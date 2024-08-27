@@ -1,0 +1,179 @@
+{
+    "name": "Plugin Notes Plus",
+    "slug": "plugin-notes-plus",
+    "version": "1.2.8",
+    "author": "<a href=\"https://github.com/jamiebergen\">Jamie Bergen</a>",
+    "author_profile": "https://profiles.wordpress.org/jamiebergen/",
+    "contributors": {
+        "jamiebergen": {
+            "profile": "https://profiles.wordpress.org/jamiebergen/",
+            "avatar": "https://secure.gravatar.com/avatar/b6147e486b172d4df1a5c0399d710c21?s=96&d=monsterid&r=g",
+            "display_name": "jamiebergen"
+        }
+    },
+    "requires": "6.2",
+    "tested": "6.6.1",
+    "requires_php": "5.6",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 58,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 58,
+    "support_url": "https://wordpress.org/support/plugin/plugin-notes-plus/",
+    "support_threads": 3,
+    "support_threads_resolved": 2,
+    "active_installs": 8000,
+    "downloaded": 53367,
+    "last_updated": "2024-08-02 3:16am GMT",
+    "added": "2018-02-13",
+    "homepage": "https://github.com/jamiebergen/plugin-notes-plus",
+    "sections": {
+        "description": "<p>Have you ever returned to a site that you built a while back and asked, &#8220;Why did I install this plugin?&#8221; This plugin provides an extra column on the Plugins page that enables you to add, edit, or delete notes about the plugins you have installed on a particular site. These notes are intended to provide documentation regarding why a particular plugin was installed and how or where it&#8217;s being used.</p>\n<p>Features</p>\n<ul>\n<li>Add as many or as few notes as you need for each plugin.</li>\n<li>Edit or delete notes as desired.</li>\n<li>Select an icon to go with each note to quickly convey what type of content it contains (e.g., info, warning, link, etc.)</li>\n<li>Format notes using basic HTML tags if desired.</li>\n<li>Any links included in the note will be automatically converted to <code>target=\"_blank\"</code></li>\n<li>Notes are added and updated via Ajax, avoiding slow page reloads.</li>\n<li>Notes also display on the WordPress Updates page for any plugins that need to be updated.</li>\n<li>A filter is provided if you would like to display notes beneath the plugin description instead of in a separate column.</li>\n<li>A filter is available to selectively hide or display plugin notes in the admin.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>You can either install the plugin via the Plugins directory from within your WordPress install, or you can upload the files manually to your server by extracting the .zip file and placing its contents in the /wp-content/plugins/ directory.</li>\n<li>Activate the plugin through the Plugins menu in WordPress.</li>\n<li>Add, edit, or delete notes in the Plugin Notes column on the Installed Plugins page.</li>\n</ol>\n",
+        "faq": "\n<dt id='can%20i%20display%20the%20plugin%20notes%20beneath%20the%20plugin%20description%20instead%20of%20in%20a%20separate%20column%3F'>\nCan I display the plugin notes beneath the plugin description instead of in a separate column?\n</h4>\n<p>\n<p>As of version 1.2.4, you can use the filter plugin-notes-plus_note_placement to move notes beneath the plugin description.</p>\n<p>Here is an example of a snippet that places plugin notes beneath the plugin description. It can be added to your child theme&#8217;s functions.php. Without this, the note position will default to a separate column on the plugins page.</p>\n<pre><code>function pnp_change_note_placement( $note_placement ) {\n\n    $note_placement = 'description';\n\n    return $note_placement;\n\n}\nadd_filter( 'plugin-notes-plus_note_placement', 'pnp_change_note_placement' );\n</code></pre>\n</p>\n<dt id='can%20i%20modify%20which%20icons%20are%20available%20to%20display%20next%20to%20plugin%20notes%3F'>\nCan I modify which icons are available to display next to plugin notes?\n</h4>\n<p>\n<p>Yes, you can use the filter plugin-notes-plus_icon_options to modify the set of icons available. The icons must be selected from <a href=\"https://developer.wordpress.org/resource/dashicons/\" rel=\"nofollow ugc\">the list of available WordPress dashicons</a>.</p>\n<p>Here is an example of a snippet that removes one icon and adds an additional icon to the list of options. It can be added to your child theme&#8217;s functions.php:</p>\n<pre><code>function pnp_change_icon_options( $icon_options ) {\n\n    // Remove key option\n    unset( $icon_options['dashicons-admin-network'] );\n\n    // Add smartphone option\n    $icon_options['dashicons-smartphone'] = 'Smartphone';\n\n    return $icon_options;\n}\nadd_filter( 'plugin-notes-plus_icon_options', 'pnp_change_icon_options' );\n</code></pre>\n</p>\n<dt id='which%20html%20tags%20are%20permitted%2C%20and%20can%20that%20list%20be%20modified%3F'>\nWhich HTML tags are permitted, and can that list be modified?\n</h4>\n<p>\n<p>You can use the following HTML tags: <code>a</code>, <code>br</code>, <code>p</code>, <code>b</code>, <code>strong</code>, <code>i</code>, <code>em</code>, <code>u</code>, <code>hr</code>.</p>\n<p>To modify the list of available tags, use the filter plugin-notes-plus_allowed_html. Be careful, however, to avoid allowing tags that could leave the site vulnerable to an XSS attack.</p>\n<pre><code>function pnp_change_allowed_html_tags( $allowed_tags ) {\n\n    // Remove br from allowed tags\n    unset( $allowed_tags['br'] );\n\n    // Add img to allowed tags\n    $allowed_tags['img'] = array();\n\n    return $allowed_tags;\n}\nadd_filter( 'plugin-notes-plus_allowed_html', 'pnp_change_allowed_html_tags' );\n</code></pre>\n</p>\n<dt id='where%20is%20the%20data%20stored%3F'>\nWhere is the data stored?\n</h4>\n<p>\n<p>Plugin notes and note metadata are stored in a custom table whose name ends in <code>plugin_notes_plus</code>. In the initial version (1.0.0), notes were stored in the options table. Version 1.1.0 was released to migrate existing notes from the options table into the <code>plugin_notes_plus</code> table. Upgrading to version 1.1.1 will perform a cleanup, removing any notes from the options table.</p>\n</p>\n<dt id='how%20does%20it%20work%20on%20multisite%20installs%3F'>\nHow does it work on multisite installs?\n</h4>\n<p>\n<p>Each site within a multisite install maintains its own plugin notes. Additionally, the superadmin can maintain their own plugin notes.</p>\n</p>\n<dt id='can%20i%20hide%20plugin%20notes%20from%20specific%20users%3F'>\nCan I hide plugin notes from specific users?\n</h4>\n<p>\n<p>As of version 1.2.6, you can use the filter plugin-notes-plus_hide_notes to show or hide plugin notes.</p>\n<p>Here is an example of a snippet that hides plugin notes from a specfic user. It can be added to your child theme&#8217;s functions.php. Without this, plugin notes are displayed by default to all users who can view the plugins page.</p>\n<pre><code>function pnp_hide_notes( $hide_notes ) {\n\n    // logic to set $hide_notes to TRUE or FALSE\n\n    return $hide_notes;\n\n}\nadd_filter( 'plugin-notes-plus_hide_notes', 'pnp_hide_notes' );\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>1.2.8</h4>\n<ul>\n<li>Fixed: Checking for user permission on ajax requests.</li>\n</ul>\n<h4>1.2.7</h4>\n<ul>\n<li>Fixed: Cross site scripting (XSS) vulnerability related to icon rendering.</li>\n</ul>\n<h4>1.2.6</h4>\n<ul>\n<li>Added: Option to selectively hide or display plugin notes. Thanks to @garconis for the suggestion.</li>\n</ul>\n<h4>1.2.5</h4>\n<ul>\n<li>Fixed: PHP warning caused by deprecated usage of wp_localize_script. Thanks to @brianhenryie for finding this.</li>\n</ul>\n<h4>1.2.4</h4>\n<ul>\n<li>Added: Option to display notes beneath plugin description. Thanks to @antipole for the suggestion.</li>\n</ul>\n<h4>1.2.3</h4>\n<ul>\n<li>Added: Money icon option. Thanks to @brianhenryie.</li>\n</ul>\n<h4>1.2.2</h4>\n<ul>\n<li>Added: Updates for RTL compatibility. Thanks to @ramiy.</li>\n<li>Removed: Unnecessary po and mo translation files.</li>\n</ul>\n<h4>1.2.1</h4>\n<ul>\n<li>Fixed: JavaScript error that sometimes happened on update-core.php if a plugin had no notes. Thanks to @brianhenryie for bringing this to my attention.</li>\n<li>Added: Hungarian translation. Thanks to @tomek00.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Added: Plugin notes now display in a read-only format on the WordPress Updates page (update-core.php). Thanks to @douglsmith for the suggestion.</li>\n<li>Fixed: Removed unnecessary multisite hook. Thanks to @foomagoo for pointing this out.</li>\n</ul>\n<h4>1.1.2</h4>\n<ul>\n<li>Fixed: Bug that prevented user from adding or updating notes after an ajax response. Thanks to @anticosti for helping to identify this bug.</li>\n<li>Added: Spinning icon to indicate that a note is in the process of being deleted.</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>Added: Cleanup routine to remove notes from the options table. (If upgrading from 1.0.0, notes will first be migrated into their own table.)</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Fixed: Bug that caused plugin notes to disappear on Windows servers due to discrepancies in the plugin file path related to forward vs. backslash. This update will recover missing notes. Thanks to @gwalsh66 for helping to identify this bug.</li>\n<li>Changed: Plugin notes will now be stored in a custom table called <code>$wpdb-&gt;prefix . 'plugin_notes_plus'</code></li>\n<li>Added: Migration routine to move notes from the options table into their own table if upgrading from version 1.0.0</li>\n<li>Added: Entry in the options table called &#8216;plugin_notes_plus_db_version&#8217; to track the custom database table version</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
+    },
+    "short_description": "Adds a column to the Plugins page where you can add, edit, or delete notes about a plugin.",
+    "description": "<p>Have you ever returned to a site that you built a while back and asked, &#8220;Why did I install this plugin?&#8221; This plugin provides an extra column on the Plugins page that enables you to add, edit, or delete notes about the plugins you have installed on a particular site. These notes are intended to provide documentation regarding why a particular plugin was installed and how or where it&#8217;s being used.</p>\n<p>Features</p>\n<ul>\n<li>Add as many or as few notes as you need for each plugin.</li>\n<li>Edit or delete notes as desired.</li>\n<li>Select an icon to go with each note to quickly convey what type of content it contains (e.g., info, warning, link, etc.)</li>\n<li>Format notes using basic HTML tags if desired.</li>\n<li>Any links included in the note will be automatically converted to <code>target=\"_blank\"</code></li>\n<li>Notes are added and updated via Ajax, avoiding slow page reloads.</li>\n<li>Notes also display on the WordPress Updates page for any plugins that need to be updated.</li>\n<li>A filter is provided if you would like to display notes beneath the plugin description instead of in a separate column.</li>\n<li>A filter is available to selectively hide or display plugin notes in the admin.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/plugin-notes-plus.1.2.8.zip",
+    "upgrade_notice": {
+        "1.2.8": "<p>This version fixes an issue related to user permissions.</p>",
+        "1.2.7": "<p>This version fixes a security issue.</p>",
+        "1.2.6": "<p>This version adds a filter to hide or display plugin notes.</p>",
+        "1.2.5": "<p>This version fixes a PHP warning that happens when upgrading to WordPress 5.7.</p>",
+        "1.2.4": "<p>This version adds a filter so that the user can move notes beneath the plugin description if desired.</p>",
+        "1.2.3": "<p>This version adds an option for a money icon.</p>",
+        "1.2.2": "<p>This version makes updates for RTL compatibility and removes unnecessary po and mo translation files.</p>",
+        "1.2.1": "<p>This version fixes a rare JavaScript error on the WordPress Updates page and adds a Hungarian translation.</p>",
+        "1.2.0": "<p>This version adds a feature to display plugin notes on the WordPress Updates page.</p>",
+        "1.1.2": "<p>This version fixes a bug where plugin notes couldn&#039;t be updated if the user had previously filtered the list of plugins.</p>",
+        "1.1.1": "<p>This version does some behind-the-scenes cleanup to the options table to improve performance. It should not affect your existing notes or the functionality of the plugin.</p>",
+        "1.1.0": "<p>This version migrates plugin notes into their own database table and fixes a bug with plugin notes disappearing on Windows servers.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/plugin-notes-plus/assets/screenshot-1.png?rev=1977865",
+            "caption": "Upon activating the plugin, you will see a new column on the Plugins page that enables you to add, edit, or delete notes about the plugins you have installed on a particular site."
+        }
+    ],
+    "tags": {
+        "memo": "memo",
+        "plugin-notes": "plugin notes",
+        "plugins": "plugins"
+    },
+    "stable_tag": "1.2.8",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/plugin-notes-plus.1.0.0.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/plugin-notes-plus.1.1.0.zip",
+        "1.1.1": "https://downloads.wordpress.org/plugin/plugin-notes-plus.1.1.1.zip",
+        "1.1.2": "https://downloads.wordpress.org/plugin/plugin-notes-plus.1.1.2.zip",
+        "1.2.0": "https://downloads.wordpress.org/plugin/plugin-notes-plus.1.2.0.zip",
+        "1.2.1": "https://downloads.wordpress.org/plugin/plugin-notes-plus.1.2.1.zip",
+        "1.2.2": "https://downloads.wordpress.org/plugin/plugin-notes-plus.1.2.2.zip",
+        "1.2.3": "https://downloads.wordpress.org/plugin/plugin-notes-plus.1.2.3.zip",
+        "1.2.4": "https://downloads.wordpress.org/plugin/plugin-notes-plus.1.2.4.zip",
+        "1.2.5": "https://downloads.wordpress.org/plugin/plugin-notes-plus.1.2.5.zip",
+        "1.2.6": "https://downloads.wordpress.org/plugin/plugin-notes-plus.1.2.6.zip",
+        "1.2.7": "https://downloads.wordpress.org/plugin/plugin-notes-plus.1.2.7.zip",
+        "1.2.8": "https://downloads.wordpress.org/plugin/plugin-notes-plus.1.2.8.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/plugin-notes-plus.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.paypal.com/donate?business=WXSWW7YP6NE5Y&no_recurring=0&currency_code=USD",
+    "banners": {
+        "low": "https://ps.w.org/plugin-notes-plus/assets/banner-772x250.png?rev=1821609",
+        "high": "https://ps.w.org/plugin-notes-plus/assets/banner-1544x500.png?rev=1821609"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/plugin-notes-plus/assets/icon.svg?rev=1821775",
+        "svg": "https://ps.w.org/plugin-notes-plus/assets/icon.svg?rev=1821775"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "plugin-notes-plus",
+            "language": "de_DE",
+            "version": "1.2.6",
+            "updated": "2022-06-01 12:43:54",
+            "package": "http://downloads.wordpress.org/translation/plugin/plugin-notes-plus/1.2.6/de_DE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "plugin-notes-plus",
+            "language": "es_ES",
+            "version": "1.2.6",
+            "updated": "2019-10-05 00:01:00",
+            "package": "http://downloads.wordpress.org/translation/plugin/plugin-notes-plus/1.2.6/es_ES.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "plugin-notes-plus",
+            "language": "he_IL",
+            "version": "1.2.6",
+            "updated": "2019-10-08 19:00:59",
+            "package": "http://downloads.wordpress.org/translation/plugin/plugin-notes-plus/1.2.6/he_IL.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "plugin-notes-plus",
+            "language": "ja",
+            "version": "1.2.6",
+            "updated": "2022-06-24 13:40:08",
+            "package": "http://downloads.wordpress.org/translation/plugin/plugin-notes-plus/1.2.6/ja.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "plugin-notes-plus",
+            "language": "nl_NL_formal",
+            "version": "1.2.6",
+            "updated": "2021-06-19 18:37:44",
+            "package": "http://downloads.wordpress.org/translation/plugin/plugin-notes-plus/1.2.6/nl_NL_formal.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "plugin-notes-plus",
+            "language": "nl_NL",
+            "version": "1.2.6",
+            "updated": "2021-10-15 13:59:39",
+            "package": "http://downloads.wordpress.org/translation/plugin/plugin-notes-plus/1.2.6/nl_NL.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "plugin-notes-plus",
+            "language": "pt_PT",
+            "version": "1.2.6",
+            "updated": "2023-03-15 01:51:31",
+            "package": "http://downloads.wordpress.org/translation/plugin/plugin-notes-plus/1.2.6/pt_PT.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "plugin-notes-plus",
+            "language": "ru_RU",
+            "version": "1.2.6",
+            "updated": "2021-02-06 14:12:20",
+            "package": "http://downloads.wordpress.org/translation/plugin/plugin-notes-plus/1.2.6/ru_RU.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "plugin-notes-plus",
+            "language": "sv_SE",
+            "version": "1.2.6",
+            "updated": "2021-08-04 13:32:02",
+            "package": "http://downloads.wordpress.org/translation/plugin/plugin-notes-plus/1.2.6/sv_SE.zip"
+        }
+    ]
+}

@@ -1,0 +1,69 @@
+{
+    "name": "WP REST API Idempotent Requests",
+    "slug": "wp-rest-api-idempotence",
+    "version": "1.0",
+    "author": "<a href=\"https://timothybjacobs.com\">Timothy B Jacobs</a>",
+    "author_profile": "https://profiles.wordpress.org/timothyblynjacobs/",
+    "contributors": {
+        "timothyblynjacobs": {
+            "profile": "https://profiles.wordpress.org/timothyblynjacobs/",
+            "avatar": "https://secure.gravatar.com/avatar/596003127e013031dd5299a3879827e9?s=96&d=monsterid&r=g",
+            "display_name": "Timothy Jacobs"
+        }
+    },
+    "requires": "4.7",
+    "tested": "4.8.25",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/wp-rest-api-idempotence/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 1842,
+    "last_updated": "2017-04-09 5:22am GMT",
+    "added": "2017-04-09",
+    "homepage": "https://timothybjacobs.com/wp-api-idempotence/",
+    "sections": {
+        "description": "<p>When a network error is encountered, API clients should be able to retry a request without a risk of their request being processed twice.<br />\nWP API Idempotence adds support for clients to include an idempotency key that uniquely identifies that request. If the server detects<br />\nthat a request with the same key has already been processed or is currently being processed, the response for the initial request will<br />\nbe returned.</p>\n<p>For Example:</p>\n<pre><code>{\n    \"title\": \"My Important Post\",\n    \"content\": \"This will only go out once!\",\n    \"status\": \"draft\",\n    \"idempotency_key\": \"1ced64e9-9537-4b7b-9919-444d9e15e201\"\n}\n</code></pre>\n<h4>Configuration</h4>\n<ul>\n<li>Idempotency key can either be passed in the request header or the request body.</li>\n<li>The idempotency key name can be customized.</li>\n<li>Change the HTTP methods the idempotency key is supported for. Defaults to <code>POST</code>, <code>PUT</code>, <code>PATCH</code>.</li>\n</ul>\n<p>A sample request interface is included to demonstrate the selected configuration.</p>\n<h4>Developers</h4>\n<p>The plugin includes two actions to modify the dependency injection container (DIC) and insert custom services.</p>\n<p>The <code>wp_api_idempotence_initialize_container_builder</code> action allows you to modify the Dependency Injection builder itself and<br />\nthe <code>wp_api_idempotence_initialize_container</code> action allows you to override dependencies. For example:</p>\n<pre><code>add_action( 'wp_api_idempotence_initialize_container', function( $container ) {\n    $container-&gt;set( '_dataStore', DI\\object( 'YourName\\CustomDataStore' ) );\n} );\n</code></pre>\n<p>Under the hood, the plugin is made up of a <code>DataStore</code>, <code>RequestHasher</code>, <code>ResponseSerializer</code> and <code>RequestPoller</code>.</p>\n<p>The <code>DataStore</code> is primarily responsible for retrieving or storing an idempotent request. By default, requests<br />\nare stored in a custom database table. This could be substituted for a custom driver by implementing the <code>DataStore</code><br />\ninterface. For example a Redis server.</p>\n<p>The <code>RequestHasher</code> produces a unique hash for a <code>WP_REST_Request</code> object. This hash is based off of the contents of<br />\nthe request, not for the object via <code>spl_object_hash</code> or similar. This can also be substituted by implementing the<br />\n    RequestHasher interface.</p>\n<p>The <code>ResponseSerializer</code> converts a <code>WP_REST_Response</code> or <code>WP_Error</code> object back and forth from a string representation.<br />\nThe default JSON serializer supports filtering the serialization process using the <code>wp_api_idempotence_serialized_response_data</code><br />\nand <code>wp_api_idempotence_attach_serialized_response_data</code> filters. See <code>src/ResponseSerializer/Filtered.php</code>.<br />\nThe entire serializer can be substituted by implementing the <code>ResponseSerializer</code> interface.</p>\n<p>Finally, the <code>RequestPoller</code> class polls the data store for a response if it is determined that an idempotent request<br />\nis currently being processed when another request with the same key arrives. By default, the data store is polled<br />\nevery seconds a maximum of 15 times to try and retrieve a response object. If no response is found, an error with code<br />\n    rest_duplicate_idempotency_key will be returned. This can be adjusted by overwriting the <code>poll.sleepSeconds</code> and<br />\n    poll.maxQueries in the DIC. The <code>RequestPoller</code> can also be entirely subsituted by implementing the <code>RequestPoller</code><br />\ninterface.</p>\n<h4>Contributing</h4>\n<p>This plugin is hosted on <a href=\"https://github.com/iron-bound-designs/wp-api-idempotence\" rel=\"nofollow ugc\">GitHub</a>. Issues and pull requests are welcomed.</p>\n",
+        "changelog": "<h4>1.0</h4>\n<ul>\n<li>Initial version.</li>\n</ul>\n",
+        "faq": "\n<h4>Installation Instructions</h4>\n<p>\n<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/wp-api-idempotence</code> directory, or install the plugin through the WordPress plugins screen directly.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; screen in WordPress</li>\n<li>Use the Settings -&gt; WP API Idempotence screen to modify the idempotency key location or name</li>\n<li>Ensure the plugin is working by using the &#8220;Sample Requests&#8221; section.</li>\n</ol>\n</p>\n\n"
+    },
+    "short_description": "Allow REST API clients to safely retry requests in case of network errors without risk of the request being processed twice.",
+    "description": "<p>When a network error is encountered, API clients should be able to retry a request without a risk of their request being processed twice.<br />\nWP API Idempotence adds support for clients to include an idempotency key that uniquely identifies that request. If the server detects<br />\nthat a request with the same key has already been processed or is currently being processed, the response for the initial request will<br />\nbe returned.</p>\n<p>For Example:</p>\n<pre><code>{\n    \"title\": \"My Important Post\",\n    \"content\": \"This will only go out once!\",\n    \"status\": \"draft\",\n    \"idempotency_key\": \"1ced64e9-9537-4b7b-9919-444d9e15e201\"\n}\n</code></pre>\n<h4>Configuration</h4>\n<ul>\n<li>Idempotency key can either be passed in the request header or the request body.</li>\n<li>The idempotency key name can be customized.</li>\n<li>Change the HTTP methods the idempotency key is supported for. Defaults to <code>POST</code>, <code>PUT</code>, <code>PATCH</code>.</li>\n</ul>\n<p>A sample request interface is included to demonstrate the selected configuration.</p>\n<h4>Developers</h4>\n<p>The plugin includes two actions to modify the dependency injection container (DIC) and insert custom services.</p>\n<p>The <code>wp_api_idempotence_initialize_container_builder</code> action allows you to modify the Dependency Injection builder itself and<br />\nthe <code>wp_api_idempotence_initialize_container</code> action allows you to override dependencies. For example:</p>\n<pre><code>add_action( 'wp_api_idempotence_initialize_container', function( $container ) {\n    $container-&gt;set( '_dataStore', DI\\object( 'YourName\\CustomDataStore' ) );\n} );\n</code></pre>\n<p>Under the hood, the plugin is made up of a <code>DataStore</code>, <code>RequestHasher</code>, <code>ResponseSerializer</code> and <code>RequestPoller</code>.</p>\n<p>The <code>DataStore</code> is primarily responsible for retrieving or storing an idempotent request. By default, requests<br />\nare stored in a custom database table. This could be substituted for a custom driver by implementing the <code>DataStore</code><br />\ninterface. For example a Redis server.</p>\n<p>The <code>RequestHasher</code> produces a unique hash for a <code>WP_REST_Request</code> object. This hash is based off of the contents of<br />\nthe request, not for the object via <code>spl_object_hash</code> or similar. This can also be substituted by implementing the<br />\n    RequestHasher interface.</p>\n<p>The <code>ResponseSerializer</code> converts a <code>WP_REST_Response</code> or <code>WP_Error</code> object back and forth from a string representation.<br />\nThe default JSON serializer supports filtering the serialization process using the <code>wp_api_idempotence_serialized_response_data</code><br />\nand <code>wp_api_idempotence_attach_serialized_response_data</code> filters. See <code>src/ResponseSerializer/Filtered.php</code>.<br />\nThe entire serializer can be substituted by implementing the <code>ResponseSerializer</code> interface.</p>\n<p>Finally, the <code>RequestPoller</code> class polls the data store for a response if it is determined that an idempotent request<br />\nis currently being processed when another request with the same key arrives. By default, the data store is polled<br />\nevery seconds a maximum of 15 times to try and retrieve a response object. If no response is found, an error with code<br />\n    rest_duplicate_idempotency_key will be returned. This can be adjusted by overwriting the <code>poll.sleepSeconds</code> and<br />\n    poll.maxQueries in the DIC. The <code>RequestPoller</code> can also be entirely subsituted by implementing the <code>RequestPoller</code><br />\ninterface.</p>\n<h4>Contributing</h4>\n<p>This plugin is hosted on <a href=\"https://github.com/iron-bound-designs/wp-api-idempotence\" rel=\"nofollow ugc\">GitHub</a>. Issues and pull requests are welcomed.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/wp-rest-api-idempotence.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "rest-api": "rest-api"
+    },
+    "stable_tag": "1.0",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/wp-rest-api-idempotence.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/wp-rest-api-idempotence.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/wp-rest-api-idempotence.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

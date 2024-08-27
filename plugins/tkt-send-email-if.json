@@ -1,0 +1,93 @@
+{
+    "name": "TukuToi Send Email If",
+    "slug": "tkt-send-email-if",
+    "version": "1.0.0",
+    "author": "<a href=\"https://www.tukutoi.com/\">TukuToi</a>",
+    "author_profile": "https://profiles.wordpress.org/bedas/",
+    "contributors": {
+        "bedas": {
+            "profile": "https://profiles.wordpress.org/bedas/",
+            "avatar": "https://secure.gravatar.com/avatar/5dfce927e603a9ef1e0d25564ce941bf?s=96&d=monsterid&r=g",
+            "display_name": "Beda"
+        }
+    },
+    "requires": "4.9",
+    "tested": "5.7.12",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/tkt-send-email-if/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 587,
+    "last_updated": "2021-06-30 5:09am GMT",
+    "added": "2021-06-30",
+    "homepage": "https://www.tukutoi.com/program/send-email-if/",
+    "sections": {
+        "description": "<p>Sometimes, you need to know when certain posts are being viewed/visited/discovered by users, be it guests or logged in users.<br />\nFor example, in a Talent Discovery Directory you might want to inform the Talent or Talent Manager that someone is vieweing their Talent Profile right now. You might want to do that discretly, but reliably, without bloating the website with heavy (and Privacy problematic) user tracking.</p>\n<p>This plugin has a solution to that problem.<br />\nIt allows you to easily send an email to a given receiver, whenever a certain post is visited.<br />\nYou can set a specific receiver for each post.<br />\nYou can control on what posts the receiver should be set, and thus the email sent when the post is visited.<br />\nYou can control what user Roles will trigger the notification when they visit the post.<br />\nYou can also customize the email contents as well as other aspects of the email.</p>\n<p>The entire plugin is very lightweight and thus renounces to any Backend Settings Screens.<br />\nIt only adds a tiny Metabox to your posts (of choice) to save the receiver email.<br />\nThe rest of the Plugin functionality is controlled with a set of Filters.</p>\n",
+        "installation": "<ol>\n<li>Install and Activate like any other Plugin in WordPress.</li>\n<li>Head to the Plugin Settings Screen in the WordPress Dashboard &gt; TukuToi &gt; Send Email If. There you can control the Plugin settings such as determine which posts should trigger an email, and what action should send the email, and customize the email sent.</li>\n<li>Control the plugin settings with the provided Filters (see FAQ)</li>\n<li>Save the email for each specific post where you want an email being sent.</li>\n</ol>\n",
+        "faq": "\n<dt id='this%20plugin%20has%20no%20settings%21'>\nThis Plugin has no settings!\n</h4>\n<p>\n<p>That&#8217;s right, in order to keep this lightweight, no settings or options pages where added in the backend.<br />\nInstead, a set of Filters will allow you to control the Plugin behaviour fully.<br />\nRead more about this in the below FAQ entries.</p>\n</p>\n<dt id='this%20plugin%20does%20not%20work%20after%20activating%21'>\nThis Plugin does not work after activating!\n</h4>\n<p>\n<p>The plugin will not activate its features unless you tell it to do so, using the Filters documented below.<br />\nMandatory filters you must use are <code>tkt_sei_metabox_location</code> and <code>tkt_sei_notify_on_role_visit</code>.<br />\nRead more in the below FAQs.</p>\n</p>\n<dt id='how%20to%20modify%20the%20email%20%22about%22%3F'>\nHow to modify the email &#8220;About&#8221;?\n</h4>\n<p>\n<p>You can use the filter <code>tkt_sei_email_subject</code> in order to customize the &#8220;About&#8221; of the Email sent.<br />\nYou just need to return a valid Email &#8220;About&#8221; (string) in the callback function:</p>\n<pre><code>add_filter('tkt_sei_email_subject', 'my_custom_email_subject');\nfunction my_custom_email_subject(){\n\n    $subject ='My Custom About';\n\n    return $subject;\n\n}\n</code></pre>\n</p>\n<dt id='how%20to%20modify%20the%20email%20%22body%22%3F'>\nHow to modify the email &#8220;Body&#8221;?\n</h4>\n<p>\n<p>You can use the filter <code>tkt_sei_notification_content</code> in order to customize the &#8220;Body&#8221; of the Email sent.<br />\nYou just need to return a valid Email &#8220;Body&#8221; (string or html with inline CSS) in the callback function:<br />\nThe Filter passes 3 additional arguments for your convenience.</p>\n<pre><code>add_filter('tkt_sei_notification_content', 'my_custom_notification_content', 10, 4);\nfunction my_custom_notification_content($default_message, $post, $current_user, $receiver_email){\n\n    //$post is the Post Object of the post which was visited.\n    //$current_user is the User Object of the user who visited the post. Might be empty, if guest user.\n    //$receiver_email is the email stored to the post visited (the email that will get the notification).\n\n    $default_message = 'My new Custom Notification Content with &lt;strong&gt;valid HTML&lt;/strong&gt;';\n\n    return $default_message;\n\n}\n</code></pre>\n</p>\n<dt id='how%20to%20modify%20the%20email%20%22to%22%20%28receiver%29%3F'>\nHow to modify the email &#8220;To&#8221; (Receiver)?\n</h4>\n<p>\n<p>You can use the filter <code>tkt_sei_receiver_email</code> in order to customize the &#8220;To&#8221; (Receiver) of the Email sent.<br />\nYou just need to return a valid Email address in the callback function:</p>\n<pre><code>add_filter('tkt_sei_receiver_email', 'my_custom_receiver_email');\nfunction my_custom_receiver_email(){\n\n    $email = 'custom@receiver.com';\n\n    return $email;\n\n}\n</code></pre>\n</p>\n<dt id='how%20can%20i%20control%20where%20the%20metabox%20appears%2C%20and%20which%20posts%20should%20be%20observed%2Ftriggering%20the%20email%3F'>\nHow can I control where the Metabox appears, and which posts should be observed/triggering the email?\n</h4>\n<p>\n<p>You can use the filter <code>tkt_sei_metabox_location</code> in order to customize the &#8220;Location&#8221; where the metabox will appear.<br />\nIn other words, with this filter you can decide on what Post Types you will want the plugin functionality active.<br />\nYou just need to return an array of valid Post Types in the callback function:</p>\n<pre><code>add_filter('tkt_sei_metabox_location', 'my_custom_metabox_location');\nfunction my_custom_metabox_location(){\n\n    $posts = array('post', 'page');//Array of post Types where the functionality shoud be active.\n\n    return $posts;\n\n}\n</code></pre>\n</p>\n<dt id='how%20can%20%20i%20control%20what%20users%20%28visitors%29%20trigger%20the%20email%3F'>\nHow can  I control what users (visitors) trigger the email?\n</h4>\n<p>\n<p>You can use the filter <code>tkt_sei_notify_on_role_visit</code> in order to customize the &#8220;Visitor&#8221; Role that should trigger the email.<br />\nIn other words, this allows you to determine what User Roles will actually trigger the emails, when an user of such role visits a post which is observed.<br />\nThe filter expects an array of valid User Roles.<br />\nPass 0 (int) if you want guests to trigger emails.<br />\nEmpty array (default) triggers no email at all.</p>\n<pre><code>add_filter('tkt_sei_notify_on_role_visit', 'my_custom_notify_on_role_visit');\nfunction my_custom_notify_on_role_visit(){\n\n    $role = array( 'administrator', 0, 'subscriber' );// it sends the email if a user with role administrator, or subscriber, or even a guest is visiting.\n\n    return $role;\n\n}\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>1.0</h4>\n<ul>\n<li>Initial Commit.</li>\n</ul>\n"
+    },
+    "short_description": "TukuToi Send Email If Plugin allows you to send an email to a dynamically set receiver, whenever any Post of a dynamically set type is visited by user &hellip;",
+    "description": "<p>Sometimes, you need to know when certain posts are being viewed/visited/discovered by users, be it guests or logged in users.<br />\nFor example, in a Talent Discovery Directory you might want to inform the Talent or Talent Manager that someone is vieweing their Talent Profile right now. You might want to do that discretly, but reliably, without bloating the website with heavy (and Privacy problematic) user tracking.</p>\n<p>This plugin has a solution to that problem.<br />\nIt allows you to easily send an email to a given receiver, whenever a certain post is visited.<br />\nYou can set a specific receiver for each post.<br />\nYou can control on what posts the receiver should be set, and thus the email sent when the post is visited.<br />\nYou can control what user Roles will trigger the notification when they visit the post.<br />\nYou can also customize the email contents as well as other aspects of the email.</p>\n<p>The entire plugin is very lightweight and thus renounces to any Backend Settings Screens.<br />\nIt only adds a tiny Metabox to your posts (of choice) to save the receiver email.<br />\nThe rest of the Plugin functionality is controlled with a set of Filters.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/tkt-send-email-if.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/tkt-send-email-if/assets/screenshot-1.png?rev=2556155",
+            "caption": "The Email MetaBox in the Post Edit Screen."
+        },
+        {
+            "src": "https://ps.w.org/tkt-send-email-if/assets/screenshot-2.png?rev=2556155",
+            "caption": "The Email as received (raw text, HTML will be expanded in real live case)."
+        }
+    ],
+    "tags": {
+        "classicpress": "ClassicPress",
+        "email": "email",
+        "talent": "talent",
+        "view": "view",
+        "visitor-notification": "visitor notification"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/tkt-send-email-if.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/tkt-send-email-if.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.tukutoi.com/",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/tkt-send-email-if/assets/icon.svg?rev=2556155",
+        "svg": "https://ps.w.org/tkt-send-email-if/assets/icon.svg?rev=2556155"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "tkt-send-email-if",
+            "language": "de_DE",
+            "version": "1.0.0",
+            "updated": "2021-07-18 12:43:12",
+            "package": "http://downloads.wordpress.org/translation/plugin/tkt-send-email-if/1.0.0/de_DE.zip"
+        }
+    ]
+}

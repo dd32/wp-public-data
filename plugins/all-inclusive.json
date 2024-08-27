@@ -1,0 +1,73 @@
+{
+    "name": "All Inclusive",
+    "slug": "all-inclusive",
+    "version": "1.0.7",
+    "author": "<a href=\"http://bugacms.com/\">stur</a>",
+    "author_profile": "https://profiles.wordpress.org/stur/",
+    "contributors": {
+        "stur": {
+            "profile": "https://profiles.wordpress.org/stur/",
+            "avatar": "https://secure.gravatar.com/avatar/ebdbdca7538acf39c46e07930b59607a?s=96&d=monsterid&r=g",
+            "display_name": "Yuriy Stepanov"
+        }
+    },
+    "requires": "5.8",
+    "tested": "5.8.10",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/all-inclusive/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 2454,
+    "last_updated": "2022-01-09 7:38am GMT",
+    "added": "2010-11-01",
+    "homepage": "http://bugacms.com/wpEn/all-inclusive/",
+    "sections": {
+        "description": "<p>The pluginplug-in, with two additional SQL queries, joins the original data sample $wp_query-&gt;posts all meta fields, all files and images, for each image the direct url to small, medium, and large image is formed. There’s no need to use functions the_post_thumbnail  and get_post_meta.</p>\n<h4>How it works</h4>\n<p>So let’s say we go to the home page of our blog, WordPress gives us a list of the latest 10 records. Let me remind you these are already in the global object in the array $wp_query-&gt; posts. Let’s begin from creating a list of ID (number of records to which they are stored in the database).</p>\n<h4>Form the first SQL query:</h4>\n<ul>\n<li>$query = &#8220;SELECT $wpdb-&gt;posts.* FROM $wpdb-&gt;posts WHERE  $wpdb-&gt;posts.post_parent IN(&#8217;21&#8217;,&#8217;29&#8217;,&#8217;30&#8217;,&#8217;35&#8217;,&#8217;38&#8217;,&#8217;42&#8217;,&#8217;46&#8217;,&#8217;48&#8217;,&#8217;49&#8217;,&#8217;55&#8217;) AND $wpdb-&gt;posts.post_parent<br />\nAND $wpdb-&gt;posts.post_type = &#8216;attachment'&#8221;;</li>\n</ul>\n<p>A normal translation is «find all the child entries for entries with the numbers (’21 ‘, ’29?, ’30 ‘, ’35?, ’38 ‘, ’42?, ’46 ‘, ’48?, ’49 ‘, ’55 ‘)». And the type of records required to be «attachment». That is, in short, we find all the files (attachment) which we downloaded for our 10 entries.</p>\n<p>Again we form a list of ID: the first 10 ID entries and add the ID of files (attachments). Attachments as ordinary records are stored in one table – wp_posts.</p>\n<h4>Now we use the function update_meta_cache:</h4>\n<ul>\n<li>$all_meta = update_meta_cache(&#8216;post&#8217;, $ar_all_id);</li>\n</ul>\n<p>$ar_all_id – here are the original recordings and attachments</p>\n<p>So everything just gets in the cache and subsequent calls get_post_meta will derive value from the cache. The rest is a matter of technique – the data must be carefully arranged, not mixing anything up. All meta fields are added to the $post-&gt;meta array, and files into an $post-&gt;files array and files are immediately sorted by number order (when downloading it, you can specify the sort order).<br />\nIn addition, for each file, if it is an image, the full path to the thumbnails is calculated: small (thumbnail), average (medium) and the complete picture (full).</p>\n<h4>WordPres 4:</h4>\n<p>The default filter is only connected to the main query using is_main_query().<br />\nDoes not work in is_admin() or is_page().</p>\n<p><a href=\"http://bugacms.com/wpEn/all-inclusive/\" rel=\"nofollow ugc\">Home page</a><br />\n<a href=\"http://bugacms.com/wpRu/all-inclusive/\" rel=\"nofollow ugc\">Русская страница</a></p>\n<h3>A brief Markdown Example</h3>\n<p><a href=\"http://bugacms.com/wpEn/all-inclusive/\" rel=\"nofollow ugc\">More PHP code Examples</a><br />\n<a href=\"http://bugacms.com/wpRu/all-inclusive/\" rel=\"nofollow ugc\">Больше примеров</a></p>\n",
+        "installation": "<ol>\n<li>Upload <code>all-inclusive.php</code> to the <code>/wp-content/plugins/</code> directory</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</li>\n</ol>\n<h4>Access to metadata fields recording</h4>\n<ul>\n<li><code>$post-&gt;meta['meta_name']</code> or <code>$post-&gt;meta_name</code></li>\n</ul>\n<h4>Get files</h4>\n<ul>\n<li><code>$post-&gt;files[0]-&gt;attachment_url</code> Direct Link</li>\n<li><code>$post-&gt;files[0]-&gt;guid</code> the first file parameter guid is the same direct link</li>\n</ul>\n<h4>Get images and thumbnail</h4>\n<ul>\n<li><code>$post-&gt;files[0]-&gt;thumbnail</code> First Image Thumbnail</li>\n<li><code>$post-&gt;files[1]-&gt;thumbnail</code> second file is a miniature</li>\n<li><code>$post-&gt;files[2]-&gt;medium</code> the third file is the average miniature</li>\n<li><code>$post-&gt;files[3]-&gt;full</code> fourth file is a complete picture</li>\n</ul>\n",
+        "changelog": "<h4>1.0</h4>\n<ul>\n<li>Initial version</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Meta field get through function update_meta_cache()</li>\n</ul>\n<h4>1.0.2</h4>\n<p>metadata fields are available as object properties  $post,<br />\nfor example: $post-&gt;meta_name</p>\n<h4>1.0.3</h4>\n<p>fixed bug when creating icons for files:  archives, programs, music, videos &#8230;<br />\nremoved error message when an empty result</p>\n<h4>1.0.4</h4>\n<p>Fixed bug when using external plug-in cache</p>\n<h4>1.0.5</h4>\n<p>Fixed bug when using external plug-in cache</p>\n<h4>1.0.6</h4>\n<p>Works with WordPress 3.5</p>\n<h4>1.0.7</h4>\n<p>Works with WordPress 5. The default filter is only connected to the main query using <strong>is_main_query()</strong>.</p>\n"
+    },
+    "short_description": "The pluginplug-in, with two additional SQL queries, joins the original data sample $wp_query-&gt;posts all meta fields, all files and images.",
+    "description": "<p>The pluginplug-in, with two additional SQL queries, joins the original data sample $wp_query-&gt;posts all meta fields, all files and images, for each image the direct url to small, medium, and large image is formed. There’s no need to use functions the_post_thumbnail  and get_post_meta.</p>\n<h4>How it works</h4>\n<p>So let’s say we go to the home page of our blog, WordPress gives us a list of the latest 10 records. Let me remind you these are already in the global object in the array $wp_query-&gt; posts. Let’s begin from creating a list of ID (number of records to which they are stored in the database).</p>\n<h4>Form the first SQL query:</h4>\n<ul>\n<li>$query = &#8220;SELECT $wpdb-&gt;posts.* FROM $wpdb-&gt;posts WHERE  $wpdb-&gt;posts.post_parent IN(&#8217;21&#8217;,&#8217;29&#8217;,&#8217;30&#8217;,&#8217;35&#8217;,&#8217;38&#8217;,&#8217;42&#8217;,&#8217;46&#8217;,&#8217;48&#8217;,&#8217;49&#8217;,&#8217;55&#8217;) AND $wpdb-&gt;posts.post_parent<br />\nAND $wpdb-&gt;posts.post_type = &#8216;attachment'&#8221;;</li>\n</ul>\n<p>A normal translation is «find all the child entries for entries with the numbers (’21 ‘, ’29?, ’30 ‘, ’35?, ’38 ‘, ’42?, ’46 ‘, ’48?, ’49 ‘, ’55 ‘)». And the type of records required to be «attachment». That is, in short, we find all the files (attachment) which we downloaded for our 10 entries.</p>\n<p>Again we form a list of ID: the first 10 ID entries and add the ID of files (attachments). Attachments as ordinary records are stored in one table – wp_posts.</p>\n<h4>Now we use the function update_meta_cache:</h4>\n<ul>\n<li>$all_meta = update_meta_cache(&#8216;post&#8217;, $ar_all_id);</li>\n</ul>\n<p>$ar_all_id – here are the original recordings and attachments</p>\n<p>So everything just gets in the cache and subsequent calls get_post_meta will derive value from the cache. The rest is a matter of technique – the data must be carefully arranged, not mixing anything up. All meta fields are added to the $post-&gt;meta array, and files into an $post-&gt;files array and files are immediately sorted by number order (when downloading it, you can specify the sort order).<br />\nIn addition, for each file, if it is an image, the full path to the thumbnails is calculated: small (thumbnail), average (medium) and the complete picture (full).</p>\n<h4>WordPres 4:</h4>\n<p>The default filter is only connected to the main query using is_main_query().<br />\nDoes not work in is_admin() or is_page().</p>\n<p><a href=\"http://bugacms.com/wpEn/all-inclusive/\" rel=\"nofollow ugc\">Home page</a><br />\n<a href=\"http://bugacms.com/wpRu/all-inclusive/\" rel=\"nofollow ugc\">Русская страница</a></p>\n<h3>A brief Markdown Example</h3>\n<p><a href=\"http://bugacms.com/wpEn/all-inclusive/\" rel=\"nofollow ugc\">More PHP code Examples</a><br />\n<a href=\"http://bugacms.com/wpRu/all-inclusive/\" rel=\"nofollow ugc\">Больше примеров</a></p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/all-inclusive.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "image": "image",
+        "meta": "meta",
+        "post": "post",
+        "posts": "posts",
+        "thumbnail": "thumbnail"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/all-inclusive/assets/banner-772x250.png?rev=1137844",
+        "high": false
+    },
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/all-inclusive_bbbbbc.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

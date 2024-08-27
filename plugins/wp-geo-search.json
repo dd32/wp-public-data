@@ -1,0 +1,74 @@
+{
+    "name": "WP Geo search",
+    "slug": "wp-geo-search",
+    "version": "0.1",
+    "author": "<a href=\"https://jayehackett.com\">Jaye Hackett</a>",
+    "author_profile": "https://profiles.wordpress.org/jhackett1/",
+    "contributors": {
+        "jhackett1": {
+            "profile": "https://profiles.wordpress.org/jhackett1/",
+            "avatar": "https://secure.gravatar.com/avatar/a81d8d79007c4f0500d335e540bd26ac?s=96&d=monsterid&r=g",
+            "display_name": "jhackett1"
+        }
+    },
+    "requires": "4.0",
+    "tested": "5.8.0",
+    "requires_php": "7.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 2,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 2,
+    "support_url": "https://wordpress.org/support/plugin/wp-geo-search/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 90,
+    "downloaded": 942,
+    "last_updated": "2021-09-06 1:29pm GMT",
+    "added": "2020-12-13",
+    "homepage": "https://github.com/jhackett1/wp-geo-search",
+    "sections": {
+        "description": "<p>A plugin to add location-aware geographical search to <a href=\"https://developer.wordpress.org/reference/classes/wp_query/\" rel=\"nofollow ugc\">WP_Query</a>.</p>\n<p>You can use it to power location-aware apps, such as showing a user results near them.</p>\n<h3>🔎 Using it in a query</h3>\n<p>Adding a <code>geo_query</code> parameter to WP_Query will add a &#8220;distance&#8221; column to the returned results, provided they have the right metadata.</p>\n<p>You can then display this in your templates.</p>\n<p>You can use a location search parameter, which will be <a href=\"#geocoding\" rel=\"nofollow ugc\">geocoded</a> or directly provide latitude and longitude values:</p>\n<pre><code>$query = new WP_Query(array(\n    \"geo_query\" =&gt; array(\n            \"location\" =&gt; \"London\"\n    )\n))\n\n$query = new WP_Query(array(\n    \"geo_query\" =&gt; array(\n            \"latitude\" =&gt; -52.005,\n            \"longitude\" =&gt; 0.005,\n    )\n))\n</code></pre>\n<p>Optionally, you can then filter by search radius.</p>\n<p>By default, distances are given in miles. You can provide <code>\"units\" =&gt; \"km\"</code> if you need kilometres.</p>\n<pre><code>$query = new WP_Query(array(\n    \"geo_query\" =&gt; array(\n            \"latitude\" =&gt; -52.005,\n            \"longitude\" =&gt; 0.005,\n            \"radius\" =&gt; 10\n    )\n))\n</code></pre>\n<p>Or order by nearness:</p>\n<pre><code>$query = new WP_Query(array(\n    \"geo_query\" =&gt; array(\n            \"latitude\" =&gt; -52.005,\n            \"longitude\" =&gt; 0.005\n    ),\n    \"orderby\" =&gt; \"geo\"\n))\n</code></pre>\n<h3>Displaying distance in templates</h3>\n<p>In a <code>WP_Query</code> loop that includes a <code>geo_query</code>, you can use two extra functions to show distance away:</p>\n<ul>\n<li><code>jhgs_get_the_distance(object $post)</code> &#8211; which returns a rounded integer for the distance away, similar to <code>get_the_title()</code></li>\n<li>\n<p><code>jhgs_the_distance(string $less_than_one, string $one, string $more_than_one)</code> &#8211; which displays an approximate human-readable string, similar to <code>the_title()</code></p>\n<p>jhgs_the_distance will show one of three messages depending on whether the rounded distance is less than one, one, or greater than one. By default these are:</p>\n</li>\n<li>\n<p>&#8220;Less than a mile away&#8221;</p>\n</li>\n<li>&#8220;About a mile away&#8221;</li>\n<li>&#8220;About %s miles away&#8221;</li>\n</ul>\n<p>If you need to use different units or translations, can pass three <a href=\"https://www.php.net/manual/en/function.printf.php\" rel=\"nofollow ugc\">printf-formatted</a> strings to <code>jhgs_the_distance()</code> to override these messages. Put <code>%s</code> where you want the value.</p>\n<p>If you need the <em>exact</em>, unrounded value, you can use <code>$post-&gt;distance</code>.</p>\n<h3>Geocoding</h3>\n<p><a href=\"https://nominatim.org/\" rel=\"nofollow ugc\">Nominatim</a>&#8216;s service is used for geocoding location searches.</p>\n<p>Using it is subject to an <a href=\"https://operations.osmfoundation.org/policies/nominatim/\" rel=\"nofollow ugc\">acceptable use policy</a> &#8211; if you use case will involve lots of API calls, you should replace it with a paid alternative, like <a href=\"https://developers.google.com/maps/documentation/geocoding/overview\" rel=\"nofollow ugc\">Google</a>&#8216;s.</p>\n<h3>📍 Populating latitude and longitude data</h3>\n<p>It looks for two <a href=\"https://wordpress.org/support/article/custom-fields/\" rel=\"ugc\">custom field</a> values with the keys <code>latitude</code> and <code>longitude</code> on your posts.</p>\n<p>It&#8217;s agnostic about how you supply this data. The simplest thing to do is type it in using WordPress&#8217;s built-in custom field editor.</p>\n<p>You could also hook into the <code>save_post</code> action to populate meta whenever you create or change a post, by adding a snippet like this to your theme&#8217;s <code>functions.php</code>:</p>\n<pre><code>function example_update_latlngs($post){\n    $location = get_field(\"location\", $post);\n    if(isset($location)){\n        update_post_meta($post, \"longitude\", $location[\"lng\"]);\n        update_post_meta($post, \"latitude\", $location[\"lat\"]);\n    }\n}\n\nadd_action(\"save_post\", \"example_update_latlngs\", 10, 3);\n</code></pre>\n<p>This example assumes you are using an <a href=\"https://www.advancedcustomfields.com/resources/google-map/\" rel=\"nofollow ugc\">ACF Google Map</a> field called &#8220;location&#8221;, but the data could come from anywhere, including a custom meta box you code yourself, so long as the post meta keys are right.</p>\n<h3>Bulk-updating existing posts</h3>\n<p>If you have many posts that you need to add longitude and latitude meta to in bulk, you could add something like this to <code>functions.php</code>, which will run on <a href=\"https://developer.wordpress.org/reference/hooks/after_switch_theme/\" rel=\"nofollow ugc\">theme activation</a>:</p>\n<pre><code>function example_update_all_latlngs(){\n    $query = new WP_Query(array(\n        \"posts_per_page\" =&gt; -1\n    ));\n    foreach($query-&gt;get_posts() as $post){\n        // Function from above\n        example_update_latlngs($post);\n    }\n}\n\nadd_action('after_switch_theme', 'example_update_all_latlngs');\n</code></pre>\n",
+        "faq": "\n<dt id='i%27ve%20activated%20it%2C%20but%20i%20can%27t%20see%20any%20changes%20to%20my%20website'>\nI&#8217;ve activated it, but I can&#8217;t see any changes to my website\n</h4>\n<p>\n<p>This plugin adds extra functionality to <code>WP_Query</code> &#8211; it&#8217;s up to you to make use of that functionality in your theme.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1</h4>\n<ul>\n<li>First release</li>\n</ul>\n"
+    },
+    "short_description": "Add location-aware geographical search to WP_Query. You can use it to power location-aware apps, such as showing a user results near them.",
+    "description": "<p>A plugin to add location-aware geographical search to <a href=\"https://developer.wordpress.org/reference/classes/wp_query/\" rel=\"nofollow ugc\">WP_Query</a>.</p>\n<p>You can use it to power location-aware apps, such as showing a user results near them.</p>\n<h3>🔎 Using it in a query</h3>\n<p>Adding a <code>geo_query</code> parameter to WP_Query will add a &#8220;distance&#8221; column to the returned results, provided they have the right metadata.</p>\n<p>You can then display this in your templates.</p>\n<p>You can use a location search parameter, which will be <a href=\"#geocoding\" rel=\"nofollow ugc\">geocoded</a> or directly provide latitude and longitude values:</p>\n<pre><code>$query = new WP_Query(array(\n    \"geo_query\" =&gt; array(\n            \"location\" =&gt; \"London\"\n    )\n))\n\n$query = new WP_Query(array(\n    \"geo_query\" =&gt; array(\n            \"latitude\" =&gt; -52.005,\n            \"longitude\" =&gt; 0.005,\n    )\n))\n</code></pre>\n<p>Optionally, you can then filter by search radius.</p>\n<p>By default, distances are given in miles. You can provide <code>\"units\" =&gt; \"km\"</code> if you need kilometres.</p>\n<pre><code>$query = new WP_Query(array(\n    \"geo_query\" =&gt; array(\n            \"latitude\" =&gt; -52.005,\n            \"longitude\" =&gt; 0.005,\n            \"radius\" =&gt; 10\n    )\n))\n</code></pre>\n<p>Or order by nearness:</p>\n<pre><code>$query = new WP_Query(array(\n    \"geo_query\" =&gt; array(\n            \"latitude\" =&gt; -52.005,\n            \"longitude\" =&gt; 0.005\n    ),\n    \"orderby\" =&gt; \"geo\"\n))\n</code></pre>\n<h3>Displaying distance in templates</h3>\n<p>In a <code>WP_Query</code> loop that includes a <code>geo_query</code>, you can use two extra functions to show distance away:</p>\n<ul>\n<li><code>jhgs_get_the_distance(object $post)</code> &#8211; which returns a rounded integer for the distance away, similar to <code>get_the_title()</code></li>\n<li>\n<p><code>jhgs_the_distance(string $less_than_one, string $one, string $more_than_one)</code> &#8211; which displays an approximate human-readable string, similar to <code>the_title()</code></p>\n<p>jhgs_the_distance will show one of three messages depending on whether the rounded distance is less than one, one, or greater than one. By default these are:</p>\n</li>\n<li>\n<p>&#8220;Less than a mile away&#8221;</p>\n</li>\n<li>&#8220;About a mile away&#8221;</li>\n<li>&#8220;About %s miles away&#8221;</li>\n</ul>\n<p>If you need to use different units or translations, can pass three <a href=\"https://www.php.net/manual/en/function.printf.php\" rel=\"nofollow ugc\">printf-formatted</a> strings to <code>jhgs_the_distance()</code> to override these messages. Put <code>%s</code> where you want the value.</p>\n<p>If you need the <em>exact</em>, unrounded value, you can use <code>$post-&gt;distance</code>.</p>\n<h3>Geocoding</h3>\n<p><a href=\"https://nominatim.org/\" rel=\"nofollow ugc\">Nominatim</a>&#8216;s service is used for geocoding location searches.</p>\n<p>Using it is subject to an <a href=\"https://operations.osmfoundation.org/policies/nominatim/\" rel=\"nofollow ugc\">acceptable use policy</a> &#8211; if you use case will involve lots of API calls, you should replace it with a paid alternative, like <a href=\"https://developers.google.com/maps/documentation/geocoding/overview\" rel=\"nofollow ugc\">Google</a>&#8216;s.</p>\n<h3>📍 Populating latitude and longitude data</h3>\n<p>It looks for two <a href=\"https://wordpress.org/support/article/custom-fields/\" rel=\"ugc\">custom field</a> values with the keys <code>latitude</code> and <code>longitude</code> on your posts.</p>\n<p>It&#8217;s agnostic about how you supply this data. The simplest thing to do is type it in using WordPress&#8217;s built-in custom field editor.</p>\n<p>You could also hook into the <code>save_post</code> action to populate meta whenever you create or change a post, by adding a snippet like this to your theme&#8217;s <code>functions.php</code>:</p>\n<pre><code>function example_update_latlngs($post){\n    $location = get_field(\"location\", $post);\n    if(isset($location)){\n        update_post_meta($post, \"longitude\", $location[\"lng\"]);\n        update_post_meta($post, \"latitude\", $location[\"lat\"]);\n    }\n}\n\nadd_action(\"save_post\", \"example_update_latlngs\", 10, 3);\n</code></pre>\n<p>This example assumes you are using an <a href=\"https://www.advancedcustomfields.com/resources/google-map/\" rel=\"nofollow ugc\">ACF Google Map</a> field called &#8220;location&#8221;, but the data could come from anywhere, including a custom meta box you code yourself, so long as the post meta keys are right.</p>\n<h3>Bulk-updating existing posts</h3>\n<p>If you have many posts that you need to add longitude and latitude meta to in bulk, you could add something like this to <code>functions.php</code>, which will run on <a href=\"https://developer.wordpress.org/reference/hooks/after_switch_theme/\" rel=\"nofollow ugc\">theme activation</a>:</p>\n<pre><code>function example_update_all_latlngs(){\n    $query = new WP_Query(array(\n        \"posts_per_page\" =&gt; -1\n    ));\n    foreach($query-&gt;get_posts() as $post){\n        // Function from above\n        example_update_latlngs($post);\n    }\n}\n\nadd_action('after_switch_theme', 'example_update_all_latlngs');\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/wp-geo-search.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "distance": "distance",
+        "geo": "geo",
+        "haversine": "haversine",
+        "location": "location",
+        "nominatim": "nominatim"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://github.com/jhackett1/wp-geo-search",
+    "banners": {
+        "low": "https://ps.w.org/wp-geo-search/assets/banner-772x250.jpg?rev=2438555",
+        "high": "https://ps.w.org/wp-geo-search/assets/banner-1544x500.jpg?rev=2438555"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/wp-geo-search/assets/icon-128x128.png?rev=2438555",
+        "2x": "https://ps.w.org/wp-geo-search/assets/icon-256x256.png?rev=2438555"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

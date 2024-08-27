@@ -1,0 +1,86 @@
+{
+    "name": "Content Sectioner",
+    "slug": "content-sectioner",
+    "version": "1.0.0",
+    "author": "<a href=\"http://kirkbowers.com\">Kirk Bowers</a>",
+    "author_profile": "https://profiles.wordpress.org/kirkbowers/",
+    "contributors": {
+        "kirkbowers": {
+            "profile": "https://profiles.wordpress.org/kirkbowers/",
+            "avatar": "https://secure.gravatar.com/avatar/864e8f857f37d0a14ff9cb9d808887f3?s=96&d=monsterid&r=g",
+            "display_name": "Kirk Bowers"
+        }
+    },
+    "requires": "3.1.0",
+    "tested": "4.6.29",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/content-sectioner/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 1166,
+    "last_updated": "2016-09-03 9:02pm GMT",
+    "added": "2016-09-03",
+    "homepage": "http://kirkbowers.com/plugins/content-sectioner",
+    "sections": {
+        "description": "<p>Most modern websites have pages that break the content into multiple sections, with changing background colors and graphics marking the breaks between sections.  In order for a page to be broken into sections, typically there needs to be additional markup within the HTML (ie. <code>div</code> tags) that can be targeted in the stylesheet for formatting.  However, most content authors don&#8217;t want to think about techie stuff like <code>div</code> tags, and prefer to work in the Visual editor which only provides for semantic markup (&#8220;Paragraph&#8221;, &#8220;Heading 1&#8221;, etc.).</p>\n<p>Content Sectioner takes advantage of WordPress&#8217;s content filtering mechanism and makes it easy for a theme developer to insert the necessary sectioning markup auto-magically while allowing content authors to still work as they prefer.  It looks for specified landmarks within the content (such as <code>h3</code> tags) and performs the necessary code insertions or replacements.  It does this using a concise and easy-to-use notation, relieving the theme developer from having to write (often repetitive) regular expressions and string manipulation.</p>\n<h4>A concrete example</h4>\n<p>Suppose you&#8217;re working on a site and you want the About page (with slug <code>about</code>) to have an inset in the middle of it with a blue background setting it apart.  The inset should contain the first occurence of a &#8220;Heading 3&#8221; and all the paragraphs up until just before the next &#8220;Heading 2&#8221;.  The stylesheet will apply the changing background to elements with the selector <code>.inset</code>.</p>\n<p>Assuming your <code>index.php</code> file contains something like this:</p>\n<pre><code>&lt;?php\n\n  $current_slug = get_queried_object()-&gt;post_name;\n\n  get_template_part('content', $current_slug);\n\n?&gt;\n</code></pre>\n<p>Then in the file <code>content-about.php</code>, you can set up the Content Sectioner like so:</p>\n<pre><code>&lt;?php\n\n  $sectioner = new ContentSectioner();\n\n  $sectioner-&gt;replace_first(\n    array(\n      'open_tag' =&gt; 'h3',\n      'open_insert' =&gt; '&lt;div class=\"inset\"&gt;',\n      'open_policy' =&gt; 'before',\n      'close_tag' =&gt; 'h2',\n      'close_insert' =&gt; '&lt;/div&gt;',\n      'close_policy' =&gt; 'before'\n    )\n  );\n\n  // Do the usual Loop thing here...\n?&gt;\n</code></pre>\n<p>The About page (and only the About page) will have this inset section inserted.</p>\n<p>You can provide replacement rules that replace/insert at the first occurrence of a match, the next occurrence, all remaining occurrences, or all occurrences in the entire piece of content.  You can place the inserted HTML before or after a match, or replace the match.  Also, you can match a closing tag by simply providing the preceding slash character (eg. &#8216;/h2&#8217;).  Tag matches will match against any variant of a tag (upper or lowercase, with or without attributes, as an opening tag or as a self-closing tag like <code>&lt;hr /&gt;</code>).  In the rare case that something other than a tag needs to be matched, you can supply a raw regex instead of a tag.</p>\n<h4>Providing instructions</h4>\n<p>As the theme developer, you likely would want to let the content authors know that this magic insertion of sections will occur, and what landmarks need to be present in their content to trigger the sectioning.</p>\n<p>In some file in your theme that gets loaded for every page (most likely <code>functions.php</code>), you can provide such instructions along with the slug for the page to which the instructions apply.  The instructions will appear at the top of the Edit Page page in the admin.</p>\n<pre><code>ContentSectioner::provide_instructions('about', \"\n  A blue background will be placed behind everything starting at the first Heading 3\n  through just before the next Heading 2.\");\n</code></pre>\n<h4>Full User Guide</h4>\n<p>For full documentation and more sample use cases, visit <a href=\"http://www.kirkbowers.com/plugins/content-sectioner\" rel=\"nofollow ugc\">the Content Sectioner homepage</a>.</p>\n",
+        "installation": "<p>The plugin may be used either as a conventional plugin, or since it is only one class file, embedded within a custom theme.</p>\n<h4>As a plugin from the WordPress dashboard</h4>\n<ol>\n<li>Visit &#8216;Plugins &gt; Add New&#8217;</li>\n<li>Search for &#8216;Content Sectioner&#8217;</li>\n<li>Activate Content Sectioner from your Plugins page</li>\n</ol>\n<h4>As a plugin from WordPress.org</h4>\n<ol>\n<li>Download Content Sectioner</li>\n<li>Upload the <code>ContentSectioner.php</code> file to the <code>/wp-content/plugins</code> directory</li>\n<li>Activate Content Sectioner from your Plugins page</li>\n</ol>\n<h4>Embedded in a custom theme</h4>\n<ol>\n<li>Download Content Sectioner</li>\n<li>Either concatenate the contents of the <code>ContentSectioner.php</code> file into your <code>functions.php</code> file, or place it in your theme folder and <code>require</code> it when needed</li>\n</ol>\n",
+        "faq": "\n<h4>Is this utility unit tested?</h4>\n<p>\n<p>Yes.  The plugin is tested with PHPSpec.<br />\nThe original source for this plugin lives on github at <a href=\"https://github.com/kirkbowers/content-sectioner\" rel=\"nofollow ugc\">github.com/kirkbowers/content-sectioner</a> (the wordpress.org <code>svn</code> repo is used strictly for distribution).</p>\n<p>To run the specs, you first need to install PHPSpec using <code>composer</code>.  In the project root directory, run:</p>\n<pre><code>util/install.sh\n</code></pre>\n<p>Then, once that&#8217;s in place, you can run the tests by running:</p>\n<pre><code>util/spec.sh\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
+    },
+    "short_description": "Content Sectioner is a developer plugin that makes it easy to insert formatting markup (div and img tags) into long pieces of content.",
+    "description": "<p>Most modern websites have pages that break the content into multiple sections, with changing background colors and graphics marking the breaks between sections.  In order for a page to be broken into sections, typically there needs to be additional markup within the HTML (ie. <code>div</code> tags) that can be targeted in the stylesheet for formatting.  However, most content authors don&#8217;t want to think about techie stuff like <code>div</code> tags, and prefer to work in the Visual editor which only provides for semantic markup (&#8220;Paragraph&#8221;, &#8220;Heading 1&#8221;, etc.).</p>\n<p>Content Sectioner takes advantage of WordPress&#8217;s content filtering mechanism and makes it easy for a theme developer to insert the necessary sectioning markup auto-magically while allowing content authors to still work as they prefer.  It looks for specified landmarks within the content (such as <code>h3</code> tags) and performs the necessary code insertions or replacements.  It does this using a concise and easy-to-use notation, relieving the theme developer from having to write (often repetitive) regular expressions and string manipulation.</p>\n<h4>A concrete example</h4>\n<p>Suppose you&#8217;re working on a site and you want the About page (with slug <code>about</code>) to have an inset in the middle of it with a blue background setting it apart.  The inset should contain the first occurence of a &#8220;Heading 3&#8221; and all the paragraphs up until just before the next &#8220;Heading 2&#8221;.  The stylesheet will apply the changing background to elements with the selector <code>.inset</code>.</p>\n<p>Assuming your <code>index.php</code> file contains something like this:</p>\n<pre><code>&lt;?php\n\n  $current_slug = get_queried_object()-&gt;post_name;\n\n  get_template_part('content', $current_slug);\n\n?&gt;\n</code></pre>\n<p>Then in the file <code>content-about.php</code>, you can set up the Content Sectioner like so:</p>\n<pre><code>&lt;?php\n\n  $sectioner = new ContentSectioner();\n\n  $sectioner-&gt;replace_first(\n    array(\n      'open_tag' =&gt; 'h3',\n      'open_insert' =&gt; '&lt;div class=\"inset\"&gt;',\n      'open_policy' =&gt; 'before',\n      'close_tag' =&gt; 'h2',\n      'close_insert' =&gt; '&lt;/div&gt;',\n      'close_policy' =&gt; 'before'\n    )\n  );\n\n  // Do the usual Loop thing here...\n?&gt;\n</code></pre>\n<p>The About page (and only the About page) will have this inset section inserted.</p>\n<p>You can provide replacement rules that replace/insert at the first occurrence of a match, the next occurrence, all remaining occurrences, or all occurrences in the entire piece of content.  You can place the inserted HTML before or after a match, or replace the match.  Also, you can match a closing tag by simply providing the preceding slash character (eg. &#8216;/h2&#8217;).  Tag matches will match against any variant of a tag (upper or lowercase, with or without attributes, as an opening tag or as a self-closing tag like <code>&lt;hr /&gt;</code>).  In the rare case that something other than a tag needs to be matched, you can supply a raw regex instead of a tag.</p>\n<h4>Providing instructions</h4>\n<p>As the theme developer, you likely would want to let the content authors know that this magic insertion of sections will occur, and what landmarks need to be present in their content to trigger the sectioning.</p>\n<p>In some file in your theme that gets loaded for every page (most likely <code>functions.php</code>), you can provide such instructions along with the slug for the page to which the instructions apply.  The instructions will appear at the top of the Edit Page page in the admin.</p>\n<pre><code>ContentSectioner::provide_instructions('about', \"\n  A blue background will be placed behind everything starting at the first Heading 3\n  through just before the next Heading 2.\");\n</code></pre>\n<h4>Full User Guide</h4>\n<p>For full documentation and more sample use cases, visit <a href=\"http://www.kirkbowers.com/plugins/content-sectioner\" rel=\"nofollow ugc\">the Content Sectioner homepage</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/content-sectioner.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release, nothing to upgrade!</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/content-sectioner/assets/screenshot-1.png?rev=1489569",
+            "caption": "This blue inset was created by the code sample given in \"Description &gt;&gt; A concrete example\""
+        },
+        {
+            "src": "https://ps.w.org/content-sectioner/assets/screenshot-2.png?rev=1489569",
+            "caption": "These instructions are the result of the code sample given in \"Description &gt;&gt; Providing instructions\""
+        }
+    ],
+    "tags": {
+        "content-filtering": "content filtering",
+        "content-formatting": "Content Formatting",
+        "developer": "developer"
+    },
+    "stable_tag": "trunk",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/content-sectioner.1.0.0.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/content-sectioner/assets/banner-772x250.png?rev=1507840",
+        "high": "https://ps.w.org/content-sectioner/assets/banner-1544x500.png?rev=1507840"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/content-sectioner/assets/icon-128x128.png?rev=1489569",
+        "2x": "https://ps.w.org/content-sectioner/assets/icon-256x256.png?rev=1489569"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

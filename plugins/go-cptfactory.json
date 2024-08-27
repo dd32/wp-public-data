@@ -1,0 +1,70 @@
+{
+    "name": "GigaOM Custom Post Type Factory",
+    "slug": "go-cptfactory",
+    "version": "a1",
+    "author": "<a href=\"http://GigaOM.com/\">Casey Bisson</a>",
+    "author_profile": "https://profiles.wordpress.org/misterbisson/",
+    "contributors": {
+        "misterbisson": {
+            "profile": "https://profiles.wordpress.org/misterbisson/",
+            "avatar": "https://secure.gravatar.com/avatar/0f756e1de29bab208e6cf438fb24e67b?s=96&d=monsterid&r=g",
+            "display_name": "Casey Bisson"
+        }
+    },
+    "requires": "3.3",
+    "tested": "3.4.2",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/go-cptfactory/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 1036,
+    "last_updated": "2012-08-13 2:58am GMT",
+    "added": "2012-08-12",
+    "homepage": "http://GigaOM.com/",
+    "sections": {
+        "description": "<p>This is a convenience class and collection of methods to make creating new custom post types with their own metaboxes easy.</p>\n<p>The general idea is to define a function that&#8217;s hooked to the <code>register_post_types</code> action. The function defines a class for your post type that extends the <code>GO_Cpt</code> class. This follows a design pattern established by the modern widgets API (as introduced in WP 2.8) https://codex.wordpress.org/Widgets_API#Developing_Widgets .</p>\n<p>The result is a new custom post type and much easier creation and updating of custom meta associated with that post type. You&#8217;ll also have a convenient object you can use to access the metadata associated with each post.</p>\n<pre><code>function my_customposttype() {     class My_CustomPostType extends GO_Cpt     {         function __construct()         {             // execute the parent constructor with the name \n            // and definition for the custom post type             parent::__construct( $post_type_name , $post_type_definition );         }          function metabox( $post , $meta )         {             // print out the form here             // \n            // this method is optional, only use it if you want to \n            // add a metabox to your custom post type         }          function update( $new_meta , $old_meta )         {             // sanitize and validate the metadata             // then return $meta so it can be saved             //             // this method is required if a \n            // metabox() method is included          }     }      global $my_customposttype;     $my_customposttype = new My_CustomPostType; }  // hook that function to the register_post_types action add_action( 'register_post_types' , 'my_customposttype' ); </code></pre>\n<p>Backstory: defining the post type class inside the function avoids issues with loading order and fatal errors resulting from attempting to extend a class that might not exist yet. Isn&#8217;t PHP awesome?</p>\n<p>See the included hello world example: https://plugins.trac.wordpress.org/browser/go-cptfactory/trunk/example-helloworld-cpt.php</p>\n<p>To access the meta associated with a post, you can call <code>$my_customposttype-&gt;get_meta( $post_id );</code></p>\n<p>You can easily add a method and hook to filter <code>the_content</code> or <code>the_excerpt</code> to insert custom values that may have been entered in the post meta. Simply add <code>add_filter( 'the_content' , array( $this , 'the_content' ));</code> in the <code>__construct()</code> and then define another method in the <code>My_CustomPostType</code> class such as:`</p>\n<pre><code>    function the_content( $content )     { \n        $meta_print = print_r( $this-&gt;get_meta( get_the_ID() ) , TRUE ); \n        return $meta_print . $content \n    } </code></pre>\n<p>`</p>\n",
+        "installation": "<ol>\n<li>Place the plugin folder in your <code>wp-content/plugins/</code> directory and activate it.</li>\n<li>To actually use it, you&#8217;ll have to define a custom post type class. See more: https://wordpress.org/extend/plugins/go-cptfactory/</li>\n</ol>\n",
+        "faq": "<h4>Q: Code is complex, is there an easier way to do this?</h4>\n<p>A: You should consinder Pods: http://podsframework.org</p>\n<h4>Q: If Pods is out there, why did you bother with this?</h4>\n<p>A: Pods is cool, but this keeps the problem in code, without any dependency on configuration information stored in the database. This also fits the architecture I like where the code related to a post type is associated with the post type definition. In my use, custom post type classes actually have many more methods to collect, validate, and display their data.</p>\n"
+    },
+    "short_description": "Makes defining custom post types as easy as creating a widget. Includes example code to get you started.",
+    "description": "<p>This is a convenience class and collection of methods to make creating new custom post types with their own metaboxes easy.</p>\n<p>The general idea is to define a function that&#8217;s hooked to the <code>register_post_types</code> action. The function defines a class for your post type that extends the <code>GO_Cpt</code> class. This follows a design pattern established by the modern widgets API (as introduced in WP 2.8) https://codex.wordpress.org/Widgets_API#Developing_Widgets .</p>\n<p>The result is a new custom post type and much easier creation and updating of custom meta associated with that post type. You&#8217;ll also have a convenient object you can use to access the metadata associated with each post.</p>\n<pre><code>function my_customposttype() {     class My_CustomPostType extends GO_Cpt     {         function __construct()         {             // execute the parent constructor with the name \n            // and definition for the custom post type             parent::__construct( $post_type_name , $post_type_definition );         }          function metabox( $post , $meta )         {             // print out the form here             // \n            // this method is optional, only use it if you want to \n            // add a metabox to your custom post type         }          function update( $new_meta , $old_meta )         {             // sanitize and validate the metadata             // then return $meta so it can be saved             //             // this method is required if a \n            // metabox() method is included          }     }      global $my_customposttype;     $my_customposttype = new My_CustomPostType; }  // hook that function to the register_post_types action add_action( 'register_post_types' , 'my_customposttype' ); </code></pre>\n<p>Backstory: defining the post type class inside the function avoids issues with loading order and fatal errors resulting from attempting to extend a class that might not exist yet. Isn&#8217;t PHP awesome?</p>\n<p>See the included hello world example: https://plugins.trac.wordpress.org/browser/go-cptfactory/trunk/example-helloworld-cpt.php</p>\n<p>To access the meta associated with a post, you can call <code>$my_customposttype-&gt;get_meta( $post_id );</code></p>\n<p>You can easily add a method and hook to filter <code>the_content</code> or <code>the_excerpt</code> to insert custom values that may have been entered in the post meta. Simply add <code>add_filter( 'the_content' , array( $this , 'the_content' ));</code> in the <code>__construct()</code> and then define another method in the <code>My_CustomPostType</code> class such as:`</p>\n<pre><code>    function the_content( $content )     { \n        $meta_print = print_r( $this-&gt;get_meta( get_the_ID() ) , TRUE ); \n        return $meta_print . $content \n    } </code></pre>\n<p>`</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/go-cptfactory.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "custom-post-types": "custom post types",
+        "custom-posts": "custom posts",
+        "developers": "developers",
+        "post-types": "post types",
+        "posts": "posts"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/go-cptfactory.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

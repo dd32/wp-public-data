@@ -1,0 +1,74 @@
+{
+    "name": "WP REST API &#8211; Pure Taxonomies",
+    "slug": "wp-rest-api-pure-taxonomies",
+    "version": "1.0",
+    "author": "<a href=\"http://magiks.ru/\">Andrew MAGIK</a>",
+    "author_profile": "https://profiles.wordpress.org/magikru/",
+    "contributors": {
+        "magikru": {
+            "profile": "https://profiles.wordpress.org/magikru/",
+            "avatar": "https://secure.gravatar.com/avatar/63107d6cbffa92e347f9776a892692e6?s=96&d=monsterid&r=g",
+            "display_name": "Andrew MAGIK"
+        }
+    },
+    "requires": "4.4",
+    "tested": "4.4.33",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 5,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 5,
+    "support_url": "https://wordpress.org/support/plugin/wp-rest-api-pure-taxonomies/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 700,
+    "downloaded": 9825,
+    "last_updated": "2016-03-01 8:31am GMT",
+    "added": "2016-02-12",
+    "homepage": "http://magiks.ru",
+    "sections": {
+        "description": "<p>Now you have no need to make additional requests to get taxonomy info (term_id, name, slug, term_group, term_taxonomy_id, taxonomy, description, parent, count, filter) from their id that is available in the default json response.</p>\n<p>Now all available taxonomy data is available in &#8216;pure_taxonomies&#8217; field from your json response. It works for all custom added taxonomies, and for custom post types.</p>\n<p>For example in &#8216;wp-json/wp/v2/posts&#8217; you can find default fields &#8216;categories&#8217;, &#8216;tags&#8217; and name of custom added taxonomies that contain only its id. With this plugin you can also find new &#8216;pure_taxonomies&#8217; field that include all available &#8216;categories&#8217;, &#8216;tags&#8217; and custom taxonomies data.</p>\n<p><strong>Before:</strong><br />\n    {<br />\n        &#8230;<br />\n        categories: [<br />\n            3<br />\n        ],<br />\n        tags: [<br />\n            2<br />\n        ],<br />\n        custom_taxonomy_name: [<br />\n            1<br />\n        ]<br />\n        &#8230;<br />\n    }</p>\n<p><strong>After:</strong><br />\n    {<br />\n        &#8230;<br />\n        pure_taxonomies: {<br />\n            categories: [<br />\n                {<br />\n                    term_id: 3,<br />\n                    name: &#8220;First category&#8221;,<br />\n                    slug: &#8220;first-category&#8221;,<br />\n                    term_group: 0,<br />\n                    term_taxonomy_id: 3,<br />\n                    taxonomy: &#8220;category&#8221;,<br />\n                    description: &#8220;&#8221;,<br />\n                    parent: 0,<br />\n                    count: 3,<br />\n                    filter: &#8220;raw&#8221;,<br />\n                    cat_ID: 3,<br />\n                    category_count: 3,<br />\n                    category_description: &#8220;&#8221;,<br />\n                    cat_name: &#8220;First category&#8221;,<br />\n                    category_nicename: &#8220;first-category&#8221;,<br />\n                    category_parent: 0<br />\n                }<br />\n            ],<br />\n            tags: [<br />\n                {<br />\n                    term_id: 2,<br />\n                    name: &#8220;First tag&#8221;,<br />\n                    slug: &#8220;first-tag&#8221;,<br />\n                    term_group: 0,<br />\n                    term_taxonomy_id: 2,<br />\n                    taxonomy: &#8220;post_tag&#8221;,<br />\n                    description: &#8220;&#8221;,<br />\n                    parent: 0,<br />\n                    count: 2,<br />\n                    filter: &#8220;raw&#8221;<br />\n                }<br />\n            ],<br />\n            custom_taxonomy_name: [<br />\n                {<br />\n                    term_id: 1,<br />\n                    name: &#8220;Custom Taxonomy Name&#8221;,<br />\n                    slug: &#8220;custom-taxonomy-name&#8221;,<br />\n                    term_group: 0,<br />\n                    term_taxonomy_id: 1,<br />\n                    taxonomy: &#8220;custom_taxonomy_name&#8221;,<br />\n                    description: &#8220;&#8221;,<br />\n                    parent: 0,<br />\n                    count: 1,<br />\n                    filter: &#8220;raw&#8221;<br />\n                }<br />\n            ]<br />\n        }<br />\n        &#8230;<br />\n    }</p>\n<p>Check my other useful rest-api plugins: <a href=\"https://wordpress.org/plugins/tags/andrew-magik-rest-api\" rel=\"ugc\">https://wordpress.org/plugins/tags/andrew-magik-rest-api</a>.</p>\n",
+        "installation": "<ol>\n<li>Double check you have the WordPress REST (v2) API installed and active</li>\n<li>Upload the plugin folder to the <code>/wp-content/plugins/</code> directory, or install the plugin through the WordPress plugins screen directly.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; screen in WordPress</li>\n</ol>\n",
+        "faq": "\n<h4>How to add custom taxonomies into Rest API:</h4>\n<p>\n<p>/**<br />\n     * Add REST API support to an already registered taxonomy.<br />\n     */<br />\n        add_action( &#8216;init&#8217;, &#8216;my_custom_taxonomy_rest_support&#8217;, 25 );<br />\n        function my_custom_taxonomy_rest_support() {<br />\n            global $wp_taxonomies;</p>\n<pre><code>        //Here should be a list of names of the already created custom taxonomies:\n        $taxonomy_names = array(\n            'clients',\n            'technologies'\n        );\n        foreach ( $taxonomy_names as $key =&gt; $taxonomy_name ) {\n            if (isset($wp_taxonomies[$taxonomy_name])) {\n                $wp_taxonomies[$taxonomy_name]-&gt;show_in_rest = true;\n                $wp_taxonomies[$taxonomy_name]-&gt;rest_base = $taxonomy_name;\n                $wp_taxonomies[$taxonomy_name]-&gt;rest_controller_class = 'WP_REST_Terms_Controller';\n            }\n        }\n    }\n</code></pre>\n</p>\n<h4>How to add custom post type into Rest API:</h4>\n<p>\n<p>/**<br />\n     * Add REST API support to an already registered post type.<br />\n     */<br />\n        add_action( &#8216;init&#8217;, &#8216;my_custom_post_type_rest_support&#8217;, 25 );<br />\n        function my_custom_post_type_rest_support() {<br />\n            global $wp_post_types;</p>\n<pre><code>        //Here should be a name of your already created custom post type:\n        $post_type_name = 'portfolio';\n        if( isset( $wp_post_types[ $post_type_name ] ) ) {\n            $wp_post_types[$post_type_name]-&gt;show_in_rest = true;\n            $wp_post_types[$post_type_name]-&gt;rest_base = $post_type_name;\n            $wp_post_types[$post_type_name]-&gt;rest_controller_class = 'WP_REST_Posts_Controller';\n        }\n    }\n</code></pre>\n</p>\n<h4>Do you have other useful REST-API plugins?</h4>\n<p>\n<p>Yes, I have. You can check them by tag: <a href=\"https://wordpress.org/plugins/tags/andrew-magik-rest-api\" rel=\"ugc\">https://wordpress.org/plugins/tags/andrew-magik-rest-api</a>.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0</h4>\n<ul>\n<li>Initial release!</li>\n</ul>\n"
+    },
+    "short_description": "This plugin include all available taxonomy attributes into the WordPress REST API (v2) without additional API requests.",
+    "description": "<p>Now you have no need to make additional requests to get taxonomy info (term_id, name, slug, term_group, term_taxonomy_id, taxonomy, description, parent, count, filter) from their id that is available in the default json response.</p>\n<p>Now all available taxonomy data is available in &#8216;pure_taxonomies&#8217; field from your json response. It works for all custom added taxonomies, and for custom post types.</p>\n<p>For example in &#8216;wp-json/wp/v2/posts&#8217; you can find default fields &#8216;categories&#8217;, &#8216;tags&#8217; and name of custom added taxonomies that contain only its id. With this plugin you can also find new &#8216;pure_taxonomies&#8217; field that include all available &#8216;categories&#8217;, &#8216;tags&#8217; and custom taxonomies data.</p>\n<p><strong>Before:</strong><br />\n    {<br />\n        &#8230;<br />\n        categories: [<br />\n            3<br />\n        ],<br />\n        tags: [<br />\n            2<br />\n        ],<br />\n        custom_taxonomy_name: [<br />\n            1<br />\n        ]<br />\n        &#8230;<br />\n    }</p>\n<p><strong>After:</strong><br />\n    {<br />\n        &#8230;<br />\n        pure_taxonomies: {<br />\n            categories: [<br />\n                {<br />\n                    term_id: 3,<br />\n                    name: &#8220;First category&#8221;,<br />\n                    slug: &#8220;first-category&#8221;,<br />\n                    term_group: 0,<br />\n                    term_taxonomy_id: 3,<br />\n                    taxonomy: &#8220;category&#8221;,<br />\n                    description: &#8220;&#8221;,<br />\n                    parent: 0,<br />\n                    count: 3,<br />\n                    filter: &#8220;raw&#8221;,<br />\n                    cat_ID: 3,<br />\n                    category_count: 3,<br />\n                    category_description: &#8220;&#8221;,<br />\n                    cat_name: &#8220;First category&#8221;,<br />\n                    category_nicename: &#8220;first-category&#8221;,<br />\n                    category_parent: 0<br />\n                }<br />\n            ],<br />\n            tags: [<br />\n                {<br />\n                    term_id: 2,<br />\n                    name: &#8220;First tag&#8221;,<br />\n                    slug: &#8220;first-tag&#8221;,<br />\n                    term_group: 0,<br />\n                    term_taxonomy_id: 2,<br />\n                    taxonomy: &#8220;post_tag&#8221;,<br />\n                    description: &#8220;&#8221;,<br />\n                    parent: 0,<br />\n                    count: 2,<br />\n                    filter: &#8220;raw&#8221;<br />\n                }<br />\n            ],<br />\n            custom_taxonomy_name: [<br />\n                {<br />\n                    term_id: 1,<br />\n                    name: &#8220;Custom Taxonomy Name&#8221;,<br />\n                    slug: &#8220;custom-taxonomy-name&#8221;,<br />\n                    term_group: 0,<br />\n                    term_taxonomy_id: 1,<br />\n                    taxonomy: &#8220;custom_taxonomy_name&#8221;,<br />\n                    description: &#8220;&#8221;,<br />\n                    parent: 0,<br />\n                    count: 1,<br />\n                    filter: &#8220;raw&#8221;<br />\n                }<br />\n            ]<br />\n        }<br />\n        &#8230;<br />\n    }</p>\n<p>Check my other useful rest-api plugins: <a href=\"https://wordpress.org/plugins/tags/andrew-magik-rest-api\" rel=\"ugc\">https://wordpress.org/plugins/tags/andrew-magik-rest-api</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/wp-rest-api-pure-taxonomies.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "api": "api",
+        "categories": "categories",
+        "rest-api": "rest-api",
+        "taxonomies": "taxonomies",
+        "wp-api": "wp-api"
+    },
+    "stable_tag": "1.0",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/wp-rest-api-pure-taxonomies.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/wp-rest-api-pure-taxonomies.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/wp-rest-api-pure-taxonomies.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

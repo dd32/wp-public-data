@@ -1,0 +1,138 @@
+{
+    "name": "Pods Gravity Forms Add-On",
+    "slug": "pods-gravity-forms",
+    "version": "1.5.0",
+    "author": "<a href=\"https://pods.io/about/\">Pods Framework Team</a>",
+    "author_profile": "https://profiles.wordpress.org/sc0ttkclark/",
+    "contributors": {
+        "sc0ttkclark": {
+            "profile": "https://profiles.wordpress.org/sc0ttkclark/",
+            "avatar": "https://secure.gravatar.com/avatar/98a5ff37f01f66062ddeba64331a26b9?s=96&d=monsterid&r=g",
+            "display_name": "Scott Kingsley Clark"
+        },
+        "jimtrue": {
+            "profile": "https://profiles.wordpress.org/jimtrue/",
+            "avatar": "https://secure.gravatar.com/avatar/0050f27260c8f13c87a909b4e78f34b8?s=96&d=monsterid&r=g",
+            "display_name": "Jim True"
+        },
+        "naomicbush": {
+            "profile": "https://profiles.wordpress.org/naomicbush/",
+            "avatar": "https://secure.gravatar.com/avatar/6354477353860da97fefca9938042c2d?s=96&d=monsterid&r=g",
+            "display_name": "Naomi C. Bush"
+        },
+        "gravityplus": {
+            "profile": "https://profiles.wordpress.org/gravityplus/",
+            "avatar": "https://secure.gravatar.com/avatar/9eb58a1c25e4fde9e79ad8c64c2e8bb6?s=96&d=monsterid&r=g",
+            "display_name": "gravity+"
+        }
+    },
+    "requires": "6.0",
+    "tested": "6.5.5",
+    "requires_php": "7.2",
+    "requires_plugins": [
+        "pods"
+    ],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 7,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 7,
+    "support_url": "https://wordpress.org/support/plugin/pods-gravity-forms/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 1000,
+    "downloaded": 28818,
+    "last_updated": "2024-03-29 3:37pm GMT",
+    "added": "2016-03-04",
+    "homepage": "https://pods.io/",
+    "sections": {
+        "description": "<ul>\n<li><strong>Requires:</strong> <a href=\"https://wordpress.org/plugins/pods/\" rel=\"ugc\">Pods</a> 3.0+, <a href=\"https://pods.io/gravityforms/\" rel=\"nofollow ugc\">Gravity Forms</a> 1.9+</li>\n<li><strong>Demo:</strong> Want to try Pods GF out? Check out the <a href=\"https://www.gravityforms.com/gravity-forms-demo/\" rel=\"nofollow ugc\">Gravity Forms Live Demo</a> and install the Pods and Pods Gravity Forms plugins once you&#8217;re there</li>\n<li><strong>Bugs/Ideas:</strong> Please report bugs or request features on <a href=\"https://github.com/pods-framework/pods-gravity-forms/\" rel=\"nofollow ugc\">GitHub</a></li>\n</ul>\n<p>Special thanks to Rocketgenius for their sponsorship support and to Naomi C. Bush for her help in the initial add-on UI work.</p>\n<h4>WP-CLI Command for Syncing Entries</h4>\n<p>This add-on provides the ability to sync entries from a Form Submission and Entry Edit screen. To bulk sync all entries even prior to setting up a Pods Gravity Form Feed, you can run a WP-CLI command.</p>\n<p><strong>Example 1: Sync all entries for Form 123 first active Pod feed</strong></p>\n<pre><code>wp pods-gf sync --form=123\n</code></pre>\n<p><strong>Example 2: Sync all entries for Form 123 using a specific feed (even if it is inactive)</strong></p>\n<pre><code>wp pods-gf sync --form=123 --feed=2\n</code></pre>\n<h4>Mapping GF List Fields to a Pods Relationship field</h4>\n<p>You can map a GF List field to a Relationship field related to another Pod. Using the below examples you can customize how the automatic mapping works. By default, the list columns will map to the pod fields with the same labels.</p>\n<p><strong>Example 1: Customize what columns map to which Related Pod fields for Form ID 1, Field ID 2</strong></p>\n<p>Customizing a list field row can be done by using the <code>pods_gf_field_columns_mapping</code> filter, which has Form ID and Field ID variations (<code>pods_gf_field_columns_mapping_{form_id}</code> and <code>pods_gf_field_columns_mapping_{form_id}_{field_id}</code>).</p>\n<pre><code>add_filter( 'pods_gf_field_columns_mapping_1_2', 'my_columns_mapping', 10, 4 );\n\n/**\n * Filter list columns mapping for related pod fields.\n *\n * @param array    $columns  List field columns.\n * @param array    $form     GF form.\n * @param GF_Field $gf_field GF field data.\n * @param Pods     $pod      Pods object.\n *\n * @return array\n */\nfunction my_columns_mapping( $columns, $form, $gf_field, $related_obj ) {\n\n    $columns[0] = 'first_field';\n    $columns[1] = 'second_field';\n    $columns[2] = 'third_field';\n\n    return $columns;\n\n}\n</code></pre>\n<p><strong>Example 2: Customize a List row for Form ID 1, Field ID 2</strong></p>\n<p>Customizing a list field row can be done by using the <code>pods_gf_field_column_row</code> filter, which has Form ID and Field ID variations (<code>pods_gf_field_column_row_{form_id}</code> and <code>pods_gf_field_column_row_{form_id}_{field_id}</code>).</p>\n<pre><code>add_filter( 'pods_gf_field_column_row_1_2', 'my_column_row_override', 10, 6 );\n\n/**\n * Filter list field row for relationship field saving purposes.\n *\n * @param array      $row         List field row.\n * @param array      $columns     List field columns.\n * @param array      $form        GF form.\n * @param GF_Field   $gf_field    GF field data.\n * @param array      $options     Pods GF options.\n * @param Pods|false $related_obj Related Pod object.\n *\n * @return array\n */\nfunction my_column_row_override( $row, $columns, $form, $gf_field, $options, $related_obj ) {\n\n    // Update certain row fields based on the value of specific column.\n    if ( ! empty( $row['user_relationship_field'] ) ) {\n        $user = get_userdata( (int) $row['user'] );\n\n        // Set the post_title to match the User display name.\n        if ( $user &amp;&amp; ! is_wp_error( $user ) ) {\n            $row['post_title'] = $user-&gt;display_name;\n        }\n    }\n\n    return $row;\n\n}\n</code></pre>\n",
+        "changelog": "<h4>1.5.0 &#8211; March 29th, 2024</h4>\n<ul>\n<li>New requirements that match Pods: WP 6.0+, PHP 7.2+, and Pods 3.0+ to prep for Pods Gravity Forms 2.0 (@sc0ttkclark)</li>\n<li>Added: Support value overrides for checkbox GF fields when prepopulating. (@sc0ttkclark)</li>\n<li>Added: Allow for passing <code>?pods_gf_debug=1</code> to a form submit URL to debug the form submission mapping to Pods which outputs debug information and stops before the save runs). (@sc0ttkclark)</li>\n<li>Added: New hook <code>pods_gf_dynamic_select_show_empty_option</code> lets you disable showing the &#8220;empty option&#8221; in dynamic fields being prepopulated. (@sc0ttkclark)</li>\n<li>Added: New hook <code>pods_gf_addon_options_{$form_id}</code> that lets  you filter the options built for a feed for the <code>Pods_GF</code> object. (@sc0ttkclark)</li>\n<li>Tweak: New <code>pods-gf-ui-view-only</code> class added to the view-only mode. (@sc0ttkclark)</li>\n<li>Tweak: Expanded secondary submit handling with the ability to have cancel button. (@sc0ttkclark)</li>\n<li>Fixed: Resolved various PHP notices. (@sc0ttkclark)</li>\n<li>Fixed: Removed &#8220;comments&#8221; from the field mapping options in the feed. (@sc0ttkclark)</li>\n<li>Fixed: Remove extra HTML in the feed labels. (@sc0ttkclark)</li>\n<li>Fixed: For non-select GF field types, trim the dashes on the custom <code>select_text</code> option used. (@sc0ttkclark)</li>\n<li>Fixed: Prepopulating field values works more consistently now when passing the prepopulated filter pre-chunked arrays of values. (@sc0ttkclark)</li>\n<li>Fixed: View-only mode forced to use page zero. (@sc0ttkclark)</li>\n<li>Fixed: Prevent duplicate submissions during feed processing. (@sc0ttkclark)</li>\n<li>Fixed: Only allow working with active leads in <code>Pods_GF_UI</code>. (@sc0ttkclark)</li>\n<li>Fixed: Prevent Markdown conflicts with other plugins and update PHP 8 compatibility by switching to the Parsedown library. #166 (@sc0ttkclark)</li>\n<li>Fixed: Stop prepopulating fields that aren&#8217;t opted-in to it. #168 (@sc0ttkclark)</li>\n</ul>\n<p>ALSO: Pods Gravity Forms 2.0 is still in development and it brings complete compatibility with the latest Gravity Forms releases. We could use your support to help it get over the finish line this year. Please consider <a href=\"https://friends.pods.io/\" rel=\"nofollow ugc\">donating to the Pods project</a> to help us get there more quickly.</p>\n<h4>1.4.5 &#8211; July 22nd, 2022</h4>\n<ul>\n<li>Tested against WP 6.0</li>\n<li>Added: Not seeing something map correctly? As a site admin, you now have the power to debug the form submission and see what might be going on. Add <code>?pods_gf_debug_gf_to_pods=1</code> to the URL of the form action before submitting to take advantage of the admin-only debug mode. This will output the values as they would be sent to Pods, the entry information used to reference it, and the feed options used at the time. It will stop the form from completely saving to Pods so you can tweak and debug your form feeds however much you&#8217;d like to perfect them. (@sc0ttkclark)</li>\n<li>Fixed: Conditional checks for feeds has been resolved and now won&#8217;t get confused when there are multiple feeds for the same form in certain cases. (@sc0ttkclark)</li>\n<li>Fixed: Additional compatibility with Gravity Flow. #157 (@JoryHogeveen)</li>\n<li>Pods 2.9 is in beta and after it is released, new mapping of GF List Fields to Pods repeatable fields will be added. This add-on will also be updated with minimum version requirements updated for WP 5.5+, Pods 2.8+, and Gravity Forms 2.5+. Complete testing will be done at that time to ensure complete compatibility.</li>\n</ul>\n<h4>1.4.4 &#8211; October 6th, 2021</h4>\n<ul>\n<li>Tested against WP 5.8</li>\n<li>Get ready for Pods 2.8 in just a week! This add-on will receive updates to ensure it is compatible with the latest Gravity Forms and the changes in Pods 2.8</li>\n</ul>\n<h4>1.4.3 &#8211; March 26th, 2020</h4>\n<ul>\n<li>Added: Now requiring PHP 5.4+</li>\n<li>Added: Freemius support when running Pods 2.7.17</li>\n<li>Fixed: Prepopulate handling for relationship fields.</li>\n<li>Fixed: Prevent errors when form doesn&#8217;t exist by the time it gets to our hook.</li>\n</ul>\n<h4>1.4.2 &#8211; March 2nd, 2020</h4>\n<ul>\n<li>Fixed: Ajax handling for various callbacks that hook into <code>gform_pre_render</code>.</li>\n<li>Fixed: Cleaned up logic and prevent PHP notices with multi-select arrays when setting up choices arrays.</li>\n<li>Fixed: Make sure <code>Pods_GF_UI</code> does not return false on UI callbacks to prevent access errors.</li>\n<li>Fixed: Add mapping feeds to the import/export! (props @travislopes)</li>\n</ul>\n<h4>1.4.1 &#8211; October 16th, 2018</h4>\n<ul>\n<li>Fixed: When syncing multiple entries, the field values were caching and not unique per entry resulting in what appeared to be duplicated content inserts/updates.</li>\n</ul>\n<h4>1.4 &#8211; October 16th, 2018</h4>\n<ul>\n<li>Support: Added support for Gravity Forms 2.3 database tables changes (You may see a warning on the Edit Pod screen but this is a false positive because we cache a list of all tables to transients and it triggers the warning solved by removing those old &#8220;rg&#8221; tables)</li>\n<li>Changed: Backwards compatibility issue &#8212; You can now more easily set custom override values, however the old style was not able to be brought over &#8212; you&#8217;ll want to update your feeds when possible, the old values will not show up and you&#8217;ll have to select the custom override value option once more, then fill it in</li>\n<li>Changed: Backwards compatibility issue &#8212; Now requiring WordPress 4.6+</li>\n<li>Feature: When editing entries in the admin area, changes now sync to the associated Pod item (except trash/deletes)</li>\n<li>Feature: New Bulk Entry Syncing to Pods WP-CLI command <code>wp pods-gf sync --form=123</code> or you can specify which feed (even if it is not active) with <code>wp pods-gf sync --form=123 --feed=2</code></li>\n<li>Feature: Support for List field mapping to a Pod field which ends up serializing the value, but can be prepopulated back into the Gravity Form</li>\n<li>Feature: List field mapping to relationship fields related to another Pod (list columns map to individual fields in the related Pod) with new filters <code>pods_gf_field_columns_mapping</code> and <code>pods_gf_field_column_row</code></li>\n<li>Feature: Support for Chained Select field mapping to a Pod field</li>\n<li>Feature: New Custom fields section added for Pods that support meta (Posts, Terms, Users, Media, and Comments), you can set additional custom fields including ability to set custom values there too</li>\n<li>Feature: Ability to set conditional processing per feed, based on specific values submitted</li>\n<li>Added: Whenever you create a new feed, mapping will automatically be associated between a Gravity Form field and a Pod field if the labels match</li>\n<li>Added: Custom override values now support GF merge tags by default (no insert UI yet) like <code>{form_id}</code> and any other merge tag</li>\n<li>Added: Required WP Object Fields in mapping are no longer required if you choose to &#8216;Enable editing with this form using ____&#8217; option for Post/Media or User pod types</li>\n<li>Added: Support for E-mail field mappings with &#8216;Confirm E-mail&#8217; enabled</li>\n<li>Added: Support for Date fields with multiple inputs (date dropdown / text fields)</li>\n<li>Added: Smarter requirement handling for WP object fields based on object type (only require what the WP insert API requires)</li>\n<li>Added: New mapping fields are now available for more Entry and Payment fields</li>\n<li>Added: New merge tags <code>{pods.id}</code> and <code>{pods.permalink}</code> are available for usage and in the merge tag selection dropdowns</li>\n<li>Improved: Added headings to each group of feed options so they are easier to work with</li>\n<li>Improved: Address field mapping for Country, State, and CA Provinces now convert properly to their Pods counterparts</li>\n<li>Updated: PHP Markdown library updated to 1.0.2</li>\n<li>Fixed: Issues with using &#8216;bypass&#8217; as a save action</li>\n<li>Fixed: Dynamic select options should set the current value (as posted in form) properly</li>\n<li>Fixed: Date/time fields shouldn&#8217;t auto populate with empty dates such as 0000-00-00 anymore</li>\n<li>Fixed: Additional attachment processing fixes</li>\n<li>Fixed: Lots of Pods GF UI issues resolved</li>\n<li>Fixed: Removed Autocomplete limit (was 30) that was being enforced, now all data from related field will show</li>\n<li>Fixed: Dynamic mapping value checking to support arrays of values</li>\n<li>Fixed: Lots of Prepopulating fixes</li>\n<li>Fixed: Now supports multi page form validation and prepopulating</li>\n</ul>\n"
+    },
+    "short_description": "Integrate with Gravity Forms to create a Pod item from a form submission.",
+    "description": "<ul>\n<li><strong>Requires:</strong> <a href=\"https://wordpress.org/plugins/pods/\" rel=\"ugc\">Pods</a> 3.0+, <a href=\"https://pods.io/gravityforms/\" rel=\"nofollow ugc\">Gravity Forms</a> 1.9+</li>\n<li><strong>Demo:</strong> Want to try Pods GF out? Check out the <a href=\"https://www.gravityforms.com/gravity-forms-demo/\" rel=\"nofollow ugc\">Gravity Forms Live Demo</a> and install the Pods and Pods Gravity Forms plugins once you&#8217;re there</li>\n<li><strong>Bugs/Ideas:</strong> Please report bugs or request features on <a href=\"https://github.com/pods-framework/pods-gravity-forms/\" rel=\"nofollow ugc\">GitHub</a></li>\n</ul>\n<p>Special thanks to Rocketgenius for their sponsorship support and to Naomi C. Bush for her help in the initial add-on UI work.</p>\n<h4>WP-CLI Command for Syncing Entries</h4>\n<p>This add-on provides the ability to sync entries from a Form Submission and Entry Edit screen. To bulk sync all entries even prior to setting up a Pods Gravity Form Feed, you can run a WP-CLI command.</p>\n<p><strong>Example 1: Sync all entries for Form 123 first active Pod feed</strong></p>\n<pre><code>wp pods-gf sync --form=123\n</code></pre>\n<p><strong>Example 2: Sync all entries for Form 123 using a specific feed (even if it is inactive)</strong></p>\n<pre><code>wp pods-gf sync --form=123 --feed=2\n</code></pre>\n<h4>Mapping GF List Fields to a Pods Relationship field</h4>\n<p>You can map a GF List field to a Relationship field related to another Pod. Using the below examples you can customize how the automatic mapping works. By default, the list columns will map to the pod fields with the same labels.</p>\n<p><strong>Example 1: Customize what columns map to which Related Pod fields for Form ID 1, Field ID 2</strong></p>\n<p>Customizing a list field row can be done by using the <code>pods_gf_field_columns_mapping</code> filter, which has Form ID and Field ID variations (<code>pods_gf_field_columns_mapping_{form_id}</code> and <code>pods_gf_field_columns_mapping_{form_id}_{field_id}</code>).</p>\n<pre><code>add_filter( 'pods_gf_field_columns_mapping_1_2', 'my_columns_mapping', 10, 4 );\n\n/**\n * Filter list columns mapping for related pod fields.\n *\n * @param array    $columns  List field columns.\n * @param array    $form     GF form.\n * @param GF_Field $gf_field GF field data.\n * @param Pods     $pod      Pods object.\n *\n * @return array\n */\nfunction my_columns_mapping( $columns, $form, $gf_field, $related_obj ) {\n\n    $columns[0] = 'first_field';\n    $columns[1] = 'second_field';\n    $columns[2] = 'third_field';\n\n    return $columns;\n\n}\n</code></pre>\n<p><strong>Example 2: Customize a List row for Form ID 1, Field ID 2</strong></p>\n<p>Customizing a list field row can be done by using the <code>pods_gf_field_column_row</code> filter, which has Form ID and Field ID variations (<code>pods_gf_field_column_row_{form_id}</code> and <code>pods_gf_field_column_row_{form_id}_{field_id}</code>).</p>\n<pre><code>add_filter( 'pods_gf_field_column_row_1_2', 'my_column_row_override', 10, 6 );\n\n/**\n * Filter list field row for relationship field saving purposes.\n *\n * @param array      $row         List field row.\n * @param array      $columns     List field columns.\n * @param array      $form        GF form.\n * @param GF_Field   $gf_field    GF field data.\n * @param array      $options     Pods GF options.\n * @param Pods|false $related_obj Related Pod object.\n *\n * @return array\n */\nfunction my_column_row_override( $row, $columns, $form, $gf_field, $options, $related_obj ) {\n\n    // Update certain row fields based on the value of specific column.\n    if ( ! empty( $row['user_relationship_field'] ) ) {\n        $user = get_userdata( (int) $row['user'] );\n\n        // Set the post_title to match the User display name.\n        if ( $user &amp;&amp; ! is_wp_error( $user ) ) {\n            $row['post_title'] = $user-&gt;display_name;\n        }\n    }\n\n    return $row;\n\n}\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/pods-gravity-forms.1.5.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/pods-gravity-forms/assets/screenshot-1.png?rev=3061238",
+            "caption": "In the Pods Admin, create your Pods and Pod Fields: Pods Admin -&gt; Add New"
+        },
+        {
+            "src": "https://ps.w.org/pods-gravity-forms/assets/screenshot-2.png?rev=3061238",
+            "caption": "In the Pods Admin, create your Pods and Pod Fields: Pod Edit Screen"
+        },
+        {
+            "src": "https://ps.w.org/pods-gravity-forms/assets/screenshot-3.png?rev=3061238",
+            "caption": "Create your Gravity Form that will be used to create a Pod item"
+        },
+        {
+            "src": "https://ps.w.org/pods-gravity-forms/assets/screenshot-4.png?rev=3061238",
+            "caption": "Form Settings-&gt;Pods menu"
+        },
+        {
+            "src": "https://ps.w.org/pods-gravity-forms/assets/screenshot-5.png?rev=3061238",
+            "caption": "Pods feed page"
+        },
+        {
+            "src": "https://ps.w.org/pods-gravity-forms/assets/screenshot-6.png?rev=3061238",
+            "caption": "Map form fields to Pod fields"
+        },
+        {
+            "src": "https://ps.w.org/pods-gravity-forms/assets/screenshot-7.png?rev=3061238",
+            "caption": "Example form"
+        },
+        {
+            "src": "https://ps.w.org/pods-gravity-forms/assets/screenshot-8.png?rev=3061238",
+            "caption": "New Pod item created from form submission"
+        },
+        {
+            "src": "https://ps.w.org/pods-gravity-forms/assets/screenshot-9.png?rev=3061238",
+            "caption": "Form entries page showing Pod ID"
+        }
+    ],
+    "tags": {
+        "form-mapping": "form mapping",
+        "gravity-forms": "gravity forms",
+        "pods": "pods"
+    },
+    "stable_tag": "1.5.0",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/pods-gravity-forms.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/pods-gravity-forms.1.1.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/pods-gravity-forms.1.2.zip",
+        "1.3": "https://downloads.wordpress.org/plugin/pods-gravity-forms.1.3.zip",
+        "1.4": "https://downloads.wordpress.org/plugin/pods-gravity-forms.1.4.zip",
+        "1.4.1": "https://downloads.wordpress.org/plugin/pods-gravity-forms.1.4.1.zip",
+        "1.4.2": "https://downloads.wordpress.org/plugin/pods-gravity-forms.1.4.2.zip",
+        "1.4.3": "https://downloads.wordpress.org/plugin/pods-gravity-forms.1.4.3.zip",
+        "1.4.4": "https://downloads.wordpress.org/plugin/pods-gravity-forms.1.4.4.zip",
+        "1.4.5": "https://downloads.wordpress.org/plugin/pods-gravity-forms.1.4.5.zip",
+        "1.5.0": "https://downloads.wordpress.org/plugin/pods-gravity-forms.1.5.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/pods-gravity-forms.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://friends.pods.io/",
+    "banners": {
+        "low": "https://ps.w.org/pods-gravity-forms/assets/banner-772x250.png?rev=3061238",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/pods-gravity-forms/assets/icon.svg?rev=3061238",
+        "svg": "https://ps.w.org/pods-gravity-forms/assets/icon.svg?rev=3061238"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

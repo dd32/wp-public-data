@@ -1,0 +1,124 @@
+{
+    "name": "Custom Post Carousels with Owl",
+    "slug": "dd-post-carousel",
+    "version": "1.4.9",
+    "author": "<a href=\"https://www.howardehrenberg.com\">Howard Ehrenberg</a>",
+    "author_profile": "https://profiles.wordpress.org/thehowarde/",
+    "contributors": {
+        "thehowarde": {
+            "profile": "https://profiles.wordpress.org/thehowarde/",
+            "avatar": "https://secure.gravatar.com/avatar/d1f97c29b362df4e40a87c3d4e4c53d8?s=96&d=monsterid&r=g",
+            "display_name": "thehowarde"
+        }
+    },
+    "requires": "4.5",
+    "tested": "6.4.5",
+    "requires_php": "7.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 92,
+    "ratings": {
+        "5": 15,
+        "4": 0,
+        "3": 0,
+        "2": 1,
+        "1": 1
+    },
+    "num_ratings": 17,
+    "support_url": "https://wordpress.org/support/plugin/dd-post-carousel/",
+    "support_threads": 2,
+    "support_threads_resolved": 0,
+    "active_installs": 2000,
+    "downloaded": 29187,
+    "last_updated": "2023-12-05 6:00pm GMT",
+    "added": "2018-08-24",
+    "homepage": "https://www.duckdiverllc.com/dd-owl-carousel-2/",
+    "sections": {
+        "description": "<p>This plugin uses the Owl-Carousel-2 jQuery plugin to create carousels (sliders) from any built in or (public) custom post type in WordPress. You can use this plugin to make:</p>\n<ul>\n<li>Image Carousel from Media Library</li>\n<li>Product Carousels (Choose WooCommerce Products)</li>\n<li>Featured Product Carousels</li>\n<li>Carousels from Posts or Products by ID</li>\n<li>Taxonomy (Category/Tag) Carousels</li>\n<li>Carousel from <em>Any Custom Post Type</em></li>\n<li>Latest Posts</li>\n<li>WooCommerce Reviews</li>\n<li>More</li>\n</ul>\n<p>Easy to use controls allow for customization of each carousel with options to show or hide Titles, Featured Image, Call to Action buttons (links) and more.</p>\n<p>This plugin is simple and without on screen nags, promotions or upsells.</p>\n<p>Please note. There is not a lot of stylesheet attached to the layout. If you don&#8217;t have basic skills, this might not be the plugin for you.</p>\n",
+        "installation": "<p>This section describes how to install the plugin and get it working.</p>\n<ol>\n<li>Upload <code>owl-carousel-2.php</code> to the <code>/wp-content/plugins/</code> directory</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</li>\n<li>Click on the menu item called <code>Carousels</code></li>\n<li>Create your carousel.</li>\n<li>Copy the Shortcode and place in your page or post, or place <code>&lt;?php echo do_shortcode('[dd-owl-carousel id=\"1\" title=\"Carousel Title\"]'); ?&gt;</code> in your templates</li>\n</ol>\n",
+        "faq": "\n<dt id='i%20made%20the%20carousel%2C%20but%20now%20i%20can%27t%20see%20it.'>\nI made the carousel, but now I can&#8217;t see it.\n</h4>\n<p>\n<p>Make sure you insert the shortcode created by the plugin.</p>\n</p>\n<dt id='can%20i%20use%20multiple%20carousels%20on%20a%20single%20page%3F'>\nCan I use multiple carousels on a single page?\n</h4>\n<p>\n<p>Yes, you can use as many as you want. Each one will have it&#8217;s own CSS ID so you can target them in your custom CSS files if you need to.</p>\n</p>\n<dt id='are%20there%20programming%20hooks%3F'>\nAre there programming Hooks?\n</h4>\n<p>\n<p>Yes, there are 2 hooks. One is before the carousel contents, and the other is after the contents.  There will be more enhancement to this at a later date.</p>\n<ol>\n<li>dd-carousel-before-content</li>\n<li>dd-carousel-after-content</li>\n</ol>\n<p>These hooks pass 1 parameter which is $carousel_ID if needed.</p>\n<p>Example to add pricing for WooCommerce Carousels &#8211; Add to your theme functions.php :</p>\n<pre><code>&lt;?php\n    function add_wc_price_to_carousel(){\n    global $post, $woocommerce;\n    $product = wc_get_product( $post-&gt;ID );\n    if ($product) {\n        echo '&lt;p class=\"price\"&gt;$' . $product-&gt;get_price() . '&lt;/p&gt;' ;\n        echo '&lt;a href=\"'.get_permalink( $post-&gt;ID ).'\" class=\"btn btn-primary \"&gt;Shop Now&lt;/a&gt;';\n        }\n    }\n    add_action('dd-carousel-after-content', 'add_wc_price_to_carousel', 10);\n</code></pre>\n</p>\n<dt id='can%20i%20filter%20the%20query%20arguments%3F'>\nCan I Filter the Query Arguments?\n</h4>\n<p>\n<p>Yes, there is currently one filter.</p>\n<ul>\n<li>dd_carousel_filter_query_args</li>\n</ul>\n<p>This filter passes 2 variables. <code>$args</code> the current arguments of the WP_Query and <code>$carousel_id</code> which is the ID of the carousel you want to filter.</p>\n<p>Example to create your own custom Query &#8211; Add to your theme functions.php :</p>\n<pre><code>&lt;?php\nadd_filter('dd_carousel_filter_query_args', 'filter_carousel', 10, 2);\nfunction filter_carousel($args, $carouselID){\n    if ($carouselID == 9803){\n    $args = array(\n        'post_type'              =&gt; array( 'post' ),\n        'meta_query'             =&gt; array(\n                'relation' =&gt; 'AND',\n                array(\n                    'key'     =&gt; '_chosen_store',\n                    'value'   =&gt; '1',\n                    'compare' =&gt; '&gt;=',\n                    'type'    =&gt; 'NUMERIC',\n                ),\n            ),\n        );\n    return $args;\n    }\n}\n</code></pre>\n</p>\n<dt id='are%20there%20other%20filters%20available%3F'>\nAre there other filters available?\n</h4>\n<p>\n<p>There are currently several filters available to you. You can apply these in your theme&#8217;s functions.php</p>\n<ol>\n<li><code>dd_carousel_filter_excerpt</code> ($excerpt, $carousel_id)\n<ul>\n<li><code>$excerpt</code> : string the excerpt</li>\n<li><code>$carousel_id</code> int the post ID of the carousel.</li>\n</ul>\n</li>\n<li><code>dd_filter_owl_carousel_script</code> ($owl_script, $carousel_id)\n<ul>\n<li><code>$owl_script</code> string the jQuery function that invokes the Owl Carousel</li>\n<li><code>$carousel_id</code> int the post ID of the carousel.</li>\n</ul>\n</li>\n<li><code>dd_carousel_filter_title_heading</code> ($heading)\n<ul>\n<li><code>$heading</code> string &#8211; use any additional valid HTML tag to wrap the title that isn&#8217;t already present.</li>\n</ul>\n</li>\n<li><code>dd_carousel_filter_prev</code> and <code>dd_carousel_filter_next</code>\n<ul>\n<li>This might be helpful to include a fontawesome or other icon set as the Prev/Next buttons</li>\n</ul>\n</li>\n<li><code>dd_carousel_filter_caption</code> ($the_caption, $caption)\n<ul>\n<li><code>$the_caption</code> &#8211; The HTML wrapper and caption for an image carousel</li>\n<li><code>$caption</code> The <code>wp_get_attachment_caption</code> caption for the image</li>\n</ul>\n</li>\n</ol>\n<p>Example of script filter:</p>\n<pre><code>&lt;?php\napply_filters('dd_filter_owl_carousel_script', 'my_filter_owl_carousel_script', 10 , 2);\nfunction my_filter_owl_carousel_script($script, $carousel_id){\n    // Do stuff\n    return $script;\n}\n?&gt;\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>1.4.6</h4>\n<p>Various fixes for sanitiziation filters.</p>\n<h4>1.4.4</h4>\n<p>Allow SVG in Prev / Next buttons</p>\n<h4>1.4.2</h4>\n<p>Security fixes</p>\n<h4>1.4.1</h4>\n<p>Add image alt text (if added to image in media library)</p>\n<h4>1.4</h4>\n<p>Added Lazy Loading as an option to all carousels (enabled by default). It is recommended you review your carousels to ensure settings are as you expect. Combined and minified front end styles.</p>\n<h4>1.3.1</h4>\n<p>Fix image issue on Taxonomy Carousel</p>\n<h4>1.3</h4>\n<p>Add &#8220;Media/Image&#8221; Carousel with choose media items. Additional filters added for convenience.</p>\n<h4>1.2.6</h4>\n<p>Add two additional filters <code>dd_filter_owl_carousel_script</code> and <code>dd_carousel_filter_excerpt</code><br />\nFix for CPT adding meta to all posts.</p>\n<h4>1.2.5</h4>\n<p>Fix Random</p>\n<h4>1.2.4</h4>\n<p>Fix for Elementor</p>\n<h4>1.2.2</h4>\n<p>Fix missing param in filter</p>\n<h4>1.2.1</h4>\n<p>Fix &#8211; Admin enqueue stylesheets only on carousel pages/edit.</p>\n<h4>1.2</h4>\n<p>Add Parameter to action hooks for carousel ID.</p>\n<h4>1.1.1</h4>\n<p>Minor fix on admin switching between Product choices.</p>\n<h4>1.1</h4>\n<p>Added Taxonomy Carousel and filter for main Query.</p>\n<h4>1.0.8</h4>\n<p>Fix issue with multiple WC Categories</p>\n<h4>1.0.7</h4>\n<p>Add multi selection for Taxonomy Terms.</p>\n<h4>1.0.6</h4>\n<p>Add Placeholder image for no-image</p>\n<h4>1.0.4</h4>\n<p>Fix Error with AQ Resize</p>\n<h4>1.0.3</h4>\n<p>Add Thumbnail Image Sizes</p>\n<h4>1.0.2</h4>\n<p>Allow for empty excerpt under title.</p>\n<h4>1.0.1</h4>\n<p>Change admin script to only enqueu on carousel custom post type.</p>\n<h4>1.0</h4>\n<p>Initial Release</p>\n"
+    },
+    "short_description": "Easily add post carousels to your website. Works with any custom post type or regular posts. Controls allow for insertion of multiple carousels on a s &hellip;",
+    "description": "<p>This plugin uses the Owl-Carousel-2 jQuery plugin to create carousels (sliders) from any built in or (public) custom post type in WordPress. You can use this plugin to make:</p>\n<ul>\n<li>Image Carousel from Media Library</li>\n<li>Product Carousels (Choose WooCommerce Products)</li>\n<li>Featured Product Carousels</li>\n<li>Carousels from Posts or Products by ID</li>\n<li>Taxonomy (Category/Tag) Carousels</li>\n<li>Carousel from <em>Any Custom Post Type</em></li>\n<li>Latest Posts</li>\n<li>WooCommerce Reviews</li>\n<li>More</li>\n</ul>\n<p>Easy to use controls allow for customization of each carousel with options to show or hide Titles, Featured Image, Call to Action buttons (links) and more.</p>\n<p>This plugin is simple and without on screen nags, promotions or upsells.</p>\n<p>Please note. There is not a lot of stylesheet attached to the layout. If you don&#8217;t have basic skills, this might not be the plugin for you.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.4.9.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/dd-post-carousel/assets/screenshot-1.png?rev=1929447",
+            "caption": "Admin View of a Featured Product Carousel"
+        },
+        {
+            "src": "https://ps.w.org/dd-post-carousel/assets/screenshot-2.png?rev=1929447",
+            "caption": "Admin View of choosing by post ID."
+        },
+        {
+            "src": "https://ps.w.org/dd-post-carousel/assets/screenshot-3.png?rev=1929447",
+            "caption": "Admin View of Chosen Category"
+        },
+        {
+            "src": "https://ps.w.org/dd-post-carousel/assets/screenshot-4.png?rev=1929447",
+            "caption": "Public Large Desktop View. With Featured Image and CTA Link to item."
+        }
+    ],
+    "tags": {
+        "image-carousel": "Image carousel",
+        "owl-carousel-2": "owl carousel 2",
+        "post-carousel": "post carousel",
+        "post-slider": "post slider",
+        "product-slider": "product slider"
+    },
+    "stable_tag": "1.4.9",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.0.3.zip",
+        "1.0.4": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.0.4.zip",
+        "1.0.5": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.0.5.zip",
+        "1.0.6": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.0.6.zip",
+        "1.0.7": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.0.7.zip",
+        "1.0.8": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.0.8.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.1.zip",
+        "1.1.1": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.1.1.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.2.zip",
+        "1.2.1": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.2.1.zip",
+        "1.2.2": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.2.2.zip",
+        "1.2.3": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.2.3.zip",
+        "1.2.4": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.2.4.zip",
+        "1.2.5": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.2.5.zip",
+        "1.2.6": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.2.6.zip",
+        "1.2.6.1": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.2.6.1.zip",
+        "1.3": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.3.zip",
+        "1.3.1": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.3.1.zip",
+        "1.4": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.4.zip",
+        "1.4.1": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.4.1.zip",
+        "1.4.2": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.4.2.zip",
+        "1.4.3": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.4.3.zip",
+        "1.4.4": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.4.4.zip",
+        "1.4.5": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.4.5.zip",
+        "1.4.6": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.4.6.zip",
+        "1.4.7": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.4.7.zip",
+        "1.4.8": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.4.8.zip",
+        "1.4.9": "https://downloads.wordpress.org/plugin/dd-post-carousel.1.4.9.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/dd-post-carousel.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.duckdiverllc.com",
+    "banners": {
+        "low": "https://ps.w.org/dd-post-carousel/assets/banner-772x250.png?rev=1929447",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/dd-post-carousel/assets/icon-128x128.png?rev=1929447"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 92,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

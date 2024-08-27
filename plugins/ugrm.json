@@ -1,0 +1,103 @@
+{
+    "name": "Shibboleth With LDAP Authorization",
+    "slug": "ugrm",
+    "version": "2.0.1",
+    "author": "<a href=\"http://www.floridamuseum.ufl.edu/omtforge\">Florida Museum of Natural History Office of Museum Technology</a>",
+    "author_profile": "https://profiles.wordpress.org/warrenbrown-1/",
+    "contributors": {
+        "warrenbrown-1": {
+            "profile": "https://profiles.wordpress.org/warrenbrown-1/",
+            "avatar": "https://secure.gravatar.com/avatar/03ad577e62f84ef5e268e9f8afec115e?s=96&d=monsterid&r=g",
+            "display_name": "warren.brown"
+        },
+        "taylorwilson": {
+            "profile": "https://profiles.wordpress.org/taylorwilson/",
+            "avatar": "https://secure.gravatar.com/avatar/f7f87c1f0278e58a1768af5be5812352?s=96&d=monsterid&r=g",
+            "display_name": "taylorwilson"
+        }
+    },
+    "requires": "3.2.1",
+    "tested": "4.9.26",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/ugrm/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 2648,
+    "last_updated": "2018-05-02 6:14pm GMT",
+    "added": "2011-09-28",
+    "homepage": "http://www.floridamuseum.ufl.edu/omtforge",
+    "sections": {
+        "description": "<p>Since this plugin extends the Shibboleth plugin, you must first have the Shibboleth plugin, available from https://wordpress.org/extend/plugins/shibboleth/<br />\ninstalled and activated. Otherwise, the plugin will fail to activate as the shibboleth_user_role filter hook will not be registered.</p>\n<p>To use this plugin, you must already have the following setup on your server:<br />\n1. The above Shibbleth plugin.<br />\n2. A UFAD group created for each of the WordPress roles (administrator, editor, author, contributor, and subscriber).</p>\n",
+        "installation": "<ol>\n<li>Install, activate, configure and test the Shibbloeth plugin. When it is working, procede.</li>\n<li>Create a UGRM directory in <code>/wp-content/plugins/</code> directory</li>\n<li>Extract the contents of the UGRM.tar.gz plugin archive to the <code>/wp-content/plugins/UGRM</code> directory</li>\n<li>Populate UgrmLdapConfig::$configuration attribute located at <code>/wp-content/plugins/UGRM/ldap-config.php</code>.  Options are:<br />\na. binddn &#8211; The Distinguished Name (DN) of the user or service account that will query LDAP server for group membership.<br />\nb. pw &#8211; The password for the user or service account connecting to ldap. (binddn user)<br />\nc. basedn &#8211; The base DN for the LDAP directory.<br />\nd. ldapUri &#8211; The URI of the ldap server.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</li>\n<li>Populate the &#8216;UFAD Groups to Roles&#8217; options page under the &#8216;Settings&#8217; menu in WordPress.</li>\n</ol>\n",
+        "faq": "\n<h4>It&#8217;s not working. What should I check?</h4>\n<p>\n<p>Check for typos on the options page and ensure you&#8217;ve spelled your UFAD groups correctly.</p>\n<pre><code>If $_SERVER['glid'] for Apache or `$_SERVER['HTTP_glid']` for IIS is not present, then complete\n</code></pre>\n<p>the correct application to have glid included in UF Shibboleth URN.</p>\n<p>Verify that you can make a connection to the ldap server specified in ldapUri set in the options file.  You may do this by launching ldp.ext<br />\nin Windows and inputting the binddn and password from the options file.  You could also use any of the various ldap modules for any<br />\nprogramming language to test.</p>\n</p>\n<h4>What if I&#8217;ve done all that and it still doesn&#8217;t work?</h4>\n<p>\n<p>Contact the plugin author(s), who will respond in a vague and unspecified amount of time.</p>\n</p>\n\n",
+        "changelog": "<h4>2.0.1</h4>\n<ul>\n<li>Updates ldap.php with ternary to elimiate options index notice for logpath</li>\n</ul>\n<h4>2.0</h4>\n<ul>\n<li>Updates UGRM.php to use UgrmLdap class from ldap.php to query UFAD LDAP server to get group membership by shibboleth provided <code>glid</code> apache server variable.</li>\n<li>Adds ldap-config.php containing LDAP connection parameters.</li>\n<li>Corrects bug in options.php where $_SERVER superglobal array keys were not quoted, emitting an error for undeclared constant.</li>\n</ul>\n<h4>1.7.1</h4>\n<ul>\n<li>Corrected typo in code. Minor fix, but very large impact.</li>\n</ul>\n<h4>1.7</h4>\n<ul>\n<li>Discovered that with multisite enabled, the server variables will sometimes present as prepended with REDIRCT_ when in a subsite. E.G. UFADGroupsDN will sometimes appear<br />\nREDIRECT_UFADGroupsDN. The code has been extended to accomdate this.<br />\n*As a side note, the Shibboleth plugin UGRM extends appears to have been abandoned. As we&#8217;ve already made code changes to enable the Shibboleth plugin to work<br />\nwith the new WordPress enabled for multisite, and we had to graft on further changes for the REDIRECT_ behavior, we plan to release a fork of the Shibboleth plugin.</li>\n</ul>\n<h4>1.6</h4>\n<ul>\n<li>Fixed a glaring bug in when &#8220;Force Shibboleth return target to HTTPS&#8221; was checked and return target was already https the target would be munged to httpss.</li>\n<li>Discovered Shibboleth on IIS prepends all Shibboleth server variables with a HTTP_ prefix because the variables are populated via CGI as IIS does not support<br />\nenvironment variables (for details, check out: https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPAttributeAccess). Plugin now inspects SERVER_SOFTWARE<br />\nvariable and adjusts accordingly.</li>\n</ul>\n<h4>1.5</h4>\n<ul>\n<li>Fixed header in UGRM.php to resolve current version display on WordPress site.</li>\n</ul>\n<h4>1.4</h4>\n<ul>\n<li>Attempting to correct WordPress SVN tagging for current</li>\n</ul>\n<h4>1.3</h4>\n<ul>\n<li>Still working on SVN versioning</li>\n</ul>\n<h4>1.2</h4>\n<ul>\n<li>New version number to resolve wonkyness with WordPress SVN.</li>\n</ul>\n<h4>1.1</h4>\n<ul>\n<li>Added a configuration option for requiring HTTPS on the return target. This hooks into the Shibboleth provided shibboleth_seesion_initiator_url filter and ensures<br />\nthe return target uses HTTPS. This allows you seemless provide a Shibboleth integrated WordPress site where the content side is delivered via HTTP and the admin<br />\nside is delivered VIA HTTPS.  The default  Shibboleth plugin behavior is to construct the return target using the current protocol, e.g. if you click the login link from<br />\nHTTP, your return target would be for HTTP.  UGRM now allows you to overide this behavior and alwasy use a HTTPS return target.</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>Initial Release</li>\n</ul>\n"
+    },
+    "short_description": "This plugin extends the Shibboleth plugin to work with UFAD &amp; Shibboleth at the University of Florida. Developed at the Florida Museum of Natural  &hellip;",
+    "description": "<p>Since this plugin extends the Shibboleth plugin, you must first have the Shibboleth plugin, available from https://wordpress.org/extend/plugins/shibboleth/<br />\ninstalled and activated. Otherwise, the plugin will fail to activate as the shibboleth_user_role filter hook will not be registered.</p>\n<p>To use this plugin, you must already have the following setup on your server:<br />\n1. The above Shibbleth plugin.<br />\n2. A UFAD group created for each of the WordPress roles (administrator, editor, author, contributor, and subscriber).</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/ugrm.2.0.zip",
+    "upgrade_notice": {
+        "1.6": "<p>Important upgrade. Bug fix for &quot;Force return target to HTTPS&quot; feature and adds IIS support.</p>",
+        "1.5": "<p>Fixed header in UGRM.php to resolve current version display on Wordpress site.</p>",
+        "1.4": "<p>Attemtpin to correct the Wordpress SVN current version labeling</p>",
+        "1.3": "<p>Still working on SVN versioning</p>",
+        "1.2": "<p>New version number to resolved wonkyness with Wordpress SVN.</p>",
+        "1.1": "<p>Added functionality to allow UGRM to override return login target to always be HTTPS.</p>",
+        "1.0": "<p>Initial Release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/ugrm/trunk/screenshot-1.png?rev=1988298",
+            "caption": "Plugin Screenshot"
+        },
+        {
+            "src": "https://ps.w.org/ugrm/trunk/screenshot-2.png?rev=1988298",
+            "caption": "Plugin Config Options"
+        }
+    ],
+    "tags": {
+        "login": "login",
+        "saml": "SAML",
+        "shibboleth": "shibboleth",
+        "uf": "UF",
+        "ufad-authentication": "UFAD authentication"
+    },
+    "stable_tag": "2.0",
+    "versions": {
+        "1.1": "https://downloads.wordpress.org/plugin/ugrm.1.1.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/ugrm.1.2.zip",
+        "1.3": "https://downloads.wordpress.org/plugin/ugrm.1.3.zip",
+        "1.4": "https://downloads.wordpress.org/plugin/ugrm.1.4.zip",
+        "1.5": "https://downloads.wordpress.org/plugin/ugrm.1.5.zip",
+        "1.6": "https://downloads.wordpress.org/plugin/ugrm.1.6.zip",
+        "2.0": "https://downloads.wordpress.org/plugin/ugrm.2.0.zip",
+        "2.1": "https://downloads.wordpress.org/plugin/ugrm.2.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/ugrm.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "http://www.flmnh.ufl.edu/",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/ugrm.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

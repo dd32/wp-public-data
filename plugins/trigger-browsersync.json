@@ -1,0 +1,71 @@
+{
+    "name": "Trigger Browsersync",
+    "slug": "trigger-browsersync",
+    "version": "0.8.6",
+    "author": "<a href=\"http://www.patabugen.co.uk/\">Sami Greenbury</a>",
+    "author_profile": "https://profiles.wordpress.org/patabugen/",
+    "contributors": {
+        "patabugen": {
+            "profile": "https://profiles.wordpress.org/patabugen/",
+            "avatar": "https://secure.gravatar.com/avatar/f43f0df0379e1bd39cb32ba0d3cdc403?s=96&d=monsterid&r=g",
+            "display_name": "Patabugen"
+        }
+    },
+    "requires": "3.0.1",
+    "tested": false,
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 94,
+    "ratings": {
+        "5": 2,
+        "4": 1,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 3,
+    "support_url": "https://wordpress.org/support/plugin/trigger-browsersync/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 1349,
+    "last_updated": "2022-06-23 3:45pm GMT",
+    "added": "2017-04-07",
+    "homepage": "https://www.patabugen.co.uk/",
+    "sections": {
+        "description": "<p>Integrates WordPress with Browsersync to trigger events like reload when you edit pages.</p>\n<p>The plugin also only triggers a reload for now. If you have requests or ideas for other functionality, get in touch.</p>\n<p>Since you (should) disable this plugin on production sites, the WordPress stats won&#8217;t be reliable &#8211; if you find the plugin useful I&#8217;d really appreciate it if you&#8217;d let me know with a quick email or message!</p>\n<h4>Triggers</h4>\n<p>By default the plugin will trigger a reload on these actions:</p>\n<ul>\n<li>save_post &#8211; Editing posts/pages/custom posts etc</li>\n<li>added_option &#8211; Changing settings</li>\n<li>attachment_updated &#8211; Editing media fields (caption etc)</li>\n<li>updated_postmeta &#8211; Covers many things, particularly regenerating media thumbnails. Some meta_fields are ignored (see <code>trigger_browsersync_irrelevant_meta_keys</code>)</li>\n<li>activated_plugin</li>\n<li>deactivated_plugin</li>\n<li>delete_widget</li>\n</ul>\n<p>you can customise this as well as other Browsersync settings using filters:</p>\n<pre><code>add_filter('trigger_browsersync_reload_actions', function($filters) {\n    // Remove a default. Bear in mind that one action you take (e.g. saving a page)\n    // may trigger more than one hook.\n    unset($filters['save_post']);\n    // Add your own. The key name lets other filters remove it (like the line above)\n    $filters['wp_logout'] = 'wp_logout';\n    return $filters;\n});\n</code></pre>\n<h4>Ignoring Meta Keys</h4>\n<p>Not all meta_key updates (triggered by <code>updated_postmeta</code>) have any impact on the front-end functioning of your site. You can customise which <code>meta_key</code> values are ignored with the <code>trigger_browsersync_irrelevant_meta_keys</code> filter:</p>\n<pre><code>add_filter('trigger_browsersync_irrelevant_meta_keys', function($filters) {\n    // Remove a default.\n    unset($filters['_edit_lock']);\n    // Add your own. The key name lets other filters remove it (like the line above)\n    $filters['_edit_lock'] = '_edit_lock';\n    return $filters;\n});\n</code></pre>\n<h4>Configuration with Filters</h4>\n<p>The default Browsersync settings will be used (<code>http://localhost:3000</code>) but you can use filters to change them. The filters are used every time the trigger is activated so you don&#8217;t need to set them before instanciating the class.</p>\n<pre><code>add_filter('trigger_browsersync_protocol', function(){ return 'https'; } );\nadd_filter('trigger_browsersync_host', function(){ return 'dev.server'; } );\nadd_filter('trigger_browsersync_port', function(){ return '4321'; } );\n</code></pre>\n<p>Or you can specify the whole URL which will cause the others to be ignored, but don&#8217;t include a trailing slash.</p>\n<pre><code>add_filter('trigger_browsersync_url', function(){ return 'http://localhost:3000'; } );\n</code></pre>\n<h4>Environmental Configuration</h4>\n<p>Since you probably only want Browsersync on your development or staging site, the plugin will do nothing once you activate it it in WordPress.</p>\n<p>To make it work, you&#8217;ll want to create a file to activate it. See Installation for instructions.</p>\n<h4>Logging Activity</h4>\n<p>Trigger Browsersync can log events to the WordPress log &#8211; this is especially useful for development on the plugin when you want to add or exclude a new event from triggering an action.</p>\n<p>To enable logging add this filter to your <code>enable-trigger-browsersync.php</code> file (see Installation);</p>\n<pre><code>add_filter('trigger_browsersync_log_events', '__return_true');\n</code></pre>\n",
+        "installation": "<p>This plugin sends signals to an existing and running BrowserSync setup. You need to install Browsersync and integrate it with your workflow first &#8211; how do to that is outside the scope of the plugin but you can get more information at <a href=\"https://www.browsersync.io/\" rel=\"nofollow ugc\">BrowserSync.io</a>.</p>\n<p>Install the plugin by uploading or via the plugin option in WordPress &#8211; the same as any other plugin.</p>\n<p>The plugin will do nothing unless you create an instance of <code>TriggerBrowsersync</code>  somewhere.</p>\n<p>You probably don&#8217;t want the integration on your production server, which means you don&#8217;t want the code to instanciate saved in your repo &#8211; I would recommend you create a file in mu-plugins with the code below, and then tell your version control to ignore the file.</p>\n<pre><code>&lt;?php\nadd_action( 'plugins_loaded', function(){ // Trigger after the TriggerBrowsersync plugin has loaded\n    if ( class_exists( 'TriggerBrowsersync' ) ) { // Check the TriggerBrowsersync plugin loaded correctly\n        // Add any configuration filters you may need here.\n\n        // Activate the integration by creating an instance.\n        new TriggerBrowsersync();\n    }\n} );\n</code></pre>\n<h4>Step by Step Example Installation</h4>\n<ul>\n<li>Create <code>wp-content/mu-plugins/enable-trigger-browsersync.php</code> (you may need to create the <code>mu-plugins</code> directory)</li>\n<li>Paste the code above in</li>\n<li>Edit .gitignore and add <code>wp-content/mu-plugins/enable-trigger-browsersync.php</code></li>\n</ul>\n<h4>All Hooks and Filters</h4>\n<p>Use filters to customise settings:</p>\n<ul>\n<li>trigger_browsersync_protocol &#8211; set the protocol for Gulp Watch (probably http or https). Defaults to http.</li>\n<li>trigger_browsersync_host &#8211; set the host port for Gulp Watch. Defaults to localhost</li>\n<li>trigger_browsersync_port &#8211; set the port for Gulp Watch. Defaults to 3000</li>\n<li>trigger_browsersync_url &#8211; Set the whole URL instead of the parts above (e.g. http://localhost:3000)</li>\n<li>trigger_browsersync_reload_actions &#8211; add/change the actions on which to trigger a reload. See source for defaults.</li>\n<li>trigger_browsersync_log_events &#8211; Return true to enable log output (to the standard log)</li>\n<li>trigger_browsersync_irrelevant_meta_keys &#8211; Lets you ignore particular meta_keys or options</li>\n<li>trigger_browsersync_irrelevant_meta_key_regex &#8211; Lets you ignore particular meta_keys or options if they match preg_match</li>\n</ul>\n<p>You can also hook on to some actions if you wish:</p>\n<ul>\n<li>trigger_browsersync_before &#8211; Called just before we trigger anything</li>\n<li>trigger_browsersync_after &#8211; Called just before we trigger anything</li>\n<li>trigger_browsersync_before_reload &#8211; Called just before we trigger a reload</li>\n<li>trigger_browsersync_after_reload &#8211; Called just after we trigger a reload &#8211; the reload won&#8217;t yet be done</li>\n</ul>\n",
+        "faq": "\n<dt id='i%27ve%20installed%20the%20plugin%2C%20but%20it%27s%20not%20doing%20anything.'>\nI&#8217;ve installed the plugin, but it&#8217;s not doing anything.\n</h4>\n<p>\n<ul>\n<li>Have you followed the installation instructions? The plugin will do nothing without them.\n<ul>\n<li>If you&#8217;re not using the default Browser Sync settings, you&#8217;ll need to add filters to override them.</li>\n</ul>\n</li>\n</ul>\n</p>\n\n",
+        "changelog": "<h4>0.8.6</h4>\n<ul>\n<li>Tested with WordPress 6</li>\n</ul>\n<h4>0.8.5</h4>\n<ul>\n<li>Tested with WordPress 5.3</li>\n<li>Fixed typo bug.</li>\n</ul>\n<h4>0.8.4</h4>\n<ul>\n<li>Tested with WordPress 5.1</li>\n</ul>\n<h4>0.8.3</h4>\n<ul>\n<li>Don&#8217;t trigger reload on cron updates.</li>\n<li>Handle logging non-string value types better.</li>\n</ul>\n<h4>0.8</h4>\n<ul>\n<li>Fixed bug where non-string option values would throw a fatal error</li>\n</ul>\n<h4>0.7</h4>\n<ul>\n<li>Added <code>trigger_browsersync_irrelevant_meta_key_regex</code> filter to let us ignore meta keys or options based on a regex match. Initial value excludes any meta_key or option mame containing &#8216;cache&#8217;</li>\n<li>Fixed bug whereby options being changed were not logged properly</li>\n<li>Added the <code>trigger_browsersync_irrelevant_meta_keys</code> to options names</li>\n<li>Added <code>updated_option</code> to compliment existing <code>added_option</code></li>\n</ul>\n<h4>0.6</h4>\n<ul>\n<li>Added <code>delete_widget</code> hook</li>\n</ul>\n<h4>0.5</h4>\n<ul>\n<li>Initial release with reload functionality, custom settings and customisable hook/trigger list.</li>\n</ul>\n"
+    },
+    "short_description": "Integrates WordPress with Browsersync to trigger events like Reload when you edit pages and settings.",
+    "description": "<p>Integrates WordPress with Browsersync to trigger events like reload when you edit pages.</p>\n<p>The plugin also only triggers a reload for now. If you have requests or ideas for other functionality, get in touch.</p>\n<p>Since you (should) disable this plugin on production sites, the WordPress stats won&#8217;t be reliable &#8211; if you find the plugin useful I&#8217;d really appreciate it if you&#8217;d let me know with a quick email or message!</p>\n<h4>Triggers</h4>\n<p>By default the plugin will trigger a reload on these actions:</p>\n<ul>\n<li>save_post &#8211; Editing posts/pages/custom posts etc</li>\n<li>added_option &#8211; Changing settings</li>\n<li>attachment_updated &#8211; Editing media fields (caption etc)</li>\n<li>updated_postmeta &#8211; Covers many things, particularly regenerating media thumbnails. Some meta_fields are ignored (see <code>trigger_browsersync_irrelevant_meta_keys</code>)</li>\n<li>activated_plugin</li>\n<li>deactivated_plugin</li>\n<li>delete_widget</li>\n</ul>\n<p>you can customise this as well as other Browsersync settings using filters:</p>\n<pre><code>add_filter('trigger_browsersync_reload_actions', function($filters) {\n    // Remove a default. Bear in mind that one action you take (e.g. saving a page)\n    // may trigger more than one hook.\n    unset($filters['save_post']);\n    // Add your own. The key name lets other filters remove it (like the line above)\n    $filters['wp_logout'] = 'wp_logout';\n    return $filters;\n});\n</code></pre>\n<h4>Ignoring Meta Keys</h4>\n<p>Not all meta_key updates (triggered by <code>updated_postmeta</code>) have any impact on the front-end functioning of your site. You can customise which <code>meta_key</code> values are ignored with the <code>trigger_browsersync_irrelevant_meta_keys</code> filter:</p>\n<pre><code>add_filter('trigger_browsersync_irrelevant_meta_keys', function($filters) {\n    // Remove a default.\n    unset($filters['_edit_lock']);\n    // Add your own. The key name lets other filters remove it (like the line above)\n    $filters['_edit_lock'] = '_edit_lock';\n    return $filters;\n});\n</code></pre>\n<h4>Configuration with Filters</h4>\n<p>The default Browsersync settings will be used (<code>http://localhost:3000</code>) but you can use filters to change them. The filters are used every time the trigger is activated so you don&#8217;t need to set them before instanciating the class.</p>\n<pre><code>add_filter('trigger_browsersync_protocol', function(){ return 'https'; } );\nadd_filter('trigger_browsersync_host', function(){ return 'dev.server'; } );\nadd_filter('trigger_browsersync_port', function(){ return '4321'; } );\n</code></pre>\n<p>Or you can specify the whole URL which will cause the others to be ignored, but don&#8217;t include a trailing slash.</p>\n<pre><code>add_filter('trigger_browsersync_url', function(){ return 'http://localhost:3000'; } );\n</code></pre>\n<h4>Environmental Configuration</h4>\n<p>Since you probably only want Browsersync on your development or staging site, the plugin will do nothing once you activate it it in WordPress.</p>\n<p>To make it work, you&#8217;ll want to create a file to activate it. See Installation for instructions.</p>\n<h4>Logging Activity</h4>\n<p>Trigger Browsersync can log events to the WordPress log &#8211; this is especially useful for development on the plugin when you want to add or exclude a new event from triggering an action.</p>\n<p>To enable logging add this filter to your <code>enable-trigger-browsersync.php</code> file (see Installation);</p>\n<pre><code>add_filter('trigger_browsersync_log_events', '__return_true');\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/trigger-browsersync.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "automation": "automation",
+        "browsersync": "browsersync",
+        "dev": "dev",
+        "refresh": "refresh"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://paypal.me/patabugen/5",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/trigger-browsersync/assets/icon-128x128.png?rev=1634350",
+        "2x": "https://ps.w.org/trigger-browsersync/assets/icon-256x256.png?rev=1634350"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 94,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

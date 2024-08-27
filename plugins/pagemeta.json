@@ -1,0 +1,100 @@
+{
+    "name": "Page Meta",
+    "slug": "pagemeta",
+    "version": "1.5.1",
+    "author": "<a href=\"http://stv.whtly.com\">StvWhtly</a>",
+    "author_profile": "https://profiles.wordpress.org/stvwhtly/",
+    "contributors": {
+        "stvwhtly": {
+            "profile": "https://profiles.wordpress.org/stvwhtly/",
+            "avatar": "https://secure.gravatar.com/avatar/3db96768f56313958929d8c00812f440?s=96&d=monsterid&r=g",
+            "display_name": "Steve"
+        }
+    },
+    "requires": "2.8.2",
+    "tested": "3.5.2",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 66,
+    "ratings": {
+        "5": 1,
+        "4": 1,
+        "3": 0,
+        "2": 0,
+        "1": 1
+    },
+    "num_ratings": 3,
+    "support_url": "https://wordpress.org/support/plugin/pagemeta/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 1000,
+    "downloaded": 31035,
+    "last_updated": "2013-03-19 11:11pm GMT",
+    "added": "2009-10-14",
+    "homepage": "http://wordpress.org/extend/plugins/pagemeta/",
+    "sections": {
+        "description": "<p>This plugin uses custom fields to allow the page title tag to be customised and differ from the actual page title.</p>\n<p>Both meta descriptions and keywords can also be added if required.</p>\n<p>Page meta details can be modified on any publicly accessible post type, such as posts and pages, as well as custom post types.</p>\n<p>Theme and plugin developers should note that it is possible override the page title within your templates by setting <code>$wppm_title = 'Newly defined title';</code> before the call to <code>get_header();</code>.</p>\n",
+        "installation": "<p>Here we go:</p>\n<ol>\n<li>Upload the <code>pagemeta</code> folder to the <code>/wp-content/plugins/</code> directory</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</li>\n<li>Choose which post types the plugin should be enabled on via the <code>Settings &gt; Reading</code> options.</li>\n</ol>\n",
+        "faq": "\n<h4>What custom field names does it use?</h4>\n<p>\n<p>The field names used are <code>_pagemeta_title</code>, <code>_pagemeta_description</code> and <code>_pagemeta_keywords</code>.</p>\n<p>The underscore prefix prevents it from being displayed in the list of custom fields.</p>\n</p>\n<h4>How do I output the custom title?</h4>\n<p>\n<p>If a custom title is set for a post type, the plugin will automatically hook into the <code>wp_title</code> function to modify the output.</p>\n<p>This uses the parameters passed via <a href=\"https://codex.wordpress.org/Function_Reference/wp_title\" title=\"Function Reference/wp title\" rel=\"nofollow ugc\">wp_title</a> and will completely override the title.</p>\n<p>You can customise the output further using the <code>pagemeta_title</code> filter, which uses the same parameters plus the original post title value.</p>\n<p>In this example we prefix the original title to the custom title.</p>\n<pre><code>add_filter( 'pagemeta_title', function( $title, $sep, $seplocation, $original_title ) {\n    return $original_title . $title;\n}, 10, 4 );\n</code></pre>\n<p>Please refer to the Codex for further information on the <a href=\"https://codex.wordpress.org/Function_Reference/add_filter\" title=\"Function Reference/add filter\" rel=\"nofollow ugc\">add_filter</a>.</p>\n</p>\n<h4>Why are the meta tags not added to my pages?</h4>\n<p>\n<p>This plugin makes use of the <code>wp_head</code> hook action, therefore in order for it to work there must be a call to wp_head in the current theme header file.</p>\n<p>More information on this can be found in the <a href=\"https://codex.wordpress.org/Function_Reference/wp_head\" title=\"Function Reference/wp head\" rel=\"nofollow ugc\">WordPress Codex</a>.</p>\n</p>\n<h4>Can I modify which fields are shown?</h4>\n<p>\n<p>Yes, as of version 1.5 you can modify which fields are used using the <code>pagemeta_fields</code> filter:</p>\n<pre><code>add_filter( 'pagemeta_fields', function( $fields ) {\n    $fields['author'] = 'Author'; // Add a new field.\n    unset( $fields['keywords'] ); // Remove a default field.\n    return $fields;\n} );\n</code></pre>\n<p>The default fields are &#8216;title&#8217;, &#8216;description&#8217; and &#8216;keywords&#8217;.</p>\n</p>\n<h4>Can I output the meta values?</h4>\n<p>\n<p>The page meta values can be output within posts using the <code>[postmeta]</code> shortcode.</p>\n<p>Passing through a <code>name</code> attribute will determine which value is returned, for example to output the description value use the following.</p>\n<pre><code>[postmeta name=\"description\"]\n</code></pre>\n<p>Name values are determined by the fields set, by default these are &#8216;title&#8217;, &#8216;description&#8217; and &#8216;keywords&#8217;.</p>\n<p>To output meta values in template files, you can make use of <code>the_pagemeta</code> function.</p>\n<pre><code>&lt;?php if ( function_exists( 'the_pagemeta' ) ) { the_pagemeta( 'description' ); } ?&gt;\n</code></pre>\n<p>This will output the value, in order to return the value or lookup a specific post ID you can use <code>get_the_pagemeta</code>.</p>\n<pre><code>&lt;?php if ( function_exists( 'get_the_pagemeta' ) ) { \n    $description = get_the_pagemeta( 'description' );\n} ?&gt;\n\n&lt;?php if ( function_exists( 'get_the_pagemeta' ) ) {\n    $description = get_the_pagemeta(\n        'description', // Page meta value name\n        123 // Post ID to lookup\n    );\n} ?&gt;\n</code></pre>\n<p>Not that these functions will return the raw values prior to any output manipulation.</p>\n</p>\n\n",
+        "changelog": "<h4>1.5</h4>\n<ul>\n<li>Fix for code previously committed in error, preventing edit page functionality.</li>\n</ul>\n<h4>1.5</h4>\n<ul>\n<li>Added ability to filter / modify meta boxes using the <code>pagemeta_fields</code> filter.</li>\n<li>Custom titles can now be filtered using <code>pagemeta_title</code>.</li>\n<li>Meta values are now output for static pages (Front and Posts) assigned via the Reading Settings page.</li>\n<li>For new plugin installs, the plugin will be enabled on pages as well as posts by default.</li>\n<li>Introduced shortcode to allow values to be output in post content.</li>\n<li>New <code>the_pagemeta</code> and <code>get_the_pagemeta</code> functions added.</li>\n<li>Addition of basic inline documentation.</li>\n</ul>\n<h4>1.4.1</h4>\n<ul>\n<li>Replaced PHP short tag used to display nonce field on admin edit screen panel.</li>\n</ul>\n<h4>1.4</h4>\n<ul>\n<li>Changed plugin author and contributor names.</li>\n<li>Replaced deactivation hook and tidy option with uninstall.php.</li>\n<li>Modified activation hook to remove warnings during plugin activation.</li>\n<li>Combined settings with Settings &gt; Reading page.</li>\n<li>Allowed meta data to be added to any public post type, instead of just posts and pages.</li>\n<li>Removed PHP shortcodes from edit page meta box.</li>\n<li>Updated donate link.</li>\n<li>Updated screenshots.</li>\n</ul>\n<h4>1.3</h4>\n<ul>\n<li>Page title is now automatically inserted, instead of using the custom function.</li>\n</ul>\n<h4>1.2</h4>\n<ul>\n<li>Fixed issue with WordPress 3.0+ not correctly outputting headers.</li>\n</ul>\n<h4>1.1</h4>\n<ul>\n<li>Fixed errors when error reporting is set to all.</li>\n<li>Tested the plugin in WordPress 2.9.</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>Converted plugin to a class based structure.</li>\n<li>Converted constants into settings page.</li>\n<li>Added donate link 😉</li>\n</ul>\n<h4>0.3.1</h4>\n<ul>\n<li>Bug fix nonce checking and addition of title override.</li>\n</ul>\n<h4>0.3</h4>\n<ul>\n<li>Added ability to allow page meta data on posts, as well as properly escaping values.</li>\n</ul>\n<h4>0.2.1</h4>\n<ul>\n<li>Removed debugging output.</li>\n</ul>\n<h4>0.2</h4>\n<ul>\n<li>Tested up to 2.8.5 and began optimisation of the included files.</li>\n</ul>\n<h4>0.1</h4>\n<ul>\n<li>This is the very first version.</li>\n</ul>\n"
+    },
+    "short_description": "Adds the ability to override the page meta title and add in meta descriptions and keywords for pages.",
+    "description": "<p>This plugin uses custom fields to allow the page title tag to be customised and differ from the actual page title.</p>\n<p>Both meta descriptions and keywords can also be added if required.</p>\n<p>Page meta details can be modified on any publicly accessible post type, such as posts and pages, as well as custom post types.</p>\n<p>Theme and plugin developers should note that it is possible override the page title within your templates by setting <code>$wppm_title = 'Newly defined title';</code> before the call to <code>get_header();</code>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/pagemeta.1.5.1.zip",
+    "upgrade_notice": {
+        "1.4": "<p>Introduced the ability to enable page meta data on any public post type via the settings page, which has been merged into the <code>Settings &amp;gt; Reading</code> admin page instead of the plugin specific settings page. Ensure page meta is enabled for required post types by checking settings in the new location.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/pagemeta/trunk/screenshot-1.png?rev=1538846",
+            "caption": "The Page Meta panel displayed below the content editor."
+        },
+        {
+            "src": "https://ps.w.org/pagemeta/trunk/screenshot-2.png?rev=1538846",
+            "caption": "Settings are managed via the Settings &gt; Reading page."
+        }
+    ],
+    "tags": {
+        "description": "description",
+        "keywords": "keywords",
+        "meta": "meta",
+        "page": "page",
+        "seo": "seo"
+    },
+    "stable_tag": "1.5.1",
+    "versions": {
+        "0.1": "https://downloads.wordpress.org/plugin/pagemeta.0.1.zip",
+        "0.2": "https://downloads.wordpress.org/plugin/pagemeta.0.2.zip",
+        "0.2.1": "https://downloads.wordpress.org/plugin/pagemeta.0.2.1.zip",
+        "0.3": "https://downloads.wordpress.org/plugin/pagemeta.0.3.zip",
+        "0.3.1": "https://downloads.wordpress.org/plugin/pagemeta.0.3.1.zip",
+        "1.0": "https://downloads.wordpress.org/plugin/pagemeta.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/pagemeta.1.1.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/pagemeta.1.2.zip",
+        "1.3": "https://downloads.wordpress.org/plugin/pagemeta.1.3.zip",
+        "1.4": "https://downloads.wordpress.org/plugin/pagemeta.1.4.zip",
+        "1.4.1": "https://downloads.wordpress.org/plugin/pagemeta.1.4.1.zip",
+        "1.5": "https://downloads.wordpress.org/plugin/pagemeta.1.5.zip",
+        "1.5.1": "https://downloads.wordpress.org/plugin/pagemeta.1.5.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/pagemeta.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QPKN7EUFKAZLE",
+    "banners": {
+        "low": "https://ps.w.org/pagemeta/assets/banner-772x250.png?rev=617720",
+        "high": false
+    },
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/pagemeta_f8f8f8.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 66,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

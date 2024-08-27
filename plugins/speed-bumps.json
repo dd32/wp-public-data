@@ -1,0 +1,83 @@
+{
+    "name": "Speed Bumps",
+    "slug": "speed-bumps",
+    "version": "0.2.0",
+    "author": "<a href=\"http://fusion.net\">Fusion Engineering</a>",
+    "author_profile": "https://profiles.wordpress.org/danielbachhuber/",
+    "contributors": {
+        "fusionengineering": {
+            "profile": "https://profiles.wordpress.org/fusionengineering/",
+            "avatar": "https://secure.gravatar.com/avatar/8b7ad57213249ef9bc657f62ebbe49d9?s=96&d=monsterid&r=g",
+            "display_name": "fusionengineering"
+        },
+        "goldenapples": {
+            "profile": "https://profiles.wordpress.org/goldenapples/",
+            "avatar": "https://secure.gravatar.com/avatar/1f5554a4b5cbe76a16b5287c308a5be9?s=96&d=monsterid&r=g",
+            "display_name": "goldenapples"
+        },
+        "noppanit": {
+            "profile": "https://profiles.wordpress.org/noppanit/",
+            "avatar": "https://secure.gravatar.com/avatar/d4255382fcdc9bea11a470c5e12fbd74?s=96&d=monsterid&r=g",
+            "display_name": "noppanit"
+        }
+    },
+    "requires": "4.2",
+    "tested": "4.7.29",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/speed-bumps/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 40,
+    "downloaded": 3431,
+    "last_updated": "2016-12-17 12:00am GMT",
+    "added": "2015-07-23",
+    "homepage": "https://github.com/fusioneng/speed-bumps",
+    "sections": {
+        "description": "<p>Speed Bumps inserts speed bumps into site content based on business needs. This plugin requires code-level configuration.</p>\n<p>Need a 300&#215;250 unit inserted 3 paragraphs down on every story greater than 9 paragraphs long? Speed Bumps makes seemingly complex business requests like this simple to implement within your WordPress environment.</p>\n<p>Any number of speed bumps can be registered, from graphical elements to advertising units to recirculation modules. Each speed bump inherits a default set of overridable rules, and the speed bump can also dictate its own logic regarding acceptable placement.</p>\n<p>To report bugs or feature requests, <a href=\"https://github.com/fusioneng/speed-bumps\" rel=\"nofollow ugc\">please use Github issues</a>.</p>\n",
+        "installation": "<p>It&#8217;s a plugin! Install it like any other.</p>\n<p>Onec you&#8217;ve installed the plugin, you&#8217;ll have to register one or more speed bumps in order for it to have any effect. You&#8217;ll also have to specifically call Speed Bumps to filter your content &#8211; the plugin doesn&#8217;t attach any filters to <code>the_content</code> or other hooks by itself.</p>\n<p>The simplest way to have Speed Bumps process all of your content and insert speed bumps into content everywhere is simply adding the filter following registration:</p>\n<pre><code>register_speed_bump( 'speed_bump_sample', array(\n    'string_to_inject' =&gt; function() { return '&lt;div id=\"speed-bump-sample\"&gt;&lt;/div&gt;'; },\n));\nadd_filter( 'the_content', 'insert_speed_bumps', 1 );\n</code></pre>\n<p>This registration results in the <code>string_to_inject</code> value being injected at the first opportunity based on the default rules (e.g. on posts longer than 1200 characters, following the third paragraph OR following the paragraph which contains the 75th word, whichever comes later).</p>\n<p>Let&#8217;s say you wanted the speed bump higher in the content. You could modify the <code>from_start</code> parameter to declare that the speed bump can be inserted after the first paragraph (yes, like good engineers, we prefer zero-based indexing).</p>\n<pre><code>register_speed_bump( 'speed_bump_sample', array(\n    'string_to_inject' =&gt; function() { return '&lt;div id=\"speed-bump-sample\"&gt;&lt;/div&gt;'; },\n    'from_start' =&gt; 0,\n));\n</code></pre>\n<p>You can also selectively insert speed bumps into a string of content by calling Speed Bumps directly:</p>\n<pre><code>echo insert_speed_bumps( $content_to_be_inserted_into );\n</code></pre>\n",
+        "faq": "\n<h4>What are the default rules?</h4>\n<p>\n<p>The default options for speed bumps are currently:</p>\n<ul>\n<li>Never insert in a post fewer than 8 paragraphs long, or fewer than 1200 characters.</li>\n<li>Never insert before the the third paragraph, or before 75 words into the post.</li>\n<li>Never insert fewer than 3 paragraphs or 75 words from the end of the article.</li>\n<li>At least one paragraph from an iframe or embed.</li>\n<li>At least two paragraphs from an image.</li>\n<li>At least one paragraph from any other speed bump in the post.</li>\n</ul>\n</p>\n<h4>How to add more specific rules?</h4>\n<p>\n<p>Adding a custom rule for a speed bump is a matter of defining a function and hooking it to the <code>speed_bumps_{id}_constraints</code> filter. The function hooked to that filter will receive several arguments to determine the state of the content, surrounding paragraphs, and other context, and can return <code>false</code> to block insertion.</p>\n<p>Simple, stupid example: You have a speed bump called &#8220;rickroll&#8221; which inserts a beautiful musical video throughout your content. You <em>really</em> need this viral bump (publisher&#8217;s words, not yours) so you disable minimum content length and the rules regarding acceptable speed bump distance from start/end of the post. Greedy!</p>\n<pre><code>register_speed_bump( 'rickroll', array(\n    'string_to_inject' =&gt; function() { return '<span class=\"embed-youtube\" style=\"text-align:center; display: block;\"><iframe loading=\"lazy\" class=\"youtube-player\" width=\"420\" height=\"315\" src=\"https://www.youtube.com/embed/dQw4w9WgXcQ?version=3&#038;rel=1&#038;showsearch=0&#038;showinfo=1&#038;iv_load_policy=1&#038;fs=1&#038;hl=en-US&#038;autohide=2&#038;wmode=transparent\" allowfullscreen=\"true\" style=\"border:0;\" sandbox=\"allow-scripts allow-same-origin allow-popups allow-presentation allow-popups-to-escape-sandbox\"></iframe></span>'; },\n    'minimum_content_length' =&gt; false,\n    'from_start' =&gt; false,\n    'from_end' =&gt; false,\n));\nadd_filter( 'the_content', 'insert_speed_bumps', 1 );\n</code></pre>\n<p>But, maybe that&#8217;s a little too extreme. You want to show it in certain situations, say, only when the previous paragraph contains the phrase &#8216;give {something} up&#8217;. Here&#8217;s how you would achieve that:</p>\n<pre><code>add_filter( 'speed_bumps_rickroll_constraints', 'give_you_up', 10, 4 );\n\nfunction give_you_up( $can_insert, $context, $args, $already_inserted ) {\n    if ( ! preg_match( '/give [^ ]+ up/i', $context['prev_paragraph'] ) ) {\n        $can_insert = false;\n    }\n    return $can_insert;\n}\n</code></pre>\n<p>You could also disable it altogether with this filter (although why you would disable so soon after addition, only Rick Astley himself could answer):</p>\n<pre><code>add_filter( 'speed_bumps_rickroll_constraints', '__return_false' );\n</code></pre>\n</p>\n<h4>How to remove default rules?</h4>\n<p>\n<p>Each rule is hooked to that speed bump&#8217;s &#8220;constraints&#8221; filter. To remove a rule, simply remove the filter which defines that rule, like these lines which remove the default rules for your speed bump:</p>\n<pre><code>remove_filter( 'speed_bumps_{id}_constraints', '\\Speed_Bumps\\Constraints\\Text\\Minimum_Text::content_is_long_enough_to_insert' );\nremove_filter( 'speed_bumps_{id}_constraints', '\\Speed_Bumps\\Constraints\\Text\\Minimum_Text::meets_minimum_distance_from_start' );\nremove_filter( 'speed_bumps_{id}_constraints', '\\Speed_Bumps\\Constraints\\Text\\Minimum_Text::meets_minimum_distance_from_end' );\nremove_filter( 'speed_bumps_{id}_constraints', '\\Speed_Bumps\\Constraints\\Content\\Injection::less_than_maximum_number_of_inserts' );\nremove_filter( 'speed_bumps_{id}_constraints', '\\Speed_Bumps\\Constraints\\Content\\Injection::meets_minimum_distance_from_other_inserts' );\nremove_filter( 'speed_bumps_{id}_constraints', '\\Speed_Bumps\\Constraints\\Elements\\Element_Constraints::meets_minimum_distance_from_elements' );\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>0.2.0 (December 15, 2016)</h4>\n<ul>\n<li>Compatability: Remove direct $wp_filter access for WP 4.7 compatability.</li>\n<li>Compatability: Fix issues throwing warnings in PHP7.</li>\n<li>Feature: Add &#8220;last ditch fallback&#8221; option for speed bump registration.</li>\n<li>Feature: Add filter around speed bump insertion content.</li>\n<li>Performance: Unregister speed bumps when global constraints prevent them being inserted.</li>\n<li>Performance: Unregister speed bumps after inserting them the maximum number of times.</li>\n<li>Performance: Allow speed bump constraint filters to short-circuit other filters at an insertion point, or to skip all remaining insertion points in a document.</li>\n</ul>\n<h4>0.1.0 (July 23, 2015)</h4>\n<ul>\n<li>Initial release.</li>\n<li><a href=\"http://fusion.net/story/170253/meet-speed-bumps-our-newest-open-source-release/\" rel=\"nofollow ugc\">Full release notes</a></li>\n</ul>\n"
+    },
+    "short_description": "Intelligently insert speed bumps into site content.",
+    "description": "<p>Speed Bumps inserts speed bumps into site content based on business needs. This plugin requires code-level configuration.</p>\n<p>Need a 300&#215;250 unit inserted 3 paragraphs down on every story greater than 9 paragraphs long? Speed Bumps makes seemingly complex business requests like this simple to implement within your WordPress environment.</p>\n<p>Any number of speed bumps can be registered, from graphical elements to advertising units to recirculation modules. Each speed bump inherits a default set of overridable rules, and the speed bump can also dictate its own logic regarding acceptable placement.</p>\n<p>To report bugs or feature requests, <a href=\"https://github.com/fusioneng/speed-bumps\" rel=\"nofollow ugc\">please use Github issues</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/speed-bumps.0.2.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "advertising": "advertising",
+        "content": "content",
+        "recirculation": "recirculation"
+    },
+    "stable_tag": "0.2.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/speed-bumps.0.1.0.zip",
+        "0.2.0": "https://downloads.wordpress.org/plugin/speed-bumps.0.2.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/speed-bumps.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/speed-bumps.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

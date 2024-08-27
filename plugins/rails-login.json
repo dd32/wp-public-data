@@ -1,0 +1,74 @@
+{
+    "name": "Rails Login",
+    "slug": "rails-login",
+    "version": "1.0",
+    "author": "<a href=\"http://wordpress.paulrosen.net\">Paul Rosen</a>",
+    "author_profile": "https://profiles.wordpress.org/paulrosen/",
+    "contributors": {
+        "paulrosen": {
+            "profile": "https://profiles.wordpress.org/paulrosen/",
+            "avatar": "https://secure.gravatar.com/avatar/6d1d7c6e63dd4eebe30b0c03b76087b7?s=96&d=monsterid&r=g",
+            "display_name": "paulrosen"
+        }
+    },
+    "requires": "4.0.0",
+    "tested": "4.1.0",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/rails-login/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 705,
+    "last_updated": "2015-01-15 4:31pm GMT",
+    "added": "2015-01-15",
+    "homepage": "http://wordpress.paulrosen.net/rails_login",
+    "sections": {
+        "description": "<p>If you have set up a WordPress installation as a subfolder of a Rails App, this plugin will make your users login with your Rails app. That is, there is no WordPress login; your users will be logged in if they are logged in to Rails, and they are not logged in if not.</p>\n<p>The WordPress installation needs to be on the same domain as the Rails app because it needs to access the same cookie.</p>\n",
+        "installation": "<ol>\n<li>Be sure that the Rails side is set up and working. See FAQ for more details.</li>\n<li>Unzip this plugin folder and copy the <em>rails-login</em> subfolder to your WordPress&#8217;s plugin directory.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>Configure the settings in the &#8216;Settings/Rails Login&#8217; page.</li>\n</ol>\n",
+        "faq": "<h4>How should the Rails app be set up?</h4>\n<p>You must first configure your Rails app and WordPress installation to work together. For instructions on how to do that, and a possible way to share a theme between WordPress and Rails is here: <a href=\"https://wordpress.org/plugins/rails-theme/\" rel=\"ugc\">Rails Theme</a></p>\n<p>In your routes.rb file:</p>\n<p>get &#8216;/authentication/user&#8217; =&gt; &#8220;authentication#user&#8221;</p>\n<p>after logging in and logging out, insert this statement:</p>\n<p>write_user_cookie()</p>\n<p>Add this to authentication_controller.rb:</p>\n<pre><code>#GET /authentication/user.json def user     user = read_user_cookie(params[:id])     obj = { user: user }     puts obj.to_json()     respond_to do |format|         format.json { render :json =&gt; { user: user } }     end end  private  def get_crypt     key = ActiveSupport::KeyGenerator.new(Rails.application.secrets.secret_key_base).generate_key(\"read-current-user\")     crypt = ActiveSupport::MessageEncryptor.new(key)     return crypt end  def write_user_cookie     crypt = get_crypt()     cookie_name = Rails.application.config.session_options[:key] + '2'     id = current_user.present? ? current_user.id : 0     cookies[cookie_name] = crypt.encrypt_and_sign(id) end  def read_user_cookie(cookie)     crypt = get_crypt()     id = crypt.decrypt_and_verify(cookie)      user = User.where(id: id).first     if user.present? &amp;&amp; !user.disabled         name = user.first_name + ' ' + user.last_name         return { email: user.email,                  first_name: user.first_name,                  last_name: user.last_name,                  url: '', description: '',                  username: user.email,                  login: user.email,                  nickname: name,                  display_name: name         }     else         return ''     end end </code></pre>\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "The Rails Login plugin enables a WordPress installation that is in a subfolder of a Rails application to use the Rails authentication instead of its o &hellip;",
+    "description": "<p>If you have set up a WordPress installation as a subfolder of a Rails App, this plugin will make your users login with your Rails app. That is, there is no WordPress login; your users will be logged in if they are logged in to Rails, and they are not logged in if not.</p>\n<p>The WordPress installation needs to be on the same domain as the Rails app because it needs to access the same cookie.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/rails-login.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/rails-login/trunk/screenshot-1.jpg?rev=1444288",
+            "caption": "Settings page for administrators."
+        }
+    ],
+    "tags": {
+        "authentication": "authentication",
+        "login": "login",
+        "rails": "rails"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "http://paulrosen.net/rails_login",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/rails-login.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

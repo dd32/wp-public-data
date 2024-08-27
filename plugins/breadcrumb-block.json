@@ -1,0 +1,182 @@
+{
+    "name": "Breadcrumb Block",
+    "slug": "breadcrumb-block",
+    "version": "1.0.14",
+    "author": "<a href=\"https://boldblocks.net\">Phi Phan</a>",
+    "author_profile": "https://profiles.wordpress.org/mr2p/",
+    "contributors": {
+        "mr2p": {
+            "profile": "https://profiles.wordpress.org/mr2p/",
+            "avatar": "https://secure.gravatar.com/avatar/6e786df8f87d8c089b1f8d6730e90fd4?s=96&d=monsterid&r=g",
+            "display_name": "Phi Phan"
+        }
+    },
+    "requires": "5.8",
+    "tested": "6.6.1",
+    "requires_php": "7.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 10,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 10,
+    "support_url": "https://wordpress.org/support/plugin/breadcrumb-block/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 1000,
+    "downloaded": 12562,
+    "last_updated": "2024-07-17 1:20am GMT",
+    "added": "2022-10-22",
+    "homepage": "",
+    "sections": {
+        "description": "<p>This is a single-block plugin for the breadcrumb trail. It&#8217;s simple, lightweight, SEO-friendly, and WooCommerce compatibility. It also includes some simple separator icons. It works everywhere: Page Editor, Site Editor, and template files.</p>\n<h3>How to customize the breadcrumb</h3>\n<ol>\n<li>\n<p>How to change/remove an item?</p>\n<pre><code>add_filter( 'breadcrumb_block_get_item', function ( $item_args, $context, $breadcrumbs_instance ) {\n  // Ignore items without context.\n  if ( ! $context || ! ( $context['object'] ?? false ) ) {\n    return $item_args;\n  }\n\n  // Eg: remove a term.\n  if ( 'term' === ( $context['type'] ?? '' ) &amp;&amp; 'term-slug' === $context['object']-&gt;slug ) {\n    return false;\n  }\n\n  // Eg: Change the title of a page.\n  if ( 'page' === ( $context['type'] ?? '' ) &amp;&amp; page_id_to_change === $context['object']-&gt;ID ) {\n    $item_args[0] = 'Make it shorter';\n  }\n\n  return $item_args;\n}, 10, 3 );\n</code></pre>\n<p>$item_args is a 3-item array: <code>[$item_label, $item_link, $item_attrs]</code><br />\n$context is an associative array: <code>['type' =&gt; 'item type', 'object' =&gt; 'item object']</code>. <code>type</code> can be one of the following values: <code>front_page</code>, <code>home</code>, <code>shop</code>, <code>page</code>, <code>post</code>, <code>single</code>, <code>term</code>, <code>taxonomy</code>, <code>post_type_archive</code>, <code>search</code>, <code>404</code>, <code>paged</code>, <code>author</code>, <code>date_year</code>, <code>date_month</code>, <code>date_day</code>, <code>attachment</code>.</p>\n</li>\n<li>\n<p>How to change the markup of the block?</p>\n<pre><code>add_filter( 'breadcrumb_block_get_breadcrumb_trail', function ( $markup, $args, $breadcrumbs_instance ) {\n  return $markup;\n}, 10, 3 );\n</code></pre>\n</li>\n<li>\n<p>How to add or remove the items from the breadcrumb trail?</p>\n<pre><code>add_filter( 'breadcrumb_block_get_items', function ( $items, $breadcrumbs_instance ) {\n  return $items;\n}, 10, 2 );\n</code></pre>\n</li>\n<li>\n<p>How to use a custom separator for the breadcrumb trail?</p>\n<pre><code>add_filter( 'breadcrumb_block_get_args', function ( $args ) {\n  // For example, change separator.\n  $args['separator'] = '&lt;svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"currentColor\" width=\"1em\" height=\"1em\" viewBox=\"0 0 16 16\"&gt;&lt;path fill-rule=\"evenodd\" d=\"M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z\"/&gt;&lt;path fill-rule=\"evenodd\" d=\"M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z\"/&gt;&lt;/svg&gt;';\n  return $args;\n} );\n</code></pre>\n<p>The custom separator should be an inline SVG. To make sure it displays properly, it should have three attributes: width, height, and fill. The values of these attributes should be as follows: <code>fill=\"currentColor\" width=\"1em\" height=\"1em\"</code>.<br />\nUsing this hook, you can customize other attributes such as container, before, after, list_tag, item_tag, item_before, item_after, separator.</p>\n</li>\n<li>\n<p>How to prepend the blog page to all single posts?</p>\n<pre><code>add_action( 'breadcrumb_block_single_prepend', function ( $post, $breadcrumbs_instance ) {\n  if ( 'post' === $post-&gt;post_type ) {\n    $blog_id = get_option( 'page_for_posts');\n    if ( $blog_id ) {\n      $breadcrumbs_instance-&gt;add_item( get_the_title( $blog_id ), get_permalink( $blog_id ) );\n    }\n  }\n}, 10, 2 );\n</code></pre>\n</li>\n</ol>\n<p>If this plugin is useful for you, please do a quick review and <a href=\"https://wordpress.org/support/plugin/breadcrumb-block/reviews/#new-post\" rel=\"ugc\">rate it</a> on WordPress.org to help us spread the word. I would very much appreciate it.</p>\n<p>Please check out my other plugins if you&#8217;re interested:</p>\n<ul>\n<li><a href=\"https://wordpress.org/plugins/content-blocks-builder\" rel=\"ugc\">Content Blocks Builder</a> &#8211; A tool to create blocks, patterns or variations easily for your site directly on the Block Editor.</li>\n<li><a href=\"https://wordpress.org/plugins/display-a-meta-field-as-block\" rel=\"ugc\">Meta Field Block</a> &#8211; A block to display a meta field or an ACF field as a block. It can also be used in the Query Loop block.</li>\n<li><a href=\"https://wordpress.org/plugins/block-enhancements\" rel=\"ugc\">Block Enhancements</a> &#8211; A plugin to add more useful features to blocks like icons, box-shadow, transform, hover style&#8230;</li>\n<li><a href=\"https://wordpress.org/plugins/icon-separator\" rel=\"ugc\">Icon Separator</a> &#8211; A tiny block just like the core/separator block but with the ability to add an icon to it.</li>\n<li><a href=\"https://wordpress.org/plugins/svg-block\" rel=\"ugc\">SVG Block</a> &#8211; A block to insert inline SVG images easily and safely. It also bundles with more than 3000 icons and some common non-rectangular dividers.</li>\n<li><a href=\"https://wordpress.org/plugins/counting-number-block\" rel=\"ugc\">Counting Number Block</a> &#8211; A block to display a number that has the number-counting effect.</li>\n<li><a href=\"https://wordpress.org/plugins/better-youtube-embed-block\" rel=\"ugc\">Better Youtube Embed Block</a> &#8211; Embed Youtube videos without slowing down your site.</li>\n</ul>\n<p>The plugin is developed using @wordpress/create-block.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/breadcrumb-block</code> directory, or install the plugin through the WordPress plugins screen directly.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; screen in WordPress</li>\n</ol>\n",
+        "faq": "\n<dt id='what%20problem%20does%20this%20plugin%20solve%3F'>\nWhat problem does this plugin solve?\n</h4>\n<p>\n<p>It provides a simple way to add a breadcrumb trail to your site.</p>\n</p>\n<dt id='who%20needs%20this%20plugin%3F'>\nWho needs this plugin?\n</h4>\n<p>\n<p>Anyone can use this plugin.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.14</h4>\n<p><em>Release Date &#8211; 07 May 2024</em></p>\n<ul>\n<li>Added    &#8211; Add the breadcrumbs instance to the <code>breadcrumb_block_get_item</code> hook</li>\n<li>Added    &#8211; Add the new hook <code>breadcrumb_block_single_prepend</code></li>\n<li>Improved &#8211; Add the commented text to remove the output not escaped warning</li>\n</ul>\n<h4>1.0.13</h4>\n<p><em>Release Date &#8211; 30 April 2024</em></p>\n<ul>\n<li>Added &#8211; A new hook <code>breadcrumb_block_get_item</code> for customizing/removing each item of the breadcrumbs</li>\n</ul>\n<h4>1.0.12</h4>\n<p><em>Release Date &#8211; 22 September 2023</em></p>\n<ul>\n<li>Added &#8211; A new hook <code>breadcrumb_block_get_args</code> for customizing the output of the breadcrumb.</li>\n</ul>\n<h4>1.0.11</h4>\n<p><em>Release Date &#8211; 12 August 2023</em></p>\n<ul>\n<li>DEV &#8211; Refactor block metadata and upgrade to apiVerion 3</li>\n<li>DEV &#8211; Add a hook <code>apply_filters( 'breadcrumb_block_strip_shortcodes', false, $breadcrumb_instance )</code> to allow opt-in/opt-out shortcodes in the post title. Thanks to Steven A. Zahm (https://github.com/shazahm1)</li>\n<li>DEV &#8211; Add parent crumbs to other hierarchical post types. Thanks to Steven A. Zahm (https://github.com/shazahm1)</li>\n<li>DEV &#8211; Add a hook <code>apply_filters( 'breadcrumb_block_add_post_type_name', true, $post, $breadcrumb_instance )</code> to allow opt-in/opt-out post type name for custom post types</li>\n<li>Fix &#8211; Conflict style with Bootstrap&#8217;s breadcrumb</li>\n</ul>\n<h4>1.0.10</h4>\n<p><em>Release Date &#8211; 13 Apr 2023</em></p>\n<ul>\n<li>DEV &#8211; Add a setting to input a custom home text</li>\n</ul>\n<h4>1.0.9</h4>\n<p><em>Release Date &#8211; 24 Mar 2023</em></p>\n<ul>\n<li>FIX &#8211; Error converting WP_Post_Type to string. Thanks to @tnchuntic for reporting it.</li>\n</ul>\n<h4>1.0.8</h4>\n<p><em>Release Date &#8211; 20 Mar 2023</em></p>\n<ul>\n<li>DEV &#8211; Make the block compatible with woocommerce</li>\n</ul>\n<h4>1.0.7</h4>\n<p><em>Release Date &#8211; 11 Mar 2023</em></p>\n<ul>\n<li>FIX &#8211; Add namespace to class_exists check</li>\n</ul>\n<h4>1.0.6</h4>\n<p><em>Release Date &#8211; 12 Feb 2023</em></p>\n<ul>\n<li>Add new hooks <code>breadcrumb_block_home_text</code>, <code>breadcrumb_block_home_url</code></li>\n</ul>\n<h4>1.0.5</h4>\n<p><em>Release Date &#8211; 05 Feb 2023</em></p>\n<ul>\n<li>DEV &#8211; Add a setting to hide the home page link</li>\n</ul>\n<h4>1.0.4</h4>\n<p><em>Release Date &#8211; 19 Jan 2023</em></p>\n<ul>\n<li>FIX &#8211; Gap issue: adding the semicolon to the CSS variable</li>\n<li>FIX &#8211; Could not modify breadcrumb data via the <code>breadcrumb_block_get_items</code> filter</li>\n<li>DEV &#8211; Add a new arrow icon as a separator</li>\n</ul>\n<h4>1.0.3</h4>\n<p><em>Release Date &#8211; 13 Dec 2022</em></p>\n<ul>\n<li>DEV &#8211; Use post_type-&gt;labels-&gt;name instead of post_type-&gt;labels-&gt;singular_name for custom post type archive name</li>\n<li>DEV &#8211; Add http://schema.org as @context for structured data</li>\n<li>Note: Big thanks to <a href=\"https://wordpress.org/support/users/ja4st3r\" rel=\"ugc\">Yannick</a> for this release</li>\n</ul>\n<h4>1.0.2</h4>\n<p><em>Release Date &#8211; 08 Dec 2022</em></p>\n<ul>\n<li>DEV &#8211; Add a setting to hide the current page title</li>\n</ul>\n<h4>1.0.1</h4>\n<p><em>Release Date &#8211; 01 Dec 2022</em></p>\n<ul>\n<li>FIX &#8211; Syntax error on PHP version 7.0.0</li>\n</ul>\n<h4>1.0.0</h4>\n<p><em>Release Date &#8211; 22 Oct 2022</em></p>\n"
+    },
+    "short_description": "A simple breadcrumb trail block that supports JSON-LD structured data and is compatible with Woocommerce",
+    "description": "<p>This is a single-block plugin for the breadcrumb trail. It&#8217;s simple, lightweight, SEO-friendly, and WooCommerce compatibility. It also includes some simple separator icons. It works everywhere: Page Editor, Site Editor, and template files.</p>\n<h3>How to customize the breadcrumb</h3>\n<ol>\n<li>\n<p>How to change/remove an item?</p>\n<pre><code>add_filter( 'breadcrumb_block_get_item', function ( $item_args, $context, $breadcrumbs_instance ) {\n  // Ignore items without context.\n  if ( ! $context || ! ( $context['object'] ?? false ) ) {\n    return $item_args;\n  }\n\n  // Eg: remove a term.\n  if ( 'term' === ( $context['type'] ?? '' ) &amp;&amp; 'term-slug' === $context['object']-&gt;slug ) {\n    return false;\n  }\n\n  // Eg: Change the title of a page.\n  if ( 'page' === ( $context['type'] ?? '' ) &amp;&amp; page_id_to_change === $context['object']-&gt;ID ) {\n    $item_args[0] = 'Make it shorter';\n  }\n\n  return $item_args;\n}, 10, 3 );\n</code></pre>\n<p>$item_args is a 3-item array: <code>[$item_label, $item_link, $item_attrs]</code><br />\n$context is an associative array: <code>['type' =&gt; 'item type', 'object' =&gt; 'item object']</code>. <code>type</code> can be one of the following values: <code>front_page</code>, <code>home</code>, <code>shop</code>, <code>page</code>, <code>post</code>, <code>single</code>, <code>term</code>, <code>taxonomy</code>, <code>post_type_archive</code>, <code>search</code>, <code>404</code>, <code>paged</code>, <code>author</code>, <code>date_year</code>, <code>date_month</code>, <code>date_day</code>, <code>attachment</code>.</p>\n</li>\n<li>\n<p>How to change the markup of the block?</p>\n<pre><code>add_filter( 'breadcrumb_block_get_breadcrumb_trail', function ( $markup, $args, $breadcrumbs_instance ) {\n  return $markup;\n}, 10, 3 );\n</code></pre>\n</li>\n<li>\n<p>How to add or remove the items from the breadcrumb trail?</p>\n<pre><code>add_filter( 'breadcrumb_block_get_items', function ( $items, $breadcrumbs_instance ) {\n  return $items;\n}, 10, 2 );\n</code></pre>\n</li>\n<li>\n<p>How to use a custom separator for the breadcrumb trail?</p>\n<pre><code>add_filter( 'breadcrumb_block_get_args', function ( $args ) {\n  // For example, change separator.\n  $args['separator'] = '&lt;svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"currentColor\" width=\"1em\" height=\"1em\" viewBox=\"0 0 16 16\"&gt;&lt;path fill-rule=\"evenodd\" d=\"M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z\"/&gt;&lt;path fill-rule=\"evenodd\" d=\"M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z\"/&gt;&lt;/svg&gt;';\n  return $args;\n} );\n</code></pre>\n<p>The custom separator should be an inline SVG. To make sure it displays properly, it should have three attributes: width, height, and fill. The values of these attributes should be as follows: <code>fill=\"currentColor\" width=\"1em\" height=\"1em\"</code>.<br />\nUsing this hook, you can customize other attributes such as container, before, after, list_tag, item_tag, item_before, item_after, separator.</p>\n</li>\n<li>\n<p>How to prepend the blog page to all single posts?</p>\n<pre><code>add_action( 'breadcrumb_block_single_prepend', function ( $post, $breadcrumbs_instance ) {\n  if ( 'post' === $post-&gt;post_type ) {\n    $blog_id = get_option( 'page_for_posts');\n    if ( $blog_id ) {\n      $breadcrumbs_instance-&gt;add_item( get_the_title( $blog_id ), get_permalink( $blog_id ) );\n    }\n  }\n}, 10, 2 );\n</code></pre>\n</li>\n</ol>\n<p>If this plugin is useful for you, please do a quick review and <a href=\"https://wordpress.org/support/plugin/breadcrumb-block/reviews/#new-post\" rel=\"ugc\">rate it</a> on WordPress.org to help us spread the word. I would very much appreciate it.</p>\n<p>Please check out my other plugins if you&#8217;re interested:</p>\n<ul>\n<li><a href=\"https://wordpress.org/plugins/content-blocks-builder\" rel=\"ugc\">Content Blocks Builder</a> &#8211; A tool to create blocks, patterns or variations easily for your site directly on the Block Editor.</li>\n<li><a href=\"https://wordpress.org/plugins/display-a-meta-field-as-block\" rel=\"ugc\">Meta Field Block</a> &#8211; A block to display a meta field or an ACF field as a block. It can also be used in the Query Loop block.</li>\n<li><a href=\"https://wordpress.org/plugins/block-enhancements\" rel=\"ugc\">Block Enhancements</a> &#8211; A plugin to add more useful features to blocks like icons, box-shadow, transform, hover style&#8230;</li>\n<li><a href=\"https://wordpress.org/plugins/icon-separator\" rel=\"ugc\">Icon Separator</a> &#8211; A tiny block just like the core/separator block but with the ability to add an icon to it.</li>\n<li><a href=\"https://wordpress.org/plugins/svg-block\" rel=\"ugc\">SVG Block</a> &#8211; A block to insert inline SVG images easily and safely. It also bundles with more than 3000 icons and some common non-rectangular dividers.</li>\n<li><a href=\"https://wordpress.org/plugins/counting-number-block\" rel=\"ugc\">Counting Number Block</a> &#8211; A block to display a number that has the number-counting effect.</li>\n<li><a href=\"https://wordpress.org/plugins/better-youtube-embed-block\" rel=\"ugc\">Better Youtube Embed Block</a> &#8211; Embed Youtube videos without slowing down your site.</li>\n</ul>\n<p>The plugin is developed using @wordpress/create-block.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/breadcrumb-block.1.0.14.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "block": "block",
+        "breadcrumb": "breadcrumb",
+        "gutenberg": "gutenberg",
+        "menu": "menu",
+        "navigation": "navigation"
+    },
+    "stable_tag": "1.0.14",
+    "versions": {
+        "1.0.1": "https://downloads.wordpress.org/plugin/breadcrumb-block.1.0.1.zip",
+        "1.0.10": "https://downloads.wordpress.org/plugin/breadcrumb-block.1.0.10.zip",
+        "1.0.11": "https://downloads.wordpress.org/plugin/breadcrumb-block.1.0.11.zip",
+        "1.0.12": "https://downloads.wordpress.org/plugin/breadcrumb-block.1.0.12.zip",
+        "1.0.13": "https://downloads.wordpress.org/plugin/breadcrumb-block.1.0.13.zip",
+        "1.0.14": "https://downloads.wordpress.org/plugin/breadcrumb-block.1.0.14.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/breadcrumb-block.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/breadcrumb-block.1.0.3.zip",
+        "1.0.4": "https://downloads.wordpress.org/plugin/breadcrumb-block.1.0.4.zip",
+        "1.0.5": "https://downloads.wordpress.org/plugin/breadcrumb-block.1.0.5.zip",
+        "1.0.6": "https://downloads.wordpress.org/plugin/breadcrumb-block.1.0.6.zip",
+        "1.0.7": "https://downloads.wordpress.org/plugin/breadcrumb-block.1.0.7.zip",
+        "1.0.8": "https://downloads.wordpress.org/plugin/breadcrumb-block.1.0.8.zip",
+        "1.0.9": "https://downloads.wordpress.org/plugin/breadcrumb-block.1.0.9.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/breadcrumb-block.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/breadcrumb-block/assets/icon.svg?rev=2802777",
+        "svg": "https://ps.w.org/breadcrumb-block/assets/icon.svg?rev=2802777"
+    },
+    "blocks": {
+        "boldblocks/breadcrumb-block": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "boldblocks/breadcrumb-block",
+            "title": "Breadcrumb Block",
+            "category": "theme",
+            "description": "A simple breadcrumb trail block that supports JSON-LD structured data",
+            "keywords": [
+                "breadcrumb",
+                "navigation",
+                "menu",
+                "link"
+            ],
+            "attributes": {
+                "gap": {
+                    "type": "string",
+                    "default": ".4em"
+                },
+                "separator": {
+                    "type": "string",
+                    "default": "/"
+                },
+                "hideHomePage": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "hideCurrentPage": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "homeText": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "supports": {
+                "html": false,
+                "anchor": true,
+                "ariaLabel": true,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "color": {
+                    "background": true,
+                    "text": true,
+                    "gradients": true,
+                    "link": true
+                },
+                "spacing": {
+                    "margin": [
+                        "top",
+                        "bottom"
+                    ],
+                    "padding": true,
+                    "__experimentalDefaultControls": {
+                        "margin": true,
+                        "padding": true
+                    }
+                },
+                "__experimentalBorder": {
+                    "color": true,
+                    "radius": true,
+                    "style": true,
+                    "width": true,
+                    "__experimentalDefaultControls": false
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true,
+                    "__experimentalFontStyle": true,
+                    "__experimentalFontWeight": true,
+                    "__experimentalLetterSpacing": true,
+                    "__experimentalTextTransform": true,
+                    "__experimentalTextDecoration": true,
+                    "__experimentalDefaultControls": {
+                        "fontSize": true,
+                        "lineHeight": true,
+                        "fontAppearance": true,
+                        "textTransform": true
+                    }
+                }
+            },
+            "textdomain": "breadcrumb-block",
+            "editorScript": "file:./index.js",
+            "editorStyle": "file:./index.css",
+            "style": "file:./style-index.css"
+        }
+    },
+    "block_assets": [
+        "/tags/1.0.14/build/index.js",
+        "/tags/1.0.14/build/index.css",
+        "/tags/1.0.14/build/style-index.css"
+    ],
+    "author_block_count": "6",
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

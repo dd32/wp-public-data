@@ -1,0 +1,111 @@
+{
+    "name": "ReCRM",
+    "slug": "recrm",
+    "version": "1.1.3",
+    "author": "ZetRider",
+    "author_profile": "https://profiles.wordpress.org/zetrider/",
+    "contributors": {
+        "zetrider": {
+            "profile": "https://profiles.wordpress.org/zetrider/",
+            "avatar": "https://secure.gravatar.com/avatar/411c5d6511198008c0a5bdfa78bd24ad?s=96&d=monsterid&r=g",
+            "display_name": "ZetRider"
+        }
+    },
+    "requires": "4.9",
+    "tested": "4.9.26",
+    "requires_php": "7.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 1,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/recrm/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 677,
+    "last_updated": "2020-11-11 8:14am GMT",
+    "added": "2019-02-27",
+    "homepage": "https://github.com/zetrider/wp.recrm",
+    "sections": {
+        "description": "<p>Плагин выгружает информацию об объектах/агентах из ReCRM используя API http://api.recrm.ru/doc/index.html</p>\n<p>Позволяет настроить категории недвижимости для импорта объектов в зависимости от их типа.</p>\n<p>Сохраняет изображения агентов и объектов на сервере сайта.</p>\n",
+        "installation": "<ol>\n<li>Установите плагин</li>\n<li>Перейдите в раздел с настройками плагина, заполните поля согласно их назначению.<br />\n2.1. Ключ &#8211; необходимо запросить у поддержки ReCRM<br />\n2.2. Cron &#8211; если эта опция не отмечена, импорт по крону запускаться не будет<br />\n2.3. Водяной знак &#8211; накладывать watermark указанный в настройках ReCRM<br />\n2.4. Скрытые объекты &#8211; выгружать объекты, у которых свойство hidden = true<br />\n2.5. Активный статус &#8211; выгружать объекты, у которых свойство status = 0<br />\n2.6. Успешный статус &#8211; выгружать объекты, у которых свойство status = 1<br />\n2.7. Неудачный статус &#8211; выгружать объекты, у которых свойство status = 3</li>\n<li>Настройте ЧПУ для агентов и объектов недвижимости.<br />\n3.1. Агенты с категориями &#8211; если необходимо, можно добавить таксономию для агентов<br />\n3.2. Префикс страницы агентов &#8211; адрес с агентами относительно корня сайта, например /agents/<br />\n3.3. Недвижимость с категориями &#8211; если необходимо, можно добавить таксономию для недвижимости. При отмеченной опции плагин позволяет автоматически определить нужные вам типа недвижимости в категориях.<br />\n3.3. Префикс страницы недвижимости &#8211; адрес с объектами относительно корня сайта, например /estate/</li>\n<li>Если необходимо разместить разные типы недвижимости в разных категориях, создайте категории, перейдите в раздел с настройками плагина &#8220;Типы недвижимости и категории&#8221;. Определите, какие типы недвижимости нужно отображать в созданных категориях.</li>\n<li>Нужно добавить define( &#8216;DISABLE_WP_CRON&#8217;, true ); в файл wp-config.php, так как процесс выгрузки потребляет много ресурсов</li>\n<li>Нужно добавить cron задачу для запуска wp-cron.php</li>\n</ol>\n<p>* * * * * php /path/to/wp-cron.php &gt; /dev/null<br />\n7. В связи с присутствием большого количества фотографий, скрипт сначала загрузит всю информацию во временные файлы. После того как файлы созданы, при каждом запуске cron задачи, скрипт поэтапно (по 30 объектов) начнет запись объектов в базу данных вместе с фотографиями.<br />\nПереопределить количество импортируемых объектов за раз можно при помощи константы (int) RECRM_CHUNK_TEMP_FILES</p>\n",
+        "faq": "\n<h4>\nКак получить API ключ\n</h4>\n<p>\n<p>Обратиться в службу поддержки https://recrm.ru/</p>\n</p>\n<h4>\nКак получить демо данные\n</h4>\n<p>\n<p>Указать ключ demo</p>\n</p>\n<h4>\nКакие хуки/фильтры присутствуют в плагине\n</h4>\n<p>\n<ol>\n<li>\n<p>recrm_import_convert_phone &#8211; конвертирует номер телефона агента [^0-9+]</p>\n<p><code>&lt;?php<br />\nadd_filter('recrm_import_convert_phone', function($phone, $phone_initial) {<br />\n//return $phone;<br />\n}, 10, 2);</code></p>\n</li>\n<li>\n<p>recrm_store_tax_id &#8211; определяет таксономию для объекта недвижимости в зависимости от его свойства type_id</p>\n<p><code>&lt;?php<br />\nadd_filter('recrm_store_tax_id', function($tax_id, $item) {<br />\n//return $tax_id;<br />\n}, 10, 2);</code></p>\n</li>\n<li>\n<p>recrm_import_finish &#8211; срабатывает каждый раз после завершения крон задачи</p>\n</li>\n</ol>\n</p>\n<h4>\nЧто происходит с удаленными объектами в ReCRM\n</h4>\n<p>\n<p>Объект/Агент будет помещен в корзину.</p>\n</p>\n<h4>\nУ меня не работает ЧПУ/адрес с объектом/агентом\n</h4>\n<p>\n<p>Перейдите в &#8220;Настройки&#8221; &#8211; &#8220;Постоянные ссылки&#8221; &#8211; нажмите кнопку &#8220;Сохранить изменения&#8221;</p>\n</p>\n<h4>\nКак сохраняются фотографии\n</h4>\n<p>\n<p>Для агентов и объектов будут добавлены свойства, которые содержат информацию о загруженных медиафайлах.</p>\n<p>recrm_gallery_agent и recrm_gallery_estate содержат массив из всех медиафайлов, которые были загружены для объекта/агента</p>\n<p>Получить отдельно каждый тип медиафайла можно по свойствам:<br />\n* recrm_agent_thumbnail &#8211; миниатюра (фотография) агента<br />\n* recrm_estate_thumbnail &#8211; миниатюра (обложка) объекта<br />\n* recrm_estate_gallery_photos &#8211; фотографии объекта<br />\n* recrm_estate_gallery_layouts &#8211; планировки объекта<br />\n* recrm_estate_gallery_building &#8211; планировки здания объекта</p>\n<p>В каждом свойстве сериализованный массив, в котором ключ это ID файла из базы данных, значение это внешний URL фотографии из ReCRM</p>\n</p>\n<h4>\nКак сохранить площадь без текста (м2)\n</h4>\n<p>\n<p>Нужно добавить функцию к хуку save_post для перезаписи или добавлении нового значения. Пример:<br />\n    <code>function custon_save_post_recrm_estate($post_id, $post, $update)<br />\n{<br />\n    $area = get_post_meta($post_id, 'recrm_estate_area', true);<br />\n    $expl = explode(' ', $area);<br />\n    update_post_meta($post_id, 'recrm_estate_area_num', $expl[0]);<br />\n}<br />\nadd_action('save_post_recrm_estate', 'custon_save_post_recrm_estate', 10, 3);</code></p>\n</p>\n<h4>\nКак переопределить категорию в зависимости от типа сделки\n</h4>\n<p>\n<p>Нужно добавить фильтр recrm_store_tax_id. Пример:<br />\n    <code>add_filter('recrm_store_tax_id', function($tax_id, $item) {<br />\n    if($item['recrm_estate_deal'] == 'аренда')<br />\n    {<br />\n        $tax_id = 16;<br />\n    }<br />\n    elseif($item['recrm_estate_deal'] == 'продажа')<br />\n    {<br />\n        $tax_id = 17;<br />\n    }<br />\n    return $tax_id;<br />\n}, 10, 2);</code></p>\n</p>\n\n",
+        "changelog": "<h4>1.1.4</h4>\n<ul>\n<li>Исправлена ошибка учета выгрузки скрытых объектов</li>\n</ul>\n<h4>1.1.3</h4>\n<ul>\n<li>Исправлена ошибка удаления объектов</li>\n</ul>\n<h4>1.1.2</h4>\n<ul>\n<li>Исправлена ошибка в скрипте для админ панели</li>\n</ul>\n<p>= 1.1.1=<br />\n* Проверка отсутствующего изображения в ответе от API<br />\n* Исправлено отображение свойств объекта и агента в админ. панели</p>\n<p>= 1.1.0=<br />\n* cron.php удален<br />\n* Задача для cron импорта перенесена в wp-cron</p>\n<p>= 1.0.0=<br />\n* Релиз плагина</p>\n"
+    },
+    "short_description": "Импорт объектов недвижимости и агентов из ReCRM",
+    "description": "<p>Плагин выгружает информацию об объектах/агентах из ReCRM используя API http://api.recrm.ru/doc/index.html</p>\n<p>Позволяет настроить категории недвижимости для импорта объектов в зависимости от их типа.</p>\n<p>Сохраняет изображения агентов и объектов на сервере сайта.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/recrm.zip",
+    "upgrade_notice": {
+        "1.1.4": "<p>Исправлена ошибка учета выгрузки скрытых объектов</p>",
+        "1.1.3": "<p>Исправлена ошибка удаления объектов</p>",
+        "1.1.2": "<p>Исправлена ошибка в скрипте для админ панели</p>",
+        "1.1.1": "<p>Добавлена проверка отсутствующего изображения в ответе от API. Правки UI.</p>",
+        "1.1.0": "<p>Удален cron файла, перенос cron задач в wp-cron. Нужно деактивировать/активировать плагин для внесения cron задачи в расписание.</p>",
+        "1.0.0": "<p>Релиз плагина</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/recrm/trunk/screenshot-1.jpg?rev=2416425",
+            "caption": "Настройки плагина"
+        },
+        {
+            "src": "https://ps.w.org/recrm/trunk/screenshot-2.jpg?rev=2416425",
+            "caption": "Настройка категория"
+        },
+        {
+            "src": "https://ps.w.org/recrm/trunk/screenshot-3.jpg?rev=2416425",
+            "caption": "Настройка свойств"
+        },
+        {
+            "src": "https://ps.w.org/recrm/trunk/screenshot-4.jpg?rev=2416425",
+            "caption": "Информация объекта недвижимости"
+        },
+        {
+            "src": "https://ps.w.org/recrm/trunk/screenshot-5.jpg?rev=2416425",
+            "caption": "Информация агента"
+        }
+    ],
+    "tags": {
+        "estate": "estate",
+        "recrm": "recrm"
+    },
+    "stable_tag": "trunk",
+    "versions": {
+        "1.1.0": "https://downloads.wordpress.org/plugin/recrm.1.1.0.zip",
+        "1.1.1": "https://downloads.wordpress.org/plugin/recrm.1.1.1.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://github.com/zetrider/wp.recrm",
+    "banners": {
+        "low": "https://ps.w.org/recrm/assets/banner-772x250.png?rev=2040311",
+        "high": false
+    },
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/recrm_009ce8.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "recrm",
+            "language": "ru_RU",
+            "version": "1.1.3",
+            "updated": "2019-02-27 06:03:18",
+            "package": "http://downloads.wordpress.org/translation/plugin/recrm/1.1.3/ru_RU.zip"
+        }
+    ]
+}

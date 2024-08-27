@@ -1,0 +1,94 @@
+{
+    "name": "phpbb_recent_topics",
+    "slug": "phpbb-recent-topics",
+    "version": "0.7.1",
+    "author": "<a href=\"http://www.linickx.com\">Nick [LINICKX] Bettison</a>",
+    "author_profile": "https://profiles.wordpress.org/linickx/",
+    "contributors": {
+        "linickx": {
+            "profile": "https://profiles.wordpress.org/linickx/",
+            "avatar": "https://secure.gravatar.com/avatar/4b66aeadf4a1e36234c8320c1741f911?s=96&d=monsterid&r=g",
+            "display_name": "linickx"
+        }
+    },
+    "requires": "2.0.9",
+    "tested": "3.2.1",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 80,
+    "ratings": {
+        "5": 0,
+        "4": 1,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/phpbb-recent-topics/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 70,
+    "downloaded": 24423,
+    "last_updated": "2011-07-08 12:39pm GMT",
+    "added": "2007-03-22",
+    "homepage": "http://www.linickx.com/3311/phpbb_recent_topics-version-0-7",
+    "sections": {
+        "description": "<p>Do you have a phpBB forum, do you want to drag your blog readers into your forum ? Then this plugin might just help, you can include somewhere in wordpress a list of recent phpbb threads (topics) in a page, a post, and even in your theme &#8211; so your sidebar for example !</p>\n<h3>A bit about Database configuration.</h3>\n<p>If wordpress &amp; phpBB share a DB already then set $PHPBBDB to DB_NAME and everything will be fine, else you.re going to need to GRANT the wordpress user read access to phpBB. (If you really need to, you can store the phpbb databse credential in the plugin using the &#8220;Insecure&#8221; connectivity method.)</p>\n<h3>How to GRANT wordpress read only access to phpBB ?</h3>\n<p>If you don.t know it already you need to find your wordpress mysql user id, it.ll be in wp-config.php</p>\n<pre><code>define('DB_USER', 'wp_user');     // Your MySQL username\n</code></pre>\n<p>and you should have already found your phpbb database &amp; table for the above.<br />\nYou need to type the following syntax into your mysql database</p>\n<pre><code>GRANT SELECT ON phpbb_database.phpbb_topics TO wp_user@localhost;\n</code></pre>\n<p>AND</p>\n<pre><code>GRANT SELECT ON phpbb_database.phpbb_forums TO wp_user@localhost;\n</code></pre>\n<p>AND</p>\n<pre><code>GRANT SELECT ON phpbb_database.phpbb_posts TO wp_user@localhost;\n</code></pre>\n<p>this can be achieved by logging into phpmyadmin as your phpbb user, selecting SQL and pasting the correct GRANT into the text box.</p>\n<h3>How to use the Insecure Database Connectivity Method</h3>\n<p>From the phpbb_recent_topics admin / settings page, tick the .Enable Insecure Database Connection. box, and submit, when the page re-freshes you.ll have some more boxes to populate, from your phpbb config.php fill in</p>\n<pre><code>$dbuser = phpbb MySQL Database UserName\n$dbpasswd = phpbb MySQL Database Password\n$dbhost = phpbb MySQL Server\n</code></pre>\n<p>Click update, and you should be connected!</p>\n<h3>The Callback function</h3>\n<p>To allow users to customize what is / can be displayed a callback function <code>phpbb_topics_callback</code> has been implemented.</p>\n<p>In ticket 1216 (https://plugins.trac.wordpress.org/ticket/1216) phil suggested that the forum name should be displayed within the topic list; the following code is an example use of the new callback function and should be added to your themes functions.php</p>\n<pre><code>function phpbb_topics_callback($phpbbdb, $wpdb, $lnx_PRT_options, $topic) {\n\n        // GET FORUM WHICH POST IS IN - Phil Ewels, 26/09/2010\n        $sql_query = \"SELECT * FROM $lnx_PRT_options[prt_phpbb_ft] WHERE forum_id=\" . $topic-&gt;forum_id. \" LIMIT 1\";\n\n        # Run Query\n        if ($lnx_PRT_options['prt_phpbb_dbinsecureon'] == \"1\") {\n                $forum = $phpbbdb-&gt;get_row($sql_query);\n        } else {\n                $forum = $wpdb-&gt;get_row($sql_query);\n        }\n\n        echo \"&lt;br /&gt;&lt;small&gt;\" . $forum-&gt;forum_name . \" &lt;/small&gt;\";\n\n}\n</code></pre>\n<p>The following variables can be used within your callback function:<br />\n* $wpdb<br />\n** If using Secure Connectivity this is a connection to your PHPBB Database<br />\n** If using Insecure Connectivity this is the standard WordPress Database<br />\n* $phpbbdb<br />\n** If using Secure Connectivity this will be NULL<br />\n** If using Insecure Connectivity this is a connection to your PHPBB Database<br />\n* $lnx_PRT_options<br />\n** An array of the phpbb-recent-topics settings<br />\n* $topic<br />\n** The current topic, with associated attributes.</p>\n",
+        "installation": "<ol>\n<li>\n<p>Setup your Database Connection, see Other Notes</p>\n</li>\n<li>\n<p>unzip phpbb_recent_topics.zip in your <code>/wp-content/plugins/</code> directory. (You&#8217;ll have a new directory, with this plugin in <code>/wp-content/plugins/phpbb_recent_topics</code>)</p>\n</li>\n<li>\n<p>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</p>\n</li>\n<li>\n<p>Configure the plugin, you need to tell wordpress about phpbb, this is done in the wordpress menu &#8216;Settings&#8217; -&gt; &#8216;phpBB Recent Topics&#8217;</p>\n<p>The following Settings are required:</p>\n<pre><code>* The name of your phpBB database (e.g phpbb)\n* The name of the table where topics are held (the default is phpbb_topics )\n* The full url of your forum for links (e.g. http://www.mydomain.com/forum)\n* The number of topics to show. (If left blank you get 5)\n* The Date Formatting, i.e. \"d/M/y - g:i a\" similar to the WordPress \"General Settings\"\n</code></pre>\n</li>\n<li>\n<p>Hit &#8216;Update Options&#8221;</p>\n</li>\n<li>\n<p>To output the list of topics in a page or post&#8230;</p>\n<pre><code>* create a new page/post, type `{phpbb_recent_topics}` , hit 'Publish' or 'Create new page'\n</code></pre>\n<p>To output the list of topics in your theme sidebar using the widget\u2026<br />\n    * click \u201cdesign\u201d in the dashboard<br />\n    * click \u201cwidgets\u201d<br />\n    * next to phpBB Recent Topics click \u201cadd\u201d<br />\n    * click &#8220;save changes&#8221;<br />\nTo output the list of topics in your theme sidebar&#8230;</p>\n<pre><code>* edit sidebar.php and inside `&lt;div id=\"sidebar\"&gt;` type...\n\n    &lt;?php\n                if (function_exists('phpbb_topics')) {\n                    phpbb_topics();\n                } \n            ?&gt;\n</code></pre>\n</li>\n</ol>\n",
+        "faq": "\n<h4>Is phpBB3 Supported ?</h4>\n<p>\n<p>Yes.</p>\n</p>\n<h4>Can I output 10 Topics in my Page, and 3 Topics in my Sidebar ?</h4>\n<p>\n<p>Yes ! In the WordPress menu &#8216;Options&#8217; -&gt; &#8216;phpBB Recent Topics&#8217;, set &#8216;The number of topics to show&#8217; to 10, and then in your sidebar include&#8230;</p>\n<pre><code>    &lt;?php\n            if (function_exists('phpbb_topics')) {\n                phpbb_topics(3);\n            } \n        ?&gt;\n</code></pre>\n</p>\n<h4>Can I exclude a certain forum from the list ?</h4>\n<p>\n<p>Yes, use the new 0.5.x feature in the admin settings</p>\n</p>\n<h4>Why do I get &#8211; Sorry you do not have access to this page?</h4>\n<p>\n<p>You&#8217;re not an Administrator</p>\n</p>\n<h4>Why is the date config under settings not in the widget configuration?</h4>\n<p>\n<p>The date settings effect both the template tag and the widget</p>\n</p>\n<h4>What is Insecure MySQL Connectivity ?</h4>\n<p>\n<p>Some people cannot GRANT priveliges from one DB to another; insecure connectivity allows you to store the phpbb database credentials within the WordPress database.</p>\n</p>\n<h4>Why is Insecure MySQL Connectivity Insecure?</h4>\n<p>\n<p>The phpbb database credentials are stored in the WordPress database in CLEAR TEXT, this is bad, as anyone with access to the WP DB can get full access to phpbb. Another reason is that usually the credentials given to the phpbb application are FULL access, we only need to read the database, so it&#8217;s much better to restrict access.</p>\n</p>\n<h4>Can I connect to a phpbb databse on a different server?</h4>\n<p>\n<p>Yes, use the Insecure Connectivity method, and change the host to the IP address of the server</p>\n</p>\n\n",
+        "changelog": "<h4>0.7.1</h4>\n<ul>\n<li>Last minute date fix!</li>\n</ul>\n<h4>0.7</h4>\n<ul>\n<li>WordPress 3.1.4 Testing</li>\n<li>CSS Styleable output</li>\n<li>Plugin Options Modernisation<br />\n** Collapse multiple options into an array<br />\n** Implement register settings to close  https://plugins.trac.wordpress.org/ticket/1217<br />\n** Implement upgrade.php to migrate all variable to new array form</li>\n<li>Resolved: Missing argument 1 for phpbb_topics()</li>\n<li>Code clean-up (Lots of changes)</li>\n<li>Timezone/Off-Set fix (Reads +/- hours from WordPress Settings)</li>\n<li>Localisation of date/time fix (https://plugins.trac.wordpress.org/ticket/1173)</li>\n<li>Callback functionality</li>\n<li>Contextual Help in the admin dashboard</li>\n</ul>\n<h4>0.6</h4>\n<ul>\n<li>Code by Number3NL<br />\n** PHPBB Recent Posts<br />\n** 1st Draft &#8211; Tool Tip Feature<br />\n** SQL Query Re-Write / Improvement</li>\n<li>Code Clean Up &#8211; Variables</li>\n<li>Tool Tip Feature Improvement<br />\n** Custom Size<br />\n** Strip Tags \ud83d\ude42 </li>\n<li>Uninstall compatability</li>\n<li>Admin UI Improvements</li>\n</ul>\n<h4>0.5.3</h4>\n<ul>\n<li>Minor Bug Fix for Error Msg: Invalid argument supplied on line 144</li>\n</ul>\n<h4>0.5.2</h4>\n<ul>\n<li>0.4.2 patch for WP 2.8.x Added to 0.5.x Branch</li>\n<li>New Insecure Connectivity option added</li>\n<li>Admin Settings page has CSS that matches WP 2.7/2.8 rather than 2.5 \ud83d\ude42</li>\n<li>Only Approved posts allowed &#8211; creditz Ashish http://www.microstrategy101.com/</li>\n</ul>\n<h4>0.5.1</h4>\n<ul>\n<li>Option for link to forum to be opened in new window added.</li>\n</ul>\n<h4>0.5</h4>\n<ul>\n<li>New Exclude Forums functionality added</li>\n</ul>\n<h4>0.4.2</h4>\n<ul>\n<li>Fixed for WordPress 2.8.x</li>\n</ul>\n<h4>0.4.1</h4>\n<ul>\n<li>Widget fixed</li>\n</ul>\n<h4>0.4</h4>\n<ul>\n<li>Plugin Tested with WP2.5 &amp; PHPBB3</li>\n<li>Quashed the install bug where by phpbb-recent-topics was confused with phpbb_recent_topics</li>\n<li>Sidebar widget implemented</li>\n<li>Editable Time &amp; Date support added</li>\n</ul>\n<h4>0.3</h4>\n<ul>\n<li>Admin Interface Added</li>\n</ul>\n<h4>0.2</h4>\n<ul>\n<li>Internal Release, changed display method to fix compatability issue with other plugins</li>\n</ul>\n<h4>0.1</h4>\n<ul>\n<li>First Release \ud83d\ude42</li>\n</ul>\n"
+    },
+    "short_description": "This plugin grabs your recent phpBB forum topics for you to display in wordpress.",
+    "description": "<p>Do you have a phpBB forum, do you want to drag your blog readers into your forum ? Then this plugin might just help, you can include somewhere in wordpress a list of recent phpbb threads (topics) in a page, a post, and even in your theme &#8211; so your sidebar for example !</p>\n<h3>A bit about Database configuration.</h3>\n<p>If wordpress &amp; phpBB share a DB already then set $PHPBBDB to DB_NAME and everything will be fine, else you.re going to need to GRANT the wordpress user read access to phpBB. (If you really need to, you can store the phpbb databse credential in the plugin using the &#8220;Insecure&#8221; connectivity method.)</p>\n<h3>How to GRANT wordpress read only access to phpBB ?</h3>\n<p>If you don.t know it already you need to find your wordpress mysql user id, it.ll be in wp-config.php</p>\n<pre><code>define('DB_USER', 'wp_user');     // Your MySQL username\n</code></pre>\n<p>and you should have already found your phpbb database &amp; table for the above.<br />\nYou need to type the following syntax into your mysql database</p>\n<pre><code>GRANT SELECT ON phpbb_database.phpbb_topics TO wp_user@localhost;\n</code></pre>\n<p>AND</p>\n<pre><code>GRANT SELECT ON phpbb_database.phpbb_forums TO wp_user@localhost;\n</code></pre>\n<p>AND</p>\n<pre><code>GRANT SELECT ON phpbb_database.phpbb_posts TO wp_user@localhost;\n</code></pre>\n<p>this can be achieved by logging into phpmyadmin as your phpbb user, selecting SQL and pasting the correct GRANT into the text box.</p>\n<h3>How to use the Insecure Database Connectivity Method</h3>\n<p>From the phpbb_recent_topics admin / settings page, tick the .Enable Insecure Database Connection. box, and submit, when the page re-freshes you.ll have some more boxes to populate, from your phpbb config.php fill in</p>\n<pre><code>$dbuser = phpbb MySQL Database UserName\n$dbpasswd = phpbb MySQL Database Password\n$dbhost = phpbb MySQL Server\n</code></pre>\n<p>Click update, and you should be connected!</p>\n<h3>The Callback function</h3>\n<p>To allow users to customize what is / can be displayed a callback function <code>phpbb_topics_callback</code> has been implemented.</p>\n<p>In ticket 1216 (https://plugins.trac.wordpress.org/ticket/1216) phil suggested that the forum name should be displayed within the topic list; the following code is an example use of the new callback function and should be added to your themes functions.php</p>\n<pre><code>function phpbb_topics_callback($phpbbdb, $wpdb, $lnx_PRT_options, $topic) {\n\n        // GET FORUM WHICH POST IS IN - Phil Ewels, 26/09/2010\n        $sql_query = \"SELECT * FROM $lnx_PRT_options[prt_phpbb_ft] WHERE forum_id=\" . $topic-&gt;forum_id. \" LIMIT 1\";\n\n        # Run Query\n        if ($lnx_PRT_options['prt_phpbb_dbinsecureon'] == \"1\") {\n                $forum = $phpbbdb-&gt;get_row($sql_query);\n        } else {\n                $forum = $wpdb-&gt;get_row($sql_query);\n        }\n\n        echo \"&lt;br /&gt;&lt;small&gt;\" . $forum-&gt;forum_name . \" &lt;/small&gt;\";\n\n}\n</code></pre>\n<p>The following variables can be used within your callback function:<br />\n* $wpdb<br />\n** If using Secure Connectivity this is a connection to your PHPBB Database<br />\n** If using Insecure Connectivity this is the standard WordPress Database<br />\n* $phpbbdb<br />\n** If using Secure Connectivity this will be NULL<br />\n** If using Insecure Connectivity this is a connection to your PHPBB Database<br />\n* $lnx_PRT_options<br />\n** An array of the phpbb-recent-topics settings<br />\n* $topic<br />\n** The current topic, with associated attributes.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/phpbb-recent-topics.0.7.1.zip",
+    "upgrade_notice": {
+        "": "<p>This upgrade is optional.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/phpbb-recent-topics/trunk/screenshot-1.png?rev=1566876",
+            "caption": "The Admin interface, where you set up the magic !"
+        }
+    ],
+    "tags": {
+        "forum": "forum",
+        "phpbb": "phpbb",
+        "posts": "posts",
+        "sidebar": "sidebar",
+        "topics": "topics"
+    },
+    "stable_tag": "0.7.1",
+    "versions": {
+        "0.1": "https://downloads.wordpress.org/plugin/phpbb-recent-topics.0.1.zip",
+        "0.2": "https://downloads.wordpress.org/plugin/phpbb-recent-topics.0.2.zip",
+        "0.3": "https://downloads.wordpress.org/plugin/phpbb-recent-topics.0.3.zip",
+        "0.4": "https://downloads.wordpress.org/plugin/phpbb-recent-topics.0.4.zip",
+        "0.4.1": "https://downloads.wordpress.org/plugin/phpbb-recent-topics.0.4.1.zip",
+        "0.4.2": "https://downloads.wordpress.org/plugin/phpbb-recent-topics.0.4.2.zip",
+        "0.5.2": "https://downloads.wordpress.org/plugin/phpbb-recent-topics.0.5.2.zip",
+        "0.5.3": "https://downloads.wordpress.org/plugin/phpbb-recent-topics.0.5.3.zip",
+        "0.6": "https://downloads.wordpress.org/plugin/phpbb-recent-topics.0.6.zip",
+        "0.7": "https://downloads.wordpress.org/plugin/phpbb-recent-topics.0.7.zip",
+        "0.7.1": "https://downloads.wordpress.org/plugin/phpbb-recent-topics.0.7.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/phpbb-recent-topics.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "http://www.linickx.com/donate",
+    "banners": {
+        "low": "https://ps.w.org/phpbb-recent-topics/assets/banner-772x250.png?rev=515612",
+        "high": false
+    },
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/phpbb-recent-topics_867975.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 80,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

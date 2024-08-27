@@ -1,0 +1,119 @@
+{
+    "name": "Hum",
+    "slug": "hum",
+    "version": "1.3.4",
+    "author": "<a href=\"https://willnorris.com/\">Will Norris</a>",
+    "author_profile": "https://profiles.wordpress.org/willnorris/",
+    "contributors": {
+        "willnorris": {
+            "profile": "https://profiles.wordpress.org/willnorris/",
+            "avatar": "https://secure.gravatar.com/avatar/2025929025b4492c58961f28cc4ed93d?s=96&d=monsterid&r=g",
+            "display_name": "Will Norris"
+        },
+        "pfefferle": {
+            "profile": "https://profiles.wordpress.org/pfefferle/",
+            "avatar": "https://secure.gravatar.com/avatar/a2bdca7870e859658cece96c044b3be5?s=96&d=monsterid&r=g",
+            "display_name": "Matthias Pfefferle"
+        }
+    },
+    "requires": "3.0",
+    "tested": "6.6.1",
+    "requires_php": "5.6",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 8,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 8,
+    "support_url": "https://wordpress.org/support/plugin/hum/",
+    "support_threads": 2,
+    "support_threads_resolved": 1,
+    "active_installs": 800,
+    "downloaded": 13676,
+    "last_updated": "2024-07-17 7:59am GMT",
+    "added": "2011-01-27",
+    "homepage": "https://github.com/willnorris/wordpress-hum",
+    "sections": {
+        "description": "<p>Hum is a personal URL shortener for WordPress, designed to provide short URLs to your personal content, both hosted on WordPress and elsewhere.  For example, rather than a long URL for a WordPress post such as <a href=\"http://willnorris.com/2011/01/hum-personal-url-shortener-wordpress\" rel=\"nofollow ugc\">http://willnorris.com/2011/01/hum-personal-url-shortener-wordpress</a>, you could have a short URL like <a href=\"http://willnorris.com/b/FJ\" rel=\"nofollow ugc\">http://willnorris.com/b/FJ</a>.  Additionally, if you have a custom domain for short URLs, you can shorten things further like <a href=\"http://wjn.me/b/FJ\" rel=\"nofollow ugc\">http://wjn.me/b/FJ</a>.  Once the plugin is enabled, the shortlink for a page or post can be found in the &#8220;Shortlink&#8221; item in the WordPress Admin Bar.</p>\n<p>WordPress post IDs are shortened using the <a href=\"http://ttk.me/w/NewBase60\" rel=\"nofollow ugc\">NewBase60</a> encoding scheme which is specifically optimized for brevity and readability, with built-in error correction for commonly confused characters like &#8216;1&#8217;, &#8216;l&#8217;, and &#8216;I&#8217;.</p>\n<p>Hum is not designed as a general purpose URL shortener along the lines of <a href=\"http://bit.ly\" rel=\"nofollow ugc\">http://bit.ly</a> or <a href=\"http://goo.gl\" rel=\"nofollow ugc\">http://goo.gl</a>.  Rather, it is specifically intended as a personal shortener for your own content.</p>\n<p>Read more about the reasoning for a personal URL shortener at <a href=\"http://tantek.com/\" rel=\"nofollow ugc\">Tantek Celik</a>&#8216;s page for <a href=\"http://ttk.me/w/Whistle\" rel=\"nofollow ugc\">Whistle</a>, which served as the inspiration for Hum.</p>\n<h3>Developer Documentation</h3>\n<h4>Adding your Amazon Affiliate ID</h4>\n<p>If you&#8217;d like to include your Amazone Affiliate ID in the <code>/i/</code> redirect URLs, implement the <code>amazon_affiliate_id</code> filter.  For example:</p>\n<pre><code>add_filter('amazon_affiliate_id', fn() =&gt; \"willnorris-20\");\n</code></pre>\n<h4>Additional Local Types</h4>\n<p>Out of the box, Hum only registers the <code>b</code>, <code>t</code>, <code>a</code> and <code>p</code> prefix to be served locally by WordPress.  If you would like to register additional prefixes, implement the <code>hum_local_types</code> filter.  For example, to include &#8216;p&#8217; as well for photos:</p>\n<pre><code>function myplugin_hum_local_types( $types ) {\n  $types[] = 'p';\n  return $types;\n}\nadd_filter('hum_local_types', 'myplugin_hum_local_types');\n</code></pre>\n<p>This will tell Hum to serve any <code>/p/{id}</code> URLs from WordPress.  Additionally, you&#8217;ll want to instruct Hum to use your prefix for that particular content type.  Here, we&#8217;re registering &#8216;p&#8217; which is normally used for photos.</p>\n<pre><code>function myplugin_hum_type_prefix( $prefix, $post_id ) {\n  $post = get_post( $post_id );\n\n  if ( $post-&gt;post_type == 'attachment' &amp;&amp;\n       strpos($post-&gt;post_mime_type, 'image') === 0 ) {\n    $prefix = 'p';\n  }\n\n  return $prefix;\n}\nadd_filter('hum_type_prefix', 'myplugin_hum_type_prefix', 10, 2);\n</code></pre>\n<h4>Simple Redirect</h4>\n<p>You can redirect all traffic for a prefix using a single line of PHP my implementing the <code>hum_redirect_base_{type}</code> filter where <code>{type}</code> is the prefix to redirect.  For example, I redirect all <code>/w/</code> URLs to wiki.willnorris.com using:</p>\n<pre><code>add_filter('hum_redirect_base_w', fn() =&gt; \"http://wiki.willnorris.com/\");\n</code></pre>\n",
+        "installation": "<p>Follow the normal instructions for <a href=\"https://codex.wordpress.org/Managing_Plugins#Installing_Plugins\" rel=\"nofollow ugc\">installing WordPress plugins</a>.</p>\n<h4>Using a custom domain</h4>\n<p>If you have a custom domain you&#8217;d like to use with Hum, add it as the &#8216;Shortlink Base (URL)&#8217; on the &#8216;General Settings&#8217; WordPress admin page or define the <code>HUM_SHORTLINK_BASE</code> constant in your <code>wp-config.php</code>:</p>\n<pre><code>define('HUM_SHORTLINK_BASE', 'http://wjn.me');\n</code></pre>\n<p>You will also need to setup your short domain to redirect to your normal domain.  Many domain registrars provide free redirection services that work well for this, so you don&#8217;t need to setup a new domain with your web host. Just make sure that you are <strong>not</strong> using an iframe style redirect.</p>\n",
+        "faq": "\n<dt id='what%20types%20of%20content%20does%20hum%20support%3F'>\nWhat types of content does Hum support?\n</h4>\n<p>\n<p>Out of the box, Hum will provide shortlinks for any content locally hosted on WordPress.  Most shortlinks will use the <code>b</code> type prefix, with the exception of posts with a &#8216;status&#8217; <a href=\"https://codex.wordpress.org/Post_Formats\" rel=\"nofollow ugc\">post format</a>, which have shortlinks using the <code>t</code> type prefix.  For example:</p>\n<ul>\n<li><a href=\"http://wjn.me/b/FJ\" rel=\"nofollow ugc\">http://wjn.me/b/FJ</a></li>\n<li><a href=\"http://wjn.me/t/FR\" rel=\"nofollow ugc\">http://wjn.me/t/FR</a></li>\n</ul>\n<p>Additionally, the <code>i</code> type prefix, along with one of four subtypes, is supported as follows:</p>\n<ul>\n<li><code>asin</code> or <code>a</code> for Amazon ASIN numbers</li>\n<li><code>isbn</code> or <code>i</code> for ISBN numbers</li>\n</ul>\n<p>All <code>i</code> URLs are redirected to Amazon.com.  For example:</p>\n<ul>\n<li><a href=\"http://wjn.me/i/a/B003QP4NPE\" rel=\"nofollow ugc\">http://wjn.me/i/a/B003QP4NPE</a></li>\n</ul>\n<p>Additional type prefixes can be registered to serve WordPress hosted content or to redirect to an external service.  See more in the developer documentation.</p>\n</p>\n\n",
+        "changelog": "<p>Project maintined on github at <a href=\"https://github.com/willnorris/wordpress-hum\" rel=\"nofollow ugc\">willnorris/wordpress-hum</a>.</p>\n<h4>1.3.4</h4>\n<ul>\n<li>fix broken <code>wp_get_shortlink</code> hook, when loaded in the frontend</li>\n</ul>\n<h4>1.3.3</h4>\n<ul>\n<li>fix PHP warning in combination with widgets</li>\n</ul>\n<h4>1.3.2</h4>\n<ul>\n<li>update documentation</li>\n</ul>\n<h4>1.3.1</h4>\n<ul>\n<li>change the priority of the rewrite rules action</li>\n</ul>\n<h4>1.3.0</h4>\n<ul>\n<li>redirect types are now also filterable</li>\n</ul>\n<h4>1.2.8</h4>\n<ul>\n<li>add shortlink panel to block editor (props <a href=\"https://profiles.wordpress.org/florianbrinkmann/\" rel=\"nofollow ugc\">@florianbrinkmann</a>)</li>\n</ul>\n<h4>1.2.7</h4>\n<ul>\n<li>redirect only known types (see <a href=\"https://wordpress.org/support/topic/causing-404-on-category-tag-pages/\" rel=\"ugc\">#wp180868</a>)</li>\n</ul>\n<p><a href=\"https://github.com/willnorris/wordpress-hum/compare/1.2.6...1.2.7\" rel=\"nofollow ugc\">full changelog</a></p>\n<h4>1.2.6</h4>\n<ul>\n<li>fix PHP 7.4 deprecation warning</li>\n<li>WordPress coding style changes</li>\n</ul>\n<p><a href=\"https://github.com/willnorris/wordpress-hum/compare/1.2.5...1.2.6\" rel=\"nofollow ugc\">full changelog</a></p>\n<h4>1.2.5</h4>\n<ul>\n<li>add shortlink to post/page overview pages</li>\n</ul>\n<p><a href=\"https://github.com/willnorris/wordpress-hum/compare/1.2.4...1.2.5\" rel=\"nofollow ugc\">full changelog</a></p>\n<h4>1.2.4</h4>\n<ul>\n<li>finally fixed &#8220;flush rewrite rules&#8221;</li>\n</ul>\n<p><a href=\"https://github.com/willnorris/wordpress-hum/compare/1.2.3...1.2.4\" rel=\"nofollow ugc\">full changelog</a></p>\n<h4>1.2.3</h4>\n<ul>\n<li>fixed &#8220;flush rewrite rules&#8221;</li>\n</ul>\n<p><a href=\"https://github.com/willnorris/wordpress-hum/compare/1.2.2...1.2.3\" rel=\"nofollow ugc\">full changelog</a></p>\n<h4>1.2.2</h4>\n<ul>\n<li>version bump</li>\n</ul>\n<p><a href=\"https://github.com/willnorris/wordpress-hum/compare/1.2.1...1.2.2\" rel=\"nofollow ugc\">full changelog</a></p>\n<h4>1.2.1</h4>\n<ul>\n<li>add <code>amazon_domain</code> filter, to support different countries</li>\n<li>add <code>hum_process_redirect</code> action, to overwrite default rewrite method (see <a href=\"https://github.com/willnorris/wordpress-hum/pull/17\" rel=\"nofollow ugc\">#17</a>)</li>\n</ul>\n<p><a href=\"https://github.com/willnorris/wordpress-hum/compare/1.2...1.2.1\" rel=\"nofollow ugc\">full changelog</a></p>\n<h4>1.2</h4>\n<ul>\n<li>move link post format to use &#8216;t&#8217; prefix instead of &#8216;h&#8217; and add support for<br />\nimage post format</li>\n<li>add support for WordPress media attachments</li>\n<li>add shortlinks to Atom feeds</li>\n<li>add support for legacy short url schemes (see <a href=\"https://github.com/willnorris/wordpress-hum/issues/6\" rel=\"nofollow ugc\">#6</a>)</li>\n<li>switch to using WordPress filters instead of actions for hum extensions (see<br />\n<a href=\"https://github.com/willnorris/wordpress-hum/issues/3\" rel=\"nofollow ugc\">#3</a>)</li>\n</ul>\n<p><a href=\"https://github.com/willnorris/wordpress-hum/compare/1.1...1.2\" rel=\"nofollow ugc\">full changelog</a></p>\n<h4>1.1</h4>\n<ul>\n<li>allow custom domain to be configured using <code>HUM_SHORTLINK_BASE</code> constant or<br />\nvia the General Settings admin page.</li>\n<li>strip some punctuation at the end of URLs (see <a href=\"https://github.com/willnorris/wordpress-hum/issues/4\" rel=\"nofollow ugc\">#4</a>)</li>\n<li>smarter URL matching (see <a href=\"https://github.com/willnorris/wordpress-hum/issues/1\" rel=\"nofollow ugc\">#1</a> and <a href=\"https://github.com/willnorris/wordpress-hum/issues/2\" rel=\"nofollow ugc\">#2</a>)</li>\n<li>add support for <code>/i/</code> URLs (redirects to Amazon for ASIN or ISBN<br />\nidentifiers, optionally including an Amazon affiliate ID)</li>\n<li>standard 404 handling if hum can&#8217;t find a proper redirect</li>\n<li>add new <code>hum_local_types</code> filter for registering other prefixes thatt are<br />\nserved locally by WordPress</li>\n<li>reduce extra redirect for local content</li>\n</ul>\n<p><a href=\"https://github.com/willnorris/wordpress-hum/compare/1.0...1.1\" rel=\"nofollow ugc\">full changelog</a></p>\n<h4>1.0</h4>\n<ul>\n<li>initial public release</li>\n</ul>\n"
+    },
+    "short_description": "Personal URL shortener for WordPress",
+    "description": "<p>Hum is a personal URL shortener for WordPress, designed to provide short URLs to your personal content, both hosted on WordPress and elsewhere.  For example, rather than a long URL for a WordPress post such as <a href=\"http://willnorris.com/2011/01/hum-personal-url-shortener-wordpress\" rel=\"nofollow ugc\">http://willnorris.com/2011/01/hum-personal-url-shortener-wordpress</a>, you could have a short URL like <a href=\"http://willnorris.com/b/FJ\" rel=\"nofollow ugc\">http://willnorris.com/b/FJ</a>.  Additionally, if you have a custom domain for short URLs, you can shorten things further like <a href=\"http://wjn.me/b/FJ\" rel=\"nofollow ugc\">http://wjn.me/b/FJ</a>.  Once the plugin is enabled, the shortlink for a page or post can be found in the &#8220;Shortlink&#8221; item in the WordPress Admin Bar.</p>\n<p>WordPress post IDs are shortened using the <a href=\"http://ttk.me/w/NewBase60\" rel=\"nofollow ugc\">NewBase60</a> encoding scheme which is specifically optimized for brevity and readability, with built-in error correction for commonly confused characters like &#8216;1&#8217;, &#8216;l&#8217;, and &#8216;I&#8217;.</p>\n<p>Hum is not designed as a general purpose URL shortener along the lines of <a href=\"http://bit.ly\" rel=\"nofollow ugc\">http://bit.ly</a> or <a href=\"http://goo.gl\" rel=\"nofollow ugc\">http://goo.gl</a>.  Rather, it is specifically intended as a personal shortener for your own content.</p>\n<p>Read more about the reasoning for a personal URL shortener at <a href=\"http://tantek.com/\" rel=\"nofollow ugc\">Tantek Celik</a>&#8216;s page for <a href=\"http://ttk.me/w/Whistle\" rel=\"nofollow ugc\">Whistle</a>, which served as the inspiration for Hum.</p>\n<h3>Developer Documentation</h3>\n<h4>Adding your Amazon Affiliate ID</h4>\n<p>If you&#8217;d like to include your Amazone Affiliate ID in the <code>/i/</code> redirect URLs, implement the <code>amazon_affiliate_id</code> filter.  For example:</p>\n<pre><code>add_filter('amazon_affiliate_id', fn() =&gt; \"willnorris-20\");\n</code></pre>\n<h4>Additional Local Types</h4>\n<p>Out of the box, Hum only registers the <code>b</code>, <code>t</code>, <code>a</code> and <code>p</code> prefix to be served locally by WordPress.  If you would like to register additional prefixes, implement the <code>hum_local_types</code> filter.  For example, to include &#8216;p&#8217; as well for photos:</p>\n<pre><code>function myplugin_hum_local_types( $types ) {\n  $types[] = 'p';\n  return $types;\n}\nadd_filter('hum_local_types', 'myplugin_hum_local_types');\n</code></pre>\n<p>This will tell Hum to serve any <code>/p/{id}</code> URLs from WordPress.  Additionally, you&#8217;ll want to instruct Hum to use your prefix for that particular content type.  Here, we&#8217;re registering &#8216;p&#8217; which is normally used for photos.</p>\n<pre><code>function myplugin_hum_type_prefix( $prefix, $post_id ) {\n  $post = get_post( $post_id );\n\n  if ( $post-&gt;post_type == 'attachment' &amp;&amp;\n       strpos($post-&gt;post_mime_type, 'image') === 0 ) {\n    $prefix = 'p';\n  }\n\n  return $prefix;\n}\nadd_filter('hum_type_prefix', 'myplugin_hum_type_prefix', 10, 2);\n</code></pre>\n<h4>Simple Redirect</h4>\n<p>You can redirect all traffic for a prefix using a single line of PHP my implementing the <code>hum_redirect_base_{type}</code> filter where <code>{type}</code> is the prefix to redirect.  For example, I redirect all <code>/w/</code> URLs to wiki.willnorris.com using:</p>\n<pre><code>add_filter('hum_redirect_base_w', fn() =&gt; \"http://wiki.willnorris.com/\");\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/hum.1.3.4.zip",
+    "upgrade_notice": {
+        "1.1": "<p>Adds a new admin UI for setting a custom domain for shortlinks, includes\nsmarter URL matching, and adds various small improvements and bug fixes.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "diso": "diso",
+        "shortlink": "shortlink",
+        "whistle": "whistle"
+    },
+    "stable_tag": "1.3.4",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/hum.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/hum.1.1.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/hum.1.2.zip",
+        "1.2.1": "https://downloads.wordpress.org/plugin/hum.1.2.1.zip",
+        "1.2.2": "https://downloads.wordpress.org/plugin/hum.1.2.2.zip",
+        "1.2.3": "https://downloads.wordpress.org/plugin/hum.1.2.3.zip",
+        "1.2.4": "https://downloads.wordpress.org/plugin/hum.1.2.4.zip",
+        "1.2.5": "https://downloads.wordpress.org/plugin/hum.1.2.5.zip",
+        "1.2.6": "https://downloads.wordpress.org/plugin/hum.1.2.6.zip",
+        "1.2.7": "https://downloads.wordpress.org/plugin/hum.1.2.7.zip",
+        "1.2.8": "https://downloads.wordpress.org/plugin/hum.1.2.8.zip",
+        "1.3.0": "https://downloads.wordpress.org/plugin/hum.1.3.0.zip",
+        "1.3.1": "https://downloads.wordpress.org/plugin/hum.1.3.1.zip",
+        "1.3.2": "https://downloads.wordpress.org/plugin/hum.1.3.2.zip",
+        "1.3.3": "https://downloads.wordpress.org/plugin/hum.1.3.3.zip",
+        "1.3.4": "https://downloads.wordpress.org/plugin/hum.1.3.4.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/hum.zip"
+    },
+    "business_model": "community",
+    "repository_url": "https://github.com/willnorris/wordpress-hum",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/hum.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "hum",
+            "language": "de_DE",
+            "version": "1.3.4",
+            "updated": "2021-01-31 18:15:58",
+            "package": "http://downloads.wordpress.org/translation/plugin/hum/1.3.4/de_DE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "hum",
+            "language": "nl_NL",
+            "version": "1.3.4",
+            "updated": "2021-03-01 21:21:30",
+            "package": "http://downloads.wordpress.org/translation/plugin/hum/1.3.4/nl_NL.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "hum",
+            "language": "sv_SE",
+            "version": "1.3.4",
+            "updated": "2021-02-09 19:48:38",
+            "package": "http://downloads.wordpress.org/translation/plugin/hum/1.3.4/sv_SE.zip"
+        }
+    ]
+}

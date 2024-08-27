@@ -1,0 +1,140 @@
+{
+    "name": "Gallery Image Captions (GIC)",
+    "slug": "gallery-image-captions",
+    "version": "1.4.0",
+    "author": "<a href=\"https://www.caughtmyeye.cc\">caught my eye</a>",
+    "author_profile": "https://profiles.wordpress.org/mlchaves/",
+    "contributors": {
+        "mlchaves": {
+            "profile": "https://profiles.wordpress.org/mlchaves/",
+            "avatar": "https://secure.gravatar.com/avatar/aa4d3bc69e72eac5c455ef5899b775d9?s=96&d=monsterid&r=g",
+            "display_name": "mark l chaves"
+        }
+    },
+    "requires": "5.3.2",
+    "tested": "6.1.7",
+    "requires_php": "7.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 1,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/gallery-image-captions/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 200,
+    "downloaded": 2800,
+    "last_updated": "2022-12-18 7:30am GMT",
+    "added": "2020-03-06",
+    "homepage": "https://github.com/marklchaves/gallery-image-captions",
+    "sections": {
+        "description": "<p>With <strong>GIC</strong>, you can display the title, caption, and description image attributes. You can also change/filter the rendering HTML to whatever you want.</p>\n<p>After installing and activating GIC, write your filter and add the WordPress <a href=\"https://codex.wordpress.org/Gallery_Shortcode\" rel=\"nofollow ugc\">Gallery shortcode</a> to your page.</p>\n<p>If you&#8217;ve been <em>dreaming</em> of writing a filter to customise the gallery image captions, then this plugin is for you.</p>\n<p><a href=\"https://streetphotography.blog/gallery-image-captions-demo/\" rel=\"nofollow ugc\">Visit the live demo page.</a></p>\n<h4>Motivation</h4>\n<p>The default WordPress gallery shortcode will only display the <strong>caption</strong> from the media&#8217;s attachment metadata. Sometimes it&#8217;s nice to display more like the title&mdash;even the description.</p>\n<p>The <strong>GIC plugin</strong> overrides the WordPress gallery shortcode function to create a <a href=\"https://developer.wordpress.org/plugins/hooks/\" rel=\"nofollow ugc\">hook</a>. With this <em>hook</em> you can do a little bit more than just displaying the caption.</p>\n<p>Some premium themes hide the caption completely. This leaves photography lovers like me scratching their head and spending precious time cobbling together makeshift caption blocks.</p>\n<h3>Usage</h3>\n<h4>Custom Filter For Displaying Captions</h4>\n<p>The <strong>crux</strong> of this plugin is the ability to filter the gallery image caption. The <code>galimgcaps_gallery_image_caption</code> hook makes this possible.</p>\n<p>For the usage examples below, this is the filter used.</p>\n<pre><code>/**\n * Custom Filter for Gallery Image Captions\n *\n * Note: Avoid altering captiontag, selector, and itemtag.\n */\nfunction mlc_gallery_image_caption($attachment_id, $captiontag, $selector, $itemtag) {\n\n    $id = $attachment_id;\n\n    // Grab the meta from the GIC plugin.\n    $my_image_meta = galimgcaps_get_image_meta($id);\n\n    /**\n     * Here's where to customise the caption content.\n     * \n     * This example uses the meta title, caption, and description. \n     * \n     * You can display any value from the $my_image_meta array. \n     * You can add your own HTML too.\n     */\n    return \"&lt;{$captiontag} class='wp-caption-text gallery-caption' id='{$selector}-{$id}'&gt;\" .\n            \"Title: \" . $my_image_meta['title'] . \"&lt;br&gt;\" .\n            \"Caption: \" . $my_image_meta['caption'] . \"&lt;br&gt;\". \n            \"Description: \". $my_image_meta['description'] . \n        \"&lt;/{$captiontag}&gt;&lt;/{$itemtag}&gt;\";\n\n}\nadd_filter('galimgcaps_gallery_image_caption', 'mlc_gallery_image_caption', 10, 4);\n</code></pre>\n<p>Feel free to use this filter code as a starter template. After activating the GIC plugin, add the code above to your child theme&#8217;s <code>functions.php</code> file. Rename the function and tweak the return string to suit your needs.</p>\n<h4>New Filter To Get Custom Fields</h4>\n<pre><code>/**\n * New GIC 1.4.0 filter for custom meta fields.\n */\nfunction gic_add_custom_fields( $image_meta, $attachment ) {\n\n    // This is how you add a custom fields to the array that\n    // GIC uses to display captions.\n    $image_meta['credit_text'] = $attachment-&gt;credit_text;\n    $image_meta['credit_link'] = $attachment-&gt;credit_link;\n\n    return $image_meta;\n}\nadd_filter( 'galimgcaps_image_meta', 'gic_add_custom_fields', 10, 2 );\n</code></pre>\n<p>To use these two custom fields, your <code>galimgcaps_gallery_image_caption</code> would look something like this.</p>\n<pre><code>function mlc_gallery_image_caption($attachment_id, $captiontag, $selector, $itemtag) {\n\n    $id = $attachment_id;\n\n    // Grab the meta from the GIC plugin.\n    $my_image_meta = galimgcaps_get_image_meta($id);\n\n    // If there's credit, give it where it's due complete with link.\n    $credit = $my_image_meta['description'] ? \n        \"&lt;br&gt;&lt;strong&gt;Credit&lt;/strong&gt;: &lt;a style='display: inline;' href='\" . \n        $my_image_meta['credit_link'] . \n        \"'&gt;\" . $my_image_meta['credit_text'] . \"&lt;/a&gt;\" . \"&lt;br&gt;\" : \n        '';\n\n    /**\n     * With GIC 1.4.0 you can also add custom media attachment fields\n     * to your captions.\n     */\n    return \"&lt;{$captiontag} class='wp-caption-text gallery-caption' id='{$selector}-{$id}'&gt;\" .\n            \"&lt;strong&gt;Caption&lt;/strong&gt;: \" . $my_image_meta['caption'] . \"&lt;br&gt;\" . \n            $credit .\n            \"&lt;/{$captiontag}&gt;&lt;/{$itemtag}&gt;\";\n\n}\nadd_filter('galimgcaps_gallery_image_caption', 'mlc_gallery_image_caption', 10, 4);\n</code></pre>\n<p><strong>Since v1.2.0</strong>, GIC automatically adds an <strong>Image ID</strong> column to your WordPress Media Library. This is to help you add the image IDs to your GIC shortcodes.</p>\n<p><a href=\"https://ps.w.org/gallery-image-captions/assets/screenshot-11.png\" rel=\"nofollow ugc\">See where GIC automatically adds an Image ID column to your WordPress Media Library.</a></p>\n<p><strong>New in v1.4.0</strong>, GIC support custom media attachment fields.</p>\n<h3>Usage Example 1</h3>\n<h4>Shortcode</h4>\n<p>For starters, let&#8217;s use a</p>\n<pre><code>&lt;p&gt;&lt;/p&gt; \n</code></pre>\n<p>tag for the caption tag.</p>\n<pre><code>[gallery size=\"full\" columns=\"1\" link=\"file\" ids=\"114\" captiontag=\"p\"]\n</code></pre>\n<h4>Styling</h4>\n<p>Let&#8217;s override the generated styles with our own style for one particular image.</p>\n<pre><code>/* Targeting a Specific Image */\n\n/* Add some padding all around. */\n#gallery-1 .gallery-item, \n#gallery-1 .gallery-item p {\n    padding: 1%;\n}\n\n/* Add some moody background with typewriter font. */\n#gallery-1 .gallery-item {\n    color: whitesmoke;\n    background-color: black;\n    font-size: 1.25rem;\n    font-family: Courier, monospace;\n    text-align: left !important;\n}\n</code></pre>\n<h3>Usage Example 2</h3>\n<h4>Shortcode</h4>\n<p><strong>A 2 column x 1 row gallery with large size images using an H4 for the caption.</strong></p>\n<pre><code>[gallery size=\"large\" columns=\"2\" link=\"file\" ids=\"109,106\" captiontag=\"h4\"]\n</code></pre>\n<p><strong>A 3 column x 1 row gallery with medium size images using a blockquote for the caption.</strong></p>\n<pre><code>[gallery size=\"medium\" columns=\"3\" link=\"file\" ids=\"109,106,108\" captiontag=\"blockquote\"]\n</code></pre>\n<p>Did you notice that we are using</p>\n<pre><code>&lt;blockquote&gt;&lt;/blockquote&gt; \n</code></pre>\n<p>in the second shortcode? Let&#8217;s give it try just for <em>kicks</em>.</p>\n<h4>Styling</h4>\n<pre><code>/* 1. Style the H4 Used in the Caption Example */\nh4 {\n    color: #777777 !important;\n    font-size: 1.2rem !important;\n    font-family: Helvetica, Arial, sans-serif !important;\n}\n\n/* 2. Help Align the Blockquote */\n#gallery-3 .gallery-caption {\n    margin-left: 40px !important;\n}\n</code></pre>\n<h3>Responsive CSS Example</h3>\n<p>I recommend adding the following media queries if you use galleries with more than one image. The two media queries below will stack 2&#215;1 and 3&#215;1 galleries into a 1 column x n rows or 2 column x n rows  as needed.</p>\n<pre><code>/* Media Queries for Responsive Galleries */\n\n/**\n * Styling based on article \"How To: Style Your WordPress Gallery\"\n * by Par Nicolas.\n * \n * https://theme.fm/how-to-style-your-wordpress-gallery/\n */\n\n/* Mobile Portrait Breakpoint - 1 column */\n@media only screen and (max-width: 719.998px) {\n    .gallery-columns-2 .gallery-item,\n    .gallery-columns-3 .gallery-item { \n     width: 100% !important; \n  }\n}\n\n/* Mobile Landscape and Tablet Breakpoints - 2 columns */\n@media only screen and (min-width: 720px) and (max-width: 1024px) {\n  .gallery-columns-3 .gallery-item { \n     width: 50% !important; \n  }\n}\n</code></pre>\n",
+        "installation": "<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/PLUGIN-NAME</code> directory, or install the plugin through the WordPress <strong>Plugins</strong> page directly.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> page in WordPress.</li>\n</ol>\n",
+        "faq": "\n<dt id='what%20media%20metadata%20can%20i%20insert%20into%20my%20captions%3F'>\nWhat media metadata can I insert into my captions?\n</h4>\n<p>\n<p>Here&#8217;s the list of metadata with their array index you can insert into your captions.</p>\n<ul>\n<li>Alternative Text [&#8216;alt&#8217;]</li>\n<li>Title [&#8216;title&#8217;]</li>\n<li>Caption  [&#8216;caption&#8217;]</li>\n<li>Description [&#8216;description&#8217;]</li>\n<li>Attachment URL [&#8216;href&#8217;]</li>\n<li>Image URL [&#8216;src&#8217;]</li>\n</ul>\n<p>Starting with version 1.4.0, you can pull <strong>custom</strong> media attachment fields right into your captions!</p>\n</p>\n<dt id='how%20do%20i%20get%20the%20file%20%28post%29%20ids%20for%20the%20shortcode%3F'>\nHow do I get the file (post) IDs for the shortcode?\n</h4>\n<p>\n<p>As of v1.2.0, you can hit the list icon in your Media Library and a <a href=\"https://ps.w.org/gallery-image-captions/assets/screenshot-11.png\" rel=\"nofollow ugc\">sortable column of image IDs</a> will display on the far right. This is much easier and faster than manually (see below) looking them up if you have a lot of images for your gallery.</p>\n<p>You can also manually find the image post IDs by selecting the image in the Media Library and hovering over the <strong>Edit</strong> link. You&#8217;ll need to visually pick out the <code>post=85</code> for example in the URL preview.</p>\n</p>\n\n",
+        "changelog": "<h4>1.4.0</h4>\n<ul>\n<li>Fixed an issue where the gallery layout is messed up if GIC is active but there&#8217;s no GIC filter yet.</li>\n<li>Added a new <code>galimgcaps_image_meta</code> filter to support custom media attachment fields.</li>\n</ul>\n<h4>1.3.0</h4>\n<ul>\n<li>Changes for WordPress 5.6.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Added an <a href=\"https://ps.w.org/gallery-image-captions/assets/screenshot-11.png\" rel=\"nofollow ugc\">Image ID column</a> to the Media Library to help find the image file IDs for the GIC shortcodes.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Slight refactoring and documentation updates</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Readme documentation updates. New author URI in source PHP file.</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "Gallery Image Captions (GIC) allows you to customise WordPress gallery image captions.",
+    "description": "<p>With <strong>GIC</strong>, you can display the title, caption, and description image attributes. You can also change/filter the rendering HTML to whatever you want.</p>\n<p>After installing and activating GIC, write your filter and add the WordPress <a href=\"https://codex.wordpress.org/Gallery_Shortcode\" rel=\"nofollow ugc\">Gallery shortcode</a> to your page.</p>\n<p>If you&#8217;ve been <em>dreaming</em> of writing a filter to customise the gallery image captions, then this plugin is for you.</p>\n<p><a href=\"https://streetphotography.blog/gallery-image-captions-demo/\" rel=\"nofollow ugc\">Visit the live demo page.</a></p>\n<h4>Motivation</h4>\n<p>The default WordPress gallery shortcode will only display the <strong>caption</strong> from the media&#8217;s attachment metadata. Sometimes it&#8217;s nice to display more like the title&mdash;even the description.</p>\n<p>The <strong>GIC plugin</strong> overrides the WordPress gallery shortcode function to create a <a href=\"https://developer.wordpress.org/plugins/hooks/\" rel=\"nofollow ugc\">hook</a>. With this <em>hook</em> you can do a little bit more than just displaying the caption.</p>\n<p>Some premium themes hide the caption completely. This leaves photography lovers like me scratching their head and spending precious time cobbling together makeshift caption blocks.</p>\n<h3>Usage</h3>\n<h4>Custom Filter For Displaying Captions</h4>\n<p>The <strong>crux</strong> of this plugin is the ability to filter the gallery image caption. The <code>galimgcaps_gallery_image_caption</code> hook makes this possible.</p>\n<p>For the usage examples below, this is the filter used.</p>\n<pre><code>/**\n * Custom Filter for Gallery Image Captions\n *\n * Note: Avoid altering captiontag, selector, and itemtag.\n */\nfunction mlc_gallery_image_caption($attachment_id, $captiontag, $selector, $itemtag) {\n\n    $id = $attachment_id;\n\n    // Grab the meta from the GIC plugin.\n    $my_image_meta = galimgcaps_get_image_meta($id);\n\n    /**\n     * Here's where to customise the caption content.\n     * \n     * This example uses the meta title, caption, and description. \n     * \n     * You can display any value from the $my_image_meta array. \n     * You can add your own HTML too.\n     */\n    return \"&lt;{$captiontag} class='wp-caption-text gallery-caption' id='{$selector}-{$id}'&gt;\" .\n            \"Title: \" . $my_image_meta['title'] . \"&lt;br&gt;\" .\n            \"Caption: \" . $my_image_meta['caption'] . \"&lt;br&gt;\". \n            \"Description: \". $my_image_meta['description'] . \n        \"&lt;/{$captiontag}&gt;&lt;/{$itemtag}&gt;\";\n\n}\nadd_filter('galimgcaps_gallery_image_caption', 'mlc_gallery_image_caption', 10, 4);\n</code></pre>\n<p>Feel free to use this filter code as a starter template. After activating the GIC plugin, add the code above to your child theme&#8217;s <code>functions.php</code> file. Rename the function and tweak the return string to suit your needs.</p>\n<h4>New Filter To Get Custom Fields</h4>\n<pre><code>/**\n * New GIC 1.4.0 filter for custom meta fields.\n */\nfunction gic_add_custom_fields( $image_meta, $attachment ) {\n\n    // This is how you add a custom fields to the array that\n    // GIC uses to display captions.\n    $image_meta['credit_text'] = $attachment-&gt;credit_text;\n    $image_meta['credit_link'] = $attachment-&gt;credit_link;\n\n    return $image_meta;\n}\nadd_filter( 'galimgcaps_image_meta', 'gic_add_custom_fields', 10, 2 );\n</code></pre>\n<p>To use these two custom fields, your <code>galimgcaps_gallery_image_caption</code> would look something like this.</p>\n<pre><code>function mlc_gallery_image_caption($attachment_id, $captiontag, $selector, $itemtag) {\n\n    $id = $attachment_id;\n\n    // Grab the meta from the GIC plugin.\n    $my_image_meta = galimgcaps_get_image_meta($id);\n\n    // If there's credit, give it where it's due complete with link.\n    $credit = $my_image_meta['description'] ? \n        \"&lt;br&gt;&lt;strong&gt;Credit&lt;/strong&gt;: &lt;a style='display: inline;' href='\" . \n        $my_image_meta['credit_link'] . \n        \"'&gt;\" . $my_image_meta['credit_text'] . \"&lt;/a&gt;\" . \"&lt;br&gt;\" : \n        '';\n\n    /**\n     * With GIC 1.4.0 you can also add custom media attachment fields\n     * to your captions.\n     */\n    return \"&lt;{$captiontag} class='wp-caption-text gallery-caption' id='{$selector}-{$id}'&gt;\" .\n            \"&lt;strong&gt;Caption&lt;/strong&gt;: \" . $my_image_meta['caption'] . \"&lt;br&gt;\" . \n            $credit .\n            \"&lt;/{$captiontag}&gt;&lt;/{$itemtag}&gt;\";\n\n}\nadd_filter('galimgcaps_gallery_image_caption', 'mlc_gallery_image_caption', 10, 4);\n</code></pre>\n<p><strong>Since v1.2.0</strong>, GIC automatically adds an <strong>Image ID</strong> column to your WordPress Media Library. This is to help you add the image IDs to your GIC shortcodes.</p>\n<p><a href=\"https://ps.w.org/gallery-image-captions/assets/screenshot-11.png\" rel=\"nofollow ugc\">See where GIC automatically adds an Image ID column to your WordPress Media Library.</a></p>\n<p><strong>New in v1.4.0</strong>, GIC support custom media attachment fields.</p>\n<h3>Usage Example 1</h3>\n<h4>Shortcode</h4>\n<p>For starters, let&#8217;s use a</p>\n<pre><code>&lt;p&gt;&lt;/p&gt; \n</code></pre>\n<p>tag for the caption tag.</p>\n<pre><code>[gallery size=\"full\" columns=\"1\" link=\"file\" ids=\"114\" captiontag=\"p\"]\n</code></pre>\n<h4>Styling</h4>\n<p>Let&#8217;s override the generated styles with our own style for one particular image.</p>\n<pre><code>/* Targeting a Specific Image */\n\n/* Add some padding all around. */\n#gallery-1 .gallery-item, \n#gallery-1 .gallery-item p {\n    padding: 1%;\n}\n\n/* Add some moody background with typewriter font. */\n#gallery-1 .gallery-item {\n    color: whitesmoke;\n    background-color: black;\n    font-size: 1.25rem;\n    font-family: Courier, monospace;\n    text-align: left !important;\n}\n</code></pre>\n<h3>Usage Example 2</h3>\n<h4>Shortcode</h4>\n<p><strong>A 2 column x 1 row gallery with large size images using an H4 for the caption.</strong></p>\n<pre><code>[gallery size=\"large\" columns=\"2\" link=\"file\" ids=\"109,106\" captiontag=\"h4\"]\n</code></pre>\n<p><strong>A 3 column x 1 row gallery with medium size images using a blockquote for the caption.</strong></p>\n<pre><code>[gallery size=\"medium\" columns=\"3\" link=\"file\" ids=\"109,106,108\" captiontag=\"blockquote\"]\n</code></pre>\n<p>Did you notice that we are using</p>\n<pre><code>&lt;blockquote&gt;&lt;/blockquote&gt; \n</code></pre>\n<p>in the second shortcode? Let&#8217;s give it try just for <em>kicks</em>.</p>\n<h4>Styling</h4>\n<pre><code>/* 1. Style the H4 Used in the Caption Example */\nh4 {\n    color: #777777 !important;\n    font-size: 1.2rem !important;\n    font-family: Helvetica, Arial, sans-serif !important;\n}\n\n/* 2. Help Align the Blockquote */\n#gallery-3 .gallery-caption {\n    margin-left: 40px !important;\n}\n</code></pre>\n<h3>Responsive CSS Example</h3>\n<p>I recommend adding the following media queries if you use galleries with more than one image. The two media queries below will stack 2&#215;1 and 3&#215;1 galleries into a 1 column x n rows or 2 column x n rows  as needed.</p>\n<pre><code>/* Media Queries for Responsive Galleries */\n\n/**\n * Styling based on article \"How To: Style Your WordPress Gallery\"\n * by Par Nicolas.\n * \n * https://theme.fm/how-to-style-your-wordpress-gallery/\n */\n\n/* Mobile Portrait Breakpoint - 1 column */\n@media only screen and (max-width: 719.998px) {\n    .gallery-columns-2 .gallery-item,\n    .gallery-columns-3 .gallery-item { \n     width: 100% !important; \n  }\n}\n\n/* Mobile Landscape and Tablet Breakpoints - 2 columns */\n@media only screen and (min-width: 720px) and (max-width: 1024px) {\n  .gallery-columns-3 .gallery-item { \n     width: 50% !important; \n  }\n}\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/gallery-image-captions.1.4.0.zip",
+    "upgrade_notice": {
+        "1.4.0": "<p>You can now display any custom fields you&#039;ve got in your gallery image captions.</p>",
+        "1.2.0": "<p>Look for the Image ID column in you Media Library&#039;s list view.</p>",
+        "1.0.1": "<p>Minor release only. No code changes. Feel free to upgrade for Readme documentation updates and the new author URI in PHP source file. Also tested on PHP version 7.2.18.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/gallery-image-captions/assets/screenshot-1.jpg?rev=2255886",
+            "caption": "WordPress Gallery Before GIC"
+        },
+        {
+            "src": "https://ps.w.org/gallery-image-captions/assets/screenshot-2.jpg?rev=2255886",
+            "caption": "WordPress Gallery Before GIC"
+        },
+        {
+            "src": "https://ps.w.org/gallery-image-captions/assets/screenshot-3.jpg?rev=2255886",
+            "caption": "Displaying title, caption, and description with moody styling using GIC"
+        },
+        {
+            "src": "https://ps.w.org/gallery-image-captions/assets/screenshot-4.jpg?rev=2255886",
+            "caption": "More styling examples using GIC: centre justified text and even using blockquote styling"
+        },
+        {
+            "src": "https://ps.w.org/gallery-image-captions/assets/screenshot-5.jpg?rev=2255886",
+            "caption": "With GIC, you can even insert links to the image file and attachment Page!"
+        },
+        {
+            "src": "https://ps.w.org/gallery-image-captions/assets/screenshot-6.jpg?rev=2264514",
+            "caption": "Write media queries to control how to display captions for different devices"
+        },
+        {
+            "src": "https://ps.w.org/gallery-image-captions/assets/screenshot-7.jpg?rev=2264514",
+            "caption": "Responsive for mobile displays"
+        },
+        {
+            "src": "https://ps.w.org/gallery-image-captions/assets/screenshot-8.jpg?rev=2264514",
+            "caption": "Another example of displaying title, caption, and description with moody styling using GIC"
+        },
+        {
+            "src": "https://ps.w.org/gallery-image-captions/assets/screenshot-9.jpg?rev=2264514",
+            "caption": "Washington Post style captions using GIC"
+        },
+        {
+            "src": "https://ps.w.org/gallery-image-captions/assets/screenshot-10.jpg?rev=2264514",
+            "caption": "Vogue style captions using GIC"
+        },
+        {
+            "src": "https://ps.w.org/gallery-image-captions/assets/screenshot-11.png?rev=2414306",
+            "caption": "Media Library Image ID column to help with writing GIC shortcodes. Since in v1.2.0."
+        },
+        {
+            "src": "https://ps.w.org/gallery-image-captions/assets/screenshot-12.jpg?rev=2728803",
+            "caption": "Custom field support. New in v1.4.0."
+        },
+        {
+            "src": "https://ps.w.org/gallery-image-captions/assets/screenshot-13.png?rev=2728803",
+            "caption": "Media attachment details with 2 custom fields for photographer credits."
+        }
+    ],
+    "tags": {
+        "css": "css",
+        "filter": "filter",
+        "gallery": "gallery",
+        "html": "html",
+        "shortcode": "shortcode"
+    },
+    "stable_tag": "1.4.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/gallery-image-captions.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/gallery-image-captions.1.0.1.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/gallery-image-captions.1.1.0.zip",
+        "1.2.0": "https://downloads.wordpress.org/plugin/gallery-image-captions.1.2.0.zip",
+        "1.3.0": "https://downloads.wordpress.org/plugin/gallery-image-captions.1.3.0.zip",
+        "1.4.0": "https://downloads.wordpress.org/plugin/gallery-image-captions.1.4.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/gallery-image-captions.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://ko-fi.com/marklchaves",
+    "banners": {
+        "low": "https://ps.w.org/gallery-image-captions/assets/banner-772x250.jpg?rev=2255886",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/gallery-image-captions/assets/icon-128x128.png?rev=2255886",
+        "2x": "https://ps.w.org/gallery-image-captions/assets/icon-256x256.png?rev=2255886"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

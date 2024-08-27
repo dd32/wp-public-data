@@ -1,0 +1,90 @@
+{
+    "name": "NMR Strava activities",
+    "slug": "nmr-strava-activities",
+    "version": "1.0.6",
+    "author": "Mircea N.",
+    "author_profile": "https://profiles.wordpress.org/mirceatm/",
+    "contributors": {
+        "mirceatm": {
+            "profile": "https://profiles.wordpress.org/mirceatm/",
+            "avatar": "https://secure.gravatar.com/avatar/9622767608e6a79006cdd3af22817791?s=96&d=monsterid&r=g",
+            "display_name": "mirceatm"
+        }
+    },
+    "requires": "5.2",
+    "tested": "6.3.5",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 1,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/nmr-strava-activities/",
+    "support_threads": 2,
+    "support_threads_resolved": 0,
+    "active_installs": 30,
+    "downloaded": 1498,
+    "last_updated": "2023-10-10 8:11pm GMT",
+    "added": "2021-09-17",
+    "homepage": "https://namir.ro/strava-activities/",
+    "sections": {
+        "description": "<p>Import Strava activities to your website. Get notified immediately after an Strava activity is recorded, using webhooks.<br />\nStrava webhooks: <a href=\"https://developers.strava.com/docs/webhooks/\" rel=\"nofollow ugc\">https://developers.strava.com/docs/webhooks/</a></p>\n<p>You need to setup a Strava API Application: <a href=\"https://www.strava.com/settings/api\" rel=\"nofollow ugc\">https://www.strava.com/settings/api</a></p>\n<p>Add this shortcode: <strong>[strava_nmr]</strong> to a user facing page or post.</p>\n<p>The address of that page/post must be used on setting: Redirect URI (see below)</p>\n<p>Configure NMR Strava activities plugin on your admin interface: <strong>Settings: Strava NMR</strong></p>\n<ul>\n<li>Strava client id &#8211; number from Strava API Application</li>\n<li>Strava client secret &#8211; secret from Strava API Application</li>\n<li>Redirect URI &#8211; Address of a page/post on your website where the shortcode: [strava_nmr] is used.</li>\n<li>Webhook callback url &#8211; it&#8217;s determined automatically, should be: <a href=\"https://your-website.com/wp-admin/admin-ajax.php?action=nmr-strava-callback&amp;\" rel=\"nofollow ugc\">https://your-website.com/wp-admin/admin-ajax.php?action=nmr-strava-callback&amp;</a><br />\nNotice the ampersand: &amp; at the end &#8211; it should be there.</li>\n<li>Verify token &#8211; a string used in the webhook subscription process</li>\n</ul>\n<p>Press <strong>Activate Strava Webhook</strong></p>\n<p>On success, you&#8217;ll see the message on <strong>Plugin status</strong>:</p>\n<blockquote>\n<p>Strava webhook subscription id = 109463</p>\n</blockquote>\n<p>it means webhook subscription worked.</p>\n<p>Strava will push activity data for all Strava users that connected their account on your website with their Strava account.<br />\nReceived activities are stored locally on your wordpress database, and an event with strava activity data is raised.</p>\n<pre><code>do_action('strava_nmr_activity_changed', 'update', $activity_data);\n</code></pre>\n<p>where <code>$activity_data</code> is an array.</p>\n<p>A Theme or another Plugin might listen to this action and perform additional actions.</p>\n<p>This plugin reacts to new, changed or deleted activities.</p>\n<p>Determine what activites are imported by interacting with <code>nmr_strava_save_activity</code> filter</p>\n<pre><code>function on_nmr_strava_save_activity($save_nmr_strava_activity, $activity_type){\n    // we only want to import running activities\n    if(strcasecmp('run', $activity_type) == 0\n        || strcasecmp('virtualrun', $activity_type) == 0){\n            return true;\n    }\n    return false;\n}\nadd_filter('nmr_strava_save_activity', 'on_nmr_strava_save_activity', 10, 2);\n</code></pre>\n<p>There&#8217;s an additional filter called <code>nmr_strava_save_activity_full</code> that sends the entire data received from Strava as an array that functions like the one above.</p>\n<p>List of Strava activities:  AlpineSki, BackcountrySki, Canoeing, Crossfit, EBikeRide, Elliptical, Golf, Handcycle, Hike, IceSkate, InlineSkate, Kayaking, Kitesurf, NordicSki, Ride, RockClimbing, RollerSki, Rowing, Run, Sail, Skateboard, Snowboard, Snowshoe, Soccer, StairStepper, StandUpPaddling, Surfing, Swim, Velomobile, VirtualRide, VirtualRun, Walk, WeightTraining, Wheelchair, Windsurf, Workout, Yoga</p>\n<p>You may list the first 100 or so activities received from Strava in any page or post by using this shortcode: <code>[strava_nmr_table top=\"100\"]</code></p>\n<p>If you enjoy using <em>NMR Strava activities</em> and find it useful, please consider <a href=\"https://paypal.me/mirceatm\" rel=\"nofollow ugc\"><strong>making a donation</strong></a>. Your donation will help encourage and support the plugin&#8217;s continued development and better user support.</p>\n<h4>Privacy Notices</h4>\n<p>This plugin stores data collected from Strava, which may include the submitters&#8217; personal information, in the database on the server that hosts the website.</p>\n",
+        "installation": "<ol>\n<li>Upload the entire <code>strava-activities-nmr</code> folder to the <code>/wp-content/plugins/</code> directory.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n</ol>\n",
+        "changelog": "<h4>1.0.6</h4>\n<ul>\n<li>Added <code>nmr_strava_save_activity_full</code> filter that sends the entire Strava data as array. One can use it to filter out manual activities, for instance.</li>\n<li>Remove dangling options by the name <code>nmr-strava-%</code></li>\n<li>Save <code>subscription_id</code> once we read it from Strava</li>\n</ul>\n<h4>1.0.5</h4>\n<ul>\n<li>Added top property to shortcode <code>[strava_nmr_table top=10]</code>. Default value if 100.</li>\n<li><code>[strava_nmr_table top=10]</code> shows km and minutes instead of meters and seconds.</li>\n<li>Activate Strava will also save the settings.</li>\n</ul>\n<h4>1.0.4</h4>\n<ul>\n<li>Added simple shortcode to list activities received from Strava: <code>[strava_nmr_table]</code></li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>Store Strava username, firstname, lastname and profile link</li>\n<li>Delete duplicate rows</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Fixed strava activity import when there is no associated wordpress user.</li>\n<li>Add filter <code>nmr_strava_save_activity</code></li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Fixed option save</li>\n<li>Add button to deactivate Strava subscription</li>\n<li>Removed use of PHP session</li>\n<li>Allow Strava activities from anonymous visitors (un-registered users) </li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial version.</li>\n</ul>\n"
+    },
+    "short_description": "Import Strava activities to your website. Get notified immediately after an Strava activity is recorded, using webhooks.",
+    "description": "<p>Import Strava activities to your website. Get notified immediately after an Strava activity is recorded, using webhooks.<br />\nStrava webhooks: <a href=\"https://developers.strava.com/docs/webhooks/\" rel=\"nofollow ugc\">https://developers.strava.com/docs/webhooks/</a></p>\n<p>You need to setup a Strava API Application: <a href=\"https://www.strava.com/settings/api\" rel=\"nofollow ugc\">https://www.strava.com/settings/api</a></p>\n<p>Add this shortcode: <strong>[strava_nmr]</strong> to a user facing page or post.</p>\n<p>The address of that page/post must be used on setting: Redirect URI (see below)</p>\n<p>Configure NMR Strava activities plugin on your admin interface: <strong>Settings: Strava NMR</strong></p>\n<ul>\n<li>Strava client id &#8211; number from Strava API Application</li>\n<li>Strava client secret &#8211; secret from Strava API Application</li>\n<li>Redirect URI &#8211; Address of a page/post on your website where the shortcode: [strava_nmr] is used.</li>\n<li>Webhook callback url &#8211; it&#8217;s determined automatically, should be: <a href=\"https://your-website.com/wp-admin/admin-ajax.php?action=nmr-strava-callback&amp;\" rel=\"nofollow ugc\">https://your-website.com/wp-admin/admin-ajax.php?action=nmr-strava-callback&amp;</a><br />\nNotice the ampersand: &amp; at the end &#8211; it should be there.</li>\n<li>Verify token &#8211; a string used in the webhook subscription process</li>\n</ul>\n<p>Press <strong>Activate Strava Webhook</strong></p>\n<p>On success, you&#8217;ll see the message on <strong>Plugin status</strong>:</p>\n<blockquote>\n<p>Strava webhook subscription id = 109463</p>\n</blockquote>\n<p>it means webhook subscription worked.</p>\n<p>Strava will push activity data for all Strava users that connected their account on your website with their Strava account.<br />\nReceived activities are stored locally on your wordpress database, and an event with strava activity data is raised.</p>\n<pre><code>do_action('strava_nmr_activity_changed', 'update', $activity_data);\n</code></pre>\n<p>where <code>$activity_data</code> is an array.</p>\n<p>A Theme or another Plugin might listen to this action and perform additional actions.</p>\n<p>This plugin reacts to new, changed or deleted activities.</p>\n<p>Determine what activites are imported by interacting with <code>nmr_strava_save_activity</code> filter</p>\n<pre><code>function on_nmr_strava_save_activity($save_nmr_strava_activity, $activity_type){\n    // we only want to import running activities\n    if(strcasecmp('run', $activity_type) == 0\n        || strcasecmp('virtualrun', $activity_type) == 0){\n            return true;\n    }\n    return false;\n}\nadd_filter('nmr_strava_save_activity', 'on_nmr_strava_save_activity', 10, 2);\n</code></pre>\n<p>There&#8217;s an additional filter called <code>nmr_strava_save_activity_full</code> that sends the entire data received from Strava as an array that functions like the one above.</p>\n<p>List of Strava activities:  AlpineSki, BackcountrySki, Canoeing, Crossfit, EBikeRide, Elliptical, Golf, Handcycle, Hike, IceSkate, InlineSkate, Kayaking, Kitesurf, NordicSki, Ride, RockClimbing, RollerSki, Rowing, Run, Sail, Skateboard, Snowboard, Snowshoe, Soccer, StairStepper, StandUpPaddling, Surfing, Swim, Velomobile, VirtualRide, VirtualRun, Walk, WeightTraining, Wheelchair, Windsurf, Workout, Yoga</p>\n<p>You may list the first 100 or so activities received from Strava in any page or post by using this shortcode: <code>[strava_nmr_table top=\"100\"]</code></p>\n<p>If you enjoy using <em>NMR Strava activities</em> and find it useful, please consider <a href=\"https://paypal.me/mirceatm\" rel=\"nofollow ugc\"><strong>making a donation</strong></a>. Your donation will help encourage and support the plugin&#8217;s continued development and better user support.</p>\n<h4>Privacy Notices</h4>\n<p>This plugin stores data collected from Strava, which may include the submitters&#8217; personal information, in the database on the server that hosts the website.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/nmr-strava-activities.1.0.6.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/nmr-strava-activities/assets/screenshot-1.jpg?rev=2600854",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/nmr-strava-activities/assets/screenshot-2.jpg?rev=2600854",
+            "caption": ""
+        }
+    ],
+    "tags": {
+        "activities": "activities",
+        "import": "import",
+        "strava": "strava",
+        "virtual": "virtual"
+    },
+    "stable_tag": "1.0.6",
+    "versions": {
+        "1.0.1": "https://downloads.wordpress.org/plugin/nmr-strava-activities.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/nmr-strava-activities.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/nmr-strava-activities.1.0.3.zip",
+        "1.0.4": "https://downloads.wordpress.org/plugin/nmr-strava-activities.1.0.4.zip",
+        "1.0.5": "https://downloads.wordpress.org/plugin/nmr-strava-activities.1.0.5.zip",
+        "1.0.6": "https://downloads.wordpress.org/plugin/nmr-strava-activities.1.0.6.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/nmr-strava-activities.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://paypal.me/mirceatm",
+    "banners": {
+        "low": "https://ps.w.org/nmr-strava-activities/assets/banner-772x250.jpg?rev=2600854",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/nmr-strava-activities/assets/icon-128x128.jpg?rev=2600854",
+        "2x": "https://ps.w.org/nmr-strava-activities/assets/icon-256x256.jpg?rev=2600854"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

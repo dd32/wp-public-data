@@ -1,0 +1,135 @@
+{
+    "name": "Auto Smart Thumbnails",
+    "slug": "auto-smart-thumbnails",
+    "version": "1.1.4",
+    "author": "longchaoliu",
+    "author_profile": "https://profiles.wordpress.org/longchaoliu/",
+    "contributors": {
+        "longchaoliu": {
+            "profile": "https://profiles.wordpress.org/longchaoliu/",
+            "avatar": "https://secure.gravatar.com/avatar/8ecb46ef93546cc53a232bde3e7d4e91?s=96&d=monsterid&r=g",
+            "display_name": "longchaoliu"
+        }
+    },
+    "requires": "3.8",
+    "tested": "5.9.10",
+    "requires_php": "7.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 86,
+    "ratings": {
+        "5": 5,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 1
+    },
+    "num_ratings": 6,
+    "support_url": "https://wordpress.org/support/plugin/auto-smart-thumbnails/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 100,
+    "downloaded": 3981,
+    "last_updated": "2022-03-02 10:24pm GMT",
+    "added": "2019-12-30",
+    "homepage": "",
+    "sections": {
+        "description": "<h4>I. Face detection</h4>\n<p>WordPress (WP) plugin/themes crop images per fixed position {top, center, bottom} x {left, center, right}. This often generates thumbnails with faces being cut out. This plugin (Auto Smart Thumbnails, AST) employs face detection to keep the face in the center of cropped images.</p>\n<h4>II. Downsize images</h4>\n<p>There are many ways to backup/store your images. Your web server host is the last option for that though (too expensive). Essentially, your web server serves one purpose and one purpose only: a lean fast website. So making it small and agile is critical in both user experience and website maintenance.</p>\n<p>Media files (pdf, movie and images) are usually the biggest storage eaters. Here are some practice tips related to images:<br />\n1. Use jpg to store images. No png except for the logo images.<br />\n2. Downsize your images to about (1920&#215;1080, full high definition, FHD).<br />\n3. Get rid of those unused thumbnails.</p>\n<p>AST helps you with 2 and 3. It helped to trim my website from 24G to 9G.</p>\n<p>AST downsizes big images in a smart way. It does so by a factor of an integer, e.g. 2, 3, 4 etc, so that the result image looks as crisp as the original on a webpage, e.g. an image of (5184&#215;3456) is downsized by 3 to (1728&#215;1152) and its file size is down from 4.9M to 239K. Conventional tools may downsize it by 3.2 (=3456/1080) to (1687&#215;1080, short side exact FHD). Blurring happens because of the pixels fractioned.</p>\n<p>For images smaller than 3840&#215;2160, which can&#8217;t even be downsized by a factor of 2, they will be compressed (at WP default quality of 82%. Though the document says the default quality is 90%, in code it&#8217;s 82%.)</p>\n<h4>III. Cleanup thumbnails</h4>\n<p>Some WP themes generate many, sometimes 10s of, custom sized thumbnails when an image is uploaded. These thumbnails may never be used yet take up your precious server storage space. AST helps remove these unused thumbnails and stop them from being generated when an image is uploaded. But a thumbnail will be generated and generated only when it is requested. The newly generated thumbnail is then stored for later use.</p>\n<h3>Notes</h3>\n<p>AST is based on <a href=\"https://wordpress.org/plugins/optimize-images-resizing/\" rel=\"ugc\">&#8216;Optimize images Resizing&#8217; by OriginalEXE</a>, which seems to be dormant for years.</p>\n<p><a href=\"https://github.com/mauricesvay/php-facedetection\" rel=\"nofollow ugc\">Face detection algorithm is by Maurice Svay</a>. It returns only the first face candidate detected. For most of images it does the job well and and it&#8217;s a bit faster than another implementation <a href=\"https://github.com/felixkoch/PHP-FaceDetector\" rel=\"nofollow ugc\">PHP-FaceDetector by Felix Koch</a>. When it fails to detect face(s), the cropping will be done by the WordPress default.</p>\n<p>The module is designed to be <strong>extendable</strong>. Other plugins can do face detection, e.g. with faster algorithms or better accuracy, or can designate focal points manually, then store the face/focal data to the meta data of an image. AST can pick up the data to do cropping. This is done by adding a new field &#8216;focal_area&#8217; in the meta data, as below:</p>\n<pre><code>Array (\n    [width] =&gt; 512\n    [height] =&gt; 512\n    [file] =&gt; 2019/04/sample-image-file.jpg\n    [sizes] =&gt; Array ()\n    [focal_area] = (\n        [x] =&gt; 100\n        [y] =&gt; 123\n        [w] =&gt; 58\n        [h] =&gt; 58\n        [faces] =&gt; Array (\n            [tharavaad-svay] =&gt; Array (\n                [0] =&gt; Array (\n                    [x] =&gt; 100\n                    [y] =&gt; 123\n                    [w] =&gt; 58\n                )\n            )\n            [koch] =&gt; Array (\n                [0] =&gt; Array (\n                    [x] =&gt; 100\n                    [y] =&gt; 123\n                    [w] =&gt; 58\n                )\n                [1] =&gt; Array (\n                    ...\n                )\n            )\n        )\n    )\n)\n</code></pre>\n<p>The focal_area is defined by the position (x, y) and width and height. External plugins can store the detection result with these 4 parameters. AST can pick them up for cropping.</p>\n<p>The &#8216;focal_area&#8217; can be non-face objects that users want to focus on. Within it, the optional &#8216;faces&#8217; array defines faces detected and the algorithm used.</p>\n<p>To make it simple, some assumptions and numbers are defined as below:</p>\n<ol>\n<li>\n<p>To resave png images in jpg will save a lot space. But it needs to mess up with the WP database, which I stayed away for now. You may want to <a href=\"https://www.xnview.com/en/xnviewmp/\" rel=\"nofollow ugc\">convert your png images to jpg</a> before uploading them to your server.</p>\n</li>\n<li>\n<p>An image is downsized only when its short side &gt; 2&#215;1080. Otherwise it&#8217;s re-compressed when its size &gt;128k bytes. The new jpg file replaces the original only when it&#8217;s 25k bytes smaller.</p>\n</li>\n<li>\n<p>When a downsizing happens, the original is saved in uploads/ast-backup. The year/month structure is preserved. To save the server storage space, it&#8217;s recommended to download it and delete it from the server.</p>\n</li>\n</ol>\n<p>I didn&#8217;t get time to handle the localization language files yet.</p>\n<p>Please let me know how it works for you, or any improvement suggestions or feedback. Thanks!</p>\n<p><a href=\"https://github.com/longchaoliu/auto-smart-thumbnails\" rel=\"nofollow ugc\">Source code</a><br />\n<a href=\"https://discord.gg/8ekYwzv\" rel=\"nofollow ugc\">Discord forum</a></p>\n",
+        "installation": "<p>In WP &#8216;Add Plugins&#8217;, seach for &#8216;auto-smart-thumbnails&#8217; and &#8216;Install Now&#8217;, and activate it.</p>\n",
+        "faq": "\n<dt id='i%20just%20installed%20the%20plugin.%20is%20there%20anything%20else%20i%20need%20to%20do%3F'>\nI just installed the plugin. Is there anything else I need to do?\n</h4>\n<p>\n<p>No. AST works silently in the background. If your site has many existing thumbnails, you can remove them manually by &#8216;Tools -&gt; Auto Smart Thumbnails&#8217; or &#8216;Installed Plugins -&gt; Auto Smart Thumbnails -&gt; Remove Unused Thumbnails&#8217;.</p>\n</p>\n<dt id='some%20image%20sizes%20are%20not%20cleaned%2C%20why%3F'>\nSome image sizes are not cleaned, why?\n</h4>\n<p>\n<p>AST doesn&#8217;t remove the default thumbanil which is defined by WP and WP uses it frequently.</p>\n</p>\n<dt id='how%20do%20i%20know%20which%20files%20the%20plugin%20cleaned%20up%3F'>\nHow do I know which files the plugin cleaned up?\n</h4>\n<p>\n<p>A list of removed files is available after a cleanup, When a cleanup is done, a message will show how many images is removed. Click on the number to show the list.</p>\n</p>\n<dt id='are%20there%20any%20drawbacks%20to%20using%20ast%3F'>\nAre there any drawbacks to using AST?\n</h4>\n<p>\n<p>Not as I know. Your WP website will continue working as is. But your uploads folder will be lighter. It helps save your server storage and makes backup easier and faster.</p>\n</p>\n<dt id='i%20run%20into%20problems.%20what%20can%20i%20do%3F'>\nI run into problems. What can I do?\n</h4>\n<p>\n<p>Turn on debug and you can check what&#8217;s going on. Check &#8216;Log debug info for troubleshooting&#8217; in &#8216;Settings -&gt; Auto Smart Thumbnails&#8217;. After that, you will see a button &#8216;Get Debug Log&#8217; in &#8216;Tools -&gt; Auto Smart Thumbnails&#8217;. It shows up when there is info logged after a cleanup is done. Leave a note with your url and the logged info in the support forum and I will try my best to help. Or you can join <a href=\"https://discord.gg/8ekYwzv\" rel=\"nofollow ugc\">Discord forum</a> to see if I or anyone there can help.</p>\n</p>\n<dt id='it%20seems%20to%20be%20stuck%20on%20%22cleanup%20in%20progress...%22%20what%20can%20i%20do%3F'>\nIt seems to be stuck on &#8220;Cleanup in progress&#8230;&#8221; What can I do?\n</h4>\n<p>\n<p>This is because your server doesn&#8217;t respond. AST needs to know how many images need to be processed. When it happens, as explained above, turn on debug, leave a note with the url in the support forum.</p>\n</p>\n<dt id='i%20still%20see%20a%20lot%20of%20big%20png%20images%2C%20what%20can%20i%20do%3F'>\nI still see a lot of big png images, what can I do?\n</h4>\n<p>\n<p>To downsize or re-compress image png files to jpg needs to change database. To keep the data and files in sync needs a lot messy code. So I decided not to do it.</p>\n<p>My suggestion is to use <a href=\"https://www.xnview.com/en/xnviewmp/\" rel=\"nofollow ugc\">XnViewMP</a> to convert the png to jpg before uploading it to your media library. XnViewMP can do batch coversion and amazing color correction. It got only one drawback that it can&#8217;t decide the target size intellgiently as AST does. You need to manually calculate the size to downsize to and different images may need seperate calculations.</p>\n</p>\n<dt id='have%20you%20checked%20smartcrop%20plugins%20currently%20available%3F'>\nHave you checked smartcrop plugins currently available?\n</h4>\n<p>\n<p>At the moment, there are two plugins: <a href=\"https://wordpress.org/plugins/smartcrop/\" rel=\"ugc\">&#8216;SmartCrop&#8217;</a> by late Alex Mills (Viper007Bond) and <a href=\"https://wordpress.org/plugins/wp-smartcrop/\" rel=\"ugc\">&#8216;WP SmartCrop&#8217;</a> by &#8216;Burlington Bytes&#8217;. The later provices a tool for users to set a focal point manually. Alex&#8217;s SmartCrop plugin uses <a href=\"https://github.com/gschoppe/PHP-Smart-Crop/blob/master/smart_crop.php\" rel=\"nofollow ugc\">Smart Cropping Class/algorithm</a> developed by Greg Schoppe, which is based on color difference and image entropy and puts the focus of the image at or close to the photograph rule of thirds line. It doesn&#8217;t do face detection. AST is the <strong>first</strong> and <strong>only</strong> WordPress plugin that does smart crop with face detection.</p>\n<p>I do hope it inspires people and more people join to explore the latest technologies and make it helpful, and more fun.</p>\n</p>\n<dt id='how%20about%20wordpress%27s%20new%20big%20image%20feature%20in%205.3%3F'>\nHow about WordPress&#8217;s new big image feature in 5.3?\n</h4>\n<p>\n<p>WordPress 5.3 introduces a new way to manage a big image by checking if its height or its width is above a big_image threshold (the default value is 2560px), and scaling down it to big_image. This is a nice feature that WordPress has big images in check.</p>\n<p>AST does it in a different and better way. It scales down images by a factor of an integer which means no fraction of pixcels and no bluring. And WordPress checks only new uploads. AST will check all the images, existing or new.</p>\n<p>Note the new feature in WordPress 5.3+ will automatically scale down large pictures. So the downsize function in AST won&#8217;t be triggered.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.4</h4>\n<ol>\n<li>Fixed a crash with is_resource in PHP 8. PHP doesn&#8217;t return resoure, changed to object.</li>\n<li>Tested up to WordPress 5.9.</li>\n</ol>\n<h4>1.1.3</h4>\n<ol>\n<li>Save debug log file for remote debugging.</li>\n<li>Tested up to WordPress 5.7.</li>\n</ol>\n<h4>1.1.2</h4>\n<ol>\n<li>Add debug log file for remote debugging.</li>\n<li>Tested up to WordPress 5.4.</li>\n</ol>\n<h4>1.1.1</h4>\n<ol>\n<li>Test up to WorePress 5.3.2.</li>\n<li>Correct readme typos and wording.</li>\n</ol>\n<h4>1.1.0</h4>\n<ol>\n<li>Add face detection.</li>\n<li>Add debug info log for troubleshooting.</li>\n</ol>\n<h4>1.0.0</h4>\n<p>Initial version. Based on &#8216;Optimize Images Resizing&#8217; by OriginalEXE. Major issues fixed:<br />\n1. During pagination, WP_Query returns corrupted result (duplicate and missing post IDs).<br />\n2. Nothing happends when button &#8216;Start new cleanup&#8217; is clicked.<br />\n3. Sizes in meta data and thumbnail files out of sync.</p>\n"
+    },
+    "short_description": "Plugin creates thumbnails on demand with face detection. Remove unused thumbnails and downsizes images. Free up server storage.",
+    "description": "<h4>I. Face detection</h4>\n<p>WordPress (WP) plugin/themes crop images per fixed position {top, center, bottom} x {left, center, right}. This often generates thumbnails with faces being cut out. This plugin (Auto Smart Thumbnails, AST) employs face detection to keep the face in the center of cropped images.</p>\n<h4>II. Downsize images</h4>\n<p>There are many ways to backup/store your images. Your web server host is the last option for that though (too expensive). Essentially, your web server serves one purpose and one purpose only: a lean fast website. So making it small and agile is critical in both user experience and website maintenance.</p>\n<p>Media files (pdf, movie and images) are usually the biggest storage eaters. Here are some practice tips related to images:<br />\n1. Use jpg to store images. No png except for the logo images.<br />\n2. Downsize your images to about (1920&#215;1080, full high definition, FHD).<br />\n3. Get rid of those unused thumbnails.</p>\n<p>AST helps you with 2 and 3. It helped to trim my website from 24G to 9G.</p>\n<p>AST downsizes big images in a smart way. It does so by a factor of an integer, e.g. 2, 3, 4 etc, so that the result image looks as crisp as the original on a webpage, e.g. an image of (5184&#215;3456) is downsized by 3 to (1728&#215;1152) and its file size is down from 4.9M to 239K. Conventional tools may downsize it by 3.2 (=3456/1080) to (1687&#215;1080, short side exact FHD). Blurring happens because of the pixels fractioned.</p>\n<p>For images smaller than 3840&#215;2160, which can&#8217;t even be downsized by a factor of 2, they will be compressed (at WP default quality of 82%. Though the document says the default quality is 90%, in code it&#8217;s 82%.)</p>\n<h4>III. Cleanup thumbnails</h4>\n<p>Some WP themes generate many, sometimes 10s of, custom sized thumbnails when an image is uploaded. These thumbnails may never be used yet take up your precious server storage space. AST helps remove these unused thumbnails and stop them from being generated when an image is uploaded. But a thumbnail will be generated and generated only when it is requested. The newly generated thumbnail is then stored for later use.</p>\n<h3>Notes</h3>\n<p>AST is based on <a href=\"https://wordpress.org/plugins/optimize-images-resizing/\" rel=\"ugc\">&#8216;Optimize images Resizing&#8217; by OriginalEXE</a>, which seems to be dormant for years.</p>\n<p><a href=\"https://github.com/mauricesvay/php-facedetection\" rel=\"nofollow ugc\">Face detection algorithm is by Maurice Svay</a>. It returns only the first face candidate detected. For most of images it does the job well and and it&#8217;s a bit faster than another implementation <a href=\"https://github.com/felixkoch/PHP-FaceDetector\" rel=\"nofollow ugc\">PHP-FaceDetector by Felix Koch</a>. When it fails to detect face(s), the cropping will be done by the WordPress default.</p>\n<p>The module is designed to be <strong>extendable</strong>. Other plugins can do face detection, e.g. with faster algorithms or better accuracy, or can designate focal points manually, then store the face/focal data to the meta data of an image. AST can pick up the data to do cropping. This is done by adding a new field &#8216;focal_area&#8217; in the meta data, as below:</p>\n<pre><code>Array (\n    [width] =&gt; 512\n    [height] =&gt; 512\n    [file] =&gt; 2019/04/sample-image-file.jpg\n    [sizes] =&gt; Array ()\n    [focal_area] = (\n        [x] =&gt; 100\n        [y] =&gt; 123\n        [w] =&gt; 58\n        [h] =&gt; 58\n        [faces] =&gt; Array (\n            [tharavaad-svay] =&gt; Array (\n                [0] =&gt; Array (\n                    [x] =&gt; 100\n                    [y] =&gt; 123\n                    [w] =&gt; 58\n                )\n            )\n            [koch] =&gt; Array (\n                [0] =&gt; Array (\n                    [x] =&gt; 100\n                    [y] =&gt; 123\n                    [w] =&gt; 58\n                )\n                [1] =&gt; Array (\n                    ...\n                )\n            )\n        )\n    )\n)\n</code></pre>\n<p>The focal_area is defined by the position (x, y) and width and height. External plugins can store the detection result with these 4 parameters. AST can pick them up for cropping.</p>\n<p>The &#8216;focal_area&#8217; can be non-face objects that users want to focus on. Within it, the optional &#8216;faces&#8217; array defines faces detected and the algorithm used.</p>\n<p>To make it simple, some assumptions and numbers are defined as below:</p>\n<ol>\n<li>\n<p>To resave png images in jpg will save a lot space. But it needs to mess up with the WP database, which I stayed away for now. You may want to <a href=\"https://www.xnview.com/en/xnviewmp/\" rel=\"nofollow ugc\">convert your png images to jpg</a> before uploading them to your server.</p>\n</li>\n<li>\n<p>An image is downsized only when its short side &gt; 2&#215;1080. Otherwise it&#8217;s re-compressed when its size &gt;128k bytes. The new jpg file replaces the original only when it&#8217;s 25k bytes smaller.</p>\n</li>\n<li>\n<p>When a downsizing happens, the original is saved in uploads/ast-backup. The year/month structure is preserved. To save the server storage space, it&#8217;s recommended to download it and delete it from the server.</p>\n</li>\n</ol>\n<p>I didn&#8217;t get time to handle the localization language files yet.</p>\n<p>Please let me know how it works for you, or any improvement suggestions or feedback. Thanks!</p>\n<p><a href=\"https://github.com/longchaoliu/auto-smart-thumbnails\" rel=\"nofollow ugc\">Source code</a><br />\n<a href=\"https://discord.gg/8ekYwzv\" rel=\"nofollow ugc\">Discord forum</a></p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/auto-smart-thumbnails.1.1.4.zip",
+    "upgrade_notice": {
+        "": "<p>none</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/auto-smart-thumbnails/assets/screenshot-1.jpg?rev=2265226",
+            "caption": "Thumbnails generated by WP default. Faces cut."
+        },
+        {
+            "src": "https://ps.w.org/auto-smart-thumbnails/assets/screenshot-2.jpg?rev=2265226",
+            "caption": "Thumbnails generated by AST plugin. Faces detected and preserved."
+        },
+        {
+            "src": "https://ps.w.org/auto-smart-thumbnails/assets/screenshot-3.jpg?rev=2265226",
+            "caption": "Thumbnails generated by SmartCrop plugin. Faces cut."
+        },
+        {
+            "src": "https://ps.w.org/auto-smart-thumbnails/assets/screenshot-4.jpg?rev=2265226",
+            "caption": "Admin UI added by the plugin."
+        },
+        {
+            "src": "https://ps.w.org/auto-smart-thumbnails/assets/screenshot-5.jpg?rev=2265226",
+            "caption": "Log page after a cleanup."
+        },
+        {
+            "src": "https://ps.w.org/auto-smart-thumbnails/assets/screenshot-6.JPG?rev=2219842",
+            "caption": "Thumbnails before cleanup."
+        },
+        {
+            "src": "https://ps.w.org/auto-smart-thumbnails/assets/screenshot-7.jpg?rev=2219842",
+            "caption": "Thumbnails after cleanup."
+        }
+    ],
+    "tags": {
+        "cleanup-thumbnails": "cleanup thumbnails",
+        "downsize-images": "downsize images",
+        "face-detection": "face detection",
+        "free-up-server-storage": "free up server storage",
+        "smart-thumbnails": "smart thumbnails"
+    },
+    "stable_tag": "1.1.4",
+    "versions": {
+        "1.1.0": "https://downloads.wordpress.org/plugin/auto-smart-thumbnails.1.1.0.zip",
+        "1.1.1": "https://downloads.wordpress.org/plugin/auto-smart-thumbnails.1.1.1.zip",
+        "1.1.2": "https://downloads.wordpress.org/plugin/auto-smart-thumbnails.1.1.2.zip",
+        "1.1.3": "https://downloads.wordpress.org/plugin/auto-smart-thumbnails.1.1.3.zip",
+        "1.1.4": "https://downloads.wordpress.org/plugin/auto-smart-thumbnails.1.1.4.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/auto-smart-thumbnails.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "http://none",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/auto-smart-thumbnails/assets/icon-256x256.jpg?rev=2219864",
+        "2x": "https://ps.w.org/auto-smart-thumbnails/assets/icon-256x256.jpg?rev=2219864"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 86,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "auto-smart-thumbnails",
+            "language": "es_ES",
+            "version": "1.1.3",
+            "updated": "2020-05-29 22:57:49",
+            "package": "http://downloads.wordpress.org/translation/plugin/auto-smart-thumbnails/1.1.3/es_ES.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "auto-smart-thumbnails",
+            "language": "nb_NO",
+            "version": "1.1.3",
+            "updated": "2021-03-29 15:40:54",
+            "package": "http://downloads.wordpress.org/translation/plugin/auto-smart-thumbnails/1.1.3/nb_NO.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "auto-smart-thumbnails",
+            "language": "ru_RU",
+            "version": "1.1.3",
+            "updated": "2022-02-08 18:37:23",
+            "package": "http://downloads.wordpress.org/translation/plugin/auto-smart-thumbnails/1.1.3/ru_RU.zip"
+        }
+    ]
+}

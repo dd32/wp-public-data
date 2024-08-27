@@ -1,0 +1,83 @@
+{
+    "name": "Block Metadata",
+    "slug": "block-metadata",
+    "version": "1.0.7",
+    "author": "<a href=\"https://leoloso.com\">Leonardo Losoviz</a>",
+    "author_profile": "https://profiles.wordpress.org/leoloso/",
+    "contributors": {
+        "leoloso": {
+            "profile": "https://profiles.wordpress.org/leoloso/",
+            "avatar": "https://secure.gravatar.com/avatar/b28085726ee66e49f08be16ad668efd5?s=96&d=monsterid&r=g",
+            "display_name": "leoloso"
+        }
+    },
+    "requires": "5.0",
+    "tested": "5.4.16",
+    "requires_php": "5.6",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 1,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/block-metadata/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 1278,
+    "last_updated": "2020-04-15 3:37am GMT",
+    "added": "2019-08-22",
+    "homepage": "https://github.com/leoloso/block-metadata",
+    "sections": {
+        "description": "<p>This plugin helps convert WordPress into a manager of our digital content, to publish it in different mediums or platforms: not just the website, but also email, iOS/Android apps, home-assistants (like Amazon Alexa) and others.</p>\n<p>It does this by extracting the metadata from all Gutenberg blocks inside of a blog post. Because each Gutenberg block stores its own content and properties, these ones can be extracted as metadata and exported through a JSON object, accessible through a REST API endpoint, to feed any application on any platform.</p>\n<p>The plugin makes the following REST API endpoints available:</p>\n<ul>\n<li>/wp-json/block-metadata/v1/metadata/{POST_ID}: Extract all metadata from all Gutenberg blocks in a blog post with id {POST_ID}, converted to medium-agnostic (eg: removing all non-semantic HTML tags)</li>\n<li>/wp-json/block-metadata/v1/data/{POST_ID}: Extract all data from all Gutenberg blocks in a blog post with id {POST_ID}, as originally stored in the block by Gutenberg (eg: containing HTML code)</li>\n</ul>\n<p>Demonstration:</p>\n<ul>\n<li><a href=\"https://nextapi.getpop.org/posts/cope-with-wordpress-post-demo-containing-plenty-of-blocks/\" rel=\"nofollow ugc\">Blog post</a></li>\n<li><a href=\"https://nextapi.getpop.org/wp-json/block-metadata/v1/data/1499\" rel=\"nofollow ugc\">Blog post&#8217;s Gutenberg blocks</a></li>\n<li><a href=\"https://nextapi.getpop.org/wp-json/block-metadata/v1/metadata/1499\" rel=\"nofollow ugc\">Blog post&#8217;s medium-agnostic metadata</a></li>\n</ul>\n<h4>How does it work?</h4>\n<p>This plugin is based on the strategy called &#8220;Create Once, Publish Everywhere&#8221; (also called &#8220;COPE&#8221;), which reduces the amount of work needed to publish our content into different mediums by establishing a single source of truth for all content.</p>\n<p>Having content that works everywhere is not a trivial task, since each medium will have its own requirements. For instance, whereas HTML is valid for printing content for the web, this language is not valid for an iOS/Android app; similarly, we can add classes to our HTML for the web, but these must be converted to styles for email.</p>\n<p>The solution is to separate form from content: The presentation and the meaning of the content must be decoupled, and only the meaning is used as the single source of truth. The presentation can then be added in another layer, specific to the selected medium. For instance, given the following piece of HTML code, the <code>&lt;p&gt;</code> is an HTML tag which applies mostly for the web, and attribute class=&#8221;align-center&#8221; is presentation (placing an element &#8220;on the center&#8221; makes sense for a screen-based medium, but not for an audio-based one such as Amazon Alexa):</p>\n<pre><code>&lt;p class=\"align-center\"&gt;Hello world!&lt;/p&gt;\n</code></pre>\n<p>Hence, this piece of content cannot be used as a single source of truth, and it must be converted into a format which separates the meaning from the presentation, such as the following piece of JSON code:</p>\n<pre><code>{\n  content: \"Hello world!\",\n  placement: \"center\",\n  type: \"paragraph\"\n}\n</code></pre>\n<p>This piece of code can be used as a single source of truth for content, since from it we can recreate once again the HTML code to use for the web, and procure an appropriate format for other mediums.</p>\n<h4>Supported Gutenberg blocks</h4>\n<p>This plugin attempts to extract the metadata for all Gutenberg blocks shipped in WordPress core; support for additional blocks, such as from plugins, can be added through hooks. Not all Gutenberg blocks can be supported (for instance, because they may only work for the web, or only make sense when applied to screen-based mediums, among other reasons).</p>\n<p>The following WordPress core blocks are currently not supported:</p>\n<ul>\n<li><code>\"core/columns\"</code></li>\n<li><code>\"core/column\"</code></li>\n<li><code>\"core/cover\"</code></li>\n<li><code>\"core/html\"</code></li>\n<li><code>\"core/table\"</code></li>\n<li><code>\"core/button\"</code></li>\n<li><code>\"core/media-text\"</code></li>\n</ul>\n<p>The following Gutenberg blocks are supported, and this plugin extracts their metadata:</p>\n<ul>\n<li><code>\"core/paragraph\"</code></li>\n<li><code>\"core/image\"</code></li>\n<li><code>\"core-embed/youtube\"</code> (all other <code>\"core-embed\"</code> blocks can also be extracted, but must be implemented through a hook)</li>\n<li><code>\"core/heading\"</code></li>\n<li><code>\"core/gallery\"</code></li>\n<li><code>\"core/list\"</code></li>\n<li><code>\"core/audio\"</code></li>\n<li><code>\"core/file\"</code></li>\n<li><code>\"core/video\"</code></li>\n<li><code>\"core/code\"</code></li>\n<li><code>\"core/preformatted\"</code></li>\n<li><code>\"core/quote\"</code></li>\n<li><code>\"core/pullquote\"</code></li>\n<li><code>\"core/verse\"</code></li>\n</ul>\n<h4>Extracting metadata for additional blocks</h4>\n<p>We can extend this plugin to extract the metadata for additional blocks, such as those shipped through plugins. To do this, simply add a hook for filter <code>\"Leoloso\\BlockMetadata\\Metadata::blockMeta\"</code> (located in function <code>get_block_metadata($block_data)</code> from class <code>Metadata</code> in file <code>block-metadata/src/Metadata.php</code>). The attributes that must be extracted must be decided on a block type by block type basis:</p>\n<pre><code>add_filter(\"Leoloso\\BlockMetadata\\Metadata::blockMeta\", \"extract_additional_block_metadata\", 10, 3);\nfunction extract_additional_block_metadata($blockMeta, $blockName, $block)\n{\n  if ($blockName == \"my-plugin/my-block-name\") {\n    return array(\n      \"property1\" =&gt; $block[\"property1\"],\n      \"property2\" =&gt; $block[\"property2\"]\n    );\n  }\n\n  return $blockMeta;\n}\n</code></pre>\n<h4>Further references</h4>\n<ul>\n<li><a href=\"https://leoloso.com/posts/my-1st-wp-plugin/\" rel=\"nofollow ugc\">Inspiration for the plugin</a></li>\n<li><a href=\"https://slides.com/leoloso/cope-with-wp\" rel=\"nofollow ugc\">Slides from presentation &#8220;COPE with WordPress&#8221;</a> (from WordCamp Singapore 2019), explaining how the plugin works</li>\n</ul>\n<h4>Contributing / Reporting issues</h4>\n<p>Please head over to the project&#8217;s <a href=\"https://github.com/leoloso/block-metadata\" rel=\"nofollow ugc\">GitHub repo</a> for contributing, reporting issues or making suggestions, and others.</p>\n<p><em>Banner image <a href=\"https://www.freepik.com\" rel=\"nofollow ugc\">designed by Freepik</a></em></p>\n",
+        "installation": "<ol>\n<li>Make sure pretty permalinks are enabled (eg: &#8220;/%postname%/&#8221;)</li>\n<li>Install and activate this plugin</li>\n</ol>\n"
+    },
+    "short_description": "Extract all metadata from all Gutenberg blocks inside of a post",
+    "description": "<p>This plugin helps convert WordPress into a manager of our digital content, to publish it in different mediums or platforms: not just the website, but also email, iOS/Android apps, home-assistants (like Amazon Alexa) and others.</p>\n<p>It does this by extracting the metadata from all Gutenberg blocks inside of a blog post. Because each Gutenberg block stores its own content and properties, these ones can be extracted as metadata and exported through a JSON object, accessible through a REST API endpoint, to feed any application on any platform.</p>\n<p>The plugin makes the following REST API endpoints available:</p>\n<ul>\n<li>/wp-json/block-metadata/v1/metadata/{POST_ID}: Extract all metadata from all Gutenberg blocks in a blog post with id {POST_ID}, converted to medium-agnostic (eg: removing all non-semantic HTML tags)</li>\n<li>/wp-json/block-metadata/v1/data/{POST_ID}: Extract all data from all Gutenberg blocks in a blog post with id {POST_ID}, as originally stored in the block by Gutenberg (eg: containing HTML code)</li>\n</ul>\n<p>Demonstration:</p>\n<ul>\n<li><a href=\"https://nextapi.getpop.org/posts/cope-with-wordpress-post-demo-containing-plenty-of-blocks/\" rel=\"nofollow ugc\">Blog post</a></li>\n<li><a href=\"https://nextapi.getpop.org/wp-json/block-metadata/v1/data/1499\" rel=\"nofollow ugc\">Blog post&#8217;s Gutenberg blocks</a></li>\n<li><a href=\"https://nextapi.getpop.org/wp-json/block-metadata/v1/metadata/1499\" rel=\"nofollow ugc\">Blog post&#8217;s medium-agnostic metadata</a></li>\n</ul>\n<h4>How does it work?</h4>\n<p>This plugin is based on the strategy called &#8220;Create Once, Publish Everywhere&#8221; (also called &#8220;COPE&#8221;), which reduces the amount of work needed to publish our content into different mediums by establishing a single source of truth for all content.</p>\n<p>Having content that works everywhere is not a trivial task, since each medium will have its own requirements. For instance, whereas HTML is valid for printing content for the web, this language is not valid for an iOS/Android app; similarly, we can add classes to our HTML for the web, but these must be converted to styles for email.</p>\n<p>The solution is to separate form from content: The presentation and the meaning of the content must be decoupled, and only the meaning is used as the single source of truth. The presentation can then be added in another layer, specific to the selected medium. For instance, given the following piece of HTML code, the <code>&lt;p&gt;</code> is an HTML tag which applies mostly for the web, and attribute class=&#8221;align-center&#8221; is presentation (placing an element &#8220;on the center&#8221; makes sense for a screen-based medium, but not for an audio-based one such as Amazon Alexa):</p>\n<pre><code>&lt;p class=\"align-center\"&gt;Hello world!&lt;/p&gt;\n</code></pre>\n<p>Hence, this piece of content cannot be used as a single source of truth, and it must be converted into a format which separates the meaning from the presentation, such as the following piece of JSON code:</p>\n<pre><code>{\n  content: \"Hello world!\",\n  placement: \"center\",\n  type: \"paragraph\"\n}\n</code></pre>\n<p>This piece of code can be used as a single source of truth for content, since from it we can recreate once again the HTML code to use for the web, and procure an appropriate format for other mediums.</p>\n<h4>Supported Gutenberg blocks</h4>\n<p>This plugin attempts to extract the metadata for all Gutenberg blocks shipped in WordPress core; support for additional blocks, such as from plugins, can be added through hooks. Not all Gutenberg blocks can be supported (for instance, because they may only work for the web, or only make sense when applied to screen-based mediums, among other reasons).</p>\n<p>The following WordPress core blocks are currently not supported:</p>\n<ul>\n<li><code>\"core/columns\"</code></li>\n<li><code>\"core/column\"</code></li>\n<li><code>\"core/cover\"</code></li>\n<li><code>\"core/html\"</code></li>\n<li><code>\"core/table\"</code></li>\n<li><code>\"core/button\"</code></li>\n<li><code>\"core/media-text\"</code></li>\n</ul>\n<p>The following Gutenberg blocks are supported, and this plugin extracts their metadata:</p>\n<ul>\n<li><code>\"core/paragraph\"</code></li>\n<li><code>\"core/image\"</code></li>\n<li><code>\"core-embed/youtube\"</code> (all other <code>\"core-embed\"</code> blocks can also be extracted, but must be implemented through a hook)</li>\n<li><code>\"core/heading\"</code></li>\n<li><code>\"core/gallery\"</code></li>\n<li><code>\"core/list\"</code></li>\n<li><code>\"core/audio\"</code></li>\n<li><code>\"core/file\"</code></li>\n<li><code>\"core/video\"</code></li>\n<li><code>\"core/code\"</code></li>\n<li><code>\"core/preformatted\"</code></li>\n<li><code>\"core/quote\"</code></li>\n<li><code>\"core/pullquote\"</code></li>\n<li><code>\"core/verse\"</code></li>\n</ul>\n<h4>Extracting metadata for additional blocks</h4>\n<p>We can extend this plugin to extract the metadata for additional blocks, such as those shipped through plugins. To do this, simply add a hook for filter <code>\"Leoloso\\BlockMetadata\\Metadata::blockMeta\"</code> (located in function <code>get_block_metadata($block_data)</code> from class <code>Metadata</code> in file <code>block-metadata/src/Metadata.php</code>). The attributes that must be extracted must be decided on a block type by block type basis:</p>\n<pre><code>add_filter(\"Leoloso\\BlockMetadata\\Metadata::blockMeta\", \"extract_additional_block_metadata\", 10, 3);\nfunction extract_additional_block_metadata($blockMeta, $blockName, $block)\n{\n  if ($blockName == \"my-plugin/my-block-name\") {\n    return array(\n      \"property1\" =&gt; $block[\"property1\"],\n      \"property2\" =&gt; $block[\"property2\"]\n    );\n  }\n\n  return $blockMeta;\n}\n</code></pre>\n<h4>Further references</h4>\n<ul>\n<li><a href=\"https://leoloso.com/posts/my-1st-wp-plugin/\" rel=\"nofollow ugc\">Inspiration for the plugin</a></li>\n<li><a href=\"https://slides.com/leoloso/cope-with-wp\" rel=\"nofollow ugc\">Slides from presentation &#8220;COPE with WordPress&#8221;</a> (from WordCamp Singapore 2019), explaining how the plugin works</li>\n</ul>\n<h4>Contributing / Reporting issues</h4>\n<p>Please head over to the project&#8217;s <a href=\"https://github.com/leoloso/block-metadata\" rel=\"nofollow ugc\">GitHub repo</a> for contributing, reporting issues or making suggestions, and others.</p>\n<p><em>Banner image <a href=\"https://www.freepik.com\" rel=\"nofollow ugc\">designed by Freepik</a></em></p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/block-metadata.1.0.7.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "api": "api",
+        "block": "block",
+        "content": "content",
+        "gutenberg": "gutenberg",
+        "metadata": "metadata"
+    },
+    "stable_tag": "1.0.7",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/block-metadata.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/block-metadata.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/block-metadata.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/block-metadata.1.0.3.zip",
+        "1.0.4": "https://downloads.wordpress.org/plugin/block-metadata.1.0.4.zip",
+        "1.0.5": "https://downloads.wordpress.org/plugin/block-metadata.1.0.5.zip",
+        "1.0.6": "https://downloads.wordpress.org/plugin/block-metadata.1.0.6.zip",
+        "1.0.7": "https://downloads.wordpress.org/plugin/block-metadata.1.0.7.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/block-metadata.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/block-metadata/assets/banner-772x250.jpg?rev=2143662",
+        "high": "https://ps.w.org/block-metadata/assets/banner-1544x500.jpg?rev=2143662"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/block-metadata/assets/icon-128x128.jpg?rev=2143662",
+        "2x": "https://ps.w.org/block-metadata/assets/icon-256x256.jpg?rev=2143662"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

@@ -1,0 +1,80 @@
+{
+    "name": "GF No Duplicates",
+    "slug": "gf-no-duplicates",
+    "version": "1.2",
+    "author": "<a href=\"https://www.samuelaguilera.com\">Samuel Aguilera</a>",
+    "author_profile": "https://profiles.wordpress.org/samuelaguilera/",
+    "contributors": {
+        "samuelaguilera": {
+            "profile": "https://profiles.wordpress.org/samuelaguilera/",
+            "avatar": "https://secure.gravatar.com/avatar/6a0b7f511fbc076636d9ac743b6725c8?s=96&d=monsterid&r=g",
+            "display_name": "Samuel Aguilera"
+        }
+    },
+    "requires": "4.9",
+    "tested": "6.5.5",
+    "requires_php": "7.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 80,
+    "ratings": {
+        "5": 0,
+        "4": 1,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/gf-no-duplicates/",
+    "support_threads": 1,
+    "support_threads_resolved": 1,
+    "active_installs": 700,
+    "downloaded": 4577,
+    "last_updated": "2024-04-26 4:48pm GMT",
+    "added": "2022-02-10",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Gravity Forms already has some built-in duplicate submission prevention techniques, including the No Duplicates setting for a field in your form, preventing the same field value from being used multiple times for the same form. Using this setting is a rock solid approach to avoid duplicate submissions, but it requires having a field in your form that you can consider as a source of unique data per submission.</p>\n<p>This add-on helps using the same idea, without requiring having a field to enable the No Duplicates setting, by dynamically adding a hidden input with a random token to the form, and checks the <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST\" rel=\"nofollow ugc\">POST request</a> received for this token value to prevent duplicate submissions.</p>\n<p>This will <strong>stop identical POST requests</strong> from being accepted for entry creation, like the ones that some browsers will send when the browser back or refresh buttons are clicked or when browser tabs are restored in mobile devices.</p>\n<h4>Limitations</h4>\n<ol>\n<li>If for any reason the visitor manually fills the form with the same information, and submits it again, <strong>blocking this visitor&#8217;s behavior is not within the scope of this plugin functionality</strong>.</li>\n</ol>\n<p>To put in another way, the add-on is intended to <strong>block automated resend of the same POST request data, it doesn&#8217;t block submissions voluntarily initiated by the visitor</strong>.</p>\n<ol>\n<li>If your site is still receiving repeated POST requests <strong>created before enabling the add-on</strong>, therefore not containing the token field, you would still receive duplicates for these entries. There&#8217;s no way for the add-on to be able stop duplicates for requests <strong>created before enabling the add-on</strong>.</li>\n</ol>\n<h4>How it works:</h4>\n<ol>\n<li><strong>When the add-on is enabled</strong> a hidden input with a random token as value is added to each form dynamically in the front-end.</li>\n<li>When a POST request is received and handled by Gravity Forms, GF No Duplicates checks if this POST request has the token and if its value was used already in an existing entry <strong>for the form tied to the POST request</strong>.</li>\n<li>If the token parameter exists but is empty or there&#8217;s any form entry where the token value was used already, GF No Duplicates stops the submission.</li>\n<li>The form is replaced with an error message, which contains a link to the form page, suggesting the visitor to click the link to start a fresh new submission.</li>\n</ol>\n<h4>Requirements</h4>\n<ul>\n<li>PHP 7.0 or higher.</li>\n<li>WordPress 4.9 or higher.</li>\n<li>Gravity Forms 2.5 or higher.</li>\n<li>The page where the form is embedded must be <strong>excluded from cache</strong> (if you use any caching plugin or server cache, see note below).</li>\n</ul>\n<h4>Usage</h4>\n<ul>\n<li>Install and activate it as you do with any other plugin.</li>\n<li>Enjoy!</li>\n</ul>\n<p>Optionally, you can customize the duplicate submission message shown to users from the settings page or using a filter (see the FAQ).</p>\n<h4>Note about Caching</h4>\n<p>The add-on functionality relies on a <strong>random</strong> token generated <strong>dynamically</strong>, so for obvious reasons caching the page where your form is embedded would prevent the add-on from working as expected. This is not a limitation of the add-on but the expected if you&#8217;re serving a static version of your page, which is the only reason to cache a page, you shouldn&#8217;t never cache pages where you expect dynamic data.</p>\n<p>Most caching plugins provide you a way to exclude URLs from cache, this is for a reason, use it.</p>\n<p>There are some web hosting providers using cache at server level and not providing their customers with an interface to exclude URLs from cache (e.g. WP Engine, Kinsta, &#8230;), you can still ask your host support staff to add the exclusion for you.</p>\n<p>You can also use <a href=\"https://wordpress.org/plugins/fresh-forms-for-gravity/\" rel=\"ugc\">Fresh Forms</a> for automated cache exclusion if you use any of the embedding methods and caching plugins supported (see Fresh Forms description for more details).</p>\n",
+        "faq": "\n<dt id='is%20it%20possible%20to%20customize%20the%20message%20shown%20for%20duplicate%20submissions%3F'>\nIs it possible to customize the message shown for duplicate submissions?\n</h4>\n<p>\n<p>Yes. You can do this from the Forms &gt; Settings &gt; GF No Duplicates settings page. Or using the gnd_duplicate_submission_message filter. See the example below:</p>\n<pre><code>add_filter( 'gnd_duplicate_submission_message', function( $message, $form ) {\n    $message = 'Your custom text goes here';\n    return $message;\n}, 10, 2 );\n</code></pre>\n<p>Using the filter will override the default message and any custom message that you may have added in the settings page.</p>\n</p>\n\n",
+        "changelog": "<h4>1.2</h4>\n<ul>\n<li>Added a settings page to allow customizing the duplicate submission message.</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>Added the gnd_duplicate_submission_message filter to allow customizing the duplicate submission message.</li>\n</ul>\n<h4>1.1</h4>\n<ul>\n<li>Improved logging messages to facilitate the log analysis.</li>\n<li>Changed the way duplicate submissions are informed to the user from a validation message to replacing the form with a message to prevent visitors ignoring the error and creating a duplicate by clicking the submit button.</li>\n<li>Prevent forms with User Registration Update User feeds skipping the GND token validation.</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>First public release.</li>\n</ul>\n"
+    },
+    "short_description": "Prevents duplicate Gravity Forms submissions caused by the same POST request sent more than once.",
+    "description": "<p>Gravity Forms already has some built-in duplicate submission prevention techniques, including the No Duplicates setting for a field in your form, preventing the same field value from being used multiple times for the same form. Using this setting is a rock solid approach to avoid duplicate submissions, but it requires having a field in your form that you can consider as a source of unique data per submission.</p>\n<p>This add-on helps using the same idea, without requiring having a field to enable the No Duplicates setting, by dynamically adding a hidden input with a random token to the form, and checks the <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST\" rel=\"nofollow ugc\">POST request</a> received for this token value to prevent duplicate submissions.</p>\n<p>This will <strong>stop identical POST requests</strong> from being accepted for entry creation, like the ones that some browsers will send when the browser back or refresh buttons are clicked or when browser tabs are restored in mobile devices.</p>\n<h4>Limitations</h4>\n<ol>\n<li>If for any reason the visitor manually fills the form with the same information, and submits it again, <strong>blocking this visitor&#8217;s behavior is not within the scope of this plugin functionality</strong>.</li>\n</ol>\n<p>To put in another way, the add-on is intended to <strong>block automated resend of the same POST request data, it doesn&#8217;t block submissions voluntarily initiated by the visitor</strong>.</p>\n<ol>\n<li>If your site is still receiving repeated POST requests <strong>created before enabling the add-on</strong>, therefore not containing the token field, you would still receive duplicates for these entries. There&#8217;s no way for the add-on to be able stop duplicates for requests <strong>created before enabling the add-on</strong>.</li>\n</ol>\n<h4>How it works:</h4>\n<ol>\n<li><strong>When the add-on is enabled</strong> a hidden input with a random token as value is added to each form dynamically in the front-end.</li>\n<li>When a POST request is received and handled by Gravity Forms, GF No Duplicates checks if this POST request has the token and if its value was used already in an existing entry <strong>for the form tied to the POST request</strong>.</li>\n<li>If the token parameter exists but is empty or there&#8217;s any form entry where the token value was used already, GF No Duplicates stops the submission.</li>\n<li>The form is replaced with an error message, which contains a link to the form page, suggesting the visitor to click the link to start a fresh new submission.</li>\n</ol>\n<h4>Requirements</h4>\n<ul>\n<li>PHP 7.0 or higher.</li>\n<li>WordPress 4.9 or higher.</li>\n<li>Gravity Forms 2.5 or higher.</li>\n<li>The page where the form is embedded must be <strong>excluded from cache</strong> (if you use any caching plugin or server cache, see note below).</li>\n</ul>\n<h4>Usage</h4>\n<ul>\n<li>Install and activate it as you do with any other plugin.</li>\n<li>Enjoy!</li>\n</ul>\n<p>Optionally, you can customize the duplicate submission message shown to users from the settings page or using a filter (see the FAQ).</p>\n<h4>Note about Caching</h4>\n<p>The add-on functionality relies on a <strong>random</strong> token generated <strong>dynamically</strong>, so for obvious reasons caching the page where your form is embedded would prevent the add-on from working as expected. This is not a limitation of the add-on but the expected if you&#8217;re serving a static version of your page, which is the only reason to cache a page, you shouldn&#8217;t never cache pages where you expect dynamic data.</p>\n<p>Most caching plugins provide you a way to exclude URLs from cache, this is for a reason, use it.</p>\n<p>There are some web hosting providers using cache at server level and not providing their customers with an interface to exclude URLs from cache (e.g. WP Engine, Kinsta, &#8230;), you can still ask your host support staff to add the exclusion for you.</p>\n<p>You can also use <a href=\"https://wordpress.org/plugins/fresh-forms-for-gravity/\" rel=\"ugc\">Fresh Forms</a> for automated cache exclusion if you use any of the embedding methods and caching plugins supported (see Fresh Forms description for more details).</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/gf-no-duplicates.1.2.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "duplicated-entry": "duplicated entry",
+        "duplicated-submission": "duplicated submission",
+        "duplicates": "duplicates",
+        "gravity-forms": "gravity forms",
+        "gravityforms": "GravityForms"
+    },
+    "stable_tag": "1.2",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/gf-no-duplicates.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/gf-no-duplicates.1.1.zip",
+        "1.1.1": "https://downloads.wordpress.org/plugin/gf-no-duplicates.1.1.1.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/gf-no-duplicates.1.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/gf-no-duplicates.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/gf-no-duplicates/assets/banner-772x250.png?rev=2680192",
+        "high": "https://ps.w.org/gf-no-duplicates/assets/banner-1544x500.png?rev=2680192"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/gf-no-duplicates/assets/icon-128x128.png?rev=2680192",
+        "2x": "https://ps.w.org/gf-no-duplicates/assets/icon-256x256.png?rev=2680192"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 80,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

@@ -1,0 +1,76 @@
+{
+    "name": "AdHerder",
+    "slug": "adherder",
+    "version": "1.3",
+    "author": "<a href=\"http://grasshopperherder.com/\">Tristan Kromer, Peter Backx</a>",
+    "author_profile": "https://profiles.wordpress.org/pbackx/",
+    "contributors": {
+        "pbackx": {
+            "profile": "https://profiles.wordpress.org/pbackx/",
+            "avatar": "https://secure.gravatar.com/avatar/d0ac731c33c73f2ee5db886b0ee0978f?s=96&d=monsterid&r=g",
+            "display_name": "pbackx"
+        }
+    },
+    "requires": "3.0",
+    "tested": "3.4.2",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/adherder/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 2001,
+    "last_updated": "2012-08-13 12:34pm GMT",
+    "added": "2011-10-27",
+    "homepage": "http://grasshopperherder.com/",
+    "sections": {
+        "description": "<p>AdHerder is an automated A/B advertisement testing platform. Create your ads and AdHerder will select the best ad for each individual user.</p>\n<p>This means you can create any number of ads to display in a wordpress widget and AdHerder will perform the following functions:</p>\n<ol>\n<li>Keep track of which ads are converting well so that you can turn off poorly performing ads.</li>\n<li>Don&#8217;t show the same user the same ad over and over. If they didn&#8217;t click the 3rd time, they&#8217;re not click the 5th.</li>\n<li>Don&#8217;t show an ad the user has already clicked on. Show them something new.</li>\n</ol>\n<p>All behaviors are completely configurable.</p>\n<p>AdHerder will automatically track clicks on links and can track just about any desired behavior. Please see the FAQ section for information on how to track Facebook likes, Twitter follows and Mailchimp signups.</p>\n",
+        "installation": "<p>Install through the admin interface, or manually in wp-content/plugins/adherder</p>\n<p>Once AdHerder is enabled, a new post type will be available, called &#8220;Ad&#8221;. Create at least one ad and add the AdHerder widget to your theme.</p>\n",
+        "faq": "<h4>I&#8217;m always seeing the same ad. What&#8217;s happening?</h4>\n<p>Most likely, you are using a caching plugin (for instance, W3 Total Cache). In that case, enable Ajax in the AdHerder options screen.</p>\n<h4>How does AdHerder select which ad to display?</h4>\n<p>AdHerder tracks the user behavior through a cookie. Based on this data the ad is selected as follows: An ad that has not been seen by the user has the highest priority. An ad on which the user has already converted (clicked) has the lowest priority. You can tweak this behavior in the settings screen.</p>\n<h4>How does AdHerder track conversions?</h4>\n<p>The plugin automatically tracks clicks on links with a small piece of JavaScript. If you want to monitor different types of conversion, you need to manually call the <code>adherder_track_conversion()</code> function with as argument the ID of the ad.</p>\n<h4>Where do I find the Ad ID?</h4>\n<p>To find the ID of the call you can open the reports page and check the table.<br />\nThe first column shows the id. Another option is to edit the call and look<br />\nat the url: <code>/wp-admin/post.php?post=7&amp;action=edit</code>. In this case, the id is 7.</p>\n<h4>How do I track Twitter follows?</h4>\n<p>Tracking Twitter conversions (this only tracks people who click on follow and weren&#8217;t already following you). Use the following code:</p>\n<pre><code>&lt;a href=\"&lt;your twitter url&gt;\" class=\"twitter-follow-button\" data-show-count=\"false\"&gt;Follow me&lt;/a&gt; &lt;script type=\"text/javascript\"&gt; jQuery.getScript(\"//platform.twitter.com/widgets.js\", function() {   twttr.events.bind('follow', function(event) {     adherder_track_conversion(&lt;ad-id);   }); }); &lt;/script&gt; </code></pre>\n<p>Don&#8217;t forget to replace:<br />\n*  with the correct url to your Twitter profile. If you are unsure, you can get it from this page http://twitter.com/about/resources/followbutton *  with the correct WordPress id of your ad (see above)</p>\n<h4>How do I track Mailchimp signups?</h4>\n<p>Mailchimp signup tracking (tracks every one who receives the signup configuratin mail, but can be changed to track any one who clicks on the submit button):</p>\n<ol>\n<li>Again it&#8217;s best to work in HTML mode when entering the data</li>\n<li>In Mailchimp, create an embedded signup form: Lists &gt; Choose your list &gt; Signup embed form &gt; choose your options, but do not disable JavaScript</li>\n<li>\n<p>Copy the code into a new call</p>\n<p>Note: by default the latest version of WordPress comes with jQuery in &#8220;no conflict&#8221; mode. This is not compatible with the Mailchimp signup form. To fix this, you need to replace every occurence of $ in the form with jQuery (capitalization is important)</p>\n</li>\n<li>Find the following text in the call: <code>function mce_success_cb(resp)</code> It is in the lower part of the signup code</li>\n<li>A few lines lower you should see <code>if (resp.result==\"success\"){</code></li>\n<li>\n<p>Just below this line add the tracking code:</p>\n<pre><code>if (resp.result==\"success\") {   adherder_track_conversion(&lt;call-id&gt;);   ... </code></pre>\n</li>\n<li>\n<p>Save the changes</p>\n</li>\n</ol>\n<h4>How do I track Facebook likes?</h4>\n<p>In order to track Facebook likes, you need to use the XFBML version of the like button. Use the following code when creating your ad:</p>\n<pre><code>&lt;div id=\"fb-root\"&gt;&lt;/div&gt; &lt;fb:like send=\"false\" layout=\"button_count\" width=\"200\" show_faces=\"true\"&gt;&lt;/fb:like&gt; &lt;script type=\"text/javascript\"&gt; jQuery.getScript('&lt;facebook script url&gt;', function() {     FB.init({ status: true, cookie: true, xfbml: true });     FB.Event.subscribe('edge.create', function(response) {       adherder_track_conversion(&lt;ad-id&gt;);     }); }); &lt;/script&gt; </code></pre>\n<p>You may need to change the &#8220;fb:like&#8221; section to suite your preferences. The easiest way to get it right is to get the code from: http://developers.facebook.com/docs/reference/plugins/like/</p>\n<h4>Can I force AdHerder to display a certain ad? For testing?</h4>\n<p>Yes you can. It is possible to override the automatic selection of ads.<br />\nAdd a <code>adherder_ad</code> parameter to the request. For instance, show the add with id 10:</p>\n<pre><code>http://yoursite/?adherder_ad=10 </code></pre>\n<p>Want a nice button to do this more easily? Ask Tristan@grasshopperherder.com</p>\n",
+        "changelog": "<h4>Version 1.3</h4>\n<ul>\n<li>Added confidence &amp; relevance calculations for selected items</li>\n<li>Now possible to customize the items that are in the report</li>\n<li>Simplified managment &amp; reporting interface</li>\n<li>Bulk actions on ads (ctr-click to select multiple) </li>\n</ul>\n<h4>Version 1.2</h4>\n<ul>\n<li>More robust JavaScript</li>\n<li>Changed Twitter &amp; Facebook help so it also works with Ajax version</li>\n<li>Added help on the new ad screen</li>\n</ul>\n<h4>Version 1.1</h4>\n<ul>\n<li>Minimal update to correctly reference authors</li>\n</ul>\n<h4>Version 1.0</h4>\n<ul>\n<li>Initial version.</li>\n</ul>\n"
+    },
+    "short_description": "AdHerder is an automated A/B advertisement testing platform. Create your ads and AdHerder will select the best ad for each individual user.",
+    "description": "<p>AdHerder is an automated A/B advertisement testing platform. Create your ads and AdHerder will select the best ad for each individual user.</p>\n<p>This means you can create any number of ads to display in a wordpress widget and AdHerder will perform the following functions:</p>\n<ol>\n<li>Keep track of which ads are converting well so that you can turn off poorly performing ads.</li>\n<li>Don&#8217;t show the same user the same ad over and over. If they didn&#8217;t click the 3rd time, they&#8217;re not click the 5th.</li>\n<li>Don&#8217;t show an ad the user has already clicked on. Show them something new.</li>\n</ol>\n<p>All behaviors are completely configurable.</p>\n<p>AdHerder will automatically track clicks on links and can track just about any desired behavior. Please see the FAQ section for information on how to track Facebook likes, Twitter follows and Mailchimp signups.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/adherder.1.3.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "ad": "ad",
+        "automatic": "automatic",
+        "manage": "manage",
+        "widget": "widget"
+    },
+    "stable_tag": "1.3",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/adherder.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/adherder.1.1.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/adherder.1.2.zip",
+        "1.3": "https://downloads.wordpress.org/plugin/adherder.1.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/adherder.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "http://grasshopperherder.com/",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/adherder.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

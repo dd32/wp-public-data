@@ -1,0 +1,95 @@
+{
+    "name": "Show Repos",
+    "slug": "show-repos",
+    "version": "1.1.3",
+    "author": "<a href=\"http://www.xn--irr040d121a.cn/\">Joytou Wu</a>",
+    "author_profile": "https://profiles.wordpress.org/joytou/",
+    "contributors": {
+        "joytou": {
+            "profile": "https://profiles.wordpress.org/joytou/",
+            "avatar": "https://secure.gravatar.com/avatar/5fc5883d37c8bfefe757b6b01162f95e?s=96&d=monsterid&r=g",
+            "display_name": "joytou"
+        }
+    },
+    "requires": "5.0",
+    "tested": "5.4.16",
+    "requires_php": "5.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/show-repos/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 531,
+    "last_updated": "2020-05-30 3:11am GMT",
+    "added": "2020-05-15",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Show your repo(s) on the wordpress through a simple shortcode.</p>\n<h4>How to Use</h4>\n<p>Add the shortcode to anywhere you want to display:<br />\n    <code>[show-repo src=\"{{code-managed plant}}\" user=\"{{username that the repo want to display}}\" repo=\"{{repository name that the repo want to display}}\"/]</code></p>\n<h4>Example Code</h4>\n<ol>\n<li>\n<code>[show-repo src=\"github\" user=\"joytou\" repo=\"WP-Bing-Background\"/]</code></li>\n<li>\n<code>[show-repo src=\"gitee\" user=\"joytouwu\" repo=\"WP-Bing-Background\"/]</code></li>\n</ol>\n<h4>Upgrade Notice</h4>\n<p>The &#8216;./mod/&#8217; directory needs to be backed up before updating, it will be overwritten through the system update mechanism.</p>\n<h4>Steps to Upgrade</h4>\n<ol>\n<li>Back up the plugin directory, deactive the plugin, and then delete the plugin directory before upgrade to new version.</li>\n<li>Upload and unzip the new version to its original location, active plugins, plugin configuration sits to automatically inherit.</li>\n</ol>\n<h4>Contribute</h4>\n<p>Welcome to help to improve the plugin if you have any idea or you had caught any bug. Please email me <a href=\"mailto:&#x6a;&#111;&#121;&#x74;&#x6f;&#117;&#046;&#x77;&#x75;&#064;&#113;&#x71;&#x2e;c&#111;&#109;\" rel=\"nofollow ugc\">&#x6a;&#111;&#121;&#x74;&#x6f;&#117;&#046;&#x77;&#x75;&#064;&#113;&#x71;&#x2e;c&#111;&#109;</a>. Thanks~</p>\n",
+        "installation": "<ol>\n<li>Backup and delete the plugin directory and deactive the plugin if you has installed any elder version.</li>\n<li>Upload the plugin files to the plugins directory, or install the plugin through the WordPress plugins screen directly.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; screen in WordPress</li>\n</ol>\n",
+        "faq": "\n<h4>\nHow to extend the other code-managed plant (or the likely service)?\n</h4>\n<p>\n<ol>\n<li>Create a php file in &#8216;./mod/&#8217; directory, and name it to the plant name (format: {{plant name}}.php).</li>\n<li>Write the php file content as the following template:<br />\n<code>php<br />\n&lt;?php<br />\nclass SHOW_REPOS_MOD_{{PLANT_NAME}} {<br />\npublic $api_url         = '{{url}}'; //Plant api url that point to repo, usual it is such: https://{{url}}/{:user}/{:repo}<br />\npublic $template_css    = '{{css_file_url}}'; //Recommend to write it follow the format: css/{{plant name}}.css<br />\npublic $template_js     = '{{js_file_url}}'; //Recommend to write it follow the format: js/{{plant name}}.js<br />\npublic $template_html   = '{{html_file_url}}'; //Recommend to write it follow the format: {{plant name}}.html<br />\npublic function data_format($original_data){<br />\n    $data = array();<br />\n    $data['name']           = $original_data['{{name}}'];  //The api struct data key which get the repo's name.<br />\n    $data['description']    = $original_data['description'];  //The api struct data key which get the repo's description.<br />\n    $data['url']            = $original_data['html_url'];  //The api struct data key which get the repo's url, which link to the repo.<br />\n    $data['download_url']   = 'http://github.com/'.$original_data['full_name'].'/zipball/master';  //The api struct data key which get the repo's download url, or the url that can download the repo.<br />\n    $data['owner']          = $original_data['owner']['login'];  //The api struct data key which get the repo owner's name.<br />\n    $data['owner_url']      = $original_data['owner']['html_url'];  //The api struct data key which get the owner's url, which can link to the owner.<br />\n    $data['subscribers']    = $original_data['subscribers_count'];  //The api struct data key which get the count of subscriber(s)/starer(s) about the repo.<br />\n    $data['watchers']       = $original_data['watchers'];  //The api struct data key which get the count of watcher(s) about the repo.<br />\n    $data['forks']          = $original_data['forks'];  //The api struct data key which get the count of has forked about the repo.<br />\n    $data['home_page']      = $original_data['homepage'];  //The api struct data key which get theurl of the repo's homepage.<br />\n    $data['branch']         = $original_data['default_branch'];  //The api struct data key which get the default branch name of the repo.<br />\n    $data['ctime']          = $original_data['created_at'];  //The api struct data key which get the repo's created time.<br />\n    $data['mtime']          = $original_data['updated_at'];  //The api struct data key which get the repo's last updated time.<br />\n    $data['ptime']          = $original_data['pushed_at'];  //The api struct data key which get the repo's last pushed time.<br />\n    return $data;<br />\n}<br />\n}</code></li>\n<li>Add and write the html template file in the directory &#8216;./mod/template/&#8217;, which want to display in the shortcode, and add such label where want to display the specified infomation:<br />\n<code>{{name}} =&gt; Repo's name<br />\n{{description}} =&gt; Repo's description<br />\n{{url}} =&gt; Repo's url<br />\n{{download_url}} =&gt; The url that can download the repo<br />\n{{owner}} =&gt; Repo owner's name<br />\n{{owner_url}} =&gt; Repo owner's url<br />\n{{subscribers}} =&gt; The num of subscribing/staring the repo<br />\n{{watchers}} =&gt; The num of watching the repo<br />\n{{forks}} =&gt; The num of forking the repo<br />\n{{home_page}} =&gt; Repo's homepage url, which can link to repo's homepage<br />\n{{branch}} =&gt; Repo's default branch name<br />\n{{ctime}} =&gt; Repo's created time<br />\n{{mtime}} =&gt; Repo's last updated time<br />\n{{ptime}} =&gt; Repo's last pushed time</code></li>\n<li>Add the css/js file to the directory &#8216;./mod/template/css/&#8217; / &#8216;./mod/template/js/&#8217; as if needed, and name it(s) to the plant name (format: {{plant name}}.js / {{plant name}}.css)</li>\n</ol>\n</p>\n<h4>\nI had added the shortcode, but it still does not display or it display the error message.\n</h4>\n<p>\n<ol>\n<li>Please ensure there are files in directory &#8216;./mod/&#8217;.</li>\n<li>Please check if you write the correct infomation, like src(point to the plant name), user(the repo&#8217;s owner), repo(the repo).</li>\n<li>If you had modified any file(s), you can modify it(s) to the correct, refer to FAQ &#8216;How to extend the other code-managed plant (or the likely service)?&#8217;.</li>\n<li>If it sitll, redownload and active the plugin.</li>\n<li>If you have any doubt(s), please email me <a href=\"mailto:&#x6a;&#111;&#121;&#x74;&#x6f;&#117;&#046;&#x77;&#x75;&#064;&#113;&#x71;&#x2e;c&#111;&#109;\" rel=\"nofollow ugc\">&#x6a;&#111;&#121;&#x74;&#x6f;&#117;&#046;&#x77;&#x75;&#064;&#113;&#x71;&#x2e;c&#111;&#109;</a>.</li>\n</ol>\n</p>\n\n",
+        "changelog": "<h4>1.1.3</h4>\n<ul>\n<li>Fixed a bug due to the error coding.</li>\n</ul>\n<h4>1.1.2</h4>\n<ul>\n<li>Add translation supportted, for locale.</li>\n<li>Add api data cache function, and can clear the cache(in the setting screen: General Settings -&gt; Show Repos). Of course, it is optional.</li>\n</ul>\n"
+    },
+    "short_description": "Show your repo(s) on the wordpress through a simple shortcode. Modular structure, on-demand expansion, open source code. Show the code-managed reposit &hellip;",
+    "description": "<p>Show your repo(s) on the wordpress through a simple shortcode.</p>\n<h4>How to Use</h4>\n<p>Add the shortcode to anywhere you want to display:<br />\n    <code>[show-repo src=\"{{code-managed plant}}\" user=\"{{username that the repo want to display}}\" repo=\"{{repository name that the repo want to display}}\"/]</code></p>\n<h4>Example Code</h4>\n<ol>\n<li>\n<code>[show-repo src=\"github\" user=\"joytou\" repo=\"WP-Bing-Background\"/]</code></li>\n<li>\n<code>[show-repo src=\"gitee\" user=\"joytouwu\" repo=\"WP-Bing-Background\"/]</code></li>\n</ol>\n<h4>Upgrade Notice</h4>\n<p>The &#8216;./mod/&#8217; directory needs to be backed up before updating, it will be overwritten through the system update mechanism.</p>\n<h4>Steps to Upgrade</h4>\n<ol>\n<li>Back up the plugin directory, deactive the plugin, and then delete the plugin directory before upgrade to new version.</li>\n<li>Upload and unzip the new version to its original location, active plugins, plugin configuration sits to automatically inherit.</li>\n</ol>\n<h4>Contribute</h4>\n<p>Welcome to help to improve the plugin if you have any idea or you had caught any bug. Please email me <a href=\"mailto:&#x6a;&#111;&#121;&#x74;&#x6f;&#117;&#046;&#x77;&#x75;&#064;&#113;&#x71;&#x2e;c&#111;&#109;\" rel=\"nofollow ugc\">&#x6a;&#111;&#121;&#x74;&#x6f;&#117;&#046;&#x77;&#x75;&#064;&#113;&#x71;&#x2e;c&#111;&#109;</a>. Thanks~</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/show-repos.zip",
+    "upgrade_notice": {
+        "": "<ul>\n<li>The ./mod/ directory needs to be backed up before updating, it will be overwritten through the system update mechanism.</li>\n</ul>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/show-repos/assets/screenshot-1.png?rev=2305634",
+            "caption": "In PC."
+        },
+        {
+            "src": "https://ps.w.org/show-repos/assets/screenshot-2.jpg?rev=2305638",
+            "caption": "In mobile."
+        },
+        {
+            "src": "https://ps.w.org/show-repos/assets/screenshot-3.png?rev=2305634",
+            "caption": "Shortcode."
+        }
+    ],
+    "tags": {
+        "git": "git",
+        "gitee": "gitee",
+        "github": "Github",
+        "repository": "repository"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/show-repos/assets/icon-128x128.png?rev=2305634",
+        "2x": "https://ps.w.org/show-repos/assets/icon-256x256.png?rev=2305634"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "show-repos",
+            "language": "es_ES",
+            "version": "1.1.3",
+            "updated": "2020-05-16 10:23:57",
+            "package": "http://downloads.wordpress.org/translation/plugin/show-repos/1.1.3/es_ES.zip"
+        }
+    ]
+}

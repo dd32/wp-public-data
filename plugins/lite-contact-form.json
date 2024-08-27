@@ -1,0 +1,88 @@
+{
+    "name": "Lite Contact Form",
+    "slug": "lite-contact-form",
+    "version": "1.1.6",
+    "author": "<a href=\"https://beherit.pl/\">Krzysztof Grochocki</a>",
+    "author_profile": "https://profiles.wordpress.org/beherit/",
+    "contributors": {
+        "beherit": {
+            "profile": "https://profiles.wordpress.org/beherit/",
+            "avatar": "https://secure.gravatar.com/avatar/6b6ad845b1addb881f692d6478721b85?s=96&d=monsterid&r=g",
+            "display_name": "Beherit"
+        }
+    },
+    "requires": "4.6",
+    "tested": "5.9.10",
+    "requires_php": "7.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 1,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/lite-contact-form/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 100,
+    "downloaded": 2762,
+    "last_updated": "2022-02-16 12:45pm GMT",
+    "added": "2020-05-18",
+    "homepage": "https://beherit.pl/en/wordpress/lite-contact-form/",
+    "sections": {
+        "description": "<p>Lightweight and simple contact form with no additional user-unfriendly options. You can add the contact form to any page with a shortcode <code>[contact_form]</code>. Plugin is integrated with plugin <a href=\"https://wordpress.org/plugins/akismet/\" rel=\"ugc\">Akismet</a> and <a href=\"https://wordpress.org/plugins/grecaptcha/\" rel=\"ugc\">GreCAPTCHA</a> which protect against spam.</p>\n",
+        "installation": "<p>In most cases you can install automatically from plugins page in admin panel.</p>\n<p>However, if you want to install it manually, follow these steps:</p>\n<ol>\n<li>Download the plugin and unzip the archive.</li>\n<li>Upload the entire <code>lite-contact-form</code> folder to the <code>/wp-content/plugins/</code> directory.</li>\n<li>Activate the plugin through the Plugins menu in WordPress.</li>\n</ol>\n",
+        "faq": "\n<dt id='how%20to%20change%20sender%20and%20recipient%20email%20address%3F'>\nHow to change sender and recipient email address?\n</h4>\n<p>\n<p>By default, the plugin uses the administrator&#8217;s email address which is set in the WordPress general settings. It can be changed by adding attributes to the shortcode.</p>\n<pre><code>[contact_form sender=\"noreply@domain.tld\" recipient=\"Blog Admin &lt;admin@domain.tld&gt;\"]\n</code></pre>\n</p>\n<dt id='how%20to%20protect%20contact%20form%20against%20spam%3F'>\nHow to protect contact form against spam?\n</h4>\n<p>\n<p>The plugin has no built-in spam protection features, but is integrated with other plugins which do that job in the best way. You can use for it  plugin <a href=\"https://wordpress.org/plugins/akismet/\" rel=\"ugc\">Akismet</a> or/and <a href=\"https://wordpress.org/plugins/grecaptcha/\" rel=\"ugc\">GreCAPTCHA</a>.</p>\n</p>\n<dt id='will%20this%20plugin%20work%20with%20cache%20plugins%3F'>\nWill this plugin work with cache plugins?\n</h4>\n<p>\n<p>Yes. The plugin was designed to work with cache plugins. It uses lightweight Vanilla JS script and WordPress REST API to process requests.</p>\n</p>\n<dt id='how%20to%20change%20the%20style%20of%20the%20contact%20form%3F'>\nHow to change the style of the contact form?\n</h4>\n<p>\n<p>By default, the fields description is displayed in placeholders, but you can change it to labels.</p>\n<pre><code>[contact_form style=\"labels\"]\n</code></pre>\n<p>If you want only to change CSS style just add selectors to file style.css in active theme or create new file lite-contact-form.css in active theme.</p>\n</p>\n<dt id='how%20to%20add%20custom%20fields%3F'>\nHow to add custom fields?\n</h4>\n<p>\n<p>The plugin is simple and there are no settings to add custom fields, you need to add PHP code e.g. in functions.php in the active theme.</p>\n<p>Use the add_filter function to add a custom field, there are three filters that you can use.</p>\n<pre><code>function custom_fields_before() {\n    return '&lt;p class=\"lcf-validate\"&gt;\n        &lt;input type=\"text\" name=\"test\" placeholder=\"Field with JS validation\"&gt;\n        &lt;span class=\"lcf-tip\"&gt;&lt;/span&gt;\n    &lt;/p&gt;';\n}\nadd_filter('lcf_before_fields', 'custom_fields_before');\n\nfunction custom_fields_before_message() {\n    return '&lt;p&gt;\n        &lt;input type=\"text\" name=\"test\" placeholder=\"Field without JS validation\"&gt;\n        &lt;span class=\"lcf-tip\"&gt;&lt;/span&gt;\n    &lt;/p&gt;';\n}\nadd_filter('lcf_before_message_field', 'custom_fields_before_message');\n\nfunction custom_fields_after() {\n    return 'some html code';\n}\nadd_filter('lcf_after_fields', 'custom_fields_after');\n</code></pre>\n<p>You can validates the entire request or only your field.</p>\n<pre><code>function custom_field_validate($result, $field, $value) {\n    if(empty($value)) {\n        $result['status'] = 'blocked';\n        $result['fields'][] = array('field' =&gt; $field, 'message' =&gt; 'This field is required.');\n    }\n    return $result;\n}\nadd_filter('lcf_validate_field_name', 'custom_field_validate', 10, 3);\n\nfunction custom_validate_request($result, $fields) {\n    if(...) {\n        $result['status'] = 'error';\n        $result['message'] = 'There was an error trying to send your message.';\n    }\n    return $result;\n}\nadd_filter('lcf_validate', 'custom_validate_request', 10, 2);\n</code></pre>\n<p>There are two more filters that you can use to change the email subject and the message body.</p>\n<pre><code>function custom_mail_subject($subject, $fields) {\n    return $subject;\n}\nadd_filter('lcf_mail_subject', 'custom_mail_subject', 10, 2);\n\nfunction custom_mail_message($message, $fields) {\n    return $message;\n}\nadd_filter('lcf_mail_message', 'custom_mail_message', 10, 2);\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>1.1.6 (2022-02-16)</h4>\n<ul>\n<li>Minor improvements.</li>\n</ul>\n<h4>1.1.4 (2020-08-18)</h4>\n<ul>\n<li>Fixed Akismet API call.</li>\n</ul>\n<h4>1.1.2 (2020-08-05)</h4>\n<ul>\n<li>Minor improvements.</li>\n</ul>\n<h4>1.1 (2020-05-19)</h4>\n<ul>\n<li>Added a style attribute for shortcode.</li>\n<li>Enqueue CSS stylesheet from active theme.</li>\n</ul>\n<h4>1.0 (2020-05-18)</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Lightweight and simple contact form with no additional user-unfriendly options. Can be additionally protected against spam by using Akismet and Google &hellip;",
+    "description": "<p>Lightweight and simple contact form with no additional user-unfriendly options. You can add the contact form to any page with a shortcode <code>[contact_form]</code>. Plugin is integrated with plugin <a href=\"https://wordpress.org/plugins/akismet/\" rel=\"ugc\">Akismet</a> and <a href=\"https://wordpress.org/plugins/grecaptcha/\" rel=\"ugc\">GreCAPTCHA</a> which protect against spam.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/lite-contact-form.1.1.6.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "contact": "contact",
+        "contact-form": "contact form",
+        "email": "email",
+        "feedback": "feedback",
+        "feedback-form": "feedback form"
+    },
+    "stable_tag": "1.1.6",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/lite-contact-form.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/lite-contact-form.1.1.zip",
+        "1.1.2": "https://downloads.wordpress.org/plugin/lite-contact-form.1.1.2.zip",
+        "1.1.4": "https://downloads.wordpress.org/plugin/lite-contact-form.1.1.4.zip",
+        "1.1.6": "https://downloads.wordpress.org/plugin/lite-contact-form.1.1.6.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/lite-contact-form.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/lite-contact-form/assets/icon.svg?rev=2309289",
+        "svg": "https://ps.w.org/lite-contact-form/assets/icon.svg?rev=2309289"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "lite-contact-form",
+            "language": "pl_PL",
+            "version": "1.1.6",
+            "updated": "2022-06-27 05:18:56",
+            "package": "http://downloads.wordpress.org/translation/plugin/lite-contact-form/1.1.6/pl_PL.zip"
+        }
+    ]
+}

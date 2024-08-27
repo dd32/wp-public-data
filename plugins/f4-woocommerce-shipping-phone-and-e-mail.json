@@ -1,0 +1,173 @@
+{
+    "name": "F4 Shipping Phone and E-Mail for WooCommerce",
+    "slug": "f4-woocommerce-shipping-phone-and-e-mail",
+    "version": "1.0.19",
+    "author": "<a href=\"https://www.f4dev.ch\">FAKTOR VIER</a>",
+    "author_profile": "https://profiles.wordpress.org/faktorvier/",
+    "contributors": {
+        "faktorvier": {
+            "profile": "https://profiles.wordpress.org/faktorvier/",
+            "avatar": "https://secure.gravatar.com/avatar/f6d72ad23e75b8141326c20093600dfc?s=96&d=monsterid&r=g",
+            "display_name": "FAKTOR VIER"
+        }
+    },
+    "requires": "5.0",
+    "tested": "6.5.5",
+    "requires_php": "7.0",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 8,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 8,
+    "support_url": "https://wordpress.org/support/plugin/f4-woocommerce-shipping-phone-and-e-mail/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 1000,
+    "downloaded": 13364,
+    "last_updated": "2024-04-02 12:09pm GMT",
+    "added": "2018-11-30",
+    "homepage": "https://github.com/faktorvier/f4-woocommerce-shipping-phone-and-e-mail",
+    "sections": {
+        "description": "<p><a href=\"https://www.f4dev.ch\" rel=\"nofollow ugc\">F4 Shipping Phone and E-Mail for WooCommerce</a> does exactly what the name says. It adds (often needed) fields<br />\nfor e-mail and/or telephone number to the shipping address. Here are a few things the plugin does:</p>\n<ul>\n<li>Adds e-mail and/or telephone field to the shipping address checkout form</li>\n<li>Adds e-mail and/or telephone field to the edit shipping address form</li>\n<li>Adds e-mail and/or telephone field to the edit order backend page</li>\n<li>Shows e-mail and/or telephone field in privacy data export</li>\n<li>Erases e-mail and/or telephone data if privacy erase is requested</li>\n<li>Shows e-mail and/or telephone field in orders (thank you page, email etc.)</li>\n<li>Full integration into the PayPal payment gateway</li>\n</ul>\n<h4>Usage</h4>\n<p>This plugin works out-of-the-box. By default, the settings from the billing address<br />\nare used for both fields (e-mail = required and telephone = required, optional or hidden, according to the billing address settings).</p>\n<p>You can change the settings for both fields on the Accounts &amp; Privacy screen in your WooCommerce settings. Both fields you can hide or set to optional/required.</p>\n<h4>Features overview</h4>\n<ul>\n<li>Adds e-mail and/or telephone fields</li>\n<li>Works without configuration</li>\n<li>Can be configurated for both fields</li>\n<li>Easy to use</li>\n<li>Lightweight and optimized</li>\n<li>100% free!</li>\n</ul>\n<h4>Planned features</h4>\n<ul>\n<li>Full integration into API and REST</li>\n<li>Compatibility check for other popular payment gateways</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/f4-woocommerce-shipping-phone-and-e-mail</code> directory, or install the plugin through the WordPress plugins screen directly</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; screen in WordPress</li>\n<li>Use the Woocommerce -&gt; Settings -&gt; Accounts &amp; Privacy screen to configure the plugin</li>\n</ol>\n",
+        "faq": "\n<dt id='since%20woocommerce%205.6%20the%20shipping%20phone%20is%20missing%20in%20the%20email%20addresses%20and%20on%20the%20order%20page'>\nSince WooCommerce 5.6 the shipping phone is missing in the email addresses and on the order page\n</h4>\n<p>\n<p>Since WooCommerce 5.6 the shipping phone is natively supported in the formatted shipping address. You have to make sure that your template files<br />\n(emails/email-addresses.php, emails/plain/email-addresses.php, order/order-details-customer.php) are up-to-date (@version 5.6.0). If your template is not at<br />\nleast 5.6 compatible then you can simply add the following hook to your functions.php. This hook should restore the previous functionality until your templates are up-to-date:</p>\n<pre><code>add_filter('F4/WCSPE/append_phone_field_to_formatted_address', '__return_true')\n</code></pre>\n</p>\n<dt id='the%20shipping%20email%2Fphone%20fields%20are%20displayed%20wrong%20or%20different%20than%20the%20billing%20email%2Fphone%20fields'>\nThe shipping email/phone fields are displayed wrong or different than the billing email/phone fields\n</h4>\n<p>\n<p>Since WooCommerce 5.6 the order of our shipping email/phone fields is different than the billing email/phone fields. Thats because our simple solution to add<br />\nthis fields to every theme without changing the code is limited and the WooCommerce 5.6 update changes a few things in the template files that prevents us from<br />\ndisplaying the fields in the right order. Also the shipping fields may look different than the billing fields, because we don&#8217;t add any html code to format the output.<br />\nIf you want to change the order of the billing phone/email or the displayed output, you can follow these steps to disable our default output and add your own code:</p>\n<p>Add the following hook to your theme (functions.php):</p>\n<pre><code>add_filter('F4/WCSPE/append_email_field_to_formatted_address', '__return_false');\nadd_filter('F4/WCSPE/append_phone_field_to_formatted_address', '__return_false'); // only for versions lesser than 5.6\n</code></pre>\n<p>Search in the template file <code>emails/email-addresses.php</code> for the following code:</p>\n<pre><code>&lt;address class=\"address\"&gt;\n    &lt;?php echo wp_kses_post( $shipping ); ?&gt;\n    &lt;?php if ( $order-&gt;get_shipping_phone() ) : ?&gt;\n        &lt;br /&gt;&lt;?php echo wc_make_phone_clickable( $order-&gt;get_shipping_phone() ); ?&gt;\n    &lt;?php endif; ?&gt;\n&lt;/address&gt;\n</code></pre>\n<p>and replace it with this code:</p>\n<pre><code>&lt;address class=\"address\"&gt;\n    &lt;?php echo wp_kses_post( $shipping ); ?&gt;\n    &lt;?php if ( $order-&gt;get_shipping_phone() ) : ?&gt;\n        &lt;br /&gt;&lt;?php echo wc_make_phone_clickable( $order-&gt;get_shipping_phone() ); ?&gt;\n    &lt;?php endif; ?&gt;\n    &lt;?php if ( $order-&gt;get_meta('_shipping_email') ) : ?&gt;\n        &lt;br/&gt;&lt;?php echo esc_html( $order-&gt;get_meta('_shipping_email') ); ?&gt;\n    &lt;?php endif; ?&gt;\n&lt;/address&gt;\n</code></pre>\n<p>Search in the template file <code>emails/plain/email-addresses.php</code> for the following code:</p>\n<pre><code>if ( $order-&gt;get_shipping_phone() ) {\n    echo $order-&gt;get_shipping_phone() . \"\\n\"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped\n}\n</code></pre>\n<p>and replace it with this code:</p>\n<pre><code>if ( $order-&gt;get_shipping_phone() ) {\n    echo $order-&gt;get_shipping_phone() . \"\\n\"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped\n}\nif ( $order-&gt;get_meta('_shipping_email') ) {\n    echo $order-&gt;get_meta('_shipping_email') . \"\\n\"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped\n}\n</code></pre>\n<p>Search in the template file <code>order/order-details-customer.php</code> for the following code:</p>\n<pre><code>&lt;?php if ( $order-&gt;get_shipping_phone() ) : ?&gt;\n    &lt;p class=\"woocommerce-customer-details--phone\"&gt;&lt;?php echo esc_html( $order-&gt;get_shipping_phone() ); ?&gt;&lt;/p&gt;\n&lt;?php endif; ?&gt;\n</code></pre>\n<p>and replace it with this code:</p>\n<pre><code>&lt;?php if ( $order-&gt;get_shipping_phone() ) : ?&gt;\n    &lt;p class=\"woocommerce-customer-details--phone\"&gt;&lt;?php echo esc_html( $order-&gt;get_shipping_phone() ); ?&gt;&lt;/p&gt;\n&lt;?php endif; ?&gt;\n\n&lt;?php if ( $order-&gt;get_meta('_shipping_email') ) : ?&gt;\n    &lt;p class=\"woocommerce-customer-details--email\"&gt;&lt;?php echo esc_html( $order-&gt;get_meta('_shipping_email') ); ?&gt;&lt;/p&gt;\n&lt;?php endif; ?&gt;\n</code></pre>\n<p>The code may vary in your theme, you just have to look for similar looking code.</p>\n</p>\n<dt id='is%20it%20really%20free%3F'>\nIs it really free?\n</h4>\n<p>\n<p>Yes, absolutely!</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.19</h4>\n<ul>\n<li>Support WooCommerce 8.7</li>\n<li>Support WordPress 6.5</li>\n</ul>\n<h4>1.0.18</h4>\n<ul>\n<li>Add support for WC &#8220;High-Performance Order Storage&#8221; feature</li>\n<li>Add support for WC &#8220;New product editor&#8221; feature</li>\n<li>Support WooCommerce 8.2</li>\n<li>Support WordPress 6.3</li>\n</ul>\n<h4>1.0.17</h4>\n<ul>\n<li>Support WooCommerce 7.1</li>\n<li>Support WordPress 6.1</li>\n</ul>\n<h4>1.0.16</h4>\n<ul>\n<li>Update www.f4dev.ch links</li>\n<li>Support WooCommerce 6.8</li>\n</ul>\n<h4>1.0.15</h4>\n<ul>\n<li>Support WooCommerce 6.5</li>\n<li>Support WordPress 6.0</li>\n</ul>\n<h4>1.0.14</h4>\n<ul>\n<li>Support WordPress 5.9</li>\n</ul>\n<h4>1.0.13</h4>\n<ul>\n<li>Fix phone field output in formatted address for WooCommerce 5.6</li>\n<li>Add hooks to individually hide email or phone field in formatted address</li>\n<li>Add some FAQ</li>\n<li>Support WooCommerce 5.6</li>\n</ul>\n<h4>1.0.12</h4>\n<ul>\n<li>Fix condition for formatted part in address block</li>\n<li>Support WooCommerce 5.5</li>\n<li>Support WordPress 5.8</li>\n</ul>\n<h4>1.0.11</h4>\n<ul>\n<li>Support WooCommerce 5.0</li>\n<li>Support WordPress 5.7</li>\n</ul>\n<h4>1.0.10</h4>\n<ul>\n<li>Support WooCommerce 4.8</li>\n<li>Support WordPress 5.6</li>\n</ul>\n<h4>1.0.9</h4>\n<ul>\n<li>Save guest checkout fields in session</li>\n</ul>\n<h4>1.0.8</h4>\n<ul>\n<li>Support WooCommerce 4.4</li>\n<li>Support WordPress 5.5</li>\n</ul>\n<h4>1.0.7</h4>\n<ul>\n<li>Update translations</li>\n</ul>\n<h4>1.0.6</h4>\n<ul>\n<li>Support WooCommerce 4.0</li>\n<li>Support WordPress 5.4</li>\n</ul>\n<h4>1.0.5</h4>\n<ul>\n<li>Fix privacy export and erase</li>\n</ul>\n<h4>1.0.4</h4>\n<ul>\n<li>Add donation link</li>\n<li>Rename plugin according to the new naming conventions</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>Fix formatted output</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Fix &#8220;load shipping address&#8221; function in order backend</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Update plugin slug and basename for better compatibility with the plugin name</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial stable release</li>\n</ul>\n"
+    },
+    "short_description": "Adds fields for e-mail and/or telephone to the WooCommerce shipping address.",
+    "description": "<p><a href=\"https://www.f4dev.ch\" rel=\"nofollow ugc\">F4 Shipping Phone and E-Mail for WooCommerce</a> does exactly what the name says. It adds (often needed) fields<br />\nfor e-mail and/or telephone number to the shipping address. Here are a few things the plugin does:</p>\n<ul>\n<li>Adds e-mail and/or telephone field to the shipping address checkout form</li>\n<li>Adds e-mail and/or telephone field to the edit shipping address form</li>\n<li>Adds e-mail and/or telephone field to the edit order backend page</li>\n<li>Shows e-mail and/or telephone field in privacy data export</li>\n<li>Erases e-mail and/or telephone data if privacy erase is requested</li>\n<li>Shows e-mail and/or telephone field in orders (thank you page, email etc.)</li>\n<li>Full integration into the PayPal payment gateway</li>\n</ul>\n<h4>Usage</h4>\n<p>This plugin works out-of-the-box. By default, the settings from the billing address<br />\nare used for both fields (e-mail = required and telephone = required, optional or hidden, according to the billing address settings).</p>\n<p>You can change the settings for both fields on the Accounts &amp; Privacy screen in your WooCommerce settings. Both fields you can hide or set to optional/required.</p>\n<h4>Features overview</h4>\n<ul>\n<li>Adds e-mail and/or telephone fields</li>\n<li>Works without configuration</li>\n<li>Can be configurated for both fields</li>\n<li>Easy to use</li>\n<li>Lightweight and optimized</li>\n<li>100% free!</li>\n</ul>\n<h4>Planned features</h4>\n<ul>\n<li>Full integration into API and REST</li>\n<li>Compatibility check for other popular payment gateways</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.19.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/f4-woocommerce-shipping-phone-and-e-mail/assets/screenshot-1.jpg?rev=1983100",
+            "caption": "Fields in checkout shipping form"
+        },
+        {
+            "src": "https://ps.w.org/f4-woocommerce-shipping-phone-and-e-mail/assets/screenshot-2.jpg?rev=1983100",
+            "caption": "Fields on order confirmation page"
+        },
+        {
+            "src": "https://ps.w.org/f4-woocommerce-shipping-phone-and-e-mail/assets/screenshot-3.jpg?rev=1983100",
+            "caption": "Fields in order confirmation e-mail"
+        },
+        {
+            "src": "https://ps.w.org/f4-woocommerce-shipping-phone-and-e-mail/assets/screenshot-4.jpg?rev=1983100",
+            "caption": "Fields on the order admin page"
+        },
+        {
+            "src": "https://ps.w.org/f4-woocommerce-shipping-phone-and-e-mail/assets/screenshot-5.jpg?rev=1983100",
+            "caption": "Fields in edit address form"
+        },
+        {
+            "src": "https://ps.w.org/f4-woocommerce-shipping-phone-and-e-mail/assets/screenshot-6.jpg?rev=1983100",
+            "caption": "Field configuration in WooCommerce settings"
+        }
+    ],
+    "tags": {
+        "checkout": "checkout",
+        "email": "email",
+        "shipping": "shipping",
+        "telephone": "telephone",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.19",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.1.zip",
+        "1.0.10": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.10.zip",
+        "1.0.11": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.11.zip",
+        "1.0.12": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.12.zip",
+        "1.0.13": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.13.zip",
+        "1.0.14": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.14.zip",
+        "1.0.15": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.15.zip",
+        "1.0.16": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.16.zip",
+        "1.0.17": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.17.zip",
+        "1.0.18": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.18.zip",
+        "1.0.19": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.19.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.3.zip",
+        "1.0.4": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.4.zip",
+        "1.0.5": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.5.zip",
+        "1.0.6": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.6.zip",
+        "1.0.7": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.7.zip",
+        "1.0.8": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.8.zip",
+        "1.0.9": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.1.0.9.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/f4-woocommerce-shipping-phone-and-e-mail.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.faktorvier.ch/donate/",
+    "banners": {
+        "low": "https://ps.w.org/f4-woocommerce-shipping-phone-and-e-mail/assets/banner-772x250.jpg?rev=1983100",
+        "high": "https://ps.w.org/f4-woocommerce-shipping-phone-and-e-mail/assets/banner-1544x500.jpg?rev=1983100"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/f4-woocommerce-shipping-phone-and-e-mail/assets/icon-128x128.jpg?rev=1983100",
+        "2x": "https://ps.w.org/f4-woocommerce-shipping-phone-and-e-mail/assets/icon-256x256.jpg?rev=1983100"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "f4-woocommerce-shipping-phone-and-e-mail",
+            "language": "de_CH_informal",
+            "version": "1.0.19",
+            "updated": "2022-08-19 14:48:59",
+            "package": "http://downloads.wordpress.org/translation/plugin/f4-woocommerce-shipping-phone-and-e-mail/1.0.19/de_CH_informal.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "f4-woocommerce-shipping-phone-and-e-mail",
+            "language": "de_CH",
+            "version": "1.0.19",
+            "updated": "2022-08-19 14:48:56",
+            "package": "http://downloads.wordpress.org/translation/plugin/f4-woocommerce-shipping-phone-and-e-mail/1.0.19/de_CH.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "f4-woocommerce-shipping-phone-and-e-mail",
+            "language": "de_DE_formal",
+            "version": "1.0.19",
+            "updated": "2022-08-19 14:49:03",
+            "package": "http://downloads.wordpress.org/translation/plugin/f4-woocommerce-shipping-phone-and-e-mail/1.0.19/de_DE_formal.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "f4-woocommerce-shipping-phone-and-e-mail",
+            "language": "de_AT",
+            "version": "1.0.19",
+            "updated": "2022-08-19 14:48:49",
+            "package": "http://downloads.wordpress.org/translation/plugin/f4-woocommerce-shipping-phone-and-e-mail/1.0.19/de_AT.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "f4-woocommerce-shipping-phone-and-e-mail",
+            "language": "de_DE",
+            "version": "1.0.19",
+            "updated": "2022-08-19 14:48:45",
+            "package": "http://downloads.wordpress.org/translation/plugin/f4-woocommerce-shipping-phone-and-e-mail/1.0.19/de_DE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "f4-woocommerce-shipping-phone-and-e-mail",
+            "language": "sv_SE",
+            "version": "1.0.19",
+            "updated": "2022-08-19 15:27:02",
+            "package": "http://downloads.wordpress.org/translation/plugin/f4-woocommerce-shipping-phone-and-e-mail/1.0.19/sv_SE.zip"
+        }
+    ]
+}

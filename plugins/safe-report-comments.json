@@ -1,0 +1,104 @@
+{
+    "name": "Safe Report Comments",
+    "slug": "safe-report-comments",
+    "version": "0.4.1",
+    "author": "<a href=\"http://automattic.com\">Thorsten Ott, Daniel Bachhuber, Automattic</a>",
+    "author_profile": "https://profiles.wordpress.org/automattic/",
+    "contributors": {
+        "tott": {
+            "profile": "https://profiles.wordpress.org/tott/",
+            "avatar": "https://secure.gravatar.com/avatar/9e8f7fd87fd2163010f98280f3e45a35?s=96&d=monsterid&r=g",
+            "display_name": "Thorsten Ott"
+        },
+        "danielbachhuber": {
+            "profile": "https://profiles.wordpress.org/danielbachhuber/",
+            "avatar": "https://secure.gravatar.com/avatar/560b284fd021779ea4817470074133f1?s=96&d=monsterid&r=g",
+            "display_name": "Daniel Bachhuber"
+        },
+        "automattic": {
+            "profile": "https://profiles.wordpress.org/automattic/",
+            "avatar": "https://secure.gravatar.com/avatar/687b3bf96c41800814e3b93766444283?s=96&d=monsterid&r=g",
+            "display_name": "Automattic"
+        }
+    },
+    "requires": "3.3",
+    "tested": "5.0.22",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 60,
+    "ratings": {
+        "5": 3,
+        "4": 0,
+        "3": 1,
+        "2": 0,
+        "1": 3
+    },
+    "num_ratings": 7,
+    "support_url": "https://wordpress.org/support/plugin/safe-report-comments/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 200,
+    "downloaded": 23557,
+    "last_updated": "2018-11-30 7:00am GMT",
+    "added": "2010-05-14",
+    "homepage": "http://wordpress.org/extend/plugins/safe-report-comments/",
+    "sections": {
+        "description": "<p>This plugin gives your visitors the possibility to report a comment as inappropriate. After a set threshold is reached the comment is put into moderation where the moderator can decide whether or not he want to approve the comment or not. If a comment is approved by a moderator it will not be auto-moderated again while still counting the amount of reports.</p>\n<h3>Customizations</h3>\n<p>By default this script should hook in just fine in most existing themes as it attaches itsself after the comment-reply link via the comment_reply_link filter.<br />\nIn case this does not work out you can place the flagging link manually by defining no_autostart_safe_report_comments in your themes&#8217; functions.php file and initializing the class via <code>$safe_report_comments = new Safe_Report_Comments(false);</code>.</p>\n<p>Here is an example of a custom setup via functions.php and placing the link comments callback function.</p>\n<p>In functions.php:</p>\n<pre><code>//flag comments plugin included in themes' functions.php - disable plugin.\ndefine( 'no_autostart_safe_report_comments', true );\ninclude_once( 'replace-with-path-to/safe-report-comments/safe-report-comments.php');\n// make sure not to auto-attach to comment reply link\n$safe_report_comments = new Safe_Report_Comments(false);\n\n// change link layout to have a pipe prepended\nadd_filter( 'safe_report_comments_flagging_link', 'adjust_flagging_link' );\nfunction adjust_flagging_link( $link ) {\n    return ' | ' . $link;\n}\n\n// adjust the text to \"Report abuse\" rather than \"Report comment\"\nadd_filter( 'safe_report_comments_flagging_link_text', 'adjust_flagging_text' );\nfunction adjust_flagging_text( $text ) {\n    return 'Report abuse';\n}\n</code></pre>\n<p>In your custom comment callback function used by wp_list_comments: https://codex.wordpress.org/Template_Tags/wp_list_comments place the following action which will print the link.</p>\n<pre><code>&lt;?php do_action( 'comment_report_abuse_link' ); ?&gt; \n</code></pre>\n<p>A possible callback function could look like this:</p>\n<pre><code>function mytheme_comment($comment, $args, $depth) {\n    $GLOBALS['comment'] = $comment; ?&gt;\n    &lt;li &lt;?php comment_class(); ?&gt; id=\"li-comment-&lt;?php comment_ID() ?&gt;\"&gt;\n        &lt;div id=\"comment-&lt;?php comment_ID(); ?&gt;\"&gt;\n            &lt;div class=\"comment-author vcard\"&gt;\n                &lt;?php echo get_avatar($comment,$size='48',$default='&lt;path_to_url&gt;' ); ?&gt;\n                &lt;?php printf(__('&lt;cite class=\"fn\"&gt;%s&lt;/cite&gt; &lt;span class=\"says\"&gt;says:&lt;/span&gt;'), get_comment_author_link()) ?&gt;\n            &lt;/div&gt;\n            &lt;?php if ($comment-&gt;comment_approved == '0') : ?&gt;\n            &lt;em&gt;&lt;?php _e('Your comment is awaiting moderation.') ?&gt;&lt;/em&gt;\n            &lt;br /&gt;\n        &lt;?php endif; ?&gt;\n        &lt;div class=\"comment-meta commentmetadata\"&gt;&lt;a href=\"&lt;?php echo htmlspecialchars( get_comment_link( $comment-&gt;comment_ID ) ) ?&gt;\"&gt;&lt;?php printf(__('%1$s at %2$s'), get_comment_date(),  get_comment_time()) ?&gt;&lt;/a&gt;&lt;?php edit_comment_link(__('(Edit)'),'    ','') ?&gt;&lt;/div&gt;\n\n        &lt;?php comment_text() ?&gt;\n\n        &lt;div class=\"reply\"&gt;\n            &lt;?php comment_reply_link(array_merge( $args, array('depth' =&gt; $depth, 'max_depth' =&gt; $args['max_depth']))) ?&gt;\n        &lt;/div&gt;\n        &lt;div class=\"report-abuse\"&gt;\n            &lt;?php do_action( 'comment_report_abuse_link' ); ?&gt;\n        &lt;/div&gt;\n    &lt;/div&gt;\n    &lt;?php\n}\n</code></pre>\n<p>Furthermore there are various actions and filters within the script to allow easy alteration of implemented behavior. Please see inline documentation.</p>\n<h3>Known issues</h3>\n<p>Automatic mode implementation currently does not work with threaded comments in the last level of threading. As the script attaches itself to the comment_reply which is not displayed once the maximum threading level is reached the abuse link is missing at this point. As a workaround set the threading level higher than the likely amount of threading depth.</p>\n",
+        "installation": "<ol>\n<li>Download and unzip the plugin.</li>\n<li>Copy the safe-report-comments directory into your plugins folder.</li>\n<li>Visit your Plugins page and activate the plugin.</li>\n<li>A new checkbox called &#8220;Allow comment flagging&#8221; will appear in the Settings-&gt;Discussion page.</li>\n<li>Activate the flag and set the threshold value which will appear on the same page after activation</li>\n</ol>\n",
+        "changelog": "<h4>0.4.1 (July 23, 2014)</h4>\n<ul>\n<li>Typo fix, props spencermorin</li>\n</ul>\n<h4>0.4 (July 23, 2014)</h4>\n<ul>\n<li>Security fix, h/t vortfu</li>\n</ul>\n<h4>0.3.2 (Mar. 6, 2013)</h4>\n<ul>\n<li>New &#8216;safe_report_comments_allow_moderated_to_be_reflagged&#8217; filter allows comments to be reflagged after being moderated.</li>\n</ul>\n<h4>0.3.1 (Nov. 21, 2012)</h4>\n<ul>\n<li>Use home_url() for generating the ajaxurl on mapped domains, but admin_url() where the domain isn&#8217;t mapped.</li>\n</ul>\n<h4>0.3 (Nov. 7, 2012)</h4>\n<ul>\n<li>Coding standards and cleanup</li>\n</ul>\n"
+    },
+    "short_description": "This plugin gives your visitors the possibility to report a comment as inappropriate. After a set threshold is reached the comment is put into moderat &hellip;",
+    "description": "<p>This plugin gives your visitors the possibility to report a comment as inappropriate. After a set threshold is reached the comment is put into moderation where the moderator can decide whether or not he want to approve the comment or not. If a comment is approved by a moderator it will not be auto-moderated again while still counting the amount of reports.</p>\n<h3>Customizations</h3>\n<p>By default this script should hook in just fine in most existing themes as it attaches itsself after the comment-reply link via the comment_reply_link filter.<br />\nIn case this does not work out you can place the flagging link manually by defining no_autostart_safe_report_comments in your themes&#8217; functions.php file and initializing the class via <code>$safe_report_comments = new Safe_Report_Comments(false);</code>.</p>\n<p>Here is an example of a custom setup via functions.php and placing the link comments callback function.</p>\n<p>In functions.php:</p>\n<pre><code>//flag comments plugin included in themes' functions.php - disable plugin.\ndefine( 'no_autostart_safe_report_comments', true );\ninclude_once( 'replace-with-path-to/safe-report-comments/safe-report-comments.php');\n// make sure not to auto-attach to comment reply link\n$safe_report_comments = new Safe_Report_Comments(false);\n\n// change link layout to have a pipe prepended\nadd_filter( 'safe_report_comments_flagging_link', 'adjust_flagging_link' );\nfunction adjust_flagging_link( $link ) {\n    return ' | ' . $link;\n}\n\n// adjust the text to \"Report abuse\" rather than \"Report comment\"\nadd_filter( 'safe_report_comments_flagging_link_text', 'adjust_flagging_text' );\nfunction adjust_flagging_text( $text ) {\n    return 'Report abuse';\n}\n</code></pre>\n<p>In your custom comment callback function used by wp_list_comments: https://codex.wordpress.org/Template_Tags/wp_list_comments place the following action which will print the link.</p>\n<pre><code>&lt;?php do_action( 'comment_report_abuse_link' ); ?&gt; \n</code></pre>\n<p>A possible callback function could look like this:</p>\n<pre><code>function mytheme_comment($comment, $args, $depth) {\n    $GLOBALS['comment'] = $comment; ?&gt;\n    &lt;li &lt;?php comment_class(); ?&gt; id=\"li-comment-&lt;?php comment_ID() ?&gt;\"&gt;\n        &lt;div id=\"comment-&lt;?php comment_ID(); ?&gt;\"&gt;\n            &lt;div class=\"comment-author vcard\"&gt;\n                &lt;?php echo get_avatar($comment,$size='48',$default='&lt;path_to_url&gt;' ); ?&gt;\n                &lt;?php printf(__('&lt;cite class=\"fn\"&gt;%s&lt;/cite&gt; &lt;span class=\"says\"&gt;says:&lt;/span&gt;'), get_comment_author_link()) ?&gt;\n            &lt;/div&gt;\n            &lt;?php if ($comment-&gt;comment_approved == '0') : ?&gt;\n            &lt;em&gt;&lt;?php _e('Your comment is awaiting moderation.') ?&gt;&lt;/em&gt;\n            &lt;br /&gt;\n        &lt;?php endif; ?&gt;\n        &lt;div class=\"comment-meta commentmetadata\"&gt;&lt;a href=\"&lt;?php echo htmlspecialchars( get_comment_link( $comment-&gt;comment_ID ) ) ?&gt;\"&gt;&lt;?php printf(__('%1$s at %2$s'), get_comment_date(),  get_comment_time()) ?&gt;&lt;/a&gt;&lt;?php edit_comment_link(__('(Edit)'),'    ','') ?&gt;&lt;/div&gt;\n\n        &lt;?php comment_text() ?&gt;\n\n        &lt;div class=\"reply\"&gt;\n            &lt;?php comment_reply_link(array_merge( $args, array('depth' =&gt; $depth, 'max_depth' =&gt; $args['max_depth']))) ?&gt;\n        &lt;/div&gt;\n        &lt;div class=\"report-abuse\"&gt;\n            &lt;?php do_action( 'comment_report_abuse_link' ); ?&gt;\n        &lt;/div&gt;\n    &lt;/div&gt;\n    &lt;?php\n}\n</code></pre>\n<p>Furthermore there are various actions and filters within the script to allow easy alteration of implemented behavior. Please see inline documentation.</p>\n<h3>Known issues</h3>\n<p>Automatic mode implementation currently does not work with threaded comments in the last level of threading. As the script attaches itself to the comment_reply which is not displayed once the maximum threading level is reached the abuse link is missing at this point. As a workaround set the threading level higher than the likely amount of threading depth.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/safe-report-comments.0.4.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/safe-report-comments/trunk/screenshot-1.png?rev=1983035",
+            "caption": "Simple activation via discussion settings"
+        },
+        {
+            "src": "https://ps.w.org/safe-report-comments/trunk/screenshot-2.png?rev=1983035",
+            "caption": "Amount of reports per comment is shown in comments administration screen"
+        },
+        {
+            "src": "https://ps.w.org/safe-report-comments/trunk/screenshot-3.png?rev=1983035",
+            "caption": "Fits well within most themes without any further action."
+        },
+        {
+            "src": "https://ps.w.org/safe-report-comments/trunk/screenshot-4.png?rev=1983035",
+            "caption": "Ajax feedback right in place where available."
+        }
+    ],
+    "tags": {
+        "comments": "comments",
+        "flag": "flag",
+        "flagging": "flagging",
+        "report": "report",
+        "report-comments": "report comments"
+    },
+    "stable_tag": "0.4.1",
+    "versions": {
+        "0.3": "https://downloads.wordpress.org/plugin/safe-report-comments.0.3.zip",
+        "0.3.1": "https://downloads.wordpress.org/plugin/safe-report-comments.0.3.1.zip",
+        "0.3.2": "https://downloads.wordpress.org/plugin/safe-report-comments.0.3.2.zip",
+        "0.4": "https://downloads.wordpress.org/plugin/safe-report-comments.0.4.zip",
+        "0.4.1": "https://downloads.wordpress.org/plugin/safe-report-comments.0.4.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/safe-report-comments.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/safe-report-comments.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 60,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

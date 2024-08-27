@@ -1,0 +1,114 @@
+{
+    "name": "A faster load_textdomain",
+    "slug": "a-faster-load-textdomain",
+    "version": "2.3.2",
+    "author": "<a href=\"https://soderlind.no\">Per Soderlind</a>",
+    "author_profile": "https://profiles.wordpress.org/pers/",
+    "contributors": {
+        "pers": {
+            "profile": "https://profiles.wordpress.org/pers/",
+            "avatar": "https://secure.gravatar.com/avatar/9e16d5154b083353f2f0bc0414b7c8c3?s=96&d=monsterid&r=g",
+            "display_name": "Per Søderlind"
+        }
+    },
+    "requires": "5.9",
+    "tested": "6.4.5",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/a-faster-load-textdomain/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 20,
+    "downloaded": 2517,
+    "last_updated": "2024-07-20 9:58pm GMT",
+    "added": "2023-11-06",
+    "homepage": "https://github.com/soderlind/a-faster-load-textdomain",
+    "sections": {
+        "description": "<blockquote>\n<p><strong>NOTE</strong> This plugin is not needed if you are running WordPress 6.5 or later, as the functionality <a href=\"https://make.wordpress.org/core/2024/02/27/i18n-improvements-6-5-performant-translations/\" rel=\"nofollow ugc\">is built into WordPress core</a>. If you need to generate translation in the new <code>.l10n.php</code> format, use the <a href=\"https://wordpress.org/plugins/performant-translations/\" rel=\"ugc\">Performant Translations</a> plugin instead.</p>\n</blockquote>\n<p>This is a WordPress plugin that caches the .mo file as an PHP array, and <a href=\"https://www.php.net/manual/en/function.include.php\" rel=\"nofollow ugc\">include</a> the array instead of the .mo file.<br />\nIn theory, nothing is faster in PHP than loading and executing another PHP file.</p>\n<h4>How it works</h4>\n<p>If you have a plugin or theme that loads a textdomain, e.g. <code>load_textdomain( 'textdomain', $path_to_mo_file )</code>, then this plugin will:</p>\n<ol>\n<li>Look for a PHP version of the .mo file in <code>WP_CONTENT_DIR . '/cache/a-faster-load-textdomain'</code> directory.</li>\n<li>If the PHP version exists, <a href=\"https://www.php.net/manual/en/function.include.php\" rel=\"nofollow ugc\">include</a> the file.</li>\n<li>If the PHP version doesn&#8217;t exist, load the .mo file, and save the file as an PHP array in <code>wp-content/cache/a-faster-load-textdomain/</code> directory.</li>\n</ol>\n<p>The localized PHP array can be cached via <a href=\"http://blog.jpauli.tech/2015-03-05-opcache-html/\" rel=\"nofollow ugc\">PHP OPcache</a>. If you have PHP OPcache enabled, then the localized PHP array will be cached in memory, and the PHP file will not be parsed again.</p>\n<h4>Filters</h4>\n<pre><code>a_faster_load_textdomain_cache_path\n</code></pre>\n<p>Change the cache path, default is <code>WP_CONTENT_DIR . '/cache/a-faster-load-textdomain'</code>.</p>\n<pre><code>add_filter( 'a_faster_load_textdomain_cache_path', function( $path ) {\n    return WP_CONTENT_DIR . '/cache/my-cache';\n} );\n</code></pre>\n<h4>GitHub</h4>\n<p>The plugin source is available at <a href=\"https://github.com/soderlind/a-faster-load-textdomain/blob/main/a-faster-load-textdomain.php\" rel=\"nofollow ugc\">GitHub</a></p>\n",
+        "installation": "<p>Either (recommended):<br />\n&#8211; Download the plugin files and extract <code>a-faster-load-textdomain.php</code> and <code>class-afld-cachehandler.php</code> to the <code>wp-content/mu-plugins</code> directory.</p>\n<p>Or:<br />\n&#8211; Search for &#8220;A faster load_textdomain&#8221; and install with the WordPress plugin installer.<br />\n&#8211; (Network) Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</p>\n<p>It&#8217;s also possible to install the plugin via Composer:</p>\n<pre><code>composer require soderlind/a-faster-load-textdomain\n</code></pre>\n",
+        "changelog": "<h4>2.3.2</h4>\n<ul>\n<li>Housekeeping.</li>\n</ul>\n<h4>2.3.1</h4>\n<ul>\n<li>Catch errors in the cache handler. If the cache file is corrupt, update the file and return the .mo file.</li>\n</ul>\n<h4>2.3.0</h4>\n<ul>\n<li>If running WordPress 6.5, give a notice that the plugin is not needed.</li>\n</ul>\n<h4>2.2.4</h4>\n<ul>\n<li>Fail gracefully if  cache directory can&#8217;t be created.</li>\n</ul>\n<h4>2.2.3</h4>\n<ul>\n<li>Housekeeping.</li>\n</ul>\n<h4>2.2.2</h4>\n<ul>\n<li>Add uninstall handler. Will remove the cache directory when the plugin is uninstalled.</li>\n</ul>\n<h4>2.2.1</h4>\n<ul>\n<li>Fix bug in cache handler.</li>\n</ul>\n<h4>2.2.0</h4>\n<ul>\n<li>Refactor cache handler.</li>\n</ul>\n<h4>2.1.5</h4>\n<ul>\n<li>Bump version to force deploy to WordPress.org</li>\n</ul>\n<h4>2.1.4</h4>\n<ul>\n<li>Deploy with GitHub Actions to WordPress.org</li>\n</ul>\n<h4>2.1.3</h4>\n<ul>\n<li>Remove <code>mkdir()</code></li>\n</ul>\n<h4>2.1.2</h4>\n<ul>\n<li>Fail gracefully if <code>$cache_path</code> can&#8217;t be created.</li>\n</ul>\n<h4>2.1.1</h4>\n<ul>\n<li>Add <code>aflt_load_textdomain</code> filter.</li>\n</ul>\n<h4>2.1.0</h4>\n<ul>\n<li>Rename namespace to <code>Soderlind\\Plugin\\A_Faster_Load_Textdomain</code></li>\n<li>Rename cache directory to <code>WP_CONTENT_DIR . '/cache/a-faster-load-textdomain'</code></li>\n</ul>\n<h4>2.0.1</h4>\n<ul>\n<li>Rename file to <code>a-faster-load-textdomain.php</code> to follow WordPress plugin standards.</li>\n</ul>\n<h4>2.0.0</h4>\n<ul>\n<li>Refactor code, instead of using a transient, save .mo file as an PHP array, and <a href=\"https://www.php.net/manual/en/function.include.php\" rel=\"nofollow ugc\">include</a> the array instead of the .mo file.</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>Housekeeping.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>DRY (Don&#8217;t Repeat Yourself) code. Add namespace.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Add multisite support</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
+    },
+    "short_description": "A faster load_textdomain",
+    "description": "<blockquote>\n<p><strong>NOTE</strong> This plugin is not needed if you are running WordPress 6.5 or later, as the functionality <a href=\"https://make.wordpress.org/core/2024/02/27/i18n-improvements-6-5-performant-translations/\" rel=\"nofollow ugc\">is built into WordPress core</a>. If you need to generate translation in the new <code>.l10n.php</code> format, use the <a href=\"https://wordpress.org/plugins/performant-translations/\" rel=\"ugc\">Performant Translations</a> plugin instead.</p>\n</blockquote>\n<p>This is a WordPress plugin that caches the .mo file as an PHP array, and <a href=\"https://www.php.net/manual/en/function.include.php\" rel=\"nofollow ugc\">include</a> the array instead of the .mo file.<br />\nIn theory, nothing is faster in PHP than loading and executing another PHP file.</p>\n<h4>How it works</h4>\n<p>If you have a plugin or theme that loads a textdomain, e.g. <code>load_textdomain( 'textdomain', $path_to_mo_file )</code>, then this plugin will:</p>\n<ol>\n<li>Look for a PHP version of the .mo file in <code>WP_CONTENT_DIR . '/cache/a-faster-load-textdomain'</code> directory.</li>\n<li>If the PHP version exists, <a href=\"https://www.php.net/manual/en/function.include.php\" rel=\"nofollow ugc\">include</a> the file.</li>\n<li>If the PHP version doesn&#8217;t exist, load the .mo file, and save the file as an PHP array in <code>wp-content/cache/a-faster-load-textdomain/</code> directory.</li>\n</ol>\n<p>The localized PHP array can be cached via <a href=\"http://blog.jpauli.tech/2015-03-05-opcache-html/\" rel=\"nofollow ugc\">PHP OPcache</a>. If you have PHP OPcache enabled, then the localized PHP array will be cached in memory, and the PHP file will not be parsed again.</p>\n<h4>Filters</h4>\n<pre><code>a_faster_load_textdomain_cache_path\n</code></pre>\n<p>Change the cache path, default is <code>WP_CONTENT_DIR . '/cache/a-faster-load-textdomain'</code>.</p>\n<pre><code>add_filter( 'a_faster_load_textdomain_cache_path', function( $path ) {\n    return WP_CONTENT_DIR . '/cache/my-cache';\n} );\n</code></pre>\n<h4>GitHub</h4>\n<p>The plugin source is available at <a href=\"https://github.com/soderlind/a-faster-load-textdomain/blob/main/a-faster-load-textdomain.php\" rel=\"nofollow ugc\">GitHub</a></p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/a-faster-load-textdomain.2.3.2.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "cache": "cache",
+        "l10n": "l10n",
+        "load_textdomain": "load_textdomain",
+        "performance": "performance"
+    },
+    "stable_tag": "2.3.2",
+    "versions": {
+        "2.1.5": "https://downloads.wordpress.org/plugin/a-faster-load-textdomain.2.1.5.zip",
+        "2.2.0": "https://downloads.wordpress.org/plugin/a-faster-load-textdomain.2.2.0.zip",
+        "2.2.1": "https://downloads.wordpress.org/plugin/a-faster-load-textdomain.2.2.1.zip",
+        "2.2.2": "https://downloads.wordpress.org/plugin/a-faster-load-textdomain.2.2.2.zip",
+        "2.2.3": "https://downloads.wordpress.org/plugin/a-faster-load-textdomain.2.2.3.zip",
+        "2.2.4": "https://downloads.wordpress.org/plugin/a-faster-load-textdomain.2.2.4.zip",
+        "2.3.0": "https://downloads.wordpress.org/plugin/a-faster-load-textdomain.2.3.0.zip",
+        "2.3.1": "https://downloads.wordpress.org/plugin/a-faster-load-textdomain.2.3.1.zip",
+        "2.3.2": "https://downloads.wordpress.org/plugin/a-faster-load-textdomain.2.3.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/a-faster-load-textdomain.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://paypal.me/PerSoderlind",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/a-faster-load-textdomain/assets/icon-256x256.jpg?rev=2990056",
+        "2x": "https://ps.w.org/a-faster-load-textdomain/assets/icon-256x256.jpg?rev=2990056"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "a-faster-load-textdomain",
+            "language": "nb_NO",
+            "version": "2.3.1",
+            "updated": "2023-11-21 20:43:14",
+            "package": "http://downloads.wordpress.org/translation/plugin/a-faster-load-textdomain/2.3.1/nb_NO.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "a-faster-load-textdomain",
+            "language": "nl_NL",
+            "version": "2.3.1",
+            "updated": "2024-02-29 15:42:12",
+            "package": "http://downloads.wordpress.org/translation/plugin/a-faster-load-textdomain/2.3.1/nl_NL.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "a-faster-load-textdomain",
+            "language": "nl_BE",
+            "version": "2.3.1",
+            "updated": "2024-02-29 15:42:26",
+            "package": "http://downloads.wordpress.org/translation/plugin/a-faster-load-textdomain/2.3.1/nl_BE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "a-faster-load-textdomain",
+            "language": "zh_TW",
+            "version": "2.3.1",
+            "updated": "2024-04-18 09:07:20",
+            "package": "http://downloads.wordpress.org/translation/plugin/a-faster-load-textdomain/2.3.1/zh_TW.zip"
+        }
+    ]
+}

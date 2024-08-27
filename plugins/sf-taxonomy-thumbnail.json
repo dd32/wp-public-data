@@ -1,0 +1,113 @@
+{
+    "name": "Taxonomy Thumbnail",
+    "slug": "sf-taxonomy-thumbnail",
+    "version": "1.3",
+    "author": "<a href=\"https://www.screenfeed.fr/greg/\">Grégory Viguier</a>",
+    "author_profile": "https://profiles.wordpress.org/greglone/",
+    "contributors": {
+        "greglone": {
+            "profile": "https://profiles.wordpress.org/greglone/",
+            "avatar": "https://secure.gravatar.com/avatar/35a94c72390323a1e182a2cdc946139c?s=96&d=monsterid&r=g",
+            "display_name": "Grégory Viguier"
+        }
+    },
+    "requires": "3.5",
+    "tested": "4.5.32",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 10,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 10,
+    "support_url": "https://wordpress.org/support/plugin/sf-taxonomy-thumbnail/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 5000,
+    "downloaded": 45873,
+    "last_updated": "2016-05-30 6:34pm GMT",
+    "added": "2015-06-15",
+    "homepage": "https://www.screenfeed.fr/plugin-wp/taxonomy-thumbnail/",
+    "sections": {
+        "description": "<p>This plugin is meant for developers, it allows to attach a thumbnail to taxonomy terms.</p>\n<h4>UI for setting the thumbnails</h4>\n<p>The thumbnail can be added on term creation or later on the term edition page.<br />\nThe terms list has a column displaying the current thumbnail (so far, no specific action here).<br />\nThe plugin uses the &#8220;new&#8221; media window (the one used since WP 3.5), not the old thickbox.<br />\nI made some extra efforts to enhance accessibility. I&#8217;m not an a11y expert but the UI is not only a &#8220;Add thumbnail&#8221; button. For instance, the new <code>wp.a11y.speak()</code> is used when available. Please give me feedback if you think it can be improved.<br />\nWorks with or without JavaScript.<br />\nIf JavaScript is enabled, thumbnails are set via ajax in the term edition window, no need to update the term.<br />\nBy default, the UI is displayed for all public taxonomies, but this can be filtered that way:</p>\n<pre><code>add_filter( 'sftth_taxonomies', 'my_taxonomies_with_thumbnail' );\n\nfunction my_taxonomies_with_thumbnail( $taxonomies ) {\n    unset( $taxonomies['post_tag'] );\n    $taxonomies['my_custom_tax'] = 'my_custom_tax';\n    return $taxonomies;\n}\n</code></pre>\n<h4>Template tags</h4>\n<p>Find them in <code>inc/template-tags.php</code>.<br />\n<strong>Important note: for WP 4.4+, these functions use <code>term_id</code>. For WP &lt; 4.4, they use <code>term_taxonomy_id</code>.</strong><br />\nI tried to mimic the post thumbnail functions:</p>\n<ol>\n<li><code>get_term_thumbnail_id( $term_id )</code>: Retrieve term thumbnail ID.</li>\n<li><code>has_term_thumbnail( $term_id )</code>: Check if a term has a thumbnail attached to it.</li>\n<li><code>the_term_thumbnail( $term_id, $size = 'post-thumbnail', $attr = '' )</code>: Display the term thumbnail.</li>\n<li><code>get_term_thumbnail( $term_id, $size = 'post-thumbnail', $attr = '' )</code>: Retrieve the term thumbnail.</li>\n<li><code>set_term_thumbnail( $term_id, $thumbnail_id )</code>: Set a term thumbnail.</li>\n<li><code>delete_term_thumbnail( $term_id )</code>: Detach a thumbnail from a term.</li>\n</ol>\n<h4>Store the data</h4>\n<p>From WordPress 4.4, the term metas API is used.<br />\nBelow WordPress 4.4, there are two ways to store the thumbnail IDs:</p>\n<ol>\n<li>Use term metas with the plugin <a href=\"https://wordpress.org/plugins/meta-for-taxonomies/\" rel=\"ugc\">Meta for Taxonomies</a>.</li>\n<li>Use an option (an array association of <code>term_taxonomy_id</code> =&gt; <code>thumbnail_id</code> integers). The option name can be customized by defining the constant <code>SFTTH_OPTION_NAME</code> in <code>wp-config.php</code>.</li>\n</ol>\n<h4>Get terms</h4>\n<p>Use <code>get_terms()</code> with a specific parameter to retrieve only terms with a thumbnail:</p>\n<pre><code>$terms = get_terms( array(\n    'with_thumbnail' =&gt; true,\n) );\n</code></pre>\n<p>From WordPress 4.4, you can also use a small helper to build your meta query:</p>\n<pre><code>$terms = get_terms( array(\n    'meta_query' =&gt; array(\n        'relation' =&gt; 'AND',\n        array(\n            // Any meta query.\n        ),\n        sftth_meta_query(),\n    ),\n) );\n</code></pre>\n<p>Below WordPress 4.4, if you use the plugin <em>Meta for Taxonomies</em>, you should always cache thumbnails.<br />\nWhen using <code>'with_thumbnail' =&gt; false</code> you will retrieve all terms, even those without a thumbnail, but the thumbnails will be cached, saving calls to the database later:</p>\n<pre><code>$terms = get_terms( array(\n    'with_thumbnail' =&gt; false,\n) );\n</code></pre>\n<h4>Uninstall</h4>\n<p>When uninstalling the plugin, you can decide to not delete the thumbnails, simply define a constant in <code>wp-config.php</code>:</p>\n<pre><code>define( 'SFTTH_KEEP_DATA', true );\n</code></pre>\n<h4>Translations</h4>\n<ul>\n<li>US English</li>\n<li>French</li>\n</ul>\n<h4>Requirements</h4>\n<p>Should work starting from WP 3.5, but tested only in WP 4.2.2+ so far.</p>\n<h4>Credits</h4>\n<p>Photo used for the banner by <a href=\"https://www.flickr.com/photos/n1colas/2598073727/\" rel=\"nofollow ugc\">Nicolas Janik</a> (<a href=\"https://creativecommons.org/licenses/by/2.0/\" rel=\"nofollow ugc\">CC BY 2.0</a>).</p>\n",
+        "installation": "<ol>\n<li>Extract the plugin folder from the downloaded ZIP file.</li>\n<li>Upload the <code>sf-taxonomy-thumbnail</code> folder to your <code>/wp-content/plugins/</code> directory.</li>\n<li>Activate the plugin from the &#8220;Plugins&#8221; page.</li>\n<li>Below WordPress 4.4, if you want to use term metas instead of an option, install the plugin <a href=\"https://wordpress.org/plugins/meta-for-taxonomies/\" rel=\"ugc\">Meta for Taxonomies</a>.</li>\n</ol>\n",
+        "faq": "\n<h4>Why should I use the plugin *Meta for Taxonomies*?</h4>\n<p>\n<p>If you use WordPress 4.4 or greater you don&#8217;t need to.<br />\nOtherwise, I think it&#8217;s the proper way to store this kind of data. Post thumbnails are stored in post metas, right? So term thumbnails should be stored in term metas.<br />\nBut it requires a plugin, WordPress does not provide a term metas system before 4.4. On the other hand, I don&#8217;t want to force you to use a dependency, so I wanted my plugin to also work without it.</p>\n</p>\n<h4>Any plan for a settings page where I can choose the taxonomies?</h4>\n<p>\n<p>Nope, it will not happen, imho there is no point to do so.</p>\n</p>\n<h4>Other questions?</h4>\n<p>\n<p>Eventually, try the <a href=\"https://wordpress.org/support/plugin/sf-taxonomy-thumbnail\" rel=\"ugc\">WordPress support forum</a>.</p>\n</p>\n\n",
+        "changelog": "<h4>1.3</h4>\n<ul>\n<li>2016/05/30</li>\n<li>The plugin now works with svg files (using svg files require an adequate plugin).</li>\n<li>Improved code docs.</li>\n</ul>\n<h4>1.2.2</h4>\n<ul>\n<li>2016/05/30</li>\n<li>Fixed a bug that prevented the use of SVG as thumbnail.</li>\n</ul>\n<h4>1.2.1</h4>\n<ul>\n<li>2016/01/31</li>\n<li>Bugfix in uninstallation process: term metas wouldn&#8217;t be deleted with the new WordPress API. Props Ghislain Phu.</li>\n</ul>\n<h4>1.2</h4>\n<ul>\n<li>2015/11/01</li>\n<li>Ready for WordPress 4.4: the plugin will use the new term metas API and will no longer use <em>Meta for Taxonomies</em> plugin. <strong>Developers, be aware that with WP 4.4+ the template tags do not use <code>term_taxonomy_id</code> anymore, but <code>term_id</code> instead.</strong></li>\n<li>Migrate to WordPress 4.4: when the site is updated to WP 4.4, the plugin automatically migrate the old data (stored in an option or by <em>Meta for Taxonomies</em>) to the new term metas table, convert <code>term_taxonomy_id</code>s into <code>term_id</code>s, and delete old data (only the plugin data of course). Then if you used <em>Meta for Taxonomies</em>, it can be uninstalled afterward. <strong>Side note: in case <em>Meta for Taxonomies</em> is not updated by then, you should deactivate it BEFORE updating to WordPress 4.4 (it is not compatible with WP 4.4 yet, and will trigger a fatal error).</strong></li>\n<li>New: when an image attachment is trashed or deleted, the related meta is also removed.</li>\n<li>Lots of docs have been added or updated.</li>\n<li>It&#8217;s a bit late now but there are new tools to migrate data between option and <em>Meta for Taxonomies</em>. See <code>inc/migrate.php</code>.</li>\n</ul>\n<h4>1.1</h4>\n<ul>\n<li>2015/09/20</li>\n<li>Move the thumbnail column after the term name. Since WP 4.3 there is a concept of <em>primary column</em>: if the thumbnail is not displayed AFTER this primary column (the term name), it will break the row layout on screens &lt; 782px.</li>\n<li>Code cleanup.</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>2015/06/11</li>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Add a thumbnail to your taxonomy terms.",
+    "description": "<p>This plugin is meant for developers, it allows to attach a thumbnail to taxonomy terms.</p>\n<h4>UI for setting the thumbnails</h4>\n<p>The thumbnail can be added on term creation or later on the term edition page.<br />\nThe terms list has a column displaying the current thumbnail (so far, no specific action here).<br />\nThe plugin uses the &#8220;new&#8221; media window (the one used since WP 3.5), not the old thickbox.<br />\nI made some extra efforts to enhance accessibility. I&#8217;m not an a11y expert but the UI is not only a &#8220;Add thumbnail&#8221; button. For instance, the new <code>wp.a11y.speak()</code> is used when available. Please give me feedback if you think it can be improved.<br />\nWorks with or without JavaScript.<br />\nIf JavaScript is enabled, thumbnails are set via ajax in the term edition window, no need to update the term.<br />\nBy default, the UI is displayed for all public taxonomies, but this can be filtered that way:</p>\n<pre><code>add_filter( 'sftth_taxonomies', 'my_taxonomies_with_thumbnail' );\n\nfunction my_taxonomies_with_thumbnail( $taxonomies ) {\n    unset( $taxonomies['post_tag'] );\n    $taxonomies['my_custom_tax'] = 'my_custom_tax';\n    return $taxonomies;\n}\n</code></pre>\n<h4>Template tags</h4>\n<p>Find them in <code>inc/template-tags.php</code>.<br />\n<strong>Important note: for WP 4.4+, these functions use <code>term_id</code>. For WP &lt; 4.4, they use <code>term_taxonomy_id</code>.</strong><br />\nI tried to mimic the post thumbnail functions:</p>\n<ol>\n<li><code>get_term_thumbnail_id( $term_id )</code>: Retrieve term thumbnail ID.</li>\n<li><code>has_term_thumbnail( $term_id )</code>: Check if a term has a thumbnail attached to it.</li>\n<li><code>the_term_thumbnail( $term_id, $size = 'post-thumbnail', $attr = '' )</code>: Display the term thumbnail.</li>\n<li><code>get_term_thumbnail( $term_id, $size = 'post-thumbnail', $attr = '' )</code>: Retrieve the term thumbnail.</li>\n<li><code>set_term_thumbnail( $term_id, $thumbnail_id )</code>: Set a term thumbnail.</li>\n<li><code>delete_term_thumbnail( $term_id )</code>: Detach a thumbnail from a term.</li>\n</ol>\n<h4>Store the data</h4>\n<p>From WordPress 4.4, the term metas API is used.<br />\nBelow WordPress 4.4, there are two ways to store the thumbnail IDs:</p>\n<ol>\n<li>Use term metas with the plugin <a href=\"https://wordpress.org/plugins/meta-for-taxonomies/\" rel=\"ugc\">Meta for Taxonomies</a>.</li>\n<li>Use an option (an array association of <code>term_taxonomy_id</code> =&gt; <code>thumbnail_id</code> integers). The option name can be customized by defining the constant <code>SFTTH_OPTION_NAME</code> in <code>wp-config.php</code>.</li>\n</ol>\n<h4>Get terms</h4>\n<p>Use <code>get_terms()</code> with a specific parameter to retrieve only terms with a thumbnail:</p>\n<pre><code>$terms = get_terms( array(\n    'with_thumbnail' =&gt; true,\n) );\n</code></pre>\n<p>From WordPress 4.4, you can also use a small helper to build your meta query:</p>\n<pre><code>$terms = get_terms( array(\n    'meta_query' =&gt; array(\n        'relation' =&gt; 'AND',\n        array(\n            // Any meta query.\n        ),\n        sftth_meta_query(),\n    ),\n) );\n</code></pre>\n<p>Below WordPress 4.4, if you use the plugin <em>Meta for Taxonomies</em>, you should always cache thumbnails.<br />\nWhen using <code>'with_thumbnail' =&gt; false</code> you will retrieve all terms, even those without a thumbnail, but the thumbnails will be cached, saving calls to the database later:</p>\n<pre><code>$terms = get_terms( array(\n    'with_thumbnail' =&gt; false,\n) );\n</code></pre>\n<h4>Uninstall</h4>\n<p>When uninstalling the plugin, you can decide to not delete the thumbnails, simply define a constant in <code>wp-config.php</code>:</p>\n<pre><code>define( 'SFTTH_KEEP_DATA', true );\n</code></pre>\n<h4>Translations</h4>\n<ul>\n<li>US English</li>\n<li>French</li>\n</ul>\n<h4>Requirements</h4>\n<p>Should work starting from WP 3.5, but tested only in WP 4.2.2+ so far.</p>\n<h4>Credits</h4>\n<p>Photo used for the banner by <a href=\"https://www.flickr.com/photos/n1colas/2598073727/\" rel=\"nofollow ugc\">Nicolas Janik</a> (<a href=\"https://creativecommons.org/licenses/by/2.0/\" rel=\"nofollow ugc\">CC BY 2.0</a>).</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/sf-taxonomy-thumbnail.zip",
+    "upgrade_notice": {
+        "": "<p>If you use <em>Meta for Taxonomies</em> plugin, you will need this version when WordPress 4.4 comes out.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/sf-taxonomy-thumbnail/assets/screenshot-1.png?rev=1181380",
+            "caption": "Create a new category an assign a thumbnail."
+        },
+        {
+            "src": "https://ps.w.org/sf-taxonomy-thumbnail/assets/screenshot-2.png?rev=1181380",
+            "caption": "Change or remove the thumbnail from the category."
+        }
+    ],
+    "tags": {
+        "category": "category",
+        "dev": "dev",
+        "image": "image",
+        "taxonomy": "taxonomy",
+        "thumbnail": "thumbnail"
+    },
+    "stable_tag": "trunk",
+    "versions": {
+        "1.1": "https://downloads.wordpress.org/plugin/sf-taxonomy-thumbnail.1.1.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/sf-taxonomy-thumbnail/assets/banner-772x250.jpg?rev=1286672",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/sf-taxonomy-thumbnail/assets/icon.svg?rev=1181360",
+        "svg": "https://ps.w.org/sf-taxonomy-thumbnail/assets/icon.svg?rev=1181360"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "sf-taxonomy-thumbnail",
+            "language": "fr_FR",
+            "version": "1.3",
+            "updated": "2017-02-07 13:00:59",
+            "package": "http://downloads.wordpress.org/translation/plugin/sf-taxonomy-thumbnail/1.3/fr_FR.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "sf-taxonomy-thumbnail",
+            "language": "ja",
+            "version": "1.3",
+            "updated": "2017-04-26 00:45:01",
+            "package": "http://downloads.wordpress.org/translation/plugin/sf-taxonomy-thumbnail/1.3/ja.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "sf-taxonomy-thumbnail",
+            "language": "ru_RU",
+            "version": "1.3",
+            "updated": "2023-06-28 07:25:07",
+            "package": "http://downloads.wordpress.org/translation/plugin/sf-taxonomy-thumbnail/1.3/ru_RU.zip"
+        }
+    ]
+}

@@ -1,0 +1,86 @@
+{
+    "name": "Authors Autocomplete Meta Box",
+    "slug": "authors-autocomplete-meta-box",
+    "version": "1.2",
+    "author": "<a href=\"http://www.wpdreamer.com\">Rachel Carden</a>",
+    "author_profile": "https://profiles.wordpress.org/bamadesigner/",
+    "contributors": {
+        "bamadesigner": {
+            "profile": "https://profiles.wordpress.org/bamadesigner/",
+            "avatar": "https://secure.gravatar.com/avatar/cf04cca68135ce6bce0e0c1224250baf?s=96&d=monsterid&r=g",
+            "display_name": "Rachel Cherry"
+        }
+    },
+    "requires": "3.3",
+    "tested": "3.6.1",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 5,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 5,
+    "support_url": "https://wordpress.org/support/plugin/authors-autocomplete-meta-box/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 100,
+    "downloaded": 4326,
+    "last_updated": "2013-12-02 5:10pm GMT",
+    "added": "2013-05-23",
+    "homepage": "http://wordpress.org/plugins/authors-autocomplete-meta-box",
+    "sections": {
+        "description": "<p>Replaces the default WordPress Author meta box (that has an author dropdown) with a meta box that allows you to select the post&#8217;s, or page&#8217;s, author via Autocomplete.</p>\n<p>Can really come in handy if you have a lot of authors and are tired of scrolling through that long author dropdown.</p>\n<h3>Credits</h3>\n<p>Big shoutout to <a href=\"http://www.ereleases.com\" rel=\"nofollow ugc\">ereleases.com</a> for commissioning this plugin and letting me share it with the community. Thanks, guys. You rock!</p>\n<p>Lots of thanks to Andrew Kurtis from WebHostingHub Support for providing the Spanish translation.</p>\n<h3>Filters</h3>\n<p>Filters can really come in handy to nail down specific customizations on a site by site basis. I am what you would consider a power user so I&#8217;m a big fan of actions and filters and try to incorporate them into my plugins as much as possible. Here are some pretty helpful filters to get your authors autocomplete meta box working just the way you like.</p>\n<h4>authors_autocomplete_mb_allow_user_id</h4>\n<p>This filter allows you to block users from the autocomplete results according to user id. Return <em>true</em> to allow and <em>false</em> to deny.</p>\n<p>It passes the user id, along with the post ID and post type. <strong>Don&#8217;t forget:</strong> when using a filter, you <strong>MUST</strong> return something. Here&#8217;s an example to help you get started:</p>\n<pre><code>&lt;?php\n\n// return *true* to allow the user and *false* to deny the user from autocomplete results\nadd_filter( 'authors_autocomplete_mb_allow_user_id', 'filter_authors_autocomplete_mb_allow_user_id', 1, 4 );\nfunction filter_authors_autocomplete_mb_allow_user_id( $allow_user_id, $user_id, $post_id, $post_type ) {\n    if ( $user_id == 4 )\n        return false;\n    return $allow_user_id;\n}\n?&gt;\n</code></pre>\n<h4>authors_autocomplete_mb_allow_user_role</h4>\n<p>This filter allows you to block users from the autocomplete results according to user role. Return <em>true</em> to allow and <em>false</em> to deny.</p>\n<p>It passes the user role, along with the post ID and post type. <strong>Don&#8217;t forget:</strong> when using a filter, you <strong>MUST</strong> return something. Here&#8217;s an example to help you get started:</p>\n<pre><code>&lt;?php\n\n// return *true* to allow the user and *false* to deny the user from autocomplete results\nadd_filter( 'authors_autocomplete_mb_allow_user_role', 'filter_authors_autocomplete_mb_allow_user_role', 1, 4 );\nfunction filter_authors_autocomplete_mb_allow_user_role( $allow_user_role, $user_role, $post_id, $post_type ) {\n    if ( $user_role == 'administrator' )\n        return false;\n    return $allow_user_role;\n}\n?&gt;\n</code></pre>\n<h4>authors_autocomplete_mb_author_capability</h4>\n<p>When checking to see if a user has author privileges, and should therefore be included in the autocomplete results, the plugin checks the user&#8217;s capabilities. If the user is editing a page, then the user is added if they have the capability to <em>edit_pages</em>, otherwise the user is added if they have the capability to <em>edit_posts</em>.</p>\n<p>If you would like to change the author privilege capability, then this filter is for you. It passes the default capability, along with the post ID and post type. <strong>Don&#8217;t forget:</strong> when using a filter, you <strong>MUST</strong> return something. Here&#8217;s an example to help you get started:</p>\n<pre><code>&lt;?php\n// changing the author capability according to post type\nadd_filter( 'authors_autocomplete_mb_author_capability', 'filter_authors_autocomplete_mb_author_capability', 1, 3 );\nfunction filter_authors_autocomplete_mb_author_capability( $author_capability, $post_id, $post_type ) {\n    if ( $post_type == 'movies' )\n        return 'edit_movies';\n    return $author_capability;\n}\n?&gt;\n</code></pre>\n<h4>authors_autocomplete_mb_custom_user_search_user_ids</h4>\n<p>Want the autocomplete box to search information besides the default user_login, display_name and user_email? This is the filter for you.</p>\n<p>Use this filter to run whatever search you like and simply return the user IDs from your results.</p>\n<p>It passes a blank array to get you started, the search term, post ID and post type. <strong>Don&#8217;t forget:</strong> when using a filter, you <strong>MUST</strong> return something.</p>\n<p>Here&#8217;s an example from me helping a user search their <a href=\"https://wordpress.org/plugins/cimy-user-extra-fields/\" rel=\"ugc\">CIMY User Extra Fields</a>:</p>\n<pre><code>&lt;?php\n// search CIMY User Extra Fields with search term and return user IDs\nadd_filter( 'authors_autocomplete_mb_custom_user_search_user_ids', 'authors_autocomplete_custom_user_search', 1, 4 );\nfunction authors_autocomplete_custom_user_search( $user_ids, $search_term, $post_id, $post_type ) {\n   global $wpdb;\n   return $wpdb-&gt;get_col( \"SELECT users.ID, cimy_uef_data.VALUE FROM $wpdb-&gt;users users LEFT JOIN {$wpdb-&gt;prefix}cimy_uef_data cimy_uef_data ON cimy_uef_data.USER_ID = users.ID WHERE ( cimy_uef_data.VALUE LIKE '%$search_term%' OR users.user_login LIKE '%$search_term%' OR users.display_name LIKE '%$search_term%' OR users.user_email LIKE '%$search_term%' ) ORDER BY users.ID ASC\" );\n}\n?&gt;\n</code></pre>\n",
+        "installation": "<ol>\n<li>Upload &#8216;authors-autocomplete-meta-box&#8217; to the &#8216;/wp-content/plugins/&#8217; directory.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>Start finding and selecting a post or page&#8217;s author like a boss.</li>\n</ol>\n",
+        "changelog": "<h4>1.2</h4>\n<ul>\n<li>Added ability to run custom user search via filter.</li>\n<li>Added support for Internationalization.</li>\n<li>Added Spanish translation with help from Andrew Kurtis from WebHostingHub Support.</li>\n<li>Added support for custom post type author capability testing.</li>\n<li>Renamed the CSS and Javascript file.</li>\n</ul>\n<h4>1.1</h4>\n<ul>\n<li>Updated author capability testing from user level to user capabilities.</li>\n<li>Added ability to change author capability via filter.</li>\n<li>Added ability to remove users from autocomplete results according to user id.</li>\n<li>Added ability to remove users from autocomplete results according to user role.</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>Plugin launch!</li>\n</ul>\n"
+    },
+    "short_description": "Replaces the default WordPress Author dropdown with a meta box that allows you to select the author via Autocomplete.",
+    "description": "<p>Replaces the default WordPress Author meta box (that has an author dropdown) with a meta box that allows you to select the post&#8217;s, or page&#8217;s, author via Autocomplete.</p>\n<p>Can really come in handy if you have a lot of authors and are tired of scrolling through that long author dropdown.</p>\n<h3>Credits</h3>\n<p>Big shoutout to <a href=\"http://www.ereleases.com\" rel=\"nofollow ugc\">ereleases.com</a> for commissioning this plugin and letting me share it with the community. Thanks, guys. You rock!</p>\n<p>Lots of thanks to Andrew Kurtis from WebHostingHub Support for providing the Spanish translation.</p>\n<h3>Filters</h3>\n<p>Filters can really come in handy to nail down specific customizations on a site by site basis. I am what you would consider a power user so I&#8217;m a big fan of actions and filters and try to incorporate them into my plugins as much as possible. Here are some pretty helpful filters to get your authors autocomplete meta box working just the way you like.</p>\n<h4>authors_autocomplete_mb_allow_user_id</h4>\n<p>This filter allows you to block users from the autocomplete results according to user id. Return <em>true</em> to allow and <em>false</em> to deny.</p>\n<p>It passes the user id, along with the post ID and post type. <strong>Don&#8217;t forget:</strong> when using a filter, you <strong>MUST</strong> return something. Here&#8217;s an example to help you get started:</p>\n<pre><code>&lt;?php\n\n// return *true* to allow the user and *false* to deny the user from autocomplete results\nadd_filter( 'authors_autocomplete_mb_allow_user_id', 'filter_authors_autocomplete_mb_allow_user_id', 1, 4 );\nfunction filter_authors_autocomplete_mb_allow_user_id( $allow_user_id, $user_id, $post_id, $post_type ) {\n    if ( $user_id == 4 )\n        return false;\n    return $allow_user_id;\n}\n?&gt;\n</code></pre>\n<h4>authors_autocomplete_mb_allow_user_role</h4>\n<p>This filter allows you to block users from the autocomplete results according to user role. Return <em>true</em> to allow and <em>false</em> to deny.</p>\n<p>It passes the user role, along with the post ID and post type. <strong>Don&#8217;t forget:</strong> when using a filter, you <strong>MUST</strong> return something. Here&#8217;s an example to help you get started:</p>\n<pre><code>&lt;?php\n\n// return *true* to allow the user and *false* to deny the user from autocomplete results\nadd_filter( 'authors_autocomplete_mb_allow_user_role', 'filter_authors_autocomplete_mb_allow_user_role', 1, 4 );\nfunction filter_authors_autocomplete_mb_allow_user_role( $allow_user_role, $user_role, $post_id, $post_type ) {\n    if ( $user_role == 'administrator' )\n        return false;\n    return $allow_user_role;\n}\n?&gt;\n</code></pre>\n<h4>authors_autocomplete_mb_author_capability</h4>\n<p>When checking to see if a user has author privileges, and should therefore be included in the autocomplete results, the plugin checks the user&#8217;s capabilities. If the user is editing a page, then the user is added if they have the capability to <em>edit_pages</em>, otherwise the user is added if they have the capability to <em>edit_posts</em>.</p>\n<p>If you would like to change the author privilege capability, then this filter is for you. It passes the default capability, along with the post ID and post type. <strong>Don&#8217;t forget:</strong> when using a filter, you <strong>MUST</strong> return something. Here&#8217;s an example to help you get started:</p>\n<pre><code>&lt;?php\n// changing the author capability according to post type\nadd_filter( 'authors_autocomplete_mb_author_capability', 'filter_authors_autocomplete_mb_author_capability', 1, 3 );\nfunction filter_authors_autocomplete_mb_author_capability( $author_capability, $post_id, $post_type ) {\n    if ( $post_type == 'movies' )\n        return 'edit_movies';\n    return $author_capability;\n}\n?&gt;\n</code></pre>\n<h4>authors_autocomplete_mb_custom_user_search_user_ids</h4>\n<p>Want the autocomplete box to search information besides the default user_login, display_name and user_email? This is the filter for you.</p>\n<p>Use this filter to run whatever search you like and simply return the user IDs from your results.</p>\n<p>It passes a blank array to get you started, the search term, post ID and post type. <strong>Don&#8217;t forget:</strong> when using a filter, you <strong>MUST</strong> return something.</p>\n<p>Here&#8217;s an example from me helping a user search their <a href=\"https://wordpress.org/plugins/cimy-user-extra-fields/\" rel=\"ugc\">CIMY User Extra Fields</a>:</p>\n<pre><code>&lt;?php\n// search CIMY User Extra Fields with search term and return user IDs\nadd_filter( 'authors_autocomplete_mb_custom_user_search_user_ids', 'authors_autocomplete_custom_user_search', 1, 4 );\nfunction authors_autocomplete_custom_user_search( $user_ids, $search_term, $post_id, $post_type ) {\n   global $wpdb;\n   return $wpdb-&gt;get_col( \"SELECT users.ID, cimy_uef_data.VALUE FROM $wpdb-&gt;users users LEFT JOIN {$wpdb-&gt;prefix}cimy_uef_data cimy_uef_data ON cimy_uef_data.USER_ID = users.ID WHERE ( cimy_uef_data.VALUE LIKE '%$search_term%' OR users.user_login LIKE '%$search_term%' OR users.display_name LIKE '%$search_term%' OR users.user_email LIKE '%$search_term%' ) ORDER BY users.ID ASC\" );\n}\n?&gt;\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/authors-autocomplete-meta-box.1.2.zip",
+    "upgrade_notice": {
+        "1.2": "<ul>\n<li>Added ability to run custom user search via filter.</li>\n<li>Added support for Internationalization.</li>\n<li>Added Spanish translation with help from Andrew Kurtis from WebHostingHub Support.</li>\n<li>Added support for custom post type author capability testing.</li>\n<li>Renamed the CSS and Javascript file.</li>\n</ul>",
+        "1.1": "<ul>\n<li>Updated author capability testing from user level to user capabilities.</li>\n<li>Added ability to change author capability via filter.</li>\n<li>Added ability to remove users from autocomplete results according to user id.</li>\n<li>Added ability to remove users from autocomplete results according to user role.</li>\n</ul>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/authors-autocomplete-meta-box/assets/screenshot-1.png?rev=723712",
+            "caption": "The Authors Autocomplete shows the author's display name, login and email address to help you select the correct author. Once selected, the author's gravatar is displayed to the left."
+        }
+    ],
+    "tags": {
+        "author": "author",
+        "authors": "authors",
+        "auto": "auto",
+        "autocomplete": "autocomplete",
+        "complete": "complete"
+    },
+    "stable_tag": "1.2",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/authors-autocomplete-meta-box.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/authors-autocomplete-meta-box.1.1.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/authors-autocomplete-meta-box.1.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/authors-autocomplete-meta-box.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=bamadesigner%40gmail%2ecom&lc=US&item_name=Rachel%20Carden%20%28Authors%20Autocomplete%20Meta%20Box%29&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted",
+    "banners": {
+        "low": "https://ps.w.org/authors-autocomplete-meta-box/assets/banner-772x250.png?rev=717558",
+        "high": false
+    },
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/authors-autocomplete-meta-box_b1b3ac.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

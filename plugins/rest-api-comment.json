@@ -1,0 +1,80 @@
+{
+    "name": "REST API Comment",
+    "slug": "rest-api-comment",
+    "version": "1.0.2",
+    "author": "<a href=\"https://appsdabanda.com\">Joaquim Domingos António</a>",
+    "author_profile": "https://profiles.wordpress.org/joaquiminteresting/",
+    "contributors": {
+        "joaquiminteresting": {
+            "profile": "https://profiles.wordpress.org/joaquiminteresting/",
+            "avatar": "https://secure.gravatar.com/avatar/5d00a8bf2fbc450b4ecf9777d625ac0f?s=96&d=monsterid&r=g",
+            "display_name": "Joaquim Domingos António"
+        }
+    },
+    "requires": "5.5",
+    "tested": "5.8.10",
+    "requires_php": "7.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/rest-api-comment/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 20,
+    "downloaded": 522,
+    "last_updated": "2021-11-07 6:19pm GMT",
+    "added": "2021-10-22",
+    "homepage": "",
+    "sections": {
+        "description": "<p>If you wish to &#8216;Create comments&#8217; using REST API, <em>without</em> exposing Administrator credentials to the Front-End application, you are at the right place. Since WordPress 4.7, REST API was natively included in WordPress.</p>\n<p>In order to &#8216;Create a comment&#8217; , the authentication for a user with &#8216;Administrator&#8217; role is required. While this is a deliberately done for security reasons, such implementation makes it very hard for Front-End applications to implement a simple &#8216;Post Comment&#8217; or &#8216;Reply Comment&#8217; function.</p>\n<p>This plugin fulfils such requirement by extending the existing WordPress REST API endpoints.</p>\n<p>Requirements:</p>\n<p><strong>Minimum PHP version: 7.0</strong><br />\n<strong>Minimum WordPress version: 5.5</strong></p>\n<p>Installation:</p>\n<p>Download the plugin form wordpress marketplace install it like any other WordPress plugin.<br />\nAfter the installation activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</p>\n<p>Endpoint:</p>\n<p>When this plugin is installed one new endpoint is added to the <strong>wp/v2</strong> namespace.</p>\n<p>  Endpoint<br />\n  HTTP Verb<br />\n  Permalinks</p>\n<p>  */wp-json/wp/v2/comments/create<br />\n  POST<br />\n  enabled</p>\n<p>  */?rest_route=/wp/v2/comments/create<br />\n  POST<br />\n  disabled</p>\n<p>Usage:</p>\n<ol>\n<li>Create a Comment</li>\n</ol>\n<p>To create a comment using REST API, send a <code>POST</code> request to:</p>\n<blockquote>\n<p><code>/wp-json/wp/v2/comments/create</code> &#8211; if permalinks is enabled on your wordpress website.</p>\n</blockquote>\n<p>Or</p>\n<blockquote>\n<p><code>/?rest_route=/wp/v2/comments/create</code> if permalinks is not enabled on your wordpress website.</p>\n</blockquote>\n<p>With a <strong>JSON body</strong>, as shown bellow:</p>\n<pre><code>`Json\n</code></pre>\n<p>{<br />\n    &#8220;post&#8221;: &#8220;Post ID&#8221;,<br />\n    &#8220;author_name&#8221;: &#8220;Comment Author&#8217;s name&#8221;,<br />\n    &#8220;author_email&#8221;: &#8220;Comment Author&#8217;s email&#8221;,<br />\n    &#8220;content&#8221;: &#8220;Comment content&#8221;<br />\n}<br />\n    `</p>\n<p>The <strong>content</strong> may also be send as an object:</p>\n<pre><code>`Json\n</code></pre>\n<p>{<br />\n    &#8220;post&#8221;: &#8220;Post ID&#8221;,<br />\n    &#8220;author_name&#8221;: &#8220;Comment Author&#8217;s name&#8221;,<br />\n    &#8220;author_email&#8221;: &#8220;Comment Author&#8217;s email&#8221;,<br />\n    &#8220;content&#8221;: {<br />\n        &#8220;raw&#8221;:&#8221;Comment content&#8221;<br />\n    }<br />\n}<br />\n    `</p>\n<p>Set header to:</p>\n<pre><code>`\n</code></pre>\n<p>content-type: application/json<br />\n    `<br />\nIf successful, you should receive a response with the data of the created comment:</p>\n<pre><code>`Json\n</code></pre>\n<p>{<br />\n  &#8220;id&#8221;: &#8220;[comment id]&#8221;,<br />\n  &#8220;status&#8221;: &#8220;[comment status]&#8221;,<br />\n  &#8220;message&#8221;:&#8221;[server response message]&#8221;<br />\n}<br />\n    `</p>\n<p>In response header the  status code should be:</p>\n<pre><code>`Http\n</code></pre>\n<p>HTTP 201 Created<br />\n    `</p>\n<ol>\n<li>Reply a comment</li>\n</ol>\n<p>To reply a comment you just need to add the field <strong>parent</strong> for the parent comment to the <strong>JSON body</strong></p>\n<pre><code>`Json\n</code></pre>\n<p>{<br />\n    &#8220;post&#8221;: &#8220;Post ID&#8221;,<br />\n    &#8220;author_name&#8221;: &#8220;Comment Author&#8217;s name&#8221;,<br />\n    &#8220;author_email&#8221;: &#8220;Comment Author&#8217;s email&#8221;,<br />\n    &#8220;content&#8221;: &#8220;Comment content&#8221;,<br />\n    &#8220;parent&#8221;:&#8221;Comment parent ID&#8221;<br />\n}<br />\n    `</p>\n<blockquote>\n<p>Note: Ensure the <strong>parent</strong> is a comment id that belongs to the post informed in the field <strong>post</strong>. The comment parent post id must match the post id otherwise the following error will be shown:</p>\n</blockquote>\n<pre><code>`Json\n</code></pre>\n<p>{<br />\n  &#8220;code&#8221;: &#8220;rest_post_mismatch_parent_post_id&#8221;,<br />\n  &#8220;message&#8221;: &#8220;Post ID and Parent post ID does not match&#8221;,<br />\n  &#8220;data&#8221;: {<br />\n    &#8220;status&#8221;: 400<br />\n  }<br />\n}<br />\n    `</p>\n<h3>Contact</h3>\n<p>If there is any thing to say about the plugin fill free to <a href=\"mailto:&#115;&#111;&#x70;&#112;&#x6f;r&#116;&#x40;&#097;&#x70;p&#115;&#x64;&#097;&#x62;&#x61;&#110;&#x64;&#097;&#046;&#x63;&#111;&#x6d;\" rel=\"nofollow ugc\">contact us</a>.</p>\n",
+        "faq": "\n<dt id='why%20do%20i%20need%20rest%20api%20comment%3F'>\nWhy do I need REST API Comment?\n</h4>\n<p>\n<p>If you&#8217;re planning on using your WordPress news website/blog as a Backend, and you&#8217;re consuming RESTful api, you&#8217;ll most probably need to <strong>Create comments</strong> and <strong>Reply comments</strong> via REST API. This is precisely what this plugin does.</p>\n</p>\n<dt id='is%20it%20secure%3F'>\nIs it secure?\n</h4>\n<p>\n<p>Great question! For the time being, this plugin just provides the same experience any wordpress site provides by default witch is allowing any one to comment a post requiring basic infos such as: name, email address and the content, without authentication. All security was followed based on the wordpress core code.</p>\n</p>\n<dt id='there%27s%20a%20bug%2C%20what%20do%20i%20do%3F'>\nThere&#8217;s a bug, what do I do?\n</h4>\n<p>\n<p>Please create a ticket on the <a href=\"mailto:&#115;&#111;&#x70;&#112;&#x6f;r&#116;&#x40;&#097;&#x70;p&#115;&#x64;&#097;&#x62;&#x61;&#110;&#x64;&#097;&#046;&#x63;&#111;&#x6d;\" rel=\"nofollow ugc\">support team</a> or open an issue in <a href=\"https://github.com/JoaquimInteresting/rest-api-comment\" rel=\"nofollow ugc\">github repository</a>. We&#8217;ll get back to you as soon as possible.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.2</h4>\n<ul>\n<li>It prevents comments for posts with comment status &#8216;closed&#8217;</li>\n<li>It prevents comments for posts with post status different from &#8216;publish&#8217;</li>\n<li>Now it requires at least wordpress version 5.5</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Now it requires at least wordpress version 4.7</li>\n<li>Response was updated</li>\n<li>README was Updated</li>\n<li>Bug fixed</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial Release </li>\n<li>Create comment</li>\n<li>Reply comment</li>\n</ul>\n"
+    },
+    "short_description": "REST API Comment adds in the &#039;Comment creation&#039; function to the Wordpress REST API.",
+    "description": "<p>If you wish to &#8216;Create comments&#8217; using REST API, <em>without</em> exposing Administrator credentials to the Front-End application, you are at the right place. Since WordPress 4.7, REST API was natively included in WordPress.</p>\n<p>In order to &#8216;Create a comment&#8217; , the authentication for a user with &#8216;Administrator&#8217; role is required. While this is a deliberately done for security reasons, such implementation makes it very hard for Front-End applications to implement a simple &#8216;Post Comment&#8217; or &#8216;Reply Comment&#8217; function.</p>\n<p>This plugin fulfils such requirement by extending the existing WordPress REST API endpoints.</p>\n<p>Requirements:</p>\n<p><strong>Minimum PHP version: 7.0</strong><br />\n<strong>Minimum WordPress version: 5.5</strong></p>\n<p>Installation:</p>\n<p>Download the plugin form wordpress marketplace install it like any other WordPress plugin.<br />\nAfter the installation activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</p>\n<p>Endpoint:</p>\n<p>When this plugin is installed one new endpoint is added to the <strong>wp/v2</strong> namespace.</p>\n<p>  Endpoint<br />\n  HTTP Verb<br />\n  Permalinks</p>\n<p>  */wp-json/wp/v2/comments/create<br />\n  POST<br />\n  enabled</p>\n<p>  */?rest_route=/wp/v2/comments/create<br />\n  POST<br />\n  disabled</p>\n<p>Usage:</p>\n<ol>\n<li>Create a Comment</li>\n</ol>\n<p>To create a comment using REST API, send a <code>POST</code> request to:</p>\n<blockquote>\n<p><code>/wp-json/wp/v2/comments/create</code> &#8211; if permalinks is enabled on your wordpress website.</p>\n</blockquote>\n<p>Or</p>\n<blockquote>\n<p><code>/?rest_route=/wp/v2/comments/create</code> if permalinks is not enabled on your wordpress website.</p>\n</blockquote>\n<p>With a <strong>JSON body</strong>, as shown bellow:</p>\n<pre><code>`Json\n</code></pre>\n<p>{<br />\n    &#8220;post&#8221;: &#8220;Post ID&#8221;,<br />\n    &#8220;author_name&#8221;: &#8220;Comment Author&#8217;s name&#8221;,<br />\n    &#8220;author_email&#8221;: &#8220;Comment Author&#8217;s email&#8221;,<br />\n    &#8220;content&#8221;: &#8220;Comment content&#8221;<br />\n}<br />\n    `</p>\n<p>The <strong>content</strong> may also be send as an object:</p>\n<pre><code>`Json\n</code></pre>\n<p>{<br />\n    &#8220;post&#8221;: &#8220;Post ID&#8221;,<br />\n    &#8220;author_name&#8221;: &#8220;Comment Author&#8217;s name&#8221;,<br />\n    &#8220;author_email&#8221;: &#8220;Comment Author&#8217;s email&#8221;,<br />\n    &#8220;content&#8221;: {<br />\n        &#8220;raw&#8221;:&#8221;Comment content&#8221;<br />\n    }<br />\n}<br />\n    `</p>\n<p>Set header to:</p>\n<pre><code>`\n</code></pre>\n<p>content-type: application/json<br />\n    `<br />\nIf successful, you should receive a response with the data of the created comment:</p>\n<pre><code>`Json\n</code></pre>\n<p>{<br />\n  &#8220;id&#8221;: &#8220;[comment id]&#8221;,<br />\n  &#8220;status&#8221;: &#8220;[comment status]&#8221;,<br />\n  &#8220;message&#8221;:&#8221;[server response message]&#8221;<br />\n}<br />\n    `</p>\n<p>In response header the  status code should be:</p>\n<pre><code>`Http\n</code></pre>\n<p>HTTP 201 Created<br />\n    `</p>\n<ol>\n<li>Reply a comment</li>\n</ol>\n<p>To reply a comment you just need to add the field <strong>parent</strong> for the parent comment to the <strong>JSON body</strong></p>\n<pre><code>`Json\n</code></pre>\n<p>{<br />\n    &#8220;post&#8221;: &#8220;Post ID&#8221;,<br />\n    &#8220;author_name&#8221;: &#8220;Comment Author&#8217;s name&#8221;,<br />\n    &#8220;author_email&#8221;: &#8220;Comment Author&#8217;s email&#8221;,<br />\n    &#8220;content&#8221;: &#8220;Comment content&#8221;,<br />\n    &#8220;parent&#8221;:&#8221;Comment parent ID&#8221;<br />\n}<br />\n    `</p>\n<blockquote>\n<p>Note: Ensure the <strong>parent</strong> is a comment id that belongs to the post informed in the field <strong>post</strong>. The comment parent post id must match the post id otherwise the following error will be shown:</p>\n</blockquote>\n<pre><code>`Json\n</code></pre>\n<p>{<br />\n  &#8220;code&#8221;: &#8220;rest_post_mismatch_parent_post_id&#8221;,<br />\n  &#8220;message&#8221;: &#8220;Post ID and Parent post ID does not match&#8221;,<br />\n  &#8220;data&#8221;: {<br />\n    &#8220;status&#8221;: 400<br />\n  }<br />\n}<br />\n    `</p>\n<h3>Contact</h3>\n<p>If there is any thing to say about the plugin fill free to <a href=\"mailto:&#115;&#111;&#x70;&#112;&#x6f;r&#116;&#x40;&#097;&#x70;p&#115;&#x64;&#097;&#x62;&#x61;&#110;&#x64;&#097;&#046;&#x63;&#111;&#x6d;\" rel=\"nofollow ugc\">contact us</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/rest-api-comment.1.0.2.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/rest-api-comment/assets/screenshot-1.PNG?rev=2618494",
+            "caption": "This Screenshot is a sample REST API POST request using REST API Comment."
+        }
+    ],
+    "tags": {
+        "api": "api",
+        "comment": "comment",
+        "rest": "rest",
+        "rest-api": "rest-api",
+        "wp": "wp"
+    },
+    "stable_tag": "1.0.2",
+    "versions": {
+        "1.0.1": "https://downloads.wordpress.org/plugin/rest-api-comment.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/rest-api-comment.1.0.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/rest-api-comment.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/rest-api-comment/assets/icon-128x128.png?rev=2618494",
+        "2x": "https://ps.w.org/rest-api-comment/assets/icon-256x256.png?rev=2618494"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

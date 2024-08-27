@@ -1,0 +1,130 @@
+{
+    "name": "Maintenance Redirect",
+    "slug": "jf3-maintenance-mode",
+    "version": "2.0.1",
+    "author": "<a href=\"https://www.fabulosawebdesign.co.uk\">Peter Hardy-vanDoorn</a>",
+    "author_profile": "https://profiles.wordpress.org/petervandoorn/",
+    "contributors": {
+        "petervandoorn": {
+            "profile": "https://profiles.wordpress.org/petervandoorn/",
+            "avatar": "https://secure.gravatar.com/avatar/ccc687e5dd725b32526a5cec5f369e70?s=96&d=monsterid&r=g",
+            "display_name": "Peter Hardy-vanDoorn"
+        },
+        "jfinch3": {
+            "profile": "https://profiles.wordpress.org/jfinch3/",
+            "avatar": "https://secure.gravatar.com/avatar/d2041d9a484c3b5dbca72d33069e6ee5?s=96&d=monsterid&r=g",
+            "display_name": "jfinch3"
+        }
+    },
+    "requires": "5.1",
+    "tested": "6.4.5",
+    "requires_php": "5.6",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 98,
+    "ratings": {
+        "5": 20,
+        "4": 2,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 22,
+    "support_url": "https://wordpress.org/support/plugin/jf3-maintenance-mode/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10000,
+    "downloaded": 176526,
+    "last_updated": "2024-02-22 2:49pm GMT",
+    "added": "2010-06-13",
+    "homepage": "https://www.fabulosawebdesign.co.uk",
+    "sections": {
+        "description": "<p>This plugin is intended primarily for designers / developers that need to allow clients to preview sites before being available to the general public or to temporarily hide your WordPress site while undergoing major updates.</p>\n<p>Any logged in user with WordPress administrator privileges will be allowed to view the site regardless of the settings in the plugin. The exact privilege can be set using a filter hook &#8211; see FAQs.</p>\n<p>The behaviour of this plugin can be enabled or disabled at any time without losing any of the settings configured in its settings pane. However, deactivating the plugin is recommended versus having it activated while disabled.</p>\n<p>When redirect is enabled it can send 2 different header types. “200 OK” is best used for when the site is under development and “503 Service Temporarily Unavailable” is best for when the site is temporarily taken offline for small amendments. If used for a long period of time, 503 can damage your Google ranking.</p>\n<p>A list of IP addresses can be set up to completely bypass maintenance mode. This option is useful when needing to allow a client’s entire office to access the site while in maintenance mode without needing to maintain individual access keys.</p>\n<p>Access keys work by creating a cookie on the user’s computer that will be checked for when maintenance mode is active. When a new key is created, a link to create the access key cookie will be emailed to the email address provided. Access can then be revoked either by disabling or deleting the key.</p>\n<p>This plugin allows three methods of notifying users that a site is undergoing maintenance:</p>\n<ol>\n<li>\n<p>They can be presented with a simple message.</p>\n</li>\n<li>\n<p>They can be presented with a custom HMTL page.</p>\n</li>\n<li>\n<p>They can be redirected to a static HTML page. This static page will need to be uploaded to the server via FTP or some other method. This plugin DOES NOT include any way to upload the static page file. Any URL can be used here, and it doesn&#8217;t need to be on the same server (so you could redirect back to the client&#8217;s current site if you&#8217;re working on a dev site, for example). However, it should NOT be the URL of a WordPress page or post on the same site as this will result in an infinite redirect loop.</p>\n</li>\n</ol>\n",
+        "installation": "<ol>\n<li>\n<p>Upload the <code>jf3-maintenance-mode</code> folder to your plugins directory (usually <code>/wp-content/plugins/</code>).</p>\n</li>\n<li>\n<p>Activate the plugin through the <code>Plugins</code> menu in WordPress.</p>\n</li>\n<li>\n<p>Configure the settings through the <code>Maintenance Redirect</code> Settings panel.</p>\n</li>\n</ol>\n",
+        "faq": "\n<dt id='what%20does%20maintenance%20redirect%20block%3F'>\nWhat does Maintenance Redirect block?\n</h4>\n<p>\n<p>This plugin is designed to block only the normal display of pages in the web browser. It will not effect any other calls to WordPress, such as the Rest API.</p>\n<p>This means that services such as the PayPal and Stripe integrations in WooCommerce, for example, are still able to function for testing WooCommerce stores.</p>\n<p>It also means that all of the usual WordPress REST endpoints are active. If you wish to completely lock down your site&#8217;s data then you will need to find an additional solution to block those calls.</p>\n</p>\n<dt id='how%20can%20i%20bypass%20the%20redirect%20programatically%3F'>\nHow can I bypass the redirect programatically?\n</h4>\n<p>\n<p>There is a filter which allows you to programatically bypass the redirection block:</p>\n<p><strong><code>wpjf3_matches</code></strong></p>\n<p>This allows you to run pretty much any test you like, although be aware that the whole redirection thing runs <em>before</em> the <code>$post</code> global is set up, so WordPress conditionals such as <code>is_post()</code> and <code>is_tax()</code> are not available.</p>\n<p>This example looks in the <code>$_SERVER</code> global to see if any part of the URL contains &#8220;demo&#8221;</p>\n<pre><code>function my_wpjf3_matches( $wpjf3_matches ) {\n    if ( stristr( $_SERVER['REQUEST_URI'], 'demo' ) ) \n        $wpjf3_matches[] = \"&lt;!-- Demo --&gt;\";\n    return $wpjf3_matches;\n}\nadd_filter( \"wpjf3_matches\", \"my_wpjf3_matches\" );\n</code></pre>\n<p><em>Props to @brianhenryie for this!</em></p>\n</p>\n<dt id='how%20can%20i%20let%20my%20logged-in%20user%20see%20the%20front%20end%3F'>\nHow can I let my logged-in user see the front end?\n</h4>\n<p>\n<p>By default, Maintenance Redirect uses the <code>manage_options</code> capability, but that is normally only applied to administrators. As it stands, a user with a lesser permissions level, such as editor, is able to view the admin side of the site, but not the front end. You can change this using this filter:</p>\n<p><strong><code>wpjf3_user_can</code></strong></p>\n<p>This filter is used to pass a different WordPress capability to check if the logged-in user has permission to view the site and thus bypass the redirection, such as <code>edit_posts</code>. Note that this is run before <code>$post</code> is set up, so WordPress conditionals such as <code>is_post()</code> and <code>is_tax()</code> are not available. However, it&#8217;s not really meant for programatically determining whether a user should have access, but rather just changing the default capability to be tested, so you don&#8217;t really need to do anything other than the example below.</p>\n<pre><code>function my_wpjf3_user_can( $capability ) {\n    return \"edit_posts\";\n}\nadd_filter( \"wpjf3_user_can\", \"my_wpjf3_user_can\" );\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>2.0.1</h4>\n<ul>\n<li>Added clarification to readme and on-screen info about the scope of what this plugin blocks (see FAQs)</li>\n</ul>\n<h4>2.0</h4>\n<ul>\n<li>Uodated minimum requirements for WP (5.1) and PHP (5.6).</li>\n<li>Updated the UI with tabs for each of the sections.</li>\n<li>Changed the activation method from a select menu to a toggle switch.</li>\n<li>Split the HTML and Message storage in the database to separate fields. When the plugin is updated the message text should be copied across, but please do double-check. <em>I suggest that you make a copy of your message or HTML before updating just in case.</em></li>\n<li>Tweaked the HTML used for the Message option.</li>\n<li>Added an option to delete all of the plugin&#8217;s settings and database tables the next time that the plugin is deleted using the Plugins screen. There are caveats &#8211; see the About &amp; Options tab in the plugin settings page for more info.</li>\n<li>Added responsive styling for the IP addresses and Access Keys tables to better display on mobile phone screens.</li>\n<li>Tidied up some of the on-screen information.</li>\n<li>Added an about section with a link to &#8220;buy me a coffee&#8221; 🙂</li>\n<li>Additional minor code tweaks</li>\n</ul>\n<h4>1.8.3</h4>\n<ul>\n<li>Fixed sprintf() PHP warning.</li>\n</ul>\n<h4>1.8.2</h4>\n<ul>\n<li>Added plugin status to the admin bar.</li>\n<li>Fixed bug where body text was being output twice.</li>\n</ul>\n<h4>1.8.1</h4>\n<ul>\n<li>Fixed Update Settings button not working.</li>\n</ul>\n<h4>1.8</h4>\n<ul>\n<li>Added button to copy full URL of an Access Key link to the clipboard.</li>\n<li>You can now click on your IP or Class C address to add it to the unrestricted IP addresses field.</li>\n<li>General hardening of translated text escaping.</li>\n</ul>\n<h4>1.7</h4>\n<ul>\n<li>Added links to plugin screen and the dashboard notification to go to the Settings page.</li>\n<li>Added information to the Site Health screen.</li>\n</ul>\n<h4>1.6</h4>\n<ul>\n<li>Added <code>wpjf3_matches</code> filter to allow programatical bypasses. Thanks to @brianhenryie for this.</li>\n<li>Added <code>wpjf3_user_can</code> filter to allow the WordPress capability check to be changed so logged-in users can be allowed to bypass the redirect.</li>\n</ul>\n<h4>1.5.3</h4>\n<ul>\n<li>Fixed ability to set IP address using Class C wildcard (eg, 192.168.0.*) &#8211; thanks to @tsouts for bringing that to my attention.</li>\n</ul>\n<h4>1.5.2</h4>\n<ul>\n<li>Tiny translation tweak</li>\n</ul>\n<h4>1.5.1</h4>\n<ul>\n<li>Phooey! Found a couple of translation strings that I missed on the previous commit!</li>\n</ul>\n<h4>1.5</h4>\n<ul>\n<li>Now translatable! I’m a typical Englishman who doesn’t speak any other language, so at time of release there aren’t any translation packs available. However, if you’re interested in contributing, just pop over to https://translate.wordpress.org/ and get translating!</li>\n<li>Minimum WordPress requirement now 4.6 due to usage of certain translation bits &amp; bobs.</li>\n</ul>\n<h4>1.4</h4>\n<ul>\n<li>Plugin taken over by @petervandoorn due to being unmaintained for over 4 years. </li>\n<li>Changed name to Maintenance Redirect</li>\n<li>Setting added to choose whether to return 200 or 503 header</li>\n<li>Added nonces and other, required, security checks</li>\n<li>General code modernisation</li>\n</ul>\n<h4>1.3</h4>\n<ul>\n<li>Updated to return 503 header when enabled to prevent indexing of maintenance page. </li>\n<li>Also, wildcards are allowed to enable entire class C ranges. Ex: 10.10.10.*</li>\n<li>A fix affecting some installations using a static page has been added. Thanks to Dorthe Luebbert.</li>\n</ul>\n<h4>1.2</h4>\n<ul>\n<li>Fixed bug in Unrestricted IP table creation.</li>\n</ul>\n<h4>1.1</h4>\n<ul>\n<li>Updated settings panel issue in WordPress 3.0 and moved folder structure to work properly with WordPress auto install.</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>First release. No Changes Yet.</li>\n</ul>\n"
+    },
+    "short_description": "Display a maintenance mode page and allow invited visitors to bypass the functionality to preview the site.",
+    "description": "<p>This plugin is intended primarily for designers / developers that need to allow clients to preview sites before being available to the general public or to temporarily hide your WordPress site while undergoing major updates.</p>\n<p>Any logged in user with WordPress administrator privileges will be allowed to view the site regardless of the settings in the plugin. The exact privilege can be set using a filter hook &#8211; see FAQs.</p>\n<p>The behaviour of this plugin can be enabled or disabled at any time without losing any of the settings configured in its settings pane. However, deactivating the plugin is recommended versus having it activated while disabled.</p>\n<p>When redirect is enabled it can send 2 different header types. “200 OK” is best used for when the site is under development and “503 Service Temporarily Unavailable” is best for when the site is temporarily taken offline for small amendments. If used for a long period of time, 503 can damage your Google ranking.</p>\n<p>A list of IP addresses can be set up to completely bypass maintenance mode. This option is useful when needing to allow a client’s entire office to access the site while in maintenance mode without needing to maintain individual access keys.</p>\n<p>Access keys work by creating a cookie on the user’s computer that will be checked for when maintenance mode is active. When a new key is created, a link to create the access key cookie will be emailed to the email address provided. Access can then be revoked either by disabling or deleting the key.</p>\n<p>This plugin allows three methods of notifying users that a site is undergoing maintenance:</p>\n<ol>\n<li>\n<p>They can be presented with a simple message.</p>\n</li>\n<li>\n<p>They can be presented with a custom HMTL page.</p>\n</li>\n<li>\n<p>They can be redirected to a static HTML page. This static page will need to be uploaded to the server via FTP or some other method. This plugin DOES NOT include any way to upload the static page file. Any URL can be used here, and it doesn&#8217;t need to be on the same server (so you could redirect back to the client&#8217;s current site if you&#8217;re working on a dev site, for example). However, it should NOT be the URL of a WordPress page or post on the same site as this will result in an infinite redirect loop.</p>\n</li>\n</ol>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/jf3-maintenance-mode.2.0.1.zip",
+    "upgrade_notice": {
+        "": "<p>New UI with tabs and an activation toggle switch. Internal settings storage changed, so please make a copy of your message or HTML before updating just in case.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/jf3-maintenance-mode/assets/screenshot-1.png?rev=2845135",
+            "caption": "About &amp; Info tab"
+        },
+        {
+            "src": "https://ps.w.org/jf3-maintenance-mode/assets/screenshot-2.png?rev=2845135",
+            "caption": "Header Type tab"
+        },
+        {
+            "src": "https://ps.w.org/jf3-maintenance-mode/assets/screenshot-3.png?rev=2845135",
+            "caption": "Unrestricted IP Addresses tab"
+        },
+        {
+            "src": "https://ps.w.org/jf3-maintenance-mode/assets/screenshot-4.png?rev=2845135",
+            "caption": "Access Keys tab"
+        },
+        {
+            "src": "https://ps.w.org/jf3-maintenance-mode/assets/screenshot-5.png?rev=2845135",
+            "caption": "Maintenance Message tab showing Message only"
+        },
+        {
+            "src": "https://ps.w.org/jf3-maintenance-mode/assets/screenshot-6.png?rev=2845135",
+            "caption": "Maintenance Message tab showing Redirect"
+        },
+        {
+            "src": "https://ps.w.org/jf3-maintenance-mode/assets/screenshot-7.png?rev=2845135",
+            "caption": "Maintenance Message tab showing HTML"
+        }
+    ],
+    "tags": {
+        "200": "200",
+        "503": "503",
+        "maintenance": "maintenance",
+        "maintenance-mode": "maintenance mode",
+        "maintenance-mode-page": "maintenance mode page"
+    },
+    "stable_tag": "2.0.1",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/jf3-maintenance-mode.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/jf3-maintenance-mode.1.1.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/jf3-maintenance-mode.1.2.zip",
+        "1.3": "https://downloads.wordpress.org/plugin/jf3-maintenance-mode.1.3.zip",
+        "1.4": "https://downloads.wordpress.org/plugin/jf3-maintenance-mode.1.4.zip",
+        "1.5": "https://downloads.wordpress.org/plugin/jf3-maintenance-mode.1.5.zip",
+        "1.5.1": "https://downloads.wordpress.org/plugin/jf3-maintenance-mode.1.5.1.zip",
+        "1.5.2": "https://downloads.wordpress.org/plugin/jf3-maintenance-mode.1.5.2.zip",
+        "1.5.3": "https://downloads.wordpress.org/plugin/jf3-maintenance-mode.1.5.3.zip",
+        "1.6": "https://downloads.wordpress.org/plugin/jf3-maintenance-mode.1.6.zip",
+        "1.7": "https://downloads.wordpress.org/plugin/jf3-maintenance-mode.1.7.zip",
+        "1.8": "https://downloads.wordpress.org/plugin/jf3-maintenance-mode.1.8.zip",
+        "1.8.1": "https://downloads.wordpress.org/plugin/jf3-maintenance-mode.1.8.1.zip",
+        "1.8.2": "https://downloads.wordpress.org/plugin/jf3-maintenance-mode.1.8.2.zip",
+        "1.8.3": "https://downloads.wordpress.org/plugin/jf3-maintenance-mode.1.8.3.zip",
+        "2.0": "https://downloads.wordpress.org/plugin/jf3-maintenance-mode.2.0.zip",
+        "2.0.1": "https://downloads.wordpress.org/plugin/jf3-maintenance-mode.2.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/jf3-maintenance-mode.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://paypal.me/fabulosawebdesigns",
+    "banners": {
+        "low": "https://ps.w.org/jf3-maintenance-mode/assets/banner-772x250.jpg?rev=2845135",
+        "high": "https://ps.w.org/jf3-maintenance-mode/assets/banner-1544x500.jpg?rev=2845135"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/jf3-maintenance-mode/assets/icon.svg?rev=2134384",
+        "svg": "https://ps.w.org/jf3-maintenance-mode/assets/icon.svg?rev=2134384"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 98,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

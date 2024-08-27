@@ -1,0 +1,79 @@
+{
+    "name": "REST API Guard",
+    "slug": "rest-api-guard",
+    "version": "1.3.2",
+    "author": "<a href=\"https://alley.com/\">Sean Fisher</a>",
+    "author_profile": "https://profiles.wordpress.org/sean212/",
+    "contributors": {
+        "sean212": {
+            "profile": "https://profiles.wordpress.org/sean212/",
+            "avatar": "https://secure.gravatar.com/avatar/525827caf9079e7edb84811724c6042e?s=96&d=monsterid&r=g",
+            "display_name": "Sean Fisher"
+        }
+    },
+    "requires": "6.0",
+    "tested": "6.3.5",
+    "requires_php": "8.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 2,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 2,
+    "support_url": "https://wordpress.org/support/plugin/rest-api-guard/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 90,
+    "downloaded": 1732,
+    "last_updated": "2024-03-20 3:21pm GMT",
+    "added": "2022-10-20",
+    "homepage": "https://github.com/alleyinteractive/wp-rest-api-guard",
+    "sections": {
+        "installation": "<p>You can install the package via composer:</p>\n<pre><code>composer require alleyinteractive/wp-rest-api-guard\n</code></pre>\n",
+        "description": "<p>Restrict and control access to the REST API.</p>\n<h3>Usage</h3>\n<p>The WordPress REST API is generally very public and can share a good deal of information with the internet anonymously. This plugin aims to make it easier to restrict access to the REST API for your WordPress site.</p>\n<p>Out of the box the plugin can:</p>\n<ul>\n<li>Disable anonymous access to the REST API.</li>\n<li>Restrict and control anonymous access to the REST API by namespace, path, etc.</li>\n</ul>\n<h3>Settings Page</h3>\n<p>The plugin can be configured via the Settings page (<code>Settings -&gt; REST API Guard</code>) or via the relevant filter.</p>\n</p>\n<h3>Preventing Access to User Information (<code>wp/v2/users</code>)</h3>\n<p>By default, the plugin will restrict anonymous access to the users endpoint. This can be prevented in the plugin&#8217;s settings or via code:</p>\n<pre><code>add_filter( 'rest_api_guard_allow_user_access', fn () =&gt; true );\n</code></pre>\n<h3>Preventing Access to Index (<code>/</code>) or Namespace Endpoints (<code>wp/v2</code>)</h3>\n<p>To prevent anonymous users from browsing your site and discovering what plugins/post types are setup, the plugin restricts access to the index (<code>/</code>) and namespace (<code>wp/v2</code>) endpoints. This can be prevented in the plugin&#8217;s settings or via code:</p>\n<pre><code>// Allow index access.\nadd_filter( 'rest_api_guard_allow_index_access', fn () =&gt; true );\n\n// Allow namespace access.\nadd_filter( 'rest_api_guard_allow_namespace_access', fn ( string $namespace ) =&gt; true );\n</code></pre>\n<h3>Restrict Anonymous Access to the REST API</h3>\n<p>The plugin can restrict anonymous access for any request to the REST API in the plugin&#8217;s settings or via code:</p>\n<pre><code>add_filter( 'rest_api_guard_prevent_anonymous_access', fn () =&gt; true );\n</code></pre>\n<h3>Limit Anonymous Access to Specific Namespaces/Routes (Allowlist)</h3>\n<p>Anonymous users can be granted access only to specific namespaces/routes. Requests outside of these paths will be denied. This can be configured in the plugin&#8217;s settings or via code:</p>\n<pre><code>add_filter(\n    'rest_api_guard_anonymous_requests_allowlist',\n    function ( array $paths, WP_REST_Request $request ): array {\n        // Allow other paths not included here will be denied.\n        $paths[] = 'wp/v2/post';\n        $paths[] = 'custom-namespace/v1/public/*';\n\n        return $paths;\n    },\n    10,\n    2\n);\n</code></pre>\n<h3>Restrict Anonymous Access to Specific Namespaces/Routes (Denylist)</h3>\n<p>Anonymous users can be restricted from specific namespaces/routes. This acts as<br />\na denylist for specific paths that an anonymous user cannot access. The paths<br />\nsupport regular expressions for matching. The use of the allowlist takes<br />\npriority over this denylist. This can be configured in the plugin&#8217;s settings or<br />\nvia code:</p>\n<pre><code>add_filter(\n    'rest_api_guard_anonymous_requests_denylist',\n    function ( array $paths, WP_REST_Request $request ): array {\n        $paths[] = 'wp/v2/user';\n        $paths[] = 'custom-namespace/v1/private/*';\n\n        return $paths;\n    },\n    10,\n    2\n);\n</code></pre>\n<h3>Require JSON Web Token (JWT) Authentication</h3>\n<p>Anonymous users can be required to authenticate via a JSON Web Token (JWT) to<br />\naccess the REST API. Users should pass an <code>Authorization: Bearer &lt;token&gt;</code> header<br />\nwith their request. This can be configured in the plugin&#8217;s settings or via code:</p>\n<pre><code>add_filter( 'rest_api_guard_authentication_jwt', fn () =&gt; true );\n</code></pre>\n<p>Out of the box, the plugin will look for a JWT in the <code>Authorization: Bearer<br />\n&lt;token&gt;</code> header. The JWT will be expected to have an audience of<br />\n&#8216;wordpress-rest-api&#8217; and issuer of the site&#8217;s URL. This can be configured in the<br />\nplugin&#8217;s settings or via code:</p>\n<pre><code>add_filter(\n    'rest_api_guard_jwt_audience',\n    function ( string $audience ): string {\n        return 'custom-audience';\n    }\n);\n\nadd_filter(\n    'rest_api_guard_jwt_issuer',\n    function ( string $issuer ): string {\n        return 'https://example.com';\n    }\n);\n</code></pre>\n<p>The JWT&#8217;s secret will be autogenerated and stored in the database in the<br />\n    rest_api_guard_jwt_secret option. The secret can also be changed via code:</p>\n<pre><code>add_filter(\n    'rest_api_guard_jwt_secret',\n    function ( string $secret ): string {\n        return 'my-custom-secret';\n    }\n);\n</code></pre>\n<h3>Allow JWT Authentication for Authenticated Users</h3>\n<p>Authenticated users can be authenticated with the REST API via a JSON Web Token.<br />\nSimilar to the anonymous JWT authentication, users should pass an<br />\n    Authorization: Bearer  header with their request. This can be<br />\nconfigured in the plugin&#8217;s settings or via code:</p>\n<pre><code>add_filter( 'rest_api_guard_user_authentication_jwt', fn () =&gt; true );\n</code></pre>\n<h3>Generating JWTs for Anonymous and Authenticated Users</h3>\n<p>JWTs can be generated by calling the<br />\n    wp rest-api-guard generate-jwt [&#8211;user=] command or using the<br />\n    Alley\\WP\\REST_API_Guard\\generate_jwt() method:</p>\n<pre><code>$jwt = \\Alley\\WP\\REST_API_Guard\\generate_jwt(\n    expiration: 3600, // Optional. The expiration time in seconds from now.\n    user: 1, // Optional. The user ID to generate the JWT for. Supports `WP_User` or user ID.\n);\n</code></pre>\n"
+    },
+    "short_description": "Restrict and control access to the REST API.",
+    "description": "<p>Restrict and control access to the REST API.</p>\n<h3>Usage</h3>\n<p>The WordPress REST API is generally very public and can share a good deal of information with the internet anonymously. This plugin aims to make it easier to restrict access to the REST API for your WordPress site.</p>\n<p>Out of the box the plugin can:</p>\n<ul>\n<li>Disable anonymous access to the REST API.</li>\n<li>Restrict and control anonymous access to the REST API by namespace, path, etc.</li>\n</ul>\n<h3>Settings Page</h3>\n<p>The plugin can be configured via the Settings page (<code>Settings -&gt; REST API Guard</code>) or via the relevant filter.</p>\n</p>\n<h3>Preventing Access to User Information (<code>wp/v2/users</code>)</h3>\n<p>By default, the plugin will restrict anonymous access to the users endpoint. This can be prevented in the plugin&#8217;s settings or via code:</p>\n<pre><code>add_filter( 'rest_api_guard_allow_user_access', fn () =&gt; true );\n</code></pre>\n<h3>Preventing Access to Index (<code>/</code>) or Namespace Endpoints (<code>wp/v2</code>)</h3>\n<p>To prevent anonymous users from browsing your site and discovering what plugins/post types are setup, the plugin restricts access to the index (<code>/</code>) and namespace (<code>wp/v2</code>) endpoints. This can be prevented in the plugin&#8217;s settings or via code:</p>\n<pre><code>// Allow index access.\nadd_filter( 'rest_api_guard_allow_index_access', fn () =&gt; true );\n\n// Allow namespace access.\nadd_filter( 'rest_api_guard_allow_namespace_access', fn ( string $namespace ) =&gt; true );\n</code></pre>\n<h3>Restrict Anonymous Access to the REST API</h3>\n<p>The plugin can restrict anonymous access for any request to the REST API in the plugin&#8217;s settings or via code:</p>\n<pre><code>add_filter( 'rest_api_guard_prevent_anonymous_access', fn () =&gt; true );\n</code></pre>\n<h3>Limit Anonymous Access to Specific Namespaces/Routes (Allowlist)</h3>\n<p>Anonymous users can be granted access only to specific namespaces/routes. Requests outside of these paths will be denied. This can be configured in the plugin&#8217;s settings or via code:</p>\n<pre><code>add_filter(\n    'rest_api_guard_anonymous_requests_allowlist',\n    function ( array $paths, WP_REST_Request $request ): array {\n        // Allow other paths not included here will be denied.\n        $paths[] = 'wp/v2/post';\n        $paths[] = 'custom-namespace/v1/public/*';\n\n        return $paths;\n    },\n    10,\n    2\n);\n</code></pre>\n<h3>Restrict Anonymous Access to Specific Namespaces/Routes (Denylist)</h3>\n<p>Anonymous users can be restricted from specific namespaces/routes. This acts as<br />\na denylist for specific paths that an anonymous user cannot access. The paths<br />\nsupport regular expressions for matching. The use of the allowlist takes<br />\npriority over this denylist. This can be configured in the plugin&#8217;s settings or<br />\nvia code:</p>\n<pre><code>add_filter(\n    'rest_api_guard_anonymous_requests_denylist',\n    function ( array $paths, WP_REST_Request $request ): array {\n        $paths[] = 'wp/v2/user';\n        $paths[] = 'custom-namespace/v1/private/*';\n\n        return $paths;\n    },\n    10,\n    2\n);\n</code></pre>\n<h3>Require JSON Web Token (JWT) Authentication</h3>\n<p>Anonymous users can be required to authenticate via a JSON Web Token (JWT) to<br />\naccess the REST API. Users should pass an <code>Authorization: Bearer &lt;token&gt;</code> header<br />\nwith their request. This can be configured in the plugin&#8217;s settings or via code:</p>\n<pre><code>add_filter( 'rest_api_guard_authentication_jwt', fn () =&gt; true );\n</code></pre>\n<p>Out of the box, the plugin will look for a JWT in the <code>Authorization: Bearer<br />\n&lt;token&gt;</code> header. The JWT will be expected to have an audience of<br />\n&#8216;wordpress-rest-api&#8217; and issuer of the site&#8217;s URL. This can be configured in the<br />\nplugin&#8217;s settings or via code:</p>\n<pre><code>add_filter(\n    'rest_api_guard_jwt_audience',\n    function ( string $audience ): string {\n        return 'custom-audience';\n    }\n);\n\nadd_filter(\n    'rest_api_guard_jwt_issuer',\n    function ( string $issuer ): string {\n        return 'https://example.com';\n    }\n);\n</code></pre>\n<p>The JWT&#8217;s secret will be autogenerated and stored in the database in the<br />\n    rest_api_guard_jwt_secret option. The secret can also be changed via code:</p>\n<pre><code>add_filter(\n    'rest_api_guard_jwt_secret',\n    function ( string $secret ): string {\n        return 'my-custom-secret';\n    }\n);\n</code></pre>\n<h3>Allow JWT Authentication for Authenticated Users</h3>\n<p>Authenticated users can be authenticated with the REST API via a JSON Web Token.<br />\nSimilar to the anonymous JWT authentication, users should pass an<br />\n    Authorization: Bearer  header with their request. This can be<br />\nconfigured in the plugin&#8217;s settings or via code:</p>\n<pre><code>add_filter( 'rest_api_guard_user_authentication_jwt', fn () =&gt; true );\n</code></pre>\n<h3>Generating JWTs for Anonymous and Authenticated Users</h3>\n<p>JWTs can be generated by calling the<br />\n    wp rest-api-guard generate-jwt [&#8211;user=] command or using the<br />\n    Alley\\WP\\REST_API_Guard\\generate_jwt() method:</p>\n<pre><code>$jwt = \\Alley\\WP\\REST_API_Guard\\generate_jwt(\n    expiration: 3600, // Optional. The expiration time in seconds from now.\n    user: 1, // Optional. The user ID to generate the JWT for. Supports `WP_User` or user ID.\n);\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/rest-api-guard.1.3.2.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "alleyinteractive": "alleyinteractive",
+        "rest-api-guard": "rest-api-guard"
+    },
+    "stable_tag": "1.3.2",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/rest-api-guard.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/rest-api-guard.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/rest-api-guard.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/rest-api-guard.1.0.3.zip",
+        "1.1.2": "https://downloads.wordpress.org/plugin/rest-api-guard.1.1.2.zip",
+        "1.2.0": "https://downloads.wordpress.org/plugin/rest-api-guard.1.2.0.zip",
+        "1.2.1": "https://downloads.wordpress.org/plugin/rest-api-guard.1.2.1.zip",
+        "1.3.0": "https://downloads.wordpress.org/plugin/rest-api-guard.1.3.0.zip",
+        "1.3.1": "https://downloads.wordpress.org/plugin/rest-api-guard.1.3.1.zip",
+        "1.3.2": "https://downloads.wordpress.org/plugin/rest-api-guard.1.3.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/rest-api-guard.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/rest-api-guard/assets/icon-128x128.png?rev=3111870",
+        "2x": "https://ps.w.org/rest-api-guard/assets/icon-256x256.png?rev=3111870"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

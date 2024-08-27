@@ -1,0 +1,108 @@
+{
+    "name": "Attachment Taxonomies",
+    "slug": "attachment-taxonomies",
+    "version": "1.2.1",
+    "author": "<a href=\"https://felix-arntz.me\">Felix Arntz</a>",
+    "author_profile": "https://profiles.wordpress.org/flixos90/",
+    "contributors": {
+        "flixos90": {
+            "profile": "https://profiles.wordpress.org/flixos90/",
+            "avatar": "https://secure.gravatar.com/avatar/311f5b078f20df54be55cbe1a5a45f1e?s=96&d=monsterid&r=g",
+            "display_name": "Felix Arntz"
+        }
+    },
+    "requires": "6.1",
+    "tested": "6.6.1",
+    "requires_php": "7.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 92,
+    "ratings": {
+        "5": 8,
+        "4": 1,
+        "3": 0,
+        "2": 1,
+        "1": 0
+    },
+    "num_ratings": 10,
+    "support_url": "https://wordpress.org/support/plugin/attachment-taxonomies/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 1000,
+    "downloaded": 27217,
+    "last_updated": "2024-08-13 9:49pm GMT",
+    "added": "2016-07-06",
+    "homepage": "https://wordpress.org/plugins/attachment-taxonomies/",
+    "sections": {
+        "description": "<p>The plugin adds two taxonomies to the WordPress media library which are then available to categorize and tag your attachments. By default, these taxonomies, although sharing the same names and behavior, are separate from the default post taxonomies, but this can easily be changed if desired.</p>\n<p>The plugin follows WordPress Core principles and offers a lightweight alternative to similar approaches which often tend to be incredibly flexible, but at the same time complicated and bloated. And if you have a little knowledge of code, you should be able to adjust the plugin exactly to your needs if the default configuration doesn&#8217;t satisfy you.</p>\n<h4>Features</h4>\n<ul>\n<li>Adds categories and tags to the Media Library (independent from the regular post categories and tags)</li>\n<li>Inserts filter dropdowns for attachment taxonomies into the media toolbar and media modal</li>\n<li>Allows to pick taxonomy terms for attachments from within the Attachment Selection &amp; Edit modals</li>\n<li>Adds a setting for the default attachment category</li>\n<li>Enhances the <code>[gallery]</code> shortcode so that images of a specific attachment taxonomy can be included automatically</li>\n</ul>\n<h4>Quality attributes</h4>\n<ul>\n<li>Lightweight plugin following WordPress Core principles</li>\n<li>&#8220;Decisions, not Options&#8221;</li>\n<li>Can easily be used as a must-use plugin</li>\n<li>Provides a flexible API to add other attachment taxonomies or disable the existing ones for developers</li>\n<li>Provides an easy-to-use <code>has_default</code> argument that can be used when registering an attachment taxonomy in order to automatically add a setting for the default taxonomy term</li>\n</ul>\n",
+        "installation": "<h4>As a regular plugin</h4>\n<ol>\n<li>Upload the entire <code>attachment-taxonomies</code> folder to the <code>/wp-content/plugins/</code> directory or download it through the WordPress backend.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n</ol>\n<h4>As a must-use plugin</h4>\n<p>If you don&#8217;t know what a must-use plugin is, you might wanna read its <a href=\"https://wordpress.org/documentation/article/must-use-plugins/\" rel=\"ugc\">introduction in the WordPress Codex</a>.</p>\n<ol>\n<li>Upload the entire <code>attachment-taxonomies</code> folder to the <code>/wp-content/mu-plugins/</code> directory (create the directory if it doesn&#8217;t exist).</li>\n<li>Move the file <code>/wp-content/mu-plugins/attachment-taxonomies/attachment-taxonomies.php</code> out of its directory to <code>/wp-content/mu-plugins/attachment-taxonomies.php</code>.</li>\n</ol>\n<p>Note that, while must-use plugins have the advantage that they cannot be disabled from the admin area, they cannot be updated through WordPress, so you&#8217;re recommended to keep them up to date manually.</p>\n<h4>Administration</h4>\n<p>Once the plugin is activated, you will see two new submenu items under Media (Categories and Tags), where you can manage available attachment categories and tags.<br />\nIf you like, you can set a default category to apply to new attachment uploads, via using the added dropdown on the <em>Settings &gt; Writing</em> screen.</p>\n<p>The plugin follows the WordPress Core philosophy &#8220;Decisions, not Options&#8221; &#8211; therefore there is no additional settings screen. However, the plugin is easily extendable and adjustable by developers (see <a href=\"https://wordpress.org/plugins/attachment-taxonomies/faq/\" rel=\"ugc\">FAQ</a>). So if the base configuration does not suit your needs, it shouldn&#8217;t be too hard to change that.</p>\n",
+        "faq": "<p>Note that all code samples below should be run before the <code>init</code> action hook and not earlier than the <code>plugins_loaded</code> (or <code>muplugins_loaded</code> if you use the plugin as a must-use plugin) hook.</p>\n\n<dt id='how%20can%20i%20add%20more%20attachment%20taxonomies%3F'>\nHow can I add more attachment taxonomies?\n</h4>\n<p>\n<p>You can simply use the WordPress Core function <a href=\"https://developer.wordpress.org/reference/functions/register_taxonomy/\" rel=\"nofollow ugc\"><code>register_taxonomy()</code></a> and specify <code>'attachment'</code> as the second parameter. As an alternative, you can create your own class for the taxonomy, extending the abstract <code>Attachment_Taxonomy</code> class provided by the plugin. Then you can add it using the method <code>add_taxonomy( $taxonomy )</code> of the class <code>Attachment_Taxonomies</code>.</p>\n<p>Example Code (adds an attachment taxonomy called &#8220;Location&#8221;):</p>\n<pre><code>&lt;?php\n\nfinal class Attachment_Location extends Attachment_Taxonomy {\n    protected $slug = 'attachment_location';\n    protected $labels = array(\n        'name'              =&gt; __( 'Locations', 'textdomain' ),\n        'singular_name'     =&gt; __( 'Location', 'textdomain' ),\n        /* more labels here... */\n    );\n    protected $args = array(\n        'hierarchical'      =&gt; true,\n        'query_var'         =&gt; 'location',\n        /* more arguments here... */\n    );\n}\n\nadd_action(\n    'plugins_loaded',\n    function() {\n        Attachment_Taxonomies::instance()-&gt;add_taxonomy( new Attachment_Location() );\n    }\n);\n</code></pre>\n</p>\n<dt id='how%20can%20i%20remove%20the%20default%20attachment%20taxonomies%3F'>\nHow can I remove the default attachment taxonomies?\n</h4>\n<p>\n<p>To remove one of the default attachment taxonomies you should call the method <code>remove_taxonomy( $taxonomy_slug )</code> of the class <code>Attachment_Taxonomies</code>.</p>\n<p>Example Code (removes the attachment taxonomy &#8220;Category&#8221;):</p>\n<pre><code>&lt;?php\n\nadd_action(\n    'plugins_loaded',\n    function() {\n        Attachment_Taxonomies::instance()-&gt;remove_taxonomy( 'attachment_category' );\n    }\n);\n</code></pre>\n</p>\n<dt id='how%20can%20i%20use%20the%20regular%20post%20categories%20and%20post%20tags%20for%20attachments%20instead%20of%20the%20additional%20taxonomies%20%3F'>\nHow can I use the regular post categories and post tags for attachments instead of the additional taxonomies ?\n</h4>\n<p>\n<p>To accomplish that, first you need to remove the two taxonomies that the plugin adds (<code>attachment_category</code> and <code>attachment_tag</code>). See above for instructions on how to do that.</p>\n<p>Then you can simply use the WordPress Core function <a href=\"https://developer.wordpress.org/reference/functions/register_taxonomy_for_object_type/\" rel=\"nofollow ugc\"><code>register_taxonomy_for_object_type()</code></a> and specify <code>'attachment'</code> as the second parameter. As an alternative, you can create your own instance of the <code>Attachment_Existing_Taxonomy</code> class provided by the plugin. Then you can add it using the method <code>add_taxonomy( $taxonomy )</code> of the class <code>Attachment_Taxonomies</code>, as seen in the example below.</p>\n<p>Example Code (makes the regular category and tag taxonomies available for attachments):</p>\n<pre><code>&lt;?php\n\nadd_action(\n    'plugins_loaded',\n    function() {\n        Attachment_Taxonomies::instance()-&gt;add_taxonomy( new Attachment_Existing_Taxonomy( 'category' ) );\n        Attachment_Taxonomies::instance()-&gt;add_taxonomy( new Attachment_Existing_Taxonomy( 'post_tag' ) );\n    }\n);\n</code></pre>\n</p>\n<dt id='how%20do%20i%20use%20the%20enhanced%20version%20of%20the%20%60%5Bgallery%5D%60%20shortcode%3F'>\nHow do I use the enhanced version of the `[gallery]` shortcode?\n</h4>\n<p>\n<p>The <code>[gallery]</code> shortcode can now be passed taxonomy attributes. They have to have the attachment taxonomy slug as the attribute name and a comma-separated list of term slugs or term IDs as value. You may also specify a new &#8220;limit&#8221; attribute to limit the amount of images shown. This is especially recommended if the attachment taxonomy term you are querying for contains a lot of images. As of version 1.2.0, the plugin furthermore supports an optional &#8220;tax_relation&#8221; attribute, which you can set to &#8220;AND&#8221; in order to show only images that satisfy <em>all</em> of the taxonomy attributes provided on the shortcode.</p>\n<p>Example Code (shows images with attachment categories 1 or 2 or attachment tag 5 with a limit of 20 images shown):</p>\n<pre><code>[gallery attachment_category=\"1,2\" attachment_tag=\"5\" limit=\"20\"]\n</code></pre>\n<p>Example Code (shows images with attachment categories 1 or 2 <em>and</em> attachment tag 5):</p>\n<pre><code>[gallery attachment_category=\"1,2\" attachment_tag=\"5\" tax_relation=\"AND\"]\n</code></pre>\n<p>Note that there is currently no UI in the backend for this, and the preview in the editor will not work properly. It will show up correctly in the frontend though.</p>\n</p>\n<dt id='which%20filters%20are%20available%20in%20the%20plugin%3F'>\nWhich filters are available in the plugin?\n</h4>\n<p>\n<p>The plugin provides some filters to adjust taxonomy arguments and labels.</p>\n<ul>\n<li><code>attachment_taxonomy_args</code> where first argument is the array of taxonomy arguments and the second argument is the taxonomy slug that these arguments apply to</li>\n<li><code>attachment_taxonomy_{$taxonomy_slug}_args</code> where the only argument is the array of taxonomy arguments for the taxonomy defined by <code>$taxonomy_slug</code></li>\n<li><code>attachment_taxonomy_labels</code> where first argument is the array of taxonomy labels and the second argument is the taxonomy slug that these labels apply to</li>\n<li><code>attachment_taxonomy_{$taxonomy_slug}_labels</code> where the only argument is the array of taxonomy labels for the taxonomy defined by <code>$taxonomy_slug</code></li>\n<li><code>attachment_taxonomy_class_names</code> where the only argument is the array of class names of the taxonomies to register by default</li>\n</ul>\n</p>\n<dt id='where%20should%20i%20submit%20my%20support%20request%3F'>\nWhere should I submit my support request?\n</h4>\n<p>\n<p>For regular support requests, please use the <a href=\"https://wordpress.org/support/plugin/attachment-taxonomies\" rel=\"ugc\">wordpress.org support forums</a>. If you have a technical issue with the plugin where you already have more insight on how to fix it, you can also <a href=\"https://github.com/felixarntz/attachment-taxonomies/issues\" rel=\"nofollow ugc\">open an issue on GitHub instead</a>.</p>\n</p>\n<dt id='how%20can%20i%20contribute%20to%20the%20plugin%3F'>\nHow can I contribute to the plugin?\n</h4>\n<p>\n<p>If you have ideas to improve the plugin or to solve a bug, feel free to raise an issue or submit a pull request in the <a href=\"https://github.com/felixarntz/attachment-taxonomies\" rel=\"nofollow ugc\">GitHub repository for the plugin</a>. Please stick to the <a href=\"https://github.com/felixarntz/attachment-taxonomies/blob/main/CONTRIBUTING.md\" rel=\"nofollow ugc\">contributing guidelines</a>.</p>\n<p>You can also contribute to the plugin by translating it. Simply visit <a href=\"https://translate.wordpress.org/projects/wp-plugins/attachment-taxonomies\" rel=\"nofollow ugc\">translate.wordpress.org</a> to get started.</p>\n</p>\n\n",
+        "changelog": "<h4>1.2.1</h4>\n<ul>\n<li>Fixed: Uploading a new image via the Image block no longer causes a console error when opening the media library afterwards. Props lucymtc.</li>\n<li>Fixed: Ensure the development directory <code>build-cs</code> is no longer included in the plugin ZIP.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Added: Add support for setting attachment terms via the REST API <code>wp/v2/media</code> endpoint.</li>\n<li>Added: Add support for new <code>tax_relation</code> attribute on <code>gallery</code> shortcode to control whether to include attachments with <em>any</em> or <em>all</em> of the given taxonomies.</li>\n<li>Enhanced: Surface the default attachment taxonomies in the REST API.</li>\n<li>Tweaked: Bump the minimum required WordPress and PHP versions.</li>\n<li>Tweaked: Remove deprecated parameters from 1.1.0.</li>\n<li>Tweaked: Use modern test infrastructure including e2e tests, revised PHPUnit tests, and GitHub Actions to ensure long-term stability.</li>\n<li>Tweaked: Modernize various aspects of legacy logic in PHP and JavaScript code.</li>\n<li>Tweaked: Deprecate singleton pattern, except on plugin main class.</li>\n<li>Fixed: Fix accessibility and styling issues with attachment details taxonomy selectors.</li>\n<li>Fixed: Use correct widths for attachment taxonomy filter dropdowns in media library to avoid offscreen elements.</li>\n<li>Fixed: Ensure selected attachment taxonomy terms are maintained when reopening attachment modal without reload.</li>\n<li>Fixed: Only show any of the plugin&#8217;s UI for taxonomies that are configured to <code>show_ui</code>.</li>\n<li>Fixed: Address Backbone cross-version compatibility issue leading to broken media attachments browser.</li>\n<li>Fixed: Ensure taxonomy filters aren&#8217;t rendered when in Edit Gallery view.</li>\n<li>Fixed: Remove unnecessary call to <code>load_plugin_textdomain()</code>.</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>Enhanced: The plugin&#8217;s attachment taxonomies now use dedicated capabilities that map to core capabilities</li>\n<li>Tweaked: Remove access docblock annotations per WordPress coding standards</li>\n<li>Fixed: Taxonomy fields in media modal are now readonly if the user does not have sufficient capabilities</li>\n<li>Fixed: Gallery shortcode without taxonomy attributes now works correctly again</li>\n<li>Fixed: No longer are duplicate attachment IDs requested in the gallery shortcode</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Added: There is now a settings field for the default attachment category. For other attachment taxonomies they can easily be added by passing a <code>has_default</code> argument of <code>true</code> when registering the taxonomy.</li>\n<li>Added: The <code>[gallery]</code> shortcode now supports passing taxonomy arguments: The slug of a taxonomy can be given alongside with a comma-separated list of term slugs or IDs.</li>\n<li>Added: New filter <code>attachment_taxonomy_class_names</code> can be used to filter the class names for the taxonomies that should be registered by default.</li>\n<li>Tweaked: Properly escape attributes in admin UI and style rules. Props tareiking.</li>\n<li>Tweaked: Store custom and existing taxonomies in the same internal container and deprecate the now unnecessary <code>$existing</code> parameter across several functions.</li>\n<li>Tweaked: Follow WordPress Documentation Standards.</li>\n<li>Tweaked: Modernize Travis-CI configuration and code climate checks.</li>\n<li>Fixed: Initialization no longer fails when using as an mu-plugin without moving the main file one level above. Props tareiking.</li>\n<li>Fixed: Correct property is used when referring to the taxonomy query var and the taxonomy slug respectively. Props tareiking.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Fixed: uploads in the post edit screen no longer freeze</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First stable version</li>\n</ul>\n"
+    },
+    "short_description": "This plugin adds categories and tags to the WordPress media library - lightweight and developer-friendly.",
+    "description": "<p>The plugin adds two taxonomies to the WordPress media library which are then available to categorize and tag your attachments. By default, these taxonomies, although sharing the same names and behavior, are separate from the default post taxonomies, but this can easily be changed if desired.</p>\n<p>The plugin follows WordPress Core principles and offers a lightweight alternative to similar approaches which often tend to be incredibly flexible, but at the same time complicated and bloated. And if you have a little knowledge of code, you should be able to adjust the plugin exactly to your needs if the default configuration doesn&#8217;t satisfy you.</p>\n<h4>Features</h4>\n<ul>\n<li>Adds categories and tags to the Media Library (independent from the regular post categories and tags)</li>\n<li>Inserts filter dropdowns for attachment taxonomies into the media toolbar and media modal</li>\n<li>Allows to pick taxonomy terms for attachments from within the Attachment Selection &amp; Edit modals</li>\n<li>Adds a setting for the default attachment category</li>\n<li>Enhances the <code>[gallery]</code> shortcode so that images of a specific attachment taxonomy can be included automatically</li>\n</ul>\n<h4>Quality attributes</h4>\n<ul>\n<li>Lightweight plugin following WordPress Core principles</li>\n<li>&#8220;Decisions, not Options&#8221;</li>\n<li>Can easily be used as a must-use plugin</li>\n<li>Provides a flexible API to add other attachment taxonomies or disable the existing ones for developers</li>\n<li>Provides an easy-to-use <code>has_default</code> argument that can be used when registering an attachment taxonomy in order to automatically add a setting for the default taxonomy term</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/attachment-taxonomies.1.2.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "attachment": "attachment",
+        "categories": "categories",
+        "media": "media",
+        "tags": "tags",
+        "taxonomies": "taxonomies"
+    },
+    "stable_tag": "1.2.1",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/attachment-taxonomies.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/attachment-taxonomies.1.0.1.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/attachment-taxonomies.1.1.0.zip",
+        "1.1.1": "https://downloads.wordpress.org/plugin/attachment-taxonomies.1.1.1.zip",
+        "1.2.0": "https://downloads.wordpress.org/plugin/attachment-taxonomies.1.2.0.zip",
+        "1.2.1": "https://downloads.wordpress.org/plugin/attachment-taxonomies.1.2.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/attachment-taxonomies.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://felix-arntz.me/wordpress-plugins/",
+    "banners": {
+        "low": "https://ps.w.org/attachment-taxonomies/assets/banner-772x250.png?rev=3048102",
+        "high": "https://ps.w.org/attachment-taxonomies/assets/banner-1544x500.png?rev=3048102"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/attachment-taxonomies/assets/icon-128x128.png?rev=3048102",
+        "2x": "https://ps.w.org/attachment-taxonomies/assets/icon-256x256.png?rev=3048102"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 92,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "attachment-taxonomies",
+            "language": "de_DE",
+            "version": "1.2.1",
+            "updated": "2021-01-30 08:48:21",
+            "package": "http://downloads.wordpress.org/translation/plugin/attachment-taxonomies/1.2.1/de_DE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "attachment-taxonomies",
+            "language": "de_DE_formal",
+            "version": "1.2.1",
+            "updated": "2017-07-31 11:48:51",
+            "package": "http://downloads.wordpress.org/translation/plugin/attachment-taxonomies/1.2.1/de_DE_formal.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "attachment-taxonomies",
+            "language": "en_GB",
+            "version": "1.2.1",
+            "updated": "2017-08-11 08:31:01",
+            "package": "http://downloads.wordpress.org/translation/plugin/attachment-taxonomies/1.2.1/en_GB.zip"
+        }
+    ]
+}

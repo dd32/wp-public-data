@@ -1,0 +1,94 @@
+{
+    "name": "Hikari Titled Comments",
+    "slug": "hikari-title-comments",
+    "version": "0.02.02",
+    "author": "<a href=\"http://Hikari.ws\">Hikari</a>",
+    "author_profile": "https://profiles.wordpress.org/shidouhikari/",
+    "contributors": {
+        "shidouhikari": {
+            "profile": "https://profiles.wordpress.org/shidouhikari/",
+            "avatar": "https://secure.gravatar.com/avatar/6f337cc2350d5e15ce962f0f085ccdd0?s=96&d=monsterid&r=g",
+            "display_name": ""
+        }
+    },
+    "requires": "2.9.0",
+    "tested": "2.9.2",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/hikari-title-comments/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 20,
+    "downloaded": 5981,
+    "last_updated": "2010-03-13 11:06pm GMT",
+    "added": "2010-03-08",
+    "homepage": "http://hikari.ws/titled-comments/",
+    "sections": {
+        "description": "<p>One of the best features Drupal has and I miss in WordPress is the possibility to set title to comments.</p>\n<p>With a title, we can identify the comment subject, it can be resumed to a phrase. Comments become more similar to articles and aggregate more value.</p>\n<p>I like to see comments as mini-articles. The post being the main article and comments being mini-articles that extend the main one. Now with title, WordPress comments are a bit closer to that approach.</p>\n<p><a href=\"http://hikari.ws/titled-comments/\" rel=\"nofollow ugc\">Hikari Titled Comments</a> enables each comment to have a title, so that commentators can give a subject meaning to their comments.</p>\n<h4>Features</h4>\n<ul>\n<li>Comments titles are stored as comment metadata.</li>\n<li>It&#8217;s easy for themes to add support the plugin, being the support optional and when the plugin is not available the support just remains hidden.</li>\n<li>A simple function prints the comment title if there is one, or prints nothing if current comment doesn&#8217;t have a title.</li>\n<li>Comments titles can be edited from admin comment edit page.</li>\n</ul>\n<p>I dedicate Hikari Titled Comments to <strong>Chiih-chan</strong>, my kawaii great frient ^-^</p>\n",
+        "installation": "<p><strong>Hikari Titled Comments</strong> requires theme modifications to be used, unfortunately there is no way to insert titles to comments without editing the theme. But first let&#8217;s install it.</p>\n<p>You can use the built in installer and upgrader, or you can install the plugin manually.</p>\n<ol>\n<li>Download the zip file, upload it to your server and extract all its content to your <code>/wp-content/plugins</code> folder. Make sure the plugin has its own folder (for exemple  <code>/wp-content/plugins/hikari-titled-comments/</code>).</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress admin page.</li>\n</ol>\n<p>There&#8217;s no options page at the moment. You can go to Edit Comment Admin Page and try to edit any comment, and the title box will be there so you can add title to existing ones. But now it&#8217;s time to edit your theme to have them shown and let your visitors set titles to their new comments.</p>\n<h4>Preparing your theme</h4>\n<p>There are 2 steps you do to add titled comments support to your theme. First you include the title to your comment building code, second you include an input text to your comment form so that users can submit the title.</p>\n<p>First thing you must do is find your comment building code, your search starts in your theme&#8217;s file <code>comments.php</code>. If you don&#8217;t have experience editing themes, you may need help. The person who developed your theme is the obvious first suggestion.</p>\n<p>Since WordPress 2.7, themes use the function <code>wp_list_comments()</code> to print comments, with support to threads, pagination, etc. This function has a parameter called <em>callback</em>, that points to a theme function that has the comment code.</p>\n<p>For exemple, in <code>wp_list_comments('style=ol&amp;type=comment&amp;callback=prefix_comment')</code>, the comment function is <code>prefix_comment</code>. Now you must find this function in your theme, I like to have it in <code>comments.php</code> itself, but many tutorials say to move the function to <code>functions.php</code>, just look around.</p>\n<p>If your <code>wp_list_comments</code> doesn&#8217;t have a <em>callback</em> parameter, you reached a dead end, your theme uses WordPress&#8217;s default code and it can&#8217;t be edited. You&#8217;ll have to design a comment layout for your theme to be able to give a title to your comments. It&#8217;s not hard or complex, but if you are reading this and don&#8217;t know what to do you&#8217;ll need to read a lot and learn a bit before proceeding.</p>\n<p>Ok, you&#8217;ve found your comment building code. There is no specific place to add a title to your comments, use your imagination. I like to see comments as mini-articles, or extensions of the post. Generally titles come on the top of the article, followed by the author and the article&#8217;s date, and then the content.</p>\n<p>Once you choose where the title will go in each comment, I tell you that not all comments have titles. Your old comments don&#8217;t have, and commentators are not required to use a title (at least for now). So you must have in mind that a title may or may not be present, both layouts must look good and be XHTML valid.</p>\n<p>The function you use to add the title is <code>function hkTC_comment_title( $comment_id=null, $before=null, $after=null)</code>. If <code>$comment_id</code> is empty, it will try to find <code>global $comment</code>. You can also pass any text to be used before and after the title, probably some HTML tag to surround the title text, these string are not escaped so pass them in the final format they&#8217;ll be sent to browsers.</p>\n<p>If current comment has a title, the function will print <code>echo $before.$comment_title.$after;</code>. If it hasn&#8217;t, the function will just return without doing anything. Here&#8217;s the final code I use in my theme:</p>\n<pre><code>&lt;?php if(function_exists('hkTC_comment_title'))\n    hkTC_comment_title($comment-&gt;comment_ID,'&lt;h2 class=\"comment-title\"&gt;','&lt;/h2&gt;');\n?&gt;\n</code></pre>\n<p><strong>Nice! Your theme is ready to print titles to your comments, now you must let your visitors submit them!</strong> Your next stop is in your theme&#8217;s comment form, also inside <code>comments.php</code>. Again, your creativity will tell you where to include the text field, I&#8217;ve chosen just above the comment textarea, with a header to say it&#8217;s meant for the title.</p>\n<p>There&#8217;s nothing much to say here, it&#8217;s a simple input text that&#8217;s added if the <code>hkTC_comment_title</code> function exists. The function isn&#8217;t used here, but we test it to assure the input text is only included if the plugin is activated to receive its parameter. Just make sure you don&#8217;t change its &#8216;name&#8217; and &#8216;id&#8217; attributes.</p>\n<pre><code>&lt;?php if(function_exists('hkTC_comment_title')) { ?&gt;\n    &lt;h3&gt;Comment Title&lt;/h3&gt;\n    &lt;input type=\"text\" name=\"hikari-titled-comments\" id=\"hikari-titled-comments\" tabindex=\"4\" value=\"\" /&gt;\n&lt;?php } ?&gt;\n</code></pre>\n<p>And that&#8217;s it! Now you are ready to aggregate value to your site&#8217;s comments!</p>\n<h4>Upgrading and uninstalling</h4>\n<p>If you have to upgrade manually, simply delete <code>hikari-titled-comments</code> folder and follow installation steps again.</p>\n<p>If you wanna deactivate the plugin, just use the option in plugins page. Your theme will keep the new code for titles, but it will remain asleep while the plugin is not available.</p>\n<p>In future version I&#8217;m gonna include an option to delete titles metadata from database.</p>\n",
+        "faq": "\n<h4>Isn&#8217;t there a way to use comment title without editing my theme?</h4>\n<p>\n<p>Unfortunately no. The only action hook that WordPress offers as default for themes to have in comments is &#8216;comment_form&#8217;, that normally is added below the comment textarea, it doesn&#8217;t offer enough flexibility. And also there is no way for a plugin to include title to comments.</p>\n<p>In reality, it could be done, but these 2 elements would hardly fit to themes layouts, you&#8217;d have a lot of trouble styling them, so it&#8217;s much easier to just edit the theme.</p>\n</p>\n<h4>My theme uses WordPress default comment building, it doesn&#8217;t have the *callback* function, can I add title to my site comments?</h4>\n<p>\n<p>You can, but you&#8217;ll have to create that function. If you&#8217;re using the default code, your comments are already simple, so just search the Web for a tutorial teaching how to create it. Then you&#8217;ll be able to add title to your site comments 🙂</p>\n</p>\n<h4>I use a free downloaded theme, I know nothing about HTML or CSS and the theme author doesn&#8217;t provide support, can you help me do it?</h4>\n<p>\n<p>I&#8217;d love to be able to help, but it would require a few hours examining the theme, and even more time if its comment code is very different from standard, or some work if it uses WordPress default comment code.</p>\n<p>Many themes also have damn ugly code that is pratically unreadable (if you&#8217;ve never read themes codes, believe me, I&#8217;ve already used a theme that was pretty looking in the browser but its code almost made me suicide its author!).</p>\n<p>Unfortunately I don&#8217;t have the time to do it. You of course can contact me if you find a bug or have any trouble that may involve my plugin code, but please don&#8217;t ask me for themes support.</p>\n</p>\n<h4>Can I add title to old comments and edit title of comments after they are created?</h4>\n<p>\n<p>Yes, just go to Edit Comment Admin Page.</p>\n<p>Go to the admin page where you see a list of your site comments and click the edit option (not the quick edit!) for the comment you wanna edit. In the page that will open, below the comment textarea there will be a box with an input text containing its current title (or empty if the comment has no title). Edit it as you want and save the comment 🙂</p>\n</p>\n<h4>Can I have a usage exemple?</h4>\n<p>\n<p>Sure, go to my plugin&#8217;s home page and add comments saying what you think about having titles in comments 🙂</p>\n</p>\n<h4>Does the plugin have security protection? Does it filter submited title? Can a hacker or a spammer use it to gain control of my site?</h4>\n<p>\n<p>When a registered user edits an existing comment&#8217;s title, wpnonce is used against the plugin filename AND this comment ID, so WordPress controls security regarding somebody trying to force a comment title change. A user also must have permission to edit a post to edit its comments&#8217; titles.</p>\n<p>For a new comment being created, I&#8217;ve used no special security measure. If a user or visitor is allowed to create a comment, he is allowed to give it a title too. I let WordPress manage permissions to add new comments, if it&#8217;s not allowed WordPress will simply not trigger the action that Hikari Titled Comments plugin uses to create the title. There are also spam protection plugins that deal with permissions to add comments.</p>\n<p>Now, regarding what a user can use in a title (add a link to it for exemple), I&#8217;ve used the filter <code>wp_filter_kses()</code> to control it, it&#8217;s the same filter used in the comment body. In the same way WordPress works, if a user has &#8216;unfiltered_html&#8217; permission, his comment body and title are not filtered, and if he doesn&#8217;t have this permission the filter is used.</p>\n<p>And if you also use the <a href=\"http://hikari.ws/email-url-obfuscator/\" rel=\"nofollow ugc\">Hikari Email &amp; URL Obfuscator</a> plugin, it will obfuscate any link that may exist in a title 🙂</p>\n<p>With these measures, I belive comment title is dealt in a similar way comment body is, I don&#8217;t believe comment title must or should have deeper control than comment body. But if you think it should be done differently, just add a comment, with title 😉 , to the plugin homepage with your ideas and concerns 🙂</p>\n</p>\n\n",
+        "changelog": "<h4>0.02 &#8211; 13/03/2010</h4>\n<ul>\n<li>Fix: removed code to delete comment title when a comment is deleted, WordPress core handles deleting comments metadata by itself.</li>\n<li>Fix: fixed a bug where all titles were deleted when a comment without title (or having its title deleted) was editied. <strong>Update ASAP to not have your titles deleted by the bug!</strong></li>\n</ul>\n<h4>0.01 &#8211; 05/03/2010</h4>\n<ul>\n<li>First public release.</li>\n</ul>\n"
+    },
+    "short_description": "Hikari Titled Comments enables each comment to have a title, so that commentators can give a subject meaning to their comments.",
+    "description": "<p>One of the best features Drupal has and I miss in WordPress is the possibility to set title to comments.</p>\n<p>With a title, we can identify the comment subject, it can be resumed to a phrase. Comments become more similar to articles and aggregate more value.</p>\n<p>I like to see comments as mini-articles. The post being the main article and comments being mini-articles that extend the main one. Now with title, WordPress comments are a bit closer to that approach.</p>\n<p><a href=\"http://hikari.ws/titled-comments/\" rel=\"nofollow ugc\">Hikari Titled Comments</a> enables each comment to have a title, so that commentators can give a subject meaning to their comments.</p>\n<h4>Features</h4>\n<ul>\n<li>Comments titles are stored as comment metadata.</li>\n<li>It&#8217;s easy for themes to add support the plugin, being the support optional and when the plugin is not available the support just remains hidden.</li>\n<li>A simple function prints the comment title if there is one, or prints nothing if current comment doesn&#8217;t have a title.</li>\n<li>Comments titles can be edited from admin comment edit page.</li>\n</ul>\n<p>I dedicate Hikari Titled Comments to <strong>Chiih-chan</strong>, my kawaii great frient ^-^</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/hikari-title-comments.0.02.02.zip",
+    "upgrade_notice": {
+        "0.01 and above": "<p>If you have to upgrade manually, simply delete hikari-titled-comments folder and follow installation steps again.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/hikari-title-comments/trunk/screenshot-1.png?rev=1538941",
+            "caption": "A normal comment without a title"
+        },
+        {
+            "src": "https://ps.w.org/hikari-title-comments/trunk/screenshot-2.png?rev=1538941",
+            "caption": "The same comment, now with a title/subject"
+        },
+        {
+            "src": "https://ps.w.org/hikari-title-comments/trunk/screenshot-3.png?rev=1538941",
+            "caption": "Exemple of a comment form with the title input text"
+        },
+        {
+            "src": "https://ps.w.org/hikari-title-comments/trunk/screenshot-4.png?rev=1538941",
+            "caption": "Edit Comment Admin Page, with the title metabox"
+        }
+    ],
+    "tags": {
+        "comment": "comment",
+        "comments": "comments",
+        "metadata": "metadata",
+        "title": "title",
+        "titled": "titled"
+    },
+    "stable_tag": "0.02.02",
+    "versions": {
+        "0.01.05": "https://downloads.wordpress.org/plugin/hikari-title-comments.0.01.05.zip",
+        "0.02.02": "https://downloads.wordpress.org/plugin/hikari-title-comments.0.02.02.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/hikari-title-comments.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "http://Hikari.ws/wordpress/#donate",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/hikari-title-comments.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

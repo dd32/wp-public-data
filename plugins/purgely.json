@@ -1,0 +1,76 @@
+{
+    "name": "Purgely",
+    "slug": "purgely",
+    "version": "1.0.1",
+    "author": "Zack Tollman, WIRED Tech Team",
+    "author_profile": "https://profiles.wordpress.org/tollmanz/",
+    "contributors": {
+        "tollmanz": {
+            "profile": "https://profiles.wordpress.org/tollmanz/",
+            "avatar": "https://secure.gravatar.com/avatar/980df66b142b2a067b3f8b67b04352de?s=96&d=monsterid&r=g",
+            "display_name": "Zack Tollman"
+        }
+    },
+    "requires": "4.2.0",
+    "tested": "4.3.34",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 1,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/purgely/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 40,
+    "downloaded": 14881,
+    "last_updated": "2016-06-15 4:55pm GMT",
+    "added": "2016-01-11",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Purgely manages caching behavior for WordPress sites using Fastly as an edge caching solution. The plugin exposes useful<br />\nAPIs to help control how pages on your site are cached, as well as provides sane defaults to make this a plug and play<br />\nsolution for Fastly cache management.</p>\n<p>The plugin handles the following:</p>\n<ul>\n<li>Sets the <code>Surrogate-Control</code> header to control the expiration time for pages</li>\n<li>Sets the <code>stale-while-revalidate</code> and <code>stale-if-error</code> <code>Cache-Control</code> directives for managing these special Fastly<br />\nbehaviors</li>\n<li>Set groups of <code>Surrogate-Keys</code> for all pages to provide purging across multiple pages with one command</li>\n<li>Provides invalidation of posts and related posts on save</li>\n</ul>\n<p>Each of these items have sane defaults with ways to override them and configure them to your liking.</p>\n<p>Additionally, the plugin exposes a WP CLI command to provide more flexible purging options.</p>\n",
+        "installation": "<h3>Manual installation</h3>\n<ol>\n<li>Upload the plugin directory to <code>/wp-content/plugins/</code></li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</li>\n</ol>\n<h3>WP CLI installation</h3>\n<ol>\n<li>Run <code>wp plugin install --activate purgely</code></li>\n</ol>\n<h3>Configuration</h3>\n<p>Purgely provides a number of constants that can be used to control the behavior of the plugin and Fastly&#8217;s cache. Users<br />\nwho wish to change these values should define the constants in <code>wp-config.php</code>.</p>\n<p>After installing, you should define <code>PURGELY_FASTLY_KEY</code> and <code>PURGELY_FASTLY_SERVICE_ID</code> in <code>wp-config.php</code>. The plugin will work without them; however, you will not be able to purge by surrogate key or purge all without configuring these options. To define them copy the following code to your <code>wp-config.php</code> file, update the key to use your key, and the service ID to match the fastly service you&#8217;re using:</p>\n<pre><code>`\n</code></pre>\n<p>define( &#8216;PURGELY_FASTLY_KEY&#8217;, &#8217;39c4820390d8f050giweda50268c7583&#8242; );<br />\ndefine( &#8216;PURGELY_FASTLY_SERVICE_ID&#8217;, &#8216;abcdefghijklmn1234567890&#8217; );<br />\n    `</p>\n<p>Configuring other constants is similarly done by defining the constant in <code>wp-config.php</code>. All constants are explained<br />\nbelow.</p>\n<p><strong>PURGELY_API_ENDPOINT</strong></p>\n<p>Defines the API endpoint for Fastly. This should not usually need to be changed, but is added in the event that Fastly<br />\ndecides to use a different API endpoint, or if there is a need for a user to have a special endpoint.</p>\n<p><em>default: (string) &#8221;</em></p>\n<p><strong>PURGELY_ALLOW_PURGE_ALL</strong></p>\n<p>Determines whether or not the plugin can issue a purge all request. Purge all can have dire consequences for a website.<br />\nAs such, this behavior is disabled by default. If can be turned on by setting this value to <code>true</code>.</p>\n<p><em>default: (bool) false</em></p>\n<p><strong>PURGELY_ENABLE_STALE_WHILE_REVALIDATE</strong></p>\n<p>Determines whether or not the plugin sets the <code>stale-while-revalidate</code> directive for the <code>Cache-Control</code> header. Setting<br />\nthis value to <code>false</code> will turn off the <code>stale-while-revalidate</code> behavior. Note that you can manually control this<br />\nbehavior via the functions exposed in the plugin regardless of this configuration option. This option only controls the<br />\ndefault plugin behavior.</p>\n<p><em>default: (bool) true</em></p>\n<p><strong>PURGELY_STALE_WHILE_REVALIDATE_TTL</strong></p>\n<p>Sets the TTL for the <code>stale-while-revalidate</code> directive in seconds. The value instructs Fastly to continue serving stale<br />\ncontent while new content is generated for the duration of the value that is set.</p>\n<p><em>default: (int) 86400</em></p>\n<p><strong>PURGELY_ENABLE_STALE_IF_ERROR</strong></p>\n<p>Determines whether or not the plugin sets the <code>stale-if-error</code> directive for the <code>Cache-Control</code> header. Setting<br />\nthis value to <code>false</code> will turn off the <code>stale-if-error</code> behavior. Note that you can manually control this<br />\nbehavior via the functions exposed in the plugin regardless of this configuration option. This option only controls the<br />\ndefault plugin behavior.</p>\n<p><em>default: (bool) true</em></p>\n<p><strong>PURGELY_STALE_IF_ERROR_TTL</strong></p>\n<p>Sets the TTL for the <code>stale-if-error</code> directive in seconds. The value instructs Fastly to continue serving stale<br />\ncontent while the origin site is serving an error for the duration of the value that is set.</p>\n<p><em>default: (int) 86400</em></p>\n<p><strong>PURGELY_SURROGATE_CONTROL_TTL</strong></p>\n<p>Sets the TTL for the <code>Surrogate-Control</code> header in seconds. This value is the default TTL for all pages on your site,<br />\nunless it is cached within the app. Changing this value changes the value for the whole site.</p>\n<p><em>default: (int) 300</em></p>\n",
+        "changelog": "<h4>1.0.1</h4>\n<ul>\n<li>Update key saniziation to allow all capital letters, not just A-B.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "A plugin to manage Fastly caching behavior and purging.",
+    "description": "<p>Purgely manages caching behavior for WordPress sites using Fastly as an edge caching solution. The plugin exposes useful<br />\nAPIs to help control how pages on your site are cached, as well as provides sane defaults to make this a plug and play<br />\nsolution for Fastly cache management.</p>\n<p>The plugin handles the following:</p>\n<ul>\n<li>Sets the <code>Surrogate-Control</code> header to control the expiration time for pages</li>\n<li>Sets the <code>stale-while-revalidate</code> and <code>stale-if-error</code> <code>Cache-Control</code> directives for managing these special Fastly<br />\nbehaviors</li>\n<li>Set groups of <code>Surrogate-Keys</code> for all pages to provide purging across multiple pages with one command</li>\n<li>Provides invalidation of posts and related posts on save</li>\n</ul>\n<p>Each of these items have sane defaults with ways to override them and configure them to your liking.</p>\n<p>Additionally, the plugin exposes a WP CLI command to provide more flexible purging options.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/purgely.1.0.1.zip",
+    "upgrade_notice": {
+        "1.0.1": "<p>Update key saniziation to allow all capital letters, not just A-B.</p>",
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "cache-invalidation": "cache invalidation",
+        "caching": "caching",
+        "fastly": "fastly",
+        "page-cache": "page cache"
+    },
+    "stable_tag": "1.0.1",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/purgely.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/purgely.1.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/purgely.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/purgely.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

@@ -1,0 +1,104 @@
+{
+    "name": "DM Visitor Location Notification",
+    "slug": "dm-visitor-location-notification",
+    "version": "1.0.0",
+    "author": "<a href=\"http://devmaverick.com/\">George Paul Cretu</a>",
+    "author_profile": "https://profiles.wordpress.org/necroob/",
+    "contributors": {
+        "necroob": {
+            "profile": "https://profiles.wordpress.org/necroob/",
+            "avatar": "https://secure.gravatar.com/avatar/1f5a2f3af37c22276000bfea26f1db95?s=96&d=monsterid&r=g",
+            "display_name": "George-Paul Crețu"
+        }
+    },
+    "requires": "5.0",
+    "tested": "5.4.16",
+    "requires_php": "7.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/dm-visitor-location-notification/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 567,
+    "last_updated": "2020-07-03 10:57am GMT",
+    "added": "2020-04-21",
+    "homepage": "",
+    "sections": {
+        "description": "<p>The plugin uses <strong>ipstack.com</strong> to get visitors details based on IP.<br />\n<em>You will need an API key from ipstack.com in order for it to work.</em></p>\n<p>After activation you can use the shortcode <code>[dm-vln-notification]</code> on the page where you want to show the notifications.</p>\n<p>Potential usage for:<br />\n&#8211; podcast sites<br />\n&#8211; video libraries<br />\n&#8211; shops<br />\n&#8211; publications</p>\n<p>Using this shortcode on your site will allow other visitors to get a sense of the engagement your pages get.</p>\n<h4>Shortcodes</h4>\n<p>Two shortcodes are available for use:<br />\n&#8211; <code>[dm-vln-notification]</code> &#8211; this one will check the visitor details, create/update the records and show the notification message.<br />\n&#8211; <code>[dm-vln-top-countries]</code> &#8211; this one will show the top 10 countries that visited the page (only unique IPs will be counted).</p>\n<p>The <code>[dm-vln-top-countries]</code> can&#8217;t provide correct data if <code>[dm-vln-notification]</code> was not added to that page at one point.<br />\nSince <code>[dm-vln-notification]</code> does the whole operation regarding visitor data display, save and update.</p>\n<h4>Settings</h4>\n<p>Dashboard page provides you with a number of options:<br />\n&#8211; Adding API Key<br />\n&#8211; Choose the position of the notification<br />\n&#8211; Style the color scheme for the notification<br />\n&#8211; Add Custom notification message for single and multiple users<br />\n&#8211; Adjust the Notification display time<br />\n&#8211; Adjust the Frequency of the Ajax call<br />\n&#8211; Set the seconds for with to check the DB (based on NOW &#8211; seconds we decide what users are new/online)<br />\n&#8211; Pause the API Request<br />\n&#8211; Select a date and delete DB records previous to that</p>\n<h4>Custom notification message</h4>\n<p>Custom notification messages can be adjusted using dynamic variables.<br />\nFor Single visitor you have:<br />\n&#8211; <code>%dm_vln_country%</code> &#8211; displays the country with the flag<br />\n&#8211; <code>%dm_vln_city%</code> &#8211; displays the city (it is not 100% accurate).</p>\n<p>For Multiple visitors you have:<br />\n&#8211; <code>%dm_vln_visitor_number%</code> &#8211; shows the number of visitors<br />\n&#8211; <code>%dm_vln_countries%</code> &#8211; displays list of country codes<br />\n&#8211; <code>%dm_vln_flags%</code> &#8211; displays list of flags instead of country codes<br />\n&#8211; <code>%dm_vln_country_flags%</code> &#8211; displays list of country codes associated with the flag.</p>\n<p>You should only use one of the <code>%dm_vln_countries%</code>, <code>%dm_vln_flags%</code>, <code>%dm_vln_country_flags%</code> or it will show you duplicate data.</p>\n<p>In all custom message you can use HTML tags.</p>\n",
+        "installation": "<ol>\n<li>Upload <code>dm-visitor-location-notification</code> folder to the <code>/wp-content/plugins/</code> directory.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>Start using the shortcodes to display the notification and record data.</li>\n</ol>\n",
+        "faq": "\n<h4>\nHow does the plugin work?\n</h4>\n<p>\n<p>On activation the plugin creates a DB table called <strong>dm_visitor_location</strong> with the columns: IP, Time, Continent, Country, Country_Code, City, Post_ID, id.<br />\nThe IP is grabbed with a PHP function at the plugin level and passed to the API request to IPStack, returning the Continent, Country, Country_Code and City.</p>\n<p>For that to happen you will need to use <code>[dm-vln-notification]</code> on the page you want to show the notification.</p>\n<p>The function behind the shortcode will get the IP, check if the IP exists in the DB for the current Post_ID. If the IP doesn&#8217;t exists associated with the current Post_ID it will save/create it. If the record already exits it will only update the timestamp.</p>\n<p>The record exists if the IP and the Post_ID match.</p>\n<p>This check is done in order to save API requests, only updating the timestamp on the IPs that were already sent via the API request.</p>\n<p><em>Example: if the same IP returned to the same Post_ID that it was visited before, we only update the timestamp, we don&#8217;t create a new record.</em><br />\n<em>If that IP visits a different Post_ID, we&#8217;ll create a new record with the new Post_ID.</em></p>\n<p>Based on these records we display the notification that someone is on the page with that Post_ID.</p>\n</p>\n<h4>\nCan I use just the notifications without displaying the top countries?\n</h4>\n<p>\n<p>Yes. You can only use the shortcode for notifications <code>[dm-vln-notification]</code> on the page you want.</p>\n</p>\n<h4>\nHow are the IPs stored?\n</h4>\n<p>\n<p>The IPs are stored in the DB hashed under MD5.</p>\n</p>\n<h4>\nWhat happens with data when deactivating/uninstalling the plugin?\n</h4>\n<p>\n<p>On deactivation nothing happens with the DB records, but once you delete the plugin via WP Dashboard the plugin DB table will be removed.</p>\n</p>\n<h4>\nHow are flag images created?\n</h4>\n<p>\n<p>The flag images are <code>.svg</code> files.</p>\n</p>\n<h4>\nCan I style the notification?\n</h4>\n<p>\n<p>Yes. You can use the existing settings to adjust the color scheme, or add CSS rules. All notification elements have classes that you can use.<br />\nAlso the font family is grabbed from the site, so no font family is added via the plugin.</p>\n</p>\n<h4>\nDo I get a notification for myself accessing the page?\n</h4>\n<p>\n<p>No. You will not get a notification for yourself accessing the page. If your IP matches with the IP retrieved from DB, you will not be displayed to yourself as a visitor.</p>\n</p>\n<h4>\nCan I see a live demo?\n</h4>\n<p>\n<p>Sure! Check it out <a href=\"https://apps.devmaverick.com/dm-vln/\" rel=\"nofollow ugc\">here</a></p>\n</p>\n\n",
+        "changelog": "<p>Nothing to display here.</p>\n"
+    },
+    "short_description": "DM VLN allows you to display notifications when new visitors access the page with location details and stats with top 10 countries for that page.",
+    "description": "<p>The plugin uses <strong>ipstack.com</strong> to get visitors details based on IP.<br />\n<em>You will need an API key from ipstack.com in order for it to work.</em></p>\n<p>After activation you can use the shortcode <code>[dm-vln-notification]</code> on the page where you want to show the notifications.</p>\n<p>Potential usage for:<br />\n&#8211; podcast sites<br />\n&#8211; video libraries<br />\n&#8211; shops<br />\n&#8211; publications</p>\n<p>Using this shortcode on your site will allow other visitors to get a sense of the engagement your pages get.</p>\n<h4>Shortcodes</h4>\n<p>Two shortcodes are available for use:<br />\n&#8211; <code>[dm-vln-notification]</code> &#8211; this one will check the visitor details, create/update the records and show the notification message.<br />\n&#8211; <code>[dm-vln-top-countries]</code> &#8211; this one will show the top 10 countries that visited the page (only unique IPs will be counted).</p>\n<p>The <code>[dm-vln-top-countries]</code> can&#8217;t provide correct data if <code>[dm-vln-notification]</code> was not added to that page at one point.<br />\nSince <code>[dm-vln-notification]</code> does the whole operation regarding visitor data display, save and update.</p>\n<h4>Settings</h4>\n<p>Dashboard page provides you with a number of options:<br />\n&#8211; Adding API Key<br />\n&#8211; Choose the position of the notification<br />\n&#8211; Style the color scheme for the notification<br />\n&#8211; Add Custom notification message for single and multiple users<br />\n&#8211; Adjust the Notification display time<br />\n&#8211; Adjust the Frequency of the Ajax call<br />\n&#8211; Set the seconds for with to check the DB (based on NOW &#8211; seconds we decide what users are new/online)<br />\n&#8211; Pause the API Request<br />\n&#8211; Select a date and delete DB records previous to that</p>\n<h4>Custom notification message</h4>\n<p>Custom notification messages can be adjusted using dynamic variables.<br />\nFor Single visitor you have:<br />\n&#8211; <code>%dm_vln_country%</code> &#8211; displays the country with the flag<br />\n&#8211; <code>%dm_vln_city%</code> &#8211; displays the city (it is not 100% accurate).</p>\n<p>For Multiple visitors you have:<br />\n&#8211; <code>%dm_vln_visitor_number%</code> &#8211; shows the number of visitors<br />\n&#8211; <code>%dm_vln_countries%</code> &#8211; displays list of country codes<br />\n&#8211; <code>%dm_vln_flags%</code> &#8211; displays list of flags instead of country codes<br />\n&#8211; <code>%dm_vln_country_flags%</code> &#8211; displays list of country codes associated with the flag.</p>\n<p>You should only use one of the <code>%dm_vln_countries%</code>, <code>%dm_vln_flags%</code>, <code>%dm_vln_country_flags%</code> or it will show you duplicate data.</p>\n<p>In all custom message you can use HTML tags.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/dm-visitor-location-notification.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/dm-visitor-location-notification/assets/screenshot-1.png?rev=2288155",
+            "caption": "Example of top visits for a page and multiple visitors from different countries notification"
+        },
+        {
+            "src": "https://ps.w.org/dm-visitor-location-notification/assets/screenshot-2.png?rev=2288155",
+            "caption": "Example of top visits for a page and multiple visitors from same country notification"
+        },
+        {
+            "src": "https://ps.w.org/dm-visitor-location-notification/assets/screenshot-3.png?rev=2288155",
+            "caption": "Example of top visits for a page and single visitor notification"
+        },
+        {
+            "src": "https://ps.w.org/dm-visitor-location-notification/assets/screenshot-4.png?rev=2288155",
+            "caption": "Settings page with API notification"
+        },
+        {
+            "src": "https://ps.w.org/dm-visitor-location-notification/assets/screenshot-5.png?rev=2288155",
+            "caption": "Add in the ipstack.com API Key"
+        },
+        {
+            "src": "https://ps.w.org/dm-visitor-location-notification/assets/screenshot-6.png?rev=2288155",
+            "caption": "Style the notification with these 3 options"
+        },
+        {
+            "src": "https://ps.w.org/dm-visitor-location-notification/assets/screenshot-7.png?rev=2288155",
+            "caption": "Customize the notification message by using the dynamic variables"
+        }
+    ],
+    "tags": {
+        "country": "country",
+        "geoip": "GeoIP",
+        "geolocation": "geolocation",
+        "notification": "notification",
+        "visits": "visits"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "http://devmaverick.com/donate",
+    "banners": {
+        "low": "https://ps.w.org/dm-visitor-location-notification/assets/banner-772x250.jpg?rev=2288155",
+        "high": "https://ps.w.org/dm-visitor-location-notification/assets/banner-1544x500.jpg?rev=2288155"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/dm-visitor-location-notification/assets/icon-128x128.jpg?rev=2288155",
+        "2x": "https://ps.w.org/dm-visitor-location-notification/assets/icon-256x256.jpg?rev=2288155"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

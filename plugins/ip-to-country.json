@@ -1,0 +1,85 @@
+{
+    "name": "IP-to-Country",
+    "slug": "ip-to-country",
+    "version": "0.08",
+    "author": "<a href=\"http://www.pepak.net\">Pepak</a>",
+    "author_profile": "https://profiles.wordpress.org/pepaknet/",
+    "contributors": {
+        "pepak": {
+            "profile": "https://profiles.wordpress.org/pepak/",
+            "avatar": "https://secure.gravatar.com/avatar/9622232a69c193afae8d4408e2152e1f?s=96&d=monsterid&r=g",
+            "display_name": ""
+        }
+    },
+    "requires": "2.8.0",
+    "tested": "3.0.5",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 60,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 1,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/ip-to-country/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 20,
+    "downloaded": 5827,
+    "last_updated": "2014-06-24 6:21pm GMT",
+    "added": "2010-03-28",
+    "homepage": "http://www.pepak.net/wordpress/ip-to-country-plugin",
+    "sections": {
+        "description": "<p>IP-to-Country is a plugin which doesn&#8217;t provide any output to users, but which<br />\nmay be used by plugin authors to quickly and easily find, in which country an<br />\nIP address is located.</p>\n<p>To do so the plugin uses data files from either http://ip-to-country.webhosting.info<br />\n(IPv4 only) or http://software77.net/geo-ip/ (both IPv4 and IPv6).<br />\nOther sources are possible as long as they have the same format: CSV file,<br />\nfields enclosed with quotes (&#8220;) and separated with comma (,), lines ending<br />\nwith LF (\\n). Five columns:</p>\n<ul>\n<li>Lower bound of an IP range.</li>\n<li>Upper bound of an IP range. Both are represented as one 32-bit integer number,<br />\nsuch as you can get by using funtion ip2long().</li>\n<li>2-character country code</li>\n<li>3-character country code</li>\n<li>Country name</li>\n</ul>\n<p>Note: In order to import IPv6 addresses, IPv4 must be imported first. The<br />\nreason is, IPv6 database does not carry the full country information with<br />\nit, while the IPv4 database does.</p>\n<p>Operations:</p>\n<ul>\n<li>\n<p>To detect if IP-to-Country plugin is installed:</p>\n<p>$ip2c_available = class_exists(&#8216;PepakIpToCountry&#8217;);</p>\n</li>\n<li>\n<p>To find information about a numeric IP address:</p>\n<p>$country = PepakIpToCountry::IP_to_Country_Full(&#8216;8.8.8.8&#8217;);<br />\n    // returns &#8216;UNITED STATES&#8217;<br />\n    $country = PepakIpToCountry::IP_to_Country(&#8216;8.8.8.8&#8217;);<br />\n    $country = PepakIpToCountry::IP_to_Country_XX(&#8216;8.8.8.8&#8217;);<br />\n    // both return &#8216;US&#8217;<br />\n    $country = PepakIpToCountry::IP_to_Country_XXX(&#8216;8.8.8.8&#8217;);<br />\n    // returns &#8216;USA&#8217;<br />\n    $country = PepakIpToCountry::IP_to_Country_Info(&#8216;8.8.8.8&#8217;);<br />\n    // returns Array(&#8216;iso_name&#8217;=&gt;&#8217;UNITED STATES&#8217;, &#8216;iso_code2&#8217;=&gt;&#8217;US&#8217;, &#8216;iso_code3&#8217;=&gt;&#8217;USA&#8217;)<br />\n$image = PepakIpToCountry::IP_to_Country_Flag(&#8216;8.8.8.8&#8217;);<br />\n// returns &#8221;</p>\n<p>You may leave the IP address empty; in that case, IP address of currently<br />\nactive user is used instead.</p>\n<p>Note: All requests are cached, so there shouldn&#8217;t be a noticeable difference<br />\nbetween reading IP_to_Country_Info and reading all three pieces of information<br />\nseparately using the _Full, _XX and _XXX functions.</p>\n</li>\n<li>\n<p>To interface your plugin&#8217;s tables to IP-to-Country plugin&#8217;s tables within SQL,<br />\na function <code>Subselect</code> is published:</p>\n<p>$subselect = PepakIpToCountry::Subselect($ip, $countryfield);</p>\n<ul>\n<li><code>$ip</code> is a field that contains IP address in the form of one 32bit number, e.g.</li>\n</ul>\n<ol>\n<li>If you store IP addresses in the usual form of four dot-separated<br />\nnumbers (&#8216;127.0.0.1&#8217;), you can use MySQL&#8217;s function INET_ATON:<br />\n$ip = &#8216;INET_ATON(my_ip_address_field)&#8217;;<br />\nIt is strongly recommended to use qualified field names (with tablename in<br />\nfront, separated by a dot):<br />\n$ip = &#8216;INET_ATON(banlist.ip_address)&#8217;;</li>\n</ol>\n<ul>\n<li><code>$countryfield</code> is the field you want returned. It can be one of the following:<br />\niso_name &#8211; returns the same string as PepakIpToCountry::IP_to_Country_Full(&#8230;)<br />\niso_code2 &#8211; returns the same string as PepakIpToCountry::IP_to_Country_XX(&#8230;)<br />\niso_code3 &#8211; returns the same string as PepakIpToCountry::IP_to_Country_XX(&#8230;)</li>\n</ul>\n<p>Note: No checking or validation is done on either of these parameters. It is assumed<br />\nthey are <em>field names</em>, <strong>NOT</strong> strings. DO NOT EVER USE VALUES THAT YOUR USERS CAN<br />\nINFLUENCE! This is important! If you let users supply arguments to Subselect(), you<br />\nare letting them to do whatever they like with your database!</p>\n<p>This function only works with IPv4 addresses.</p>\n<p>Example usage:</p>\n<p>if (class_exists(&#8216;PepakIpToCountry&#8217;))<br />\n      $field = PepakIpToCountry(&#8220;INET_ATON(b.ip_addr)&#8221;, &#8216;iso_code2&#8217;);<br />\n    else<br />\n      $field = &#8216;NULL&#8217;;<br />\n    $sql = &#8220;SELECT b.*, ${field} country_code FROM ${wpdb-&gt;prefix}banlist b WHERE &#8230;&#8221;;</p>\n</li>\n</ul>\n<p>Note: This plugin <em>requires</em> PHP5. If you want it to work with ZIP files<br />\n(e.g. for updating IP-country info from the default location), your PHP<br />\nmust have extension php_zip enabled.</p>\n",
+        "installation": "<ol>\n<li>Create a subdirectory in your &#8216;/wp-content/plugins/&#8217; directory and extract the plugin<br />\nthere. The plugin subdirectory can be anything you like &#8211; I use &#8216;ip-to-country&#8217;, but<br />\nthe plugin should accept any name.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>You will see a &#8216;IP-to-Country&#8217; item in your &#8216;Settings&#8217; menu. It lets you choose<br />\nthe source of IP-country info and update the database with it. Please do so, as the<br />\nnecessary tables start empty after installation.</li>\n</ol>\n",
+        "faq": "\n<h4>I am having some problem with this plugin. Where can I get help?</h4>\n<p>\n<p>On my webpage I have a support forum http://forum.pepak.net with english section<br />\nwhere you can ask. At the time of writing, the forum is open for everybody without<br />\nregistration.</p>\n</p>\n\n",
+        "changelog": "<h4>0.08</h4>\n<ul>\n<li>Ukrainian translation by Michael Yunat.</li>\n</ul>\n<h4>0.07</h4>\n<ul>\n<li>Updated the Serbo-Croatian translation.</li>\n</ul>\n<h4>0.06</h4>\n<ul>\n<li>Serbo-Croatian translation by Andrijana Nikolic.</li>\n<li>Fixed warnings in WordPress 3.5 and newer.</li>\n</ul>\n<h4>0.05</h4>\n<ul>\n<li>Romanian translation by Alexander Ovsov.</li>\n</ul>\n<h4>0.04</h4>\n<ul>\n<li>Country name was added to atribute TITLE (until now it only appeared in ALT).</li>\n</ul>\n<h4>0.03</h4>\n<ul>\n<li>Fixed a bug with some IPv4 addresses (signed vs. unsigned numbers), as<br />\nreported by Andrea.</li>\n<li>Added method IP_to_Country_Flag which returns an &#8221; tag suitable for<br />\ndisplaying a small country flag. Icons come from http://www.famfamfam.com.</li>\n<li>Support for IPv6, using data from http://software77.net/geo-ip/.</li>\n</ul>\n<h4>0.02</h4>\n<ul>\n<li>Added error reporting for imports.</li>\n<li>Removed memory-intensive preg_match_all and replaced with strpos/substr.</li>\n</ul>\n<h4>0.01</h4>\n<ul>\n<li>Initial version.</li>\n</ul>\n"
+    },
+    "short_description": "Provide a simple interface for plugin authors to determine, in which country an IP is located.",
+    "description": "<p>IP-to-Country is a plugin which doesn&#8217;t provide any output to users, but which<br />\nmay be used by plugin authors to quickly and easily find, in which country an<br />\nIP address is located.</p>\n<p>To do so the plugin uses data files from either http://ip-to-country.webhosting.info<br />\n(IPv4 only) or http://software77.net/geo-ip/ (both IPv4 and IPv6).<br />\nOther sources are possible as long as they have the same format: CSV file,<br />\nfields enclosed with quotes (&#8220;) and separated with comma (,), lines ending<br />\nwith LF (\\n). Five columns:</p>\n<ul>\n<li>Lower bound of an IP range.</li>\n<li>Upper bound of an IP range. Both are represented as one 32-bit integer number,<br />\nsuch as you can get by using funtion ip2long().</li>\n<li>2-character country code</li>\n<li>3-character country code</li>\n<li>Country name</li>\n</ul>\n<p>Note: In order to import IPv6 addresses, IPv4 must be imported first. The<br />\nreason is, IPv6 database does not carry the full country information with<br />\nit, while the IPv4 database does.</p>\n<p>Operations:</p>\n<ul>\n<li>\n<p>To detect if IP-to-Country plugin is installed:</p>\n<p>$ip2c_available = class_exists(&#8216;PepakIpToCountry&#8217;);</p>\n</li>\n<li>\n<p>To find information about a numeric IP address:</p>\n<p>$country = PepakIpToCountry::IP_to_Country_Full(&#8216;8.8.8.8&#8217;);<br />\n    // returns &#8216;UNITED STATES&#8217;<br />\n    $country = PepakIpToCountry::IP_to_Country(&#8216;8.8.8.8&#8217;);<br />\n    $country = PepakIpToCountry::IP_to_Country_XX(&#8216;8.8.8.8&#8217;);<br />\n    // both return &#8216;US&#8217;<br />\n    $country = PepakIpToCountry::IP_to_Country_XXX(&#8216;8.8.8.8&#8217;);<br />\n    // returns &#8216;USA&#8217;<br />\n    $country = PepakIpToCountry::IP_to_Country_Info(&#8216;8.8.8.8&#8217;);<br />\n    // returns Array(&#8216;iso_name&#8217;=&gt;&#8217;UNITED STATES&#8217;, &#8216;iso_code2&#8217;=&gt;&#8217;US&#8217;, &#8216;iso_code3&#8217;=&gt;&#8217;USA&#8217;)<br />\n$image = PepakIpToCountry::IP_to_Country_Flag(&#8216;8.8.8.8&#8217;);<br />\n// returns &#8221;</p>\n<p>You may leave the IP address empty; in that case, IP address of currently<br />\nactive user is used instead.</p>\n<p>Note: All requests are cached, so there shouldn&#8217;t be a noticeable difference<br />\nbetween reading IP_to_Country_Info and reading all three pieces of information<br />\nseparately using the _Full, _XX and _XXX functions.</p>\n</li>\n<li>\n<p>To interface your plugin&#8217;s tables to IP-to-Country plugin&#8217;s tables within SQL,<br />\na function <code>Subselect</code> is published:</p>\n<p>$subselect = PepakIpToCountry::Subselect($ip, $countryfield);</p>\n<ul>\n<li><code>$ip</code> is a field that contains IP address in the form of one 32bit number, e.g.</li>\n</ul>\n<ol>\n<li>If you store IP addresses in the usual form of four dot-separated<br />\nnumbers (&#8216;127.0.0.1&#8217;), you can use MySQL&#8217;s function INET_ATON:<br />\n$ip = &#8216;INET_ATON(my_ip_address_field)&#8217;;<br />\nIt is strongly recommended to use qualified field names (with tablename in<br />\nfront, separated by a dot):<br />\n$ip = &#8216;INET_ATON(banlist.ip_address)&#8217;;</li>\n</ol>\n<ul>\n<li><code>$countryfield</code> is the field you want returned. It can be one of the following:<br />\niso_name &#8211; returns the same string as PepakIpToCountry::IP_to_Country_Full(&#8230;)<br />\niso_code2 &#8211; returns the same string as PepakIpToCountry::IP_to_Country_XX(&#8230;)<br />\niso_code3 &#8211; returns the same string as PepakIpToCountry::IP_to_Country_XX(&#8230;)</li>\n</ul>\n<p>Note: No checking or validation is done on either of these parameters. It is assumed<br />\nthey are <em>field names</em>, <strong>NOT</strong> strings. DO NOT EVER USE VALUES THAT YOUR USERS CAN<br />\nINFLUENCE! This is important! If you let users supply arguments to Subselect(), you<br />\nare letting them to do whatever they like with your database!</p>\n<p>This function only works with IPv4 addresses.</p>\n<p>Example usage:</p>\n<p>if (class_exists(&#8216;PepakIpToCountry&#8217;))<br />\n      $field = PepakIpToCountry(&#8220;INET_ATON(b.ip_addr)&#8221;, &#8216;iso_code2&#8217;);<br />\n    else<br />\n      $field = &#8216;NULL&#8217;;<br />\n    $sql = &#8220;SELECT b.*, ${field} country_code FROM ${wpdb-&gt;prefix}banlist b WHERE &#8230;&#8221;;</p>\n</li>\n</ul>\n<p>Note: This plugin <em>requires</em> PHP5. If you want it to work with ZIP files<br />\n(e.g. for updating IP-country info from the default location), your PHP<br />\nmust have extension php_zip enabled.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/ip-to-country.0.08.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/ip-to-country/trunk/screenshot-1.png?rev=1538967",
+            "caption": "Administrative options"
+        }
+    ],
+    "tags": {
+        "country": "country",
+        "geolocation": "geolocation",
+        "invisible": "invisible",
+        "ip": "ip",
+        "ip-to-country": "ip to country"
+    },
+    "stable_tag": "0.08",
+    "versions": {
+        "0.01": "https://downloads.wordpress.org/plugin/ip-to-country.0.01.zip",
+        "0.02": "https://downloads.wordpress.org/plugin/ip-to-country.0.02.zip",
+        "0.03": "https://downloads.wordpress.org/plugin/ip-to-country.0.03.zip",
+        "0.04": "https://downloads.wordpress.org/plugin/ip-to-country.0.04.zip",
+        "0.05": "https://downloads.wordpress.org/plugin/ip-to-country.0.05.zip",
+        "0.06": "https://downloads.wordpress.org/plugin/ip-to-country.0.06.zip",
+        "0.08": "https://downloads.wordpress.org/plugin/ip-to-country.0.08.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/ip-to-country.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/ip-to-country.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 60,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

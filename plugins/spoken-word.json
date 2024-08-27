@@ -1,0 +1,90 @@
+{
+    "name": "Spoken Word",
+    "slug": "spoken-word",
+    "version": "1.0.1",
+    "author": "<a href=\"https://weston.ruter.net/\">Weston Ruter</a>",
+    "author_profile": "https://profiles.wordpress.org/westonruter/",
+    "contributors": {
+        "westonruter": {
+            "profile": "https://profiles.wordpress.org/westonruter/",
+            "avatar": "https://secure.gravatar.com/avatar/22ed378fbf1d918ef43a45b2a1f34634?s=96&d=monsterid&r=g",
+            "display_name": "Weston Ruter"
+        }
+    },
+    "requires": "4.7",
+    "tested": "4.9.26",
+    "requires_php": "5.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 94,
+    "ratings": {
+        "5": 5,
+        "4": 2,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 7,
+    "support_url": "https://wordpress.org/support/plugin/spoken-word/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 100,
+    "downloaded": 4628,
+    "last_updated": "2018-01-21 10:22pm GMT",
+    "added": "2018-01-21",
+    "homepage": "https://github.com/westonruter/spoken-word",
+    "sections": {
+        "description": "<p>Add text-to-speech (TTS) to content, with playback controls, read-along highlighting, multi-lingual support, and settings for rate, pitch, and voice.</p>\n<ul>\n<li>Uses local text-to-speech engine in user&#8217;s browser. Directly interfaces with the <code>speechSynthesis</code> browser API. Zero external requests or dependencies.</li>\n<li>Words are selected/highlighted as they are being spoken to allow you to read along.</li>\n<li>Skips speaking elements that should not be read, including footnote superscripts (the <code>sup</code> element).</li>\n<li>Pauses of different length added are between headings versus paragraphs.</li>\n<li>Controls remain in view during playback, with each the current text being spoken persistently being scrolled into view. (Requires browser support for <code>position:sticky</code>.)</li>\n<li>Back/forward controls allow you to skip to the next paragraph; when not speaking, the next paragraph to read will be selected entirely.</li>\n<li>Select text to read from that point; click on text during speech to immediately change position.</li>\n<li>Multi-lingual support, allowing embedded text with <code>[lang]</code> attribute to be spoken by the appropriate voice (assuming the user has it installed).</li>\n<li>Settings for changing the default voice (for each language), along with settings for the rate of speech and its pitch. (Not supported by all engines.) Changes can be made while speaking.</li>\n<li>Hit escape to pause during playback.</li>\n<li>Voice preferences are persistently stored in <code>localStorage</code>, with changes synced across windows (of a given site).</li>\n<li>Ability to use JS in standalone manner (such as in bookmarklet).</li>\n<li>Known to work in the latest desktop versions of Chrome, Firefox, and Safari. (Tested on OSX.) It does not work reliably in mobile/touch browsers on Android or iOS, apparently due both to the (still experimental) <code>speechSynthesis</code> API not being implemented well enough on those systems and/or programmatic range selection does not work the same way as on desktop. For these reasons, the functionality is disabled by default on mobile operating systems.</li>\n</ul>\n<p><a href=\"https://westonruter.github.io/spoken-word/test/example.html\" rel=\"nofollow ugc\">Try it out</a> on standalone example with some test content.</p>\n<h4>Theme Config</h4>\n<p>The settings for Spoken Word are presented in an HTML5 <code>dialog</code> element. For browsers that do not yet support this feature, the plugin bundles the <a href=\"https://github.com/GoogleChrome/dialog-polyfill\" rel=\"nofollow ugc\">dialog-polyfill</a>. The polyfill is only included if it is detected the browser does not support <code>dialog</code> natively. The inclusion of the polyfill can be disabled by adding the following to your theme or plugin:</p>\n<pre>\nadd_filter( 'spoken_word_include_dialog_polyfill', '__return_false' );\n</pre>\n<p>For themes that have a sticky header (such as the nav menu in Twenty Seventeen) you may need to add some additional CSS to ensure that the sticky-positioned playback controls do not get hidden behind the sticky header. For example in Twenty Seventeen, you can add the following to the Custom CSS in the Customizer:</p>\n<pre>\n@media screen and (min-width: 782px) {\n    body:not(.admin-bar) .spoken-word--active {\n        top: calc( 0.5em + 70px );\n    }\n    body.admin-bar .spoken-word--active {\n        top: calc( 0.5em + 32px + 70px );\n    }\n}\n</pre>\n<h4>Internals</h4>\n<p>A bookmarklet can be used to load the Spoken Word functionality into any site, even non-WordPress sites where the plugin is not installed. The key is to use the appropriate <code>contentSelector</code>:</p>\n<pre>\n( () =&gt; {\n    const link = document.createElement( 'link' );\n    link.rel = 'stylesheet';\n    link.href = 'https://unpkg.com/spoken-word/css/style.css';\n    document.head.appendChild( link );\n\n    const script = document.createElement( 'script' );\n    script.src = 'https://unpkg.com/spoken-word/dist/spoken-word.js';\n    script.addEventListener( 'load', () =&gt; {\n        spokenWord.initialize( {\n            contentSelector: [ /* 👈 Amend as desired. */\n                '.hentry',\n                '.entry-content',\n                '.h-entry',\n                '.e-content',\n                '[itemprop=\"articleBody\"]',\n            ].join( ', ' )\n        } );\n    } );\n    document.head.appendChild( script );\n} )();\n</pre>\n<p>The <code>spokenWord.initialize()</code> function takes an object as its argument which can have the following properties:</p>\n<pre>\n * @param {string}  contentSelector         - CSS Selector to find the elements for speaking.\n * @param {Element} rootElement             - Root element within which to look for content.\n * @param {Object}  chunkifyOptions         - Options passed into chunkify.\n * @param {boolean} useDashicons            - Whether to use Dashicons.\n * @param {Object}  defaultUtteranceOptions - Default utterance options when none are supplied from localStorage.\n</pre>\n<p>The dialog and the controls are rendered using <a href=\"https://preactjs.com/\" rel=\"nofollow ugc\">Preact</a>. For a list of all the modules used by this plugin, see the <a href=\"https://github.com/westonruter/spoken-word/blob/master/package.json\" rel=\"nofollow ugc\">package.json</a>.</p>\n<p>This plugin is <a href=\"https://github.com/westonruter/spoken-word\" rel=\"nofollow ugc\">developed on GitHub</a> where the source can be viewed. Please <a href=\"https://github.com/westonruter/spoken-word/issues\" rel=\"nofollow ugc\">report issues</a> there. Pull requests welcome. The <code>spoken-word</code> package is also <a href=\"https://www.npmjs.com/package/spoken-word\" rel=\"nofollow ugc\">published on npm</a>.</p>\n",
+        "changelog": "<h4>1.0.1 (2018-01-21)</h4>\n<p>Disable functionality in Android and iOS devices by default.</p>\n<h4>1.0.0 (2018-01-20)</h4>\n<p>Initial release.</p>\n"
+    },
+    "short_description": "Add text-to-speech (TTS) to content, with playback controls, read-along highlighting, multi-lingual support, and settings for rate, pitch, and voice.",
+    "description": "<p>Add text-to-speech (TTS) to content, with playback controls, read-along highlighting, multi-lingual support, and settings for rate, pitch, and voice.</p>\n<ul>\n<li>Uses local text-to-speech engine in user&#8217;s browser. Directly interfaces with the <code>speechSynthesis</code> browser API. Zero external requests or dependencies.</li>\n<li>Words are selected/highlighted as they are being spoken to allow you to read along.</li>\n<li>Skips speaking elements that should not be read, including footnote superscripts (the <code>sup</code> element).</li>\n<li>Pauses of different length added are between headings versus paragraphs.</li>\n<li>Controls remain in view during playback, with each the current text being spoken persistently being scrolled into view. (Requires browser support for <code>position:sticky</code>.)</li>\n<li>Back/forward controls allow you to skip to the next paragraph; when not speaking, the next paragraph to read will be selected entirely.</li>\n<li>Select text to read from that point; click on text during speech to immediately change position.</li>\n<li>Multi-lingual support, allowing embedded text with <code>[lang]</code> attribute to be spoken by the appropriate voice (assuming the user has it installed).</li>\n<li>Settings for changing the default voice (for each language), along with settings for the rate of speech and its pitch. (Not supported by all engines.) Changes can be made while speaking.</li>\n<li>Hit escape to pause during playback.</li>\n<li>Voice preferences are persistently stored in <code>localStorage</code>, with changes synced across windows (of a given site).</li>\n<li>Ability to use JS in standalone manner (such as in bookmarklet).</li>\n<li>Known to work in the latest desktop versions of Chrome, Firefox, and Safari. (Tested on OSX.) It does not work reliably in mobile/touch browsers on Android or iOS, apparently due both to the (still experimental) <code>speechSynthesis</code> API not being implemented well enough on those systems and/or programmatic range selection does not work the same way as on desktop. For these reasons, the functionality is disabled by default on mobile operating systems.</li>\n</ul>\n<p><a href=\"https://westonruter.github.io/spoken-word/test/example.html\" rel=\"nofollow ugc\">Try it out</a> on standalone example with some test content.</p>\n<h4>Theme Config</h4>\n<p>The settings for Spoken Word are presented in an HTML5 <code>dialog</code> element. For browsers that do not yet support this feature, the plugin bundles the <a href=\"https://github.com/GoogleChrome/dialog-polyfill\" rel=\"nofollow ugc\">dialog-polyfill</a>. The polyfill is only included if it is detected the browser does not support <code>dialog</code> natively. The inclusion of the polyfill can be disabled by adding the following to your theme or plugin:</p>\n<pre>\nadd_filter( 'spoken_word_include_dialog_polyfill', '__return_false' );\n</pre>\n<p>For themes that have a sticky header (such as the nav menu in Twenty Seventeen) you may need to add some additional CSS to ensure that the sticky-positioned playback controls do not get hidden behind the sticky header. For example in Twenty Seventeen, you can add the following to the Custom CSS in the Customizer:</p>\n<pre>\n@media screen and (min-width: 782px) {\n    body:not(.admin-bar) .spoken-word--active {\n        top: calc( 0.5em + 70px );\n    }\n    body.admin-bar .spoken-word--active {\n        top: calc( 0.5em + 32px + 70px );\n    }\n}\n</pre>\n<h4>Internals</h4>\n<p>A bookmarklet can be used to load the Spoken Word functionality into any site, even non-WordPress sites where the plugin is not installed. The key is to use the appropriate <code>contentSelector</code>:</p>\n<pre>\n( () =&gt; {\n    const link = document.createElement( 'link' );\n    link.rel = 'stylesheet';\n    link.href = 'https://unpkg.com/spoken-word/css/style.css';\n    document.head.appendChild( link );\n\n    const script = document.createElement( 'script' );\n    script.src = 'https://unpkg.com/spoken-word/dist/spoken-word.js';\n    script.addEventListener( 'load', () =&gt; {\n        spokenWord.initialize( {\n            contentSelector: [ /* 👈 Amend as desired. */\n                '.hentry',\n                '.entry-content',\n                '.h-entry',\n                '.e-content',\n                '[itemprop=\"articleBody\"]',\n            ].join( ', ' )\n        } );\n    } );\n    document.head.appendChild( script );\n} )();\n</pre>\n<p>The <code>spokenWord.initialize()</code> function takes an object as its argument which can have the following properties:</p>\n<pre>\n * @param {string}  contentSelector         - CSS Selector to find the elements for speaking.\n * @param {Element} rootElement             - Root element within which to look for content.\n * @param {Object}  chunkifyOptions         - Options passed into chunkify.\n * @param {boolean} useDashicons            - Whether to use Dashicons.\n * @param {Object}  defaultUtteranceOptions - Default utterance options when none are supplied from localStorage.\n</pre>\n<p>The dialog and the controls are rendered using <a href=\"https://preactjs.com/\" rel=\"nofollow ugc\">Preact</a>. For a list of all the modules used by this plugin, see the <a href=\"https://github.com/westonruter/spoken-word/blob/master/package.json\" rel=\"nofollow ugc\">package.json</a>.</p>\n<p>This plugin is <a href=\"https://github.com/westonruter/spoken-word\" rel=\"nofollow ugc\">developed on GitHub</a> where the source can be viewed. Please <a href=\"https://github.com/westonruter/spoken-word/issues\" rel=\"nofollow ugc\">report issues</a> there. Pull requests welcome. The <code>spoken-word</code> package is also <a href=\"https://www.npmjs.com/package/spoken-word\" rel=\"nofollow ugc\">published on npm</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/spoken-word.1.0.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/spoken-word/assets/screenshot-1.png?rev=1806472",
+            "caption": "Words are highlighted (selected) as they are spoken."
+        },
+        {
+            "src": "https://ps.w.org/spoken-word/assets/screenshot-2.png?rev=1806472",
+            "caption": "Change the rate, pitch, and voices used in speech."
+        },
+        {
+            "src": "https://ps.w.org/spoken-word/assets/screenshot-3.png?rev=1806472",
+            "caption": "Skip ahead to the desired paragraph with controls or via selecting with cursor."
+        }
+    ],
+    "tags": {
+        "audio": "audio",
+        "speech-synthesis": "speech synthesis",
+        "text-to-speech": "text to speech",
+        "tts": "tts",
+        "voice": "voice"
+    },
+    "stable_tag": "1.0.1",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/spoken-word.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/spoken-word.1.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/spoken-word.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/spoken-word/assets/banner-772x250.png?rev=1806472",
+        "high": "https://ps.w.org/spoken-word/assets/banner-1544x500.png?rev=1806472"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/spoken-word/assets/icon.svg?rev=1806472",
+        "svg": "https://ps.w.org/spoken-word/assets/icon.svg?rev=1806472"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 94,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

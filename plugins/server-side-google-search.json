@@ -1,0 +1,78 @@
+{
+    "name": "Server-Side Google Search",
+    "slug": "server-side-google-search",
+    "version": "1.0.3",
+    "author": "<a href=\"http://www.aptivate.org/\">Aptivate</a>",
+    "author_profile": "https://profiles.wordpress.org/aptivate/",
+    "contributors": {
+        "aptivate": {
+            "profile": "https://profiles.wordpress.org/aptivate/",
+            "avatar": "https://secure.gravatar.com/avatar/517e3be3c7834200d08013258c485de8?s=96&d=monsterid&r=g",
+            "display_name": "Aptivate"
+        }
+    },
+    "requires": "3.7",
+    "tested": "4.3.34",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/server-side-google-search/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 1799,
+    "last_updated": "2015-08-17 4:59pm GMT",
+    "added": "2015-01-06",
+    "homepage": "https://github.com/aptivate/server-side-google-search",
+    "sections": {
+        "description": "<p>This plugin adds Google Custom Search to your website, but unlike other plugins<br />\noperates on the server side, thus eliminating the need for JavaScript and<br />\nkeeping the page size small.</p>\n<p>The admin interface is based on that used by the [WP Google Search plugin]<br />\n(https://wordpress.org/plugins/wp-google-search/)</p>\n<p>The interface with the Google API is based on <a href=\"https://github.com/jasonclark/digital-collections-custom-search-api\" rel=\"nofollow ugc\">Digital Collection Search</a> by Jason Clark for Montana<br />\nState University.</p>\n<h4>Available languages</h4>\n<ul>\n<li>English</li>\n<li>Spanish (incomplete)</li>\n</ul>\n<p><a href=\"https://github.com/aptivate/server-side-google-search\" rel=\"nofollow ugc\">Follow this project on Github</a></p>\n<h3>Development</h3>\n<p>This plugin uses <a href=\"http://wp-cli.org/\" rel=\"nofollow ugc\">wp-cli</a> and <a href=\"https://phpunit.de/\" rel=\"nofollow ugc\">PHPUnit</a> for testing.<br />\nThe tests require <a href=\"https://github.com/zenovich/runkit\" rel=\"nofollow ugc\">runkit</a> for mocking functions.</p>\n<ul>\n<li>\n<p>Grab the latest source from github:</p>\n<p>$ git clone git@github.com:aptivate/server-side-google-search.git</p>\n</li>\n<li>\n<p>Install <a href=\"http://wp-cli.org/#install\" rel=\"nofollow ugc\">wp-cli</a></p>\n</li>\n<li>Install <a href=\"https://phpunit.de/\" rel=\"nofollow ugc\">PHPUnit</a></li>\n<li>\n<p>Set up runkit:</p>\n<p>$ git clone https://github.com/zenovich/runkit.git<br />\n$ cd runkit<br />\n$ phpize<br />\n$ ./configure<br />\n$ sudo make install</p>\n</li>\n</ul>\n<p>Add the following lines to <code>/etc/php5/cli/php.ini</code>:</p>\n<pre><code>extension=runkit.so\nrunkit.internal_override=1\n</code></pre>\n<ul>\n<li>\n<p>Install the test WordPress environment:</p>\n<p>cd server-side-google-search<br />\nbash bin/install-wp-tests.sh test_db_name db_user &#8216;db_password&#8217; db_host version</p>\n</li>\n</ul>\n<p>where:<br />\n** <code>test_db_name</code> is the name for your <strong>temporary</strong> test WordPress database<br />\n** <code>db_user</code> is the database user name<br />\n** <code>db_password</code> is the password<br />\n** <code>db_host</code> is the database host (eg <code>localhost</code>)<br />\n** <code>version</code> is the version of WordPress (eg <code>4.2.2</code> or <code>latest</code>)</p>\n<ul>\n<li>Run the tests<br />\nphpunit</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the plugin to the <code>/wp-content/plugins/</code> directory.</li>\n<li>Activate it through the <strong>Plugins</strong> menu in WordPress.</li>\n<li>Register your Google Custom Search Engine and get your Google Search Engine ID and API key here: https://www.google.com/cse/</li>\n<li>Enable the plugin and enter the Google Search Engine ID and API key (<strong>Settings</strong> -&gt; <strong>Server-Side Google Search</strong>)</li>\n<li>If necessary, add the default search widget to the sidebar where you want to see it</li>\n<li>Put the Server-Side Google Search widget on the sidebar where you want to see the results</li>\n<li>Your theme will need to override the page that displays the &#8220;Nothing Found&#8221;<br />\nmessage when the search results are displayed.</li>\n</ol>\n<h4>Example of how to add custom metadata to search results</h4>\n<p>In your header.php:</p>\n<pre><code>&lt;!--\n&lt;PageMap&gt;\n    &lt;DataObject type=\"post_metadata\"&gt;\n        &lt;Attribute name=\"modified_date\" value=\"&lt;?php the_modified_date( \"M d, Y\", '', '', true ); ?&gt;\" /&gt;\n    &lt;/DataObject&gt;\n&lt;/PageMap&gt;\n--&gt;\n</code></pre>\n<p>In your functions.php:</p>\n<pre><code>function add_modified_date( $metadata, $item_data ) {\n    return $metadata . sprintf(\n        'Last modified on: %s',\n        $item_data['pagemap']['post_metadata'][0]['modified_date']\n    );\n}\n\nadd_filter( 'ssgs-add-post-search-metadata',\n            'add_modified_date', 10, 2 );\n</code></pre>\n",
+        "changelog": "<h4>1.0.3</h4>\n<ul>\n<li>Removed deprecation warnings for WordPress 4.3</li>\n<li>Fixed potential bug where sort argument wasn&#8217;t being preserved in links</li>\n<li>Updated test infrastructure to use wp-cli</li>\n<li>Documentation updates</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Added filter to allow custom metadata in search results</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Made display of URLs in search results optional (displayed by default)</li>\n<li>Right aligned sort options in search results</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First version</li>\n</ul>\n"
+    },
+    "short_description": "Adds a lightweight Google Custom Search to your website, without the need for JavaScript.",
+    "description": "<p>This plugin adds Google Custom Search to your website, but unlike other plugins<br />\noperates on the server side, thus eliminating the need for JavaScript and<br />\nkeeping the page size small.</p>\n<p>The admin interface is based on that used by the [WP Google Search plugin]<br />\n(https://wordpress.org/plugins/wp-google-search/)</p>\n<p>The interface with the Google API is based on <a href=\"https://github.com/jasonclark/digital-collections-custom-search-api\" rel=\"nofollow ugc\">Digital Collection Search</a> by Jason Clark for Montana<br />\nState University.</p>\n<h4>Available languages</h4>\n<ul>\n<li>English</li>\n<li>Spanish (incomplete)</li>\n</ul>\n<p><a href=\"https://github.com/aptivate/server-side-google-search\" rel=\"nofollow ugc\">Follow this project on Github</a></p>\n<h3>Development</h3>\n<p>This plugin uses <a href=\"http://wp-cli.org/\" rel=\"nofollow ugc\">wp-cli</a> and <a href=\"https://phpunit.de/\" rel=\"nofollow ugc\">PHPUnit</a> for testing.<br />\nThe tests require <a href=\"https://github.com/zenovich/runkit\" rel=\"nofollow ugc\">runkit</a> for mocking functions.</p>\n<ul>\n<li>\n<p>Grab the latest source from github:</p>\n<p>$ git clone git@github.com:aptivate/server-side-google-search.git</p>\n</li>\n<li>\n<p>Install <a href=\"http://wp-cli.org/#install\" rel=\"nofollow ugc\">wp-cli</a></p>\n</li>\n<li>Install <a href=\"https://phpunit.de/\" rel=\"nofollow ugc\">PHPUnit</a></li>\n<li>\n<p>Set up runkit:</p>\n<p>$ git clone https://github.com/zenovich/runkit.git<br />\n$ cd runkit<br />\n$ phpize<br />\n$ ./configure<br />\n$ sudo make install</p>\n</li>\n</ul>\n<p>Add the following lines to <code>/etc/php5/cli/php.ini</code>:</p>\n<pre><code>extension=runkit.so\nrunkit.internal_override=1\n</code></pre>\n<ul>\n<li>\n<p>Install the test WordPress environment:</p>\n<p>cd server-side-google-search<br />\nbash bin/install-wp-tests.sh test_db_name db_user &#8216;db_password&#8217; db_host version</p>\n</li>\n</ul>\n<p>where:<br />\n** <code>test_db_name</code> is the name for your <strong>temporary</strong> test WordPress database<br />\n** <code>db_user</code> is the database user name<br />\n** <code>db_password</code> is the password<br />\n** <code>db_host</code> is the database host (eg <code>localhost</code>)<br />\n** <code>version</code> is the version of WordPress (eg <code>4.2.2</code> or <code>latest</code>)</p>\n<ul>\n<li>Run the tests<br />\nphpunit</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/server-side-google-search.1.0.3.zip",
+    "upgrade_notice": {
+        "1.0.0": "<ul>\n<li>First version</li>\n</ul>"
+    },
+    "screenshots": [],
+    "tags": {
+        "google": "google",
+        "google-custom-search": "google custom search",
+        "google-search": "google search",
+        "sce": "SCE",
+        "server-side-google-search": "Server-Side Google Search"
+    },
+    "stable_tag": "1.0.3",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/server-side-google-search.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/server-side-google-search.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/server-side-google-search.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/server-side-google-search.1.0.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/server-side-google-search.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/server-side-google-search.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

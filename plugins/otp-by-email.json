@@ -1,0 +1,76 @@
+{
+    "name": "OTP by Email for Contact Form 7",
+    "slug": "otp-by-email",
+    "version": "1.2.0",
+    "author": "<a href=\"https://profiles.wordpress.org/aurovrata/\">aurovrata</a>",
+    "author_profile": "https://profiles.wordpress.org/aurovrata/",
+    "contributors": {
+        "aurovrata": {
+            "profile": "https://profiles.wordpress.org/aurovrata/",
+            "avatar": "https://secure.gravatar.com/avatar/7a4fab6edc2ecd9df01c17b249084f28?s=96&d=monsterid&r=g",
+            "display_name": "Aurovrata Venet"
+        }
+    },
+    "requires": "4.4",
+    "tested": "6.2.6",
+    "requires_php": "5.6",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/otp-by-email/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 40,
+    "downloaded": 1219,
+    "last_updated": "2023-05-02 11:02am GMT",
+    "added": "2020-12-01",
+    "homepage": "https://github.com/aurovrata/otp-by-email",
+    "sections": {
+        "description": "<p>Use this CF7 extension to enable OTP links to be inserted into confirmation/notification emails sent to email addresses submitted through your CF7 forms.  The OTP is a unique link the email inbox user needs to click to confirm their address.  The link is valid by default for 72 hours and can be customised.</p>\n",
+        "installation": "<ol>\n<li>Install Contact Form 7 plugin</li>\n<li>Install OTP by Email plugin extension</li>\n<li>OTP tag requires an email field in your CF7 forms.</li>\n<li>In CF7 forms with email fields, a mail tag <code>[otp-&lt;field-name&gt;]</code> will be available to insert into your notification/confirmation email which will all a unique time-limited URL for users to confirm their email.</li>\n<li>In the form editor page, the OTP tab allows you to set the pages to redirect to when an email is validated or fails due to an outdated link.</li>\n</ol>\n",
+        "faq": "\n<dt id='0.%20what%20does%20this%20plugin%20do%20%3F'>\n0. What does this plugin do ?\n</h4>\n<p>\n<p>If you are collecting an email address in your CF7 form from a visitor, you can use this plugin to validate that email.</p>\n<p>The email field name will be used to create a unique OTP mail tag shortcode to insert into your notification mail (sent to that email).  The shortcode will be replaced by a unique URL which the recipient can click on to validate their email.  This unique link is created using WordPress nonce API, and it stored in the DB as a transient with a default validity of 72 hours (3 days).  You can customise this validity period, please refer to the FAQ below for more details.  When a recipient clicks on a valid link, they are redirected to the <em>On Success</em> page you configured in the OTP tab.  If the link is no longer valid, they are taken to the <em>On failure</em> page instead, where you may give them the option to send them a new OTP link.</p>\n<p>You can use this plugin to go beyond simple email validation, as each valid user now has a unique way to identify themselves on your server.  I have used this plugin to create a conference registration and submission form for speakers without having them to actually create a user account on the server.  A visitor registers as a speaker, and once their email is validated, they use their OTP link (which expires a week prior to the conference start date) in order to submit talks for the conference without having to have an account.</p>\n<p>If you need to explore such functionality, you can contact me on &#8220;vrata at syllogic dot in&#8221;.</p>\n</p>\n<dt id='1.%20is%20it%20possible%20to%20change%20the%20time-limit%20for%20the%20link%20validity%20%3F'>\n1. Is it possible to change the time-limit for the link validity ?\n</h4>\n<p>\n<p>The unique confirmation link has a 3-day (72 hours) validity by default, you can change it with the following filter,</p>\n<pre><code>add_filter('otp_by_email_lifetime', 'otp_by_email_validity',10,3);\nfunction otp_by_email_validity($limit, $email, $form_id){\n  //you can set different time limits for different email domains or form ID.\n  $limit = 24 * HOUR_IN_SECONDS;  //limit is in seconds.\n  return $limit;\n}\n</code></pre>\n</p>\n<dt id='2.%20how%20to%20retrieve%20an%20email%20that%20has%20been%20validated%20%3F'>\n2. How to retrieve an email that has been validated ?\n</h4>\n<p>\n<p>Use the following filter,</p>\n<pre><code>add_filter('otp_by_email_validated', 'otp_validated',10,3);\nfunction otp_validated($url, $email, $form_id){\n  //you can identify a validated email and the form ID from which it was submitted.\n  //you can also change the URL to which you want to redirect.\n  return $url;\n}\n</code></pre>\n</p>\n<dt id='3.%20how%20to%20retrieve%20an%20email%20that%20failed%20due%20to%20an%20outdated%20link%20%3F'>\n3. How to retrieve an email that failed due to an outdated link ?\n</h4>\n<p>\n<p>Use the following filter,</p>\n<pre><code>add_filter('otp_by_email_failed', 'otp_failed',10,3);\nfunction otp_failed($url, $email, $form_id){\n  //you can identify a failed email and the form ID from which it was submitted.\n  //you can also change the URL to which you want to redirect.\n  return $url;\n}\n</code></pre>\n</p>\n<dt id='4.%20is%20it%20possible%20to%20get%20an%20otp%20link%20for%20an%20email%20programmatically%20%3F'>\n4. Is it possible to get an OTP link for an email programmatically ?\n</h4>\n<p>\n<p>Yes, you can use the following function to retrieve a unique link,</p>\n<pre><code>/**\n* Funiton to get a link for email validation.\n* @param String $email a valid email.\n* @param String $form_id the id of the form on which this email was submitted. (Defaults to 0).\n* @return String a unique link to validate the email, reurns false if the $email is invalid.\n* @since 1.0\n*/\n$link = get_otp_by_email_link($email, $form_id=0);\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>1.2.0</h4>\n<ul>\n<li>clarify the OTP tab settings and mail tag functionality.</li>\n</ul>\n<h4>1.1.2</h4>\n<ul>\n<li>fix form ID field bug.</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>changed location of action hook otp_by_email_unique_link_created and added nonce field as attribute.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>added action hook otp_by_email_unique_link_created</li>\n<li>added nonce field in otp_by_email_validated filter hook attributes.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>fix display of tab in admin page.</li>\n</ul>\n"
+    },
+    "short_description": "A small Contact Form 7 extension plugin to enable email confirmation by unique links sent to the email inbox.",
+    "description": "<p>Use this CF7 extension to enable OTP links to be inserted into confirmation/notification emails sent to email addresses submitted through your CF7 forms.  The OTP is a unique link the email inbox user needs to click to confirm their address.  The link is valid by default for 72 hours and can be customised.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/otp-by-email.1.2.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "contact-form-7-extension": "contact form 7 extension",
+        "email-validation": "email validation",
+        "email-verification": "email verification",
+        "otp": "otp",
+        "otp-by-email": "OTP by email"
+    },
+    "stable_tag": "1.2.0",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/otp-by-email.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/otp-by-email.1.1.zip",
+        "1.2.0": "https://downloads.wordpress.org/plugin/otp-by-email.1.2.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/otp-by-email.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.paypal.com/donate?hosted_button_id=V6CMZPJSW7KXS",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/otp-by-email.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

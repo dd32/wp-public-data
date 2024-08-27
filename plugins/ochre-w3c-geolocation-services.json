@@ -1,0 +1,73 @@
+{
+    "name": "Ochre W3C Geolocation Services",
+    "slug": "ochre-w3c-geolocation-services",
+    "version": "0.04",
+    "author": "<a href=\"http://www.ochrelabs.com\">Ochre Development Labs</a>",
+    "author_profile": "https://profiles.wordpress.org/ochrelabs/",
+    "contributors": {
+        "ochrelabs": {
+            "profile": "https://profiles.wordpress.org/ochrelabs/",
+            "avatar": "https://secure.gravatar.com/avatar/0bfe59c0f06c529f4bf6d7c2fa779ea7?s=96&d=monsterid&r=g",
+            "display_name": "ochrelabs"
+        }
+    },
+    "requires": "3.0.0",
+    "tested": "3.3.2",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/ochre-w3c-geolocation-services/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 2065,
+    "last_updated": "2012-01-09 8:58pm GMT",
+    "added": "2012-01-09",
+    "homepage": "http://www.ochrelabs.com/wordpress-plugins/ochre-geolocation",
+    "sections": {
+        "description": "<p><a href=\"http://www.ochrelabs.com/wordpress-plugins/ochre-geolocation\" title=\"Ochre's Geolocation Services plugin for WordPress\" rel=\"nofollow ugc\">Ochre&#8217;s Geolocation Services plugin for<br />\nWordPress</a>  utilizes the <a href=\"http://dev.w3.org/geo/api/spec-source.html\" title=\"Geolocation API Specification\" rel=\"nofollow ugc\">W3C Geolocation API</a> to retrieve a visitor&#8217;s physical location, enabling a<br />\nWordPress website to present content relevant to a visitors current physical location such as local maps, event listings, branch and franchise locations, social media and other information that is geographically<br />\ninteresting.</p>\n<p>The plugin provides three &#8220;back end&#8221; action hooks for use by your or third party plugins or theme actions, and AJAX actions for &#8220;front end&#8221; customization such as executing javascript with the resolved Location information, redirecting to a new page, or refreshing the current page.</p>\n<h3>Configuration</h3>\n<p>Global Configuration is available from the WordPress settings-&gt;Ochre Geolocation page:</p>\n<ul>\n<li>Global or per-post/per page geolocation behavour</li>\n</ul>\n<p>Per-page and per-post configurations include:</p>\n<ul>\n<li>Executing custom javascript</li>\n<li>Redirecting to a URL</li>\n<li>Performing a page refresh</li>\n<li>Firing off the ochregeo actions but doing nothing on the front end</li>\n<li>Disabling completely</li>\n</ul>\n<h3>Actions</h3>\n<p>The following actions for do_action() are fired when a Geolocation update is received:</p>\n<ul>\n<li>ochregeo_received_nosupport : No Geolocation support in the device/browser</li>\n<li>ochregeo_received_unknownpos : A position could not be retrieved</li>\n<li>ochregeo_received_location : Position was received.  This action is passed the OCHRELABS_WP_Geolocation object as its only argument</li>\n</ul>\n<h3>AJAX actions</h3>\n<p>The following AJAX actions are implemented:</p>\n<ul>\n<li>(nopriv) ochregeo_ochregeos : Transmits location information and executes an action based on a per-post/page or global setting.</li>\n<li>(nopriv) ochregeo_get_coordinates : Retrieves last received location information. (we haven&#8217;t tested this)</li>\n</ul>\n<h3>Executing custom javascript after a succesful Geolocation update</h3>\n<p>Javascript executed on a per-page/post or global basis has access to a <code>res</code> object<br />\ncontaining information from the Geolocation Service plugin.</p>\n<p>Properties of this object are:</p>\n<pre><code>res.la; // latitude\nres.ll; // longitude\nres.ev; // elevation (not always available - do not rely on)\nres.ac  // accuracy (not always available - do not rely on)\n\nIf reverse geo coding is enabled, the object may also contain:\n\nres.country  // country\nres.countryc // country code\nres.state    // state\nres.statec   // state code\nres.city     // city\n</code></pre>\n<h3>El Quickie API Reference</h3>\n<p>`<br />\n// This is the Ochre Geo object instantiated by the plugin.<br />\n$ochre_geo = new OCHRELABS_WP_Geolocation();</p>\n<p>// Get status of the current geolocation request.  $ochre_geo::STATUS_UPDATED means you have &#8220;valid&#8221; coordinate data.<br />\n// Constants are:<br />\n  $ochre_geo::STATUS_QUERY;        // waiting for update from client<br />\n  $ochre_geo::STATUS_UPDATED;      // received coordinate update from client<br />\n  $ochre_geo::STATUS_NOTSUPPORTED; // client does not support geo location<br />\n  $ochre_geo::STATUS_ERROR;        // an error was returned from the client<br />\n  $ochre_geo::STATUS_UNKNOWNPOS;   // location was unknown<br />\n  $ochre_geo::STATUS_DISABLED;     // module has been told not to present geolocation query</p>\n<p>$ochre_geo-&gt;get_status();</p>\n<p>// Set the location information manually (not normally needed)<br />\n$ochre_geo-&gt;set_coordinates($latitude,$longitude,$elevation=0,$accuracy=0);</p>\n<p>// get the current resolved location information &#8211; check get_status() first before relying on this data!<br />\n// the returned array will be something like: array(&#8220;latitude&#8221;=&gt;49.1234, &#8220;longitude&#8221;=&gt;&#8221;-123.1234&#8243;,&#8221;elevation&#8221;=&gt;0,&#8221;accuracy&#8221;=&gt;0);<br />\n$ochre_geo-&gt;get_coordinates();</p>\n<p>// geocodes the current resolved location information and returns it as an array like array(&#8220;city&#8221;=&gt;&#8221;Vancouver&#8221;,&#8221;country&#8221;=&gt;&#8221;Canada&#8221;,&#8221;state&#8221;=&gt;&#8221;British Columbia&#8221;,&#8221;statec&#8221;=&gt;&#8221;BC&#8221;,&#8221;country&#8221;=&gt;&#8221;Canada&#8221;,&#8221;countryc&#8221;=&gt;&#8221;CA&#8221;)<br />\n$ochre_geo-&gt;geocode();</p>\n<pre><code>&lt;h3&gt;Reverse Geo Coder&lt;/h3&gt;We've thrown in Yahoo! place finder Geocoding support.  The geocoder()\nreturns an array consisting of something like:\n</code></pre>\n<p>array(<br />\n    &#8220;city&#8221;=&gt;&#8221;Vancouver&#8221;,&#8221;<br />\n    &#8220;country&#8221;=&gt;&#8221;Canada&#8221;,<br />\n    &#8220;state&#8221;=&gt;&#8221;British Columbia&#8221;,<br />\n    &#8220;statec&#8221;=&gt;&#8221;BC&#8221;,<br />\n    &#8220;country&#8221;=&gt;&#8221;Canada&#8221;,<br />\n    &#8220;countryc&#8221;=&gt;&#8221;CA&#8221;<br />\n    )<br />\n`</p>\n<p>Geo Coding support is still young and subject to change.  It&#8217;s not hooked into the Javascript API, and since there are at least a few geo coder javascript api&#8217;s already out there we haven&#8217;t decided whether to do this or not.</p>\n",
+        "installation": "<ol>\n<li>Using the WordPress plugin manager, install this plugin.</li>\n</ol>\n<p>or</p>\n<ol>\n<li>Download from https://wordpress.org/extend/plugins/ochre-w3c-geolocation-services/</li>\n<li>Using the WordPress plugin manager, upload the archive you just downloaded.</li>\n<li>Activate</li>\n</ol>\n<p>or</p>\n<ol>\n<li>Download from https://wordpress.org/extend/plugins/ochre-w3c-geolocation-services/</li>\n<li>Extract, and upload contents of archive to wp-content/plugins/ochre-w3c-geolocation-services</li>\n<li>Using the WordPress plugin manager, activate the plugin</li>\n</ol>\n<p>or</p>\n<p><a href=\"http://www.ochrelabs.com/contact/\" title=\"Contact Ochre Labs for installation services\" rel=\"nofollow ugc\">Get us to do it</a>, or your web developer.</p>\n",
+        "faq": "<p>There are none yet.</p>\n",
+        "changelog": "<h4>0.02</h4>\n<p>First release.  There may be bugs and other problems!  Try it out and let us know if you run into problems or have suggestions for improvement!</p>\n<h4>0.03</h4>\n<p>Miscellaneous fixes.</p>\n<h4>0.04</h4>\n<ul>\n<li>Add option to reverse geo code results </li>\n<li>Add city, state, statec, country and countryc to redirect templates and returned javascript object</li>\n<li>Fixes for PHP &lt; 5.3 compatability</li>\n</ul>\n"
+    },
+    "short_description": "Geolocation Services attempts to retrieve a visitor&#039;s physical location, allowing for geographically relevant content to be delivered.",
+    "description": "<p><a href=\"http://www.ochrelabs.com/wordpress-plugins/ochre-geolocation\" title=\"Ochre's Geolocation Services plugin for WordPress\" rel=\"nofollow ugc\">Ochre&#8217;s Geolocation Services plugin for<br />\nWordPress</a>  utilizes the <a href=\"http://dev.w3.org/geo/api/spec-source.html\" title=\"Geolocation API Specification\" rel=\"nofollow ugc\">W3C Geolocation API</a> to retrieve a visitor&#8217;s physical location, enabling a<br />\nWordPress website to present content relevant to a visitors current physical location such as local maps, event listings, branch and franchise locations, social media and other information that is geographically<br />\ninteresting.</p>\n<p>The plugin provides three &#8220;back end&#8221; action hooks for use by your or third party plugins or theme actions, and AJAX actions for &#8220;front end&#8221; customization such as executing javascript with the resolved Location information, redirecting to a new page, or refreshing the current page.</p>\n<h3>Configuration</h3>\n<p>Global Configuration is available from the WordPress settings-&gt;Ochre Geolocation page:</p>\n<ul>\n<li>Global or per-post/per page geolocation behavour</li>\n</ul>\n<p>Per-page and per-post configurations include:</p>\n<ul>\n<li>Executing custom javascript</li>\n<li>Redirecting to a URL</li>\n<li>Performing a page refresh</li>\n<li>Firing off the ochregeo actions but doing nothing on the front end</li>\n<li>Disabling completely</li>\n</ul>\n<h3>Actions</h3>\n<p>The following actions for do_action() are fired when a Geolocation update is received:</p>\n<ul>\n<li>ochregeo_received_nosupport : No Geolocation support in the device/browser</li>\n<li>ochregeo_received_unknownpos : A position could not be retrieved</li>\n<li>ochregeo_received_location : Position was received.  This action is passed the OCHRELABS_WP_Geolocation object as its only argument</li>\n</ul>\n<h3>AJAX actions</h3>\n<p>The following AJAX actions are implemented:</p>\n<ul>\n<li>(nopriv) ochregeo_ochregeos : Transmits location information and executes an action based on a per-post/page or global setting.</li>\n<li>(nopriv) ochregeo_get_coordinates : Retrieves last received location information. (we haven&#8217;t tested this)</li>\n</ul>\n<h3>Executing custom javascript after a succesful Geolocation update</h3>\n<p>Javascript executed on a per-page/post or global basis has access to a <code>res</code> object<br />\ncontaining information from the Geolocation Service plugin.</p>\n<p>Properties of this object are:</p>\n<pre><code>res.la; // latitude\nres.ll; // longitude\nres.ev; // elevation (not always available - do not rely on)\nres.ac  // accuracy (not always available - do not rely on)\n\nIf reverse geo coding is enabled, the object may also contain:\n\nres.country  // country\nres.countryc // country code\nres.state    // state\nres.statec   // state code\nres.city     // city\n</code></pre>\n<h3>El Quickie API Reference</h3>\n<p>`<br />\n// This is the Ochre Geo object instantiated by the plugin.<br />\n$ochre_geo = new OCHRELABS_WP_Geolocation();</p>\n<p>// Get status of the current geolocation request.  $ochre_geo::STATUS_UPDATED means you have &#8220;valid&#8221; coordinate data.<br />\n// Constants are:<br />\n  $ochre_geo::STATUS_QUERY;        // waiting for update from client<br />\n  $ochre_geo::STATUS_UPDATED;      // received coordinate update from client<br />\n  $ochre_geo::STATUS_NOTSUPPORTED; // client does not support geo location<br />\n  $ochre_geo::STATUS_ERROR;        // an error was returned from the client<br />\n  $ochre_geo::STATUS_UNKNOWNPOS;   // location was unknown<br />\n  $ochre_geo::STATUS_DISABLED;     // module has been told not to present geolocation query</p>\n<p>$ochre_geo-&gt;get_status();</p>\n<p>// Set the location information manually (not normally needed)<br />\n$ochre_geo-&gt;set_coordinates($latitude,$longitude,$elevation=0,$accuracy=0);</p>\n<p>// get the current resolved location information &#8211; check get_status() first before relying on this data!<br />\n// the returned array will be something like: array(&#8220;latitude&#8221;=&gt;49.1234, &#8220;longitude&#8221;=&gt;&#8221;-123.1234&#8243;,&#8221;elevation&#8221;=&gt;0,&#8221;accuracy&#8221;=&gt;0);<br />\n$ochre_geo-&gt;get_coordinates();</p>\n<p>// geocodes the current resolved location information and returns it as an array like array(&#8220;city&#8221;=&gt;&#8221;Vancouver&#8221;,&#8221;country&#8221;=&gt;&#8221;Canada&#8221;,&#8221;state&#8221;=&gt;&#8221;British Columbia&#8221;,&#8221;statec&#8221;=&gt;&#8221;BC&#8221;,&#8221;country&#8221;=&gt;&#8221;Canada&#8221;,&#8221;countryc&#8221;=&gt;&#8221;CA&#8221;)<br />\n$ochre_geo-&gt;geocode();</p>\n<pre><code>&lt;h3&gt;Reverse Geo Coder&lt;/h3&gt;We've thrown in Yahoo! place finder Geocoding support.  The geocoder()\nreturns an array consisting of something like:\n</code></pre>\n<p>array(<br />\n    &#8220;city&#8221;=&gt;&#8221;Vancouver&#8221;,&#8221;<br />\n    &#8220;country&#8221;=&gt;&#8221;Canada&#8221;,<br />\n    &#8220;state&#8221;=&gt;&#8221;British Columbia&#8221;,<br />\n    &#8220;statec&#8221;=&gt;&#8221;BC&#8221;,<br />\n    &#8220;country&#8221;=&gt;&#8221;Canada&#8221;,<br />\n    &#8220;countryc&#8221;=&gt;&#8221;CA&#8221;<br />\n    )<br />\n`</p>\n<p>Geo Coding support is still young and subject to change.  It&#8217;s not hooked into the Javascript API, and since there are at least a few geo coder javascript api&#8217;s already out there we haven&#8217;t decided whether to do this or not.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/ochre-w3c-geolocation-services.zip",
+    "upgrade_notice": {
+        "": "<p>All users are advised to upgrade to this latest release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "geo-location": "geo location",
+        "geolocation": "geolocation",
+        "location": "location",
+        "ochre": "ochre",
+        "w3c": "w3c"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/ochre-w3c-geolocation-services.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

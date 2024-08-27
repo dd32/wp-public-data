@@ -1,0 +1,74 @@
+{
+    "name": "F1 Register Flow",
+    "slug": "f1-register-flow",
+    "version": "1.0",
+    "author": "F1 Code",
+    "author_profile": "https://profiles.wordpress.org/nico80/",
+    "contributors": {
+        "nico80": {
+            "profile": "https://profiles.wordpress.org/nico80/",
+            "avatar": "https://secure.gravatar.com/avatar/2a501d3f1493c8e8a4637521494eee62?s=96&d=monsterid&r=g",
+            "display_name": "nico80"
+        }
+    },
+    "requires": "4.1",
+    "tested": "4.3.34",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 20,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 1
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/f1-register-flow/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 912,
+    "last_updated": "2015-11-19 3:02am GMT",
+    "added": "2015-09-27",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Register Flow gives a simple solution to custom registration form needs.  Rather than having you learn to use a new form designer, shortcodes are provided to turn your custom pages into registration steps.  Action and filter hooks are then used to let plugin users tweak the registration process as needed.  This is intentionally a developer focused solution to allow full control of the process.</p>\n<p>The registration process has 3 steps:</p>\n<ul>\n<li>Step 1 is where users could enter a username and validate there it is valid.  You can implement custom validation to modify this step.</li>\n<li>Step 2 would be the rest of the information (password, phone, etc).  Once they complete this step an email will be sent enabling them to complete the process.  You can implement custom validation here as well.</li>\n<li>Confirmation step is called when the user clicks on the link in their email (up until that point they have not actually been created as a WordPress user).  You can implement custom validation as well as custom logic to be run when the user has been created (good place to save some additional user data).</li>\n</ul>\n<p>All these steps are controlled via custom pages, action hooks and filters &#8211; see the FAQ section for more details.</p>\n",
+        "installation": "<ol>\n<li>Upload the files to <code>wp-content/plugins/f1-register-flow</code> or use the automatic installer\n<ol>\n<li>Activate the plugin</li>\n<li>Look at instructions on the FAQ section to learn how to define your registration flow</li>\n</ol>\n</li>\n</ol>\n",
+        "faq": "<h4>How do I define the registration form?</h4>\n<p>2 shortcodes are available for use in the site&#8217;s pages:</p>\n<ul>\n<li>f1-registration-form-step1</li>\n<li>f1-registration-form-step2</li>\n</ul>\n<p>They should wrap the form&#8217;s content.  Form&#8217;s control names should be prefixed with &#8220;registration_&#8221;.</p>\n<p>Any field included in the &#8220;step1&#8221; form will be passed to the &#8220;step2&#8221; page via the query string.  At a minimum the step2 form must have the following fields (these can either be present on the form itself, or generated via the     registration_step2_validate action):</p>\n<ul>\n<li>registration_first</li>\n<li>registration_last</li>\n<li>registration_email</li>\n<li>registration_login</li>\n<li>registration_password</li>\n<li>registration_password_confirm</li>\n</ul>\n<p>The default page names are:</p>\n<ul>\n<li><code>register</code> &#8211; initial registration form.  This must contain the <code>registration-form-step1</code> shortcode.</li>\n<li><code>register-complete</code> &#8211; step 2 of the registration.  This must contain the <code>registration-form-step2</code> shortcode.</li>\n<li><code>register-checkemail</code> &#8211; page shown when step 2 completes.  Should have a message to the effect of &#8220;Please check your email&#8221;</li>\n</ul>\n<p>You can select other pages on the plugin settings page.</p>\n<h4>How do I edit email templates?</h4>\n<p>Templates are simply custom WP pages with pre-determined names.  Variables surrounded by {{ }} will be expanded. There is only 1 email template at this time:</p>\n<ul>\n<li>Registration Confirmation Request: The system will look for a page named <code>registration-confirmation-request-template</code> and expand the following variables:\n<ul>\n<li>registration_confirmation_url &#8211; URL to be used for confirming the registration</li>\n<li>variables provided on the registration form (e.g. registration_login, registration_password, etc)</li>\n</ul>\n</li>\n</ul>\n<h4>How do I customize the validation steps?</h4>\n<p>Use the following WordPress filter hooks:</p>\n<ul>\n<li>\n<p>f1_registration_step1_validate($form_data, $errors): This will be passed the form data.  If the validation fails errors should be added to the $errors parameter. $form_data (modified or not) must be returned.</p>\n</li>\n<li>\n<p>f1_registration_step2_validate($form_data, $errors): This will be passed the form data.  If the validation fails errors should be added to the $errors parameter. $form_data (modified or not) must be returned.</p>\n</li>\n<li>\n<p>f1_registration_confirmation_request_email($email, $form_data): This can be used to modify the email used for the confirmation request. By default the system will use the provided registration_email.</p>\n</li>\n<li>\n<p>f1_registration_confirmation_validate($form_data, $errors): This will be passed the form data.  It fires right before the user is created. If the validation fails errors should be added to the $errors parameter. $form_data (modified or not) must be returned.</p>\n</li>\n</ul>\n<h4>How do I save additional user data for the user?</h4>\n<p>Use the following action hook:</p>\n<ul>\n<li>f1_registration_confirmed($user_id, $form_data): Invoked when the user confirms his registration, by clicking the link in the email.  The original form data gets passed. This is where additional metadata could be added to the user, or a thank you email could be sent.</li>\n</ul>\n<h4>How do I show a confirmation page to the user (or other post-confirmation actions)?</h4>\n<p>By default, once the user has passed the confirmation step, they will be redirected to the site&#8217;s home page. To customize this, use the following action hook:</p>\n<ul>\n<li>f1_registration_loggedin($user_id): Invoked when the user has confirmed registration, and after they have already been marked as logged in.</li>\n</ul>\n",
+        "changelog": "<h4>1.0</h4>\n<p>Initial release</p>\n<h4>1.1</h4>\n<p>Add configuration options for registration pages</p>\n<h4>1.2</h4>\n<p>Add example configuration (example.md)</p>\n"
+    },
+    "short_description": "Register Flow gives a simple solution to custom registration form needs.  Rather than having you learn to use a",
+    "description": "<p>Register Flow gives a simple solution to custom registration form needs.  Rather than having you learn to use a new form designer, shortcodes are provided to turn your custom pages into registration steps.  Action and filter hooks are then used to let plugin users tweak the registration process as needed.  This is intentionally a developer focused solution to allow full control of the process.</p>\n<p>The registration process has 3 steps:</p>\n<ul>\n<li>Step 1 is where users could enter a username and validate there it is valid.  You can implement custom validation to modify this step.</li>\n<li>Step 2 would be the rest of the information (password, phone, etc).  Once they complete this step an email will be sent enabling them to complete the process.  You can implement custom validation here as well.</li>\n<li>Confirmation step is called when the user clicks on the link in their email (up until that point they have not actually been created as a WordPress user).  You can implement custom validation as well as custom logic to be run when the user has been created (good place to save some additional user data).</li>\n</ul>\n<p>All these steps are controlled via custom pages, action hooks and filters &#8211; see the FAQ section for more details.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/f1-register-flow.1.2.zip",
+    "upgrade_notice": {
+        "1.0": "<p>Initial Release</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "registration": "registration"
+    },
+    "stable_tag": "1.2",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/f1-register-flow.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/f1-register-flow.1.1.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/f1-register-flow.1.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/f1-register-flow.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/f1-register-flow.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 20,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

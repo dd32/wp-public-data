@@ -1,0 +1,119 @@
+{
+    "name": "Post Author IP",
+    "slug": "post-author-ip",
+    "version": "1.4",
+    "author": "<a href=\"https://coffee2code.com/\">Scott Reilly</a>",
+    "author_profile": "https://profiles.wordpress.org/coffee2code/",
+    "contributors": {
+        "coffee2code": {
+            "profile": "https://profiles.wordpress.org/coffee2code/",
+            "avatar": "https://secure.gravatar.com/avatar/5af525fba95b93c4e0c8a03b639c9486?s=96&d=monsterid&r=g",
+            "display_name": "Scott Reilly"
+        }
+    },
+    "requires": "4.9",
+    "tested": "5.7.12",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/post-author-ip/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 300,
+    "downloaded": 2647,
+    "last_updated": "2021-06-10 8:19am GMT",
+    "added": "2018-02-15",
+    "homepage": "https://coffee2code.com/wp-plugins/post-author-ip/",
+    "sections": {
+        "description": "<p>This plugin records the IP address of the original post author when a post first gets created.</p>\n<p>The admin listing of posts is amended with a new &#8220;Author IP&#8221; column that shows the IP address of the author who first saved the post.</p>\n<p>The plugin is unable to provide IP address information for posts that were created prior to the use of this plugin.</p>\n<p>Links: <a href=\"https://coffee2code.com/wp-plugins/post-author-ip/\" rel=\"nofollow ugc\">Plugin Homepage</a> | <a href=\"https://wordpress.org/plugins/post-author-ip/\" rel=\"ugc\">Plugin Directory Page</a> | <a href=\"https://github.com/coffee2code/post-author-ip/\" rel=\"nofollow ugc\">GitHub</a> | <a href=\"https://coffee2code.com\" rel=\"nofollow ugc\">Author Homepage</a></p>\n<h3>Hooks</h3>\n<p>The plugin is further customizable via four filters. Typically, code making use of filters should ideally be put into a mu-plugin or site-specific plugin (which is beyond the scope of this readme to explain).</p>\n<p><strong>c2c_show_post_author_ip_column (filter)</strong></p>\n<p>The &#8216;c2c_show_post_author_ip_column&#8217; filter allows you to determine if the post author IP column should appear in the admin post listing table. Your hooking function can be sent 1 argument:</p>\n<p>Argument :</p>\n<ul>\n<li>$show_column (bool) Should the column be shown? Default true.</li>\n</ul>\n<p>Example:</p>\n<pre><code>/**\n * Don't show the post author IP column except to admins.\n *\n * @param bool $show_column Should the column be shown? Default true.\n * @return bool\n */\nfunction post_author_ip_column_admin_only( $show ) {\n    if ( ! current_user_can( 'manage_options' ) ) {\n        $show = false;\n    }\n    return $show;\n}\nadd_filter( 'c2c_show_post_author_ip_column', 'post_author_ip_column_admin_only' );\n</code></pre>\n<p><strong>c2c_get_post_author_ip (filter)</strong></p>\n<p>The &#8216;c2c_get_post_author_ip&#8217; filter allows you to customize the value stored as the post author IP address. Your hooking function can be sent 2 arguments:</p>\n<p>Arguments :</p>\n<ul>\n<li>$ip (string)   The post author IP address.</li>\n<li>$post_id (int) The post ID.</li>\n</ul>\n<p>Example:</p>\n<pre><code>/**\n * Store all IP addresses from local subnet IP addresses as the same IP address.\n *\n * @param string $ip      The post author IP address.\n * @param int    $post_id The post ID.\n * @return string\n */\nfunction customize_post_author_ip( $ip, $post_id ) {\n    if ( 0 === strpos( $ip, '192.168.' ) ) {\n        $ip = '192.168.1.1';\n    }\n    return $ip;\n}\nadd_filter( 'c2c_get_post_author_ip', 'customize_post_author_ip', 10, 2 );\n</code></pre>\n<p><strong>c2c_get_current_user_ip (filter)</strong></p>\n<p>The &#8216;c2c_get_current_user_ip&#8217; filter allows you to customize the current user&#8217;s IP address, as used by the plugin. Your hooking function can be sent 1 argument:</p>\n<p>Argument :</p>\n<ul>\n<li>$ip (string)   The post author IP address.</li>\n</ul>\n<p>Example:</p>\n<pre><code>/**\n * Overrides localhost IP address.\n *\n * @param string $ip      The post author IP address.\n * @param int    $post_id The post ID.\n * @return string\n */\nfunction customize_post_author_ip( $ip, $post_id ) {\n    if ( 0 === strpos( $ip, '192.168.' ) ) {\n        $ip = '192.168.1.1';\n    }\n    return $ip;\n}\nadd_filter( 'c2c_get_post_author_ip', 'customize_post_author_ip', 10, 2 );\n</code></pre>\n<p><strong>c2c_post_author_ip_allowed (filter)</strong></p>\n<p>The &#8216;c2c_post_author_ip_allowed&#8217; filter allows you to determine on a per-post basis if the post author IP should be stored. Your hooking function can be sent 3 arguments:</p>\n<p>Arguments :</p>\n<ul>\n<li>$allowed (bool) Can post author IP be saved for post? Default true.</li>\n<li>$post_id (int)  The post ID.</li>\n<li>$ip (string)    The post author IP address.</li>\n</ul>\n<p>Example:</p>\n<pre><code>/**\n * Don't bother storing localhost IP addresses.\n *\n * @param bool   $allowed Can post author IP be saved for post? Default true.\n * @param int    $post_id The post ID.\n * @param string $ip      The post author IP address.\n * @return string\n */\nfunction disable_localhost_post_author_ips( $allowed, $post_id, $ip ) {\n    if ( $allowed &amp;&amp; 0 === strpos( $ip, '192.168.' ) ) {\n        $allowed = false;\n    }\n    return $allowed;\n}\nadd_filter( 'c2c_post_author_ip_allowed', 'disable_localhost_post_author_ips', 10, 3 );\n</code></pre>\n",
+        "installation": "<ol>\n<li>Install via the built-in WordPress plugin installer. Or download and unzip <code>post-author-ip.zip</code> inside the plugins directory for your site (typically <code>wp-content/plugins/</code>)</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; admin menu in WordPress</li>\n</ol>\n",
+        "faq": "\n<dt id='if%20a%20post%20is%20originally%20drafted%20at%20one%20ip%20address%2C%20then%20later%20worked%20on%20at%20another%20ip%20address%2C%20which%20ip%20address%20gets%20recorded%3F'>\nIf a post is originally drafted at one IP address, then later worked on at another IP address, which IP address gets recorded?\n</h4>\n<p>\n<p>The IP address in use at the time that the post is first saved (regardless of whether the post was saved as a draft, immediately published, or some other status) will be recorded.</p>\n</p>\n<dt id='are%20other%20ip%20addresses%20in%20use%20during%20the%20post%27s%20handling%20%28such%20as%20when%20it%20is%20edited%2C%20published%2C%20etc%29%20also%20tracked%3F'>\nAre other IP addresses in use during the post&#8217;s handling (such as when it is edited, published, etc) also tracked?\n</h4>\n<p>\n<p>No, this plugin only records the IP address in use when the post was first saved.</p>\n</p>\n<dt id='how%20do%20i%20see%20%28or%20hide%29%20the%20%22author%20ip%22%20column%20in%20an%20admin%20listing%20of%20posts%3F'>\nHow do I see (or hide) the &#8220;Author IP&#8221; column in an admin listing of posts?\n</h4>\n<p>\n<p>In the upper-right of the page is a &#8220;Screen Options&#8221; link that reveals a panel of options. In the &#8220;Columns&#8221; section, check (to show) or uncheck (to hide) the &#8220;Author IP&#8221; option.</p>\n</p>\n<dt id='is%20this%20plugin%20compatible%20with%20the%20new%20block%20editor%20%28aka%20gutenberg%29%3F'>\nIs this plugin compatible with the new block editor (aka Gutenberg)?\n</h4>\n<p>\n<p>Yes. This plugin is compatible with the block editor as well as the classic editor.</p>\n</p>\n<dt id='is%20this%20plugin%20gdpr-compliant%3F'>\nIs this plugin GDPR-compliant?\n</h4>\n<p>\n<p>Yes. The IP address stored for authors on the posts they created will be exported on data export requests and deleted for data erasure requests.</p>\n</p>\n<dt id='does%20this%20plugin%20include%20unit%20tests%3F'>\nDoes this plugin include unit tests?\n</h4>\n<p>\n<p>Yes.</p>\n</p>\n\n",
+        "changelog": "<h4>1.4 (2021-06-09)</h4>\n<p>Highlights:</p>\n<p>This recommended release adds GDPR compliance for data export and erasure, modernizes block editor implementation, restructures unit test files, and notes compatibility through WP 5.7.</p>\n<p>Details:</p>\n<ul>\n<li>New: Add GDPR compliance for data export and erasure\n<ul>\n<li>New: Add <code>register_privacy_erasers()</code> and <code>remove_ip_address_from_posts_by_email()</code> for handling data erasure requests</li>\n<li>New: Add <code>register_data_exporter()</code> and <code>export_user_data_by_email()</code> for handling data export requests</li>\n<li>New: Add <code>add_privacy_policy_content()</code> for outputting suggested privacy policy snippet</li>\n<li>New: Add FAQ entry denoting GDPR compliance</li>\n</ul>\n</li>\n<li>Change: Modernize block editor implementation and update JS dependencies</li>\n<li>Change: Remove check for theme support of HTML5 since that isn&#8217;t relevant to admin</li>\n<li>Change: Enable script translations</li>\n<li>Change: Note compatibility through WP 5.7+</li>\n<li>Change: Update copyright date (2021)</li>\n<li>Unit tests:\n<ul>\n<li>Change: Restructure unit test directories and files into <code>tests/</code> top-level directory</li>\n<li>Change: Remove &#8216;test-&#8216; prefix from unit test files</li>\n<li>Change: In bootstrap, store path to plugin file constant</li>\n<li>Change: Rename <code>phpunit.xml</code> to <code>phpunit.xml.dist</code> per best practices</li>\n</ul>\n</li>\n<li>New: Add a few more possible TODO items</li>\n</ul>\n<h4>1.3 (2020-08-06)</h4>\n<p>Highlights:</p>\n<p>This recommended release adds support for all public post types, reduces column width, improves meta key handling, expands unit testing, adds a TODO.md file, updates compatibility to be WP 4.9 through 5.4+, and more internally.</p>\n<p>Details:</p>\n<ul>\n<li>New: Enable plugin functionality for all public post types by default\n<ul>\n<li>New: Add <code>get_post_types()</code> for retrieving post types</li>\n<li>New: Add filter <code>c2c_stealth_publish_post_types</code> to filter post types</li>\n</ul>\n</li>\n<li>New: Add <code>is_protected_meta()</code> to protect the meta key from being exposed as a custom field</li>\n<li>New: Improve configurability and accessibility of meta key name\n<ul>\n<li>New: Add <code>get_meta_key_name()</code> as getter for meta_key name</li>\n<li>New: Add filter <code>c2c_post_author_ip_meta_key</code> for customizing meta key name</li>\n</ul>\n</li>\n<li>New: Add <code>rest_pre_insert()</code> to add meta key as first-class object property prior to REST-initiated update</li>\n<li>New: Add HTML5 compliance by omitting <code>type</code> attribute for <code>style</code> tag when the theme supports &#8216;html5&#8217;</li>\n<li>New: Add TODO.md for newly added potential TODO items</li>\n<li>Change: Reduce width of &#8216;Author IP&#8217; column</li>\n<li>Change: Remove duplicate hook registration</li>\n<li>Change: Note compatibility through WP 5.4+</li>\n<li>Change: Drop compatibility for version of WP older than 4.9</li>\n<li>Change: Update JS dependencies</li>\n<li>Change: Tweak formatting of CSS styles</li>\n<li>Change: Update links to coffee2code.com to be HTTPS</li>\n<li>Unit tests:\n<ul>\n<li>New: Add tests for <code>add_admin_css()</code>, <code>admin_css()</code>, <code>add_post_column()</code>, <code>enqueue_block_editor_assets()</code>, <code>handle_column_data()</code></li>\n<li>New: Add tests for <code>include_column()</code>, <code>register_meta()</code>, <code>show_post_author_ip()</code>, <code>transition_post_status()</code></li>\n<li>New: Add test for default hooks</li>\n<li>Change: Use <code>get_meta_key_name()</code> to set default meta key used by tests</li>\n<li>Change: Remove unnecessary unregistering of hooks in <code>tearDown()</code></li>\n<li>Change: Use HTTPS for link to WP SVN repository in bin script for configuring unit tests</li>\n</ul>\n</li>\n</ul>\n<h4>1.2.1 (2020-01-06)</h4>\n<ul>\n<li>New: Unit tests: Add test to verify plugin hooks <code>plugins_loaded</code> action to initialize itself</li>\n<li>Change: Note compatibility through WP 5.3+</li>\n<li>Change: Update JS dependencies</li>\n<li>Change: Update copyright date (2020)</li>\n</ul>\n<p><em>Full changelog is available in <a href=\"https://github.com/coffee2code/post-author-ip/blob/master/CHANGELOG.md\" rel=\"nofollow ugc\">CHANGELOG.md</a>.</em></p>\n"
+    },
+    "short_description": "Records the IP address of the original post author when a post first gets created.",
+    "description": "<p>This plugin records the IP address of the original post author when a post first gets created.</p>\n<p>The admin listing of posts is amended with a new &#8220;Author IP&#8221; column that shows the IP address of the author who first saved the post.</p>\n<p>The plugin is unable to provide IP address information for posts that were created prior to the use of this plugin.</p>\n<p>Links: <a href=\"https://coffee2code.com/wp-plugins/post-author-ip/\" rel=\"nofollow ugc\">Plugin Homepage</a> | <a href=\"https://wordpress.org/plugins/post-author-ip/\" rel=\"ugc\">Plugin Directory Page</a> | <a href=\"https://github.com/coffee2code/post-author-ip/\" rel=\"nofollow ugc\">GitHub</a> | <a href=\"https://coffee2code.com\" rel=\"nofollow ugc\">Author Homepage</a></p>\n<h3>Hooks</h3>\n<p>The plugin is further customizable via four filters. Typically, code making use of filters should ideally be put into a mu-plugin or site-specific plugin (which is beyond the scope of this readme to explain).</p>\n<p><strong>c2c_show_post_author_ip_column (filter)</strong></p>\n<p>The &#8216;c2c_show_post_author_ip_column&#8217; filter allows you to determine if the post author IP column should appear in the admin post listing table. Your hooking function can be sent 1 argument:</p>\n<p>Argument :</p>\n<ul>\n<li>$show_column (bool) Should the column be shown? Default true.</li>\n</ul>\n<p>Example:</p>\n<pre><code>/**\n * Don't show the post author IP column except to admins.\n *\n * @param bool $show_column Should the column be shown? Default true.\n * @return bool\n */\nfunction post_author_ip_column_admin_only( $show ) {\n    if ( ! current_user_can( 'manage_options' ) ) {\n        $show = false;\n    }\n    return $show;\n}\nadd_filter( 'c2c_show_post_author_ip_column', 'post_author_ip_column_admin_only' );\n</code></pre>\n<p><strong>c2c_get_post_author_ip (filter)</strong></p>\n<p>The &#8216;c2c_get_post_author_ip&#8217; filter allows you to customize the value stored as the post author IP address. Your hooking function can be sent 2 arguments:</p>\n<p>Arguments :</p>\n<ul>\n<li>$ip (string)   The post author IP address.</li>\n<li>$post_id (int) The post ID.</li>\n</ul>\n<p>Example:</p>\n<pre><code>/**\n * Store all IP addresses from local subnet IP addresses as the same IP address.\n *\n * @param string $ip      The post author IP address.\n * @param int    $post_id The post ID.\n * @return string\n */\nfunction customize_post_author_ip( $ip, $post_id ) {\n    if ( 0 === strpos( $ip, '192.168.' ) ) {\n        $ip = '192.168.1.1';\n    }\n    return $ip;\n}\nadd_filter( 'c2c_get_post_author_ip', 'customize_post_author_ip', 10, 2 );\n</code></pre>\n<p><strong>c2c_get_current_user_ip (filter)</strong></p>\n<p>The &#8216;c2c_get_current_user_ip&#8217; filter allows you to customize the current user&#8217;s IP address, as used by the plugin. Your hooking function can be sent 1 argument:</p>\n<p>Argument :</p>\n<ul>\n<li>$ip (string)   The post author IP address.</li>\n</ul>\n<p>Example:</p>\n<pre><code>/**\n * Overrides localhost IP address.\n *\n * @param string $ip      The post author IP address.\n * @param int    $post_id The post ID.\n * @return string\n */\nfunction customize_post_author_ip( $ip, $post_id ) {\n    if ( 0 === strpos( $ip, '192.168.' ) ) {\n        $ip = '192.168.1.1';\n    }\n    return $ip;\n}\nadd_filter( 'c2c_get_post_author_ip', 'customize_post_author_ip', 10, 2 );\n</code></pre>\n<p><strong>c2c_post_author_ip_allowed (filter)</strong></p>\n<p>The &#8216;c2c_post_author_ip_allowed&#8217; filter allows you to determine on a per-post basis if the post author IP should be stored. Your hooking function can be sent 3 arguments:</p>\n<p>Arguments :</p>\n<ul>\n<li>$allowed (bool) Can post author IP be saved for post? Default true.</li>\n<li>$post_id (int)  The post ID.</li>\n<li>$ip (string)    The post author IP address.</li>\n</ul>\n<p>Example:</p>\n<pre><code>/**\n * Don't bother storing localhost IP addresses.\n *\n * @param bool   $allowed Can post author IP be saved for post? Default true.\n * @param int    $post_id The post ID.\n * @param string $ip      The post author IP address.\n * @return string\n */\nfunction disable_localhost_post_author_ips( $allowed, $post_id, $ip ) {\n    if ( $allowed &amp;&amp; 0 === strpos( $ip, '192.168.' ) ) {\n        $allowed = false;\n    }\n    return $allowed;\n}\nadd_filter( 'c2c_post_author_ip_allowed', 'disable_localhost_post_author_ips', 10, 3 );\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/post-author-ip.1.4.zip",
+    "upgrade_notice": {
+        "1.4": "<p>Recommended update: added GDPR compliance for data export and erasure, modernized block editor implementation, restructured unit test files, noted compatibility through WP 5.7, and updated copyright date (2021).</p>",
+        "1.3": "<p>Recommended update: added support for all public post types, reduced column width, improved meta key handling, expanded unit testing, added TODO.md file, updated compatibility to be WP 4.9 through 5.4+, and more internally.</p>",
+        "1.2.1": "<p>Trivial update: noted compatibility through WP 5.3+, updated JS development dependencies, and updated copyright date (2020)</p>",
+        "1.2": "<p>Recommended feature update: added support for the new block editor (aka Gutenberg),</p>",
+        "1.1": "<p>Minor update: added &#039;c2c_post_author_ip_allowed&#039; filter, modified initialization handling, noted compatibility through WP 5.1+, updated copyright date (2019), and more.</p>",
+        "1.0": "<p>Initial public release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/post-author-ip/assets/screenshot-1.png?rev=1822507",
+            "caption": "A screenshot of the admin post listing showing the added \"Author IP\" column. It demonstrates the mix of a post where the post author IP address was recorded, and posts where it wasn't (due to the plugin not being activated at the time)."
+        },
+        {
+            "src": "https://ps.w.org/post-author-ip/assets/screenshot-2.png?rev=1822507",
+            "caption": "A screenshot of the Publish metabox for a post showing the post author's IP address (for versions of WordPress older than 5.0, or later if the new block editor aka Gutenberg is disabled)"
+        },
+        {
+            "src": "https://ps.w.org/post-author-ip/assets/screenshot-3.png?rev=2223202",
+            "caption": "A screenshot of the block editor sidebar panel for a post showing the post author IP address (WP 5.0 and later)"
+        }
+    ],
+    "tags": {
+        "audit": "audit",
+        "author": "author",
+        "ip": "ip",
+        "ip-address": "ip address",
+        "post": "post"
+    },
+    "stable_tag": "1.4",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/post-author-ip.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/post-author-ip.1.1.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/post-author-ip.1.2.zip",
+        "1.2.1": "https://downloads.wordpress.org/plugin/post-author-ip.1.2.1.zip",
+        "1.3": "https://downloads.wordpress.org/plugin/post-author-ip.1.3.zip",
+        "1.4": "https://downloads.wordpress.org/plugin/post-author-ip.1.4.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/post-author-ip.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6ARCFJ9TX3522",
+    "banners": {
+        "low": "https://ps.w.org/post-author-ip/assets/banner-772x250.png?rev=1822507",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/post-author-ip/assets/icon-128x128.png?rev=1822507"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "post-author-ip",
+            "language": "es_ES",
+            "version": "1.4",
+            "updated": "2020-08-07 07:21:59",
+            "package": "http://downloads.wordpress.org/translation/plugin/post-author-ip/1.4/es_ES.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "post-author-ip",
+            "language": "es_VE",
+            "version": "1.4",
+            "updated": "2020-08-07 07:24:50",
+            "package": "http://downloads.wordpress.org/translation/plugin/post-author-ip/1.4/es_VE.zip"
+        }
+    ]
+}

@@ -1,0 +1,77 @@
+{
+    "name": "Activity Logs",
+    "slug": "activity-logs",
+    "version": "1.1",
+    "author": "<a href=\"http://cookspin.com\">Tomas Buteler</a>",
+    "author_profile": "https://profiles.wordpress.org/tbuteler/",
+    "contributors": {
+        "tbuteler": {
+            "profile": "https://profiles.wordpress.org/tbuteler/",
+            "avatar": "https://secure.gravatar.com/avatar/fbb5da07eab1d0f2137f9fe543fc2d3a?s=96&d=monsterid&r=g",
+            "display_name": "tbuteler"
+        }
+    },
+    "requires": "3.0.1",
+    "tested": "3.5.2",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 1,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/activity-logs/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 30,
+    "downloaded": 2946,
+    "last_updated": "2013-05-25 5:01pm GMT",
+    "added": "2013-05-25",
+    "homepage": "",
+    "sections": {
+        "description": "<p>The Activity Logs plugin will record most of the changes that occur in your WordPress blog or multisite network, making it easy for you to keep on track of what everyone is doing, or to catch up on what happened since you last checked in.</p>\n<p>It&#8217;s a very simple to use plugin (though it offers good extensibility to advanced users and plugin authors): just activate it and the logs will be recorded automatically, and an activity stream will appear on your dashboard.</p>\n<p>The Activity Logs plugin keeps track of post, pages, custom post types and comments transitions, settings changes, plugin activations, import, export, user and site management in a simple, seamless way.</p>\n<h3>Feedback and Support</h3>\n<p>Comments are welcome. You can contact me directly via tbuteler@gmail.com.<br />\nIf you think you&#8217;ve found a bug, or you want to make this plugin better, go to <a href=\"https://github.com/tbuteler/ck_activity_logs\" rel=\"nofollow ugc\">GitHub</a>.<br />\nDid you find this helpful? Did it save you precious programming time? Please consider <a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=5H36WT4G7XBKQ\" rel=\"nofollow ugc\">donating</a>.</p>\n",
+        "installation": "<ol>\n<li>Unpackage contents to your wp-content/plugins/ directory;</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress;</li>\n<li>That&#8217;s it! The plugin will install required tables and configure itself on first run.</li>\n</ol>\n",
+        "faq": "\n<h4>I don&#8217;t see a settings page for this plugin. Can I configure it somehow?</h4>\n<p>\n<p>A little bit, yes. Although the idea is to allow users to install and forget, admins have some configuration options available. To do so, define the constants below in your <code>wp-config.php</code> file (or anywhere else, as long as they&#8217;re defined before the <code>init</code> action takes place).</p>\n<p>Values defined here are the plugins defaults, which can be overriden.</p>\n<p>Time range, in seconds, that will cause our activity log to ignore repeat actions. Note that activity will still be logged, but won&#8217;t be displayed in the dashboard:</p>\n<pre><code>// Logs 60 seconds apart will be treated as the same action (same type, same logger only)\ndefine('CK_LOG_TIME_IGNORE', 60);\n</code></pre>\n<p>Maximum number of rows reserved for activity logs in custom table:</p>\n<pre><code>// 0 means no limit\ndefine('CK_LOG_MAX_ROWS', 0);\n</code></pre>\n<p>Amount of logs to load on dashboard widget at a time:</p>\n<pre><code>define('CK_LOG_DEFAULT_LIMIT', 25);\n</code></pre>\n</p>\n<h4>Can I create my own loggers?</h4>\n<p>\n<p>Yes. There are many filters and actions to hook into, but the default loggers take into account core functionality only. This includes custom post types, but not custom functionality which most plugins add to WordPress. Luckily, you can easily set your own loggers by using the following function:</p>\n<pre><code>cookspin_register_logger(\n    $name,      // A slug-like name for this logger, shorter than 255 characters\n    $category,  // A slug-like name for the logger's category. For the default list, see below\n    $args       // See below\n);\n</code></pre>\n<p>Here are the default categories (and slugs) for loggers. These are meant to mimick the default sections of the WordPress admin menu. Your custom logger can go into any of these, and you can create your own categories as well (though you will have to specify labels and CSS / icons via filters):</p>\n<ol>\n<li>Sites: <code>blogs</code></li>\n<li>Posts: <code>posts</code> </li>\n<li>Media: <code>media</code></li>\n<li>Users: <code>users</code></li>\n<li>Settings: <code>preferences</code></li>\n<li>Appearance: <code>comments</code></li>\n<li>Plugins: <code>appearance</code></li>\n<li>Tools: <code>tools</code></li>\n</ol>\n<p>The third and final argument of the function is actually an array of arguments. Let&#8217;s go through the options one by one. (Note that omitting &#8220;required&#8221; arguments might not cause the function to fail, but will prevent the log from displaying properly.)</p>\n<ol>\n<li><code>hook</code> (string)(required): Which action should we hook to? Every time it fires, our log will record an entry. <strong>Important:</strong> If you&#8217;re hooking to filters and not actions, set the <code>hook_to_filter</code> argument to <code>true</code></li>\n<li><code>priority</code> (integer)(optional): Priority of the logger function compared to all other functions hooked to this action.</li>\n<li><code>n_params</code> (integer)(optional): How many arguments does the logger function need from the action? If more than one, this has to be specified.</li>\n<li><code>cb</code> (string)(required): The actual callback which will define what information gets recorded on the database.</li>\n<li><code>print_cb</code> (string)(required): A callback which is used to generate a readable version of the log.</li>\n<li><code>hook_to_filter</code> (boolean)(optional): Do you want to log something everytime a <em>filter</em> is applied? You can do that too, but you <strong>need to set this to true</strong>. Failure to do so will prevent the filter you&#8217;re hooking to from working properly, and can break stuff.</li>\n<li><code>ignore_cmp</code> (string or array of strings)(optional): Sometimes ignoring logs based on the time they were recorded is not enough to prevent you from showing actions which have no actual impact. Here you can specify any of the following, which correspond to the activity log&#8217;s table columns: &#8216;object_type&#8217;, &#8216;object_id&#8217;, &#8216;log_code&#8217;, &#8216;user_id&#8217;.</li>\n</ol>\n</p>\n\n",
+        "changelog": "<h4>1.1</h4>\n<ul>\n<li>Initial public release.</li>\n</ul>\n"
+    },
+    "short_description": "A WordPress plugin which logs and displays relevant activity within your blog or network.",
+    "description": "<p>The Activity Logs plugin will record most of the changes that occur in your WordPress blog or multisite network, making it easy for you to keep on track of what everyone is doing, or to catch up on what happened since you last checked in.</p>\n<p>It&#8217;s a very simple to use plugin (though it offers good extensibility to advanced users and plugin authors): just activate it and the logs will be recorded automatically, and an activity stream will appear on your dashboard.</p>\n<p>The Activity Logs plugin keeps track of post, pages, custom post types and comments transitions, settings changes, plugin activations, import, export, user and site management in a simple, seamless way.</p>\n<h3>Feedback and Support</h3>\n<p>Comments are welcome. You can contact me directly via tbuteler@gmail.com.<br />\nIf you think you&#8217;ve found a bug, or you want to make this plugin better, go to <a href=\"https://github.com/tbuteler/ck_activity_logs\" rel=\"nofollow ugc\">GitHub</a>.<br />\nDid you find this helpful? Did it save you precious programming time? Please consider <a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=5H36WT4G7XBKQ\" rel=\"nofollow ugc\">donating</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/activity-logs.1.1.zip",
+    "upgrade_notice": {
+        "1.1": "<p>Initial public release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/activity-logs/assets/screenshot-1.png?rev=718238",
+            "caption": "The Activity Log widget rendered on the default dashboard."
+        }
+    ],
+    "tags": {
+        "activity": "activity"
+    },
+    "stable_tag": "1.1",
+    "versions": {
+        "1.1": "https://downloads.wordpress.org/plugin/activity-logs.1.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/activity-logs.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5H36WT4G7XBKQ",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/activity-logs.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

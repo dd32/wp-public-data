@@ -1,0 +1,85 @@
+{
+    "name": "Debug-Bar-Extender",
+    "slug": "debug-bar-extender",
+    "version": "0.5",
+    "author": "<a href=\"http://hitchhackerguide.com\">Thorsten Ott, Automattic</a>",
+    "author_profile": "https://profiles.wordpress.org/tott/",
+    "contributors": {
+        "tott": {
+            "profile": "https://profiles.wordpress.org/tott/",
+            "avatar": "https://secure.gravatar.com/avatar/9e8f7fd87fd2163010f98280f3e45a35?s=96&d=monsterid&r=g",
+            "display_name": "Thorsten Ott"
+        },
+        "automattic": {
+            "profile": "https://profiles.wordpress.org/automattic/",
+            "avatar": "https://secure.gravatar.com/avatar/687b3bf96c41800814e3b93766444283?s=96&d=monsterid&r=g",
+            "display_name": "Automattic"
+        }
+    },
+    "requires": "3.1",
+    "tested": "3.2.1",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 92,
+    "ratings": {
+        "5": 4,
+        "4": 0,
+        "3": 1,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 5,
+    "support_url": "https://wordpress.org/support/plugin/debug-bar-extender/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 800,
+    "downloaded": 152300,
+    "last_updated": "2011-09-02 1:06pm GMT",
+    "added": "2011-03-02",
+    "homepage": "http://wordpress.org/extend/plugins/debug-bar-extender/",
+    "sections": {
+        "description": "<p>This plugins adds more features to the debug-bar and is mainly aimed at developers who like to debug their code or want to measure runtimes to find glitches in their code.<br />\nIt also allows lookup of variables by adding simple code snippets in your source.</p>\n<p>Please note that this plugin should be used solely for debugging or on a development environment and is not intended for use in a production site.</p>\n<h3>Requirements</h3>\n<p>This plugin requires <a href=\"https://wordpress.org/extend/plugins/debug-bar\" rel=\"ugc\">the debug-bar plugin &gt;0.5</a> and a developers&#8217; brain to work correctly.</p>\n<h3>Usage</h3>\n<h4>Usage example to debug the loop of a theme</h4>\n<p>Add your checkpoints in the index.php or any other template file as shown below.</p>\n<pre><code>&lt;?php if (have_posts()) : ?&gt;\n\n&lt;?php Debug_Bar_Extender::instance()-&gt;checkpoint('loop start'); ?&gt;\n\n&lt;?php while (have_posts()) : the_post(); ?&gt;\n\n&lt;?php Debug_Bar_Extender::instance()-&gt;trace_var( $post ); ?&gt;\n\n&lt;?php Debug_Bar_Extender::instance()-&gt;checkpoint('loop1'); ?&gt;\n\n&lt;div &lt;?php post_class() ?&gt; id=\"post-&lt;?php the_ID(); ?&gt;\"&gt;\n&lt;?php //before_post(); ?&gt;\n&lt;h2&gt;&lt;a href=\"&lt;?php the_permalink() ?&gt;\" rel=\"bookmark\" title=\"&lt;?php printf(__('Permanent Link to %s', 'kubrick'), the_title_attribute('echo=0')); ?&gt;\"&gt;&lt;?php the_title(); ?&gt;&lt;/a&gt;&lt;/h2&gt;\n&lt;small&gt;&lt;?php the_time(get_option('date_format')) ?&gt; by &lt;?php the_author() ?&gt;&lt;/small&gt;\n&lt;div class=\"entry\"&gt;\n&lt;?php the_content(__('Read the rest of this entry &amp;raquo;', 'kubrick')); ?&gt;\n&lt;/div&gt;\n&lt;p class=\"postmetadata\"&gt;&lt;?php the_tags(__('Tags:', 'kubrick') . ' ', ', ', '&lt;br /&gt;'); ?&gt; &lt;?php printf(__('Posted in %s', 'kubrick'), get_the_category_list(', ')); ?&gt; | &lt;?php edit_post_link(__('Edit', 'kubrick'), '', ' | '); ?&gt; &lt;?php comments_popup_link(__('No Comments &#187;', 'kubrick'), __('1 Comment &#187;', 'kubrick'), __('% Comments &#187;', 'kubrick')); ?&gt;&lt;/p&gt;\n&lt;?php after_post(); ?&gt;\n&lt;/div&gt;\n\n&lt;?php Debug_Bar_Extender::instance()-&gt;checkpoint('loop2'); ?&gt;\n\n&lt;?php endwhile; ?&gt;\n\n&lt;?php Debug_Bar_Extender::instance()-&gt;checkpoint('loop end'); ?&gt;\n\n&lt;div class=\"navigation\"&gt;\n&lt;div class=\"alignleft\"&gt;&lt;?php next_posts_link(__('&amp;laquo; Older Entries', 'kubrick')) ?&gt;&lt;/div&gt;\n&lt;div class=\"alignright\"&gt;&lt;?php previous_posts_link(__('Newer Entries &amp;raquo;', 'kubrick')) ?&gt;&lt;/div&gt;\n&lt;/div&gt;\n&lt;?php else : ?&gt;\n</code></pre>\n<h3>Advanced usage</h3>\n<p>Looking at the source of the debug-bar-extender.php you will notice that there are various filters to control the default settings. This is useful when you are working on a multisite install and want to use the debug bar without having to adjust the settings every time. Here&#8217;s an example of how settings enforced by a php file in mu-plugins/ could look like</p>\n<pre><code>add_filter( 'debugbarextender_default_settings', 'my_debug_bar_extender_settings' );\n// enforce debug bar settings\nfunction my_debug_bar_extender_settings( $default_settings ) {\n    $default_settings = array(\n            'enable_profiler'               =&gt; 1,\n            'enable_variable_lookup'        =&gt; 1,\n            'track_default_vars'            =&gt; 0,\n            'add_default_checkpoints'       =&gt; 1,\n            'savequeries_debugmode_enable'  =&gt; 1,\n            'use_error_log'                 =&gt; 0,\n            'allow_url_settings'            =&gt; 1,\n            'enable_admin_bar_menu'         =&gt; 1,\n    );\n    return $default_settings;\n}\n\nadd_filter( 'debugbarextender_default_checkpoint_actions', 'my_debug_bar_extender_checkpoints' );\n// initiate some default checkpoints\nfunction my_debug_bar_extender_checkpoints( $default_checkpoints ) {\n    $default_checkpoints = array(\n                    'muplugins_loaded',\n                    'wp_head',\n                    'wp_footer',\n                    'loop_start',\n                    'loop_end',\n                    'shutdown',\n    );\n    return $default_checkpoints;\n}\n</code></pre>\n<h3>Wishlist</h3>\n<p>This is a work in progress, so feel free to pass by on <a href=\"http://hitchhackerguide.com/wordpress-plugins/debug-bar-extender/\" rel=\"nofollow ugc\">our plugin page</a> and leave us<br />\nyour suggestions in the comments.</p>\n",
+        "changelog": "<h4>Version 0.5</h4>\n<ul>\n<li>added filters to control settings <code>debugbarextender_default_settings</code>, <code>debugbarextender_default_checkpoint_actions</code></li>\n<li>added wrapper functions <code>dbgx_checkpoint( $note = '' )</code> and <code>dbgx_trace_var( $value, $var_name = false )</code> for easier access to debugging functions.</li>\n<li>added new setting option to allow control of some settings via $_GET parameters in the urls. Allows dbgx_use_error_log, dbgx_track_default_vars, dbgx_add_default_checkpoints to be added as query strings in order to enable respective features. Combinations are possible &#8211; for example: /wp-admin/options-general.php?page=debug-bar-extender&amp;dbgx_use_error_log=1&amp;dbgx_add_default_checkpoints=1&amp;dbgx_track_default_vars=1 </li>\n<li>added new setting option to enable a admin bar menu with shortcuts to this urls</li>\n</ul>\n<h4>Version 0.4</h4>\n<ul>\n<li>Moving style enqueuing to init hook. We don&#8217;t want to be doing it wrong https://core.trac.wordpress.org/changeset/18556</li>\n</ul>\n<h4>Version 0.3</h4>\n<ul>\n<li>Fixed conflicting enqueueing which should fix issues with Debug Console plugin. Thanks to AaronCampbell and Westi</li>\n</ul>\n<h4>Version 0.2</h4>\n<ul>\n<li>fixed: prevent filters which have same names as actions to fail.</li>\n</ul>\n<h4>Version 0.1</h4>\n<ul>\n<li>Initial version of this plugin.</li>\n</ul>\n"
+    },
+    "short_description": "Extends the debug-bar plugin with additional tabs to measure runtimes between checkpoints and lookup variable content.",
+    "description": "<p>This plugins adds more features to the debug-bar and is mainly aimed at developers who like to debug their code or want to measure runtimes to find glitches in their code.<br />\nIt also allows lookup of variables by adding simple code snippets in your source.</p>\n<p>Please note that this plugin should be used solely for debugging or on a development environment and is not intended for use in a production site.</p>\n<h3>Requirements</h3>\n<p>This plugin requires <a href=\"https://wordpress.org/extend/plugins/debug-bar\" rel=\"ugc\">the debug-bar plugin &gt;0.5</a> and a developers&#8217; brain to work correctly.</p>\n<h3>Usage</h3>\n<h4>Usage example to debug the loop of a theme</h4>\n<p>Add your checkpoints in the index.php or any other template file as shown below.</p>\n<pre><code>&lt;?php if (have_posts()) : ?&gt;\n\n&lt;?php Debug_Bar_Extender::instance()-&gt;checkpoint('loop start'); ?&gt;\n\n&lt;?php while (have_posts()) : the_post(); ?&gt;\n\n&lt;?php Debug_Bar_Extender::instance()-&gt;trace_var( $post ); ?&gt;\n\n&lt;?php Debug_Bar_Extender::instance()-&gt;checkpoint('loop1'); ?&gt;\n\n&lt;div &lt;?php post_class() ?&gt; id=\"post-&lt;?php the_ID(); ?&gt;\"&gt;\n&lt;?php //before_post(); ?&gt;\n&lt;h2&gt;&lt;a href=\"&lt;?php the_permalink() ?&gt;\" rel=\"bookmark\" title=\"&lt;?php printf(__('Permanent Link to %s', 'kubrick'), the_title_attribute('echo=0')); ?&gt;\"&gt;&lt;?php the_title(); ?&gt;&lt;/a&gt;&lt;/h2&gt;\n&lt;small&gt;&lt;?php the_time(get_option('date_format')) ?&gt; by &lt;?php the_author() ?&gt;&lt;/small&gt;\n&lt;div class=\"entry\"&gt;\n&lt;?php the_content(__('Read the rest of this entry &amp;raquo;', 'kubrick')); ?&gt;\n&lt;/div&gt;\n&lt;p class=\"postmetadata\"&gt;&lt;?php the_tags(__('Tags:', 'kubrick') . ' ', ', ', '&lt;br /&gt;'); ?&gt; &lt;?php printf(__('Posted in %s', 'kubrick'), get_the_category_list(', ')); ?&gt; | &lt;?php edit_post_link(__('Edit', 'kubrick'), '', ' | '); ?&gt; &lt;?php comments_popup_link(__('No Comments &#187;', 'kubrick'), __('1 Comment &#187;', 'kubrick'), __('% Comments &#187;', 'kubrick')); ?&gt;&lt;/p&gt;\n&lt;?php after_post(); ?&gt;\n&lt;/div&gt;\n\n&lt;?php Debug_Bar_Extender::instance()-&gt;checkpoint('loop2'); ?&gt;\n\n&lt;?php endwhile; ?&gt;\n\n&lt;?php Debug_Bar_Extender::instance()-&gt;checkpoint('loop end'); ?&gt;\n\n&lt;div class=\"navigation\"&gt;\n&lt;div class=\"alignleft\"&gt;&lt;?php next_posts_link(__('&amp;laquo; Older Entries', 'kubrick')) ?&gt;&lt;/div&gt;\n&lt;div class=\"alignright\"&gt;&lt;?php previous_posts_link(__('Newer Entries &amp;raquo;', 'kubrick')) ?&gt;&lt;/div&gt;\n&lt;/div&gt;\n&lt;?php else : ?&gt;\n</code></pre>\n<h3>Advanced usage</h3>\n<p>Looking at the source of the debug-bar-extender.php you will notice that there are various filters to control the default settings. This is useful when you are working on a multisite install and want to use the debug bar without having to adjust the settings every time. Here&#8217;s an example of how settings enforced by a php file in mu-plugins/ could look like</p>\n<pre><code>add_filter( 'debugbarextender_default_settings', 'my_debug_bar_extender_settings' );\n// enforce debug bar settings\nfunction my_debug_bar_extender_settings( $default_settings ) {\n    $default_settings = array(\n            'enable_profiler'               =&gt; 1,\n            'enable_variable_lookup'        =&gt; 1,\n            'track_default_vars'            =&gt; 0,\n            'add_default_checkpoints'       =&gt; 1,\n            'savequeries_debugmode_enable'  =&gt; 1,\n            'use_error_log'                 =&gt; 0,\n            'allow_url_settings'            =&gt; 1,\n            'enable_admin_bar_menu'         =&gt; 1,\n    );\n    return $default_settings;\n}\n\nadd_filter( 'debugbarextender_default_checkpoint_actions', 'my_debug_bar_extender_checkpoints' );\n// initiate some default checkpoints\nfunction my_debug_bar_extender_checkpoints( $default_checkpoints ) {\n    $default_checkpoints = array(\n                    'muplugins_loaded',\n                    'wp_head',\n                    'wp_footer',\n                    'loop_start',\n                    'loop_end',\n                    'shutdown',\n    );\n    return $default_checkpoints;\n}\n</code></pre>\n<h3>Wishlist</h3>\n<p>This is a work in progress, so feel free to pass by on <a href=\"http://hitchhackerguide.com/wordpress-plugins/debug-bar-extender/\" rel=\"nofollow ugc\">our plugin page</a> and leave us<br />\nyour suggestions in the comments.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/debug-bar-extender.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/debug-bar-extender/trunk/screenshot-1.jpg?rev=1573780",
+            "caption": "Settings screen to enable/disable various features."
+        },
+        {
+            "src": "https://ps.w.org/debug-bar-extender/trunk/screenshot-2.jpg?rev=1573780",
+            "caption": "Profiler output showing the runtimes between default checkpoints."
+        },
+        {
+            "src": "https://ps.w.org/debug-bar-extender/trunk/screenshot-3.jpg?rev=1573780",
+            "caption": "Lookup of various default variables"
+        }
+    ],
+    "tags": {
+        "debug": "debug",
+        "debug-bar": "debug bar",
+        "development": "development"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "http://hitchhackerguide.com",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/debug-bar-extender.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 92,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

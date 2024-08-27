@@ -1,0 +1,81 @@
+{
+    "name": "Featured Item Metabox",
+    "slug": "featured-item-metabox",
+    "version": "1.3.2",
+    "author": "<a href=\"http://www.kathyisawesome.com\">Kathy Darling</a>",
+    "author_profile": "https://profiles.wordpress.org/helgatheviking/",
+    "contributors": {
+        "helgatheviking": {
+            "profile": "https://profiles.wordpress.org/helgatheviking/",
+            "avatar": "https://secure.gravatar.com/avatar/e59280745b3f6f86a4cc6fad485647e9?s=96&d=monsterid&r=g",
+            "display_name": "HelgaTheViking"
+        }
+    },
+    "requires": "3.8",
+    "tested": "5.3.18",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 60,
+    "ratings": {
+        "5": 1,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 1
+    },
+    "num_ratings": 2,
+    "support_url": "https://wordpress.org/support/plugin/featured-item-metabox/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 100,
+    "downloaded": 2798,
+    "last_updated": "2020-02-17 11:38pm GMT",
+    "added": "2013-01-31",
+    "homepage": "http://wordpress.org/extend/plugins/featured-item-metabox/",
+    "sections": {
+        "description": "<p>I found I constantly needed a way for clients to mark a post as something they wanted to feature and I&#8217;ve never found sticky posts particularly inuitive and the UI is pretty hidden for new users.  The simplest solution was a checkbox in prominently located metabox.</p>\n<p>Please note that this plugin, by itself, will not change how your posts are displayed.  It just gives the UI to users and a meta key to theme developers to query for.</p>\n<h4>Usage</h4>\n<p>This plugin simply adds a <code>_featured</code> meta key to every post with a value of <code>yes</code> for featured items and <code>no</code> for everything else.  Actual display of the featured items is entirely up to the theme developer, but an example ( place in your template where you&#8217;d like to display a list of featured &#8220;Portfolios&#8221;) might be as follows:</p>\n<pre><code>// params for our query\n$args = array(\n    'post_type' =&gt; 'portfolio',\n   'posts_per_page'  =&gt; 5,\n   'meta_key'        =&gt; '_featured',\n   'meta_value'      =&gt; 'yes'\n);\n\n// The Query\n$featured_portfolios = new WP_Query( $args );\n\n// The Loop\nif ( $featured_portfolios ) :\n\n    echo '&lt;ul class=\"featured\"&gt;';\n\n    while ( $featured_portfolios-&gt;have_posts() ) :\n        $featured_portfolios-&gt;the_post();\n        echo '&lt;li&gt;' . get_the_title() . '&lt;/li&gt;';\n    endwhile;\n\n    echo '&lt;/ul&gt;';\n\nelse :\n\n    echo 'No featured portfolios found.';\n\nendif;\n\n/* Restore original Post Data\n * NB: Because we are using new WP_Query we aren't stomping on the\n * original $wp_query and it does not need to be reset.\n*/\nwp_reset_postdata();\n</code></pre>\n<p>Multiple queries per page load can slow down your site so it is worthwhile to take advantage of the <a href=\"https://codex.wordpress.org/Transients_API\" rel=\"nofollow ugc\">Transients API</a>, so an alternate usage would be:</p>\n<pre><code>// Get any existing copy of our transient data\nif ( false === ( $featured_portfolios = get_transient( 'featured_portfolios' ) ) ) {\n    // It wasn't there, so regenerate the data and save the transient\n\n   // params for our query\n    $args = array(\n        'post_type' =&gt; 'portfolio',\n       'posts_per_page'  =&gt; 5,\n       'meta_key'        =&gt; '_featured',\n       'meta_value'      =&gt; 'yes'\n    );\n\n    // The Query\n    $featured_portfolios = new WP_Query( $args );\n\n    // store the transient\n    set_transient( 'featured_portfolios', $featured_portfolios );\n\n}\n\n// Use the data like you would have normally...\n\n// The Loop\nif ( $featured_portfolios ) :\n\n    echo '&lt;ul class=\"featured\"&gt;';\n\n    while ( $featured_portfolios-&gt;have_posts() ) :\n        $featured_portfolios-&gt;the_post();\n        echo '&lt;li&gt;' . get_the_title() . '&lt;/li&gt;';\n    endwhile;\n\n    echo '&lt;/ul&gt;';\n\nelse :\n\n    echo 'No featured portfolios found.';\n\nendif;\n\n/* Restore original Post Data\n * NB: Because we are using new WP_Query we aren't stomping on the\n * original $wp_query and it does not need to be reset.\n*/\nwp_reset_postdata();\n</code></pre>\n<p>Then to ensure that your featured posts list is updated, add a function to your theme&#8217;s functions.php to delete the transient when a portfolio (in this example) post type is saved.</p>\n<pre><code>// Create a function to delete our transient when a portfolio post is saved\nfunction save_post_delete_featured_transient( $post_id ) {\n   if ( 'portfolio' == get_post_type( $post_id ) )\n    delete_transient( 'featured_portfolios' );\n}\n// Add the function to the save_post hook so it runs when posts are saved\nadd_action( 'save_post', 'save_post_delete_featured_transient' );\n</code></pre>\n<p>Simple queries should only need the <code>meta_key</code> and <code>meta_value</code> parameters, but if you need something more advanced then you might want to read about how to use the more <a href=\"http://scribu.net/wordpress/advanced-metadata-queries.html\" rel=\"nofollow ugc\">complex Meta Query parameters</a>.</p>\n<h4>Support</h4>\n<p>Support is handled in the <a href=\"https://wordpress.org/support/plugin/featured-item-metabox\" rel=\"ugc\">WordPress forums</a>.  Please note that support is limited and does not cover any custom implementation of the plugin.</p>\n<p>Please report any bugs, errors, warnings, code problems at <a href=\"https://github.com/helgatheviking/Featured-Item-Metabox/issues\" rel=\"nofollow ugc\">Github</a></p>\n",
+        "installation": "<ol>\n<li>Upload the <code>plugin</code> folder to the <code>/wp-content/plugins/</code> directory</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</li>\n<li>Go to the plugin&#8217;s settings and select which post types for which you&#8217;d like to show the featured metabox</li>\n</ol>\n",
+        "changelog": "<h4>1.4.0</h4>\n<ul>\n<li>Gutenberg compatibility</li>\n</ul>\n<h4>1.3.2</h4>\n<ul>\n<li>fixes bug where toggle script wasn&#8217;t loading if &#8220;remove all&#8221; plugin option was checked</li>\n</ul>\n<h4>1.3.1</h4>\n<ul>\n<li>fixes problem of quick edit not adjusting to toggle</li>\n</ul>\n<h4>1.3.0</h4>\n<ul>\n<li>testing against WP4.4</li>\n<li>on posts overview page, use ajax to toggle featured on/off</li>\n<li>replace star images with dashicons</li>\n</ul>\n<h4>1.2.4</h4>\n<ul>\n<li>testing against WP4.3</li>\n<li>improved code formatting</li>\n</ul>\n<h4>1.2.3</h4>\n<ul>\n<li>add featured_items_metabox_label filter</li>\n<li>add featured_items_checkbox_label filter</li>\n</ul>\n<h4>1.2.2</h4>\n<ul>\n<li>make plugin work on media attachments</li>\n</ul>\n<h4>1.2.1</h4>\n<ul>\n<li>Fixing file rename</li>\n</ul>\n<h4>1.2</h4>\n<ul>\n<li>switching to singular instance of plugin, to prevent the need to use globals (global still there for backcompat)</li>\n<li>don&#8217;t show private post types as possibilities in options </li>\n<li>update documentaion</li>\n<li>update docbloc</li>\n</ul>\n<h4>1.1.4</h4>\n<ul>\n<li>verify WP 3.8 compatibility</li>\n</ul>\n<h4>1.1.3</h4>\n<ul>\n<li>fix more warnings. props @pushka</li>\n</ul>\n<h4>1.1.2</h4>\n<ul>\n<li>php strict standards for static variables</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>update FAQ</li>\n</ul>\n<h4>1.1</h4>\n<ul>\n<li>fix whitescreen bug on ajax action for edit columns</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>fix markdown for changelog</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Quickly add a metabox to any post type for marking a post as featured.  Toggle featured status even more quickly from the posts lists/ quick edit scre &hellip;",
+    "description": "<p>I found I constantly needed a way for clients to mark a post as something they wanted to feature and I&#8217;ve never found sticky posts particularly inuitive and the UI is pretty hidden for new users.  The simplest solution was a checkbox in prominently located metabox.</p>\n<p>Please note that this plugin, by itself, will not change how your posts are displayed.  It just gives the UI to users and a meta key to theme developers to query for.</p>\n<h4>Usage</h4>\n<p>This plugin simply adds a <code>_featured</code> meta key to every post with a value of <code>yes</code> for featured items and <code>no</code> for everything else.  Actual display of the featured items is entirely up to the theme developer, but an example ( place in your template where you&#8217;d like to display a list of featured &#8220;Portfolios&#8221;) might be as follows:</p>\n<pre><code>// params for our query\n$args = array(\n    'post_type' =&gt; 'portfolio',\n   'posts_per_page'  =&gt; 5,\n   'meta_key'        =&gt; '_featured',\n   'meta_value'      =&gt; 'yes'\n);\n\n// The Query\n$featured_portfolios = new WP_Query( $args );\n\n// The Loop\nif ( $featured_portfolios ) :\n\n    echo '&lt;ul class=\"featured\"&gt;';\n\n    while ( $featured_portfolios-&gt;have_posts() ) :\n        $featured_portfolios-&gt;the_post();\n        echo '&lt;li&gt;' . get_the_title() . '&lt;/li&gt;';\n    endwhile;\n\n    echo '&lt;/ul&gt;';\n\nelse :\n\n    echo 'No featured portfolios found.';\n\nendif;\n\n/* Restore original Post Data\n * NB: Because we are using new WP_Query we aren't stomping on the\n * original $wp_query and it does not need to be reset.\n*/\nwp_reset_postdata();\n</code></pre>\n<p>Multiple queries per page load can slow down your site so it is worthwhile to take advantage of the <a href=\"https://codex.wordpress.org/Transients_API\" rel=\"nofollow ugc\">Transients API</a>, so an alternate usage would be:</p>\n<pre><code>// Get any existing copy of our transient data\nif ( false === ( $featured_portfolios = get_transient( 'featured_portfolios' ) ) ) {\n    // It wasn't there, so regenerate the data and save the transient\n\n   // params for our query\n    $args = array(\n        'post_type' =&gt; 'portfolio',\n       'posts_per_page'  =&gt; 5,\n       'meta_key'        =&gt; '_featured',\n       'meta_value'      =&gt; 'yes'\n    );\n\n    // The Query\n    $featured_portfolios = new WP_Query( $args );\n\n    // store the transient\n    set_transient( 'featured_portfolios', $featured_portfolios );\n\n}\n\n// Use the data like you would have normally...\n\n// The Loop\nif ( $featured_portfolios ) :\n\n    echo '&lt;ul class=\"featured\"&gt;';\n\n    while ( $featured_portfolios-&gt;have_posts() ) :\n        $featured_portfolios-&gt;the_post();\n        echo '&lt;li&gt;' . get_the_title() . '&lt;/li&gt;';\n    endwhile;\n\n    echo '&lt;/ul&gt;';\n\nelse :\n\n    echo 'No featured portfolios found.';\n\nendif;\n\n/* Restore original Post Data\n * NB: Because we are using new WP_Query we aren't stomping on the\n * original $wp_query and it does not need to be reset.\n*/\nwp_reset_postdata();\n</code></pre>\n<p>Then to ensure that your featured posts list is updated, add a function to your theme&#8217;s functions.php to delete the transient when a portfolio (in this example) post type is saved.</p>\n<pre><code>// Create a function to delete our transient when a portfolio post is saved\nfunction save_post_delete_featured_transient( $post_id ) {\n   if ( 'portfolio' == get_post_type( $post_id ) )\n    delete_transient( 'featured_portfolios' );\n}\n// Add the function to the save_post hook so it runs when posts are saved\nadd_action( 'save_post', 'save_post_delete_featured_transient' );\n</code></pre>\n<p>Simple queries should only need the <code>meta_key</code> and <code>meta_value</code> parameters, but if you need something more advanced then you might want to read about how to use the more <a href=\"http://scribu.net/wordpress/advanced-metadata-queries.html\" rel=\"nofollow ugc\">complex Meta Query parameters</a>.</p>\n<h4>Support</h4>\n<p>Support is handled in the <a href=\"https://wordpress.org/support/plugin/featured-item-metabox\" rel=\"ugc\">WordPress forums</a>.  Please note that support is limited and does not cover any custom implementation of the plugin.</p>\n<p>Please report any bugs, errors, warnings, code problems at <a href=\"https://github.com/helgatheviking/Featured-Item-Metabox/issues\" rel=\"nofollow ugc\">Github</a></p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/featured-item-metabox.1.4.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "featured": "featured",
+        "metabox": "metabox"
+    },
+    "stable_tag": "1.4.0",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/featured-item-metabox.1.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/featured-item-metabox.1.0.1.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/featured-item-metabox.1.1.zip",
+        "1.1.2": "https://downloads.wordpress.org/plugin/featured-item-metabox.1.1.2.zip",
+        "1.1.4": "https://downloads.wordpress.org/plugin/featured-item-metabox.1.1.4.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/featured-item-metabox.1.2.zip",
+        "1.2.1": "https://downloads.wordpress.org/plugin/featured-item-metabox.1.2.1.zip",
+        "1.2.3": "https://downloads.wordpress.org/plugin/featured-item-metabox.1.2.3.zip",
+        "1.2.4": "https://downloads.wordpress.org/plugin/featured-item-metabox.1.2.4.zip",
+        "1.3.0": "https://downloads.wordpress.org/plugin/featured-item-metabox.1.3.0.zip",
+        "1.3.2": "https://downloads.wordpress.org/plugin/featured-item-metabox.1.3.2.zip",
+        "1.4.0": "https://downloads.wordpress.org/plugin/featured-item-metabox.1.4.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/featured-item-metabox.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.paypal.com/fundraiser/112574644767835624/charity/1451316",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/featured-item-metabox.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 60,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

@@ -1,0 +1,71 @@
+{
+    "name": "BE REST Endpoints",
+    "slug": "be-rest-endpoints",
+    "version": "1.0.0",
+    "author": "BE Webdesign",
+    "author_profile": "https://profiles.wordpress.org/chopinbach/",
+    "contributors": {
+        "chopinbach": {
+            "profile": "https://profiles.wordpress.org/chopinbach/",
+            "avatar": "https://secure.gravatar.com/avatar/bc11b699a2e59027c7c8ce4e90dfc4a1?s=96&d=monsterid&r=g",
+            "display_name": "Edwin Cromley"
+        }
+    },
+    "requires": "4.4.0",
+    "tested": "4.4.33",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/be-rest-endpoints/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 30,
+    "downloaded": 1541,
+    "last_updated": "2016-02-07 11:58pm GMT",
+    "added": "2016-02-07",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Major features in BE REST Endpoints include:</p>\n<p>Sidebars and Widget endpoints for the WP REST API v2.</p>\n<p>More improvements will come.</p>\n<h3>Disclaimer</h3>\n<p>This plugin has not been tested for all themes.</p>\n<p>It is possible that this plugin may not work as intended depending on your theme or if a plugin is modifying the underlying Widgets API.</p>\n<p>Themes that are built on top of _s (http://underscores.me) and default themes should work fine.</p>\n<p>If you are having issues please contact us at (http://be-webdesign.com/contact/)</p>\n<p>Also important to note is that this plugin is more of an experiment and should not be used on a production environment.</p>\n<p>Improvements to the JSON schema and inference of schema data from widgets will need to be improved before this plugin is secure.</p>\n<p>This plugin is mainly just an illustration of one possibility for a widgets and sidebars endpoint in the WP REST API v2.</p>\n<h3>Donations</h3>\n<p>Coming soon, maybe.</p>\n",
+        "installation": "<p>Install WP REST API v2 and activate it. (https://wordpress.org/plugins/rest-api/)</p>\n<p>Upload the BE REST Endpoints plugin to your site, <em>Activate it.</em></p>\n<p>1, 2, 3: You&#8217;re done!</p>\n<p>Endpoints can be accessed at /wp-json/be/v1/widgets/ and /wp-json/be/v1/sidebars</p>\n<p>Lets talk about more interesting stuff now!<br />\nTo see a particular widget instance or sidebar make a request like this.<br />\n&#8216;text-2&#8217; will serve as our example widget ID and &#8216;sidebar-1&#8217; for our sidebar-id.</p>\n<p>Note: text-2 would already have to exist.</p>\n<p><strong>For a widget instance:</strong><br />\nGET /wp-json/be/v1/widgets/text-2</p>\n<p><strong>For a sidebar:</strong><br />\nGET /wp-json/be/v1/sidebars/sidebar-1</p>\n<p>Cool!!! Now you can make that JavaScript based theme you&#8217;ve been wanting to do.<br />\nNow for more interesting stuff!</p>\n<p>Lets create a widget via the WP REST API! First, there are a couple of query parameters to go over.</p>\n<p><strong>widget_base</strong>      -&gt; is the type of widget you want to create.  <em>REQUIRED PARAMETER.</em></p>\n<p><strong>sidebar_id</strong>       -&gt; is the id of the sidebar you want to place the widget into. <em>REQUIRED PARAMETER.</em></p>\n<p><strong>sidebar_position</strong> -&gt; is the numeric position of where you want to place the widget in the sidebar.<br />\n    sidebar_position does not use array index base numbers instead if you want your widget first use 1.<br />\n    if you want it second 2. If you want it 10th, use 10.  This parameter defaults to 1.<br />\n    If left empty your widget will automatically default to first in the sidebar.</p>\n<p>Now lets do some REST requests.</p>\n<p><strong>Create a text widget in sidebar-1:</strong></p>\n<p>POST /wp-json/be/v1/widgets/?widget_base=text&amp;sidebar_id=sidebar-1</p>\n<p><strong>Create a tag cloud widget in sidebar-1 after our text widget we just made:</strong></p>\n<p>POST /wp-json/be/v1/widgets/?widget_base=tag_cloud&amp;sidebar_id=sidebar-1&amp;sidebar_position=2</p>\n<p>Now we are cooking. But wait our new awesome widgets are just empty shells 🙁<br />\nNow we need to update the actual widget instances. Knowledge of how your widgets work comes in very handy here.</p>\n<p>You can do these tests in twenty sixteen because it has multiple sidebars.<br />\nIf you have a theme that supports multiple sidebars feel free to use that just make sure the sidebar IDs match up.</p>\n<p>The instance of the widget is what holds it&#8217;s dynamic data. You must look at the code to know the values that need to be updated.<br />\nWhen you create a widget you will notice that you are returned a series of instances.<br />\nThe parameters within these indexes are used by the instance.</p>\n<p>Lets create a calendar widget.</p>\n<p><strong>Create calendar widget:</strong></p>\n<p>POST /wp-json/be/v1/widgets/?widget_base=calendar&amp;sidebar_id=sidebar-1</p>\n<p>We are returned the widget instance. A JSON object that would look like this.</p>\n<p>{</p>\n<pre><code>    2 - {\n\n        \"title\": \"\"\n\n    },\n\n    \"_multiwidget\": 1\n</code></pre>\n<p>}</p>\n<p>So at the numeric index 2 matching calendar-2 we see that this is a simple widget.<br />\nIt only has the option to have the instance of its title modified. So lets do it.</p>\n<p><strong>POST /wp-json/be/v1/widgets/calendar-2?title=Made by REST API</strong></p>\n<p>Voila! Are calendar widget has a fancy new title. What if we need to move its position though since we want it at the bottom of our sidebar.</p>\n<p><strong>POST /wp-json/be/v1/widgets/calendar-2?sidebar_position=3</strong></p>\n<p>There it is at the end of the sidebar. But wait what I really wanted was for it to be in the other sidebar.  No problem.</p>\n<p><strong>POST /wp-json/be/v1/widgets/calendar-2?sidebar_id=sidebar-2</strong></p>\n<p>Done.</p>\n<p>So you also combine these as well lets take our text widget we created and move it to the after the calendar in sidebar-2.</p>\n<p><strong>POST /wp-json/be/v1/widgets/text-2?title=Moved&amp;text=Yes+it+moved&amp;sidebar_id=sidebar-2&amp;sidebar_position=2</strong></p>\n<p>I forgot that I didn&#8217;t want to do any of this. Luckily, we have delete as well. Lets clean up.</p>\n<p><strong>Delete our widgets:</strong></p>\n<p>DELETE wp-json/be/v1/widgets/calendar-2<br />\nDELETE wp-json/be/v1/widgets/text-2<br />\nDELETE wp-json/be/v1/widgets/tag_cloud-2</p>\n<p>The unique IDs for widgets will incrementally increase. If you create three text widgets you would have text-2, text-3, text-4.<br />\nSo now, you could write an administrative tool that utilizes the widgets and sidebars endpoints!</p>\n<p>If you have any questions feel free to contact us at (http://be-webdesign.com/contact/)</p>\n",
+        "faq": "<p>No questions have been frequently asked yet!</p>\n",
+        "changelog": "<p>No changes yet.</p>\n"
+    },
+    "short_description": "Major features in BE REST Endpoints include:",
+    "description": "<p>Major features in BE REST Endpoints include:</p>\n<p>Sidebars and Widget endpoints for the WP REST API v2.</p>\n<p>More improvements will come.</p>\n<h3>Disclaimer</h3>\n<p>This plugin has not been tested for all themes.</p>\n<p>It is possible that this plugin may not work as intended depending on your theme or if a plugin is modifying the underlying Widgets API.</p>\n<p>Themes that are built on top of _s (http://underscores.me) and default themes should work fine.</p>\n<p>If you are having issues please contact us at (http://be-webdesign.com/contact/)</p>\n<p>Also important to note is that this plugin is more of an experiment and should not be used on a production environment.</p>\n<p>Improvements to the JSON schema and inference of schema data from widgets will need to be improved before this plugin is secure.</p>\n<p>This plugin is mainly just an illustration of one possibility for a widgets and sidebars endpoint in the WP REST API v2.</p>\n<h3>Donations</h3>\n<p>Coming soon, maybe.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/be-rest-endpoints.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "rest-api-widgets": "REST API widgets",
+        "sidebars": "sidebars",
+        "widget-areas": "widget areas",
+        "widgets": "widgets",
+        "wp-rest-api-widgets": "WP REST API widgets"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "http://be-webdesign.com",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/be-rest-endpoints.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

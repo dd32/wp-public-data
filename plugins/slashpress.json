@@ -1,0 +1,78 @@
+{
+    "name": "SlashPress",
+    "slug": "slashpress",
+    "version": "1.1.0",
+    "author": "Roy Orbison",
+    "author_profile": "https://profiles.wordpress.org/lev0/",
+    "contributors": {
+        "lev0": {
+            "profile": "https://profiles.wordpress.org/lev0/",
+            "avatar": "https://secure.gravatar.com/avatar/352b27d4906bf5c8d481477e1a81c76e?s=96&d=monsterid&r=g",
+            "display_name": "Roy Orbitson"
+        }
+    },
+    "requires": "4.7.1",
+    "tested": "6.1.7",
+    "requires_php": "7.0.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/slashpress/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 570,
+    "last_updated": "2023-02-17 4:23am GMT",
+    "added": "2020-04-28",
+    "homepage": "",
+    "sections": {
+        "description": "<p>It&#8217;s very easy to create a <a href=\"https://docs.mattermost.com/developer/slash-commands.html#custom-slash-command\" rel=\"nofollow ugc\">custom slash command on Mattermost</a>, or <a href=\"https://api.slack.com/apps\" rel=\"nofollow ugc\">a private app on Slack</a> that has <a href=\"https://api.slack.com/interactivity/slash-commands\" rel=\"nofollow ugc\">the slash command feature</a>. This plugin turns that convenient chat interface into a subscribable event using standard WordPress filter &amp; action hooks. This enables automation of tasks that need to be run on-demand, and provision of interactive help for them.</p>\n<p>The hooks provided are as follows:</p>\n<ul>\n<li><code>slashpress_command_${command}</code></li>\n<li><code>slashpress_command</code></li>\n<li><code>slashpress_help_${command}</code></li>\n<li><code>slashpress_help</code></li>\n</ul>\n<p>The subscribed events receive a helper object representing the sent slash command, with methods to respond using Markdown or a rich response object the chat service can render. Plugins may listen for a specific slash command or a site-wide one, and respond based on the command content. Long-running tasks (&gt; 3 seconds) can provide an immediate acknowledgement response, then later a result response; this is easily achieved by ensuring a <a href=\"https://developer.wordpress.org/plugins/cron/hooking-wp-cron-into-the-system-task-scheduler/\" rel=\"nofollow ugc\">proper cron invocation</a> for the site, then passing the helper object to <code>wp_schedule_single_event()</code> to run the task in the background and POST a status message back upon completion.</p>\n<p>By itself, this plugin doesn&#8217;t do anything. It is aimed at developers and maintainers to abstract away the boring plumbing and authentication, allowing you to keep your code DRY. It supports authentication by both tokens and HMAC signatures. There is no limit on the number of such integrations this endpoint can handle. Only POST method requests are accepted and sent so access logs are kept clean. The interactive help keyword is configurable.</p>\n<p>There is no logging, metrics, analytics, nags, or anything that would violate your privacy or GDPR obligations contained in this plugin. It is not freemium; there is no &#8216;Pro&#8217; version.</p>\n",
+        "installation": "<ol>\n<li>Upload the entire, extracted plugin directory to the <code>wp-content/plugins/</code> directory, or install the plugin through the WordPress Plugins screen directly.</li>\n<li>Activate the plugin through the Plugins screen.</li>\n<li>Go to <em>Settings &gt; SlashPress</em>, add a service ID, and save.</li>\n<li>Note the endpoint URLs provided and insert them into your chat service integration.</li>\n<li>Copy the authentication credential from your service to the plugin settings and save again.</li>\n<li>Test the integration by entering your slash command followed by <code>help</code>.</li>\n<li>Subscribe to the hooks in your own code.</li>\n</ol>\n",
+        "faq": "\n<dt id='what%20is%20this%20good%20for%3F'>\nWhat is this good for?\n</h4>\n<p>\n<p>Running any task any task that you want to start immediately from the comfort of your chat app. It&#8217;s great for providing instant summaries, triggering actions like backups, clearing/preloading caches of optimisation plugins, updating copies of remote data.</p>\n<p>Your code can respond with anything you need, from a simple <code>OK</code> to a full tabulated response using Markdown:</p>\n<pre><code>|Order stat|Count|\n|:---|---:|\n|New orders today|27|\n|Orders to fulfil|8|\n|Unpaid orders|2|\n</code></pre>\n</p>\n<dt id='so%20how%20do%20i%20use%20this%20thing%3F'>\nSo how do I use this thing?\n</h4>\n<p>\n<p>A simple example is probably best:</p>\n<pre><code>add_action(\n    'slashpress_help'\n    , function(SlashPress\\Command $slash, string $help_terms) {\n        $slash-&gt;addHelp('flubbers', '`flubbers` Gets the latest map of nearby flubbers.')\n            -&gt;addHelp('gronks', '`gronks` Updates the list of the top 100 gronks and their values.')\n            -&gt;addHelp('uncache', 'Site content not looking quite right? Use `uncache` to clear the out the generated pages.');\n    }\n    , 100\n    , 2\n);\n\nadd_filter(\n    'slashpress_command'\n    , function($initial_response, SlashPress\\Command $slash) {\n        if (!$slash-&gt;known) {\n            $text = trim($slash-&gt;data['text']);\n            switch ($text) {\n                case 'flubbers':\n                case 'gronks':\n                    $slash-&gt;handled = true;\n                    wp_schedule_single_event(time(), 'big_data_fetch_cron_event_hook', [$text, $slash]);\n                    return 'Big data fetch queued.';\n                case 'uncache':\n                    $slash-&gt;handled = true;\n                    if (function_exists('w3tc_flush_posts')) {\n                        w3tc_flush_posts();\n                        return 'Cleared the post cache.';\n                    }\n                    return 'No cache found to clear.';\n            }\n        }\n        return $initial_response;\n    }\n    , 10\n    , 2\n);\n\nadd_action(\n    'big_data_fetch_cron_event_hook'\n    , function(string $what = null, SlashPress\\Command $slash = null) {\n        $results_bad = $results = [];\n        if (null == $what || 'flubbers' == $what) {\n            if (fetch_flubbers()) {\n                $results[] = 'Flubbers fetched.';\n            }\n            else {\n                $results_bad[] = $results[] = 'Could not fetch the flubbers.';\n            }\n        }\n        if (null == $what || 'gronks' == $what) {\n            if (fetch_gronks()) {\n                $results[] = 'Gronks fetched.';\n            }\n            else {\n                $results_bad[] = $results[] = 'Could not fetch the gronks.';\n            }\n        }\n        if ($slash) {\n            if ($slash-&gt;canRespondDelayed()) {\n                $slash-&gt;respondDelayed(implode(\"  \\n\", $results));\n            }\n        }\n        elseif ($results_bad) {\n            echo implode(\"  \\n\", $results_bad);\n        }\n    }\n);\n</code></pre>\n</p>\n\n"
+    },
+    "short_description": "A conduit between your chat service and your WordPress sites.",
+    "description": "<p>It&#8217;s very easy to create a <a href=\"https://docs.mattermost.com/developer/slash-commands.html#custom-slash-command\" rel=\"nofollow ugc\">custom slash command on Mattermost</a>, or <a href=\"https://api.slack.com/apps\" rel=\"nofollow ugc\">a private app on Slack</a> that has <a href=\"https://api.slack.com/interactivity/slash-commands\" rel=\"nofollow ugc\">the slash command feature</a>. This plugin turns that convenient chat interface into a subscribable event using standard WordPress filter &amp; action hooks. This enables automation of tasks that need to be run on-demand, and provision of interactive help for them.</p>\n<p>The hooks provided are as follows:</p>\n<ul>\n<li><code>slashpress_command_${command}</code></li>\n<li><code>slashpress_command</code></li>\n<li><code>slashpress_help_${command}</code></li>\n<li><code>slashpress_help</code></li>\n</ul>\n<p>The subscribed events receive a helper object representing the sent slash command, with methods to respond using Markdown or a rich response object the chat service can render. Plugins may listen for a specific slash command or a site-wide one, and respond based on the command content. Long-running tasks (&gt; 3 seconds) can provide an immediate acknowledgement response, then later a result response; this is easily achieved by ensuring a <a href=\"https://developer.wordpress.org/plugins/cron/hooking-wp-cron-into-the-system-task-scheduler/\" rel=\"nofollow ugc\">proper cron invocation</a> for the site, then passing the helper object to <code>wp_schedule_single_event()</code> to run the task in the background and POST a status message back upon completion.</p>\n<p>By itself, this plugin doesn&#8217;t do anything. It is aimed at developers and maintainers to abstract away the boring plumbing and authentication, allowing you to keep your code DRY. It supports authentication by both tokens and HMAC signatures. There is no limit on the number of such integrations this endpoint can handle. Only POST method requests are accepted and sent so access logs are kept clean. The interactive help keyword is configurable.</p>\n<p>There is no logging, metrics, analytics, nags, or anything that would violate your privacy or GDPR obligations contained in this plugin. It is not freemium; there is no &#8216;Pro&#8217; version.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/slashpress.1.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "chatops": "ChatOps",
+        "mattermost": "Mattermost",
+        "slack": "slack",
+        "slash-commands": "slash commands"
+    },
+    "stable_tag": "1.1.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/slashpress.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/slashpress.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/slashpress.1.0.2.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/slashpress.1.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/slashpress.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/slashpress/assets/banner-772x250.png?rev=2755127",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/slashpress/assets/icon-128x128.png?rev=2293582"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

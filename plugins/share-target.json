@@ -1,0 +1,87 @@
+{
+    "name": "Share Target",
+    "slug": "share-target",
+    "version": "1.0.0-beta.1",
+    "author": "<a href=\"https://felix-arntz.me\">Felix Arntz</a>",
+    "author_profile": "https://profiles.wordpress.org/flixos90/",
+    "contributors": {
+        "flixos90": {
+            "profile": "https://profiles.wordpress.org/flixos90/",
+            "avatar": "https://secure.gravatar.com/avatar/311f5b078f20df54be55cbe1a5a45f1e?s=96&d=monsterid&r=g",
+            "display_name": "Felix Arntz"
+        }
+    },
+    "requires": "5.2",
+    "tested": "5.7.12",
+    "requires_php": "7.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/share-target/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 820,
+    "last_updated": "2021-04-06 1:46am GMT",
+    "added": "2021-04-06",
+    "homepage": "https://wordpress.org/plugins/share-target/",
+    "sections": {
+        "description": "<p>By using this plugin, you can share content like images, media, URLs and text directly to your WordPress site from a <a href=\"https://caniuse.com/web-app-manifest\" rel=\"nofollow ugc\">capable device and browser</a>. For example, you can share a photo that you just took on your phone to your WordPress site in the same way that you would otherwise share it with your friends in a native messaging app.</p>\n<p>When you share content to your WordPress site using this plugin, it will automatically start a new block editor draft post with it; you can then just add anything else you like, or immediately publish it as is. For certain use-cases, e.g. an image blog, creating a post with the shared image might be everything that&#8217;s needed before publishing right away!</p>\n<p>To name a few other examples of what you can share to your WordPress site using this plugin, think about audio and video files, short text notes, Spotify playlists &#8211; basically anything that you can share from an app on your phone you can now also share directly to your WordPress site.</p>\n<h4>Requirements</h4>\n<p>In order to use this plugin, you will also need to install and activate the <a href=\"https://wordpress.org/plugins/pwa/\" rel=\"ugc\">PWA plugin</a>, which provides the basic infrastructure for your site to become a PWA.</p>\n<h4>Usage</h4>\n<p>With both plugins active, once you visit your site on a <a href=\"https://caniuse.com/web-app-manifest\" rel=\"nofollow ugc\">capable device and browser</a>, you should see a prompt (via the PWA plugin&#8217;s functionality) to add the plugin to your home screen (e.g. similar to an app on your phone).</p>\n<p>Once you have added your website to the home screen of your device, it should be available as a target when sharing any content from that device, e.g. a photo or a URL.</p>\n<p>When you share something to your WordPress site, the installed PWA of your website should open. You should then (potentially after logging in) land directly on a new post in the block editor where the shared content has already been added. If you are sharing a media file (e.g. an image or video file), it will be automatically added to your site&#8217;s media library.</p>\n<h4>Background information</h4>\n<p>This plugin is powered by the Web Share Target API. The <a href=\"https://web.dev/web-share-target/\" rel=\"nofollow ugc\">Web Share Target API</a> is a modern browser API which allows sharing images, media, URLs and basic text content directly to your website, relying on the regular sharing UI that is for example integrated in your phone. <a href=\"https://w3c.github.io/web-share-target/\" rel=\"nofollow ugc\">See here for more technical background information about the Web Share Target API.</a></p>\n<h4>Third-party developer API</h4>\n<p>The Share Target plugin allows other plugins to integrate with it. You can customize what should happen with incoming shared content when it arrives in the block editor, conditionally overriding the default behavior of the plugin.</p>\n<p>In PHP, enqueue your custom JavaScript file. Make sure to include the <code>share-target</code> script in its dependencies. For example:</p>\n<pre><code>wp_enqueue_script(\n  'my-share-target-handler',\n  '/assets/js/my-share-target-handler.js',\n  array( 'share-target' )\n);\n</code></pre>\n<p>In your JavaScript file you can then add your custom share handler using the following function:</p>\n<p><strong><code>wp.shareTarget.registerShareHandler( options )</code></strong></p>\n<p>Registers a new share handler for incoming shared data.</p>\n<p>Parameters:</p>\n<ul>\n<li><code>options</code>: <em>(Object) (required)</em> Handler options.</li>\n<li><code>options.handle</code>: <em>(Function) (required)</em> Share handler function. Must be asynchronous and accept an object with properties <code>title</code>, <code>description</code>, <code>link</code> (each strings), and <code>attachment</code> (object). Any of these may be undefined. Depending on the data, the function should decide whether to handle it and if so run the necessary logic and return true, to stop following handlers from being called. Otherwise, it should return false.</li>\n<li><code>options.priority</code>: <em>(number) (optional)</em> Priority for the handler. A lower number means higher priority, like for WordPress hooks. Default is 10.</li>\n</ul>\n<p>The following example handles any shared Spotify content and embeds it into the post:</p>\n<pre><code>// Matches a shared Spotify URL.\nconst spotifyRegex = /^https:\\/\\/open\\.spotify\\.com/;\n\nwp.shareTarget.registerShareHandler( {\n  handle: async ( { link, attachment } ) =&gt; {\n    // Do not handle if a media file is being shared.\n    if ( attachment ) {\n      return false;\n    }\n\n    // If a shared Spotify URL, embed it.\n    if ( link &amp;&amp; link.match( spotifyRegex ) ) {\n      wp.data.dispatch( 'core/block-editor' ).insertBlocks( [\n        wp.blocks.createBlock( 'core/embed', {\n          url: link,\n          type: 'rich',\n          providerNameSlug: 'spotify',\n          responsive: true,\n        } ),\n      ] );\n      return true;\n    }\n\n    // Otherwise fall back to other handlers.\n    return false;\n  },\n  priority: 5,\n} );\n</code></pre>\n",
+        "installation": "<p><strong>Make sure you have the <a href=\"https://wordpress.org/plugins/pwa/\" rel=\"ugc\">PWA plugin</a> installed before using the Share Target plugin.</strong></p>\n<ol>\n<li>Upload the entire <code>share-target</code> folder to the <code>/wp-content/plugins/</code> directory or download it through the WordPress backend.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n</ol>\n",
+        "faq": "\n<dt id='why%20does%20my%20website%20not%20show%20up%20as%20a%20target%20for%20shared%20content%3F'>\nWhy does my website not show up as a target for shared content?\n</h4>\n<p>\n<p>In order for your website to show up in your device&#8217;s integrated sharing UI, you need to install your website as a PWA on your device. Make sure to use a <a href=\"https://caniuse.com/web-app-manifest\" rel=\"nofollow ugc\">browser and OS that supports adding your website as a PWA to your homescreen</a>.</p>\n</p>\n<dt id='where%20should%20i%20submit%20my%20support%20request%3F'>\nWhere should I submit my support request?\n</h4>\n<p>\n<p>For regular support requests, please use the <a href=\"https://wordpress.org/support/plugin/share-target\" rel=\"ugc\">wordpress.org support forums</a>. If you have a technical issue with the plugin where you already have more insight on how to fix it, you can also <a href=\"https://github.com/felix-arntz/wp-share-target/issues\" rel=\"nofollow ugc\">open an issue on Github instead</a>.</p>\n</p>\n<dt id='how%20can%20i%20contribute%20to%20the%20plugin%3F'>\nHow can I contribute to the plugin?\n</h4>\n<p>\n<p>If you have some ideas to improve the plugin or to solve a bug, feel free to raise an issue or submit a pull request in the <a href=\"https://github.com/felix-arntz/wp-share-target\" rel=\"nofollow ugc\">Github repository for the plugin</a>. Please stick to the <a href=\"https://github.com/felix-arntz/wp-share-target/blob/main/CONTRIBUTING.md\" rel=\"nofollow ugc\">contributing guidelines</a>.</p>\n<p>You can also contribute to the plugin by translating it. Simply visit <a href=\"https://translate.wordpress.org/projects/wp-plugins/share-target\" rel=\"nofollow ugc\">translate.wordpress.org</a> to get started.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0-beta.1</h4>\n<ul>\n<li>Initial beta release</li>\n</ul>\n"
+    },
+    "short_description": "Allows to share images and other content directly to a WordPress site through the Web Share Target API.",
+    "description": "<p>By using this plugin, you can share content like images, media, URLs and text directly to your WordPress site from a <a href=\"https://caniuse.com/web-app-manifest\" rel=\"nofollow ugc\">capable device and browser</a>. For example, you can share a photo that you just took on your phone to your WordPress site in the same way that you would otherwise share it with your friends in a native messaging app.</p>\n<p>When you share content to your WordPress site using this plugin, it will automatically start a new block editor draft post with it; you can then just add anything else you like, or immediately publish it as is. For certain use-cases, e.g. an image blog, creating a post with the shared image might be everything that&#8217;s needed before publishing right away!</p>\n<p>To name a few other examples of what you can share to your WordPress site using this plugin, think about audio and video files, short text notes, Spotify playlists &#8211; basically anything that you can share from an app on your phone you can now also share directly to your WordPress site.</p>\n<h4>Requirements</h4>\n<p>In order to use this plugin, you will also need to install and activate the <a href=\"https://wordpress.org/plugins/pwa/\" rel=\"ugc\">PWA plugin</a>, which provides the basic infrastructure for your site to become a PWA.</p>\n<h4>Usage</h4>\n<p>With both plugins active, once you visit your site on a <a href=\"https://caniuse.com/web-app-manifest\" rel=\"nofollow ugc\">capable device and browser</a>, you should see a prompt (via the PWA plugin&#8217;s functionality) to add the plugin to your home screen (e.g. similar to an app on your phone).</p>\n<p>Once you have added your website to the home screen of your device, it should be available as a target when sharing any content from that device, e.g. a photo or a URL.</p>\n<p>When you share something to your WordPress site, the installed PWA of your website should open. You should then (potentially after logging in) land directly on a new post in the block editor where the shared content has already been added. If you are sharing a media file (e.g. an image or video file), it will be automatically added to your site&#8217;s media library.</p>\n<h4>Background information</h4>\n<p>This plugin is powered by the Web Share Target API. The <a href=\"https://web.dev/web-share-target/\" rel=\"nofollow ugc\">Web Share Target API</a> is a modern browser API which allows sharing images, media, URLs and basic text content directly to your website, relying on the regular sharing UI that is for example integrated in your phone. <a href=\"https://w3c.github.io/web-share-target/\" rel=\"nofollow ugc\">See here for more technical background information about the Web Share Target API.</a></p>\n<h4>Third-party developer API</h4>\n<p>The Share Target plugin allows other plugins to integrate with it. You can customize what should happen with incoming shared content when it arrives in the block editor, conditionally overriding the default behavior of the plugin.</p>\n<p>In PHP, enqueue your custom JavaScript file. Make sure to include the <code>share-target</code> script in its dependencies. For example:</p>\n<pre><code>wp_enqueue_script(\n  'my-share-target-handler',\n  '/assets/js/my-share-target-handler.js',\n  array( 'share-target' )\n);\n</code></pre>\n<p>In your JavaScript file you can then add your custom share handler using the following function:</p>\n<p><strong><code>wp.shareTarget.registerShareHandler( options )</code></strong></p>\n<p>Registers a new share handler for incoming shared data.</p>\n<p>Parameters:</p>\n<ul>\n<li><code>options</code>: <em>(Object) (required)</em> Handler options.</li>\n<li><code>options.handle</code>: <em>(Function) (required)</em> Share handler function. Must be asynchronous and accept an object with properties <code>title</code>, <code>description</code>, <code>link</code> (each strings), and <code>attachment</code> (object). Any of these may be undefined. Depending on the data, the function should decide whether to handle it and if so run the necessary logic and return true, to stop following handlers from being called. Otherwise, it should return false.</li>\n<li><code>options.priority</code>: <em>(number) (optional)</em> Priority for the handler. A lower number means higher priority, like for WordPress hooks. Default is 10.</li>\n</ul>\n<p>The following example handles any shared Spotify content and embeds it into the post:</p>\n<pre><code>// Matches a shared Spotify URL.\nconst spotifyRegex = /^https:\\/\\/open\\.spotify\\.com/;\n\nwp.shareTarget.registerShareHandler( {\n  handle: async ( { link, attachment } ) =&gt; {\n    // Do not handle if a media file is being shared.\n    if ( attachment ) {\n      return false;\n    }\n\n    // If a shared Spotify URL, embed it.\n    if ( link &amp;&amp; link.match( spotifyRegex ) ) {\n      wp.data.dispatch( 'core/block-editor' ).insertBlocks( [\n        wp.blocks.createBlock( 'core/embed', {\n          url: link,\n          type: 'rich',\n          providerNameSlug: 'spotify',\n          responsive: true,\n        } ),\n      ] );\n      return true;\n    }\n\n    // Otherwise fall back to other handlers.\n    return false;\n  },\n  priority: 5,\n} );\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/share-target.1.0.0-beta.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/share-target/assets/screenshot-1.png?rev=2509752",
+            "caption": "Sharing media and text from a notes app on the phone directly into a WordPress site about cocktails"
+        },
+        {
+            "src": "https://ps.w.org/share-target/assets/screenshot-2.png?rev=2509752",
+            "caption": "The shared content from the other screenshot as initially displayed in the block editor, with only one click left to publish"
+        }
+    ],
+    "tags": {
+        "image": "image",
+        "media": "media",
+        "share-target": "share target",
+        "sharing": "sharing",
+        "web": "web"
+    },
+    "stable_tag": "1.0.0-beta.1",
+    "versions": {
+        "1.0.0-beta.1": "https://downloads.wordpress.org/plugin/share-target.1.0.0-beta.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/share-target.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/share-target/assets/banner-772x250.png?rev=2509752",
+        "high": "https://ps.w.org/share-target/assets/banner-1544x500.png?rev=2509752"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/share-target/assets/icon-128x128.png?rev=2509752",
+        "2x": "https://ps.w.org/share-target/assets/icon-256x256.png?rev=2509752"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

@@ -1,0 +1,122 @@
+{
+    "name": "WP Deferred JavaScripts",
+    "slug": "wp-deferred-javascripts",
+    "version": "2.0.5",
+    "author": "<a href=\"https://wabeo.fr/wp-deferred-js-authors.html\">Willy Bahuaud, Daniel Roch, Grégory Viguier</a>",
+    "author_profile": "https://profiles.wordpress.org/willybahuaud/",
+    "contributors": {
+        "willybahuaud": {
+            "profile": "https://profiles.wordpress.org/willybahuaud/",
+            "avatar": "https://secure.gravatar.com/avatar/954f71b7723f0ba503514acb65c24293?s=96&d=monsterid&r=g",
+            "display_name": "Willy Bahuaud"
+        },
+        "confridin": {
+            "profile": "https://profiles.wordpress.org/confridin/",
+            "avatar": "https://secure.gravatar.com/avatar/5c5227643fd2075732b6da6be0993433?s=96&d=monsterid&r=g",
+            "display_name": "Daniel Roch"
+        },
+        "greglone": {
+            "profile": "https://profiles.wordpress.org/greglone/",
+            "avatar": "https://secure.gravatar.com/avatar/35a94c72390323a1e182a2cdc946139c?s=96&d=monsterid&r=g",
+            "display_name": "Grégory Viguier"
+        }
+    },
+    "requires": "3.0",
+    "tested": "4.6.29",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 64,
+    "ratings": {
+        "5": 17,
+        "4": 1,
+        "3": 0,
+        "2": 6,
+        "1": 11
+    },
+    "num_ratings": 35,
+    "support_url": "https://wordpress.org/support/plugin/wp-deferred-javascripts/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 1000,
+    "downloaded": 157919,
+    "last_updated": "2016-09-01 8:54am GMT",
+    "added": "2013-01-27",
+    "homepage": "http://www.screenfeed.fr",
+    "sections": {
+        "description": "<p>This plugin defer the loading of all JavaScripts added by the way of <code>wp_enqueue_script()</code>, using LABJS. The result is a significant optimization of loading time.</p>\n<p>It is compatible with all WordPress JavaScript functions (<code>wp_localize_script()</code>, js in header, in footer&#8230;) and works with all well coded plugins.</p>\n<p>If a plugin or a theme is not properly enqueuing scripts, your site may not work. Check this page: <a href=\"https://codex.wordpress.org/Function_Reference/wp_enqueue_script\" rel=\"nofollow ugc\">Function Reference/wp_enqueue_script on WordPress Codex</a>.</p>\n<p>LABjs (Loading And Blocking JavaScript) is an open-source (MIT license) project supported by <a href=\"http://getify.com/\" rel=\"nofollow ugc\">Getify Solutions</a>.</p>\n<p>We performed a range of tests to determine the potential benefit of loading time. On <a href=\"http://wabeo.fr\" rel=\"nofollow ugc\">wabeo</a> we executed <a href=\"http://webwait.com/\" rel=\"nofollow ugc\">webwait</a> (150 calls by test). Result is this plugin could <strong>improve your loading time by 25%</strong>!!<br />\nMore information in the <a href=\"https://wordpress.org/extend/plugins/wp-deferred-javascripts/screenshots/\" rel=\"ugc\">Screenshots section</a>.</p>\n<p>You can find <a href=\"http://www.seomix.fr/wp-deferred-javascript/\" rel=\"nofollow ugc\">more information about WP Deferred JavaScripts</a> and <a href=\"http://wabeo.fr/blog/wordpress-javascripts-asynchrones/\" rel=\"nofollow ugc\">technical information about asynchronous scripts</a> on authors blogs.</p>\n",
+        "installation": "<ol>\n<li>\n<p>Upload the WP Deferred JavaScripts plugin to your blog and activate it.</p>\n</li>\n<li>\n<p>Enjoy ^^</p>\n</li>\n</ol>\n",
+        "faq": "<p>WP Deferred JavaScript includes some hooks. If you never used one of them, <a href=\"https://codex.wordpress.org/Plugin_API\" rel=\"nofollow ugc\">check this page</a>. It&#8217;s better to use those filters in a plugin or a mu-plugin.</p>\n\n<h4>Exclude Scripts</h4>\n<p>\n<p><em>do_not_defer</em> is a filter that took as a parameter an array containing scripts that should be handle normally.</p>\n<p>Here is an example:</p>\n<pre><code>// Normal script enqueue.\nadd_action( 'wp_enqueue_scripts', 'register_canvas_script' );\nfunction register_canvas_script() {\n    wp_register_script( 'my-canvas-script', 'http://exemple.com/myscript.js' );\n    wp_enqueue_script( 'my-canvas-script' );\n}\n\n// Don't defer this script.\nadd_filter( 'do_not_defer', 'exclude_canvas_script' );\nfunction exclude_canvas_script( $do_not_defer ) {\n    $do_not_defer[] = 'my-canvas-script';\n    return $do_not_defer;\n}\n</code></pre>\n<p><strong>Since 2.0.3 you can also use the WP Deferred JS settings pannel!</strong></p>\n</p>\n<h4>Change LABJS URL</h4>\n<p>\n<p><em>wdjs_labjs_src</em> is a filter that allow you to change LabJS URL.<br />\n ($lab_src, $lab_ver)</p>\n<pre><code>// for example, I need a specific version of LabJS\nadd_filter( 'wdjs_labjs_src', 'my_labjs_src', 10, 2 );\nfunction my_labjs_src( $src, $ver ) {\n    if ( '2.0' !== $ver ) {\n        // Hotlinking raw github is a bad practice, I did it just for the lulz.\n        return 'https://raw.githubusercontent.com/getify/LABjs/edb9fed40dc224bc03c338be938cb586ef397fa6/LAB.min.js';\n    }\n    return $src;\n}\n</code></pre>\n</p>\n<h4>HTML5 compatibility</h4>\n<p>\n<p>If you use HTM5, <code>wdjs_use_html5</code> is a filter that remove the <code>type=\"text/javascript\"</code> attribute. You can use it this way:</p>\n<pre><code>add_filter( 'wdjs_use_html5', '__return_true' );\n</code></pre>\n</p>\n<h4>Change a script URL</h4>\n<p>\n<p><em>wdjs_deferred_script_src</em> can be used to change the way one of the script is loaded. For example:</p>\n<pre><code>// Here, I need to add information about the charset.\nadd_filter( 'wdjs_deferred_script_src', '', 10, 3 );\nfunction change_my_script_src( $src_string, $handle, $src ) {\n    // $src_string -&gt; .script(\"http://exemple.com/myscript.js?v=2.0\")\n    // $handle -&gt; my-script\n    // $src -&gt; http://exemple.com/myscript.js?v=2.0\n    $out = array( 'src' =&gt; $src, 'charset' =&gt; 'iso-8859-1' );\n    return '.wait(' . json_encode( $out ) . ')';\n}\n</code></pre>\n</p>\n<h4>How to execute a code right after script loading</h4>\n<p>\n<p>You may need to execute a script right after its loading. You can use <em>wdjs_deferred_script_wait</em> filter to do it.</p>\n<pre><code>add_action( 'wdjs_deferred_script_wait', 'after_my_script', 10, 2 );\nfunction after_my_script( $wait, $handle ) {\n    if ( 'my-script' === $handle ) {\n        $wait = 'function(){new MyScriptObject();}';\n    }\n    return $wait;\n}\n</code></pre>\n</p>\n<h4>Execute a function when all scripts are loaded</h4>\n<p>\n<p>You may have to use inline JavaScript in your footer. If that&#8217;s the case, you will have to use that last hook to make it compatible with WP Deferred JavaScripts.</p>\n<p>You will have to wrap this inline JS into a new function. Then, you will have to use <em>wdjs_before_end_lab</em> to execute it.</p>\n<pre><code>// This is a fake function that we are wrapping in a new function\nadd_filter( 'before_shitty_plugin_print_js', 'wrap_this_code' );\nfunction wrap_this_code( $code ) {\n    return 'function PluginShittyCode(){' . $code . '}';\n}\n\nadd_filter( 'wdjs_before_end_lab', 'call_shitty_code' );\nfunction call_shitty_code( $end ) {\n    $end .= '.PluginShittyCode()';\n    return $end;\n}\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>2.0.5</h4>\n<ul>\n<li>Solve problem encountered on <a href=\"https://wordpress.org/support/topic/problem-after-update-array_merge-argument-2-is-not-an-array?replies=2\" rel=\"ugc\">this support topic</a></li>\n</ul>\n<h4>2.0.4</h4>\n<ul>\n<li>do_not_defer can now accept scripts URI.</li>\n<li>New settings sub-pannel to exclude scripts from deferring, without using the plugin filter.</li>\n<li>Tested up to WordPress 4.4.2</li>\n</ul>\n<h4>2.0.2</h4>\n<ul>\n<li>Minor bugfix: now the plugin catches some data added lately and include it in the plugin script tag (instead of letting the data create its own tag).</li>\n</ul>\n<h4>2.0.1</h4>\n<ul>\n<li>Small code improvement.</li>\n<li>Prefix functions with <code>wdjs</code> instead of <code>sfdjs</code>.</li>\n</ul>\n<h4>2.0.0</h4>\n<ul>\n<li>Overall code rewrite, by <a href=\"http://screenfeed.fr\" rel=\"nofollow ugc\">Grégory Viguier</a>.</li>\n<li>New hooks.</li>\n<li>LabJS is loaded now loaded asynchronously.</li>\n<li>Conditional script are now supported.</li>\n<li>Bug fix: 404 error on scripts without source.</li>\n<li>Script dependency that should not be deferred are now excluded automatically.</li>\n<li>WP Deferred JavaScripts is compatible with <a href=\"http://www.screenfeed.fr/plugin-wp/sf-cache-busting/\" rel=\"nofollow ugc\">SF Cache Busting</a>.</li>\n</ul>\n<h4>1.5.5</h4>\n<ul>\n<li>Solve a problem when uri script contain &#8220;&amp;&#8221;.</li>\n<li>Solve a bug while waiting dependencies.</li>\n</ul>\n<h4>1.5.4</h4>\n<ul>\n<li>Prevent bug when scripts dependencies are not enqueued.</li>\n</ul>\n<h4>1.5.3</h4>\n<ul>\n<li>Prevent a minor bug for footer enqueue script.</li>\n</ul>\n<h4>1.5.2</h4>\n<ul>\n<li>Fixed a minor bug: bad priority while emptying <code>$wp_scripts</code>.</li>\n</ul>\n<h4>1.5.1</h4>\n<ul>\n<li>Fixed a minor bug: plugin active was on login and register pages.</li>\n</ul>\n<h4>1.5</h4>\n<ul>\n<li>Fixed a major bug: plugin active only in front end.</li>\n</ul>\n<h4>1.4</h4>\n<ul>\n<li>Fixed a minor bug: some JavaScripts enqueued with very high priority were ignored &#8211; filter scripts are now hooked on <em>wp_print_scripts</em>.</li>\n</ul>\n<h4>1.3</h4>\n<ul>\n<li>Fixed a major bug: files with dependencies are now waiting the loading of parent files before loading themselves.</li>\n</ul>\n<h4>1.2</h4>\n<ul>\n<li>Data called after <em>wp_head</em>, but linked to a script queued into header are now considered by the plugin.</li>\n</ul>\n<h4>1.1</h4>\n<ul>\n<li>Correction of some minor bugs</li>\n<li>Improve code readability</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
+    },
+    "short_description": "Defer the loading of all JavaScripts added with wp_enqueue_script(), using LABJS (an asynchronous javascript library).",
+    "description": "<p>This plugin defer the loading of all JavaScripts added by the way of <code>wp_enqueue_script()</code>, using LABJS. The result is a significant optimization of loading time.</p>\n<p>It is compatible with all WordPress JavaScript functions (<code>wp_localize_script()</code>, js in header, in footer&#8230;) and works with all well coded plugins.</p>\n<p>If a plugin or a theme is not properly enqueuing scripts, your site may not work. Check this page: <a href=\"https://codex.wordpress.org/Function_Reference/wp_enqueue_script\" rel=\"nofollow ugc\">Function Reference/wp_enqueue_script on WordPress Codex</a>.</p>\n<p>LABjs (Loading And Blocking JavaScript) is an open-source (MIT license) project supported by <a href=\"http://getify.com/\" rel=\"nofollow ugc\">Getify Solutions</a>.</p>\n<p>We performed a range of tests to determine the potential benefit of loading time. On <a href=\"http://wabeo.fr\" rel=\"nofollow ugc\">wabeo</a> we executed <a href=\"http://webwait.com/\" rel=\"nofollow ugc\">webwait</a> (150 calls by test). Result is this plugin could <strong>improve your loading time by 25%</strong>!!<br />\nMore information in the <a href=\"https://wordpress.org/extend/plugins/wp-deferred-javascripts/screenshots/\" rel=\"ugc\">Screenshots section</a>.</p>\n<p>You can find <a href=\"http://www.seomix.fr/wp-deferred-javascript/\" rel=\"nofollow ugc\">more information about WP Deferred JavaScripts</a> and <a href=\"http://wabeo.fr/blog/wordpress-javascripts-asynchrones/\" rel=\"nofollow ugc\">technical information about asynchronous scripts</a> on authors blogs.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/wp-deferred-javascripts.2.0.5.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/wp-deferred-javascripts/assets/screenshot-1.jpg?rev=663726",
+            "caption": "Average load time of <strong>1.91</strong> seconds <strong>without WP Deferred JavaScripts activated</strong> and scripts loaded in the header"
+        },
+        {
+            "src": "https://ps.w.org/wp-deferred-javascripts/assets/screenshot-2.jpg?rev=663726",
+            "caption": "Average load time of <strong>1.99</strong> seconds <strong>without WP Deferred JavaScripts activated</strong> and scripts queued in the footer"
+        },
+        {
+            "src": "https://ps.w.org/wp-deferred-javascripts/assets/screenshot-3.jpg?rev=663726",
+            "caption": "Average load time of <strong>1.56</strong> seconds <strong>with WP Deferred JavaScripts activated</strong> and scripts queued in the header"
+        },
+        {
+            "src": "https://ps.w.org/wp-deferred-javascripts/assets/screenshot-4.jpg?rev=663726",
+            "caption": "Average load time of <strong>1.54</strong> seconds <strong>with WP Deferred JavaScripts activated</strong> and scripts queued in the footer"
+        }
+    ],
+    "tags": {
+        "deferring": "deferring",
+        "javascript": "javascript",
+        "labjs": "labjs",
+        "optimization": "optimization",
+        "performance": "performance"
+    },
+    "stable_tag": "2.0.5",
+    "versions": {
+        "1.5.2": "https://downloads.wordpress.org/plugin/wp-deferred-javascripts.1.5.2.zip",
+        "1.5.3": "https://downloads.wordpress.org/plugin/wp-deferred-javascripts.1.5.3.zip",
+        "1.5.4": "https://downloads.wordpress.org/plugin/wp-deferred-javascripts.1.5.4.zip",
+        "1.5.5": "https://downloads.wordpress.org/plugin/wp-deferred-javascripts.1.5.5.zip",
+        "1.5.6": "https://downloads.wordpress.org/plugin/wp-deferred-javascripts.1.5.6.zip",
+        "2.0.0": "https://downloads.wordpress.org/plugin/wp-deferred-javascripts.2.0.0.zip",
+        "2.0.1": "https://downloads.wordpress.org/plugin/wp-deferred-javascripts.2.0.1.zip",
+        "2.0.2": "https://downloads.wordpress.org/plugin/wp-deferred-javascripts.2.0.2.zip",
+        "2.0.5": "https://downloads.wordpress.org/plugin/wp-deferred-javascripts.2.0.5.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/wp-deferred-javascripts.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/wp-deferred-javascripts/assets/banner-772x250.jpg?rev=659847",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/wp-deferred-javascripts/assets/icon-128x128.png?rev=974705",
+        "2x": "https://ps.w.org/wp-deferred-javascripts/assets/icon-256x256.png?rev=974705"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 64,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "wp-deferred-javascripts",
+            "language": "fr_FR",
+            "version": "2.0.5",
+            "updated": "2016-09-02 06:08:50",
+            "package": "http://downloads.wordpress.org/translation/plugin/wp-deferred-javascripts/2.0.5/fr_FR.zip"
+        }
+    ]
+}

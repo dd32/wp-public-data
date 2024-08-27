@@ -1,0 +1,102 @@
+{
+    "name": "Auto Post Scheduler",
+    "slug": "auto-post-scheduler",
+    "version": "1.84",
+    "author": "<a href=\"http://www.superblogme.com\">Super Blog Me</a>",
+    "author_profile": "https://profiles.wordpress.org/johnh10/",
+    "contributors": {
+        "johnh10": {
+            "profile": "https://profiles.wordpress.org/johnh10/",
+            "avatar": "https://secure.gravatar.com/avatar/f6c31819cee0458456528df9c2e7a65e?s=96&d=monsterid&r=g",
+            "display_name": "johnh10"
+        }
+    },
+    "requires": "3.0",
+    "tested": "6.3.5",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 96,
+    "ratings": {
+        "5": 33,
+        "4": 0,
+        "3": 1,
+        "2": 0,
+        "1": 1
+    },
+    "num_ratings": 35,
+    "support_url": "https://wordpress.org/support/plugin/auto-post-scheduler/",
+    "support_threads": 2,
+    "support_threads_resolved": 0,
+    "active_installs": 20000,
+    "downloaded": 142633,
+    "last_updated": "2024-06-17 8:40pm GMT",
+    "added": "2014-05-21",
+    "homepage": "http://www.superblogme.com/auto-post-scheduler/",
+    "sections": {
+        "description": "<p>Use the Auto Post Scheduler to publish new posts and/or recycle old posts, automatically! No need to schedule post times individually, and recycling old posts keeps your site looking fresh.</p>\n<p>Especially useful when importing a large number of posts, you can<br />\nhave the Auto Post Scheduler publish them at whatever frequency you choose.</p>\n<p>Works great with the auto blogging plugin <a href=\"http://videoblogsterpro.com\" rel=\"nofollow ugc\">http://videoblogsterpro.com</a></p>\n<p>Pro version <a href=\"https://codecanyon.net/item/wp-auto-poster/23805990?ref=johnh10\" rel=\"nofollow ugc\">WP Auto Poster</a> completely rewritten to be easier to use, with more features, unlimited rulesets, and premium support.</p>\n",
+        "installation": "<ol>\n<li>Install the plugin through WordPress admin or upload the <code>Auto Post<br />\nScheduler</code> directory to the <code>/wp-content/plugins/</code> directory</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</li>\n<li>Visit <code>Settings -&gt; Auto Post Scheduler</code> to set options and Enable the scheduler.</li>\n</ol>\n",
+        "faq": "\n<dt id='why%20don%27t%20the%20auto%20post%20checks%20trigger%3F%20nothing%20is%20happening.'>\nWhy don&#8217;t the auto post checks trigger? Nothing is happening.\n</h4>\n<p>\n<ol>\n<li>\n<p>Auto Post Scheduler hooks into the WordPress WP-Cron for scheduling. These cron events are typically only checked when a visitor loads any WordPress page on the site. If there are no visitors, there can be no cron checks and therefore no site. If there are no visitors, there can be no cron checks and therefore no<br />\nauto post checks.</p>\n</li>\n<li>\n<p>If you are using .htaccess to allow,deny by IP, make sure to allow the IP of your WordPress site itself as the wp-cron uses that IP address.</p>\n</li>\n</ol>\n</p>\n<dt id='error%3A%20aps_auto_hook%20not%20scheduled%2C%20likely%20another%20plugin%20misuse%20of%20cron_schedules'>\nError: aps_auto_hook not scheduled, likely another plugin misuse of cron_schedules\n</h4>\n<p>\n<p>This happens when another plugin incorrectly replaces cron_schedules with their own schedules instead of correctly adding to existing schedules, so the other plugin actually removes our aps_auto_hook. Other plugin code needs to be fixed.</p>\n</p>\n<dt id='how%20do%20i%20turn%20off%20wp_cron%20and%20use%20server%20cron%20jobs%20instead%3F'>\nHow do I turn off WP_Cron and use server cron jobs instead?\n</h4>\n<p>\n<p>WordPress calls WP_Cron on every page load to check for cron_schedules. If you have a high traffic site, you might want to use caching or set cron checks on a schedule instead to save on resources. See <a href=\"http://www.superblogme.com/wordpress-calling-wp-cron-vs-cron-job-calling-wp-cron/\" rel=\"nofollow ugc\">this post</a> for more information.</p>\n<p>To do this:</p>\n<ol>\n<li>Make sure Auto Post Scheduler is enabled.</li>\n<li>Edit /wp-config.php and add the line<br />\ndefine(&#8216;DISABLE_WP_CRON&#8217;, true);</li>\n<li>From the server command line, edit your cron with &#8216;crontab -e&#8217; and add the line<br />\n*/5 * * * * wget -q -O -&#8220;http://www.mydomain.com/wp-cron.php?doing_wp_cron=&#8217;date +\\%s'&#8221; &gt; /dev/null2&gt;&amp;1</li>\n</ol>\n<p>and change &#8216;mydomain&#8217; to your site domain.</p>\n<p>This crontab entry will call wp_cron every 5 minutes.</p>\n</p>\n<dt id='when%20using%20wp%20super%20cache%20the%20home%2Ffront%20page%20isn%27t%20updated%20when%20aps%20publishes%20a%20post%20or%20recycles%20an%20old%20post.%20why%20is%20that%3F'>\nWhen using WP Super Cache the Home/Front page isn&#8217;t updated when APS publishes a post or recycles an old post. Why is that?\n</h4>\n<p>\n<p>As far as I know, WP Super Cache must not hook into when a post status has changed. User MassimoD reports &#8220;Quick Cache does, W3Total Cache does, Hyper Cache does, Gator Cache does. Only WP Super Cache doesn&#8217;t.&#8221;</p>\n</p>\n<dt id='does%20this%20plugin%20have%20any%20callable%20filters%3F'>\nDoes this plugin have any callable filters?\n</h4>\n<p>\n<p>Yes! In case you think of something that is not covered in the plugin settings, here are the available filter hooks:</p>\n<ul>\n<li><strong>aps_eligible_query</strong> &#8211; passed value is the array that will be used by WP_Query to find eligible posts. Any changes will also apply to aps_recycle_query as well.</li>\n<li><strong>aps_recycle_query</strong> &#8211; passed value is the array that will be used by WP_Query to find recyclable posts if there are no eligible posts found.</li>\n<li><strong>aps_update_post</strong> &#8211; passed value is the array that will be used by wp_update_post when publishing a draft or pending post.</li>\n<li><strong>aps_recycle_post</strong> &#8211; passed value is the array that will be used by wp_update_post when recycling a published post.</li>\n</ul>\n<p>Example Usage #1: I only want to publish or recycle posts that have the tag &#8216;featured&#8217;.</p>\n<p>Add this code snippet to your theme&#8217;s functions.php file or equivalent.</p>\n<pre><code>function my_aps_eligible_change($args) {\n        $args['tag'] = 'featured';\n        return $args;\n}\nadd_filter( 'aps_eligible_query', 'my_aps_eligible_change' );\n</code></pre>\n<p>Example Usage #2: I want to add a post meta field when a post has been recycled.</p>\n<p>Add this code snippet to your theme&#8217;s functions.php file or equivalent.</p>\n<pre><code>function my_aps_recycle_post($args) {\n        $postID = $args['ID'];\n        add_post_meta( $postID, 'aps_recycled', 1, true ) || update_post_meta( $postID, 'aps_recycled', 1 );\n        return $args;\n}\nadd_filter( 'aps_recycle_post', 'my_aps_recycle_post' );\n</code></pre>\n</p>\n<dt id='i%27m%20a%20little%20confused%20between%20eligible%20posts%20and%20recycle%20mode.%20can%20you%20elaborate%20how%20it%20works%3F'>\nI&#8217;m a little confused between Eligible Posts and Recycle Mode. Can you elaborate how it works?\n</h4>\n<p>\n<p>Hopefully this table will help. Hopefully.</p>\n<pre><code>Eligible Posts?    Pick Random?    Recycle Posts?  RESULTS over multiple auto post checks\n\ndrafts             no              no              drafts ordered by date and published. \n                                                   if no drafts nothing happens.\n\ndrafts             yes             no              drafts picked randomly and published. \n                                                   if no drafts nothing happens.\n\ndrafts             no              yes             drafts ordered by date and published. \n                                                   if no drafts then published posts ordered by date and recycled.\n\ndrafts             yes             yes             drafts ordered randomly and published. \n                                                   if no drafts then published posts ordered by date and recycled.\n\ndrafts, publish    no              no              drafts and published posts are ordered by date and either published or recycled.\n\ndrafts, publish    yes             no              drafts and published posts are ordered randomly and either published or recycled.\n\ndrafts, publish    no              yes             drafts and published posts are ordered by date and either published or recycled. \n                                                   Recycle Posts does not apply since there are always eligible posts.\n\ndrafts, publish    yes             yes             drafts and published posts are ordered randomly and either published or recycled. \n                                                   Recycle Posts does not apply since there are always eligible posts.\n</code></pre>\n</p>\n\n",
+        "changelog": "<p>= 1.84</p>\n<ul>\n<li>Updated code to use modified user parameter for authors.</li>\n</ul>\n<p>= 1.83</p>\n<ul>\n<li>Updated deprecated variable for WP_User_Query.</li>\n<li>Fixed variable mismatch for comparing max posts per day.</li>\n</ul>\n<p>= 1.82</p>\n<ul>\n<li>Message tweak when more than 1 schedule event detected for APS.</li>\n<li>Note on rewritten Pro version.</li>\n</ul>\n<p>= 1.81</p>\n<ul>\n<li>Check max log size when APS triggered, not just when settings page loaded.</li>\n<li>Extra check for WP_Query number of results.</li>\n</ul>\n<p>= 1.80</p>\n<ul>\n<li>Added option to limit checks to posts by keyword search.</li>\n<li>Added option to limit checks to posts from certain Authors.</li>\n<li>Added option to set special case recycling to &#8216;On This Day in History&#8217;.</li>\n<li>Bugfix &#8211; don&#8217;t check for restart when a published post is edited.</li>\n<li>Bugfix &#8211; stop echoing log message to screen when manually publishing a post and &#8216;Restart on Publish?&#8217; is checked.</li>\n<li>Bugfix &#8211; don&#8217;t check for eligible posts if no eligible post statuses are checked.</li>\n</ul>\n<p>= 1.70</p>\n<ul>\n<li>Log File replaced with rolling Log Messages in database.</li>\n<li>Added select box for post types.</li>\n<li>Added select box for categories. If you used negative category IDs before, please redo selection.</li>\n<li>Extra checks for valid 24-hour format in Limit certain Days.</li>\n<li>Added &#8216;Recycle Posts as New?&#8217; option to trigger any publish hooks.</li>\n<li>Combined aps_restart_event and aps_schedule_event.</li>\n<li>Added more DEBUG messages.</li>\n<li>Added check for wp_update_post error from WordPress.</li>\n<li>Expanded aps_updating toggle range, added update_option fail check.</li>\n<li>Bugfix &#8211; APS checks &#8216;Restart on Publish?&#8217; option only when Enabled.</li>\n</ul>\n<h4>1.63</h4>\n<ul>\n<li>Added filters for the queries and the updates (see FAQ). Requested by <a href=\"https://wordpress.org/support/topic/feature-request-duplicate-instead-of-republish\" rel=\"ugc\">policieuxjp</a></li>\n<li>Added option to restart the scheduler if a post is published outside of APS. Requested by <a href=\"https://wordpress.org/support/topic/minimum-delay-to-wait-after-last-post\" rel=\"ugc\">brigcam</a></li>\n<li>Added option to set max number of posts per day.</li>\n<li>Added option for the scheduler to exclude certain dates. Requested by <a href=\"https://wordpress.org/support/topic/exclude-specific-dates\" rel=\"ugc\">rbergeron81</a>, <a href=\"https://wordpress.org/support/topic/feature-request-exclude-list-of-dates\" rel=\"ugc\">policieuxjp</a></li>\n<li>Added DEBUG mode to display extra information to logfile.</li>\n<li>Changed default WP_Query to ignore sticky posts.</li>\n<li>Added ability to mix Eligible Post Statuses option with Minimum Recycle Age option. Requested by <a href=\"https://wordpress.org/support/topic/minimum-recycle-age-not-working-with-publish-eligible-post-status\" rel=\"ugc\">hjakhrw3</a></li>\n</ul>\n<h4>1.62</h4>\n<ul>\n<li>Removed debug line that dumped schedules to log file.</li>\n<li>Fixed bug added in 1.61 that prevented posts from being published. sorry about that.</li>\n</ul>\n<h4>1.61</h4>\n<ul>\n<li>If limit day is set to 0 no posts will be published that day.</li>\n</ul>\n<h4>1.60</h4>\n<ul>\n<li>SVN version change only. WP was using v1.5 instead of 1.50 so no updates.</li>\n</ul>\n<h4>1.50</h4>\n<ul>\n<li>Will detect missing aps_auto_post_hook event and re-add if somehow removed by another plugin.</li>\n<li>Added i18n support. Google Translation for: Spanish.</li>\n<li>Changed priority of &#8216;cron_schedules&#8217; add_filter call to 99.</li>\n<li>If no &#8216;Eligible Post Statuses?&#8217; selected, default is &#8216;publish&#8217;.</li>\n</ul>\n<h4>1.41</h4>\n<ul>\n<li>Bugfix: Limit by category: WP_Query function uses &#8216;cat&#8217; arg instead of &#8216;category&#8217;</li>\n</ul>\n<h4>1.4</h4>\n<ul>\n<li>Added feature: Option to also handle posts in Pending and Publish status.</li>\n<li>Added feature: Support for a time range in Auto Post Schedule field. i.e. 2-6 hours.</li>\n<li>Added feature: Detect if another plugin removed cron_schedules.</li>\n<li>Updated feature: No longer restarts if settings are updated when Scheduler is Enabled.</li>\n<li>Updated feature: Expanded &#8216;Limit Certain Day(s)&#8217; to allow different limits for each day.</li>\n<li>Updated feature: Time display on settings page and log file to use same 24h format.</li>\n<li>Updated feature: Log messages detail post type.</li>\n<li>Updated feature: Added Minimum Recycle Age for recycling posts.</li>\n<li>Internal change: Use WP_Query instead of get_posts for more arg options.</li>\n<li>Internal change: Moved inline css to css file.</li>\n<li>Internal change: Use primary buttons instead of custom.</li>\n<li>Internal change: Easier log file display code.</li>\n<li>Internal change: Easier way to retrieve &#8216;Next auto post check&#8217; time.</li>\n</ul>\n<h4>1.3</h4>\n<ul>\n<li>Will now set post time based on the timezone in Settings-&gt;General. Default UTC.</li>\n<li>Added ability to limit post checks to certain days of the week and time ranges.</li>\n</ul>\n<h4>1.2</h4>\n<ul>\n<li>Minor cosmetic changes on options page.</li>\n<li>Added quick link buttons to support/review/donations on options page.</li>\n<li>Added security check for current_user_can() to manage options.</li>\n</ul>\n<h4>1.1</h4>\n<ul>\n<li>Added support for custom post types.</li>\n<li>Bypass kses filter check during wp_update_post() to avoid WordPress</li>\n<li>automatically stripping embed codes such as Youtube iframes.</li>\n<li>Added &#8216;Settings&#8217; shortcut link under Admin-&gt;Plugins-&gt;Auto Post Scheduler</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>Initial Release</li>\n</ul>\n"
+    },
+    "short_description": "This plugin will schedule &#039;auto post checks&#039; to publish new posts and/or recycle old posts automatically.",
+    "description": "<p>Use the Auto Post Scheduler to publish new posts and/or recycle old posts, automatically! No need to schedule post times individually, and recycling old posts keeps your site looking fresh.</p>\n<p>Especially useful when importing a large number of posts, you can<br />\nhave the Auto Post Scheduler publish them at whatever frequency you choose.</p>\n<p>Works great with the auto blogging plugin <a href=\"http://videoblogsterpro.com\" rel=\"nofollow ugc\">http://videoblogsterpro.com</a></p>\n<p>Pro version <a href=\"https://codecanyon.net/item/wp-auto-poster/23805990?ref=johnh10\" rel=\"nofollow ugc\">WP Auto Poster</a> completely rewritten to be easier to use, with more features, unlimited rulesets, and premium support.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/auto-post-scheduler.1.84.zip",
+    "upgrade_notice": {
+        "none": ""
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/auto-post-scheduler/assets/screenshot-1.png?rev=1028086",
+            "caption": "The admin options."
+        }
+    ],
+    "tags": {
+        "auto-post": "auto post",
+        "draft": "draft",
+        "pending": "pending",
+        "schedule": "schedule",
+        "schedule-post": "schedule post"
+    },
+    "stable_tag": "1.84",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/auto-post-scheduler.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/auto-post-scheduler.1.1.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/auto-post-scheduler.1.2.zip",
+        "1.3": "https://downloads.wordpress.org/plugin/auto-post-scheduler.1.3.zip",
+        "1.4": "https://downloads.wordpress.org/plugin/auto-post-scheduler.1.4.zip",
+        "1.5": "https://downloads.wordpress.org/plugin/auto-post-scheduler.1.5.zip",
+        "1.50": "https://downloads.wordpress.org/plugin/auto-post-scheduler.1.50.zip",
+        "1.60": "https://downloads.wordpress.org/plugin/auto-post-scheduler.1.60.zip",
+        "1.61": "https://downloads.wordpress.org/plugin/auto-post-scheduler.1.61.zip",
+        "1.62": "https://downloads.wordpress.org/plugin/auto-post-scheduler.1.62.zip",
+        "1.63": "https://downloads.wordpress.org/plugin/auto-post-scheduler.1.63.zip",
+        "1.7": "https://downloads.wordpress.org/plugin/auto-post-scheduler.1.7.zip",
+        "1.70": "https://downloads.wordpress.org/plugin/auto-post-scheduler.1.70.zip",
+        "1.80": "https://downloads.wordpress.org/plugin/auto-post-scheduler.1.80.zip",
+        "1.81": "https://downloads.wordpress.org/plugin/auto-post-scheduler.1.81.zip",
+        "1.82": "https://downloads.wordpress.org/plugin/auto-post-scheduler.1.82.zip",
+        "1.83": "https://downloads.wordpress.org/plugin/auto-post-scheduler.1.83.zip",
+        "1.84": "https://downloads.wordpress.org/plugin/auto-post-scheduler.1.84.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/auto-post-scheduler.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W4W9RA2Q6TAGQ",
+    "banners": {
+        "low": "https://ps.w.org/auto-post-scheduler/assets/banner-772x250.png?rev=1028793",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/auto-post-scheduler/assets/icon-128x128.png?rev=1028793",
+        "2x": "https://ps.w.org/auto-post-scheduler/assets/icon-256x256.png?rev=1028793"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 96,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

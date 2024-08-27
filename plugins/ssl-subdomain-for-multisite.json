@@ -1,0 +1,73 @@
+{
+    "name": "SSL Subdomain for Multisite",
+    "slug": "ssl-subdomain-for-multisite",
+    "version": "1.1",
+    "author": "<a href=\"http://peter.upfold.org.uk/\">Peter Upfold</a>",
+    "author_profile": "https://profiles.wordpress.org/vanpattenmedia/",
+    "contributors": {
+        "vanpattenmedia": {
+            "profile": "https://profiles.wordpress.org/vanpattenmedia/",
+            "avatar": "https://secure.gravatar.com/avatar/97fb8cbdf6bb689dcfbfc8f2985e47d5?s=96&d=monsterid&r=g",
+            "display_name": "Van Patten Media"
+        }
+    },
+    "requires": "3.3.1",
+    "tested": "3.3.2",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 20,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 1
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/ssl-subdomain-for-multisite/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 2725,
+    "last_updated": "2012-03-28 8:36am GMT",
+    "added": "2012-03-07",
+    "homepage": "http://www.vanpattenmedia.com/",
+    "sections": {
+        "description": "<p>Ensures logins are always done via SSL on a subdomain of the master domain, but that access to custom domains are always done over HTTP, to avoid certificate errors. For WordPress Multisite.</p>\n<p>WordPress’ built-in <code>FORCE_SSL_LOGIN</code> and <code>FORCE_SSL_ADMIN</code> directives in <code>wp-config.php</code> work great, but are too restrictive in situations where you have custom domains — custom domains for which you cannot have SSL certificates. For sites on custom domains, we need to make sure that the login and admin access happens over the subdomain, which can be properly served over HTTPS.</p>\n<h4>What this Plugin does (incorporating Foolish Assumptions)</h4>\n<p><em>or, a readme you <strong>should</strong> read before implementing this plugin on your site.</em></p>\n<p>This plugin filters the login, logout, home and admin URLs that WordPress uses to generate its internal links.</p>\n<p>Why do we do this?</p>\n<h4>The Scenario</h4>\n<p>We have a WordPress Multisite network. Let&#8217;s call it <code>mynetwork.com</code>. We bought a fancy SSL wildcard certificate so we can offer <code>*.mynetwork.com</code> over a secure connection.</p>\n<p>We’d very much like to use this secure connection for all logins, and for all admin access.</p>\n<p>We also allow sites on this network to use a custom domain — like <code>demo-site.com</code>. We might be using <a href=\"https://wordpress.org/extend/plugins/wordpress-mu-domain-mapping/\" rel=\"ugc\">WPMU Domain Mapping</a> to achieve this. These sites have two domains, then — <code>demo-site.com</code> and <code>demo-site.mynetwork.com</code>.</p>\n<p>If we switch on <code>FORCE_SSL_LOGIN</code> or <code>FORCE_SSL_ADMIN</code>, we have a problem. When users go to <code>https://demo-site.com/wp-login.php</code>, they get a certificate error. We have a wildcard certificate for <code>*.mynetwork.com</code>, but we can’t possibly have a valid SSL certificate installed for every custom domain!</p>\n<p>Instead, we want to force all login pages and admin pages to be:</p>\n<pre><code>https://demo-site.mynetwork.com/wp-admin/… </code></pre>\n<p>We want all regular access to be:</p>\n<pre><code>http://demo-site.com/… </code></pre>\n<p>This plugin facilitates that — rewriting the <code>wp-login</code> (including logout) and <code>wp-admin</code> URLs to the first example, and rewriting all the others to the second style.</p>\n<h4>Foolish Assumptions</h4>\n<p>This plugin makes some (foolish) assumptions about your multisite network. You must make sure that these assumptions are true for your site, or you will find that this plugin may have unintended consequences and break things that are difficult to fix without manually disabling the plugin.</p>\n<ol>\n<li>\n<p>Your subdomains are in the format: <code>a.b</code></p>\n<blockquote>\n<p>where <code>a</code> is, for example: <code>demo-site</code>.   <code>b</code> is, for example: <code>mynetwork.com</code>.   <code>a</code> <strong>must</strong> be a single domain component. (<code>a</code> can&#8217;t be, for example: <code>demo.site</code>)</p>\n</blockquote>\n</li>\n<li>\n<p>Your wildcard certificate is configured properly for:</p>\n<ul>\n<li><code>*.mynetwork.com</code></li>\n<li>your network site URL</li>\n</ul>\n<p>So if your network site URL is <code>www.mynetwork.com</code>, your wildcard cert will be fine. If it is just <code>mynetwork.com</code>, you will need another cert to avoid errors when you go to <code>https://mynetwork.com/wp-admin</code>.)</p>\n</li>\n<li>\n<p>Your site already has the custom domains working.</p>\n<ul>\n<li>\n<p>I suggest the excellent <a href=\"https://wordpress.org/extend/plugins/wordpress-mu-domain-mapping/\" rel=\"ugc\">WPMU Domain Mapping</a> for this.</p>\n<ul>\n<li>Your web server also needs to be <a href=\"http://www.lampjunkie.com/2008/05/how-to-set-up-a-wildcard-catch-all-virtual-host-in-apache/\" title=\"A tutorial on wildcard catch all hosting for Apache\" rel=\"nofollow ugc\">set up</a> to handle hosting a wildcard name virtual host. All of this is really part of the WPMU Domain Mapping set up, and not the set up for this plugin. I’m just, you know, mentioning it.</li>\n</ul>\n</li>\n</ul>\n</li>\n<li>\n<p>You have the <code>FORCE_SSL_LOGIN</code> setting in <code>wp-config.php</code> <strong>true</strong>.</p>\n</li>\n<li>\n<p>You have the <code>FORCE_SSL_ADMIN</code> setting in <code>wp-config.php</code> <strong>false</strong>. We’ll handle that — WordPress’ forcing of SSL admins will conflict with this plugin.</p>\n</li>\n</ol>\n",
+        "installation": "<ol>\n<li>Set up custom domains, perhaps using <a href=\"https://wordpress.org/extend/plugins/wordpress-mu-domain-mapping/\" rel=\"ugc\">WPMU Domain Mapping</a>.</li>\n<li>Configure your web server with your wildcard certificate for your master domain (for example <code>*.mynetwork.com</code>).</li>\n<li>Set <code>FORCE_SSL_LOGIN</code> to <strong>true</strong> in <code>wp-config.php</code>.</li>\n<li>Upload <code>ssl-subdomain-for-multisite.php</code> to your <code>mu-plugins</code> folder.</li>\n</ol>\n",
+        "changelog": "<h4>1.1</h4>\n<ul>\n<li>Fix a bug where the &#8216;Dashboard&#8217; link on the Network Sites page would point to an incorrect domain in some installations of WordPress Multisite. Thanks to Rob Mint.</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Ensures logins are always done via SSL on a subdomain of the master domain, but access to custom domains are always over HTTP, to avoid cert errors.",
+    "description": "<p>Ensures logins are always done via SSL on a subdomain of the master domain, but that access to custom domains are always done over HTTP, to avoid certificate errors. For WordPress Multisite.</p>\n<p>WordPress’ built-in <code>FORCE_SSL_LOGIN</code> and <code>FORCE_SSL_ADMIN</code> directives in <code>wp-config.php</code> work great, but are too restrictive in situations where you have custom domains — custom domains for which you cannot have SSL certificates. For sites on custom domains, we need to make sure that the login and admin access happens over the subdomain, which can be properly served over HTTPS.</p>\n<h4>What this Plugin does (incorporating Foolish Assumptions)</h4>\n<p><em>or, a readme you <strong>should</strong> read before implementing this plugin on your site.</em></p>\n<p>This plugin filters the login, logout, home and admin URLs that WordPress uses to generate its internal links.</p>\n<p>Why do we do this?</p>\n<h4>The Scenario</h4>\n<p>We have a WordPress Multisite network. Let&#8217;s call it <code>mynetwork.com</code>. We bought a fancy SSL wildcard certificate so we can offer <code>*.mynetwork.com</code> over a secure connection.</p>\n<p>We’d very much like to use this secure connection for all logins, and for all admin access.</p>\n<p>We also allow sites on this network to use a custom domain — like <code>demo-site.com</code>. We might be using <a href=\"https://wordpress.org/extend/plugins/wordpress-mu-domain-mapping/\" rel=\"ugc\">WPMU Domain Mapping</a> to achieve this. These sites have two domains, then — <code>demo-site.com</code> and <code>demo-site.mynetwork.com</code>.</p>\n<p>If we switch on <code>FORCE_SSL_LOGIN</code> or <code>FORCE_SSL_ADMIN</code>, we have a problem. When users go to <code>https://demo-site.com/wp-login.php</code>, they get a certificate error. We have a wildcard certificate for <code>*.mynetwork.com</code>, but we can’t possibly have a valid SSL certificate installed for every custom domain!</p>\n<p>Instead, we want to force all login pages and admin pages to be:</p>\n<pre><code>https://demo-site.mynetwork.com/wp-admin/… </code></pre>\n<p>We want all regular access to be:</p>\n<pre><code>http://demo-site.com/… </code></pre>\n<p>This plugin facilitates that — rewriting the <code>wp-login</code> (including logout) and <code>wp-admin</code> URLs to the first example, and rewriting all the others to the second style.</p>\n<h4>Foolish Assumptions</h4>\n<p>This plugin makes some (foolish) assumptions about your multisite network. You must make sure that these assumptions are true for your site, or you will find that this plugin may have unintended consequences and break things that are difficult to fix without manually disabling the plugin.</p>\n<ol>\n<li>\n<p>Your subdomains are in the format: <code>a.b</code></p>\n<blockquote>\n<p>where <code>a</code> is, for example: <code>demo-site</code>.   <code>b</code> is, for example: <code>mynetwork.com</code>.   <code>a</code> <strong>must</strong> be a single domain component. (<code>a</code> can&#8217;t be, for example: <code>demo.site</code>)</p>\n</blockquote>\n</li>\n<li>\n<p>Your wildcard certificate is configured properly for:</p>\n<ul>\n<li><code>*.mynetwork.com</code></li>\n<li>your network site URL</li>\n</ul>\n<p>So if your network site URL is <code>www.mynetwork.com</code>, your wildcard cert will be fine. If it is just <code>mynetwork.com</code>, you will need another cert to avoid errors when you go to <code>https://mynetwork.com/wp-admin</code>.)</p>\n</li>\n<li>\n<p>Your site already has the custom domains working.</p>\n<ul>\n<li>\n<p>I suggest the excellent <a href=\"https://wordpress.org/extend/plugins/wordpress-mu-domain-mapping/\" rel=\"ugc\">WPMU Domain Mapping</a> for this.</p>\n<ul>\n<li>Your web server also needs to be <a href=\"http://www.lampjunkie.com/2008/05/how-to-set-up-a-wildcard-catch-all-virtual-host-in-apache/\" title=\"A tutorial on wildcard catch all hosting for Apache\" rel=\"nofollow ugc\">set up</a> to handle hosting a wildcard name virtual host. All of this is really part of the WPMU Domain Mapping set up, and not the set up for this plugin. I’m just, you know, mentioning it.</li>\n</ul>\n</li>\n</ul>\n</li>\n<li>\n<p>You have the <code>FORCE_SSL_LOGIN</code> setting in <code>wp-config.php</code> <strong>true</strong>.</p>\n</li>\n<li>\n<p>You have the <code>FORCE_SSL_ADMIN</code> setting in <code>wp-config.php</code> <strong>false</strong>. We’ll handle that — WordPress’ forcing of SSL admins will conflict with this plugin.</p>\n</li>\n</ol>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/ssl-subdomain-for-multisite.1.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "https": "https",
+        "mu": "mu",
+        "multisite": "multisite",
+        "ssl": "ssl"
+    },
+    "stable_tag": "1.1",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/ssl-subdomain-for-multisite.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/ssl-subdomain-for-multisite.1.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/ssl-subdomain-for-multisite.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/ssl-subdomain-for-multisite.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 20,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

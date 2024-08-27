@@ -1,0 +1,72 @@
+{
+    "name": "Easy Custom Fields",
+    "slug": "easy-custom-fields",
+    "version": "0.6",
+    "author": "<a href=\"http://automattic.com\">Thorsten Ott</a>",
+    "author_profile": "https://profiles.wordpress.org/tott/",
+    "contributors": {
+        "tott": {
+            "profile": "https://profiles.wordpress.org/tott/",
+            "avatar": "https://secure.gravatar.com/avatar/9e8f7fd87fd2163010f98280f3e45a35?s=96&d=monsterid&r=g",
+            "display_name": "Thorsten Ott"
+        },
+        "automattic": {
+            "profile": "https://profiles.wordpress.org/automattic/",
+            "avatar": "https://secure.gravatar.com/avatar/687b3bf96c41800814e3b93766444283?s=96&d=monsterid&r=g",
+            "display_name": "Automattic"
+        }
+    },
+    "requires": "2.9.2",
+    "tested": "3.3.2",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/easy-custom-fields/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 70,
+    "downloaded": 8794,
+    "last_updated": "2012-07-11 2:45pm GMT",
+    "added": "2010-05-02",
+    "homepage": "http://wordpress.org/extend/plugins/easy-custom-fields/",
+    "sections": {
+        "description": "<p>Features:</p>\n<ul>\n<li>simply generate post boxes with multiple fields / groups</li>\n<li>easily validate/sanitize input and output data</li>\n<li>easy access to field data via $easy_cf-&gt;field_id-&gt;get() or $easy_cf-&gt;field_id-&gt;get( NULL, $raw=true );</li>\n<li>get error messages for validation failures via admin notices</li>\n<li>custom post type aware</li>\n<li>extendable to your needs by extending Easy_CF_Field and Easy_CF_Validator classes (see advanced usage)</li>\n</ul>\n<p>As this script is mainly meant as basis for developers it needs minor coding skills to add this functionality<br />\nto your theme.</p>\n<p>In order to make use of this class simply initialize it from the functions.php file of your theme as described below.</p>\n<h4>Simple Usage</h4>\n<pre><code>require_once( WP_PLUGIN_DIR . '/easy-custom-fields/easy-custom-fields.php' );\n$field_data = array (\n    'testgroup' =&gt; array (              // unique group id\n        'fields' =&gt; array(              // array \"fields\" with field definitions\n            'field1'    =&gt; array(),     // globally unique field id\n            'field2'    =&gt; array(),\n            'field3'    =&gt; array(),\n        ),\n    ),\n);\n$easy_cf = new Easy_CF($field_data);\n</code></pre>\n<h4>Advanced Usage</h4>\n<pre><code>require_once( WP_PLUGIN_DIR . '/easy-custom-fields/easy-custom-fields.php' );\n$field_data = array (\n    'testgroup' =&gt; array (\n        'fields' =&gt; array(\n            'field1'    =&gt; array(),\n            'field2'    =&gt; array(),\n            'field3'    =&gt; array(),\n        ),\n    ),\n    'advanced_testgroup' =&gt; array (                                     // unique group id\n        'fields' =&gt; array(                                              // array \"fields\" with field definitions \n            'advanced_field'    =&gt; array(                               // globally unique field id\n                'label'         =&gt; 'Advanced Field Description',        // Field Label\n                'hint'          =&gt; 'Long Advanced Field description',   // A descriptive hint for the field\n                'type'          =&gt; 'textarea',                          // Custom Field Type (see Ref: field_type)\n                'class'         =&gt; 'aclass',                            // CSS Wrapper class for the field\n                'input_class'   =&gt; 'theEditor',                         // CSS class for the input field\n                'error_msg'     =&gt; 'The Advanced Field is wrong' ),     // Error message to show when validate fails\n                'validate'      =&gt; 'validatorname',                     // Custom Validator (see Ref: validator)\n            'advanced_email' =&gt; array(\n                'label' =&gt; 'Email',\n                'hint' =&gt; 'Enter your email',\n                'validate' =&gt; 'email', )\n        ),\n        'title' =&gt; 'Product Description',   // Group Title\n        'context' =&gt; 'advanced',            // context as in https://codex.wordpress.org/Function_Reference/add_meta_box\n        'pages' =&gt; array( 'post', 'page' ), // pages as in https://codex.wordpress.org/Function_Reference/add_meta_box\n    ),\n);\n\nif ( !class_exists( \"Easy_CF_Validator_Email\" ) ) {\n\n    class Easy_CF_Validator_Email extends Easy_CF_Validator {\n        public function get( $value='' ) {\n            return esc_attr( $value );\n        }\n\n        public function set( $value='' ) {\n            $value = esc_attr( trim( stripslashes( $value ) ) );\n            return $value;\n        }\n\n        public function validate( $value='' ) {\n            if ( empty( $value ) || is_email( $value ) ) \n                return true;\n            else\n                return false;\n        }\n    }\n}\n\nif ( !class_exists( \"Easy_CF_Field_Textarea\" ) ) {\n    class Easy_CF_Field_Textarea extends Easy_CF_Field {\n        public function print_form() {\n            $class = ( empty( $this-&gt;_field_data['class'] ) ) ? $this-&gt;_field_data['id'] . '_class' :  $this-&gt;_field_data['class'];\n            $input_class = ( empty( $this-&gt;_field_data['input_class'] ) ) ? $this-&gt;_field_data['id'] . '_input_class' :  $this-&gt;_field_data['input_class'];\n\n            $id = ( empty( $this-&gt;_field_data['id'] ) ) ? $this-&gt;_field_data['id'] :  $this-&gt;_field_data['id'];\n            $label = ( empty( $this-&gt;_field_data['label'] ) ) ? $this-&gt;_field_data['id'] :  $this-&gt;_field_data['label'];\n            $value = $this-&gt;get();\n            $hint = ( empty( $this-&gt;_field_data['hint'] ) ) ? '' :  '&lt;p&gt;&lt;em&gt;' . $this-&gt;_field_data['hint'] . '&lt;/em&gt;&lt;/p&gt;';\n\n            $label_format =\n                '&lt;div class=\"%s\"&gt;'.\n                '&lt;p&gt;&lt;label for=\"%s\"&gt;&lt;strong&gt;%s&lt;/strong&gt;&lt;/label&gt;&lt;/p&gt;'.\n                '&lt;p&gt;&lt;textarea class=\"%s\" style=\"width: 100%%;\" type=\"text\" name=\"%s\"&gt;%s&lt;/textarea&gt;&lt;/p&gt;'.\n                '%s'.\n                '&lt;/div&gt;';\n            printf( $label_format, $class, $id, $label, $input_class, $id, $value, $hint );\n        }\n    }\n}\n\n$easy_cf = new Easy_CF($field_data);\n</code></pre>\n<h4>Note</h4>\n<p>If you&#8217;re not using auto_init then meta boxes need to be added individually using<br />\nadd_meta_box( $group_id, $group_title, array( &amp;$easy_cf, &#8216;meta_box_cb&#8217; ), $page, $group_context );<br />\nand the save methods need to be initialized after adding all meta boxes using<br />\n$easy_cf-&gt;add_save_method();</p>\n"
+    },
+    "short_description": "This is a set of extendable classes to allow easy handling of custom post fields.",
+    "description": "<p>Features:</p>\n<ul>\n<li>simply generate post boxes with multiple fields / groups</li>\n<li>easily validate/sanitize input and output data</li>\n<li>easy access to field data via $easy_cf-&gt;field_id-&gt;get() or $easy_cf-&gt;field_id-&gt;get( NULL, $raw=true );</li>\n<li>get error messages for validation failures via admin notices</li>\n<li>custom post type aware</li>\n<li>extendable to your needs by extending Easy_CF_Field and Easy_CF_Validator classes (see advanced usage)</li>\n</ul>\n<p>As this script is mainly meant as basis for developers it needs minor coding skills to add this functionality<br />\nto your theme.</p>\n<p>In order to make use of this class simply initialize it from the functions.php file of your theme as described below.</p>\n<h4>Simple Usage</h4>\n<pre><code>require_once( WP_PLUGIN_DIR . '/easy-custom-fields/easy-custom-fields.php' );\n$field_data = array (\n    'testgroup' =&gt; array (              // unique group id\n        'fields' =&gt; array(              // array \"fields\" with field definitions\n            'field1'    =&gt; array(),     // globally unique field id\n            'field2'    =&gt; array(),\n            'field3'    =&gt; array(),\n        ),\n    ),\n);\n$easy_cf = new Easy_CF($field_data);\n</code></pre>\n<h4>Advanced Usage</h4>\n<pre><code>require_once( WP_PLUGIN_DIR . '/easy-custom-fields/easy-custom-fields.php' );\n$field_data = array (\n    'testgroup' =&gt; array (\n        'fields' =&gt; array(\n            'field1'    =&gt; array(),\n            'field2'    =&gt; array(),\n            'field3'    =&gt; array(),\n        ),\n    ),\n    'advanced_testgroup' =&gt; array (                                     // unique group id\n        'fields' =&gt; array(                                              // array \"fields\" with field definitions \n            'advanced_field'    =&gt; array(                               // globally unique field id\n                'label'         =&gt; 'Advanced Field Description',        // Field Label\n                'hint'          =&gt; 'Long Advanced Field description',   // A descriptive hint for the field\n                'type'          =&gt; 'textarea',                          // Custom Field Type (see Ref: field_type)\n                'class'         =&gt; 'aclass',                            // CSS Wrapper class for the field\n                'input_class'   =&gt; 'theEditor',                         // CSS class for the input field\n                'error_msg'     =&gt; 'The Advanced Field is wrong' ),     // Error message to show when validate fails\n                'validate'      =&gt; 'validatorname',                     // Custom Validator (see Ref: validator)\n            'advanced_email' =&gt; array(\n                'label' =&gt; 'Email',\n                'hint' =&gt; 'Enter your email',\n                'validate' =&gt; 'email', )\n        ),\n        'title' =&gt; 'Product Description',   // Group Title\n        'context' =&gt; 'advanced',            // context as in https://codex.wordpress.org/Function_Reference/add_meta_box\n        'pages' =&gt; array( 'post', 'page' ), // pages as in https://codex.wordpress.org/Function_Reference/add_meta_box\n    ),\n);\n\nif ( !class_exists( \"Easy_CF_Validator_Email\" ) ) {\n\n    class Easy_CF_Validator_Email extends Easy_CF_Validator {\n        public function get( $value='' ) {\n            return esc_attr( $value );\n        }\n\n        public function set( $value='' ) {\n            $value = esc_attr( trim( stripslashes( $value ) ) );\n            return $value;\n        }\n\n        public function validate( $value='' ) {\n            if ( empty( $value ) || is_email( $value ) ) \n                return true;\n            else\n                return false;\n        }\n    }\n}\n\nif ( !class_exists( \"Easy_CF_Field_Textarea\" ) ) {\n    class Easy_CF_Field_Textarea extends Easy_CF_Field {\n        public function print_form() {\n            $class = ( empty( $this-&gt;_field_data['class'] ) ) ? $this-&gt;_field_data['id'] . '_class' :  $this-&gt;_field_data['class'];\n            $input_class = ( empty( $this-&gt;_field_data['input_class'] ) ) ? $this-&gt;_field_data['id'] . '_input_class' :  $this-&gt;_field_data['input_class'];\n\n            $id = ( empty( $this-&gt;_field_data['id'] ) ) ? $this-&gt;_field_data['id'] :  $this-&gt;_field_data['id'];\n            $label = ( empty( $this-&gt;_field_data['label'] ) ) ? $this-&gt;_field_data['id'] :  $this-&gt;_field_data['label'];\n            $value = $this-&gt;get();\n            $hint = ( empty( $this-&gt;_field_data['hint'] ) ) ? '' :  '&lt;p&gt;&lt;em&gt;' . $this-&gt;_field_data['hint'] . '&lt;/em&gt;&lt;/p&gt;';\n\n            $label_format =\n                '&lt;div class=\"%s\"&gt;'.\n                '&lt;p&gt;&lt;label for=\"%s\"&gt;&lt;strong&gt;%s&lt;/strong&gt;&lt;/label&gt;&lt;/p&gt;'.\n                '&lt;p&gt;&lt;textarea class=\"%s\" style=\"width: 100%%;\" type=\"text\" name=\"%s\"&gt;%s&lt;/textarea&gt;&lt;/p&gt;'.\n                '%s'.\n                '&lt;/div&gt;';\n            printf( $label_format, $class, $id, $label, $input_class, $id, $value, $hint );\n        }\n    }\n}\n\n$easy_cf = new Easy_CF($field_data);\n</code></pre>\n<h4>Note</h4>\n<p>If you&#8217;re not using auto_init then meta boxes need to be added individually using<br />\nadd_meta_box( $group_id, $group_title, array( &amp;$easy_cf, &#8216;meta_box_cb&#8217; ), $page, $group_context );<br />\nand the save methods need to be initialized after adding all meta boxes using<br />\n$easy_cf-&gt;add_save_method();</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/easy-custom-fields.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "custom-fields": "custom fields",
+        "custom-post-fields": "custom post fields",
+        "post-meta": "post meta",
+        "post_meta": "post_meta"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/easy-custom-fields.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

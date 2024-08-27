@@ -1,0 +1,157 @@
+{
+    "name": "Maintenance &amp; Coming Soon Redirect Animation",
+    "slug": "maintenance-coming-soon-redirect-animation",
+    "version": "2.1.3",
+    "author": "<a href=\"https://profiles.wordpress.org/yasinedr/\">Yassine Idrissi</a>",
+    "author_profile": "https://profiles.wordpress.org/yasinedr/",
+    "contributors": {
+        "yasinedr": {
+            "profile": "https://profiles.wordpress.org/yasinedr/",
+            "avatar": "https://secure.gravatar.com/avatar/3bdbe96d98f68eb30cdfb1a25e15de5c?s=96&d=monsterid&r=g",
+            "display_name": "Yassine Idrissi"
+        }
+    },
+    "requires": "4.6",
+    "tested": "6.6.1",
+    "requires_php": "5.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 13,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 13,
+    "support_url": "https://wordpress.org/support/plugin/maintenance-coming-soon-redirect-animation/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 5000,
+    "downloaded": 20366,
+    "last_updated": "2024-01-28 12:36am GMT",
+    "added": "2022-08-14",
+    "homepage": "https://wordpress.org/plugins/maintenance-coming-soon-redirect-animation/",
+    "sections": {
+        "description": "<p>This super lightweight plugin is intended primarily for developers , designers and site administrators that need to allow clients to preview site before being available to the general public or to temporarily hide it while undergoing major updates.</p>\n<p>Any logged in user with WordPress administrator privileges will be allowed to view the site regardless of the settings in the plugin. The exact privilege can be set using a filter hook &#8211; see FAQs.</p>\n<p>The behaviour of this can be enabled or disabled at any time without losing any of settings configured in its settings pane. However, deactivating the plugin is recommended versus having it activated while disabled.</p>\n<p>When redirect is enabled it can send a different header types.</p>\n<p>A list of IP addresses can be set up to completely bypass maintenance mode. This option is useful when needing to allow a client’s entire office to access the site while in maintenance mode without needing to maintain individual access keys.</p>\n<p>Access keys work by creating a key on the user’s computer that will be checked against when maintenance mode is active. When a new key is created, a link to create the access key cookie will be emailed to the email address provided. Access can then be revoked either by disabling or deleting the key.</p>\n<p>Whitelisted User Roles – user roles who see the site, instead of under maintenance page</p>\n<p>Whitelisted Users – users who see the site, instead of maintenance page</p>\n<p><strong><code>Animations :</code></strong></p>\n<p>Animation on the web is not only fun, but engaging in such a way that it has converted site visitors into customers even before will be available to the general public and it will make them eagerly await its launch.</p>\n<p>You can either choose your animation from the library or upload your own; this animation will be shown in front of your site when it is undergoing maintenance.</p>\n<p><strong><code>Notes :</code></strong><br />\n✔ This plugin will override any other maintenance plugin you use.<br />\n✔ All settings are auto-updated , you don&#8217;t need to save anything .</p>\n<h4>WP-CLI Commands :</h4>\n<p>Note : before you begin run these commands make sure you have wp-cli installed on your server and your are in your WordPress site Root folder</p>\n<p>✔ To install the plugin via wp-cli : <code>sudo wp plugin install maintenance-coming-soon-redirect-animation --allow-root</code><br />\n✔ To activate it : <code>sudo wp plugin activate maintenance-coming-soon-redirect-animation --allow-root</code><br />\n✔ To deactivate it : <code>sudo wp plugin deactivate maintenance-coming-soon-redirect-animation --allow-root</code><br />\n✔ To uninstall it : <code>sudo wp plugin uninstall maintenance-coming-soon-redirect-animation --allow-root</code><br />\nNote : before you can uninstall the plugin you have to deactivate it first<br />\n✔ To Update the plugin : <code>sudo wp plugin update maintenance-coming-soon-redirect-animation --allow-root</code></p>\n",
+        "installation": "<ol>\n<li>Unpack the download package.</li>\n<li>Upload the <code>maintenance-coming-soon-redirect-animation</code> folder to your plugins directory (usually <code>/wp-content/plugins/</code>).</li>\n<li>Activate the plugin through the <code>Plugins</code> menu in WordPress.</li>\n<li>You can turn on the maintenance mode in one click from Top bar icon.</li>\n<li>For more customization , go to <code>Settings</code> page from the link in the activation notice or through the <code>Maintenance</code> Settings panel just below the dashboard icon.</li>\n</ol>\n",
+        "faq": "\n<dt id='how%20can%20i%20bypass%20the%20redirect%20programatically%20%3F'>\nHow can I bypass the redirect programatically ?\n</h4>\n<p>\n<p>There is a filter which allows you to programatically bypass the redirection block:</p>\n<p><strong><code>wploti_matches</code></strong></p>\n<p>This allows you to run pretty much any test you like, although be aware that the whole redirection thing runs <em>before</em> the <code>$post</code> global is set up, so WordPress conditionals such as <code>is_post()</code> and <code>is_tax()</code> are not available.</p>\n<p>This example looks in the <code>$_SERVER</code> global to see if any part of the URL contains &#8220;hello-world&#8221; ( default wordpress post for example )</p>\n<pre><code>function my_wploti_matches( $wploti_matches ) {\n    if ( stristr( $_SERVER['REQUEST_URI'], 'hello-world' ) ) \n        $wploti_matches[] = \"&lt;!-- hello-world --&gt;\";\n    return $wploti_matches;\n}\nadd_filter( \"wploti_matches\", \"my_wploti_matches\" );\n</code></pre>\n<p>You can follow the same process for pages, posts, categories, taxonomies, custom post types ,etc.</p>\n</p>\n<dt id='how%20can%20i%20let%20my%20logged-in%20user%20see%20the%20front%20end%20%3F'>\nHow can I let my logged-in user see the front end ?\n</h4>\n<p>\n<p>By default, Maintenance &amp; Coming Soon Redirect Animation uses the <code>manage_options</code> capability, but that is normally only applied to administrators. As it stands, a user with a lesser permissions level, such as editor, is able to view the admin side of the site, but not the front end. You can change this using this filter :</p>\n<p><strong><code>wploti_user_can</code></strong></p>\n<p>This filter is used to pass a different WordPress capability to check if the logged-in user has permission to view the site and thus bypass the redirection, such as <code>edit_posts</code>. Note that this is run before <code>$post</code> is set up, so WordPress conditionals such as <code>is_post()</code> and <code>is_tax()</code> are not available. However, it&#8217;s not really meant for programatically determining whether a user should have access, but rather just changing the default capability to be tested, so you don&#8217;t really need to do anything other than the example below.</p>\n<pre><code>function my_wploti_user_can( $capability ) {\n    return \"edit_posts\";\n}\nadd_filter( \"wploti_user_can\", \"my_wploti_user_can\" );\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>1.1.1</h4>\n<ul>\n<li>First Final release. No Changes Yet.</li>\n</ul>\n<h4>1.1.2</h4>\n<ul>\n<li>Fix Maintenance Status not showing in Top admin bar front</li>\n</ul>\n<h4>2.0.0</h4>\n<ul>\n<li>Redesign Ui to tabs style</li>\n<li>New font added as primary font</li>\n<li>Fixed some styles issues on large screens</li>\n<li>Changed plugin icons</li>\n<li>Added feature : Whitelisted User Roles – user roles who see the site</li>\n<li>Added feature : Whitelisted Users – users who see the site</li>\n<li>Added feature : Administrator can upload &amp; use his own JSON or gif Animation</li>\n<li>Added notice in login screen if Maintenance Mode is enabled.</li>\n<li>Added submenus</li>\n<li>Replace message input with wysiwyg Editor</li>\n<li>New Added headers</li>\n</ul>\n<h4>2.0.1</h4>\n<ul>\n<li>Fix Gif animations</li>\n<li>Update readme file</li>\n</ul>\n<h4>2.1.3</h4>\n<ul>\n<li>New : Execute a complete log-out for all currently signed-in users with a single click</li>\n<li>Remove unnecessary plugin font</li>\n<li>Fix issues with ajax requests not working when maintenance mode is enabled</li>\n<li>optimizing security and performance</li>\n</ul>\n"
+    },
+    "short_description": "Make your website under maintenance in seconds with great looking animations and configure settings to allow specific users to bypass the maintenance  &hellip;",
+    "description": "<p>This super lightweight plugin is intended primarily for developers , designers and site administrators that need to allow clients to preview site before being available to the general public or to temporarily hide it while undergoing major updates.</p>\n<p>Any logged in user with WordPress administrator privileges will be allowed to view the site regardless of the settings in the plugin. The exact privilege can be set using a filter hook &#8211; see FAQs.</p>\n<p>The behaviour of this can be enabled or disabled at any time without losing any of settings configured in its settings pane. However, deactivating the plugin is recommended versus having it activated while disabled.</p>\n<p>When redirect is enabled it can send a different header types.</p>\n<p>A list of IP addresses can be set up to completely bypass maintenance mode. This option is useful when needing to allow a client’s entire office to access the site while in maintenance mode without needing to maintain individual access keys.</p>\n<p>Access keys work by creating a key on the user’s computer that will be checked against when maintenance mode is active. When a new key is created, a link to create the access key cookie will be emailed to the email address provided. Access can then be revoked either by disabling or deleting the key.</p>\n<p>Whitelisted User Roles – user roles who see the site, instead of under maintenance page</p>\n<p>Whitelisted Users – users who see the site, instead of maintenance page</p>\n<p><strong><code>Animations :</code></strong></p>\n<p>Animation on the web is not only fun, but engaging in such a way that it has converted site visitors into customers even before will be available to the general public and it will make them eagerly await its launch.</p>\n<p>You can either choose your animation from the library or upload your own; this animation will be shown in front of your site when it is undergoing maintenance.</p>\n<p><strong><code>Notes :</code></strong><br />\n✔ This plugin will override any other maintenance plugin you use.<br />\n✔ All settings are auto-updated , you don&#8217;t need to save anything .</p>\n<h4>WP-CLI Commands :</h4>\n<p>Note : before you begin run these commands make sure you have wp-cli installed on your server and your are in your WordPress site Root folder</p>\n<p>✔ To install the plugin via wp-cli : <code>sudo wp plugin install maintenance-coming-soon-redirect-animation --allow-root</code><br />\n✔ To activate it : <code>sudo wp plugin activate maintenance-coming-soon-redirect-animation --allow-root</code><br />\n✔ To deactivate it : <code>sudo wp plugin deactivate maintenance-coming-soon-redirect-animation --allow-root</code><br />\n✔ To uninstall it : <code>sudo wp plugin uninstall maintenance-coming-soon-redirect-animation --allow-root</code><br />\nNote : before you can uninstall the plugin you have to deactivate it first<br />\n✔ To Update the plugin : <code>sudo wp plugin update maintenance-coming-soon-redirect-animation --allow-root</code></p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/maintenance-coming-soon-redirect-animation.2.1.3.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/maintenance-coming-soon-redirect-animation/assets/screenshot-1.png?rev=2912225",
+            "caption": "Welcome screen after installation / Maintenance Mode Disabled"
+        },
+        {
+            "src": "https://ps.w.org/maintenance-coming-soon-redirect-animation/assets/screenshot-2.png?rev=2912225",
+            "caption": "Header Type Tab"
+        },
+        {
+            "src": "https://ps.w.org/maintenance-coming-soon-redirect-animation/assets/screenshot-3.png?rev=2912232",
+            "caption": "Unrestricted IP adresses Tab"
+        },
+        {
+            "src": "https://ps.w.org/maintenance-coming-soon-redirect-animation/assets/screenshot-4.png?rev=2912232",
+            "caption": "Send an Access key to specific user"
+        },
+        {
+            "src": "https://ps.w.org/maintenance-coming-soon-redirect-animation/assets/screenshot-5.png?rev=2912225",
+            "caption": "Access key link email"
+        },
+        {
+            "src": "https://ps.w.org/maintenance-coming-soon-redirect-animation/assets/screenshot-6.png?rev=2912225",
+            "caption": "Access keys Tab Updated / Access key is activated for the user"
+        },
+        {
+            "src": "https://ps.w.org/maintenance-coming-soon-redirect-animation/assets/screenshot-7.png?rev=2912225",
+            "caption": "Active or Selected Animation"
+        },
+        {
+            "src": "https://ps.w.org/maintenance-coming-soon-redirect-animation/assets/screenshot-8.png?rev=2912225",
+            "caption": "Upload an animation from Media library"
+        },
+        {
+            "src": "https://ps.w.org/maintenance-coming-soon-redirect-animation/assets/screenshot-9.png?rev=2912225",
+            "caption": "Selected animation from the animations Library"
+        },
+        {
+            "src": "https://ps.w.org/maintenance-coming-soon-redirect-animation/assets/screenshot-10.png?rev=2912225",
+            "caption": "Animations for different purposes : Update, security, coming soon, under construction .."
+        },
+        {
+            "src": "https://ps.w.org/maintenance-coming-soon-redirect-animation/assets/screenshot-11.png?rev=2912225",
+            "caption": "Maintenance message displayed under animation"
+        },
+        {
+            "src": "https://ps.w.org/maintenance-coming-soon-redirect-animation/assets/screenshot-12.png?rev=2912225",
+            "caption": "Extra Tab : Whitelisted User Roles &amp; Whitelisted Users"
+        },
+        {
+            "src": "https://ps.w.org/maintenance-coming-soon-redirect-animation/assets/screenshot-13.png?rev=2912225",
+            "caption": "Maintenance Front Page"
+        },
+        {
+            "src": "https://ps.w.org/maintenance-coming-soon-redirect-animation/assets/screenshot-14.png?rev=2912225",
+            "caption": "Site Health Status"
+        },
+        {
+            "src": "https://ps.w.org/maintenance-coming-soon-redirect-animation/assets/screenshot-15.png?rev=2912225",
+            "caption": "WP-CLI Commands"
+        },
+        {
+            "src": "https://ps.w.org/maintenance-coming-soon-redirect-animation/assets/screenshot-16.png?rev=2912225",
+            "caption": "Update plugin through WP-CLI"
+        }
+    ],
+    "tags": {
+        "admin": "admin",
+        "animation": "animation",
+        "maintenance": "maintenance",
+        "maintenance-mode": "maintenance mode",
+        "redirect": "redirect"
+    },
+    "stable_tag": "2.1.3",
+    "versions": {
+        "1.1.1": "https://downloads.wordpress.org/plugin/maintenance-coming-soon-redirect-animation.1.1.1.zip",
+        "1.1.2": "https://downloads.wordpress.org/plugin/maintenance-coming-soon-redirect-animation.1.1.2.zip",
+        "2.0.0": "https://downloads.wordpress.org/plugin/maintenance-coming-soon-redirect-animation.2.0.0.zip",
+        "2.0.1": "https://downloads.wordpress.org/plugin/maintenance-coming-soon-redirect-animation.2.0.1.zip",
+        "2.1.1": "https://downloads.wordpress.org/plugin/maintenance-coming-soon-redirect-animation.2.1.1.zip",
+        "2.1.2": "https://downloads.wordpress.org/plugin/maintenance-coming-soon-redirect-animation.2.1.2.zip",
+        "2.1.3": "https://downloads.wordpress.org/plugin/maintenance-coming-soon-redirect-animation.2.1.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/maintenance-coming-soon-redirect-animation.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.paypal.me/yassineidrissi",
+    "banners": {
+        "low": "https://ps.w.org/maintenance-coming-soon-redirect-animation/assets/banner-772x250.gif?rev=2770369",
+        "high": "https://ps.w.org/maintenance-coming-soon-redirect-animation/assets/banner-1544x500.gif?rev=2770347"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/maintenance-coming-soon-redirect-animation/assets/icon-128x128.gif?rev=2914978"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "maintenance-coming-soon-redirect-animation",
+            "language": "fr_FR",
+            "version": "2.1.3",
+            "updated": "2023-05-15 19:00:38",
+            "package": "http://downloads.wordpress.org/translation/plugin/maintenance-coming-soon-redirect-animation/2.1.3/fr_FR.zip"
+        }
+    ]
+}

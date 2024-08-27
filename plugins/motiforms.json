@@ -1,0 +1,74 @@
+{
+    "name": "Motiforms",
+    "slug": "motiforms",
+    "version": "0.1.0",
+    "author": "<a href=\"http://motivast.com\">Motivast</a>",
+    "author_profile": "https://profiles.wordpress.org/kierzniak/",
+    "contributors": {
+        "kierzniak": {
+            "profile": "https://profiles.wordpress.org/kierzniak/",
+            "avatar": "https://secure.gravatar.com/avatar/c1ed40ca2a368fa1feb32d9b386ea126?s=96&d=monsterid&r=g",
+            "display_name": "kierzniak"
+        }
+    },
+    "requires": "3.8",
+    "tested": "4.8.25",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/motiforms/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 931,
+    "last_updated": "2017-11-10 2:49pm GMT",
+    "added": "2017-11-10",
+    "homepage": "https://github.com/motivast/motiforms",
+    "sections": {
+        "description": "<h4>WARNING</h4>\n<p>If you are not developer this plugin is not for you. Motiforms do not provide any WordPress admin interface to creating forms.</p>\n<h4>Features</h4>\n<ul>\n<li>Handle form logic</li>\n<li>Field sanitization</li>\n<li>Field validation</li>\n<li>Built in html rendering helpers</li>\n<li>Flexibility</li>\n<li>Based on advanced Symfony framework</li>\n</ul>\n<h4>Get started</h4>\n<p>To create simple contact form paste code bellow to your functions.php file. And paste <code>[contact]</code> shortcode to your contact page.</p>\n<pre><code>use Symfony\\Component\\Form\\Extension\\Core\\Type\\TextType;\nuse Symfony\\Component\\Form\\Extension\\Core\\Type\\EmailType;\nuse Symfony\\Component\\Form\\Extension\\Core\\Type\\TextareaType;\nuse Symfony\\Component\\Form\\Extension\\Core\\Type\\SubmitType;\n\nclass ContactForm {\n\n    /**\n     * Form instance\n     *\n     * FormType\n     */\n    private $form;\n\n    /**\n     * ContacForm constructor\n     *\n     * @return ContacForm\n     */\n    public function __construct() {\n\n        $this-&gt;define_hooks();\n    }\n\n    /**\n     * Create and process contact form\n     *\n     * This method is executed by wp action hook.\n     * It will be executed only on page which has contact\n     * shortcode.\n     *\n     * @return void\n     */\n    public function controller() {\n\n        global $post;\n\n        // Check if current view is page and page has content shortcode\n        if ( is_page() &amp;&amp; has_shortcode( $post-&gt;post_content, 'contact' ) ) {\n\n            $factory = mf_get_factory();\n\n            // Create form\n            $this-&gt;form = $factory-&gt;create();\n\n            // Add fields to form\n            $this-&gt;form-&gt;add( 'full_name', TextType::class );\n            $this-&gt;form-&gt;add( 'email', EmailType::class );\n            $this-&gt;form-&gt;add( 'message', TextareaType::class );\n            $this-&gt;form-&gt;add( 'submit', SubmitType::class );\n\n            // Get request object\n            $request = mf_get_request();\n\n            // Handle request\n            $this-&gt;form-&gt;handleRequest( $request );\n\n            // Check if form is valid\n            if ( $this-&gt;form-&gt;isSubmitted() &amp;&amp; $this-&gt;form-&gt;isValid() ) {\n\n                // Get data from the form\n                $data = $this-&gt;form-&gt;getData();\n\n                // Define filters\n                $filters = array(\n                    'full_name' =&gt; FILTER_SANITIZE_STRING,\n                    'email' =&gt; FILTER_SANITIZE_STRING | FILTER_SANITIZE_EMAIL,\n                    'message' =&gt; FILTER_SANITIZE_STRING,\n                );\n\n                // Fields sanitization\n                $sanitized_data = filter_var_array( $data, $filters );\n\n                // Perform action with form data e.g. send an e-mail\n\n                // Redirect user with success parameter to prevent double submitting form\n                wp_safe_redirect( $this-&gt;get_redirect_url() );\n            }\n        }\n    }\n\n    /**\n     * Render contact form.\n     *\n     * This method is executed by contact shortcode.\n     *\n     * @return string\n     */\n    public function render() {\n\n        $success =  filter_input( INPUT_GET, 'success', FILTER_SANITIZE_NUMBER_INT );\n\n        if( '1' === $success ) {\n            return sprintf('&lt;h2&gt;%s&lt;/h2&gt;', __('Thank you for submitting the form. We will contact you shortly.') );\n        }\n\n        $form_view = $this-&gt;form-&gt;createView();\n\n        $engine = mf_get_engine();\n\n        return $engine['form']-&gt;form( $form_view, array('attr' =&gt; array('novalidate' =&gt; 'novalidate') ) );\n\n    }\n\n    /**\n     * Method executed by constructor to define hooks and\n     * create and render contact form.\n     *\n     * @return void\n     */\n    private function define_hooks() {\n\n        add_action( 'wp', array( $this, 'controller' ) );\n\n        add_shortcode( 'contact', array( $this, 'render' ) );\n    }\n\n    /**\n     * Build url for form redirect\n     *\n     * @return string\n     */\n    private function get_redirect_url() {\n\n        $url = get_permalink();\n\n        $query = parse_url($url, PHP_URL_QUERY);\n\n        // Returns a string if the URL has parameters or NULL if not\n        if ($query) {\n            $url .= '&amp;success=1';\n        } else {\n            $url .= '?success=1';\n        }\n\n        return $url;\n    }\n}\n\n// Initialize contact form\nnew ContactForm();\n</code></pre>\n",
+        "installation": "<ol>\n<li>Visit Plugins &gt; Add New</li>\n<li>Search for “Motiforms”</li>\n<li>Install and activate “Motiforms&#8221;</li>\n<li>Go to <a href=\"https://github.com/motivast/motiforms#user-content-get-started\" rel=\"nofollow ugc\">get started</a> section to see a simple example.</li>\n</ol>\n<p>or</p>\n<ol>\n<li>Download plugin from wordpres.org repository or <a href=\"https://github.com/motivast/motiforms/releases/latest\" rel=\"nofollow ugc\">release section</a>.</li>\n<li>Upload the motiforms directory to your /wp-content/plugins/ directory</li>\n<li>Activate the plugin through the&#8221;‘Plugins&#8221; menu in WordPress</li>\n<li>Go to <a href=\"https://github.com/motivast/motiforms#user-content-get-started\" rel=\"nofollow ugc\">get started</a> section to see a simple example.</li>\n</ol>\n",
+        "faq": "\n<h4>Installation Instructions</h4>\n<p>\n<ol>\n<li>Visit Plugins &gt; Add New</li>\n<li>Search for “Motiforms”</li>\n<li>Install and activate “Motiforms&#8221;</li>\n<li>Go to <a href=\"https://github.com/motivast/motiforms#user-content-get-started\" rel=\"nofollow ugc\">get started</a> section to see a simple example.</li>\n</ol>\n<p>or</p>\n<ol>\n<li>Download plugin from wordpres.org repository or <a href=\"https://github.com/motivast/motiforms/releases/latest\" rel=\"nofollow ugc\">release section</a>.</li>\n<li>Upload the motiforms directory to your /wp-content/plugins/ directory</li>\n<li>Activate the plugin through the&#8221;‘Plugins&#8221; menu in WordPress</li>\n<li>Go to <a href=\"https://github.com/motivast/motiforms#user-content-get-started\" rel=\"nofollow ugc\">get started</a> section to see a simple example.</li>\n</ol>\n</p>\n<h4>Where I can find documentation?</h4>\n<p>\n<p>Documentation for Motiforms can be found on github <a href=\"https://github.com/motivast/motiforms/wiki\" rel=\"nofollow ugc\">wiki pages</a>.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>Motiforms</li>\n</ul>\n"
+    },
+    "short_description": "Motiforms is a WordPress plugin provided for creating forms programmatically using Symfony framework.",
+    "description": "<h4>WARNING</h4>\n<p>If you are not developer this plugin is not for you. Motiforms do not provide any WordPress admin interface to creating forms.</p>\n<h4>Features</h4>\n<ul>\n<li>Handle form logic</li>\n<li>Field sanitization</li>\n<li>Field validation</li>\n<li>Built in html rendering helpers</li>\n<li>Flexibility</li>\n<li>Based on advanced Symfony framework</li>\n</ul>\n<h4>Get started</h4>\n<p>To create simple contact form paste code bellow to your functions.php file. And paste <code>[contact]</code> shortcode to your contact page.</p>\n<pre><code>use Symfony\\Component\\Form\\Extension\\Core\\Type\\TextType;\nuse Symfony\\Component\\Form\\Extension\\Core\\Type\\EmailType;\nuse Symfony\\Component\\Form\\Extension\\Core\\Type\\TextareaType;\nuse Symfony\\Component\\Form\\Extension\\Core\\Type\\SubmitType;\n\nclass ContactForm {\n\n    /**\n     * Form instance\n     *\n     * FormType\n     */\n    private $form;\n\n    /**\n     * ContacForm constructor\n     *\n     * @return ContacForm\n     */\n    public function __construct() {\n\n        $this-&gt;define_hooks();\n    }\n\n    /**\n     * Create and process contact form\n     *\n     * This method is executed by wp action hook.\n     * It will be executed only on page which has contact\n     * shortcode.\n     *\n     * @return void\n     */\n    public function controller() {\n\n        global $post;\n\n        // Check if current view is page and page has content shortcode\n        if ( is_page() &amp;&amp; has_shortcode( $post-&gt;post_content, 'contact' ) ) {\n\n            $factory = mf_get_factory();\n\n            // Create form\n            $this-&gt;form = $factory-&gt;create();\n\n            // Add fields to form\n            $this-&gt;form-&gt;add( 'full_name', TextType::class );\n            $this-&gt;form-&gt;add( 'email', EmailType::class );\n            $this-&gt;form-&gt;add( 'message', TextareaType::class );\n            $this-&gt;form-&gt;add( 'submit', SubmitType::class );\n\n            // Get request object\n            $request = mf_get_request();\n\n            // Handle request\n            $this-&gt;form-&gt;handleRequest( $request );\n\n            // Check if form is valid\n            if ( $this-&gt;form-&gt;isSubmitted() &amp;&amp; $this-&gt;form-&gt;isValid() ) {\n\n                // Get data from the form\n                $data = $this-&gt;form-&gt;getData();\n\n                // Define filters\n                $filters = array(\n                    'full_name' =&gt; FILTER_SANITIZE_STRING,\n                    'email' =&gt; FILTER_SANITIZE_STRING | FILTER_SANITIZE_EMAIL,\n                    'message' =&gt; FILTER_SANITIZE_STRING,\n                );\n\n                // Fields sanitization\n                $sanitized_data = filter_var_array( $data, $filters );\n\n                // Perform action with form data e.g. send an e-mail\n\n                // Redirect user with success parameter to prevent double submitting form\n                wp_safe_redirect( $this-&gt;get_redirect_url() );\n            }\n        }\n    }\n\n    /**\n     * Render contact form.\n     *\n     * This method is executed by contact shortcode.\n     *\n     * @return string\n     */\n    public function render() {\n\n        $success =  filter_input( INPUT_GET, 'success', FILTER_SANITIZE_NUMBER_INT );\n\n        if( '1' === $success ) {\n            return sprintf('&lt;h2&gt;%s&lt;/h2&gt;', __('Thank you for submitting the form. We will contact you shortly.') );\n        }\n\n        $form_view = $this-&gt;form-&gt;createView();\n\n        $engine = mf_get_engine();\n\n        return $engine['form']-&gt;form( $form_view, array('attr' =&gt; array('novalidate' =&gt; 'novalidate') ) );\n\n    }\n\n    /**\n     * Method executed by constructor to define hooks and\n     * create and render contact form.\n     *\n     * @return void\n     */\n    private function define_hooks() {\n\n        add_action( 'wp', array( $this, 'controller' ) );\n\n        add_shortcode( 'contact', array( $this, 'render' ) );\n    }\n\n    /**\n     * Build url for form redirect\n     *\n     * @return string\n     */\n    private function get_redirect_url() {\n\n        $url = get_permalink();\n\n        $query = parse_url($url, PHP_URL_QUERY);\n\n        // Returns a string if the URL has parameters or NULL if not\n        if ($query) {\n            $url .= '&amp;success=1';\n        } else {\n            $url .= '?success=1';\n        }\n\n        return $url;\n    }\n}\n\n// Initialize contact form\nnew ContactForm();\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/motiforms.0.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "contact-form": "contact form",
+        "custom-form": "custom form",
+        "form": "form",
+        "forms": "forms",
+        "symfony": "symfony"
+    },
+    "stable_tag": "0.1.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/motiforms.0.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/motiforms.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/motiforms.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

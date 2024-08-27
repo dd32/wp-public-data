@@ -1,0 +1,191 @@
+{
+    "name": "Proxy Cache Purge",
+    "slug": "varnish-http-purge",
+    "version": "5.2.2",
+    "author": "<a href=\"https://halfelf.org/\">Mika Epstein, Danila Vershinin</a>",
+    "author_profile": "https://profiles.wordpress.org/dvershinin/",
+    "contributors": {
+        "ipstenu": {
+            "profile": "https://profiles.wordpress.org/ipstenu/",
+            "avatar": "https://secure.gravatar.com/avatar/f4c134eb021e026414a1bd23d3c5c927?s=96&d=monsterid&r=g",
+            "display_name": "Ipstenu (Mika Epstein)"
+        },
+        "mikeschroder": {
+            "profile": "https://profiles.wordpress.org/mikeschroder/",
+            "avatar": "https://secure.gravatar.com/avatar/71a20c8e12fd4e4b6dc513cceaad100f?s=96&d=monsterid&r=g",
+            "display_name": "Mike Schroder"
+        },
+        "techpriester": {
+            "profile": "https://profiles.wordpress.org/techpriester/",
+            "avatar": "https://secure.gravatar.com/avatar/412f7a3dd572845b1d3c29ad10bd27d4?s=96&d=monsterid&r=g",
+            "display_name": "techpriester"
+        },
+        "danielbachhuber": {
+            "profile": "https://profiles.wordpress.org/danielbachhuber/",
+            "avatar": "https://secure.gravatar.com/avatar/560b284fd021779ea4817470074133f1?s=96&d=monsterid&r=g",
+            "display_name": "Daniel Bachhuber"
+        },
+        "dvershinin": {
+            "profile": "https://profiles.wordpress.org/dvershinin/",
+            "avatar": "https://secure.gravatar.com/avatar/242c03511a740a92c178fb3ff87b4418?s=96&d=monsterid&r=g",
+            "display_name": "Danila Vershinin"
+        }
+    },
+    "requires": "5.0",
+    "tested": "6.6.1",
+    "requires_php": "5.6",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 88,
+    "ratings": {
+        "5": 17,
+        "4": 2,
+        "3": 3,
+        "2": 1,
+        "1": 1
+    },
+    "num_ratings": 24,
+    "support_url": "https://wordpress.org/support/plugin/varnish-http-purge/",
+    "support_threads": 1,
+    "support_threads_resolved": 0,
+    "active_installs": 40000,
+    "downloaded": 1855264,
+    "last_updated": "2024-08-11 7:36am GMT",
+    "added": "2011-07-15",
+    "homepage": "https://github.com/dvershinin/varnish-http-purge",
+    "sections": {
+        "description": "<p><strong>This plugin <em>does not</em> install nor configure a cache proxy. It acts as an interface with such services.</strong></p>\n<p>One common method of caching content for websites is via the use of reverse proxy caching. Common examples of this are <a href=\"https://www.varnish-cache.org/\" rel=\"nofollow ugc\">Varnish</a> and <a href=\"https://www.nginx.com/\" rel=\"nofollow ugc\">Nginx</a>. These systems allow a website to update content and have the visitor&#8217;s experience cached without the need for complex plugins storing the files locally and using up a user&#8217;s disk space.</p>\n<p>A reverse proxy cache is installed in front of a server and reviews requests. If the page being requested is already cached, it delivers the cached content. Otherwise it generates the page and the cache on demand.</p>\n<p>The Proxy Cache Purge plugin sends a request to delete (aka flush) the cached data of a page or post every time it&#8217;s modified.</p>\n<h4>How It Works</h4>\n<p>When content on a site is updated by WordPress, the plugin reaches out to the proxy cache service with the URL of the page, requesting the cache be deleted.</p>\n<p>Not all page are deleted from the cache on every change. For example, when a post, page, or custom post type is edited, or a new comment is added, <em>only</em> the following pages will purge:</p>\n<ul>\n<li>The front page</li>\n<li>The post/page edited</li>\n<li>Any categories, tags, and/or custom taxonomies associated with the page</li>\n<li>Related feeds</li>\n<li>Associated JSON API pages</li>\n</ul>\n<p>In addition, your <em>entire</em> cache will be deleted on the following actions:</p>\n<ul>\n<li>Changing themes</li>\n<li>Pressing the <strong>Empty Cache</strong> button on the toolbar</li>\n</ul>\n<p>Plugins can hook into the purge actions as well, to filter their own events to trigger a purge.</p>\n<p>On a multisite network using subfolders, only <strong>network admins</strong> can purge the main site.</p>\n<h4>Development Mode</h4>\n<p>If you&#8217;re working on a site and need to turn off caching in one of two ways:</p>\n<ol>\n<li>Add <code>define( 'VHP_DEVMODE', true );</code> to your <code>wp-config.php</code> file</li>\n<li>Go to Proxy Cache -&gt; Settings and enable debug mode for 24 hours at a time</li>\n</ol>\n<p>That will break cache on page loads. It is <em>not</em> recommended for production!</p>\n<h4>WP CLI</h4>\n<p><strong>Purge</strong></p>\n<p>Purge commands let you empty the cache.</p>\n<ul>\n<li><code>wp varnish purge</code> &#8211; Flush the cache for your front page</li>\n<li><code>wp varnish purge [&lt;url&gt;]</code> &#8211; Flush the cache for one URL</li>\n</ul>\n<p>You can use the parameter <code>--wildcard</code> to empty everything from that URL down. So if you wanted to empty cache for all themes, you would do this:</p>\n<ul>\n<li><code>wp varnish purge https://example.com/wp-content/themes --wildcard</code></li>\n</ul>\n<p><strong>Debug</strong></p>\n<p>Debugging can help you figure out why your cache isn&#8217;t working as well as it could. The default is for your home page, but you can pass any URL on your domain.</p>\n<ul>\n<li><code>wp varnish debug [&lt;url&gt;]</code></li>\n</ul>\n<p>Available parameters:</p>\n<ul>\n<li><code>[--include-headers]</code> &#8212;  Include headers in debug check output</li>\n<li><code>[--include-grep]</code> &#8212; Grep active theme and plugin directories for common issues</li>\n</ul>\n<p><strong>DevMode</strong></p>\n<p>Development mode allows you to disable the cache, temporarily.</p>\n<ul>\n<li><code>wp varnish devmode [&lt;activate|deactivate|toggle&gt;]</code> &#8211; Change development mode state</li>\n</ul>\n<h4>Privacy Policy</h4>\n<p>As of version 5, this plugin no longer uses any remote data.</p>\n",
+        "installation": "<p>No special instructions apply.</p>\n<p>If you have a 3rd party proxy service (such as Sucuri or Cloudflare) you will need to add an IP address on the <em>Proxy Cache -&gt; Settings</em> page. Alternatively you can add a define to your <code>wp-config.php</code> file: <code>define('VHP_VARNISH_IP','123.45.67.89');</code></p>\n<p>When using Nginx based proxies, your IP will likely be <code>localhost</code>.</p>\n<h4>Requirements</h4>\n<ul>\n<li>Pretty Permalinks enabled</li>\n<li>A server based proxy cache service (such as Varnish or Nginx)</li>\n</ul>\n",
+        "faq": "<p><strong>Please report all issues in the <a href=\"https://wordpress.org/support/plugin/varnish-http-purge\" rel=\"ugc\">support forums</a></strong></p>\n<p>If you have code patches, <a href=\"https://github.com/Ipstenu/varnish-http-purge\" rel=\"nofollow ugc\">pull requests are welcome</a>.</p>\n\n<dt id='don%27t%20you%20work%20at%20dreamhost%3F%20is%20this%20official%20or%20dreamhost%20only%3F'>\nDon&#8217;t you work at DreamHost? Is this Official or DreamHost only?\n</h4>\n<p>\n<p>This plugin was originally adopted and updated for DreamHost&#8217;s DreamPress server, however it is not (and never has been) for DreamHost <em>only</em>.</p>\n<p>I worked at DreamHost from 2012 to 2022, and have maintained the plugin since around 2014 or so.</p>\n<p>As of October 2023, this plugin is <em>NO LONGER</em> installed by default on DreamPress.</p>\n</p>\n<dt id='is%20this%20plugin%20caching%20my%20data%3F'>\nIs this plugin caching my data?\n</h4>\n<p>\n<p>No. This plugin tells your cache system when content is updated, and to delete the cached data at that time.</p>\n</p>\n<dt id='why%20doesn%27t%20the%20plugin%20automatically%20delete%20the%20whole%20cache%3F'>\nWhy doesn&#8217;t the plugin automatically delete the whole cache?\n</h4>\n<p>\n<p>Speed and stability. Emptying too much of a cache on every change can slow a server down. This plugin does it&#8217;s best to determine what needs to be deleted and when, while providing hooks for developers to use as necessary.</p>\n</p>\n<dt id='how%20many%20cached%20files%20are%20deleted%20when%20a%20post%20is%20updated%3F'>\nHow many cached files are deleted when a post is updated?\n</h4>\n<p>\n<p>It depends on the post, but in general the tool will delete cached content for:</p>\n<ol>\n<li>The post name</li>\n<li>The front page of the site</li>\n<li>All first pages of related tags/categories</li>\n<li>The JSON API pages</li>\n<li>All related RSS feeds</li>\n</ol>\n</p>\n<dt id='is%20there%20a%20limit%20to%20how%20many%20pages%20i%20can%20purge%20at%20once%3F'>\nIs there a limit to how many pages I can purge at once?\n</h4>\n<p>\n<p>Not really, but in order to prevent your site from crashing by running the same checks over and over, if you try to purge more than 50 URLs at once, the plugin will do a full purge. Normally this never happens, but there are some plugins that hook into the options to add more pages to purge on an update.</p>\n<p>You can change this value in your settings, or via the define VHP_VARNISH_MAXPOSTS in your <code>wp-config.php</code> file.</p>\n<p>Keep in mind, the count of 50 <em>does not</em> include category/tags, API, or RSS pages. It&#8217;s just the sheer number of individual posts/pages you&#8217;re trying to purge at once.</p>\n</p>\n<dt id='can%20i%20delete%20the%20entire%20cache%3F'>\nCan I delete the entire cache?\n</h4>\n<p>\n<p>Yes. Click the &#8216;Empty Cache&#8217; button on the &#8220;Right Now&#8221; Dashboard (see the screenshot if you can&#8217;t find it). There&#8217;s also an &#8220;Empty Cache&#8221; button on the admin toolbar.</p>\n<p>If you don&#8217;t see a button, then your account doesn&#8217;t have the appropriate permissions. Only administrators can empty the entire cache. In the case of a subfolder multisite network, only the <em>network</em> admins can empty the cache for the primary site.</p>\n</p>\n<dt id='will%20the%20plugin%20delete%20my%20cache%20when%20i%20edit%20files%20on%20the%20server%3F'>\nWill the plugin delete my cache when I edit files on the server?\n</h4>\n<p>\n<p>No. WordPress can&#8217;t detect those file changes so it can&#8217;t tell your cache what to do. You will need to use the Empty Cache buttons when you&#8217;re done editing your code.</p>\n</p>\n<dt id='does%20every%20wordpress%20plugin%20and%20theme%20work%20with%20a%20proxy%20cache%3F'>\nDoes every WordPress plugin and theme work with a proxy cache?\n</h4>\n<p>\n<p>No. Some of them have behaviours that causes them not to cache, either by accident or design. It&#8217;s incredibly hard to debug those, since many of the related issues are contextual (like <em>if</em> you save a page with a special setting). I&#8217;ve done my best to flag everything as possible issues with the debugger.</p>\n</p>\n<dt id='i%27m%20a%20developer%2C%20can%20i%20tell%20your%20cache%20to%20empty%20in%20my%20plugin%2Ftheme%3F'>\nI&#8217;m a developer, can I tell your cache to empty in my plugin/theme?\n</h4>\n<p>\n<p>Yes. <a href=\"https://github.com/Ipstenu/varnish-http-purge/wiki/Custom-Filters\" rel=\"nofollow ugc\">Full documentation can be found on Custom Filters in the wiki</a>.</p>\n</p>\n<dt id='can%20i%20turn%20off%20caching%3F'>\nCan I turn off caching?\n</h4>\n<p>\n<p>Not permanently, and remember that this plugin is not actually caching your content.</p>\n<p>You can use development mode to have WordPress attempt to tell your proxy service not to serve cached content, but the content will still be cached by the service.</p>\n<p>There are three ways to do this:</p>\n<ol>\n<li>Chose &#8216;Pause Cache (24hrs)&#8217; from the Cache dropdown menu in your toolbar</li>\n<li>Go to Proxy Cache -&gt; Settings and enable development mode</li>\n<li>Add <code>define( 'VHP_DEVMODE', true );</code> to your <code>wp-config.php</code> file.</li>\n</ol>\n<p>The first two options will enable development mode for 24 hours. If you&#8217;re working on long term development, you can should use the define.</p>\n<p>It is <em>not</em> recommended you use development mode on production sites for extended periods of time, as it <em>will</em> will slow your site down and lose all the benefits of caching in the first place.</p>\n</p>\n<dt id='why%20is%20the%20restart%20cache%20button%20missing%3F'>\nWhy is the restart cache button missing?\n</h4>\n<p>\n<p>If you&#8217;ve disabled caching via the define, then you cannot restart cache via the plugin. You would need to change  <code>define( 'VHP_DEVMODE', true );</code> to  <code>define( 'VHP_DEVMODE', false );</code> in your <code>wp-config.php</code> file.</p>\n</p>\n<dt id='why%20don%27t%20i%20have%20access%20to%20development%20mode%3F'>\nWhy don&#8217;t I have access to development mode?\n</h4>\n<p>\n<p>Due to the damage this can cause a site, access is limited to admins only. In the case of a multisite network, only <em>Network Admins</em> can disable caching and they must do so via <code>wp-config.php</code> for security.</p>\n</p>\n<dt id='why%20do%20i%20still%20see%20cached%20content%20in%20development%20mode%3F'>\nWhy do I still see cached content in development mode?\n</h4>\n<p>\n<p>While development mode is on, your server will continue to cache content but the plugin will tell WordPress not to use the cached content. That means files that exist outside of WordPress (like CSS or images) <em>may</em> serve cached content. The plugin does its best to add a No Cache parameter to javascript and CSS, however if a theme or plugin <em>doesn&#8217;t</em> use proper WordPress enqueues, then their cached content will be shown.</p>\n</p>\n<dt id='why%20can%20i%20still%20flush%20cache%20while%20in%20development%20mode%3F'>\nWhy can I still flush cache while in development mode?\n</h4>\n<p>\n<p>Because the server is still caching content. The plugin provides a way to flush the cache for those pages, as well as anything not included in WordPress, for your convenience.</p>\n</p>\n<dt id='how%20can%20i%20tell%20if%20everything%27s%20caching%3F'>\nHow can I tell if everything&#8217;s caching?\n</h4>\n<p>\n<p>From your WordPress Dashboard, go to <em>Proxy Cache &gt; Check Caching</em>. There a page will auto-scan your front page and report back any issues found. This includes any known problematic plugins. You can use it to scan any URL on your domain.</p>\n</p>\n<dt id='why%20is%20nothing%20caching%20when%20i%20use%20pagespeed%3F'>\nWhy is nothing caching when I use PageSpeed?\n</h4>\n<p>\n<p>PageSpeed likes to put in Caching headers to say <em>not</em> to cache. To fix this, you need to put this in your <code>.htaccess</code> section for PageSpeed: <code>ModPagespeedModifyCachingHeaders off</code></p>\n<p>If you&#8217;re using nginx, it&#8217;s <code>pagespeed ModifyCachingHeaders off;</code></p>\n</p>\n<dt id='why%20aren%27t%20my%20changes%20showing%20when%20i%20use%20cloudflare%20or%20another%20proxy%3F'>\nWhy aren&#8217;t my changes showing when I use CloudFlare or another proxy?\n</h4>\n<p>\n<p>When you use CloudFlare or any other similar service, you&#8217;ve put a proxy in front of the server&#8217;s proxy. In general this isn&#8217;t a bad thing, though it can introduce some network latency (that means your site may run slower because it has to go through multiple layers to get to the content). The problem arises when WordPress tries to send the purge request to your domain name and, with a proxy, that means the proxy service and not your website.</p>\n<p>On single-site, you can edit this via the <em>Proxy Cache &gt; Check Caching</em> page. On Multisite, you&#8217;ll need to add the following to your wp-config.php file: <code>define('VHP_VARNISH_IP','123.45.67.89');</code></p>\n<p>Replace <code>123.45.67.89</code> with the IP of your <em>Proxy Cache Server</em> (<em>not</em> CloudFlare). <strong>DO NOT</strong> put http in this define. If you&#8217;re on nginx, you&#8217;ll want to use <code>localhost</code> instead of an IP address.</p>\n<p>If you want to use WP-CLI, you can set an option in the database. This will not take precedence over the define, and exists for people who want to use automation tools: <code>wp option update vhp_varnish_ip 123.45.67.890</code></p>\n</p>\n<dt id='why%20are%20my%20posts%20timing%20out%2Fnot%20showing%20when%20i%27m%20using%20cloudflare%3F'>\nWhy are my posts timing out/not showing when I&#8217;m using CloudFlare?\n</h4>\n<p>\n<p>This is usually related to CloudFlare&#8217;s APO setup. I have an open ticket with CloudFlare trying to debug this, but basically whatever they&#8217;re doing with APO doesn&#8217;t &#8216;like&#8217; the flush command and times out (or crashes).</p>\n</p>\n<dt id='why%20do%20i%20get%20a%20503%20or%20504%20error%20on%20every%20post%20update%3F'>\nWhy do I get a 503 or 504 error on every post update?\n</h4>\n<p>\n<p>Your IP address is incorrect. Check the IP of your server and then the setting for your proxy cache IP. If they&#8217;re <em>not</em> the same, that&#8217;s likely why.</p>\n</p>\n<dt id='how%20do%20i%20find%20the%20right%20ip%20address%3F'>\nHow do I find the right IP address?\n</h4>\n<p>\n<p>Your proxy IP must be one of the IPs that the service is listening on. If you use multiple IPs, or if you&#8217;ve customized your ACLs, you&#8217;ll need to pick on that doesn&#8217;t conflict with your other settings.</p>\n<p>For example, if you have a Varnish based cache and it&#8217;s listening on a public and private IP, you&#8217;ll want to pick the private. On the other hand, if you told Varnish to listen on 0.0.0.0 (i.e. &#8220;listen on every interface you can&#8221;) you would need to check what IP you set your purge ACL to allow (commonly 127.0.0.1 aka localhost), and use that (i.e. 127.0.0.1).</p>\n<p>If your web host set up your service, check their documentation.</p>\n</p>\n<dt id='what%20if%20i%20have%20multiple%20proxy%20cache%20ips%3F'>\nWhat if I have multiple proxy cache IPs?\n</h4>\n<p>\n<p>You may enter them, separated by a comma, on the settings page.</p>\n</p>\n<dt id='what%20version%20of%20varnish%20is%20supported%3F'>\nWhat version of Varnish is supported?\n</h4>\n<p>\n<p>So far this plugin has been reported to successfully function on Varnish v 2 through v 6.5.</p>\n</p>\n<dt id='does%20this%20work%20with%20nginx%20caching%3F'>\nDoes this work with Nginx caching?\n</h4>\n<p>\n<p>It can, if you&#8217;ve configured Nginx caching to respect the curl PURGE request. If this doesn&#8217;t work, try setting your Varnish IP to <code>localhost</code> as Nginx requires a service control installed for the IP address to work.</p>\n</p>\n<dt id='what%20should%20my%20cache%20rules%20be%3F'>\nWhat should my cache rules be?\n</h4>\n<p>\n<p>This is a question beyond the support of plugin. I do not have the resources available to offer any configuration help. Here are some basic gotchas to be aware of:</p>\n<ul>\n<li>To empty any cached data, the service will need to respect the PURGE command</li>\n<li>Not all cache services set up PURGE by default</li>\n<li>When flushing the whole cache, the plugin sends a PURGE command of <code>/.*</code> and sets the <code>X-Purge-Method</code> header to <code>regex</code></li>\n<li>Nginx expects the IP address to be &#8216;localhost&#8217;</li>\n</ul>\n</p>\n<dt id='how%20can%20i%20see%20what%20the%20plugin%20is%20sending%20to%20the%20cache%20service%3F'>\nHow can I see what the plugin is sending to the cache service?\n</h4>\n<p>\n<p>Yes <em>IF</em> the service has an interface. Sadly Nginx does not. <a href=\"https://github.com/Ipstenu/varnish-http-purge/wiki\" rel=\"nofollow ugc\">Detailed directions can be found on the debugging section on GitHub</a>. Bear in mind, these interfaces tend to be command-line only.</p>\n</p>\n<dt id='caching%20is%20detected%20but%20cannot%20be%20confirmed.%20what%20does%20that%20mean%3F'>\nCaching is detected but cannot be confirmed. What does that mean?\n</h4>\n<p>\n<p>It means that somewhere your server&#8217;s headers aren&#8217;t returning the data the plugin needs to see, in order to determine if the cache is working. The most common cause is that your server isn&#8217;t returning the <code>X-Varnish</code> header or the <code>Age</code> header.</p>\n</p>\n<dt id='i%20have%20renamed%20x-varnish%20header%20for%20security%20reasons%20and%20site%20health%20check%20says%20no%20cache%20service'>\nI have renamed X-Varnish header for security reasons and Site Health Check says no cache service\n</h4>\n<p>\n<p>You can use <code>varnish_http_purge_x_varnish_header_name</code> filter to customize this header name, like so:</p>\n<pre><code>function change_varnish_header( $default_header ) {\n    return 'My-Custom-Header'; // Replace with the desired header\n}\nadd_filter( 'varnish_http_purge_x_varnish_header_name', 'change_varnish_header' );\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>5.2.2</h4>\n<ul>\n<li>August 2024</li>\n<li>Fix undefined variable $rest_api_route</li>\n</ul>\n<h4>5.2.1</h4>\n<ul>\n<li>January 2024</li>\n<li>Allow custom X-Varnish header name.</li>\n</ul>\n<h4>5.2.0</h4>\n<ul>\n<li>July 2023</li>\n<li>Fix debug for if Via headers are an array (props @iverok)</li>\n</ul>\n"
+    },
+    "short_description": "Automatically empty proxy cached content when your site is modified.",
+    "description": "<p><strong>This plugin <em>does not</em> install nor configure a cache proxy. It acts as an interface with such services.</strong></p>\n<p>One common method of caching content for websites is via the use of reverse proxy caching. Common examples of this are <a href=\"https://www.varnish-cache.org/\" rel=\"nofollow ugc\">Varnish</a> and <a href=\"https://www.nginx.com/\" rel=\"nofollow ugc\">Nginx</a>. These systems allow a website to update content and have the visitor&#8217;s experience cached without the need for complex plugins storing the files locally and using up a user&#8217;s disk space.</p>\n<p>A reverse proxy cache is installed in front of a server and reviews requests. If the page being requested is already cached, it delivers the cached content. Otherwise it generates the page and the cache on demand.</p>\n<p>The Proxy Cache Purge plugin sends a request to delete (aka flush) the cached data of a page or post every time it&#8217;s modified.</p>\n<h4>How It Works</h4>\n<p>When content on a site is updated by WordPress, the plugin reaches out to the proxy cache service with the URL of the page, requesting the cache be deleted.</p>\n<p>Not all page are deleted from the cache on every change. For example, when a post, page, or custom post type is edited, or a new comment is added, <em>only</em> the following pages will purge:</p>\n<ul>\n<li>The front page</li>\n<li>The post/page edited</li>\n<li>Any categories, tags, and/or custom taxonomies associated with the page</li>\n<li>Related feeds</li>\n<li>Associated JSON API pages</li>\n</ul>\n<p>In addition, your <em>entire</em> cache will be deleted on the following actions:</p>\n<ul>\n<li>Changing themes</li>\n<li>Pressing the <strong>Empty Cache</strong> button on the toolbar</li>\n</ul>\n<p>Plugins can hook into the purge actions as well, to filter their own events to trigger a purge.</p>\n<p>On a multisite network using subfolders, only <strong>network admins</strong> can purge the main site.</p>\n<h4>Development Mode</h4>\n<p>If you&#8217;re working on a site and need to turn off caching in one of two ways:</p>\n<ol>\n<li>Add <code>define( 'VHP_DEVMODE', true );</code> to your <code>wp-config.php</code> file</li>\n<li>Go to Proxy Cache -&gt; Settings and enable debug mode for 24 hours at a time</li>\n</ol>\n<p>That will break cache on page loads. It is <em>not</em> recommended for production!</p>\n<h4>WP CLI</h4>\n<p><strong>Purge</strong></p>\n<p>Purge commands let you empty the cache.</p>\n<ul>\n<li><code>wp varnish purge</code> &#8211; Flush the cache for your front page</li>\n<li><code>wp varnish purge [&lt;url&gt;]</code> &#8211; Flush the cache for one URL</li>\n</ul>\n<p>You can use the parameter <code>--wildcard</code> to empty everything from that URL down. So if you wanted to empty cache for all themes, you would do this:</p>\n<ul>\n<li><code>wp varnish purge https://example.com/wp-content/themes --wildcard</code></li>\n</ul>\n<p><strong>Debug</strong></p>\n<p>Debugging can help you figure out why your cache isn&#8217;t working as well as it could. The default is for your home page, but you can pass any URL on your domain.</p>\n<ul>\n<li><code>wp varnish debug [&lt;url&gt;]</code></li>\n</ul>\n<p>Available parameters:</p>\n<ul>\n<li><code>[--include-headers]</code> &#8212;  Include headers in debug check output</li>\n<li><code>[--include-grep]</code> &#8212; Grep active theme and plugin directories for common issues</li>\n</ul>\n<p><strong>DevMode</strong></p>\n<p>Development mode allows you to disable the cache, temporarily.</p>\n<ul>\n<li><code>wp varnish devmode [&lt;activate|deactivate|toggle&gt;]</code> &#8211; Change development mode state</li>\n</ul>\n<h4>Privacy Policy</h4>\n<p>As of version 5, this plugin no longer uses any remote data.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/varnish-http-purge.5.2.2.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/varnish-http-purge/assets/screenshot-01.png?rev=3027185",
+            "caption": "Purge button on Right Now (Dashboard Admin)"
+        },
+        {
+            "src": "https://ps.w.org/varnish-http-purge/assets/screenshot-02.png?rev=3027185",
+            "caption": "Toolbar menu (with cache enabled)"
+        },
+        {
+            "src": "https://ps.w.org/varnish-http-purge/assets/screenshot-03.png?rev=3027185",
+            "caption": "Toolbar menu (with cache disabled)"
+        },
+        {
+            "src": "https://ps.w.org/varnish-http-purge/assets/screenshot-04.png?rev=3027185",
+            "caption": "Scanner results"
+        },
+        {
+            "src": "https://ps.w.org/varnish-http-purge/assets/screenshot-05.png?rev=3027185",
+            "caption": "Change Proxy IP address"
+        },
+        {
+            "src": "https://ps.w.org/varnish-http-purge/assets/screenshot-06.png?rev=3027185",
+            "caption": "Activate Dev Mode"
+        },
+        {
+            "src": "https://ps.w.org/varnish-http-purge/assets/screenshot-07.png?rev=3027185",
+            "caption": "Dev Mode Warning (24 hour notice)"
+        }
+    ],
+    "tags": {
+        "cache": "cache",
+        "nginx": "nginx",
+        "proxy": "proxy",
+        "purge": "Purge",
+        "varnish": "varnish"
+    },
+    "stable_tag": "5.2.2",
+    "versions": {
+        "4.4.0": "https://downloads.wordpress.org/plugin/varnish-http-purge.4.4.0.zip",
+        "4.5.0": "https://downloads.wordpress.org/plugin/varnish-http-purge.4.5.0.zip",
+        "4.6.6": "https://downloads.wordpress.org/plugin/varnish-http-purge.4.6.6.zip",
+        "4.7.3": "https://downloads.wordpress.org/plugin/varnish-http-purge.4.7.3.zip",
+        "4.8.1": "https://downloads.wordpress.org/plugin/varnish-http-purge.4.8.1.zip",
+        "5.0": "https://downloads.wordpress.org/plugin/varnish-http-purge.5.0.zip",
+        "5.0.1": "https://downloads.wordpress.org/plugin/varnish-http-purge.5.0.1.zip",
+        "5.0.2": "https://downloads.wordpress.org/plugin/varnish-http-purge.5.0.2.zip",
+        "5.0.3": "https://downloads.wordpress.org/plugin/varnish-http-purge.5.0.3.zip",
+        "5.1.0": "https://downloads.wordpress.org/plugin/varnish-http-purge.5.1.0.zip",
+        "5.1.1": "https://downloads.wordpress.org/plugin/varnish-http-purge.5.1.1.zip",
+        "5.1.2": "https://downloads.wordpress.org/plugin/varnish-http-purge.5.1.2.zip",
+        "5.1.3": "https://downloads.wordpress.org/plugin/varnish-http-purge.5.1.3.zip",
+        "5.2.0": "https://downloads.wordpress.org/plugin/varnish-http-purge.5.2.0.zip",
+        "5.2.1": "https://downloads.wordpress.org/plugin/varnish-http-purge.5.2.1.zip",
+        "5.2.2": "https://downloads.wordpress.org/plugin/varnish-http-purge.5.2.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/varnish-http-purge.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/varnish-http-purge/assets/banner-772x250.png?rev=3052770",
+        "high": "https://ps.w.org/varnish-http-purge/assets/banner-1544x500.png?rev=3052770"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/varnish-http-purge/assets/icon-128x128.png?rev=3027185",
+        "2x": "https://ps.w.org/varnish-http-purge/assets/icon-256x256.png?rev=3027185"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": "1",
+    "author_block_rating": 80,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "varnish-http-purge",
+            "language": "en_GB",
+            "version": "5.2.2",
+            "updated": "2024-03-27 20:37:41",
+            "package": "http://downloads.wordpress.org/translation/plugin/varnish-http-purge/5.2.2/en_GB.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "varnish-http-purge",
+            "language": "en_CA",
+            "version": "5.2.2",
+            "updated": "2021-03-31 23:02:45",
+            "package": "http://downloads.wordpress.org/translation/plugin/varnish-http-purge/5.2.2/en_CA.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "varnish-http-purge",
+            "language": "fr_FR",
+            "version": "5.2.2",
+            "updated": "2021-11-19 08:39:37",
+            "package": "http://downloads.wordpress.org/translation/plugin/varnish-http-purge/5.2.2/fr_FR.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "varnish-http-purge",
+            "language": "gl_ES",
+            "version": "5.2.2",
+            "updated": "2024-02-06 12:45:17",
+            "package": "http://downloads.wordpress.org/translation/plugin/varnish-http-purge/5.2.2/gl_ES.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "varnish-http-purge",
+            "language": "nl_NL",
+            "version": "5.2.2",
+            "updated": "2022-02-17 08:59:27",
+            "package": "http://downloads.wordpress.org/translation/plugin/varnish-http-purge/5.2.2/nl_NL.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "varnish-http-purge",
+            "language": "ru_RU",
+            "version": "5.2.2",
+            "updated": "2021-09-28 16:40:40",
+            "package": "http://downloads.wordpress.org/translation/plugin/varnish-http-purge/5.2.2/ru_RU.zip"
+        }
+    ]
+}

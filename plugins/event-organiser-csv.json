@@ -1,0 +1,89 @@
+{
+    "name": "Event Organiser CSV",
+    "slug": "event-organiser-csv",
+    "version": "0.3.2",
+    "author": "<a href=\"http://stephenharris.info\">Stephen Harris</a>",
+    "author_profile": "https://profiles.wordpress.org/stephenharris/",
+    "contributors": {
+        "stephenharris": {
+            "profile": "https://profiles.wordpress.org/stephenharris/",
+            "avatar": "https://secure.gravatar.com/avatar/99c40eb6a15d5177d940890784cc797d?s=96&d=monsterid&r=g",
+            "display_name": "Stephen Harris"
+        }
+    },
+    "requires": "3.5.1",
+    "tested": "4.2.38",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 76,
+    "ratings": {
+        "5": 2,
+        "4": 2,
+        "3": 0,
+        "2": 0,
+        "1": 1
+    },
+    "num_ratings": 5,
+    "support_url": "https://wordpress.org/support/plugin/event-organiser-csv/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 800,
+    "downloaded": 18066,
+    "last_updated": "2015-05-25 12:47pm GMT",
+    "added": "2014-01-06",
+    "homepage": "http://wp-event-organiser.com/",
+    "sections": {
+        "description": "<p>This plug-in allows to import events from a CSV file into Event Organiser. You can also export events from<br />\nEvent Organiser into a CSV file.</p>\n<p>Please note that this plug-in still in <strong>beta</strong>. I welcome feedback, issues and pull-requests.</p>\n<h4>Aim</h4>\n<p>To allow users to export / import events in CSV format between various calendar applications, and to do this flexiably<br />\nso as to limit the number of requirements on the CSV file before it can be read correctly. To allow users to move events<br />\nbetween installations of Event Organiser while preserving data that is not suported by iCal.</p>\n<p>In the vein of flexibility columns do not have to be in any prescribed order: you tell the plug-in which columns pertain to what (start date, end date etc)<br />\nafter importing the file.</p>\n<h4>How to use this plug-in</h4>\n<p>Once installed, go to <em>Tools &gt; Import Events</em>. Here you can export a CSV file or select a file to import one. To import an file:</p>\n<ul>\n<li>Select browse and select the file, click &#8220;Upload file and import&#8221;</li>\n<li>All being well you should now see a preview of the CSV file, along with a drop-down option at the base of each column. If the preview looks wrong, try<br />\nselecting a different delimiter type (comma, tab, space) at the top.</li>\n<li>If the first row of the CSV file is a header, select the option indicating this. The first row will then be ignored.</li>\n<li>At the bottom of each column select what the column represents. The options are (not all are required):\n<ul>\n<li>Title</li>\n<li>Start (formatted in Y-m-d format, and also indicating time <strong>only</strong> if the event is not all-day)  </li>\n<li>End (formatted as above)</li>\n<li>Recur until (if the event recurs, the date of its last occurrence)</li>\n<li>Recurrence Schedule (if the event recurs, how it repeats: once|daily|weekly|monthly|yearly|custom).</li>\n<li>Recurrence Frequency (if the event recurs, an integer indicating with what frequency)</li>\n<li>Schedule Meta (See documentation for <a href=\"http://codex.wp-event-organiser.com/function-eo_insert_event.html\" rel=\"nofollow ugc\">eo_insert_post()</a>, e.g. &#8220;MO,TU,THR&#8221; (weekly), &#8220;BYDAY=2MO&#8221; or &#8220;BYMONTHDAY=16&#8221; (monthly)</li>\n<li>Content (HTML post content)</li>\n<li>Venue (Venue slug)</li>\n<li>Categories (comma seperated list of category slugs) </li>\n<li>Tags (comma seperated list of tag slugs)</li>\n<li>[Any custom event taxonomies registered] (comma seperated list of slugs)</li>\n<li>Include dates (comma seperated list of Y-m-d dates to include from the event&#8217;s schedule)</li>\n<li>Exclude dates (as above, but added to the event&#8217;s schedule)</li>\n<li>Post Meta (an option will appear to provide the meta-key)</li>\n<li>Click import.</li>\n</ul>\n</li>\n</ul>\n<h4>Importing new venues, categories and tags</h4>\n<p>By default the plug-in will only import venues, categories and tags that already exist.<br />\nTo allow the plug-in to create new venues, categories and tags you can add the following<br />\ncode (to a seperate plug-in or your theme&#8217;s <code>functions.php</code>).</p>\n<pre><code> function my_set_import_imports( $args, $file ){\n      $args['import_new_event-category'] =  true; //create category if it doesn't exist\n      $args['import_new_event-venue']    =  true; //create venue if it doesn't exist.\n      $args['import_new_event-tag']      =  true; //create tag if it doesn't exist. \n\n      return $args;\n }\n add_filter( 'eventorganiser_csv_import_args', 'my_set_import_imports', 10, 2 );\n</code></pre>\n<p>Please note the limitations on importing venues discussed below.</p>\n<h4>Limitations</h4>\n<p>Current limitations apply. See the examples folder for an archetypal CSV file</p>\n<ul>\n<li>All dates are read using PHP&#8217;s DateTime. While various formats are supported, Y-m-d (e.g. 2013-12-31) formats are <strong>strongly</strong> recommended</li>\n<li>Starts dates must be provided in Y-m-d (e.g. 2013-12-31) for all day events and also include a time-component (e.g. 2013-12-31 11:30pm) for non-all-day events. There is no<br />\nprescribed format for the time but 24-hour time is recommended. You do not need to specify seconds.</li>\n<li>Include/exclude dates should be given as comma-seperated list of dates in Y-m-d format.</li>\n<li>Categories and tags must be given as comma-seperated list of names</li>\n<li>It does not support venue meta-data (yet)</li>\n</ul>\n<p><em>Please note that in theory all dates (other than the start date) can be given in any format, however, to<br />\nensure dates are interpreted correctly it is strongly recommended to give dates in Y-m-d (or Y-m-d H:i for non-all day events) format. The start<br />\ndate must be in that format so that the importer can differentriate between all-day and non-all-day events.</em></p>\n<h4>Future Features</h4>\n<ul>\n<li>An &#8220;import preview&#8221; or &#8220;dry-run&#8221; so users can view how events will be imported.</li>\n<li>Support venue meta data</li>\n<li>Support category colours</li>\n<li>Add filters for developers</li>\n<li>Add support for UID to prevent importing an event twice (perhaps, update the event?)</li>\n<li>Add support &#8216;maps&#8217; for importing from other applications (where format of exported CSV file is prescribed).</li>\n<li>Support generic date formatting (try to &#8216;guess&#8217; / ask for format )</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the entire <code>/event-organiser-csv</code> directory to the <code>/wp-content/plugins/</code> directory.</li>\n<li>Activate Event Organiser CSV through the &#8216;Plugins&#8217; menu in WordPress.</li>\n</ol>\n",
+        "changelog": "<h4>0.3.2 &#8211; 25th May 2015</h4>\n<ul>\n<li>Fix bug with non-latin character sets &amp; CSV preview</li>\n<li>Adds error message and prevents processing of CSV file if a start date column hasn&#8217;t been selected.</li>\n</ul>\n<h4>0.3.1</h4>\n<ul>\n<li>Fix bug with using term name for importing venues/categories as opposed to slug (as documented). </li>\n</ul>\n<h4>0.3.0</h4>\n<ul>\n<li>Fix bug with parsing schedule meta data of weekly events.</li>\n<li>Recognise custom event taxonomies in column selection.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>Refactored CSV parsing routine</li>\n<li>Adds <code>eventorganiser_csv_import_columns</code> filter to allow additional columns to be &#8216;registered&#8217;</li>\n<li>Adds <code>eventorganiser_csv_cell_value</code> filter to filter parsed value</li>\n<li>Adds <code>eventorganiser_csv_event_inserted</code> action after event is inserted</li>\n<li>Adds support for semicolon delimiters </li>\n</ul>\n<h4>0.1.3</h4>\n<ul>\n<li>Fixed bugs which meant event-tags wouldn&#8217;t be exported.</li>\n<li>Supports event-tag import (not just category/venue)</li>\n<li>Added filter to toggle import arguments</li>\n<li>Changed page/menu title to make it clearer that a CSV file can be exported there. </li>\n</ul>\n<h4>0.1.2</h4>\n<ul>\n<li>Fixed spelling errors in readme</li>\n</ul>\n<h4>0.1.1</h4>\n<ul>\n<li>Added support for post meta</li>\n<li>Fixed bugt with importing Venues with &#8220;&amp;&#8221; in the name</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>First release</li>\n</ul>\n"
+    },
+    "short_description": "Import &amp; export events from/to CSV format",
+    "description": "<p>This plug-in allows to import events from a CSV file into Event Organiser. You can also export events from<br />\nEvent Organiser into a CSV file.</p>\n<p>Please note that this plug-in still in <strong>beta</strong>. I welcome feedback, issues and pull-requests.</p>\n<h4>Aim</h4>\n<p>To allow users to export / import events in CSV format between various calendar applications, and to do this flexiably<br />\nso as to limit the number of requirements on the CSV file before it can be read correctly. To allow users to move events<br />\nbetween installations of Event Organiser while preserving data that is not suported by iCal.</p>\n<p>In the vein of flexibility columns do not have to be in any prescribed order: you tell the plug-in which columns pertain to what (start date, end date etc)<br />\nafter importing the file.</p>\n<h4>How to use this plug-in</h4>\n<p>Once installed, go to <em>Tools &gt; Import Events</em>. Here you can export a CSV file or select a file to import one. To import an file:</p>\n<ul>\n<li>Select browse and select the file, click &#8220;Upload file and import&#8221;</li>\n<li>All being well you should now see a preview of the CSV file, along with a drop-down option at the base of each column. If the preview looks wrong, try<br />\nselecting a different delimiter type (comma, tab, space) at the top.</li>\n<li>If the first row of the CSV file is a header, select the option indicating this. The first row will then be ignored.</li>\n<li>At the bottom of each column select what the column represents. The options are (not all are required):\n<ul>\n<li>Title</li>\n<li>Start (formatted in Y-m-d format, and also indicating time <strong>only</strong> if the event is not all-day)  </li>\n<li>End (formatted as above)</li>\n<li>Recur until (if the event recurs, the date of its last occurrence)</li>\n<li>Recurrence Schedule (if the event recurs, how it repeats: once|daily|weekly|monthly|yearly|custom).</li>\n<li>Recurrence Frequency (if the event recurs, an integer indicating with what frequency)</li>\n<li>Schedule Meta (See documentation for <a href=\"http://codex.wp-event-organiser.com/function-eo_insert_event.html\" rel=\"nofollow ugc\">eo_insert_post()</a>, e.g. &#8220;MO,TU,THR&#8221; (weekly), &#8220;BYDAY=2MO&#8221; or &#8220;BYMONTHDAY=16&#8221; (monthly)</li>\n<li>Content (HTML post content)</li>\n<li>Venue (Venue slug)</li>\n<li>Categories (comma seperated list of category slugs) </li>\n<li>Tags (comma seperated list of tag slugs)</li>\n<li>[Any custom event taxonomies registered] (comma seperated list of slugs)</li>\n<li>Include dates (comma seperated list of Y-m-d dates to include from the event&#8217;s schedule)</li>\n<li>Exclude dates (as above, but added to the event&#8217;s schedule)</li>\n<li>Post Meta (an option will appear to provide the meta-key)</li>\n<li>Click import.</li>\n</ul>\n</li>\n</ul>\n<h4>Importing new venues, categories and tags</h4>\n<p>By default the plug-in will only import venues, categories and tags that already exist.<br />\nTo allow the plug-in to create new venues, categories and tags you can add the following<br />\ncode (to a seperate plug-in or your theme&#8217;s <code>functions.php</code>).</p>\n<pre><code> function my_set_import_imports( $args, $file ){\n      $args['import_new_event-category'] =  true; //create category if it doesn't exist\n      $args['import_new_event-venue']    =  true; //create venue if it doesn't exist.\n      $args['import_new_event-tag']      =  true; //create tag if it doesn't exist. \n\n      return $args;\n }\n add_filter( 'eventorganiser_csv_import_args', 'my_set_import_imports', 10, 2 );\n</code></pre>\n<p>Please note the limitations on importing venues discussed below.</p>\n<h4>Limitations</h4>\n<p>Current limitations apply. See the examples folder for an archetypal CSV file</p>\n<ul>\n<li>All dates are read using PHP&#8217;s DateTime. While various formats are supported, Y-m-d (e.g. 2013-12-31) formats are <strong>strongly</strong> recommended</li>\n<li>Starts dates must be provided in Y-m-d (e.g. 2013-12-31) for all day events and also include a time-component (e.g. 2013-12-31 11:30pm) for non-all-day events. There is no<br />\nprescribed format for the time but 24-hour time is recommended. You do not need to specify seconds.</li>\n<li>Include/exclude dates should be given as comma-seperated list of dates in Y-m-d format.</li>\n<li>Categories and tags must be given as comma-seperated list of names</li>\n<li>It does not support venue meta-data (yet)</li>\n</ul>\n<p><em>Please note that in theory all dates (other than the start date) can be given in any format, however, to<br />\nensure dates are interpreted correctly it is strongly recommended to give dates in Y-m-d (or Y-m-d H:i for non-all day events) format. The start<br />\ndate must be in that format so that the importer can differentriate between all-day and non-all-day events.</em></p>\n<h4>Future Features</h4>\n<ul>\n<li>An &#8220;import preview&#8221; or &#8220;dry-run&#8221; so users can view how events will be imported.</li>\n<li>Support venue meta data</li>\n<li>Support category colours</li>\n<li>Add filters for developers</li>\n<li>Add support for UID to prevent importing an event twice (perhaps, update the event?)</li>\n<li>Add support &#8216;maps&#8217; for importing from other applications (where format of exported CSV file is prescribed).</li>\n<li>Support generic date formatting (try to &#8216;guess&#8217; / ask for format )</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/event-organiser-csv.0.3.2.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/event-organiser-csv/assets/screenshot-1.png?rev=834030",
+            "caption": "At <em>Tools &gt; Import Events</em> select a file to import."
+        },
+        {
+            "src": "https://ps.w.org/event-organiser-csv/assets/screenshot-2.png?rev=834030",
+            "caption": "Select delimiter, and identify each column."
+        },
+        {
+            "src": "https://ps.w.org/event-organiser-csv/assets/screenshot-3.png?rev=834030",
+            "caption": "After importing the events you'll be notified if the it was successful."
+        }
+    ],
+    "tags": {
+        "csv": "csv",
+        "event": "Event",
+        "import": "import"
+    },
+    "stable_tag": "0.3.2",
+    "versions": {
+        "0.1.2": "https://downloads.wordpress.org/plugin/event-organiser-csv.0.1.2.zip",
+        "0.1.3": "https://downloads.wordpress.org/plugin/event-organiser-csv.0.1.3.zip",
+        "0.2.0": "https://downloads.wordpress.org/plugin/event-organiser-csv.0.2.0.zip",
+        "0.3.0": "https://downloads.wordpress.org/plugin/event-organiser-csv.0.3.0.zip",
+        "0.3.1": "https://downloads.wordpress.org/plugin/event-organiser-csv.0.3.1.zip",
+        "0.3.2": "https://downloads.wordpress.org/plugin/event-organiser-csv.0.3.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/event-organiser-csv.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "http://wp-event-organiser.com/",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/event-organiser-csv.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 76,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

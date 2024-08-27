@@ -1,0 +1,133 @@
+{
+    "name": "Automatic Variants for GlotPress",
+    "slug": "gp-automatic-variants",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/pedromendonca/\">Pedro Mendonça</a>",
+    "author_profile": "https://profiles.wordpress.org/pedromendonca/",
+    "contributors": {
+        "pedromendonca": {
+            "profile": "https://profiles.wordpress.org/pedromendonca/",
+            "avatar": "https://secure.gravatar.com/avatar/39736018b4d3a3c544db97a780167af9?s=96&d=monsterid&r=g",
+            "display_name": "Pedro Mendonça"
+        }
+    },
+    "requires": "5.3",
+    "tested": "5.8.10",
+    "requires_php": "7.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/gp-automatic-variants/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 652,
+    "last_updated": "2022-08-10 2:11pm GMT",
+    "added": "2021-12-15",
+    "homepage": "https://wordpress.org/plugins/gp-automatic-variants/",
+    "sections": {
+        "description": "<p>This plugin for GlotPress customizes the default behavior of a set of chosen pairs of Locales (root/variant), allowing you to automatically convert the approved/current strings in the root to its variant.</p>\n<p>It keeps the root translations automatically converted and synced with its variant translations within your GlotPress install.</p>\n<p>The only translations added to the variant translation set are those which are different from the root translation.</p>\n<p>The strings that don&#8217;t need any conversion remain untranslated on the variant, falling back to the root Locale.</p>\n<p>This plugin was heavily inspired by the <a href=\"https://meta.trac.wordpress.org/ticket/5471\" rel=\"nofollow ugc\">Serbian Latin</a> solution for transliteration of Serbian Cyrillic locale from <a href=\"https://meta.trac.wordpress.org/browser/sites/trunk/wordpress.org/public_html/wp-content/plugins/wporg-gp-customizations/inc/locales/class-serbian-latin.php?rev=10360\" rel=\"nofollow ugc\">translate.wordpress.org</a>.</p>\n<h3>Features</h3>\n<ul>\n<li>Filter <code>gp_automatic_variants_list</code> to add your variant to the array of automatically converted variants.</li>\n<li>Filter <code>gp_automatic_variants_convert_{variant_locale}</code> to process the conversion of strings of the automatic variant.</li>\n<li>Check for GlotPress minimum requirements.</li>\n<li>Check if the added Locales are variants supported the installed GlotPress.</li>\n<li>Convert <code>current</code> root translations and add to the variant translation set.</li>\n<li>Delete variant unused translations instead of keeping as <code>rejected</code>, <code>fuzzy</code>, <code>old</code>.</li>\n<li>Delete <code>current</code> variant translation if a new root translation (same <code>original_id</code>) is added and doesn&#8217;t need conversion.</li>\n</ul>\n<h3>Install GlotPress</h3>\n<ol>\n<li>\n<p>Install and activate GlotPress 3.0.0-alpha minimum version.</p>\n</li>\n<li>\n<p>Install and activate this plugin from your plugins page.</p>\n</li>\n</ol>\n<h3>Configure Automatic Variants for GlotPress</h3>\n<ol>\n<li>\n<p>Set the variants you want to be automatically converted with the filter <code>gp_automatic_variants_list</code>:</p>\n<pre><code>/**\n * Add my automatically converted variants.\n */\nfunction my_automatic_variants( $locales ) {\n    $additional_locales = array(\n        'ca-valencia',\n        'pt-ao90',\n        'ca-valencia',\n        'en-gb',\n        'de-at',\n        'de-ch',\n    );\n    return array_merge( $locales, $additional_locales );\n}\n\nadd_filter( 'gp_automatic_variants_list', 'my_automatic_variants' );\n</code></pre>\n</li>\n<li>\n<p>Add your Locale actual conversion process with the filter <code>gp_automatic_variants_convert_{variant_locale}</code>:</p>\n<p>Example for the variant &#8216;pt-ao90&#8217;:</p>\n<pre><code>/**\n * Actual conversion of the string.\n */\nfunction convert_translation( $translation ) {\n    return do_something( $translation );\n}\n\nadd_filter( 'gp_automatic_variants_convert_pt-ao90', 'convert_translation' );\n</code></pre>\n<h3>Usage</h3>\n</li>\n<li>\n<p>For every translation project, add both root and variant translation sets as usual.</p>\n</li>\n<li>\n<p>Translate only on the root Locale and see the conversions automatically propagate to the variant.</p>\n</li>\n</ol>\n<h3>Requirements</h3>\n<ul>\n<li><a href=\"https://github.com/GlotPress/GlotPress/releases/tag/3.0.0-alpha.4\" rel=\"nofollow ugc\">GlotPress 3.0.0-alpha</a> with Variants support.</li>\n</ul>\n",
+        "faq": "\n<dt id='what%20does%20this%20plugin%20really%20do%3F'>\nWhat does this plugin really do?\n</h4>\n<p>\n<p>It extends the translation platform GlotPress used to translate WordPress projects.<br />\nSince GlotPress 3.x there is a new Variants feature, enabling some Locales to be a variant of a root Locale. With this, comes fallback.<br />\nIf a translation doesn&#8217;t exist on the variant, it assumes its root translation.<br />\nThis plugin links both Locales in a way that you only need to focus in translating and manage consistency on the root, knowing that the variant is being automatically converted and synced with no human action needed.<br />\nWith this tool, the translators can continue to provide both Locales with the minimum effort.</p>\n</p>\n<dt id='does%20translate.wp.org%20supports%20automatically%20converted%20variants%3F'>\nDoes translate.wp.org supports automatically converted variants?\n</h4>\n<p>\n<p>No(t yet). This is a working proof of concept, it works on any GlotPress 3.x, but isn&#8217;t running on <a href=\"https://translate.wp.org\" rel=\"nofollow ugc\">translate.wp.org</a> (GlotPress based) at the moment.</p>\n</p>\n<dt id='should%20this%20feature%20be%20a%20part%20of%20glotpress%20itself%3F'>\nShould this feature be a part of GlotPress itself?\n</h4>\n<p>\n<p>To be discussed.<br />\nThe relationship between root/variant depend on each team that uses GlotPress.<br />\nDepending on how the translation team decides to work. It&#8217;s useful if automatic conversion is wanted.<br />\nFor teams that want a root/variant to work automatically, GlotPress could integrate this optional feature of setting a specific variant to be automatically converted from its root with a custom hookable process, and turning the variant read-only.<br />\nThis can be used by any Locale team that want to hook an automatic conversion between root and variant Locales.<br />\nThis plugin is intended to be a proof of concept to use and test this workflow.</p>\n</p>\n<dt id='what%20versions%20of%20glotpress%20are%20compatible%20with%20this%20plugin%3F'>\nWhat versions of GlotPress are compatible with this plugin?\n</h4>\n<p>\n<p>The Variants feature was introduced in <a href=\"https://github.com/GlotPress/GlotPress/releases/tag/3.0.0-alpha.4\" rel=\"nofollow ugc\">GlotPress 3.0.0-alpha</a>.<br />\nLater, on <a href=\"https://github.com/GlotPress/GlotPress/releases/tag/3.0.0-beta.1\" rel=\"nofollow ugc\">GlotPress 3.0.0-beta</a> the Variants feature <a href=\"https://github.com/GlotPress/GlotPress/pull/1327\" rel=\"nofollow ugc\">was removed temporarily</a>, so for now the GlotPress alpha version is the only Variants compatible version, and you must install it for this plugin to do its magic.</p>\n</p>\n<dt id='can%20i%20contribute%20to%20this%20plugin%3F'>\nCan I contribute to this plugin?\n</h4>\n<p>\n<p>Sure! You are welcome to report any issues or add feature suggestions on the <a href=\"https://github.com/pedro-mendonca/GP-Automatic-Variants\" rel=\"nofollow ugc\">GitHub repository</a>.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>Filter <code>gp_automatic_variants_list</code> to add your variant to the array of automatically converted variants.</li>\n<li>Filter <code>gp_automatic_variants_convert_{variant_locale}</code> to process the conversion of strings of the automatic variant.</li>\n<li>Check for GlotPress minimum requirements.</li>\n<li>Check if the added Locales are variants supported the installed GlotPress.</li>\n<li>Convert <code>current</code> root translations and add to the variant translation set.</li>\n<li>Delete variant unused translations instead of keeping as <code>rejected</code>, <code>fuzzy</code>, <code>old</code>.</li>\n<li>Delete <code>current</code> variant translation if a new root translation (same <code>original_id</code>) is added and doesn&#8217;t need conversion.</li>\n</ul>\n"
+    },
+    "short_description": "Plugin for GlotPress to manage automatically converted variants.",
+    "description": "<p>This plugin for GlotPress customizes the default behavior of a set of chosen pairs of Locales (root/variant), allowing you to automatically convert the approved/current strings in the root to its variant.</p>\n<p>It keeps the root translations automatically converted and synced with its variant translations within your GlotPress install.</p>\n<p>The only translations added to the variant translation set are those which are different from the root translation.</p>\n<p>The strings that don&#8217;t need any conversion remain untranslated on the variant, falling back to the root Locale.</p>\n<p>This plugin was heavily inspired by the <a href=\"https://meta.trac.wordpress.org/ticket/5471\" rel=\"nofollow ugc\">Serbian Latin</a> solution for transliteration of Serbian Cyrillic locale from <a href=\"https://meta.trac.wordpress.org/browser/sites/trunk/wordpress.org/public_html/wp-content/plugins/wporg-gp-customizations/inc/locales/class-serbian-latin.php?rev=10360\" rel=\"nofollow ugc\">translate.wordpress.org</a>.</p>\n<h3>Features</h3>\n<ul>\n<li>Filter <code>gp_automatic_variants_list</code> to add your variant to the array of automatically converted variants.</li>\n<li>Filter <code>gp_automatic_variants_convert_{variant_locale}</code> to process the conversion of strings of the automatic variant.</li>\n<li>Check for GlotPress minimum requirements.</li>\n<li>Check if the added Locales are variants supported the installed GlotPress.</li>\n<li>Convert <code>current</code> root translations and add to the variant translation set.</li>\n<li>Delete variant unused translations instead of keeping as <code>rejected</code>, <code>fuzzy</code>, <code>old</code>.</li>\n<li>Delete <code>current</code> variant translation if a new root translation (same <code>original_id</code>) is added and doesn&#8217;t need conversion.</li>\n</ul>\n<h3>Install GlotPress</h3>\n<ol>\n<li>\n<p>Install and activate GlotPress 3.0.0-alpha minimum version.</p>\n</li>\n<li>\n<p>Install and activate this plugin from your plugins page.</p>\n</li>\n</ol>\n<h3>Configure Automatic Variants for GlotPress</h3>\n<ol>\n<li>\n<p>Set the variants you want to be automatically converted with the filter <code>gp_automatic_variants_list</code>:</p>\n<pre><code>/**\n * Add my automatically converted variants.\n */\nfunction my_automatic_variants( $locales ) {\n    $additional_locales = array(\n        'ca-valencia',\n        'pt-ao90',\n        'ca-valencia',\n        'en-gb',\n        'de-at',\n        'de-ch',\n    );\n    return array_merge( $locales, $additional_locales );\n}\n\nadd_filter( 'gp_automatic_variants_list', 'my_automatic_variants' );\n</code></pre>\n</li>\n<li>\n<p>Add your Locale actual conversion process with the filter <code>gp_automatic_variants_convert_{variant_locale}</code>:</p>\n<p>Example for the variant &#8216;pt-ao90&#8217;:</p>\n<pre><code>/**\n * Actual conversion of the string.\n */\nfunction convert_translation( $translation ) {\n    return do_something( $translation );\n}\n\nadd_filter( 'gp_automatic_variants_convert_pt-ao90', 'convert_translation' );\n</code></pre>\n<h3>Usage</h3>\n</li>\n<li>\n<p>For every translation project, add both root and variant translation sets as usual.</p>\n</li>\n<li>\n<p>Translate only on the root Locale and see the conversions automatically propagate to the variant.</p>\n</li>\n</ol>\n<h3>Requirements</h3>\n<ul>\n<li><a href=\"https://github.com/GlotPress/GlotPress/releases/tag/3.0.0-alpha.4\" rel=\"nofollow ugc\">GlotPress 3.0.0-alpha</a> with Variants support.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/gp-automatic-variants.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "glotpress": "glotpress",
+        "localization": "localization",
+        "translation": "translation",
+        "variants": "variants"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/gp-automatic-variants.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/gp-automatic-variants.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://github.com/sponsors/pedro-mendonca",
+    "banners": {
+        "low": "https://ps.w.org/gp-automatic-variants/assets/banner-772x250.png?rev=2822016",
+        "high": "https://ps.w.org/gp-automatic-variants/assets/banner-1544x500.png?rev=2822016"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/gp-automatic-variants/assets/icon-128x128.png?rev=2806524",
+        "2x": "https://ps.w.org/gp-automatic-variants/assets/icon-256x256.png?rev=2769236"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "gp-automatic-variants",
+            "language": "es_CO",
+            "version": "1.0.0",
+            "updated": "2021-12-15 08:45:22",
+            "package": "http://downloads.wordpress.org/translation/plugin/gp-automatic-variants/1.0.0/es_CO.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "gp-automatic-variants",
+            "language": "es_EC",
+            "version": "1.0.0",
+            "updated": "2021-12-15 08:45:47",
+            "package": "http://downloads.wordpress.org/translation/plugin/gp-automatic-variants/1.0.0/es_EC.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "gp-automatic-variants",
+            "language": "es_ES",
+            "version": "1.0.0",
+            "updated": "2021-12-15 08:43:13",
+            "package": "http://downloads.wordpress.org/translation/plugin/gp-automatic-variants/1.0.0/es_ES.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "gp-automatic-variants",
+            "language": "es_VE",
+            "version": "1.0.0",
+            "updated": "2021-12-15 08:46:14",
+            "package": "http://downloads.wordpress.org/translation/plugin/gp-automatic-variants/1.0.0/es_VE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "gp-automatic-variants",
+            "language": "it_IT",
+            "version": "1.0.0",
+            "updated": "2023-02-28 16:44:20",
+            "package": "http://downloads.wordpress.org/translation/plugin/gp-automatic-variants/1.0.0/it_IT.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "gp-automatic-variants",
+            "language": "nl_BE",
+            "version": "1.0.0",
+            "updated": "2023-01-23 12:38:39",
+            "package": "http://downloads.wordpress.org/translation/plugin/gp-automatic-variants/1.0.0/nl_BE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "gp-automatic-variants",
+            "language": "pt_PT",
+            "version": "1.0.0",
+            "updated": "2021-12-15 04:38:13",
+            "package": "http://downloads.wordpress.org/translation/plugin/gp-automatic-variants/1.0.0/pt_PT.zip"
+        }
+    ]
+}

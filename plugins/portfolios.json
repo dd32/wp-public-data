@@ -1,0 +1,85 @@
+{
+    "name": "Portfolios",
+    "slug": "portfolios",
+    "version": "1.1.6",
+    "author": "<a href=\"http://themeblvd.com\">Theme Blvd</a>",
+    "author_profile": "https://profiles.wordpress.org/themeblvd/",
+    "contributors": {
+        "themeblvd": {
+            "profile": "https://profiles.wordpress.org/themeblvd/",
+            "avatar": "https://secure.gravatar.com/avatar/561c94081b9214cb3df82e54a0b76717?s=96&d=monsterid&r=g",
+            "display_name": "Jason"
+        }
+    },
+    "requires": false,
+    "tested": "5.0.22",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 2,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 2,
+    "support_url": "https://wordpress.org/support/plugin/portfolios/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 1000,
+    "downloaded": 25848,
+    "last_updated": "2019-01-20 10:26pm GMT",
+    "added": "2013-08-01",
+    "homepage": "",
+    "sections": {
+        "description": "<p>This plugin adds a &#8220;Portfolio Item&#8221; custom post type with associated &#8220;Portfolio&#8221; and &#8220;Porfolio Tag&#8221; taxonomies.</p>\n<p>Any instances of <code>the_tags()</code> by your theme when on a portfolio item post are filtered to use Portfolio Tags.</p>\n<h4>Theme Blvd Integration</h4>\n<p>If you&#8217;re using a theme with <a href=\"http://www.themeblvd.com\" rel=\"nofollow ugc\">Theme Blvd</a> framework v2.3+, this plugin has some cool integration features.</p>\n<ul>\n<li>Breadcrumb integration for Portfolio Items and associated taxonomy archives.</li>\n<li>Portfolio and Portfolio Tag WordPress can display in grid mode.</li>\n<li>Post List and Post Grid page templates can accept &#8220;portfolio&#8221; and &#8220;portfolio_tag&#8221; custom fields to filter posts.</li>\n<li>Standard &#8220;Post Options&#8221; meta box is integrated into the portfolio item custom post type.</li>\n<li>With our <a href=\"https://wordpress.org/plugins/theme-blvd-layout-builder\" rel=\"ugc\">Layout Builder</a> plugin, options to pull posts by Portfolio or Portfolio Tag are added to verious elements.</li>\n<li>With our <a href=\"https://wordpress.org/plugins/theme-blvd-shortcodes/\" rel=\"ugc\">Shortcodes</a> plugin, you can use &#8220;portfolio&#8221; and &#8220;portfolio_tag&#8221; parameters for <code>[post_list]</code> and <code>[post_grid]</code> shortcodes.</li>\n<li>With our <a href=\"https://wordpress.org/plugins/theme-blvd-sliders/\" rel=\"ugc\">Sliders</a> plugin, you can use &#8220;portfolio&#8221; and &#8220;portfolio_tag&#8221; parameters with <code>[post_slider]</code> shortcode.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload <code>portfolios</code> folder to the <code>/wp-content/plugins/</code> directory.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n</ol>\n",
+        "faq": "\n<h4>Will this plugin work if I&#8217;m not using a Theme Blvd theme?</h4>\n<p>\n<p>Yup, but it just won&#8217;t do a whole lot. You&#8217;ll essentially end up with a &#8220;Portfolio Item&#8221; custom post type and associated &#8220;Portfolio&#8221; and &#8220;Portfolio Tag&#8221; taxonomies.</p>\n</p>\n<h4>How can change the number of columns and rows in portfolio archive grids?</h4>\n<p>\n<p>function my_grid_columns() {<br />\n        return 3; // Number of columns (1-5)<br />\n    }<br />\n    add_filter(&#8216;themeblvd_default_grid_columns&#8217;, &#8216;my_grid_columns&#8217;);</p>\n<pre><code>function my_grid_rows() {\n    return 4; // Number of rows per page\n}\nadd_filter('themeblvd_default_grid_rows', 'my_grid_rows');\n</code></pre>\n</p>\n<h4>How can disable portfolio archives from displaying in a grid?</h4>\n<p>\n<p>function my_portfolio_mods() {</p>\n<pre><code>    $portfolios = Theme_Blvd_Portfolios::get_instance();\n\n    remove_filter( 'themeblvd_theme_mode_override', array( $portfolios, 'theme_mode' ) );\n    remove_filter( 'themeblvd_template_parts', array( $portfolios, 'template_parts' ) );\n\n}\nadd_action('after_setup_theme', 'my_portfolio_mods');\n</code></pre>\n</p>\n<h4>How can I change the sidebar layout of Portfolio and Portfolio Tag archives?</h4>\n<p>\n<p>If you&#8217;re using a theme with Theme Blvd framework 2.5+, there&#8217;s a user option for this at <em>Appearance &gt; Theme Options &gt; Layout &gt; Sidebar Layout &gt; Portfolios</em>. And if not, you can use the following code.</p>\n<pre><code>function my_sidebar_layout( $layout ) {\n\n    if ( is_tax('portfolio') || is_tax('portfolio_tag') ) {\n        $layout = 'full_width';\n    }\n\n    return $layout;\n}\nadd_filter('themeblvd_sidebar_layout', 'my_sidebar_layout');\n</code></pre>\n<p>More Info: <a href=\"http://dev.themeblvd.com/tutorial/sidebar-layouts/\" rel=\"nofollow ugc\">Customizing Sidebar Layouts</a></p>\n</p>\n<h4>How can I change the URL slug of Portfolio and Portfolio Tag archives?</h4>\n<p>\n<p>function my_portfolio_tax_args( $args ) {<br />\n        $args[&#8216;rewrite&#8217;] = array(&#8216;slug&#8217; =&gt; &#8216;my-slug&#8217;);<br />\n        return $args;<br />\n    }<br />\n    add_filter(&#8216;themeblvd_portfolio_tax_args&#8217;, &#8216;my_portfolio_tax_args&#8217;);</p>\n<pre><code>function my_portfolio_tag_tax_args( $args ) {\n    $args['rewrite'] = array('slug' =&gt; 'my-other-slug');\n    return $args;\n}\nadd_filter('themeblvd_portfolio_tag_tax_args', 'my_portfolio_tag_tax_args');\n</code></pre>\n<p>Note: Remember to flush your re-write rules! In other words, after you make this change, go to <em>Settings &gt; Permalinks</em> in your WordPress admin, and re-save the page.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.6 &#8211; 01/20/2019</h4>\n<ul>\n<li>Allow portfolio taxonomies to be available through REST API and applied with Gutenberg.</li>\n</ul>\n<h4>1.1.5 &#8211; 09/07/2018</h4>\n<ul>\n<li>Allow portfolio items to be available through REST API and editable with Gutenberg.</li>\n</ul>\n<h4>1.1.4 &#8211; 09/11/2016</h4>\n<ul>\n<li>Apply archive post display option to portfolio item archives, opposed to just portfolio and portfolio tag taxonomy archives.</li>\n</ul>\n<h4>1.1.3 &#8211; 02/10/2015</h4>\n<ul>\n<li>Changed default value for &#8220;Portfolio Info Boxes&#8221; option.</li>\n<li>Added Banner functionality to portfolio items (for framework 2.5+ themes).</li>\n</ul>\n<h4>1.1.2 &#8211; 12/16/2014</h4>\n<ul>\n<li>Fixed filters applied to registering the taxonomies.</li>\n<li>Added option for sidebar layout on portfolio archives (for framework 2.5+ themes).</li>\n<li>Added more code examples to <a href=\"https://wordpress.org/plugins/portfolios/faq/\" rel=\"ugc\">FAQ</a> on using these filters.</li>\n</ul>\n<h4>1.1.1 &#8211; 12/15/2014</h4>\n<ul>\n<li>Fixed Theme Blvd integration hook, from last update.</li>\n<li>Fixed post meta integration (for framework 2.4 themes).</li>\n</ul>\n<h4>1.1.0 &#8211; 12/13/2014</h4>\n<ul>\n<li>List associated portfolios at the bottom of the portfolio item post (for framework 2.5+ themes).</li>\n<li>Added portfolio archive options at <em>Appearance &gt; Theme Options &gt; Content &gt; Portfolios</em> (for framework 2.5+ themes).</li>\n<li>Fixes for Layout Builder 2.0+ integration.</li>\n<li>Added support for filtering with Post Grid, Post List, and Post Showcase elements of Layout Builder 2.0+ (for framework 2.5+ themes).</li>\n<li>GlotPress compatibility (for 2015 wordpress.org release).</li>\n</ul>\n<h4>1.0.1 &#8211; 07/21/2014</h4>\n<ul>\n<li>Fixed PHP warning on Portfolio Items breadcrumb trail when no portfolio is selected.</li>\n</ul>\n<h4>1.0.0 &#8211; 08/01/2013</h4>\n<ul>\n<li>This is the first release.</li>\n</ul>\n"
+    },
+    "short_description": "Adds a &quot;Portfolio Item&quot; custom post type with associated &quot;Portfolio&quot; and &quot;Porfolio Tag&quot; taxonomies.",
+    "description": "<p>This plugin adds a &#8220;Portfolio Item&#8221; custom post type with associated &#8220;Portfolio&#8221; and &#8220;Porfolio Tag&#8221; taxonomies.</p>\n<p>Any instances of <code>the_tags()</code> by your theme when on a portfolio item post are filtered to use Portfolio Tags.</p>\n<h4>Theme Blvd Integration</h4>\n<p>If you&#8217;re using a theme with <a href=\"http://www.themeblvd.com\" rel=\"nofollow ugc\">Theme Blvd</a> framework v2.3+, this plugin has some cool integration features.</p>\n<ul>\n<li>Breadcrumb integration for Portfolio Items and associated taxonomy archives.</li>\n<li>Portfolio and Portfolio Tag WordPress can display in grid mode.</li>\n<li>Post List and Post Grid page templates can accept &#8220;portfolio&#8221; and &#8220;portfolio_tag&#8221; custom fields to filter posts.</li>\n<li>Standard &#8220;Post Options&#8221; meta box is integrated into the portfolio item custom post type.</li>\n<li>With our <a href=\"https://wordpress.org/plugins/theme-blvd-layout-builder\" rel=\"ugc\">Layout Builder</a> plugin, options to pull posts by Portfolio or Portfolio Tag are added to verious elements.</li>\n<li>With our <a href=\"https://wordpress.org/plugins/theme-blvd-shortcodes/\" rel=\"ugc\">Shortcodes</a> plugin, you can use &#8220;portfolio&#8221; and &#8220;portfolio_tag&#8221; parameters for <code>[post_list]</code> and <code>[post_grid]</code> shortcodes.</li>\n<li>With our <a href=\"https://wordpress.org/plugins/theme-blvd-sliders/\" rel=\"ugc\">Sliders</a> plugin, you can use &#8220;portfolio&#8221; and &#8220;portfolio_tag&#8221; parameters with <code>[post_slider]</code> shortcode.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/portfolios.1.1.6.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "bundle": "bundle",
+        "jason-bobich": "Jason Bobich",
+        "portfolios": "portfolios",
+        "theme-blvd": "Theme Blvd",
+        "themeblvd": "themeblvd"
+    },
+    "stable_tag": "1.1.6",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/portfolios.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/portfolios.1.0.1.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/portfolios.1.1.0.zip",
+        "1.1.1": "https://downloads.wordpress.org/plugin/portfolios.1.1.1.zip",
+        "1.1.2": "https://downloads.wordpress.org/plugin/portfolios.1.1.2.zip",
+        "1.1.3": "https://downloads.wordpress.org/plugin/portfolios.1.1.3.zip",
+        "1.1.4": "https://downloads.wordpress.org/plugin/portfolios.1.1.4.zip",
+        "1.1.5": "https://downloads.wordpress.org/plugin/portfolios.1.1.5.zip",
+        "1.1.6": "https://downloads.wordpress.org/plugin/portfolios.1.1.6.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/portfolios.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/portfolios/assets/banner-772x250.jpg?rev=952465",
+        "high": false
+    },
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/portfolios_e0e9ef.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

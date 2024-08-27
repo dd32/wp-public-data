@@ -1,0 +1,82 @@
+{
+    "name": "WP GeoNames",
+    "slug": "wp-geonames",
+    "version": "1.8",
+    "author": "<a href=\"https://www.boiteasite.fr\">Jacques Malgrange</a>",
+    "author_profile": "https://profiles.wordpress.org/sojahu/",
+    "contributors": {
+        "sojahu": {
+            "profile": "https://profiles.wordpress.org/sojahu/",
+            "avatar": "https://secure.gravatar.com/avatar/b7c6db982f674a7683207c52ab6f54b2?s=96&d=monsterid&r=g",
+            "display_name": "Jacques Malgrange"
+        }
+    },
+    "requires": "3.0.1",
+    "tested": "6.0.9",
+    "requires_php": "5.3",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 2,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 2,
+    "support_url": "https://wordpress.org/support/plugin/wp-geonames/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 200,
+    "downloaded": 13545,
+    "last_updated": "2022-06-07 2:17pm GMT",
+    "added": "2014-11-27",
+    "homepage": "",
+    "sections": {
+        "description": "<p>This lightweight plugin makes it easy to install the millions of GEONAMES Data on your WordPress site.<br />\nIt allows :</p>\n<ul>\n<li>Install data from one or more file (place &amp; postal code) ;</li>\n<li>Choose column to install to avoid excessive enlargement of the base ;</li>\n<li>Choose type of data to install (city, park, road&#8230;) ;</li>\n<li>Remove all the data.</li>\n<li>Check data in the database.</li>\n<li>Edit and change datas from Dashboard.</li>\n<li>Display the places on OpenStreetMap.</li>\n</ul>\n<p>A shortcode is also available to create a city region and country taxonomy.</p>\n<p>This plugin will give you plenty of ideas to improve the quality of your website.</p>\n<p>Official <a href=\"http://www.geonames.org/\" rel=\"nofollow ugc\">GeoNames</a> website.</p>\n",
+        "installation": "<h4>Install and Activate</h4>\n<ol>\n<li>Unzip the downloaded wp-geonames zip file</li>\n<li>Upload the <code>wp-geonames</code> folder and its contents into the <code>wp-content/plugins/</code> directory of your WordPress installation</li>\n<li>Activate WP GeoNames from Plugins page</li>\n</ol>\n<h4>Insert GeoNames data</h4>\n<ol>\n<li>Go to the new tab in Settings : WP GeoNames</li>\n<li>Select the GeoNames file you want</li>\n<li>Select Columns you want to insert (latitude, longitude, population, elevation&#8230;)</li>\n<li>Select type of data you want (city, building, lake, mountain&#8230;)</li>\n<li>Click ADD</li>\n</ol>\n<p>You can insert as many file as you want.</p>\n<h4>Use</h4>\n<p>You must use the WordPress tools to get the database. <strong>WPDB is your friend</strong>.<br />\nYou can write the code directly in your template or in functions.php of your theme.</p>\n<p>Name of the table : ($wpdb-&gt;prefix)geonames</p>\n<p>Names of the columns :</p>\n<ul>\n<li><code>idwpgn</code> (bigint)</li>\n<li><code>geonameid</code> (bigint)</li>\n<li><code>name</code> (varchar)</li>\n<li><code>asciiname</code> (varchar)</li>\n<li><code>alternatenames</code> (text)</li>\n<li><code>latitude</code> (decimal)</li>\n<li><code>longitude</code> (decimal)</li>\n<li><code>feature_class</code> (char)</li>\n<li><code>feature_code</code> (varchar)</li>\n<li><code>country_code</code> (varchar)</li>\n<li><code>cc2</code> (varchar)</li>\n<li><code>admin1_code</code> (varchar)</li>\n<li><code>admin2_code</code> (varchar)</li>\n<li><code>admin3_code</code> (varchar)</li>\n<li><code>admin4_code</code> (varchar)</li>\n<li><code>population</code> (bigint)</li>\n<li><code>elevation</code> (int)</li>\n<li><code>dem</code> (smallint)</li>\n<li><code>timezone</code> (varchar)</li>\n<li><code>modification_date</code> (date)</li>\n</ul>\n<p>Feature Class &amp; Code <a href=\"http://www.geonames.org/export/codes.html\" rel=\"nofollow ugc\">here</a>.</p>\n<p>Example : get GPS position for a specific city in a specific country :</p>\n<pre><code>global $wpdb;\n$s = $wpdb-&gt;get_row(\"SELECT latitude, longitude \n    FROM \".$wpdb-&gt;prefix.\"geonames \n    WHERE name='Paris' and country_code='FR' \");\necho $s-&gt;latitude . \" - \" . $s-&gt;longitude;\n</code></pre>\n<p>Example : 10 most populous cities in Switzerland :</p>\n<pre><code>global $wpdb;\n$s = $wpdb-&gt;get_results(\"SELECT name, population \n    FROM \".$wpdb-&gt;prefix.\"geonames \n    WHERE country_code='CH' and feature_class='P' \n    ORDER BY population DESC \n    LIMIT 10\");\nforeach($s as $t) {\n    echo $t-&gt;name. \" : \" . $t-&gt;population . \"&lt;br /&gt;\";\n}\n</code></pre>\n<p>Example : hotels within 40 km from Marbella (ES) :</p>\n<pre><code>global $wpdb;\n$p = $wpdb-&gt;get_row(\"SELECT latitude, longitude \n    FROM \".$wpdb-&gt;prefix.\"geonames \n    WHERE name='Marbella' and country_code='ES' \");\n$dlat = 40 / 1.852 / 60;\n$dlon = 40 / 1.852 / 60 / cos($p-&gt;latitude * 0.0174533);\n$s = $wpdb-&gt;get_results(\"SELECT name, latitude, longitude\n    FROM \".$wpdb-&gt;prefix.\"geonames \n    WHERE country_code='ES' and \n        feature_code='HTL' and \n        latitude&lt;\".($p-&gt;latitude+$dlat).\" and\n        latitude&gt;\".($p-&gt;latitude-$dlat).\" and\n        longitude&lt;\".($p-&gt;longitude+$dlon).\" and\n        longitude&gt;\".($p-&gt;longitude-$dlon).\"\n    LIMIT 100\");\nforeach($s as $t) {\n    $d = (floor(sqrt(pow(($p-&gt;latitude-$t-&gt;latitude)*60*1.852,2)+pow(($p-&gt;longitude-$t-&gt;longitude)*60*1.852*cos($p-&gt;latitude * 0.0174533),2))));\n    if($d&lt;=40) echo $t-&gt;name. \" : \" . $d . \" km&lt;br /&gt;\";\n}\n</code></pre>\n<p>Example : Suggest cities during the typing by the user (like Google search)</p>\n<p>You must use Ajax action and PHP function with the name <strong>&#8220;wpgeonamesAjax&#8221;</strong></p>\n<p>In your theme, in function.php ; add :<br />\n    function wpgeonamesAjax() {<br />\n        global $wpdb;<br />\n        $s = $wpdb-&gt;get_results(&#8220;SELECT name<br />\n            FROM &#8220;.$wpdb-&gt;prefix.&#8221;geonames<br />\n            WHERE country_code=&#8217;FR&#8217; and feature_class=&#8217;P&#8217; and name LIKE &#8216;&#8221;.strip_tags($_POST[&#8220;city&#8221;]).&#8221;%&#8217;<br />\n            ORDER BY name<br />\n            LIMIT 10&#8243;);<br />\n        foreach($s as $t) {<br />\n            echo &#8216;</p>\n<p>&#8216;.$t-&gt;name.&#8217;</p>\n<p>&#8216;;<br />\n        }<br />\n    }</p>\n<p>In your theme, in the right page ; add :</p>\n<pre><code>&lt;input id=\"inpCity\" name=\"inpCity\" type=\"text\" onkeyup=\"sugg(this,'&lt;?php echo admin_url('admin-ajax.php'); ?&gt;');\" /&gt;\n&lt;div class=\"suggCity\" id=\"suggCity\"&gt;&lt;/div&gt;\n&lt;script&gt;\nfunction sugg(f,g){\n    jQuery(document).ready(function(){\n        jQuery.post(g,{'action':'wpgeonamesAjax','city':f.value},function(r){\n            jQuery('#suggCity').empty();jQuery('#suggCity').append(r.substring(0,r.length-1));\n        });\n    });\n}\n&lt;/script&gt;\n</code></pre>\n",
+        "changelog": "<h4>1.8</h4>\n<p>08/02/2022</p>\n<ul>\n<li>Update Leaflet 1.7.1.</li>\n<li>Update SumoSelect 3.4.2.</li>\n<li>Split admin sidet in a specific file.</li>\n</ul>\n<h4>1.7</h4>\n<p>21/03/2020</p>\n<ul>\n<li>Fix issue with very long line in Geoname DB.</li>\n<li>Add nonce.</li>\n<li>Braces style standardisation in the code.</li>\n</ul>\n<h4>1.6</h4>\n<p>14/03/2019 &#8211; Add Postal code database.</p>\n<h4>1.5.1</h4>\n<p>27/01/2018 &#8211; Curl used by default if exists in place of File_Get_Content.</p>\n<h4>1.5</h4>\n<p>12/01/2018 &#8211; Add tab to edit and change datas.</p>\n<h4>1.4</h4>\n<p>24/06/2017</p>\n<ul>\n<li>Add Taxonomy.</li>\n<li>Add shortcode to create taxonomy in the site.</li>\n<li>Add template to customize the taxonomy form.</li>\n<li>Ability to download multiple files in one click.</li>\n<li>Check the database with a taxonomy form and display the place on OpenStreetMap.</li>\n<li>Multisite.</li>\n</ul>\n<h4>1.3</h4>\n<p>09/10/2015 &#8211; Fix &#8220;Fatal error: Out of memory (allocated xxx) (tried to allocate xxx bytes)&#8221;.</p>\n<p>07/06/2016 &#8211; 1.3.1 &#8211; Fix error when reactivate (header already sent&#8230;).</p>\n<h4>1.2</h4>\n<p>06/08/2015 &#8211; Fix installation bug.</p>\n<h4>1.1</h4>\n<p>01/12/2014 &#8211; Add Ajax hook.</p>\n<h4>1.0</h4>\n<p>25/11/2014 &#8211; First stable version.</p>\n"
+    },
+    "short_description": "Allows you to insert all or part of the global GeoNames database in your WordPress base.",
+    "description": "<p>This lightweight plugin makes it easy to install the millions of GEONAMES Data on your WordPress site.<br />\nIt allows :</p>\n<ul>\n<li>Install data from one or more file (place &amp; postal code) ;</li>\n<li>Choose column to install to avoid excessive enlargement of the base ;</li>\n<li>Choose type of data to install (city, park, road&#8230;) ;</li>\n<li>Remove all the data.</li>\n<li>Check data in the database.</li>\n<li>Edit and change datas from Dashboard.</li>\n<li>Display the places on OpenStreetMap.</li>\n</ul>\n<p>A shortcode is also available to create a city region and country taxonomy.</p>\n<p>This plugin will give you plenty of ideas to improve the quality of your website.</p>\n<p>Official <a href=\"http://www.geonames.org/\" rel=\"nofollow ugc\">GeoNames</a> website.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/wp-geonames.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/wp-geonames/trunk/screenshot-1.jpg?rev=2738695",
+            "caption": "WP-GeoNames main tab in the Dashboard."
+        },
+        {
+            "src": "https://ps.w.org/wp-geonames/trunk/screenshot-2.jpg?rev=2738695",
+            "caption": "Check your database in Dashboard."
+        }
+    ],
+    "tags": {
+        "city": "city",
+        "data": "data",
+        "geo": "geo",
+        "sql": "sql",
+        "table": "table"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.paypal.me/JacquesMalgrange",
+    "banners": {
+        "low": "https://ps.w.org/wp-geonames/assets/banner-772x250.png?rev=1033712",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/wp-geonames/assets/icon-128x128.png?rev=1033712"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

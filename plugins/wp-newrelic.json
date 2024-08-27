@@ -1,0 +1,104 @@
+{
+    "name": "New Relic Reporting for WordPress",
+    "slug": "wp-newrelic",
+    "version": "1.3.3",
+    "author": "<a href=\"https://10up.com\">10up</a>",
+    "author_profile": "https://profiles.wordpress.org/10up/",
+    "contributors": {
+        "10up": {
+            "profile": "https://profiles.wordpress.org/10up/",
+            "avatar": "https://secure.gravatar.com/avatar/78f1d9ceab2dbc8f92f875ec1637e2f1?s=96&d=monsterid&r=g",
+            "display_name": "10up"
+        },
+        "ritteshpatel": {
+            "profile": "https://profiles.wordpress.org/ritteshpatel/",
+            "avatar": "https://secure.gravatar.com/avatar/8133a9baa7e975e0276f4dd993761462?s=96&d=monsterid&r=g",
+            "display_name": "Ritesh Patel"
+        },
+        "tott": {
+            "profile": "https://profiles.wordpress.org/tott/",
+            "avatar": "https://secure.gravatar.com/avatar/9e8f7fd87fd2163010f98280f3e45a35?s=96&d=monsterid&r=g",
+            "display_name": "Thorsten Ott"
+        },
+        "oscarssanchez": {
+            "profile": "https://profiles.wordpress.org/oscarssanchez/",
+            "avatar": "https://secure.gravatar.com/avatar/e7d234593425c4acf42ab423bd67f556?s=96&d=monsterid&r=g",
+            "display_name": "oscarssanchez"
+        },
+        "jeffpaul": {
+            "profile": "https://profiles.wordpress.org/jeffpaul/",
+            "avatar": "https://secure.gravatar.com/avatar/8ac4ec4b1f9cb342e59ed5127f050d24?s=96&d=monsterid&r=g",
+            "display_name": "Jeffrey Paul"
+        }
+    },
+    "requires": "6.3",
+    "tested": "6.5.5",
+    "requires_php": "8.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 4,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 4,
+    "support_url": "https://wordpress.org/support/plugin/wp-newrelic/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 900,
+    "downloaded": 89728,
+    "last_updated": "2024-06-26 9:00pm GMT",
+    "added": "2016-12-02",
+    "homepage": "https://wordpress.org/plugins/wp-newrelic",
+    "sections": {
+        "description": "<p>WP New Relic (WPNR) is designed to use with <a href=\"https://newrelic.com/application-monitoring\" rel=\"nofollow ugc\">New Relic APM</a> which uses <a href=\"https://docs.newrelic.com/docs/agents/php-agent/configuration/php-agent-api\" rel=\"nofollow ugc\">New Relic PHP Agent API</a> to properly augment existing metrics with valuable WordPress details such as templates, users, request type, transaction names etc. This plugin is tested with PHP Agent 10.19.0.9.</p>\n<p>New Relic is a trademark of New Relic, Inc.</p>\n<h4>Admin Settings</h4>\n<p>After activating the plugin, You will see a new option named <strong>New Relic</strong> under the Tools menu in your WordPress Dashboard. If you are running WordPress in Network Mode, the settings page will be found in your Network Dashboard.</p>\n<p>Capture URL Parameters: If Capture URLs setting is enabled, it will capture URL parameters for displaying in transaction traces.</p>\n<h4>Basic Config</h4>\n<p>By default plugin will setup 3 configs.<br />\n&#8211; newrelic.appname<br />\n&#8211; newrelic.capture_params<br />\n&#8211; newrelic.framework (value is wordpress)</p>\n<p>appname and capture_params config can be override using <strong>wp_nr_config filter</strong>. <strong>wp_nr_setup_config</strong> action hook can also be used to setup any extra config.</p>\n<h4>New Relic Custom Attributes</h4>\n<p>Certain useful custom attrribute (just like WordPress post meta) will be set for each event which can provide additional information using key-value pair. You can query events and filter them using these attributes in New Relic Insights. See <a href=\"https://docs.newrelic.com/docs/insights/new-relic-insights/using-new-relic-query-language/nrql-reference\" rel=\"nofollow ugc\">NRQL reference</a> for more details on how to query events.</p>\n<ol>\n<li>\n<p><strong>User</strong></p>\n<p>User attribute is getting set using <a href=\"https://docs.newrelic.com/docs/agents/php-agent/configuration/php-agent-api#api-set-user-attributes\" rel=\"nofollow ugc\">newrelic_set_user_attributes</a>. If user is logged in, user ID will be set to user attribute and if not it will be set to <strong>not-logged-in</strong>.<br />\nEx: In New Relic Insights you can query transactions for non-logged in users as<br />\nSELECT * FROM Transaction WHERE appName = &#8216;{appName}&#8217; AND user = &#8216;not-logged-in&#8217;</p>\n</li>\n<li>\n<p><strong>Post ID</strong></p>\n<p>For single post, post ID will be set via <strong>post_id</strong> custom parameter in transaction.</p>\n<p>Ex: Get all transactions for a post ID 190.</p>\n<p>SELECT * FROM Transaction WHERE appName = &#8216;{appName}&#8217; AND post_id = &#8216;190&#8217;</p>\n<p>One can also query for post view count for post 190.</p>\n<p>SELECT count(*) FROM Transaction WHERE appName = &#8216;{appName}&#8217; AND post_id = &#8216;190&#8217;</p>\n</li>\n<li>\n<p><strong>Template</strong></p>\n<p>For each request, template being used getting set as <strong>template</strong> custom parameter in transaction.</p>\n<p>Ex: You can query all transactions for a particular template as following.</p>\n<p>SELECT * FROM Transaction WHERE appName = &#8216;{appName}&#8217; AND template = &#8216;{Absolute Template Path}&#8217;</p>\n</li>\n<li>\n<p><strong>Theme</strong></p>\n<p>Current theme is getting set as <strong>theme</strong> custom parameter in transaction.</p>\n<p>Ex: Query all transactions for &#8220;Twenty Fifteen&#8221; theme.</p>\n<p>SELECT * FROM Transaction WHERE appName = &#8216;{appName}&#8217; AND theme = &#8216;Twenty Fifteen&#8217;</p>\n</li>\n<li>\n<p><strong>Request type</strong></p>\n<p>There can be 3 type of requests namely web, ajax and cli. Current request type getting set as <strong>request_type</strong> custom parameter in transaction.<br />\nRequest type can be override using wp_nr_request_type filter.</p>\n<p>Ex: Get all transaction for &#8220;ajax&#8221; request type</p>\n<p>SELECT * FROM Transaction WHERE appName = &#8216;{appName}&#8217; AND request_type = &#8216;ajax&#8217;</p>\n</li>\n<li>\n<p><strong>Transaction Name</strong></p>\n<p>Transaction name is getting set as per the main WP_Query parameters using <a href=\"https://docs.newrelic.com/docs/agents/php-agent/configuration/php-agent-api#api-name-wt\" rel=\"nofollow ugc\">newrelic_name_transaction</a>.<br />\nPossible values are Default Home Page, Front Page, Blog Page, Network Dashboard, Dashboard, Single &#8211; {post_type}, Page &#8211; {pagename}, Date Archive, Search Page, Feed, Archive &#8211; {post_type}, Category &#8211; {cat_name}, Tag &#8211; {tag_name}, Tax &#8211; {taxonomy} &#8211; {term}</p>\n</li>\n<li>\n<p><strong>Custom Error Logging</strong></p>\n<p>Using <strong>wp_nr_log_errors</strong> function, any plugin/theme can log errors/notices to New Relic for current transaction.<br />\nNote: This function can be used more than once but only last use will be considered to log the error to New Relic. It’s limitation of <a href=\"https://docs.newrelic.com/docs/agents/php-agent/configuration/php-agent-api#api-notice-error\" rel=\"nofollow ugc\">PHP Agent API</a>.</p>\n<p><strong>wp_nr_log_errors( &#8216;Error message&#8217;, Exception $exception );</strong></p>\n</li>\n<li>\n<p><strong>Runtime of async tasks</strong></p>\n<p>This plugin also tracks runtime of <a href=\"https://github.com/10up/WP-Gears\" rel=\"nofollow ugc\">gearman</a> async tasks. Gearman async task run for a particular hook and it’s runtime can be track using “wp_async_task-{hook}” custom attribute in New Relic Insights.</p>\n</li>\n</ol>\n<h4>Issues</h4>\n<ol>\n<li>\n<p><strong>PHP version</strong><br />\nPHP version 7.3.3 is known to cause issues with this plugin, updating to 7.3.11 or greater appears to resolve these issues.  For more details, see <a href=\"https://github.com/10up/wp-newrelic/issues/39\" rel=\"nofollow ugc\">issue#39</a>.</p>\n</li>\n<li>\n<p><strong>Have an issue to report?</strong><br />\nIf you identify any errors or have an idea for improving the plugin, please open an <a href=\"https://github.com/10up/wp-newrelic/issues?stage=open\" rel=\"nofollow ugc\">issue</a>. We&#8217;re excited to see what the community thinks of this project, and we would love your input!</p>\n</li>\n</ol>\n",
+        "installation": "<ol>\n<li>First, you will need to <a href=\"https://docs.newrelic.com/docs/agents/php-agent/getting-started/new-relic-php\" rel=\"nofollow ugc\">install and configure</a> New Relic PHP agent on server.</li>\n<li>Activate the plugin in WordPress.</li>\n<li>Enjoy!</li>\n</ol>\n",
+        "changelog": "<h4>1.3.3 &#8211; 2024-06-26</h4>\n<p><strong>Note this release bumps the PHP minimum from 7.3.11 to 8.0 and the WordPress minimum from 4.0 to 6.3.</strong><br />\n* <strong>Added:</strong> Minimum PHP version check for 7.3.11 (props <a href=\"https://github.com/bmarshall511\" rel=\"nofollow ugc\">@bmarshall511</a>, <a href=\"https://github.com/Sidsector9\" rel=\"nofollow ugc\">@Sidsector9</a> via <a href=\"https://github.com/10up/wp-newrelic/pull/60\" rel=\"nofollow ugc\">#60</a>).<br />\n* <strong>Changed:</strong> <a href=\"https://github.com/10up/wp-newrelic?tab=readme-ov-file#support-level\" rel=\"nofollow ugc\">Support Level</a> downgraded from <code>Active</code> to <code>Stable</code> (props <a href=\"https://github.com/jeffpaul\" rel=\"nofollow ugc\">@jeffpaul</a>, <a href=\"https://github.com/dkotter\" rel=\"nofollow ugc\">@dkotter</a>, <a href=\"https://github.com/felipeelia\" rel=\"nofollow ugc\">@felipeelia</a>, <a href=\"https://github.com/oscarssanchezz\" rel=\"nofollow ugc\">@oscarssanchezz</a> via <a href=\"https://github.com/10up/wp-newrelic/pull/65\" rel=\"nofollow ugc\">#65</a>).<br />\n* <strong>Changed:</strong> Bump WordPress &#8220;tested up to&#8221; version 6.5 (props <a href=\"https://github.com/zamanq\" rel=\"nofollow ugc\">@zamanq</a>, <a href=\"https://github.com/jeffpaul\" rel=\"nofollow ugc\">@jeffpaul</a>, <a href=\"https://github.com/oscarssanchezz\" rel=\"nofollow ugc\">@oscarssanchezz</a> via <a href=\"https://github.com/10up/wp-newrelic/pull/58\" rel=\"nofollow ugc\">#58</a>, <a href=\"https://github.com/10up/wp-newrelic/pull/66\" rel=\"nofollow ugc\">#66</a>).<br />\n* <strong>Fixed:</strong> Improve compatibility with PHP 8.1 by replacing the deprecated <code>FILTER_SANITIZE_STRING</code> (props <a href=\"https://github.com/burhandodhy\" rel=\"nofollow ugc\">@burhandodhy</a>, <a href=\"https://github.com/jeffpaul\" rel=\"nofollow ugc\">@jeffpaul</a>, <a href=\"https://github.com/felipeelia\" rel=\"nofollow ugc\">@felipeelia</a>, <a href=\"mailto:&#x76;e&#110;&#x6d;&#115;&#x40;&#103;&#x6d;&#097;&#x69;&#108;&#046;&#x63;&#111;&#x6d;\" rel=\"nofollow ugc\">Sven</a> via <a href=\"https://github.com/10up/wp-newrelic/pull/68\" rel=\"nofollow ugc\">#68</a>).</p>\n<h4>1.3.2 &#8211; 2022-06-28</h4>\n<ul>\n<li><strong>Changed:</strong> Bump WordPress version &#8220;tested up to&#8221; 6.0 (props <a href=\"https://github.com/lukecav\" rel=\"nofollow ugc\">@lukecav</a>, <a href=\"https://github.com/burhandodhy\" rel=\"nofollow ugc\">@burhandodhy</a>, <a href=\"https://github.com/jeffpaul\" rel=\"nofollow ugc\">@jeffpaul</a> via <a href=\"https://github.com/10up/wp-newrelic/pull/45\" rel=\"nofollow ugc\">#45</a>, <a href=\"https://github.com/10up/wp-newrelic/pull/49\" rel=\"nofollow ugc\">#49</a>).</li>\n</ul>\n<p><a href=\"https://github.com/10up/wp-newrelic/blob/develop/CHANGELOG.md\" rel=\"nofollow ugc\">View historical changelog details here</a>.</p>\n"
+    },
+    "short_description": "New Relic APM reports for WordPress.",
+    "description": "<p>WP New Relic (WPNR) is designed to use with <a href=\"https://newrelic.com/application-monitoring\" rel=\"nofollow ugc\">New Relic APM</a> which uses <a href=\"https://docs.newrelic.com/docs/agents/php-agent/configuration/php-agent-api\" rel=\"nofollow ugc\">New Relic PHP Agent API</a> to properly augment existing metrics with valuable WordPress details such as templates, users, request type, transaction names etc. This plugin is tested with PHP Agent 10.19.0.9.</p>\n<p>New Relic is a trademark of New Relic, Inc.</p>\n<h4>Admin Settings</h4>\n<p>After activating the plugin, You will see a new option named <strong>New Relic</strong> under the Tools menu in your WordPress Dashboard. If you are running WordPress in Network Mode, the settings page will be found in your Network Dashboard.</p>\n<p>Capture URL Parameters: If Capture URLs setting is enabled, it will capture URL parameters for displaying in transaction traces.</p>\n<h4>Basic Config</h4>\n<p>By default plugin will setup 3 configs.<br />\n&#8211; newrelic.appname<br />\n&#8211; newrelic.capture_params<br />\n&#8211; newrelic.framework (value is wordpress)</p>\n<p>appname and capture_params config can be override using <strong>wp_nr_config filter</strong>. <strong>wp_nr_setup_config</strong> action hook can also be used to setup any extra config.</p>\n<h4>New Relic Custom Attributes</h4>\n<p>Certain useful custom attrribute (just like WordPress post meta) will be set for each event which can provide additional information using key-value pair. You can query events and filter them using these attributes in New Relic Insights. See <a href=\"https://docs.newrelic.com/docs/insights/new-relic-insights/using-new-relic-query-language/nrql-reference\" rel=\"nofollow ugc\">NRQL reference</a> for more details on how to query events.</p>\n<ol>\n<li>\n<p><strong>User</strong></p>\n<p>User attribute is getting set using <a href=\"https://docs.newrelic.com/docs/agents/php-agent/configuration/php-agent-api#api-set-user-attributes\" rel=\"nofollow ugc\">newrelic_set_user_attributes</a>. If user is logged in, user ID will be set to user attribute and if not it will be set to <strong>not-logged-in</strong>.<br />\nEx: In New Relic Insights you can query transactions for non-logged in users as<br />\nSELECT * FROM Transaction WHERE appName = &#8216;{appName}&#8217; AND user = &#8216;not-logged-in&#8217;</p>\n</li>\n<li>\n<p><strong>Post ID</strong></p>\n<p>For single post, post ID will be set via <strong>post_id</strong> custom parameter in transaction.</p>\n<p>Ex: Get all transactions for a post ID 190.</p>\n<p>SELECT * FROM Transaction WHERE appName = &#8216;{appName}&#8217; AND post_id = &#8216;190&#8217;</p>\n<p>One can also query for post view count for post 190.</p>\n<p>SELECT count(*) FROM Transaction WHERE appName = &#8216;{appName}&#8217; AND post_id = &#8216;190&#8217;</p>\n</li>\n<li>\n<p><strong>Template</strong></p>\n<p>For each request, template being used getting set as <strong>template</strong> custom parameter in transaction.</p>\n<p>Ex: You can query all transactions for a particular template as following.</p>\n<p>SELECT * FROM Transaction WHERE appName = &#8216;{appName}&#8217; AND template = &#8216;{Absolute Template Path}&#8217;</p>\n</li>\n<li>\n<p><strong>Theme</strong></p>\n<p>Current theme is getting set as <strong>theme</strong> custom parameter in transaction.</p>\n<p>Ex: Query all transactions for &#8220;Twenty Fifteen&#8221; theme.</p>\n<p>SELECT * FROM Transaction WHERE appName = &#8216;{appName}&#8217; AND theme = &#8216;Twenty Fifteen&#8217;</p>\n</li>\n<li>\n<p><strong>Request type</strong></p>\n<p>There can be 3 type of requests namely web, ajax and cli. Current request type getting set as <strong>request_type</strong> custom parameter in transaction.<br />\nRequest type can be override using wp_nr_request_type filter.</p>\n<p>Ex: Get all transaction for &#8220;ajax&#8221; request type</p>\n<p>SELECT * FROM Transaction WHERE appName = &#8216;{appName}&#8217; AND request_type = &#8216;ajax&#8217;</p>\n</li>\n<li>\n<p><strong>Transaction Name</strong></p>\n<p>Transaction name is getting set as per the main WP_Query parameters using <a href=\"https://docs.newrelic.com/docs/agents/php-agent/configuration/php-agent-api#api-name-wt\" rel=\"nofollow ugc\">newrelic_name_transaction</a>.<br />\nPossible values are Default Home Page, Front Page, Blog Page, Network Dashboard, Dashboard, Single &#8211; {post_type}, Page &#8211; {pagename}, Date Archive, Search Page, Feed, Archive &#8211; {post_type}, Category &#8211; {cat_name}, Tag &#8211; {tag_name}, Tax &#8211; {taxonomy} &#8211; {term}</p>\n</li>\n<li>\n<p><strong>Custom Error Logging</strong></p>\n<p>Using <strong>wp_nr_log_errors</strong> function, any plugin/theme can log errors/notices to New Relic for current transaction.<br />\nNote: This function can be used more than once but only last use will be considered to log the error to New Relic. It’s limitation of <a href=\"https://docs.newrelic.com/docs/agents/php-agent/configuration/php-agent-api#api-notice-error\" rel=\"nofollow ugc\">PHP Agent API</a>.</p>\n<p><strong>wp_nr_log_errors( &#8216;Error message&#8217;, Exception $exception );</strong></p>\n</li>\n<li>\n<p><strong>Runtime of async tasks</strong></p>\n<p>This plugin also tracks runtime of <a href=\"https://github.com/10up/WP-Gears\" rel=\"nofollow ugc\">gearman</a> async tasks. Gearman async task run for a particular hook and it’s runtime can be track using “wp_async_task-{hook}” custom attribute in New Relic Insights.</p>\n</li>\n</ol>\n<h4>Issues</h4>\n<ol>\n<li>\n<p><strong>PHP version</strong><br />\nPHP version 7.3.3 is known to cause issues with this plugin, updating to 7.3.11 or greater appears to resolve these issues.  For more details, see <a href=\"https://github.com/10up/wp-newrelic/issues/39\" rel=\"nofollow ugc\">issue#39</a>.</p>\n</li>\n<li>\n<p><strong>Have an issue to report?</strong><br />\nIf you identify any errors or have an idea for improving the plugin, please open an <a href=\"https://github.com/10up/wp-newrelic/issues?stage=open\" rel=\"nofollow ugc\">issue</a>. We&#8217;re excited to see what the community thinks of this project, and we would love your input!</p>\n</li>\n</ol>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/wp-newrelic.1.3.3.zip",
+    "upgrade_notice": {
+        "1.3.3": "<p>This release bumps the PHP minimum from 7.3.11 to 8.0 and the WordPress minimum from 4.0 to 6.3.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "apm-reporting": "APM Reporting",
+        "new-relic": "New Relic",
+        "new-relic-apm-reporting": "New Relic APM Reporting",
+        "new-relic-reporting": "New Relic Reporting"
+    },
+    "stable_tag": "1.3.3",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/wp-newrelic.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/wp-newrelic.1.1.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/wp-newrelic.1.2.zip",
+        "1.3": "https://downloads.wordpress.org/plugin/wp-newrelic.1.3.zip",
+        "1.3.1": "https://downloads.wordpress.org/plugin/wp-newrelic.1.3.1.zip",
+        "1.3.2": "https://downloads.wordpress.org/plugin/wp-newrelic.1.3.2.zip",
+        "1.3.3": "https://downloads.wordpress.org/plugin/wp-newrelic.1.3.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/wp-newrelic.zip"
+    },
+    "business_model": "community",
+    "repository_url": "https://github.com/10up/wp-newrelic/",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/wp-newrelic/assets/banner-772x250.png?rev=2968950",
+        "high": "https://ps.w.org/wp-newrelic/assets/banner-1544x500.png?rev=2968950"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/wp-newrelic/assets/icon.svg?rev=2968950",
+        "svg": "https://ps.w.org/wp-newrelic/assets/icon.svg?rev=2968950"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": "2",
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

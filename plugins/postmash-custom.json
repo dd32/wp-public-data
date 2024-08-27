@@ -1,0 +1,94 @@
+{
+    "name": "PostMash Custom &#8211; custom post order",
+    "slug": "postmash-custom",
+    "version": "1.0.3",
+    "author": "<a href=\"http://opperud.com\">Torstein Opperud</a>",
+    "author_profile": "https://profiles.wordpress.org/torsteino/",
+    "contributors": {
+        "torsteino": {
+            "profile": "https://profiles.wordpress.org/torsteino/",
+            "avatar": "https://secure.gravatar.com/avatar/cfaa7dc183f4b6b8b155469c6e621846?s=96&d=monsterid&r=g",
+            "display_name": "torsteino"
+        }
+    },
+    "requires": "3.0",
+    "tested": "3.1.4",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/postmash-custom/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 600,
+    "downloaded": 23482,
+    "last_updated": "2011-03-30 10:50pm GMT",
+    "added": "2011-03-03",
+    "homepage": "http://opperud.com/postmash_custom",
+    "sections": {
+        "description": "<p>Posts are usually listed in reverse chronological order as they are often used for posting regular time-orientated content.</p>\n<p>PostMash Custom lets you customise the order your posts are listed in using a simple Ajax drag-and-drop administrative interface, both regular posts and custom post types, with filtering for both standard taxonomy and custom taxonomies. Plus it gives quick access to toggle posts between draft and published states. Particularly useful if you&#8217;re using WordPress as a CMS.</p>\n<p><a href=\"http://opperud.com/postmash_custom/\" rel=\"nofollow ugc\">Plugin home page</a></p>\n<h3>Credits</h3>\n<p>This version: Torstein Opperud, http:/opperud.com</p>\n<p>The original postMash plugin and author: http://joelstarnes.co.uk/postMash/,<br />\npostMash (filtered): http://postmashfiltered.wordpress.com/2009/06/19/post-mash-filtered/</p>\n<h3>Localization</h3>\n<p>Currently only available in english.</p>\n",
+        "installation": "<p>Upload to wp-content/plugins/ and activate.</p>\n<p>To make use of this chosen order you will need to modify your template code:<br />\nOpen wp-content/themes/your-theme-name/index.php and find the beginning of ‘the loop’. Which will start: <code>if(have_posts())</code>. Then add the following code directly before this:</p>\n<pre><code>&lt;?php  \n    $wp_query-&gt;set('orderby', 'menu_order');  \n    $wp_query-&gt;set('order', 'ASC');  \n    $wp_query-&gt;get_posts();  \n?&gt;\n</code></pre>\n<p>This just tells WP to get the posts ordered according to their ‘menu_order’ position. Therefore you can get the posts ordered anytime you use a function such as get_posts simply by giving it the required arguments:</p>\n<pre><code>&lt;?php get_posts('orderby=menu_order&amp;order=ASC'); ?&gt;\n</code></pre>\n<p>Checkout the get_posts() function in the wordpress codex for more info.<br />\nNote that it says menu_order is only useful for pages, posts have a menu_order position too, it just isn’t used. postMash provides you with an interface so that you can use it.</p>\n<h4>Instructions for Twenty Ten</h4>\n<p>Things may seem a bit different in Twenty Ten, since the loop has been moved from the individual templatefiles into loop.php, but actually it still works almost exactly the same. Below is the entire code you need for Twenty Tens index.php:</p>\n<pre><code>&lt;?php\n/**\n * The main template file.\n *\n * This is the most generic template file in a WordPress theme\n * and one of the two required files for a theme (the other being style.css).\n * It is used to display a page when nothing more specific matches a query.\n * E.g., it puts together the home page when no home.php file exists.\n * Learn more: https://codex.wordpress.org/Template_Hierarchy\n *\n * @package WordPress\n * @subpackage Twenty_Ten\n * @since Twenty Ten 1.0\n */\n\nget_header(); ?&gt;\n\n        &lt;div id=\"container\"&gt;\n            &lt;div id=\"content\" role=\"main\"&gt;\n&lt;?php  \n    $wp_query-&gt;set('orderby', 'menu_order');  \n    $wp_query-&gt;set('order', 'ASC');  \n    $wp_query-&gt;get_posts();  \n?&gt;\n            &lt;?php\n            /* Run the loop to output the posts.\n             * If you want to overload this in a child theme then include a file\n             * called loop-index.php and that will be used instead.\n             */\n             get_template_part( 'loop', 'index' );\n            ?&gt;\n            &lt;/div&gt;&lt;!-- #content --&gt;\n        &lt;/div&gt;&lt;!-- #container --&gt;\n\n&lt;?php get_sidebar(); ?&gt;\n&lt;?php get_footer(); ?&gt;\n</code></pre>\n<p>NEXT POST AND PREVIOUS POST LINKS</p>\n<p>ALSO You can now use the &#8216;Next Post&#8217; and &#8216;Previous Post&#8217; calls in your template file &#8216;single.php&#8217;, as usual, but rather than calling items by date, it will call items using the same order as set in postMash,  using the following modified commands in place of the regular tags</p>\n<pre><code>ORIGINAL TAGS\n\n    next_post_link(); \n    previous_post_link();\n\nMODIFIED TAGS\n\n    next_post_link_menu(); \n    previous_post_link_menu();\n</code></pre>\n<p>(Please note that, by default, &#8216;In Same Category&#8217; is set to TRUE. You will need to edit this if you wish to disable it. All other variables passed to the function should work as normal)</p>\n<p>OPTIONAL ADMIN INSTALLATION</p>\n<p>If you wish to view the posts in the WordPress admin &#8216;Edit Posts&#8217; panel in the same order as you have set them postMash (rather than the default &#8216;Date Published&#8217; or &#8216;Date Modified&#8217;), you can modify wp-admin/includes/post.php, on line 784 as follows;</p>\n<pre><code>ORIGINAL\n\n    if ( isset($q['post_status']) &amp;&amp; 'pending' === $q['post_status'] ) {\n        $order = 'ASC';\n        $orderby = 'modified';\n    } elseif ( isset($q['post_status']) &amp;&amp; 'draft' === $q['post_status'] ) {\n        $order = 'DESC';\n        $orderby = 'modified';\n    } else {\n        $order = 'DESC';\n        $orderby = 'date';\n    }\n\n\nMODIFIED\n\n    if ( isset($q['post_status']) &amp;&amp; 'pending' === $q['post_status'] ) {\n        $order = 'ASC';\n        $orderby = 'menu_order';\n    } elseif ( isset($q['post_status']) &amp;&amp; 'draft' === $q['post_status'] ) {\n        $order = 'ASC';\n        $orderby = 'menu_order';\n    } else {\n        $order = 'ASC';\n        $orderby = 'menu_order';\n    }\n</code></pre>\n",
+        "faq": "\n<h4>None of it&#8217;s working</h4>\n<p>\n<p>The most likely cause is that you have another plugin which has included an incompatible javascript library onto the postMash admin page.</p>\n<p>Try opening up your WP admin and browse to your postMash page, then take a look at the page source. Check if the prototype or scriptaculous scripts are included in the header. If so then the next step is to track down the offending plugin, which you can do by disabling each of your plugins in turn and checking when the scripts are no longer included.</p>\n</p>\n<h4>Do I need any special code in my template</h4>\n<p>\n<p>Yes, by default posts are shown in reverse chronological order, to show the posts in the order you set in postMash you will need to use different code to display your posts. Look in the install section for an example.</p>\n</p>\n<h4>Which browsers are supported</h4>\n<p>\n<p>Any good up-to-date browser should work fine. Tested in Firefox, IE7, Safari and Opera.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0</h4>\n<ul>\n<li>Initial Release</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Fixed &#8220;not permission&#8221;-errors when filtering, added screenshots, fixed some typos &amp; such.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>corrected some info</li>\n</ul>\n"
+    },
+    "short_description": "Customize display order of posts by a simple drag-and-drop Ajax interface, now with support for custom post types and custom taxonomies.",
+    "description": "<p>Posts are usually listed in reverse chronological order as they are often used for posting regular time-orientated content.</p>\n<p>PostMash Custom lets you customise the order your posts are listed in using a simple Ajax drag-and-drop administrative interface, both regular posts and custom post types, with filtering for both standard taxonomy and custom taxonomies. Plus it gives quick access to toggle posts between draft and published states. Particularly useful if you&#8217;re using WordPress as a CMS.</p>\n<p><a href=\"http://opperud.com/postmash_custom/\" rel=\"nofollow ugc\">Plugin home page</a></p>\n<h3>Credits</h3>\n<p>This version: Torstein Opperud, http:/opperud.com</p>\n<p>The original postMash plugin and author: http://joelstarnes.co.uk/postMash/,<br />\npostMash (filtered): http://postmashfiltered.wordpress.com/2009/06/19/post-mash-filtered/</p>\n<h3>Localization</h3>\n<p>Currently only available in english.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/postmash-custom.1.0.3.zip",
+    "upgrade_notice": {
+        "1.0.1": "<ul>\n<li>Fixed permission errors when filtering\n\n<ul>\n<li>Fixed typos and urls</li>\n</ul></li>\n</ul>",
+        "1.0.2": "<ul>\n<li>corrected some info</li>\n</ul>",
+        "1.0.3": "<ul>\n<li>refixed permission errors when filtering\n\n<ul>\n<li>fixed timeout error when updating/saving</li>\n</ul></li>\n</ul>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/postmash-custom/trunk/screenshot-1.png?rev=1566869",
+            "caption": "From the filtering screen."
+        },
+        {
+            "src": "https://ps.w.org/postmash-custom/trunk/screenshot-2.png?rev=1566869",
+            "caption": "Change order by dragging posts up/down."
+        },
+        {
+            "src": "https://ps.w.org/postmash-custom/trunk/screenshot-3.png?rev=1566869",
+            "caption": ""
+        }
+    ],
+    "tags": {
+        "admin": "admin",
+        "ajax": "ajax",
+        "drag-and-drop": "drag-and-drop",
+        "order-posts": "order posts",
+        "re-order": "re-order"
+    },
+    "stable_tag": "1.0.3",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/postmash-custom.1.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/postmash-custom.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/postmash-custom.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/postmash-custom.1.0.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/postmash-custom.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/postmash-custom.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

@@ -1,0 +1,289 @@
+{
+    "name": "Nav Menu Roles",
+    "slug": "nav-menu-roles",
+    "version": "2.1.2",
+    "author": "<a href=\"http://www.kathyisawesome.com\">Kathy Darling</a>",
+    "author_profile": "https://profiles.wordpress.org/helgatheviking/",
+    "contributors": {
+        "helgatheviking": {
+            "profile": "https://profiles.wordpress.org/helgatheviking/",
+            "avatar": "https://secure.gravatar.com/avatar/e59280745b3f6f86a4cc6fad485647e9?s=96&d=monsterid&r=g",
+            "display_name": "HelgaTheViking"
+        }
+    },
+    "requires": "4.5.0",
+    "tested": "6.5.0",
+    "requires_php": "5.3.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 98,
+    "ratings": {
+        "5": 209,
+        "4": 2,
+        "3": 1,
+        "2": 0,
+        "1": 3
+    },
+    "num_ratings": 215,
+    "support_url": "https://wordpress.org/support/plugin/nav-menu-roles/",
+    "support_threads": 3,
+    "support_threads_resolved": 0,
+    "active_installs": 90000,
+    "downloaded": 1690560,
+    "last_updated": "2024-07-26 5:54pm GMT",
+    "added": "2012-09-20",
+    "homepage": "http://www.kathyisawesome.com/449/nav-menu-roles/",
+    "sections": {
+        "description": "<p>This plugin lets you hide custom menu items based on user roles.  So if you have a link in the menu that you only want to show to logged in users, certain types of users, or even only to logged out users, this plugin is for you.</p>\n<p>Nav Menu Roles is very flexible. In addition to standard user roles, you can customize the functionality by adding your own check boxes with custom labels using the <code>nav_menu_roles</code> filter and then using the <code>nav_menu_roles_item_visibility</code> filter to check against whatever criteria you need. You can check against any user meta values (like capabilities) and any custom attributes added by other plugins.</p>\n<h4>IMPORTANT NOTE</h4>\n<p>In WordPress menu items and pages are completely separate entities. Nav Menu Roles does not restrict access to content. Nav Menu Roles is <em>only</em> for showing/hiding <em>nav menu</em> items. If you wish to restrict content then you need to also be using a membership plugin.</p>\n<h4>Usage</h4>\n<ol>\n<li>Go to Appearance &gt; Menus</li>\n<li>Set the &#8220;Display Mode&#8221; to either &#8220;logged in users&#8221;, &#8220;logged out users&#8221;, or &#8220;everyone&#8221;. &#8220;Everyone&#8221; is the default.</li>\n<li>If you wish to customize by role, set the &#8220;Display Mode&#8221; to &#8220;Logged In Users&#8221; and under &#8220;Restrict menu item to a minimum role&#8221; check the boxes next to the desired roles. <strong>Keep in mind that the role doesn&#8217;t limit the item strictly to that role, but to everyone who has that role&#8217;s capability.</strong> For example: an item set to &#8220;Subscriber&#8221; will be visible by Subscribers <em>and</em> by admins. Think of this more as a minimum role required to see an item. </li>\n</ol>\n<h4>Support</h4>\n<p>Support is handled in the <a href=\"https://wordpress.org/support/plugin/nav-menu-roles\" rel=\"ugc\">WordPress forums</a>. Please note that support is limited and does not cover any custom implementation of the plugin. Before posting, please read the <a href=\"https://wordpress.org/plugins/nav-menu-roles/faq/\" rel=\"ugc\">FAQ</a>. Also, please verify the problem with other plugins disabled and while using a default theme.</p>\n<p>Please report any bugs, errors, warnings, code problems to <a href=\"https://github.com/helgatheviking/nav-menu-roles/issues\" rel=\"nofollow ugc\">Github</a></p>\n",
+        "installation": "<ol>\n<li>Upload the <code>plugin</code> folder to the <code>/wp-content/plugins/</code> directory</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</li>\n<li>Go to Appearance &gt; Menus</li>\n<li>Edit the menu items accordingly. First select whether you&#8217;d like to display the item to Everyone, all logged out users, or all logged in users. </li>\n<li>Logged in users can be further limited to specific roles by checking the boxes next to the roles you&#8217;d like to restrict visibility to.</li>\n</ol>\n",
+        "faq": "\n<dt id='i%20don%27t%20see%20the%20nav%20menu%20roles%20options%20in%20the%20admin%20menu%20items%3F'>\nI don&#8217;t see the Nav Menu Roles options in the admin menu items?\n</h4>\n<p>\n<p>This is likely due to a conflict with another plugin (or theme).</p>\n<p>As of WordPress 5.4 the <code>wp_nav_menu_item_custom_fields</code> hook has been added to WordPress core.</p>\n<p>Nav Menu Roles is therefore attaching directly to this hook without needing to replace the custom Admin Menu Walker, of which there can still be only one.  If the Walker is replaced by a theme/plugin and the core hook is not included, then Nav Menu Roles cannot add it&#8217;s fields.</p>\n<p><strong>A non-exhaustive list of known conflicts:</strong></p>\n<ol>\n<li>UberMenu 2.x Mega Menus plugin (UberMenu 3.x supports NMR!)</li>\n<li>Add Descendants As Submenu Items plugin</li>\n<li>Navception plugin</li>\n<li>Suffusion theme</li>\n<li>BeTheme</li>\n<li>Yith Menu</li>\n<li>Jupiter Theme</li>\n<li>iMedica theme</li>\n<li>Prostyler EVO theme</li>\n<li>Mega Main Plugin</li>\n</ol>\n</p>\n<dt id='workaround%20%231'>\nWorkaround #1\n</h4>\n<p>\n<p><a href=\"https://profiles.wordpress.org/shazdeh/\" rel=\"nofollow ugc\">Shazdeh</a> had the genius idea to not wait for a core hook and simply add the hook ourselves. If all plugin and theme authors use the same hook, we can make our plugins play together.</p>\n<p>Prior to WordPress 5.4, I used this idea and modified my admin nav menu Walker to <em>only</em> adding the following lines (right after the description input):</p>\n<pre><code>&lt;?php \n// Place this in your admin nav menu Walker\ndo_action( 'wp_nav_menu_item_custom_fields', $item_id, $item, $depth, $args, $id );\n// end added section \n?&gt;\n</code></pre>\n<p>Since WordPress 5.4, I no longer replace the Walker at all and would advise other plugins and themes to do the same.</p>\n<p>But for those that still are, they definitely need to include the now-core hook.</p>\n<p><strong>Ask your conflicting plugin/theme&#8217;s author to add this code to their plugin or theme and our plugins will become compatible.</strong></p>\n</p>\n<dt id='instructions%20for%20patching%20your%20plugin%2Ftheme'>\nInstructions for Patching Your Plugin/Theme\n</h4>\n<p>\n<p>Should you wish to attempt this patch yourself, you can modify your conflicting plugin/theme&#8217;s admin menu Walker class.</p>\n<p><strong>Reminder: I do not provide support for fixing your plugin/theme. If you aren&#8217;t comfortable with the following instructions, contact the developer of the conflicting plugin/theme!</strong></p>\n<p>1&#046; Find the class that extends the <code>Walker_Nav_Menu</code>. The fastest way to do this is to search your whole plugin/theme folder for <code>extends Walker_Nav_Menu</code>. When you find the file that contains this text you will know which file you need to edit. Once you find it here&#8217;s what the beginning of that class will look like:</p>\n<pre><code>class YOUR_THEME_CUSTOM_WALKER extends Walker_Nav_Menu {}\n</code></pre>\n<p>2&#046; Find the <code>start_el()</code> method</p>\n<p>In that file you will eventually see a class method that looks like:</p>\n<pre><code>function start_el( &amp;$output, $item, $depth = 0, $args = array(), $id = 0 ) {\n  // some stuff truncated for brevity\n}\n</code></pre>\n<p>3&#046; Paste the action hook somewhere in this method!</p>\n<p>In Nav Menu Roles, I have placed the hook directly after the description, like so:</p>\n<pre><code>&lt;p class=\"field-description description description-wide\"&gt;\n  &lt;label for=\"edit-menu-item-description-&lt;?php echo $item_id; ?&gt;\"&gt;\n    &lt;?php _e( 'Description' ); ?&gt;&lt;br /&gt;\n    &lt;textarea id=\"edit-menu-item-description-&lt;?php echo $item_id; ?&gt;\" class=\"widefat edit-menu-item-description\" rows=\"3\" cols=\"20\" name=\"menu-item-description[&lt;?php echo $item_id; ?&gt;]\"&gt;&lt;?php echo esc_html( $item-&gt;description ); // textarea_escaped ?&gt;&lt;/textarea&gt;\n    &lt;span class=\"description\"&gt;&lt;?php _e('The description will be displayed in the menu if the current theme supports it.'); ?&gt;&lt;/span&gt;\n  &lt;/label&gt;\n&lt;/p&gt;\n\n&lt;?php \n// Add this directly after the description paragraph in the start_el() method\ndo_action( 'wp_nav_menu_item_custom_fields', $item_id, $item, $depth, $args, $id );\n// end added section \n?&gt;\n</code></pre>\n</p>\n<dt id='workaround%20%232'>\nWorkaround #2\n</h4>\n<p>\n<p>As a workaround, you can switch to a default theme (or disable the conflicting plugin), edit the Nav Menu Roles, for each menu item, then revert to your original theme/ re-enable the conflicting plugin. The front-end functionality of Nav Menu Roles will still work.</p>\n</p>\n<dt id='workaround%20%233'>\nWorkaround #3\n</h4>\n<p>\n<p>Only works with WordPress less than 5.4.</p>\n<p>Download and install this <a href=\"https://gist.github.com/helgatheviking/d00f9c033a4b0aab0f69cf50d7dcd89c\" rel=\"nofollow ugc\">tiny plugin</a>. Activate it when you need to make the NMR options appear and then disable it when you are done editing.</p>\n</p>\n<dt id='i%27m%20using%20xyz%20membership%20plugin%20and%20i%20don%27t%20see%20its%20%22levels%22%3F'>\nI&#8217;m using XYZ Membership plugin and I don&#8217;t see its &#8220;levels&#8221;?\n</h4>\n<p>\n<p>There are apparently a few membership plugins out there that <em>don&#8217;t</em> use traditional WordPress roles/capabilities. My plugin will list any role registered in the traditional WordPress way. If your membership plugin is using some other system, then Nav Menu Roles won&#8217;t work with it out of the box.  Since 1.3.5 I&#8217;ve added a filter called <code>nav_menu_roles_item_visibility</code> just before my code decides whether to show/hide a menu item. There&#8217;s also always been the <code>nav_menu_roles</code> filter which lets you modify the roles listed in the admin. Between these two, I believe you have enough to integrate Nav Menu Roles with any membership plugin.</p>\n<p>Here&#8217;s an example where I&#8217;ve added a new pseudo role, creatively called &#8220;new-role&#8221;.  The first function adds it to the menu item admin screen. The second function is pretty generic and won&#8217;t actually do anything because you need to supply your own logic based on the plugin you are using.  Nav Menu Roles will save the new &#8220;role&#8221; info and add it to the item in an array to the <code>$item-&gt;roles</code> variable.</p>\n</p>\n<dt id='existing%20compatibility%20plugins'>\nExisting Compatibility Plugins\n</h4>\n<p>\n<ol>\n<li><a href=\"https://github.com/helgatheviking/nav-menu-roles-wishlists-memberships\" rel=\"nofollow ugc\">Wishlists Memberships</a></li>\n<li><a href=\"https://github.com/helgatheviking/nav-menu-roles-woocommerce-memberships\" rel=\"nofollow ugc\">WooCommerce Memberships</a></li>\n</ol>\n<p>If your membership plugin is not listed here, you may be able to use the above bridge plugins as a template. Scroll down to the bottom of the main plugin file and you will see a section for &#8220;Helper Functions&#8221;. If you modify the 3 wrapper functions according to your membership plugin&#8217;s logic, the rest of the plugin should handle the integration with Nav Menu Roles.</p>\n</p>\n<dt id='adding%20a%20new%20%22role%22'>\nAdding a new &#8220;role&#8221;\n</h4>\n<p>\n<p>The roles in NMR are filterable distinct from the global <code>$wp_roles</code>. This allows for compatibility to be added between plugins that don&#8217;t use the core roles to determine access, like some membership plugins.</p>\n<pre><code>/**\n * Add custom roles to Nav Menu Roles menu list\n * param: $roles an array of all available roles, by default is global $wp_roles \n * return: array\n */\nfunction kia_new_roles( $roles ) {\n  $roles['new-role-key'] = 'new-role';\n  return $roles;\n}\nadd_filter( 'nav_menu_roles', 'kia_new_roles' );\n</code></pre>\n<p>Note, if you want to add a WordPress capability the above is literally all you need. Because Nav Menu Roles checks whether a role has permission to view the menu item using <code>current_user_can($role) you do not need to right a custom callback for the</code>nav_menu_roles_item_visibility` filter.</p>\n<p>In case you <em>do</em> need to check your visibility status against something very custom, here is how you&#8217;d go about it:</p>\n<pre><code>/**\n  * Change visibility of each menu item\n  * @param bool $visible\n  * @param obj $item The complete menu object. Nav Menu Roles adds its info to the following keys {\n  *         roles - Possible value: \"in\" (all logged in) | \"out\" (all logged out) | an array of specific roles, ex: [ \"administrator\", \"editor\" ]\n  *         display_mode - Possible values: \"show\" (show if conditions met) | \"hide\" (hide if conditions met)\n  * return boolean\n  */\nfunction kia_item_visibility( $visible, $item ) {\n  if ( isset( $item-&gt;roles ) &amp;&amp; is_array( $item-&gt;roles ) &amp;&amp; in_array( 'new-role-key', $item-&gt;roles ) ) {\n  /*  if ( // your own custom check on the current user versus 'new-role' status ) {\n        $visible = true;\n      } else {\n        $visible = false;\n    }\n  */  }\n  return $visible;\n}\nadd_filter( 'nav_menu_roles_item_visibility', 'kia_item_visibility', 10, 2 );\n</code></pre>\n<p>Note that you have to generate your own if/then logic. I can&#8217;t provide free support for custom integration with another plugin. You may <a href=\"http://kathyisawesome.com/contact\" rel=\"nofollow ugc\">contact me</a> to discuss hiring me, or I would suggest using a plugin that supports WordPress&#8217; roles, such as Justin Tadlock&#8217;s <a href=\"https://wordpress.org/plugins/members\" rel=\"ugc\">Members</a>.</p>\n</p>\n<dt id='sort%20the%20roles%20alphabetically'>\nSort the roles alphabetically\n</h4>\n<p>\n<p>Add the following snippet to your theme&#8217;s <code>functions.php</code> file:</p>\n<pre><code>/*\n * Sort the NMR roles\n * @param: $roles an array of all available roles with ID=&gt;Name\n * @return: array\n */\nfunction kia_sort_roles( $roles ) {\n  if ( is_admin() ) {\n    $array_lowercase = array_map( 'strtolower', $roles );\n    array_multisort( $array_lowercase, SORT_ASC, SORT_STRING, $roles );\n    return $roles;\n  }\n}\nadd_filter( 'nav_menu_roles', 'kia_sort_roles' );\n</code></pre>\n</p>\n<dt id='the%20menu%20exploded%3F%20why%20are%20all%20my%20pages%20displaying%20for%20logged%20out%20users%3F'>\nThe menu exploded? Why are all my pages displaying for logged out users?\n</h4>\n<p>\n<p>If every item in your menu is configured to display to logged in users (either all logged in users, or by specific role), then when a logged out visitor comes to your site there are no items in the menu to display.  <code>wp_nav_menu()</code> will then try check its <code>fallback_cb</code> argument&#8230; which defaults to <code>wp_page_menu</code>.</p>\n<p>Therefore, if you have no items to display, WordPress will end up displaying ALL your pages!!</p>\n<p>If you don&#8217;t want this, you must set the fallback argument to be a null string.</p>\n<pre><code>wp_nav_menu( array( 'theme_location' =&gt; 'primary-menu', 'fallback_cb' =&gt; '' ) );\n</code></pre>\n<p>You must do this for every effected instance of <code>wp_nav_menu()</code> in your theme templates. It is not possible for me to tell you where they are located, but <code>header.php</code> is a very common location for the main menu.</p>\n<p>Alternatively, you could do this universally by adding the following snippet to your child theme&#8217;s <em>function.php</em> file or by adding it via the <a href=\"https://wordpress.org/plugins/code-snippets/\" rel=\"ugc\">Code Snippets</a> plugin:</p>\n<pre><code>/**\n * Disables the fallback page menu for all menus\n *\n * @param array $args Array of wp_nav_menu() arguments.\n * @return array\n */\nfunction kia_nav_menu_args( $args ) {\n  $args['fallback_cb'] = '';\n  return $args;\n}\nadd_filter( 'wp_nav_menu_args', 'kia_nav_menu_args' );\n</code></pre>\n</p>\n<dt id='what%20happened%20to%20my%20menu%20roles%20on%20import%2Fexport%3F'>\nWhat happened to my menu roles on import/export?\n</h4>\n<p>\n<p>The Nav Menu Roles plugin stores 1 piece of post <em>meta</em> to every menu item/post.  This is exported just fine by the default Export tool.</p>\n<p>However, the Import plugin only imports certain post meta for menu items.  As of version 1.3, I&#8217;ve added a custom Importer to Nav Menu Roles as a work around.</p>\n</p>\n<dt id='how%20do%20i%20use%20the%20custom%20importer%3F'>\nHow Do I Use the Custom Importer?\n</h4>\n<p>\n<ol>\n<li>Go to Tools&gt;Export, choose to export All Content and download the Export file</li>\n<li>Go to Tools&gt;Import on your new site and perform your normal WordPress import</li>\n<li>Return to Tools&gt;Import and this time select the Nav Menu Roles importer.</li>\n<li>Use the same .xml file and perform a second import</li>\n<li>No duplicate posts will be created but all menu post meta (including your Nav Menu Roles info) will be imported</li>\n</ol>\n</p>\n<dt id='is%20nav%20menu%20roles%20compatible%20with%20wpml%20%3F'>\nIs Nav Menu Roles compatible with WPML ?\n</h4>\n<p>\n<p>Yes, but manually. WPML developers have informed me that the meta data for nav menu items is <strong>not</strong> synced by WPML, meaning that menus copied into a new language will not bring their custom Nav Menu Roles settings. However, if you manually reconfigure the settings, the new language menu will work as expected.</p>\n</p>\n\n",
+        "changelog": "<h4>2.1.3</h4>\n<ul>\n<li>Fix: RTL layout style.</li>\n</ul>\n<h4>2.1.2</h4>\n<ul>\n<li>Fix: Typos.</li>\n</ul>\n<h4>2.1.1</h4>\n<ul>\n<li>Fix: Top-level display of hidden child menu items of hidden parent menu items.</li>\n</ul>\n<h4>2.1.0</h4>\n<ul>\n<li>New: Add support for &#8220;hiding&#8221; a menu item by role.</li>\n</ul>\n<h4>2.0.2</h4>\n<ul>\n<li>Fix: PHP Fatal error: Uncaught Error: Call to undefined method WP_Customize_Manager::settings_previewed(). settings_previewed() does not exist until WordPress 3.9.0+.</li>\n</ul>\n<h4>2.0.1</h4>\n<ul>\n<li>Tweak: Alphabetically sort role names.</li>\n</ul>\n<h4>2.0.0</h4>\n<ul>\n<li>New: Customizer support! props @westonruter!</li>\n</ul>\n<h4>1.10.2</h4>\n<ul>\n<li>Fix:  Strict array typecasting for nav menu classes.</li>\n</ul>\n<h4>1.10.1</h4>\n<ul>\n<li>Fix:  Only auto-apply classes on front-end. Prevents appending duplicate classes on each save.</li>\n</ul>\n<h4>1.10.0</h4>\n<ul>\n<li>Fix: My hook made it into core for WP5.4!! Can finally stop overriding the admin menu Walker.</li>\n</ul>\n<h4>1.9.5</h4>\n<ul>\n<li>Fix: PHP Notice:  Undefined variable $item</li>\n</ul>\n<h4>1.9.4</h4>\n<ul>\n<li>Add the NMR roles as css classes to the menu output</li>\n<li>Improve menu editor role checkbox list UX, by making list items full-width. Props @lkraav</li>\n</ul>\n<h4>1.9.3</h4>\n<ul>\n<li>Check all object properties exist before accessing. Resolves PHP notices for custom menu items.</li>\n</ul>\n<h4>1.9.2</h4>\n<ul>\n<li>Include a !empty() check on menu $items</li>\n<li>Update donation link</li>\n</ul>\n<h4>1.9.1</h4>\n<ul>\n<li>Update donation link</li>\n<li>Update required and tested against versions</li>\n</ul>\n<h4>1.9.0</h4>\n<ul>\n<li>Add support for multisite. Props @open-dsi and @fiech.</li>\n</ul>\n<h4>1.8.5</h4>\n<ul>\n<li>Use new Walker for WP4.7</li>\n</ul>\n<h4>1.8.4</h4>\n<ul>\n<li>Prevent nav menu items edited in the customizer from rendering when they should be excluded</li>\n</ul>\n<h4>1.8.3</h4>\n<ul>\n<li>Remove deprecated screen_icon()</li>\n</ul>\n<h4>1.8.2</h4>\n<ul>\n<li>Reduce number of parameters passed to <code>add_action_links</code> filter</li>\n</ul>\n<h4>1.8.1</h4>\n<ul>\n<li>Switch input names to use a counter [nav-menu-role][100][1]. For some reason [nav-menu-role][100][] doesn&#8217;t post an array and hypenated names [nav-menu-role][100][gold-plan] wreak havoc on the save routine. Shouldn&#8217;t impact anyone not using hyphenated role names. </li>\n</ul>\n<h4>1.8.0</h4>\n<ul>\n<li>Fix style issue in WordPress 4.5</li>\n</ul>\n<h4>1.7.9</h4>\n<ul>\n<li>revert priority of walker back to default because themes are not actually using the hook to add their own fields. sadface. </li>\n</ul>\n<h4>1.7.8</h4>\n<ul>\n<li>remove all admin notices</li>\n</ul>\n<h4>1.7.7</h4>\n<ul>\n<li>add fancy debug messages</li>\n</ul>\n<h4>1.7.6</h4>\n<ul>\n<li>tweak CSS to initially hide checkboxes on newly added menu items (defaults to &#8220;Everyone&#8221; so roles should not appear)</li>\n</ul>\n<h4>1.7.5</h4>\n<ul>\n<li>Update Walker_Nav_Menu_Edit_Roles to mimic Walker_Nav_Menu in WordPress 4.4</li>\n</ul>\n<h4>1.7.4</h4>\n<ul>\n<li>Change language in metabox to try to explain min caps versus strict role checking</li>\n<li>keep tweaking the FAQ</li>\n</ul>\n<h4>1.7.3</h4>\n<ul>\n<li>update readme, update error notice, add more links to the FAQ</li>\n</ul>\n<h4>1.7.2</h4>\n<ul>\n<li>add Italian language. props @sododesign</li>\n</ul>\n<h4>1.7.1</h4>\n<ul>\n<li>Updated FAQ with patch instructions for conflicting plugins/themes</li>\n<li>add Portugeuse language. props @brunobarros</li>\n</ul>\n<h4>1.7.0</h4>\n<ul>\n<li>adjust admin UI to be more user-friendly. Options are now: show to everyone, show to logged out users, and show to logged in users (optionally, logged in users by specific role)</li>\n</ul>\n<h4>1.6.5</h4>\n<ul>\n<li>add Guajarati language. props @rohilmistry93</li>\n</ul>\n<h4>1.6.4</h4>\n<ul>\n<li>more language issues -&gt; sync svn+git version numbers</li>\n</ul>\n<h4>1.6.3</h4>\n<ul>\n<li>Try again to add languages. Where&#8217;d they all go?</li>\n</ul>\n<h4>1.6.2</h4>\n<ul>\n<li>Add French translation. Props @Philippe Gilles</li>\n</ul>\n<h4>1.6.1</h4>\n<ul>\n<li>Update list of conflits</li>\n<li>Don&#8217;t display radio buttons if no roles &#8211; allows for granular permissions control</li>\n</ul>\n<h4>1.6.0</h4>\n<ul>\n<li>Feature: Hiding a parent menu item will automatically hide all its children</li>\n<li>Feature: Add compatibility with Menu Item Visibility Control plugin and any plugin/theme that is willing to add its inputs via the <code>wp_nav_menu_item_custom_fields</code> hook. See the <a href=\"https://wordpress.org/plugins/nav-menu-roles/faq/#compatibility\" rel=\"ugc\">FAQ</a> to make our plugins compatible.</li>\n</ul>\n<h4>1.5.1</h4>\n<ul>\n<li>Hopefully fix missing nav-menu-roles.min.js SVN issue</li>\n</ul>\n<h4>1.5.0</h4>\n<ul>\n<li>Switch to instance of plugin</li>\n<li>Add notice when conflicting plugins are detected </li>\n<li>Remove some extraneous parameters</li>\n<li>Add Spanish translation thanks to @deskarrada</li>\n</ul>\n<h4>1.4.1</h4>\n<ul>\n<li>update to WP 3.8 version of Walker_Nav_Menu_Edit (prolly not any different from 3.7.1)</li>\n<li>minor CSS adjustment to admin menu items</li>\n<li>checked against WP 3.8</li>\n</ul>\n<h4>1.4</h4>\n<ul>\n<li>Add to FAQ</li>\n<li>add JS flair to admin menu items</li>\n<li>update to WP 3.7.1 version of Walker_Nav_Menu_Edit</li>\n</ul>\n<h4>1.3.5</h4>\n<ul>\n<li>Add nav_menu_roles_item_visibility filter to work with plugins that don&#8217;t use traditional roles</li>\n</ul>\n<h4>1.3.4</h4>\n<ul>\n<li>Update admin language thanks to @hassanhamm</li>\n<li>Add Arabic translation thanks to @hassanhamm</li>\n</ul>\n<h4>1.3.3</h4>\n<ul>\n<li>Fix Nav_Menu_Roles_Import not found error</li>\n</ul>\n<h4>1.3.2</h4>\n<ul>\n<li>Stupid comment error causing save issues</li>\n</ul>\n<h4>1.3.1</h4>\n<ul>\n<li>SVN failure to include importer files!</li>\n</ul>\n<h4>1.3</h4>\n<ul>\n<li>Added custom importer</li>\n</ul>\n<h4>1.2</h4>\n<ul>\n<li>Major fix for theme&#8217;s that use their own custom Walkers, thanks to Evan Stein @vanpop http://vanpop.com/</li>\n<li>Instead of a custom nav Walker, menu items are controlled through the wp_get_nav_menu_items filter</li>\n<li>Remove the custom nav Walker code</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>Fix link to plugin site</li>\n<li>Fix labels in admin Walker</li>\n</ul>\n<h4>1.1</h4>\n<ul>\n<li>Clean up debug messages</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
+    },
+    "short_description": "Hide custom menu items based on user roles. PLEASE READ THE FAQ IF YOU ARE NOT SEEING THE SETTINGS.",
+    "description": "<p>This plugin lets you hide custom menu items based on user roles.  So if you have a link in the menu that you only want to show to logged in users, certain types of users, or even only to logged out users, this plugin is for you.</p>\n<p>Nav Menu Roles is very flexible. In addition to standard user roles, you can customize the functionality by adding your own check boxes with custom labels using the <code>nav_menu_roles</code> filter and then using the <code>nav_menu_roles_item_visibility</code> filter to check against whatever criteria you need. You can check against any user meta values (like capabilities) and any custom attributes added by other plugins.</p>\n<h4>IMPORTANT NOTE</h4>\n<p>In WordPress menu items and pages are completely separate entities. Nav Menu Roles does not restrict access to content. Nav Menu Roles is <em>only</em> for showing/hiding <em>nav menu</em> items. If you wish to restrict content then you need to also be using a membership plugin.</p>\n<h4>Usage</h4>\n<ol>\n<li>Go to Appearance &gt; Menus</li>\n<li>Set the &#8220;Display Mode&#8221; to either &#8220;logged in users&#8221;, &#8220;logged out users&#8221;, or &#8220;everyone&#8221;. &#8220;Everyone&#8221; is the default.</li>\n<li>If you wish to customize by role, set the &#8220;Display Mode&#8221; to &#8220;Logged In Users&#8221; and under &#8220;Restrict menu item to a minimum role&#8221; check the boxes next to the desired roles. <strong>Keep in mind that the role doesn&#8217;t limit the item strictly to that role, but to everyone who has that role&#8217;s capability.</strong> For example: an item set to &#8220;Subscriber&#8221; will be visible by Subscribers <em>and</em> by admins. Think of this more as a minimum role required to see an item. </li>\n</ol>\n<h4>Support</h4>\n<p>Support is handled in the <a href=\"https://wordpress.org/support/plugin/nav-menu-roles\" rel=\"ugc\">WordPress forums</a>. Please note that support is limited and does not cover any custom implementation of the plugin. Before posting, please read the <a href=\"https://wordpress.org/plugins/nav-menu-roles/faq/\" rel=\"ugc\">FAQ</a>. Also, please verify the problem with other plugins disabled and while using a default theme.</p>\n<p>Please report any bugs, errors, warnings, code problems to <a href=\"https://github.com/helgatheviking/nav-menu-roles/issues\" rel=\"nofollow ugc\">Github</a></p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/nav-menu-roles.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/nav-menu-roles/assets/screenshot-1.png?rev=2336319",
+            "caption": "Show the new options for the menu items in the admin menu customizer"
+        }
+    ],
+    "tags": {
+        "menu": "menu",
+        "menus": "menus",
+        "nav-menu": "nav menu",
+        "nav-menus": "nav menus"
+    },
+    "stable_tag": "trunk",
+    "versions": {
+        "1.10.0": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.10.0.zip",
+        "1.10.1": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.10.1.zip",
+        "1.10.2": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.10.2.zip",
+        "1.6.3": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.6.3.zip",
+        "1.6.4": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.6.4.zip",
+        "1.7.0": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.7.0.zip",
+        "1.7.1": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.7.1.zip",
+        "1.7.3": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.7.3.zip",
+        "1.7.4": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.7.4.zip",
+        "1.7.6": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.7.6.zip",
+        "1.7.7": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.7.7.zip",
+        "1.7.8": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.7.8.zip",
+        "1.7.9": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.7.9.zip",
+        "1.8.0": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.8.0.zip",
+        "1.8.1": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.8.1.zip",
+        "1.8.2": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.8.2.zip",
+        "1.8.3": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.8.3.zip",
+        "1.8.4": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.8.4.zip",
+        "1.8.5": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.8.5.zip",
+        "1.8.6": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.8.6.zip",
+        "1.9.0": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.9.0.zip",
+        "1.9.1": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.9.1.zip",
+        "1.9.2": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.9.2.zip",
+        "1.9.3": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.9.3.zip",
+        "1.9.4": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.9.4.zip",
+        "1.9.5": "https://downloads.wordpress.org/plugin/nav-menu-roles.1.9.5.zip",
+        "2.0.0": "https://downloads.wordpress.org/plugin/nav-menu-roles.2.0.0.zip",
+        "2.0.1": "https://downloads.wordpress.org/plugin/nav-menu-roles.2.0.1.zip",
+        "2.0.2": "https://downloads.wordpress.org/plugin/nav-menu-roles.2.0.2.zip",
+        "2.1.0": "https://downloads.wordpress.org/plugin/nav-menu-roles.2.1.0.zip",
+        "2.1.1": "https://downloads.wordpress.org/plugin/nav-menu-roles.2.1.1.zip",
+        "2.1.2": "https://downloads.wordpress.org/plugin/nav-menu-roles.2.1.2.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.paypal.com/fundraiser/charity/1451316",
+    "banners": {
+        "low": "https://ps.w.org/nav-menu-roles/assets/banner-772x250.png?rev=2336319",
+        "high": "https://ps.w.org/nav-menu-roles/assets/banner-1544x500.png?rev=2336319"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/nav-menu-roles/assets/icon-128x128.png?rev=2336319",
+        "2x": "https://ps.w.org/nav-menu-roles/assets/icon-256x256.png?rev=2336319"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 98,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "cs_CZ",
+            "version": "2.1.2",
+            "updated": "2021-01-04 20:10:15",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/cs_CZ.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "de_DE_formal",
+            "version": "2.1.2",
+            "updated": "2022-12-25 19:12:08",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/de_DE_formal.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "de_DE",
+            "version": "2.1.2",
+            "updated": "2022-12-25 19:21:10",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/de_DE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "en_GB",
+            "version": "2.1.2",
+            "updated": "2022-04-01 11:25:29",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/en_GB.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "es_CO",
+            "version": "2.1.2",
+            "updated": "2022-02-25 08:21:16",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/es_CO.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "es_VE",
+            "version": "2.1.2",
+            "updated": "2022-02-25 08:20:16",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/es_VE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "es_ES",
+            "version": "2.1.2",
+            "updated": "2022-02-25 08:19:32",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/es_ES.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "es_EC",
+            "version": "2.1.2",
+            "updated": "2022-02-25 08:20:52",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/es_EC.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "fi",
+            "version": "2.1.2",
+            "updated": "2016-05-04 14:36:39",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/fi.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "fr_FR",
+            "version": "2.1.2",
+            "updated": "2022-02-25 09:37:52",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/fr_FR.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "gl_ES",
+            "version": "2.1.2",
+            "updated": "2022-08-20 22:56:59",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/gl_ES.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "it_IT",
+            "version": "2.1.2",
+            "updated": "2022-10-13 19:44:49",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/it_IT.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "nb_NO",
+            "version": "2.1.2",
+            "updated": "2021-04-01 08:14:34",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/nb_NO.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "nl_BE",
+            "version": "2.1.2",
+            "updated": "2023-04-21 18:43:06",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/nl_BE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "nl_NL_formal",
+            "version": "2.1.2",
+            "updated": "2024-01-18 18:11:58",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/nl_NL_formal.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "nl_NL",
+            "version": "2.1.2",
+            "updated": "2023-11-14 22:26:22",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/nl_NL.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "pl_PL",
+            "version": "2.1.2",
+            "updated": "2024-06-12 05:47:26",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/pl_PL.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "pt_BR",
+            "version": "2.1.2",
+            "updated": "2016-02-09 22:53:26",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/pt_BR.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "ru_RU",
+            "version": "2.1.2",
+            "updated": "2023-10-04 10:01:35",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/ru_RU.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "sv_SE",
+            "version": "2.1.2",
+            "updated": "2022-03-28 10:53:33",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/sv_SE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "zh_CN",
+            "version": "2.1.2",
+            "updated": "2020-11-21 06:33:12",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/zh_CN.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "nav-menu-roles",
+            "language": "zh_TW",
+            "version": "2.1.2",
+            "updated": "2022-04-10 07:44:27",
+            "package": "http://downloads.wordpress.org/translation/plugin/nav-menu-roles/2.1.2/zh_TW.zip"
+        }
+    ]
+}

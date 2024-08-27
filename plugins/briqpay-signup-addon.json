@@ -1,0 +1,83 @@
+{
+    "name": "Briqpay B2B Registration Form",
+    "slug": "briqpay-signup-addon",
+    "version": "1.1.1",
+    "author": "Mattias Nording",
+    "author_profile": "https://profiles.wordpress.org/briqpaymattias/",
+    "contributors": {
+        "mnording10": {
+            "profile": "https://profiles.wordpress.org/mnording10/",
+            "avatar": "https://secure.gravatar.com/avatar/f70a23c7044ac55b510f67d25bbd2b5e?s=96&d=monsterid&r=g",
+            "display_name": "mnording10"
+        }
+    },
+    "requires": "4.0",
+    "tested": "5.9.10",
+    "requires_php": "7.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/briqpay-signup-addon/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 2482,
+    "last_updated": "2022-12-14 9:58am GMT",
+    "added": "2022-05-12",
+    "homepage": "https://briqpay.com/",
+    "sections": {
+        "description": "<p>Utilise the Briqpay B2B Registration form to quickly turn visitors to users. Allows you to easily render the Briqpay B2B registration form on your wordpress site<br />\nIn order to utlize this plugin you need to have an account at Briqpay. Register your own playground account att https://app.briqpay.com</p>\n<p>With Briqpay’s B2B registration form you can add a seamless registration to your application process. Creating an account has never been easier.</p>\n<p>The registration process differs depending on the industry, market and, other business-critical assessments. Therefore our solutions come with wide flexibility and lots of functionality.</p>\n<p>Get validated data, company information, run an automated credit check, e-signature, industry filtering – you’re in control.</p>\n<p>Read more at <a href=\"https://briqpay.com\" rel=\"nofollow ugc\">https://briqpay.com</a></p>\n",
+        "installation": "<p>download plugin<br />\nupload to wp-content<br />\nactivate in plugins dashboard</p>\n",
+        "faq": "\n<dt id='how%20do%20i%20find%20my%20api%20key%3F'>\nHow do I find my api key?\n</h4>\n<p>\n<p>By logging into your merchant account at <a href=\"https://app.briqpay.com\" rel=\"nofollow ugc\">https://app.briqpay.com</a><br />\nDont have a merchant account? No worries, you can get instant access to a playground account by registering your user.</p>\n</p>\n<dt id='the%20plugin%20rejects%20all%20registrations'>\nThe plugin rejects all registrations\n</h4>\n<p>\n<p>You likely havent implemented the correct hook for approving the account validation. Below is example implentnations on how to both validate the application and subsequently create a new user.</p>\n<pre><code>add_action(\n    'init',\n    function() {\n        add_filter( 'briqpay_signup_completed', 'example_function_to_create_user', 10, 1 );\n    }\n);\nadd_action(\n    'init',\n    function() {\n        add_filter( 'briqpay_signup_validation', 'example_filter_functon_for_validation', 10, 2 );\n    }\n);\n\nfunction example_function_to_create_user( $signup_data ) {\n    $selected_pass = wp_generate_password();\n    $user_id       = wp_insert_user(\n        array(\n            'user_login'   =&gt; $signup_data-&gt;user-&gt;email,\n            'user_pass'    =&gt; $selected_pass,\n            'user_email'   =&gt; $signup_data-&gt;user-&gt;email,\n            'first_name'   =&gt; $signup_data-&gt;user-&gt;firstName,\n            'last_name'    =&gt; $signup_data-&gt;user-&gt;lastName,\n            'display_name' =&gt; $signup_data-&gt;user-&gt;firstName . ' ' . $signup_data-&gt;user-&gt;lastName,\n\n        )\n    );\n\n    $billing_data = array(\n        'first_name'        =&gt; $signup_data-&gt;user-&gt;firstName,\n        'last_name'         =&gt; $signup_data-&gt;user-&gt;lastName,\n        'billing_city'      =&gt; $signup_data-&gt;address-&gt;city,\n        'billing_postcode'  =&gt; $signup_data-&gt;address-&gt;zip,\n        'billing_email'     =&gt; $signup_data-&gt;user-&gt;email,\n        'billing_phone'     =&gt; $signup_data-&gt;user-&gt;phone,\n        'billing_company'   =&gt; $signup_data-&gt;address-&gt;companyname,\n        'billing_address_1' =&gt; $signup_data-&gt;address-&gt;streetaddress,\n    );\n    foreach ( $billing_data as $billing_meta_key =&gt; $billing_meta_value ) {\n            update_user_meta( $user_id, $billing_meta_key, $billing_meta_value );\n    }\n\n}\n\n\n    function example_filter_functon_for_validation( $validaton, $signup_data ) {\n\n    if ( ! get_user_by( 'email', $signup_data-&gt;user-&gt;email ) ) {\n        $validaton = array(\n            'result' =&gt; true,\n            'errors' =&gt; array(),\n        );\n    } else {\n        $validaton = array(\n            'result' =&gt; false,\n            'errors' =&gt; array(\n                array(\n                    'errorCode'    =&gt; 'already_exists',\n                    'errorField'   =&gt; 'email',\n                    'errorMessage' =&gt; 'Found existing user',\n                ),\n            ),\n        );\n    }\n    return $validaton;\n}\n</code></pre>\n</p>\n<dt id='how%20do%20i%20activate%20the%20live%20account%3F'>\nHow do I activate the live account?\n</h4>\n<p>\n<p>You need to have an active subscription plan with Briqpay to utilise our live services.<br />\nContact Briqpay to activate your subscription. <a href=\"https://briqpay.com/contact-briqpay\" rel=\"nofollow ugc\">https://briqpay.com/contact-briqpay</a></p>\n</p>\n<dt id='what%20is%20briqpay%3F'>\nWhat is Briqpay?\n</h4>\n<p>\n<p>Briqpay is a technical solution that delivers great user experiences for business-to-business sales online.</p>\n<p>Use Briqpays software and API’s to create a seamless customer experience and automate your payment flow, on all markets.</p>\n</p>\n<dt id='how%20can%20i%20find%20briqpays%20privacy%20policy%3F'>\nHow can i find Briqpays privacy policy?\n</h4>\n<p>\n<p><a href=\"https://briqpay.com/privacy-policy\" rel=\"nofollow ugc\">https://briqpay.com/privacy-policy</a></p>\n</p>\n\n"
+    },
+    "short_description": "Easy account creation for your B2B customers.",
+    "description": "<p>Utilise the Briqpay B2B Registration form to quickly turn visitors to users. Allows you to easily render the Briqpay B2B registration form on your wordpress site<br />\nIn order to utlize this plugin you need to have an account at Briqpay. Register your own playground account att https://app.briqpay.com</p>\n<p>With Briqpay’s B2B registration form you can add a seamless registration to your application process. Creating an account has never been easier.</p>\n<p>The registration process differs depending on the industry, market and, other business-critical assessments. Therefore our solutions come with wide flexibility and lots of functionality.</p>\n<p>Get validated data, company information, run an automated credit check, e-signature, industry filtering – you’re in control.</p>\n<p>Read more at <a href=\"https://briqpay.com\" rel=\"nofollow ugc\">https://briqpay.com</a></p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/briqpay-signup-addon.1.1.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "b2b": "b2b",
+        "briqpay": "briqpay",
+        "registration": "registration",
+        "user": "user",
+        "useraccount": "useraccount"
+    },
+    "stable_tag": "1.1.1",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/briqpay-signup-addon.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/briqpay-signup-addon.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/briqpay-signup-addon.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/briqpay-signup-addon.1.0.3.zip",
+        "1.0.4": "https://downloads.wordpress.org/plugin/briqpay-signup-addon.1.0.4.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/briqpay-signup-addon.1.1.0.zip",
+        "1.1.1": "https://downloads.wordpress.org/plugin/briqpay-signup-addon.1.1.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/briqpay-signup-addon.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/briqpay-signup-addon/assets/banner-772x250.png?rev=2722529",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/briqpay-signup-addon/assets/icon-256x256.jpg?rev=2722506",
+        "2x": "https://ps.w.org/briqpay-signup-addon/assets/icon-256x256.jpg?rev=2722506"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

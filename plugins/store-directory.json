@@ -1,0 +1,73 @@
+{
+    "name": "Store Directory",
+    "slug": "store-directory",
+    "version": "0.1",
+    "author": "<a href=\"http://boyn.es/\">Matthew Boynes</a>",
+    "author_profile": "https://profiles.wordpress.org/mboynes/",
+    "contributors": {
+        "mboynes": {
+            "profile": "https://profiles.wordpress.org/mboynes/",
+            "avatar": "https://secure.gravatar.com/avatar/6b5e3a6a664bcb435216ecba76c9ed90?s=96&d=monsterid&r=g",
+            "display_name": "Matthew Boynes"
+        }
+    },
+    "requires": "3.0",
+    "tested": "3.7.41",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 1,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/store-directory/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 1937,
+    "last_updated": "2014-01-03 5:07am GMT",
+    "added": "2014-01-02",
+    "homepage": "https://github.com/mboynes/store-directory",
+    "sections": {
+        "description": "<p>This plugin adds a store/location directory to your WordPress site. Once you add stores, you can add the Store Search widget to your widget area or you can add the form to your theme manually.</p>\n<p>This plugin is intentionally light and simple. It&#8217;s very flexible and is intended to be something on which you can build.</p>\n<h3>Filters</h3>\n<h4>wpsd_radius_options</h4>\n<p>Param: <code>array( 5, 10, 25, 50, 100 )</code></p>\n<p>This filter allows you to modify the options in the radius dropdown in the store search form. Values are in miles by default.</p>\n<h4>wpsd_register_post_type</h4>\n<p>Param: <code>true</code></p>\n<p>This filter allows you to disable the <code>store</code> post type altogether. To do so, simply add <code>add_filter( 'wpsd_register_post_type', '__return_false' )</code> to your theme or plugin.</p>\n<h4>wpsd_post_type_args</h4>\n<p>This filter gives you the ability to modify the arguments passed to <code>register_post_type()</code> for the &#8216;store&#8217; post type. See <a href=\"https://codex.wordpress.org/Function_Reference/register_post_type\" rel=\"nofollow ugc\">register_post_type in the Codex</a> for valid arguments and values.</p>\n<p>Param:</p>\n<pre><code>array(\n    'public'      =&gt; true,\n    'has_archive' =&gt; true,\n    'supports'    =&gt; array( 'title' ),\n    'labels'      =&gt; array(\n        'name'                =&gt; __( 'Stores', 'store-directory' ),\n        'singular_name'       =&gt; __( 'Store', 'store-directory' ),\n        'all_items'           =&gt; __( 'Stores', 'store-directory' ),\n        'new_item'            =&gt; __( 'New store', 'store-directory' ),\n        'add_new'             =&gt; __( 'Add New', 'store-directory' ),\n        'add_new_item'        =&gt; __( 'Add New store', 'store-directory' ),\n        'edit_item'           =&gt; __( 'Edit store', 'store-directory' ),\n        'view_item'           =&gt; __( 'View store', 'store-directory' ),\n        'search_items'        =&gt; __( 'Search stores', 'store-directory' ),\n        'not_found'           =&gt; __( 'No stores found', 'store-directory' ),\n        'not_found_in_trash'  =&gt; __( 'No stores found in trash', 'store-directory' ),\n        'parent_item_colon'   =&gt; __( 'Parent store', 'store-directory' ),\n        'menu_name'           =&gt; __( 'Stores', 'store-directory' ),\n    )\n)\n</code></pre>\n<h4>wpsd_automap</h4>\n<p>Param: <code>true</code></p>\n<p>By default, a Google Map is added to the store archive views and store singular views using the <code>'loop_start'</code> action. This may not be desirable in all circumstances, especially if you loop through your posts multiple times. To disable this, add <code>add_filter( 'wpsd_automap', '__return_false' )</code> to your theme or plugin. If you choose to disable this, see the <code>wpsd_the_map()</code> tempalte tag to manually display the map.</p>\n<h4>wpsd_mappable_data</h4>\n<p>Param:</p>\n<pre><code>array(\n    'name'      =&gt; $post-&gt;post_title,\n    'address'   =&gt; get_post_meta( $post-&gt;ID, 'address', true ),\n    'latitude'  =&gt; $post-&gt;latitude,\n    'longitude' =&gt; $post-&gt;longitude,\n    'distance'  =&gt; $post-&gt;distance\n)\n</code></pre>\n<p>Param: <code>$post</code></p>\n<p>This filter allows you to customize the data used in the map. There is also a javascript &#8220;hook&#8221; that works in tandem with this, <code>wpsd_custom_create_marker</code>. To use the data you pass through the <code>wpsd_mappable_data</code> filter, you need to define a javascript function, <code>wpsd_custom_create_marker( latlng, data )</code>. This function should take two params, where the first is a <code>google.maps.LatLng</code> object and the second is an object with your filtered data. Armed with this data, you can create the marker however you need! See <code>js/maps.js:wpsd_create_marker()</code> for an example of how to create a marker.</p>\n<h3>Template Tags</h3>\n<h4>wpsd_the_store_search_form()</h4>\n<p>Output the store search form. If you choose not to use the provided widget, this lets you add the form wherever you&#8217;d like.</p>\n<h4>wpsd_the_map()</h4>\n<p>Param: <code>$posts</code> array An array of posts to map. Each entry in the array should contain the following keys:</p>\n<ul>\n<li><code>'name' =&gt;</code> The marker title.</li>\n<li><code>'address' =&gt;</code> The marker address.</li>\n<li><code>'latitude' =&gt;</code> The latitude of the point.</li>\n<li><code>'longitude' =&gt;</code> The longitude of the point.</li>\n<li><code>'distance' =&gt;</code> The distance of the point from the center (optional, not presently used).</li>\n</ul>\n<p>See <code>WPSD_Search::get_mappable_data()</code> for an example.</p>\n<p>Param: <code>$lat</code> float The latitude of the center point for the map.<br />\nParam: <code>$long</code> float The longitude of the center point for the map.</p>\n<p>Output a Google Map with the given points (posts) centered around the given latitude and longitude.</p>\n<h3>Other Notes for Developers</h3>\n<p>Beyond the above, pretty much everything in this plugin is modifiable by editing the properties of the singleton classes. Here are some examples:</p>\n<ul>\n<li>To change the post type, e.g. to be <code>'location'</code> instead of store, you can set it by calling <code>WPSD_Post_Type()-&gt;post_type = 'location';</code> from your theme or plugin (ideally during <code>after_setup_theme</code> at a priority higher than 10).</li>\n<li>To change the units from miles to kilometers, <code>WPSD_Post_Type()-&gt;units = 'km';</code></li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the plugin to the <code>/wp-content/plugins/</code> directory</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</li>\n<li>Add stores via the &#8220;Stores&#8221; menu in the left.</li>\n<li>Add the Store Search widget to your toolbar, or add the search form to your theme via <code>wpsd_the_store_search_form()</code></li>\n</ol>\n",
+        "changelog": "<h4>0.1</h4>\n<p>Brand new plugin. Enjoy!</p>\n"
+    },
+    "short_description": "A simple, flexible plugin for keeping a store/location directory and searching for them by radius.",
+    "description": "<p>This plugin adds a store/location directory to your WordPress site. Once you add stores, you can add the Store Search widget to your widget area or you can add the form to your theme manually.</p>\n<p>This plugin is intentionally light and simple. It&#8217;s very flexible and is intended to be something on which you can build.</p>\n<h3>Filters</h3>\n<h4>wpsd_radius_options</h4>\n<p>Param: <code>array( 5, 10, 25, 50, 100 )</code></p>\n<p>This filter allows you to modify the options in the radius dropdown in the store search form. Values are in miles by default.</p>\n<h4>wpsd_register_post_type</h4>\n<p>Param: <code>true</code></p>\n<p>This filter allows you to disable the <code>store</code> post type altogether. To do so, simply add <code>add_filter( 'wpsd_register_post_type', '__return_false' )</code> to your theme or plugin.</p>\n<h4>wpsd_post_type_args</h4>\n<p>This filter gives you the ability to modify the arguments passed to <code>register_post_type()</code> for the &#8216;store&#8217; post type. See <a href=\"https://codex.wordpress.org/Function_Reference/register_post_type\" rel=\"nofollow ugc\">register_post_type in the Codex</a> for valid arguments and values.</p>\n<p>Param:</p>\n<pre><code>array(\n    'public'      =&gt; true,\n    'has_archive' =&gt; true,\n    'supports'    =&gt; array( 'title' ),\n    'labels'      =&gt; array(\n        'name'                =&gt; __( 'Stores', 'store-directory' ),\n        'singular_name'       =&gt; __( 'Store', 'store-directory' ),\n        'all_items'           =&gt; __( 'Stores', 'store-directory' ),\n        'new_item'            =&gt; __( 'New store', 'store-directory' ),\n        'add_new'             =&gt; __( 'Add New', 'store-directory' ),\n        'add_new_item'        =&gt; __( 'Add New store', 'store-directory' ),\n        'edit_item'           =&gt; __( 'Edit store', 'store-directory' ),\n        'view_item'           =&gt; __( 'View store', 'store-directory' ),\n        'search_items'        =&gt; __( 'Search stores', 'store-directory' ),\n        'not_found'           =&gt; __( 'No stores found', 'store-directory' ),\n        'not_found_in_trash'  =&gt; __( 'No stores found in trash', 'store-directory' ),\n        'parent_item_colon'   =&gt; __( 'Parent store', 'store-directory' ),\n        'menu_name'           =&gt; __( 'Stores', 'store-directory' ),\n    )\n)\n</code></pre>\n<h4>wpsd_automap</h4>\n<p>Param: <code>true</code></p>\n<p>By default, a Google Map is added to the store archive views and store singular views using the <code>'loop_start'</code> action. This may not be desirable in all circumstances, especially if you loop through your posts multiple times. To disable this, add <code>add_filter( 'wpsd_automap', '__return_false' )</code> to your theme or plugin. If you choose to disable this, see the <code>wpsd_the_map()</code> tempalte tag to manually display the map.</p>\n<h4>wpsd_mappable_data</h4>\n<p>Param:</p>\n<pre><code>array(\n    'name'      =&gt; $post-&gt;post_title,\n    'address'   =&gt; get_post_meta( $post-&gt;ID, 'address', true ),\n    'latitude'  =&gt; $post-&gt;latitude,\n    'longitude' =&gt; $post-&gt;longitude,\n    'distance'  =&gt; $post-&gt;distance\n)\n</code></pre>\n<p>Param: <code>$post</code></p>\n<p>This filter allows you to customize the data used in the map. There is also a javascript &#8220;hook&#8221; that works in tandem with this, <code>wpsd_custom_create_marker</code>. To use the data you pass through the <code>wpsd_mappable_data</code> filter, you need to define a javascript function, <code>wpsd_custom_create_marker( latlng, data )</code>. This function should take two params, where the first is a <code>google.maps.LatLng</code> object and the second is an object with your filtered data. Armed with this data, you can create the marker however you need! See <code>js/maps.js:wpsd_create_marker()</code> for an example of how to create a marker.</p>\n<h3>Template Tags</h3>\n<h4>wpsd_the_store_search_form()</h4>\n<p>Output the store search form. If you choose not to use the provided widget, this lets you add the form wherever you&#8217;d like.</p>\n<h4>wpsd_the_map()</h4>\n<p>Param: <code>$posts</code> array An array of posts to map. Each entry in the array should contain the following keys:</p>\n<ul>\n<li><code>'name' =&gt;</code> The marker title.</li>\n<li><code>'address' =&gt;</code> The marker address.</li>\n<li><code>'latitude' =&gt;</code> The latitude of the point.</li>\n<li><code>'longitude' =&gt;</code> The longitude of the point.</li>\n<li><code>'distance' =&gt;</code> The distance of the point from the center (optional, not presently used).</li>\n</ul>\n<p>See <code>WPSD_Search::get_mappable_data()</code> for an example.</p>\n<p>Param: <code>$lat</code> float The latitude of the center point for the map.<br />\nParam: <code>$long</code> float The longitude of the center point for the map.</p>\n<p>Output a Google Map with the given points (posts) centered around the given latitude and longitude.</p>\n<h3>Other Notes for Developers</h3>\n<p>Beyond the above, pretty much everything in this plugin is modifiable by editing the properties of the singleton classes. Here are some examples:</p>\n<ul>\n<li>To change the post type, e.g. to be <code>'location'</code> instead of store, you can set it by calling <code>WPSD_Post_Type()-&gt;post_type = 'location';</code> from your theme or plugin (ideally during <code>after_setup_theme</code> at a priority higher than 10).</li>\n<li>To change the units from miles to kilometers, <code>WPSD_Post_Type()-&gt;units = 'km';</code></li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/store-directory.0.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "directory": "directory",
+        "google-maps": "Google Maps",
+        "location": "location",
+        "maps": "maps",
+        "store": "store"
+    },
+    "stable_tag": "0.1",
+    "versions": {
+        "0.1": "https://downloads.wordpress.org/plugin/store-directory.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/store-directory.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/store-directory.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

@@ -1,0 +1,72 @@
+{
+    "name": "Simperium",
+    "slug": "simperium",
+    "version": "0.1.0",
+    "author": "<a href=\"http://gedex.web.id\">Akeda Bagus</a>",
+    "author_profile": "https://profiles.wordpress.org/akeda/",
+    "contributors": {
+        "akeda": {
+            "profile": "https://profiles.wordpress.org/akeda/",
+            "avatar": "https://secure.gravatar.com/avatar/97d899efa4cc11f285c9615d842b91c3?s=96&d=monsterid&r=g",
+            "display_name": "Akeda Bagus"
+        }
+    },
+    "requires": "3.6",
+    "tested": "3.9.40",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/simperium/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 785,
+    "last_updated": "2014-05-18 4:48am GMT",
+    "added": "2014-05-16",
+    "homepage": "https://github.com/gedex/wp-simperium",
+    "sections": {
+        "description": "<p>This plugin is intended for developer to send data to Simperium. Followings are use cases in which this plugin might come in handy:</p>\n<ol>\n<li>You need post-processing (for instance pinging dozen web services after a post is published) without blocking request. In this case you call provided actions or helper methods, then you spawn long-live process (either from the same server or different server) that listens to changes from your Simperium bucket for post-processing.</li>\n<li>You need to log events that happen during request lifecycle under restricted circumstances (for instance it won&#8217;t possible to access log files on the server).</li>\n</ol>\n<p><strong>How to use it</strong></p>\n<p>Once this plugin is installed and activated, you can send data to Simperium in following ways:</p>\n<ol>\n<li>Via action hook: <code>do_action( 'simperium_send_data', $bucket, $data )</code> or <code>do_action( 'simperium_send_buffered_data', $bucket, $data )</code>. The first hook, will send the <code>$data</code> immediately, while the later will send the data to buffer and will send all buffered data to Simperium at once after calling <code>do_action( 'simperium_flush_buffer', $bucket )</code>. If <code>$bucket</code> arg is provided, it only flushes buffered data that&#8217;s targetted to <code>$bucket</code>.</li>\n<li>Via helper method: <code>WP_Simperium::send_data( $bucket, $data )</code> or <code>WP_Simperium::send_buffered_data( $bucket, $data )</code>. To flush buffer, you call <code>WP_Simperium::flush_buffer( $bucket )</code>. Again, <code>$bucket</code> arg is optional.</li>\n</ol>\n<p>The value of <code>$data</code> MUST BE in key-value array structure as nested structure is not supported by Simperium.</p>\n<p>Before using the action hooks or helper methods, you need to supply Simperium app credentials via <code>simperium_config</code> filter, for example:</p>\n<pre><code>add_filter( 'simperium_config', function() {     return array(         'app_id'  =&gt; 'YOUR_APP_ID',         'api_key' =&gt; 'YOUR_API_KEY',     ) } ); </code></pre>\n<p>In addition to <code>app_id</code> and <code>api_key</code> you can pass <code>username</code> and/or <code>access_token</code> to the array config. If <code>access_token</code> is omitted, the plugin will request <code>access_token</code> from Simperium with provided <code>username</code> (if exists) or <code>get_bloginfo( 'admin_email' )</code> and store the info in option. Subsequent calls will read <code>access_token</code> information from option, but can be bypassed by providing <code>access_token</code> in array config. It&#8217;s preferred to supply your own <code>access_token</code> or <code>username</code> that hasn&#8217;t registered yet. Please keep in mind that token has 30 days life span. If you&#8217;re using <code>access_token</code> that&#8217;s automatically retrieved by the plugin, you don&#8217;t need to worry as scheduled event will refresh the token per 29 days.</p>\n<p><strong>Sender Examples</strong></p>\n<p>I&#8217;ve created <a href=\"https://github.com/gedex/wp-simperium-sender-examples\" rel=\"nofollow ugc\">sender examples plugin</a> that you can use as a starting point, though it will run without any customization. Currently it has following features:</p>\n<ul>\n<li>Send post data once post status is transitioned to public.</li>\n<li>Send new comment.</li>\n<li>More will come later..</li>\n</ul>\n<p><strong>Consumer Examples</strong></p>\n<p>I&#8217;m working to provide listener apps, written in PHP (stay tuned!), for now you can check <a href=\"https://simperium.com/samples/\" rel=\"nofollow ugc\">Simperium examples</a> and their awesome libraries.</p>\n<p><strong>Contributing</strong></p>\n<ul>\n<li>Development of this plugin is done on <a href=\"https://github.com/gedex/wp-simperium\" rel=\"nofollow ugc\">GitHub</a>. Pull requests are always welcome.</li>\n<li>For <strong>Sender</strong> apps feedback, please check its <a href=\"https://github.com/gedex/wp-simperium-sender-examples\" rel=\"nofollow ugc\">GitHub repo</a>.</li>\n<li>For <strong>Consumer</strong> apps feedback, please stay tuned!</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload <strong>Simperium</strong> plugin to your blog&#8217;s <code>wp-content/plugins/</code> directory and activate.</li>\n<li>Hook into <code>simperium_config</code> filter either as drop-in plugin or in your theme&#8217;s <code>functions.php</code></li>\n</ol>\n",
+        "faq": "<h4>Does the plugin provides API to retrieve entity from Simperium</h4>\n<p>No. The main purpose of this plugin is to send data (from WordPress) only, the decision of this plugin is to not to expose API to get/update/delete data. Simperium has <a href=\"URL\" rel=\"nofollow ugc\">client libraries</a> that expose get/update/delete data, you better use that.</p>\n",
+        "changelog": "<h4>0.1.0</h4>\n<p>Initial release</p>\n"
+    },
+    "short_description": "This plugin contains easy-to-use API that uses WP HTTP API to send data to Simperium.",
+    "description": "<p>This plugin is intended for developer to send data to Simperium. Followings are use cases in which this plugin might come in handy:</p>\n<ol>\n<li>You need post-processing (for instance pinging dozen web services after a post is published) without blocking request. In this case you call provided actions or helper methods, then you spawn long-live process (either from the same server or different server) that listens to changes from your Simperium bucket for post-processing.</li>\n<li>You need to log events that happen during request lifecycle under restricted circumstances (for instance it won&#8217;t possible to access log files on the server).</li>\n</ol>\n<p><strong>How to use it</strong></p>\n<p>Once this plugin is installed and activated, you can send data to Simperium in following ways:</p>\n<ol>\n<li>Via action hook: <code>do_action( 'simperium_send_data', $bucket, $data )</code> or <code>do_action( 'simperium_send_buffered_data', $bucket, $data )</code>. The first hook, will send the <code>$data</code> immediately, while the later will send the data to buffer and will send all buffered data to Simperium at once after calling <code>do_action( 'simperium_flush_buffer', $bucket )</code>. If <code>$bucket</code> arg is provided, it only flushes buffered data that&#8217;s targetted to <code>$bucket</code>.</li>\n<li>Via helper method: <code>WP_Simperium::send_data( $bucket, $data )</code> or <code>WP_Simperium::send_buffered_data( $bucket, $data )</code>. To flush buffer, you call <code>WP_Simperium::flush_buffer( $bucket )</code>. Again, <code>$bucket</code> arg is optional.</li>\n</ol>\n<p>The value of <code>$data</code> MUST BE in key-value array structure as nested structure is not supported by Simperium.</p>\n<p>Before using the action hooks or helper methods, you need to supply Simperium app credentials via <code>simperium_config</code> filter, for example:</p>\n<pre><code>add_filter( 'simperium_config', function() {     return array(         'app_id'  =&gt; 'YOUR_APP_ID',         'api_key' =&gt; 'YOUR_API_KEY',     ) } ); </code></pre>\n<p>In addition to <code>app_id</code> and <code>api_key</code> you can pass <code>username</code> and/or <code>access_token</code> to the array config. If <code>access_token</code> is omitted, the plugin will request <code>access_token</code> from Simperium with provided <code>username</code> (if exists) or <code>get_bloginfo( 'admin_email' )</code> and store the info in option. Subsequent calls will read <code>access_token</code> information from option, but can be bypassed by providing <code>access_token</code> in array config. It&#8217;s preferred to supply your own <code>access_token</code> or <code>username</code> that hasn&#8217;t registered yet. Please keep in mind that token has 30 days life span. If you&#8217;re using <code>access_token</code> that&#8217;s automatically retrieved by the plugin, you don&#8217;t need to worry as scheduled event will refresh the token per 29 days.</p>\n<p><strong>Sender Examples</strong></p>\n<p>I&#8217;ve created <a href=\"https://github.com/gedex/wp-simperium-sender-examples\" rel=\"nofollow ugc\">sender examples plugin</a> that you can use as a starting point, though it will run without any customization. Currently it has following features:</p>\n<ul>\n<li>Send post data once post status is transitioned to public.</li>\n<li>Send new comment.</li>\n<li>More will come later..</li>\n</ul>\n<p><strong>Consumer Examples</strong></p>\n<p>I&#8217;m working to provide listener apps, written in PHP (stay tuned!), for now you can check <a href=\"https://simperium.com/samples/\" rel=\"nofollow ugc\">Simperium examples</a> and their awesome libraries.</p>\n<p><strong>Contributing</strong></p>\n<ul>\n<li>Development of this plugin is done on <a href=\"https://github.com/gedex/wp-simperium\" rel=\"nofollow ugc\">GitHub</a>. Pull requests are always welcome.</li>\n<li>For <strong>Sender</strong> apps feedback, please check its <a href=\"https://github.com/gedex/wp-simperium-sender-examples\" rel=\"nofollow ugc\">GitHub repo</a>.</li>\n<li>For <strong>Consumer</strong> apps feedback, please stay tuned!</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/simperium.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "data": "data",
+        "event": "Event",
+        "log": "log",
+        "logger": "logger",
+        "post-processing": "post-processing",
+        "simperium": "Simperium"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/simperium.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

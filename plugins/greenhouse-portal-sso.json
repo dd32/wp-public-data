@@ -1,0 +1,72 @@
+{
+    "name": "Greenhouse Portal SSO",
+    "slug": "greenhouse-portal-sso",
+    "version": "1.0.0",
+    "author": "shane.van.den.bogaard",
+    "author_profile": "https://profiles.wordpress.org/ghmeh/",
+    "contributors": {
+        "ghmeh": {
+            "profile": "https://profiles.wordpress.org/ghmeh/",
+            "avatar": "https://secure.gravatar.com/avatar/a393bda1f21f2d80f5ff84dc11e2fc67?s=96&d=monsterid&r=g",
+            "display_name": "ghmeh"
+        }
+    },
+    "requires": "4.9",
+    "tested": "5.6.14",
+    "requires_php": "7.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/greenhouse-portal-sso/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 480,
+    "last_updated": "2021-03-23 11:15am GMT",
+    "added": "2021-03-23",
+    "homepage": "https://gitlab.com/meh/wordpress-plugin-gh-portal-sso",
+    "sections": {
+        "description": "<p>This plugin allows to authenticate users against GH Portal API with Authorization Flow.<br />\nOnce installed, it can be configured to automatically authenticate users (SSO). After consent has been obtained, an existing user is automatically logged into WordPress, while<br />\nnew users are created in WordPress database.</p>\n<h3>Plugin flow explained</h3>\n<p>When a user of your WordPress application visits one of your public pages, a check is done if a user session is currently set. When <code>GH_Portal_SSO_Option_Settings::enforce_privacy</code> is set to <code>TRUE</code>, the plugin will redirect the user from the public page to the Greenhouse Portal SSO page incase no active session was found. The default WordPress authorization check if performed when accessing any of the <code>wp-admin</code> pages. This also allows to user to sign-in using either the Greenhouse account of their existing WordPress acount.</p>\n<p>The following applies to any non wp-admin page request incase no user session is found:</p>\n<p>The user will be redirected from the current page to the Greenhouse Portal, which acts a proxy between Auth0&#8217;s management system and Greenhouse&#8217;s Microsoft Identity (OpenID Connect) accounts, to perform it&#8217;s authentication through SSO.</p>\n<p>A success SSO using the Greenhouse Portal results in an active access token that&#8217;s short lived (8 hours). The access token can be used to retrieve data on behalf of the user to which he/she has given consent.</p>\n<p>The request for a redirect to the Greenhouse Portal requires a <code>redirect_uri</code> as one of its query parameter. This is the URL to which the proxy should return the user&#8217;s access token. By default, the redirect URL is set to <code>admin-ajax.php</code> in conjuction with <a href=\"https://developer.wordpress.org/reference/functions/admin_url/\" rel=\"nofollow ugc\">admin_url</a> and uses <a href=\"https://codex.wordpress.org/AJAX_in_Plugins\" rel=\"nofollow ugc\">WordPress&#8217; AJAX API</a> to further handle the redirect flow.</p>\n<pre><code>`\n</code></pre>\n<p>Temperary Redirect<br />\nLocation:<br />\n  https://authorize.my.greenhousegroup.com/authorize</p>\n<p>redirect_uri=&lt;redirect/callback URL&gt;<br />\n    `</p>\n<p>The above URL will initiate a SSO request to Auth0. Once the user has signed in, the Greenhouse Portal will redirect the user to the given URL in the <code>redirect_uri</code> query parameter. The access token is passed through as a query parameter to the redirect url (e.g. <code>?GHP_authorization_token=xxxxxxxxxxxx</code>).</p>\n<p>On successfull redirect, the access token is fetched from the query parameters. An additional request is made to the Greenhouse API to fetch the Greenhouse user information from the retrieved access token.</p>\n<pre><code>`\n</code></pre>\n<p>POST / HTTP/1.1<br />\nHost:<br />\n  https://api.my.greenhousegroup.com/user</p>\n<p>Headers:<br />\n  Authorization=<br />\n  x-api-version=<br />\n    `</p>\n<p>The Greenhouse user information is used to find an existing WordPress user. When no WordPress user was found, a new one can be automatically created when <code>GH_Portal_SSO_Option_Settings::create_if_does_not_exist</code> is set to <code>TRUE</code> on successfull sign-in.</p>\n<p>After finding/creating the WordPress user, a session of 8 hours is created, the duration can be set by <code>GH_Portal_SSO_Option_Settings::expires_in</code> using a numeric measured in seconds.</p>\n<p>When no WordPress user account was found or can not be created, the user is redirected to the wp-admin sign-in page with the approriate error message (if any).</p>\n",
+        "installation": "<ol>\n<li>Install from plugins page by name (Greenhouse Portal SSO) OR upload to the <code>/wp-content/plugins/</code> directory</li>\n<li>Activate the plugin</li>\n<li>Configure the <a href=\"./includes/gh-portal-sso-option-settings.php\" rel=\"nofollow ugc\">plugin settings</a> to meet your needs</li>\n</ol>\n"
+    },
+    "short_description": "A client plugin that provides SSO (Single-Sign-on) or opt-in authentication against Greenhouse Portal Auth0 implementation.",
+    "description": "<p>This plugin allows to authenticate users against GH Portal API with Authorization Flow.<br />\nOnce installed, it can be configured to automatically authenticate users (SSO). After consent has been obtained, an existing user is automatically logged into WordPress, while<br />\nnew users are created in WordPress database.</p>\n<h3>Plugin flow explained</h3>\n<p>When a user of your WordPress application visits one of your public pages, a check is done if a user session is currently set. When <code>GH_Portal_SSO_Option_Settings::enforce_privacy</code> is set to <code>TRUE</code>, the plugin will redirect the user from the public page to the Greenhouse Portal SSO page incase no active session was found. The default WordPress authorization check if performed when accessing any of the <code>wp-admin</code> pages. This also allows to user to sign-in using either the Greenhouse account of their existing WordPress acount.</p>\n<p>The following applies to any non wp-admin page request incase no user session is found:</p>\n<p>The user will be redirected from the current page to the Greenhouse Portal, which acts a proxy between Auth0&#8217;s management system and Greenhouse&#8217;s Microsoft Identity (OpenID Connect) accounts, to perform it&#8217;s authentication through SSO.</p>\n<p>A success SSO using the Greenhouse Portal results in an active access token that&#8217;s short lived (8 hours). The access token can be used to retrieve data on behalf of the user to which he/she has given consent.</p>\n<p>The request for a redirect to the Greenhouse Portal requires a <code>redirect_uri</code> as one of its query parameter. This is the URL to which the proxy should return the user&#8217;s access token. By default, the redirect URL is set to <code>admin-ajax.php</code> in conjuction with <a href=\"https://developer.wordpress.org/reference/functions/admin_url/\" rel=\"nofollow ugc\">admin_url</a> and uses <a href=\"https://codex.wordpress.org/AJAX_in_Plugins\" rel=\"nofollow ugc\">WordPress&#8217; AJAX API</a> to further handle the redirect flow.</p>\n<pre><code>`\n</code></pre>\n<p>Temperary Redirect<br />\nLocation:<br />\n  https://authorize.my.greenhousegroup.com/authorize</p>\n<p>redirect_uri=&lt;redirect/callback URL&gt;<br />\n    `</p>\n<p>The above URL will initiate a SSO request to Auth0. Once the user has signed in, the Greenhouse Portal will redirect the user to the given URL in the <code>redirect_uri</code> query parameter. The access token is passed through as a query parameter to the redirect url (e.g. <code>?GHP_authorization_token=xxxxxxxxxxxx</code>).</p>\n<p>On successfull redirect, the access token is fetched from the query parameters. An additional request is made to the Greenhouse API to fetch the Greenhouse user information from the retrieved access token.</p>\n<pre><code>`\n</code></pre>\n<p>POST / HTTP/1.1<br />\nHost:<br />\n  https://api.my.greenhousegroup.com/user</p>\n<p>Headers:<br />\n  Authorization=<br />\n  x-api-version=<br />\n    `</p>\n<p>The Greenhouse user information is used to find an existing WordPress user. When no WordPress user was found, a new one can be automatically created when <code>GH_Portal_SSO_Option_Settings::create_if_does_not_exist</code> is set to <code>TRUE</code> on successfull sign-in.</p>\n<p>After finding/creating the WordPress user, a session of 8 hours is created, the duration can be set by <code>GH_Portal_SSO_Option_Settings::expires_in</code> using a numeric measured in seconds.</p>\n<p>When no WordPress user account was found or can not be created, the user is redirected to the wp-admin sign-in page with the approriate error message (if any).</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/greenhouse-portal-sso.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "ghp": "ghp",
+        "greenhouse": "greenhouse",
+        "login": "login",
+        "portal": "portal",
+        "security": "security"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/greenhouse-portal-sso.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/greenhouse-portal-sso.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/greenhouse-portal-sso.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

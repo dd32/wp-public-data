@@ -1,0 +1,214 @@
+{
+    "name": "Default Featured Image",
+    "slug": "default-featured-image",
+    "version": "1.7.3",
+    "author": "<a href=\"https://janw.me/\">Jan Willem Oostendorp</a>",
+    "author_profile": "https://profiles.wordpress.org/janwoostendorp/",
+    "contributors": {
+        "janwoostendorp": {
+            "profile": "https://profiles.wordpress.org/janwoostendorp/",
+            "avatar": "https://secure.gravatar.com/avatar/96e97de571d9bd3612a7698557c30242?s=96&d=monsterid&r=g",
+            "display_name": "Jan-Willem"
+        }
+    },
+    "requires": "6.2",
+    "tested": "6.5.5",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 98,
+    "ratings": {
+        "5": 59,
+        "4": 2,
+        "3": 1,
+        "2": 0,
+        "1": 1
+    },
+    "num_ratings": 63,
+    "support_url": "https://wordpress.org/support/plugin/default-featured-image/",
+    "support_threads": 1,
+    "support_threads_resolved": 0,
+    "active_installs": 80000,
+    "downloaded": 410349,
+    "last_updated": "2024-05-29 9:16am GMT",
+    "added": "2012-12-25",
+    "homepage": "http://wordpress.org/extend/plugins/default-featured-image/",
+    "sections": {
+        "description": "<p>Add a default featured image to the media settings page. This featured image will show up if no featured image is set. Simple as that.</p>\n<p>Take a look at <a href=\"https://wordpress.org/extend/plugins/default-featured-image/faq/\" rel=\"ugc\">FAQ</a> for the basic questions.<br />\nFeel free to contact me <a href=\"https://wordpress.org/support/plugin/default-featured-image/\" rel=\"ugc\">on the forum</a> or on the <a href=\"https://github.com/janw-me/default-featured-image\" rel=\"nofollow ugc\">github repository</a>.</p>\n",
+        "installation": "<ol>\n<li>Unzip the folder to the <code>/wp-content/plugins/</code> directory</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</li>\n<li>Go to the settings-&gt;media page and select an image.</li>\n</ol>\n",
+        "faq": "\n<dt id='my%20chosen%20featured%20image%20doesn%27t%20show%2C%20why%20isn%27t%20it%20working%3F'>\nMy chosen featured image doesn&#8217;t show, why isn&#8217;t it working?\n</h4>\n<p>\n<p>This plugin works out of the box for most cases, but not always. If it doesn&#8217;t work you can try the following things.</p>\n<ul>\n<li>Switch themes. Most of the time the theme does something weird.</li>\n<li>Are you using the Core WordPress functions to get the image? (see the FAQ below this one).</li>\n<li>Do normal feature images work?</li>\n<li>Might it be hidden via css? DFI images have an extra <code>default-featured-img</code> class added to them.</li>\n</ul>\n<p>Still having problems? I want to know if it fails, so <a href=\"https://wordpress.org/support/plugin/default-featured-image\" rel=\"ugc\">contact me</a></p>\n</p>\n<dt id='which%20functions%20can%20i%20use%20to%20display%20the%20featured%20image%3F'>\nWhich functions can I use to display the featured image?\n</h4>\n<p>\n<p>There are no new functions, all core WordPress functions can be used.</p>\n<ul>\n<li><a href=\"https://developer.wordpress.org/reference/functions/the_post_thumbnail/\" rel=\"nofollow ugc\">the_post_thumbnail</a> / <a href=\"https://developer.wordpress.org/reference/functions/get_the_post_thumbnail/\" rel=\"nofollow ugc\">get_the_post_thumbnail</a> Display the image.</li>\n<li><a href=\"https://developer.wordpress.org/reference/functions/the_post_thumbnail_url/\" rel=\"nofollow ugc\">the_post_thumbnail_url</a> / <a href=\"https://developer.wordpress.org/reference/functions/get_the_post_thumbnail_url/\" rel=\"nofollow ugc\">get_the_post_thumbnail_url</a> Get the url.</li>\n<li><a href=\"https://developer.wordpress.org/reference/functions/has_post_thumbnail/\" rel=\"nofollow ugc\">has_post_thumbnail</a> If a DFI is set it will always return true.</li>\n<li><a href=\"https://developer.wordpress.org/reference/functions/get_post_thumbnail_id/\" rel=\"nofollow ugc\">get_post_thumbnail_id</a> will return the ID set on the post or the DFI.</li>\n</ul>\n</p>\n<dt id='can%20i%20set%20a%20different%20image%20for%20a%20custom%20post%20type%3F'>\nCan I set a different image for a custom post type?\n</h4>\n<p>\n<p>Yes, the following code will set a different image.</p>\n<pre><code>add_filter( 'dfi_thumbnail_id', 'dfi_posttype_book', 10, 2 );\nfunction dfi_posttype_book( $dfi_id, $post_id ) {\n    $post = get_post( $post_id );\n    if ( 'book' === $post-&gt;post_type ) {\n        return 31; // the image id for the book post type.\n    }\n\n    return $dfi_id; // the original featured image id.\n}\n</code></pre>\n</p>\n<dt id='can%20i%20set%20different%20images%20per%20category%3F'>\nCan I set different images per category?\n</h4>\n<p>\n<p>Yes, the following snippet will set different images based on the category.</p>\n<pre><code>add_filter( 'dfi_thumbnail_id', 'dfi_category', 10, 2 );\nfunction dfi_category( $dfi_id, $post_id ) {\n    // Set a different image for posts that have the 'cats' category set.\n    // This will trigger first, if multiple categories have been set.\n    if ( has_category( 'cats', $post_id ) ) {\n        return 7; // cats img id.\n    }\n    // Set a different image for posts that have the 'cats' category set.\n    if ( has_category( 'dogs', $post_id ) ) {\n        return 8; // dogs img id.\n    }\n\n    return $dfi_id; // the original featured image id.\n}\n</code></pre>\n</p>\n<dt id='can%20i%20change%20the%20html%20of%20the%20default%20featured%20image%3F'>\nCan I change the HTML of the default featured image?\n</h4>\n<p>\n<p>When a Default Featured Image is used it will already add an extra class <code>default-featured-img</code>.<br />\nThis can be used for styling.</p>\n<p>If you need more you can change the whole HTML with the filter <code>dfi_thumbnail_html</code>.</p>\n<pre><code>add_filter( 'dfi_thumbnail_html', 'dfi_add_class', 10, 5 );\nfunction dfi_add_class( $html, $post_id, $default_thumbnail_id, $size, $attr ) {\n    // Add a class to the existing class list.\n    $attr['class'] .= ' my-class';\n\n    return wp_get_attachment_image( $default_thumbnail_id, $size, false, $attr );\n}\n</code></pre>\n</p>\n<dt id='can%20i%20exclude%20one%20page%20from%20having%20a%20default%20featured%20image%3F'>\nCan I exclude one page from having a Default Featured Image?\n</h4>\n<p>\n<p>The following code will exclude the post/page with ID 23.</p>\n<pre><code>add_filter( 'dfi_thumbnail_id', 'dfi_skip_page', 10, 2 );\nfunction dfi_skip_page( $dfi_id, $post_id ) {\n    if ( $post_id == 23 ) {\n        return 0; // invalid id.\n    }\n\n    return $dfi_id; // the original featured image id.\n}\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>1.7.3</h4>\n<ul>\n<li>PHP 7.4 and WP 6.2 are now required. This is to use the new <a href=\"https://make.wordpress.org/core/2023/03/07/introducing-the-html-api-in-wordpress-6-2/\" rel=\"nofollow ugc\">WP_HTML_Tag_Processor</a> functions.</li>\n<li>Fixed a bug where classes were overridden.</li>\n</ul>\n<h4>1.7.2.1</h4>\n<ul>\n<li>Development is now done in git.</li>\n</ul>\n<h4>1.7.2</h4>\n<ul>\n<li>Added extra context to a translation as suggested by <a href=\"https://wordpress.org/support/topic/i18n-issue-14/\" rel=\"ugc\">Alex Lion</a></li>\n</ul>\n<h4>1.7.1</h4>\n<ul>\n<li>Fixed weird SVN deployment bug.</li>\n</ul>\n<h4>1.7.0</h4>\n<ul>\n<li>moved main class to it&#8217;s own file.</li>\n<li>Added second class that can hold exceptions with other plugins</li>\n<li>The first exception is for WP User Frontend</li>\n<li>The second exception  is for WP All Import.</li>\n</ul>\n<h4>1.6.4</h4>\n<ul>\n<li><code>get_post_meta($post_id)</code> without specifying the meta_key didn&#8217;t find the DFI. It will now even use an even deeper level and set it in the core cache.</li>\n</ul>\n<h4>1.6.3</h4>\n<ul>\n<li>Fixed plugin header which blocked installing it.</li>\n</ul>\n<h4>1.6.2</h4>\n<ul>\n<li>Plugin now follows WP coding standard</li>\n<li>Fixed a small bug where DFI overrides attachments featured images. mp3 has a music note by default, DFI should not override that.</li>\n</ul>\n<h4>1.6.1</h4>\n<ul>\n<li>Small readme.txt update.</li>\n</ul>\n<h4>1.6</h4>\n<ul>\n<li>On of the last fixes didn&#8217;t account for all situations.</li>\n</ul>\n<h4>1.5</h4>\n<ul>\n<li>Fixed two small (and rare) warnings</li>\n<li>Added translation domain</li>\n</ul>\n<h4>1.4</h4>\n<ul>\n<li>Added plugin images both the plugin header as the thumbnail. Based on the boat WP.org uses in it&#8217;s theme previews</li>\n<li>Fixed a bug where the ajax calls didn&#8217;t return the DFI <a href=\"https://wordpress.org/support/topic/dfi-woocommerce-facetwp?replies=10\" rel=\"ugc\">forum thread</a></li>\n</ul>\n<h4>1.3</h4>\n<ul>\n<li>Filter <code>dfi_thumbnail_id</code> now also returns the post ID of the post (or any postype) that is being called. See the FAQ for new examples</li>\n</ul>\n<h4>1.2</h4>\n<ul>\n<li>Filter <code>dfi_thumbnail_id</code> is now called in an earlier stage.</li>\n</ul>\n<h4>1.1</h4>\n<ul>\n<li>Fixed inheriting classes of the image</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>Plugin will now remove it&#8217;s setting on plugin removal</li>\n<li>added a default class to the <code>&lt;img&gt;</code> tag, if it shows a default featured image</li>\n<li>The default featured image will now also return with <code>get_post_thumbnail_id</code>, making the chance that it fail far far smaller.</li>\n<li>The image given in the media page is now validated</li>\n</ul>\n<h4>0.9</h4>\n<ul>\n<li>Launch</li>\n</ul>\n"
+    },
+    "short_description": "Add a Default Featured Image for all posts &amp; pages.",
+    "description": "<p>Add a default featured image to the media settings page. This featured image will show up if no featured image is set. Simple as that.</p>\n<p>Take a look at <a href=\"https://wordpress.org/extend/plugins/default-featured-image/faq/\" rel=\"ugc\">FAQ</a> for the basic questions.<br />\nFeel free to contact me <a href=\"https://wordpress.org/support/plugin/default-featured-image/\" rel=\"ugc\">on the forum</a> or on the <a href=\"https://github.com/janw-me/default-featured-image\" rel=\"nofollow ugc\">github repository</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/default-featured-image.1.7.3.zip",
+    "upgrade_notice": {
+        "1.0": "<p>Update makes sure that the set image will show. Everywhere.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/default-featured-image/assets/screenshot-1.png?rev=2771497",
+            "caption": "The setting on the media page"
+        },
+        {
+            "src": "https://ps.w.org/default-featured-image/assets/screenshot-2.png?rev=2771497",
+            "caption": "The media manager will start with the current selected image"
+        }
+    ],
+    "tags": {
+        "image": "image",
+        "media": "media"
+    },
+    "stable_tag": "1.7.3",
+    "versions": {
+        "0.9": "https://downloads.wordpress.org/plugin/default-featured-image.0.9.zip",
+        "1.0": "https://downloads.wordpress.org/plugin/default-featured-image.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/default-featured-image.1.1.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/default-featured-image.1.2.zip",
+        "1.3": "https://downloads.wordpress.org/plugin/default-featured-image.1.3.zip",
+        "1.4": "https://downloads.wordpress.org/plugin/default-featured-image.1.4.zip",
+        "1.5": "https://downloads.wordpress.org/plugin/default-featured-image.1.5.zip",
+        "1.6": "https://downloads.wordpress.org/plugin/default-featured-image.1.6.zip",
+        "1.6.1": "https://downloads.wordpress.org/plugin/default-featured-image.1.6.1.zip",
+        "1.6.2": "https://downloads.wordpress.org/plugin/default-featured-image.1.6.2.zip",
+        "1.6.3": "https://downloads.wordpress.org/plugin/default-featured-image.1.6.3.zip",
+        "1.6.4": "https://downloads.wordpress.org/plugin/default-featured-image.1.6.4.zip",
+        "1.7.1": "https://downloads.wordpress.org/plugin/default-featured-image.1.7.1.zip",
+        "1.7.2": "https://downloads.wordpress.org/plugin/default-featured-image.1.7.2.zip",
+        "1.7.2.1": "https://downloads.wordpress.org/plugin/default-featured-image.1.7.2.1.zip",
+        "1.7.3": "https://downloads.wordpress.org/plugin/default-featured-image.1.7.3.zip",
+        "1.7.4-beta": "https://downloads.wordpress.org/plugin/default-featured-image.1.7.4-beta.zip",
+        "BP2": "https://downloads.wordpress.org/plugin/default-featured-image.BP2.zip",
+        "blueprint": "https://downloads.wordpress.org/plugin/default-featured-image.blueprint.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/default-featured-image.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/default-featured-image/assets/banner-772x250.jpg?rev=1058491",
+        "high": "https://ps.w.org/default-featured-image/assets/banner-1544x500.jpg?rev=1058491"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/default-featured-image/assets/icon-128x128.jpg?rev=1058491",
+        "2x": "https://ps.w.org/default-featured-image/assets/icon-256x256.jpg?rev=1058491"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 98,
+    "blueprints": [
+        {
+            "filename": "blueprint.json",
+            "url": "https://wordpress.org/plugins/wp-json/plugins/v1/plugin/default-featured-image/blueprint.json?rev=3094405"
+        }
+    ],
+    "preview_link": "https://wordpress.org/plugins/default-featured-image/?preview=1",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "default-featured-image",
+            "language": "da_DK",
+            "version": "1.7.3",
+            "updated": "2024-03-29 11:54:05",
+            "package": "http://downloads.wordpress.org/translation/plugin/default-featured-image/1.7.3/da_DK.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "default-featured-image",
+            "language": "de_DE",
+            "version": "1.7.3",
+            "updated": "2021-04-10 07:15:59",
+            "package": "http://downloads.wordpress.org/translation/plugin/default-featured-image/1.7.3/de_DE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "default-featured-image",
+            "language": "es_ES",
+            "version": "1.7.3",
+            "updated": "2021-11-10 13:07:03",
+            "package": "http://downloads.wordpress.org/translation/plugin/default-featured-image/1.7.3/es_ES.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "default-featured-image",
+            "language": "fr_FR",
+            "version": "1.7.3",
+            "updated": "2022-03-25 13:45:36",
+            "package": "http://downloads.wordpress.org/translation/plugin/default-featured-image/1.7.3/fr_FR.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "default-featured-image",
+            "language": "he_IL",
+            "version": "1.7.3",
+            "updated": "2018-02-07 21:54:02",
+            "package": "http://downloads.wordpress.org/translation/plugin/default-featured-image/1.7.3/he_IL.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "default-featured-image",
+            "language": "nb_NO",
+            "version": "1.7.3",
+            "updated": "2020-08-12 11:20:02",
+            "package": "http://downloads.wordpress.org/translation/plugin/default-featured-image/1.7.3/nb_NO.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "default-featured-image",
+            "language": "nl_NL",
+            "version": "1.7.3",
+            "updated": "2023-08-28 15:26:50",
+            "package": "http://downloads.wordpress.org/translation/plugin/default-featured-image/1.7.3/nl_NL.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "default-featured-image",
+            "language": "nl_NL_formal",
+            "version": "1.7.3",
+            "updated": "2022-05-15 13:57:29",
+            "package": "http://downloads.wordpress.org/translation/plugin/default-featured-image/1.7.3/nl_NL_formal.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "default-featured-image",
+            "language": "nl_BE",
+            "version": "1.7.3",
+            "updated": "2024-02-15 10:11:25",
+            "package": "http://downloads.wordpress.org/translation/plugin/default-featured-image/1.7.3/nl_BE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "default-featured-image",
+            "language": "sv_SE",
+            "version": "1.7.3",
+            "updated": "2020-12-22 14:42:13",
+            "package": "http://downloads.wordpress.org/translation/plugin/default-featured-image/1.7.3/sv_SE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "default-featured-image",
+            "language": "tr_TR",
+            "version": "1.7.3",
+            "updated": "2018-08-24 22:12:30",
+            "package": "http://downloads.wordpress.org/translation/plugin/default-featured-image/1.7.3/tr_TR.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "default-featured-image",
+            "language": "zh_CN",
+            "version": "1.7.3",
+            "updated": "2021-01-03 05:15:55",
+            "package": "http://downloads.wordpress.org/translation/plugin/default-featured-image/1.7.3/zh_CN.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "default-featured-image",
+            "language": "zh_TW",
+            "version": "1.7.3",
+            "updated": "2022-05-19 23:10:42",
+            "package": "http://downloads.wordpress.org/translation/plugin/default-featured-image/1.7.3/zh_TW.zip"
+        }
+    ]
+}

@@ -1,0 +1,82 @@
+{
+    "name": "PayPal Framework",
+    "slug": "paypal-framework",
+    "version": "1.0.12",
+    "author": "<a href=\"http://bluedogwebservices.com/\">Aaron D. Campbell</a>",
+    "author_profile": "https://profiles.wordpress.org/aaroncampbell/",
+    "contributors": {
+        "aaroncampbell": {
+            "profile": "https://profiles.wordpress.org/aaroncampbell/",
+            "avatar": "https://secure.gravatar.com/avatar/51f13e0e11344034ec9d33f37576ee39?s=96&d=monsterid&r=g",
+            "display_name": "Aaron D. Campbell"
+        }
+    },
+    "requires": "2.8",
+    "tested": "4.5.32",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 4,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 4,
+    "support_url": "https://wordpress.org/support/plugin/paypal-framework/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 500,
+    "downloaded": 28701,
+    "last_updated": "2016-05-01 12:47am GMT",
+    "added": "2009-09-23",
+    "homepage": "http://bluedogwebservices.com/wordpress-plugin/paypal-framework/",
+    "sections": {
+        "description": "<p>This plugins gives you a great framework to use for integrating with PayPal.<br />\nIt stores both live and sandbox API credentials and allows you to switch back<br />\nand forth easily.  All NVP API calls are passed through the framework and<br />\ndefault values such as API version, API credentials, and even currency code are<br />\nadded to the request based on settings from the admin panel.</p>\n<p>It also has a built in IPN listener that validates messages as coming from<br />\nPayPal then throws WordPress actions based on messages received.  For example it<br />\nthrows &#8220;paypal-recurring_payment_profile_cancel&#8221; when someone cancels a<br />\nrecurring payment that they had set up with you.  It passes along all the info<br />\nthat PayPal sent to the action, so it&#8217;s simple to create other plugins that use<br />\nthis one.</p>\n<p>Requires PHP5.</p>\n<p>You may also be interested in WordPress tips and tricks at <a href=\"http://wpinformer.com\" rel=\"nofollow ugc\">WordPress Informer</a> or gerneral <a href=\"http://webdevnews.net\" rel=\"nofollow ugc\">Web Developer News</a></p>\n",
+        "installation": "<ol>\n<li>Use automatic installer.</li>\n</ol>\n",
+        "faq": "\n<h4>How do I send a request to PayPal?</h4>\n<p>\n<p>To send a request to PayPal, simply build the request as an associative array and pass it to the hashCall helper function like this:</p>\n<pre><code>$ppParams = array(\n    'METHOD'         =&gt; 'doDirectPayment',\n    'PAYMENTACTION'  =&gt; 'Sale',\n    'IPADDRESS'      =&gt; '123.123.123.123',\n    'AMT'            =&gt; '222.22',\n    'DESC'           =&gt; 'some product',\n    'CREDITCARDTYPE' =&gt; 'VISA',\n    'ACCT'           =&gt; '4111111111111111',\n    'EXPDATE'        =&gt; '112011',\n    'CVV2'           =&gt; '123',\n    'FIRSTNAME'      =&gt; 'Aaron',\n    'LASTNAME'       =&gt; 'Campbell',\n    'EMAIL'          =&gt; 'pptest@xavisys.com',\n    'STREET'         =&gt; '123 some pl',\n    'STREET2'        =&gt; '',\n    'CITY'           =&gt; 'San Diego',\n    'STATE'          =&gt; 'CA',\n    'ZIP'            =&gt; '92101',\n    'COUNTRYCODE'    =&gt; 'US',\n    'INVNUM'         =&gt; '12345',\n);\n\n$response = hashCall($ppParams);\n</code></pre>\n</p>\n<h4>How do I use the Listener to process PayPal messages?</h4>\n<p>\n<p>First you have to tell PayPal to send message to the correct URL.  Go to the<br />\nPayPal Framework settings page and click the &#8220;PayPal IPN Listener URL&#8221; link to<br />\nsee instructions on how to use the URL that&#8217;s listed there.  Once your PayPal<br />\naccount has been set up the listener will automatically process all IPN messages<br />\nand turn them into WordPress actions that you can hook into.  You can use the<br />\n&#8216;paypal-ipn&#8217; action to look at every message you ever get, or hook directly into<br />\na &#8216;paypal-{transaction-type}&#8217; hook to process a specific type of message:</p>\n<pre><code>add_action('paypal-ipn', 'my_process_ipn');\nfunction my_process_ipn( $data ) {\n    echo 'Processing IPN Message:&lt;pre&gt;';\n    var_dump( $data );\n    echo '&lt;/pre&gt;';\n}\n\nadd_action('paypal-recurring_payment_failed', 'my_process_ipn_recurring_payment_failed');\nfunction my_process_ipn_recurring_payment_failed( $data ) {\n    echo 'A recurring payment has failed. Here is the data I have to process this:&lt;pre&gt;';\n    var_dump( $data );\n    echo '&lt;/pre&gt;';\n}\n</code></pre>\n</p>\n<h4>Why do you set sslverify to false?</h4>\n<p>\n<p>Many servers have out of date certificate lists, so this is necessary to be as<br />\nportable as possible.  However, if your server is set up right you can force<br />\nsslverify like this:</p>\n<pre><code>add_filter( 'paypal_framework_sslverify', '__return_true' );\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>1.0.12</h4>\n<ul>\n<li>Add httpversion 1.1 to wp_remote_get(). Now required by PayPal Sandbox to support TLS 1.2. &#8211; props @cferdinandi</li>\n</ul>\n<h4>1.0.11</h4>\n<ul>\n<li>Don&#8217;t verify SSL on validation calls &#8211; too many people with out of date CAs</li>\n</ul>\n<h4>1.0.10</h4>\n<ul>\n<li>Replace instance of _() with __() &#8211; Props Ken Bass</li>\n</ul>\n<h4>1.0.9</h4>\n<ul>\n<li>Use admin-ajax for listener</li>\n<li>Add sslverify filter &#8211; props @evansolomon</li>\n</ul>\n<h4>1.0.8</h4>\n<ul>\n<li>Fix missing quotes</li>\n</ul>\n<h4>1.0.7</h4>\n<ul>\n<li>Lots of code cleanup, some requiring WordPress 2.8+</li>\n<li>Better help</li>\n<li>Make translatable</li>\n</ul>\n<h4>1.0.6</h4>\n<ul>\n<li>Fixed a bug that throws a warning for certain requests when in debugging mode.  Props Ken Bass <a href=\"mailto:&#107;&#x62;&#097;&#x73;&#115;&#064;&#x6b;&#101;&#x6e;&#098;&#x61;&#115;&#x73;&#046;&#x63;&#111;&#x6d;\" rel=\"nofollow ugc\">&#107;&#x62;&#097;&#x73;&#115;&#064;&#x6b;&#101;&#x6e;&#098;&#x61;&#115;&#x73;&#046;&#x63;&#111;&#x6d;</a></li>\n</ul>\n<h4>1.0.5</h4>\n<ul>\n<li>Fixed a bug introduced in 1.0.4 that affected certain debug messages when not using the sandbox</li>\n</ul>\n<h4>1.0.4</h4>\n<ul>\n<li>Debug E-Mails for live requests now get an obfuscated credit card number (ACCT) as well as EXPDATE and CVV2</li>\n<li>The IPN listener only throws a transaction-specific action if a txt_type is given in the message</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>IPN Message validations now work even if there are apostophes (slashes are stripped)</li>\n<li>You can now have multiple debug E-Mail addresses (comma separated)</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Added a / to the IPN URL so that PayPal doesn&#8217;t complain that it&#8217;s invalid</li>\n<li>Fixed a couple debug messages to send the proper URL used</li>\n<li>Added a more general &#8220;paypal-ipn&#8221; action that can be used to catch and process all IPN message</li>\n<li>Moved add_action calls inside the __construct</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Added sendToExpressCheckout method for sending users to PayPal to finish up Express Checkout Payments</li>\n<li>Changed hashCall to use the WordPress WP_Http class</li>\n<li>Changed makeNVP to a public method</li>\n<li>Updated makeNVP to use http_build_query</li>\n<li>Switched to using wp_remote_post rather than specifying POST and using wp_remote_request</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Original version released to wordpress.org repository</li>\n</ul>\n"
+    },
+    "short_description": "PayPal integration framework and admin interface as well as IPN listener.",
+    "description": "<p>This plugins gives you a great framework to use for integrating with PayPal.<br />\nIt stores both live and sandbox API credentials and allows you to switch back<br />\nand forth easily.  All NVP API calls are passed through the framework and<br />\ndefault values such as API version, API credentials, and even currency code are<br />\nadded to the request based on settings from the admin panel.</p>\n<p>It also has a built in IPN listener that validates messages as coming from<br />\nPayPal then throws WordPress actions based on messages received.  For example it<br />\nthrows &#8220;paypal-recurring_payment_profile_cancel&#8221; when someone cancels a<br />\nrecurring payment that they had set up with you.  It passes along all the info<br />\nthat PayPal sent to the action, so it&#8217;s simple to create other plugins that use<br />\nthis one.</p>\n<p>Requires PHP5.</p>\n<p>You may also be interested in WordPress tips and tricks at <a href=\"http://wpinformer.com\" rel=\"nofollow ugc\">WordPress Informer</a> or gerneral <a href=\"http://webdevnews.net\" rel=\"nofollow ugc\">Web Developer News</a></p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/paypal-framework.1.0.12.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "paypal": "paypal"
+    },
+    "stable_tag": "1.0.12",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/paypal-framework.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/paypal-framework.1.0.1.zip",
+        "1.0.10": "https://downloads.wordpress.org/plugin/paypal-framework.1.0.10.zip",
+        "1.0.11": "https://downloads.wordpress.org/plugin/paypal-framework.1.0.11.zip",
+        "1.0.12": "https://downloads.wordpress.org/plugin/paypal-framework.1.0.12.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/paypal-framework.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/paypal-framework.1.0.3.zip",
+        "1.0.4": "https://downloads.wordpress.org/plugin/paypal-framework.1.0.4.zip",
+        "1.0.5": "https://downloads.wordpress.org/plugin/paypal-framework.1.0.5.zip",
+        "1.0.6": "https://downloads.wordpress.org/plugin/paypal-framework.1.0.6.zip",
+        "1.0.7": "https://downloads.wordpress.org/plugin/paypal-framework.1.0.7.zip",
+        "1.0.8": "https://downloads.wordpress.org/plugin/paypal-framework.1.0.8.zip",
+        "1.0.9": "https://downloads.wordpress.org/plugin/paypal-framework.1.0.9.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/paypal-framework.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=paypal%40xavisys%2ecom&item_name=PayPal%20Framework&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/paypal-framework.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

@@ -1,0 +1,81 @@
+{
+    "name": "Rails Theme",
+    "slug": "rails-theme",
+    "version": "1.1.1.0",
+    "author": "<a href=\"http://paulrosen.net\">Paul Rosen</a>",
+    "author_profile": "https://profiles.wordpress.org/paulrosen/",
+    "contributors": {
+        "paulrosen": {
+            "profile": "https://profiles.wordpress.org/paulrosen/",
+            "avatar": "https://secure.gravatar.com/avatar/6d1d7c6e63dd4eebe30b0c03b76087b7?s=96&d=monsterid&r=g",
+            "display_name": "paulrosen"
+        }
+    },
+    "requires": "3.2",
+    "tested": "3.5.2",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/rails-theme/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 7251,
+    "last_updated": "2013-05-31 12:41pm GMT",
+    "added": "2011-11-29",
+    "homepage": "http://www.performantsoftware.com/wordpress/plugins/rails_theme/",
+    "sections": {
+        "description": "<p>This calls back to a web service to get theme information, so that it is easy to keep the rails and WP sides in sync.</p>\n<p>It is designed to be used when a Rails application wishes to contain WordPress content. This allows the WordPress pages<br />\nto directly use the styles of the Rails application so that it will always match, even when the Rails app changes.</p>\n<p>It is also useful when the header of the page changes, for instance, if new menu items can appear depending on the state of the<br />\napplication.</p>\n<p>And finally, if you want to POST back to the Rails app (for instance, to log in), you need the CSRF to be set in the page&#8217;s header,<br />\nand that needs to come from the Rails session.</p>\n<p>NOTE: This might take some tweaking depending on the theme you are using. It successfully works with the default 2011 theme<br />\nand the Hybrid theme.</p>\n<p>It requires an entry point in your Rails controller that returns three things:<br />\n1. a section that is put in the header to load stylesheets and javascript,<br />\n1. a section that is loaded at the top of the body, and<br />\n1. a section that is loaded at the bottom of the body.</p>\n<p>There is one main option in the plugin to tell it the base URL of the Rails app. The rails app is expected to respond to the<br />\nfollowing URL:</p>\n<pre><code>/wrapper\n</code></pre>\n<p>This also supplies a convenience option to add classes to the  so that you can match the body styles in your rails app.</p>\n<h3>Troubleshooting</h3>\n<ol>\n<li>My theme doesn&#8217;t show up at all.</li>\n</ol>\n<p>Turn on WP_DEBUG in wp_config.php and see if there is an error message printed to the page.</p>\n",
+        "installation": "<p>The plugin itself is easy to install.</p>\n<ol>\n<li>Upload this folder to the <code>/wp-content/plugins/</code> directory.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>Click &#8216;Settings&#8217; in the dashboard, then &#8216;Rails Theme&#8217; and enter the base URL for your Rails app.</li>\n</ol>\n<p>There are a number of things that have to happen on the Rails side, though.</p>\n<p>You will need something like the following in your routes.rb file:</p>\n<pre><code>get \"/wrapper\" =&gt; \"home#wrapper\"\n</code></pre>\n<p>And it should return a partial with three sections. The sections should be separated from each other with 10 tildes (that<br />\nis: <code>~~~~~~~~~~</code>).</p>\n<p>It is most convenient to rearrange your layout file to call those three partials. Here is a possible layout file:</p>\n<pre><code>&lt;!DOCTYPE html&gt;\n&lt;html&gt;\n\n&lt;head&gt;\n    &lt;%= render :partial =&gt; '/layouts/dependencies' %&gt;\n    &lt;title&gt;Site Title&lt;/title&gt;\n\n&lt;/head&gt;\n&lt;body&gt;\n\n   &lt;%= render :partial =&gt; '/layouts/header' %&gt;\n    &lt;%= yield %&gt;\n\n&lt;%= render :partial =&gt; '/layouts/footer' %&gt;\n\n&lt;/body&gt;\n&lt;/html&gt;\n</code></pre>\n<p>Notice that all the work is done by those three partials.</p>\n<p>Then, the wrapper call is handled like this:</p>\n<ul>\n<li>\n<p>home_controller:<br />\ndef wrapper<br />\n   render :partial =&gt; &#8220;/layouts/wrapper&#8221;<br />\nend</p>\n</li>\n<li>\n<p>layouts/_wrapper.html.erb:<br />\n &#8220;/layouts/dependencies&#8221; %&gt;<br />\n &#8220;/layouts/any_session_related_tasks %&gt;</p>\n<pre><code>&lt;%= render :partial =&gt; \"/layouts/header\" %&gt;\n</code></pre>\n<p> &#8220;/layouts/footer&#8221; %&gt;</p>\n</li>\n</ul>\n<p>You will have to be careful about the css classes you create so that they don&#8217;t conflict with the WP theme&#8217;s classes.<br />\nFor instance, you probably don&#8217;t want a class named &#8216;content&#8217;.</p>\n<p>You will also probably have to tweak the css in your layout some to override some of your theme. In the case of the<br />\n2011 theme, I had to put in the following:</p>\n<pre><code>/* for wordpress */\n#body-container {\n    margin: 0;\n}\n#header-container {\n   display:none;\n}\n</code></pre>\n<p>The big problem with making this seamless is that WP can&#8217;t use the session data from the Rails app. Typically in<br />\nmy apps, this means that I don&#8217;t know how to draw the &#8220;sign in&#8221; section because I can&#8217;t tell if the user is logged in.<br />\nTo get around that, the sign in section should be drawn as if there is no one logged in, then an ajax call made from<br />\nthe Rails app to correct that. That is what should go in the <code>any_session_related_tasks</code> partial above: some javascript<br />\nthat triggers at <code>onload</code> time that returns the sign in div.</p>\n",
+        "faq": "\n<h4>How do I get rails to ignore the WP&#8217;s PHP?</h4>\n<p>\n<p>If you are using Passenger and Apache, put this in your conf file (assuming you want the WordPress site to be accessible<br />\nthrough <code>/news</code>):</p>\n<pre><code>&lt;Directory \"/path/to/rails/app/public/news\"&gt;\n    PassengerEnabled off\n    AllowOverride all\n&lt;/Directory&gt;\n</code></pre>\n</p>\n<h4>How do I get the URL for the WP blog look like the URLs for my Rails app?</h4>\n<p>\n<p>If you create a symbolic link in your public folder to the wp site, then you can use the URL /news to get to your blog:</p>\n<pre><code>cd path/to/rails/app/public\nln -s /path/to/wordpress/installation news\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>1.1.1.0</h4>\n<ul>\n<li>Retry the call to rails, since the rails app or the network might be slow.</li>\n</ul>\n<h4>1.1.0.0</h4>\n<ul>\n<li>Added the option to add classes to .</li>\n</ul>\n<h4>1.0.3.0</h4>\n<ul>\n<li>Removing the pass through of cookies, since later versions of Rails invalidates the session when it sees the cookie<br />\ncoming from the wrong place.</li>\n</ul>\n<h4>1.0.2.0</h4>\n<ul>\n<li>Using WP_Http to make the server call to work in more configurations.</li>\n<li>Improved error reporting.</li>\n</ul>\n<h4>1.0.1.0</h4>\n<ul>\n<li>Pass the page&#8217;s cookies through to the rails app.</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "This calls back to a Rails (or other) web service to get theme information, so that it is easy to keep the rails and WP sides in sync.",
+    "description": "<p>This calls back to a web service to get theme information, so that it is easy to keep the rails and WP sides in sync.</p>\n<p>It is designed to be used when a Rails application wishes to contain WordPress content. This allows the WordPress pages<br />\nto directly use the styles of the Rails application so that it will always match, even when the Rails app changes.</p>\n<p>It is also useful when the header of the page changes, for instance, if new menu items can appear depending on the state of the<br />\napplication.</p>\n<p>And finally, if you want to POST back to the Rails app (for instance, to log in), you need the CSRF to be set in the page&#8217;s header,<br />\nand that needs to come from the Rails session.</p>\n<p>NOTE: This might take some tweaking depending on the theme you are using. It successfully works with the default 2011 theme<br />\nand the Hybrid theme.</p>\n<p>It requires an entry point in your Rails controller that returns three things:<br />\n1. a section that is put in the header to load stylesheets and javascript,<br />\n1. a section that is loaded at the top of the body, and<br />\n1. a section that is loaded at the bottom of the body.</p>\n<p>There is one main option in the plugin to tell it the base URL of the Rails app. The rails app is expected to respond to the<br />\nfollowing URL:</p>\n<pre><code>/wrapper\n</code></pre>\n<p>This also supplies a convenience option to add classes to the  so that you can match the body styles in your rails app.</p>\n<h3>Troubleshooting</h3>\n<ol>\n<li>My theme doesn&#8217;t show up at all.</li>\n</ol>\n<p>Turn on WP_DEBUG in wp_config.php and see if there is an error message printed to the page.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/rails-theme.zip",
+    "upgrade_notice": {
+        "1.0.1.0": "<ul>\n<li>This version is needed if your rails app depends on cookies to generate the correct header.</li>\n</ul>",
+        "1.0": "<ul>\n<li>Initial release.</li>\n</ul>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/rails-theme/trunk/screenshot-1.png?rev=1566947",
+            "caption": "This is the options page."
+        }
+    ],
+    "tags": {
+        "rails": "rails",
+        "theme": "theme"
+    },
+    "stable_tag": "trunk",
+    "versions": {
+        "1.0.0.0": "https://downloads.wordpress.org/plugin/rails-theme.1.0.0.0.zip",
+        "1.0.1.0": "https://downloads.wordpress.org/plugin/rails-theme.1.0.1.0.zip",
+        "1.0.2.0": "https://downloads.wordpress.org/plugin/rails-theme.1.0.2.0.zip",
+        "1.1.0.0": "https://downloads.wordpress.org/plugin/rails-theme.1.1.0.0.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "http://www.performantsoftware.com/wordpress/plugins/rails_theme/",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/rails-theme.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

@@ -1,0 +1,87 @@
+{
+    "name": "Secure DB Connection",
+    "slug": "secure-db-connection",
+    "version": "1.1.5",
+    "author": "<a href=\"http://xyu.io/\">Xiao Yu</a>",
+    "author_profile": "https://profiles.wordpress.org/hypertextranch/",
+    "contributors": {
+        "hypertextranch": {
+            "profile": "https://profiles.wordpress.org/hypertextranch/",
+            "avatar": "https://secure.gravatar.com/avatar/25e2ecf9b520e06d71e47ab083924300?s=96&d=monsterid&r=g",
+            "display_name": "hypertextranch"
+        }
+    },
+    "requires": "4.9",
+    "tested": "4.9.26",
+    "requires_php": "5.2.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 3,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 3,
+    "support_url": "https://wordpress.org/support/plugin/secure-db-connection/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 200,
+    "downloaded": 22887,
+    "last_updated": "2018-07-08 1:06pm GMT",
+    "added": "2016-08-21",
+    "homepage": "http://wordpress.org/plugins/secure-db-connection/",
+    "sections": {
+        "description": "<p>Depending on the MySQL server setup the SSL certs used may not be in the trusted store, if that&#8217;s the case <code>mysqli_ssl_set()</code> needs to be called to set custom keys and certs before connect. This Plugin adds a custom DB class that allows these settings to be configured via custom constants.</p>\n<p>This plugin will also add a custom item on the &#8220;At a Glance&#8221; section of the Dashboard to show if the <code>$wpdb</code> connection is secure or not.</p>\n<p>Also find me on <a href=\"https://github.com/xyu/secure-db-connection\" rel=\"nofollow ugc\">GitHub</a>.</p>\n",
+        "installation": "<p>For detailed installation instructions, please read the <a href=\"https://codex.wordpress.org/Managing_Plugins#Installing_Plugins\" rel=\"nofollow ugc\">standard installation procedure for WordPress plugins</a>.</p>\n<ol>\n<li>Install and activate plugin, if the filesystem is writable the Secure DB Connection dropin will be installed for you automatically. If not proceed to step 2</li>\n<li>Symlink or copy the <code>db.php</code> file from the <code>/wp-content/plugins/secure-db-connection/lib/</code> directory to the <code>/wp-content/</code> directory.</li>\n<li>Set the relevant defines in your <code>wp-config.php</code> file.</li>\n</ol>\n<h4>Configuration Parameters</h4>\n<p>To adjust the configuration, define any of the following applicable constants in your <code>wp-config.php</code> file.</p>\n<ul>\n<li>\n<p><code>MYSQL_SSL_KEY</code> [default: not set]</p>\n<p>The path name to the key file. (RSA Key)</p>\n</li>\n<li>\n<p><code>MYSQL_SSL_CERT</code> [default: not set]</p>\n<p>The path name to the certificate file.</p>\n</li>\n<li>\n<p><code>MYSQL_SSL_CA</code> [default: not set]</p>\n<p>The path name to the certificate authority file in PEM format.</p>\n</li>\n<li>\n<p><code>MYSQL_SSL_CA_PATH</code> [default: not set]</p>\n<p>The pathname to a directory that contains trusted SSL CA certificates in PEM format.</p>\n</li>\n<li>\n<p><code>MYSQL_SSL_CIPHER</code> [default: not set]</p>\n<p>A list of allowable ciphers to use for SSL encryption. You can leave this blank if you want to just use the strongest available.</p>\n</li>\n</ul>\n<h4>Turning on SSL</h4>\n<p>First please note, only the <code>mysqli</code> (MySQL Improved) extension is supported this is the default extension used by WordPress however if you do not have the extension installed WordPress will fallback on the much older mysql extension which does not support secure connections.</p>\n<p>Depending on your database configuration you may not need to set all the available options. For example when connecting to RDS Amazon helpfully provides a certificate bundle so once that&#8217;s downloaded to the server all that&#8217;s need is to set the CA option:</p>\n<pre><code>define(\n  'MYSQL_SSL_CA',\n  '/path/to/rds-combined-ca-bundle.pem'\n);\n</code></pre>\n<p>Once SSL keys / certs have been configured you via the defines above define an WP core constant to pass a use SSL flag to the mysqli client also in your <code>wp-config.php</code> file.</p>\n<pre><code>define(\n  'MYSQL_CLIENT_FLAGS',\n  MYSQLI_CLIENT_SSL\n);\n</code></pre>\n<p>If you are using the MySQL Native Driver and MySQL 5.6 or later <code>mysqli_real_connect()</code> will verify the server SSL certificate before connecting. If the SSL cert installed on the MySQL server your are connecting to is not valid PHP will refuse to connect. A flag was added to disable server certificate validation. If your server has an invalid certificate turn on SSL and turn off validation like so:</p>\n<pre><code>define(\n  'MYSQL_CLIENT_FLAGS',\n   MYSQLI_CLIENT_SSL |\n   MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT\n);\n</code></pre>\n<h4>Example Config</h4>\n<p>Aside from setting the normal MySQL connection parameters the minimum configs to get SSL connections to the database will look something like this in <code>wp-config.php</code>:</p>\n<pre><code>define( 'MYSQL_SSL_CA', '/path/to/ca-bundle.pem' );\ndefine( 'MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL );\n</code></pre>\n",
+        "changelog": "<h4>1.1.6</h4>\n<ul>\n<li>Cleanup GitHub repo, remove screenshot image</li>\n<li>Minor code cleanup</li>\n</ul>\n<h4>1.1.5</h4>\n<ul>\n<li>PHP backwards compatibility with versions prior to 5.5</li>\n<li>Syncs DB connect code with WP Core 4.9 (Fixes https://core.trac.wordpress.org/ticket/41722)</li>\n</ul>\n<h4>1.1.4</h4>\n<ul>\n<li>Update version numbers in file headers.</li>\n</ul>\n<h4>1.1.3</h4>\n<ul>\n<li>Better PHP backwards compatibility.</li>\n</ul>\n<h4>1.1.2</h4>\n<ul>\n<li>Only set MySQL SSL opts if secure connections are requested.</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>Retag release to fix version inconsistency</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Fix status message for when DB connection is not SSL enabled</li>\n<li>Automatically install and remove db.php dropin on activate / deactivate</li>\n<li>Check and report status of dropin</li>\n<li>Add i18n support</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n",
+        "faq": "\n<h4>Installation Instructions</h4>\n<p>\n<p>For detailed installation instructions, please read the <a href=\"https://codex.wordpress.org/Managing_Plugins#Installing_Plugins\" rel=\"nofollow ugc\">standard installation procedure for WordPress plugins</a>.</p>\n<ol>\n<li>Install and activate plugin, if the filesystem is writable the Secure DB Connection dropin will be installed for you automatically. If not proceed to step 2</li>\n<li>Symlink or copy the <code>db.php</code> file from the <code>/wp-content/plugins/secure-db-connection/lib/</code> directory to the <code>/wp-content/</code> directory.</li>\n<li>Set the relevant defines in your <code>wp-config.php</code> file.</li>\n</ol>\n<h4>Configuration Parameters</h4>\n<p>To adjust the configuration, define any of the following applicable constants in your <code>wp-config.php</code> file.</p>\n<ul>\n<li>\n<p><code>MYSQL_SSL_KEY</code> [default: not set]</p>\n<p>The path name to the key file. (RSA Key)</p>\n</li>\n<li>\n<p><code>MYSQL_SSL_CERT</code> [default: not set]</p>\n<p>The path name to the certificate file.</p>\n</li>\n<li>\n<p><code>MYSQL_SSL_CA</code> [default: not set]</p>\n<p>The path name to the certificate authority file in PEM format.</p>\n</li>\n<li>\n<p><code>MYSQL_SSL_CA_PATH</code> [default: not set]</p>\n<p>The pathname to a directory that contains trusted SSL CA certificates in PEM format.</p>\n</li>\n<li>\n<p><code>MYSQL_SSL_CIPHER</code> [default: not set]</p>\n<p>A list of allowable ciphers to use for SSL encryption. You can leave this blank if you want to just use the strongest available.</p>\n</li>\n</ul>\n<h4>Turning on SSL</h4>\n<p>First please note, only the <code>mysqli</code> (MySQL Improved) extension is supported this is the default extension used by WordPress however if you do not have the extension installed WordPress will fallback on the much older mysql extension which does not support secure connections.</p>\n<p>Depending on your database configuration you may not need to set all the available options. For example when connecting to RDS Amazon helpfully provides a certificate bundle so once that&#8217;s downloaded to the server all that&#8217;s need is to set the CA option:</p>\n<pre><code>define(\n  'MYSQL_SSL_CA',\n  '/path/to/rds-combined-ca-bundle.pem'\n);\n</code></pre>\n<p>Once SSL keys / certs have been configured you via the defines above define an WP core constant to pass a use SSL flag to the mysqli client also in your <code>wp-config.php</code> file.</p>\n<pre><code>define(\n  'MYSQL_CLIENT_FLAGS',\n  MYSQLI_CLIENT_SSL\n);\n</code></pre>\n<p>If you are using the MySQL Native Driver and MySQL 5.6 or later <code>mysqli_real_connect()</code> will verify the server SSL certificate before connecting. If the SSL cert installed on the MySQL server your are connecting to is not valid PHP will refuse to connect. A flag was added to disable server certificate validation. If your server has an invalid certificate turn on SSL and turn off validation like so:</p>\n<pre><code>define(\n  'MYSQL_CLIENT_FLAGS',\n   MYSQLI_CLIENT_SSL |\n   MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT\n);\n</code></pre>\n<h4>Example Config</h4>\n<p>Aside from setting the normal MySQL connection parameters the minimum configs to get SSL connections to the database will look something like this in <code>wp-config.php</code>:</p>\n<pre><code>define( 'MYSQL_SSL_CA', '/path/to/ca-bundle.pem' );\ndefine( 'MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL );\n</code></pre>\n</p>\n\n"
+    },
+    "short_description": "Sets SSL keys and certs for encrypted MySQL database connections.",
+    "description": "<p>Depending on the MySQL server setup the SSL certs used may not be in the trusted store, if that&#8217;s the case <code>mysqli_ssl_set()</code> needs to be called to set custom keys and certs before connect. This Plugin adds a custom DB class that allows these settings to be configured via custom constants.</p>\n<p>This plugin will also add a custom item on the &#8220;At a Glance&#8221; section of the Dashboard to show if the <code>$wpdb</code> connection is secure or not.</p>\n<p>Also find me on <a href=\"https://github.com/xyu/secure-db-connection\" rel=\"nofollow ugc\">GitHub</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/secure-db-connection.1.1.6.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/secure-db-connection/assets/screenshot-1.png?rev=1902198",
+            "caption": "An at a glance item is added showing the status of the MySQL connection when this plugin is activated. If the connection is encrypted the SSL version and cipher used will also be shown."
+        }
+    ],
+    "tags": {
+        "db": "db",
+        "encrypted": "encrypted",
+        "mysql": "mysql",
+        "secure": "secure",
+        "ssl": "ssl"
+    },
+    "stable_tag": "1.1.6",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/secure-db-connection.1.0.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/secure-db-connection.1.1.0.zip",
+        "1.1.1": "https://downloads.wordpress.org/plugin/secure-db-connection.1.1.1.zip",
+        "1.1.2": "https://downloads.wordpress.org/plugin/secure-db-connection.1.1.2.zip",
+        "1.1.3": "https://downloads.wordpress.org/plugin/secure-db-connection.1.1.3.zip",
+        "1.1.4": "https://downloads.wordpress.org/plugin/secure-db-connection.1.1.4.zip",
+        "1.1.5": "https://downloads.wordpress.org/plugin/secure-db-connection.1.1.5.zip",
+        "1.1.6": "https://downloads.wordpress.org/plugin/secure-db-connection.1.1.6.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/secure-db-connection.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://cash.me/$xyu",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/secure-db-connection/assets/icon-128x128.png?rev=1905585",
+        "2x": "https://ps.w.org/secure-db-connection/assets/icon-256x256.png?rev=1905585"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

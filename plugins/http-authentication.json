@@ -1,0 +1,110 @@
+{
+    "name": "HTTP Authentication",
+    "slug": "http-authentication",
+    "version": "4.6",
+    "author": "<a href=\"http://danieltwc.com/\">Daniel Westermann-Clark</a>",
+    "author_profile": "https://profiles.wordpress.org/dwc/",
+    "contributors": {
+        "dwc": {
+            "profile": "https://profiles.wordpress.org/dwc/",
+            "avatar": "https://secure.gravatar.com/avatar/5bd8d1c51235c3736212eeb92224777e?s=96&d=monsterid&r=g",
+            "display_name": "Daniel Westermann-Clark"
+        }
+    },
+    "requires": "3.1",
+    "tested": "6.5.5",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 1,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/http-authentication/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 700,
+    "downloaded": 43046,
+    "last_updated": "2024-04-24 1:06pm GMT",
+    "added": "2005-03-10",
+    "homepage": "http://danieltwc.com/2011/http-authentication-4-0/",
+    "sections": {
+        "description": "<p>The HTTP Authentication plugin allows you to use existing means of authenticating people to WordPress. This includes Apache&#8217;s basic HTTP authentication module, <a href=\"http://shibboleth.internet2.edu/\" rel=\"nofollow ugc\">Shibboleth</a>, and many others.</p>\n<p>To follow updates to this plugin, visit:</p>\n<p>https://danieltwc.com/</p>\n<p>For help with this version, visit:</p>\n<p>https://danieltwc.com/2011/http-authentication-4-0/</p>\n",
+        "installation": "<ol>\n<li>Login as an existing user, such as admin.</li>\n<li>Upload the <code>http-authentication</code> folder to your plugins folder, usually <code>wp-content/plugins</code>. (Or simply via the built-in installer.)</li>\n<li>Activate the plugin on the Plugins screen.</li>\n<li>Add one or more users to WordPress, specifying the external username for the &#8220;Username&#8221; field. Also be sure to set the role for each user.</li>\n<li>Logout.</li>\n<li>Protect <code>wp-login.php</code> and <code>wp-admin</code> using your external authentication (using, for example, <code>.htaccess</code> files).</li>\n<li>Try logging in as one of the users added in step 4.</li>\n</ol>\n",
+        "faq": "\n<dt id='what%20authentication%20mechanisms%20can%20i%20use%3F'>\nWhat authentication mechanisms can I use?\n</h4>\n<p>\n<p>Any authentication mechanism which sets the <code>REMOTE_USER</code> (or <code>REDIRECT_REMOTE_USER</code>, in the case of ScriptAlias&#8217;d PHP-as-CGI) environment variable can be used in conjunction with this plugin. Examples include Apache&#8217;s <code>mod_auth</code> and <code>mod_auth_ldap</code>.</p>\n</p>\n<dt id='how%20should%20i%20set%20up%20external%20authentication%3F'>\nHow should I set up external authentication?\n</h4>\n<p>\n<p>This depends on your hosting environment and your means of authentication.</p>\n<p>Many Apache installations allow configuration of authentication via <code>.htaccess</code> files, while some do not. Try adding the following to your blog&#8217;s top-level <code>.htaccess</code> file:</p>\n<p>    AuthName &#8220;WordPress&#8221;<br />\n    AuthType Basic<br />\n    AuthUserFile /path/to/passwords<br />\n    Require user dwc\n    </p>\n<p>(You may also want to protect your <code>xmlrpc.php</code> file, which uses separate authentication code.)</p>\n<p>Then, create another <code>.htaccess</code> file in your <code>wp-admin</code> directory with the following contents:<br />\n    AuthName &#8220;WordPress&#8221;<br />\n    AuthType Basic<br />\n    AuthUserFile /path/to/passwords<br />\n    Require user dwc</p>\n<p>In both files, be sure to set <code>/path/to/passwords</code> to the location of your password file. For more information on creating this file, see below.</p>\n</p>\n<dt id='where%20can%20i%20find%20more%20information%20on%20configuring%20apache%20authentication%3F'>\nWhere can I find more information on configuring Apache authentication?\n</h4>\n<p>\n<p>See Apache&#8217;s HOWTO: <a href=\"http://httpd.apache.org/docs/howto/auth.html\" rel=\"nofollow ugc\">Authentication, Authorization, and Access Control</a>.</p>\n</p>\n<dt id='how%20does%20this%20plugin%20authenticate%20users%3F'>\nHow does this plugin authenticate users?\n</h4>\n<p>\n<p>This plugin doesn&#8217;t actually authenticate users. It simply feeds WordPress the name of a user who has successfully authenticated through Apache.</p>\n<p>To determine the username, this plugin uses the <code>REMOTE_USER</code> or the <code>REDIRECT_REMOTE_USER</code> environment variable, which is set by many Apache authentication modules. If someone can find a way to spoof this value, this plugin is not guaranteed to be secure.</p>\n<p>By default, this plugin generates a random password each time you create a user or edit an existing user&#8217;s profile. However, since this plugin requires an external authentication mechanism, this password is not requested by WordPress. Generating a random password helps protect accounts, preventing one authorized user from pretending to be another.</p>\n</p>\n<dt id='if%20i%20disable%20this%20plugin%2C%20how%20will%20i%20login%3F'>\nIf I disable this plugin, how will I login?\n</h4>\n<p>\n<p>Because this plugin generates a random password when you create a new user or edit an existing user&#8217;s profile, you will most likely have to reset each user&#8217;s password if you disable this plugin. WordPress provides a link for requesting a new password on the login screen.</p>\n<p>Also, you should leave the <code>admin</code> user as a fallback, i.e. create a new account to use with this plugin. As long as you don&#8217;t edit the <code>admin</code> profile, WordPress will store the password set when you installed WordPress.</p>\n<p>In the worst case scenario, you may have to use phpMyAdmin or the MySQL command line to <a href=\"https://codex.wordpress.org/Resetting_Your_Password\" rel=\"nofollow ugc\">reset a user&#8217;s password</a>.</p>\n</p>\n<dt id='can%20i%20configure%20the%20plugin%20to%20support%20standard%20wordpress%20logins%3F'>\nCan I configure the plugin to support standard WordPress logins?\n</h4>\n<p>\n<p>Yes. You can authenticate some users via an external, single sign-on system and other users via the built-in username and password combination. (Note: When mixed authentication is in use, this plugin does not scramble passwords as described above.)</p>\n<p>When you configure your external authentication system, make sure that you allow users in even if they have not authenticated externally. Using <a href=\"http://shibboleth.internet2.edu/\" rel=\"nofollow ugc\">Shibboleth</a> as an example:<br />\n    AuthName &#8220;Shibboleth&#8221;<br />\n    AuthType Shibboleth<br />\n    Require Shibboleth</p>\n<p>This enables Shibboleth authentication in <a href=\"https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPProtectContent\" rel=\"nofollow ugc\">&#8220;passive&#8221; mode</a>.</p>\n<p>Then, in WordPress:</p>\n<ol>\n<li>Set the plugin to allow WordPress authentication.</li>\n<li>Configure the login URI to match your Shibboleth system. For example, if your blog is hosted at <code>http://example.com/</code>, then your login URI should be <code>http://example.com/Shibboleth.sso/Login?target=%redirect_encoded%</code>.</li>\n<li>Configure the logout URI to match your Shibboleth system. Following the above example, your logout URI would be <code>http://example.com/Shibboleth.sso/Logout?return=%redirect_encoded%</code>.</li>\n</ol>\n<p>After saving the options, authentication will work as follows:</p>\n<ul>\n<li>If a user is already authenticated via Shibboleth, and he or she exists in the WordPress database, this plugin will log them in automatically.</li>\n<li>If a user is not authenticated via Shibboleth, the plugin will present the standard WordPress login form with an additional link to login via Shibboleth.</li>\n</ul>\n<p>Other authentication systems (particularly those without a login or logout URI) will need to be configured differently.</p>\n</p>\n<dt id='does%20this%20plugin%20support%20multisite%20%28wordpress%20mu%29%20setups%3F'>\nDoes this plugin support multisite (WordPress MU) setups?\n</h4>\n<p>\n<p>Yes, you can enable this plugin across a network or on individual sites. However, options will need to be set on individual sites.</p>\n<p>If you have suggestions on how to improve network support, please submit a comment.</p>\n</p>\n<dt id='how%20do%20you%20handle%20staged%20deployments%20%28dev%2C%20test%2C%20prod%29%20with%20the%20plugin%3F'>\nHow do you handle staged deployments (dev, test, prod) with the plugin?\n</h4>\n<p>\n<p>If you have a WordPress site with multiple environments (e.g. <code>dev.example.com</code>, <code>test.example.com</code>, and <code>example.com</code>) you can use additional variables in the login and logout URIs:</p>\n<ul>\n<li><code>%host%</code> &#8211; The current value of <code>$_SERVER['HTTP_HOST']</code></li>\n<li><code>%base%</code> &#8211; The base domain URL (everything before the path)</li>\n<li><code>%site%</code> &#8211; The WordPress home URI</li>\n<li><code>%redirect%</code> &#8211; The return URI provided by WordPress</li>\n</ul>\n<p>You can also use <code>%host_encoded%</code>, <code>%site_encoded%</code>, and <code>%redirect_encoded%</code> for URL-encoded values.</p>\n<p>For example, your login URI could be:</p>\n<pre><code>https://%host%/Shibboleth.sso/Login?target=%redirect_encoded%\n</code></pre>\n<p>This would be modified for each environment as appropriate.</p>\n</p>\n\n",
+        "changelog": "<h4>4.6</h4>\n<ul>\n<li>Add PHP 7/8 compatibility by updating constructor to use __construct</li>\n</ul>\n<h4>4.5</h4>\n<ul>\n<li>Avoid some PHP notices due to saving options (William Schneider)</li>\n<li>Fix for redirect loop on some multisite setups (#1497)</li>\n<li>Add option to support additional $_SERVER variables in authentication (#1477)</li>\n<li>Remove use of call-time pass by reference to avoid warnings on PHP 5.3 and newer</li>\n<li>Fix deprecation notice in WordPress 3.3 on <code>get_userdatabylogin</code> (#1513)</li>\n<li>Fix deprecation notice in WordPress 3.1 and later for including wp-includes/registration.php</li>\n<li>Associate options page label tags with their input fields (#1514)</li>\n</ul>\n<h4>4.4</h4>\n<ul>\n<li>Update CSS to correctly center login button on WordPress 3.3</li>\n</ul>\n<h4>4.3</h4>\n<ul>\n<li>Update plugin URIs</li>\n</ul>\n<h4>4.2</h4>\n<ul>\n<li>Declare support for WordPress 3.2.1</li>\n<li>Extend variable replacement for staged deployments</li>\n<li>Wrap redirect parameter on login to force us through <code>wp-login.php</code> so we can check the external authentication (thanks to Josh Larios)</li>\n</ul>\n<h4>4.1</h4>\n<ul>\n<li>Declare support for WordPress 3.2</li>\n<li>Update screenshots for WordPress 3.2</li>\n</ul>\n<h4>4.0</h4>\n<ul>\n<li>Restore (and improve) support for falling back to WordPress password authentication</li>\n<li>Remove migration of old options format (we&#8217;ll assume enough people have upgraded)</li>\n</ul>\n<h4>3.3</h4>\n<ul>\n<li>Update options handling to better support WordPress MU</li>\n</ul>\n<h4>3.2</h4>\n<ul>\n<li>Restore password generation for adding and editing users</li>\n</ul>\n<h4>3.1</h4>\n<ul>\n<li>Bump version number to make 3.0.1 the latest version on wordpress.org</li>\n</ul>\n<h4>3.0.1</h4>\n<ul>\n<li>Handle authentication cookies more gracefully</li>\n</ul>\n<h4>3.0</h4>\n<ul>\n<li>Add support for WordPress 3.0</li>\n<li>Update WordPress MU support for WordPress 3.0</li>\n</ul>\n<h4>2.4</h4>\n<ul>\n<li>Add support for WordPress MU (Elliot Kendall)</li>\n<li>Allow for mixed HTTP and built-in authentication by falling back to wp-login.php (Elliot Kendall)</li>\n</ul>\n"
+    },
+    "short_description": "Use an external authentication source in WordPress.",
+    "description": "<p>The HTTP Authentication plugin allows you to use existing means of authenticating people to WordPress. This includes Apache&#8217;s basic HTTP authentication module, <a href=\"http://shibboleth.internet2.edu/\" rel=\"nofollow ugc\">Shibboleth</a>, and many others.</p>\n<p>To follow updates to this plugin, visit:</p>\n<p>https://danieltwc.com/</p>\n<p>For help with this version, visit:</p>\n<p>https://danieltwc.com/2011/http-authentication-4-0/</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/http-authentication.4.6.zip",
+    "upgrade_notice": {
+        "4.5": "<p>Avoid some PHP errors and warnings; add support for choosing $_SERVER variables</p>",
+        "4.4": "<p>Minor CSS fix for WordPress 3.3</p>",
+        "4.3": "<p>No code changes; updating plugin URIs</p>",
+        "4.2": "<p>Extends support for variable replacement</p>",
+        "4.1": "<p>Minor update for WordPress 3.2</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/http-authentication/trunk/screenshot-1.png?rev=3076472",
+            "caption": "Plugin options, allowing WordPress authentication"
+        },
+        {
+            "src": "https://ps.w.org/http-authentication/trunk/screenshot-2.png?rev=3076472",
+            "caption": "WordPress login form with external authentication link"
+        }
+    ],
+    "tags": {
+        "authentication": "authentication"
+    },
+    "stable_tag": "4.6",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/http-authentication.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/http-authentication.1.1.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/http-authentication.1.2.zip",
+        "1.3": "https://downloads.wordpress.org/plugin/http-authentication.1.3.zip",
+        "1.4": "https://downloads.wordpress.org/plugin/http-authentication.1.4.zip",
+        "1.5": "https://downloads.wordpress.org/plugin/http-authentication.1.5.zip",
+        "1.6": "https://downloads.wordpress.org/plugin/http-authentication.1.6.zip",
+        "1.7": "https://downloads.wordpress.org/plugin/http-authentication.1.7.zip",
+        "1.8": "https://downloads.wordpress.org/plugin/http-authentication.1.8.zip",
+        "1.8.1": "https://downloads.wordpress.org/plugin/http-authentication.1.8.1.zip",
+        "2.0": "https://downloads.wordpress.org/plugin/http-authentication.2.0.zip",
+        "2.1": "https://downloads.wordpress.org/plugin/http-authentication.2.1.zip",
+        "2.2": "https://downloads.wordpress.org/plugin/http-authentication.2.2.zip",
+        "2.3": "https://downloads.wordpress.org/plugin/http-authentication.2.3.zip",
+        "2.4": "https://downloads.wordpress.org/plugin/http-authentication.2.4.zip",
+        "3.0": "https://downloads.wordpress.org/plugin/http-authentication.3.0.zip",
+        "3.0.1": "https://downloads.wordpress.org/plugin/http-authentication.3.0.1.zip",
+        "3.1": "https://downloads.wordpress.org/plugin/http-authentication.3.1.zip",
+        "3.2": "https://downloads.wordpress.org/plugin/http-authentication.3.2.zip",
+        "4.0": "https://downloads.wordpress.org/plugin/http-authentication.4.0.zip",
+        "4.1": "https://downloads.wordpress.org/plugin/http-authentication.4.1.zip",
+        "4.2": "https://downloads.wordpress.org/plugin/http-authentication.4.2.zip",
+        "4.3": "https://downloads.wordpress.org/plugin/http-authentication.4.3.zip",
+        "4.4": "https://downloads.wordpress.org/plugin/http-authentication.4.4.zip",
+        "4.5": "https://downloads.wordpress.org/plugin/http-authentication.4.5.zip",
+        "4.6": "https://downloads.wordpress.org/plugin/http-authentication.4.6.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/http-authentication.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/http-authentication.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

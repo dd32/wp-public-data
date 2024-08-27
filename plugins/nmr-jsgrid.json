@@ -1,0 +1,82 @@
+{
+    "name": "NMR jsGrid",
+    "slug": "nmr-jsgrid",
+    "version": "1.0.0",
+    "author": "Mircea N.",
+    "author_profile": "https://profiles.wordpress.org/mirceatm/",
+    "contributors": {
+        "mirceatm": {
+            "profile": "https://profiles.wordpress.org/mirceatm/",
+            "avatar": "https://secure.gravatar.com/avatar/9622767608e6a79006cdd3af22817791?s=96&d=monsterid&r=g",
+            "display_name": "mirceatm"
+        }
+    },
+    "requires": "5.2",
+    "tested": "6.1.7",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/nmr-jsgrid/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 1626,
+    "last_updated": "2023-01-26 2:46pm GMT",
+    "added": "2023-01-26",
+    "homepage": "https://namir.ro/jsgrid/",
+    "sections": {
+        "description": "<p>Add jsGrid http://js-grid.com tables to your website using the shortcode: <code>[nmr_jsgrid id='your-grid-name']</code>.</p>\n<p>Data grids or tables have configurable number of columns, filters, edit, update and delete functionalities.<br />\nConfiguration of grids is performed on the admin back-end.<br />\nTables can be paginated and need back-end pagination. Ajax calls help to avoid entire page reload.</p>\n<p>Example of a toy back-end pagination:</p>\n<pre><code>add_action('wp_ajax_nopriv_sample_pagination', function () {\n    // assume HTTP GET for this example\n    $data = $_GET;\n    global $wpdb;\n    $sql_base = $wpdb-&gt;prepare(\"SELECT umeta_id, meta_key FROM {$wpdb-&gt;prefix}usermeta\");\n    $sql = $wpdb-&gt;prepare(\"SELECT COUNT(*) FROM ({$sql_base}) t\");\n    $itemsCount = $wpdb-&gt;get_var($sql);\n    $pageIndex = intval($data['pageIndex']);\n    if ($pageIndex &lt; 1) {\n        $pageIndex = 1;\n    }\n    $pageSize = intval($data['pageSize']);\n    if ($pageSize &lt; 1) {\n        $pageSize = 20;\n    }\n    $endIndex = $pageIndex * $pageSize;\n    $startIndex = $endIndex - $pageSize;\n    $limit = \"LIMIT {$pageSize} OFFSET {$startIndex}\";\n    $sql = \"SELECT t.* FROM ({$sql_base}) t {$limit}\";\n    wp_send_json(json_encode(['data' =&gt; $wpdb-&gt;get_results($sql, ARRAY_A), 'itemsCount' =&gt; $itemsCount]));\n});\n</code></pre>\n<p>Having prepared the back-end to provide paginated data, the front-end data-grid cand be built in the Admin-&gt;NMR jsGrids interface.<br />\nAdd a row and set the column values accordingly.<br />\nPlease consult <a href=\"http://js-grid.com/docs/\" rel=\"nofollow ugc\">the documentation</a> for more details:</p>\n<ul>\n<li><code>Name</code> will be used as DOM id for the data-grid</li>\n<li><code>URL</code> back-end endpoint, usually https://your-website.com/wp-admin/admin-ajax.php</li>\n<li><code>Action</code> should be sincronized with back-end. In our example <code>Action=sample_pagination</code> taken from: <code>wp_ajax_nopriv_sample_pagination</code></li>\n<li><code>Fields</code> JSON array of columns as text. In our example could be:<br />\n[{&#8220;name&#8221;: &#8220;umeta_id&#8221;,&#8221;title&#8221;: &#8220;Id&#8221;,&#8221;type&#8221;: &#8220;number&#8221;},{&#8220;name&#8221;: &#8220;meta_key&#8221;,&#8221;title&#8221;: &#8220;Key&#8221;,&#8221;type&#8221;: &#8220;text&#8221;}]<br />\nFor a complete list of possible columns check <a href=\"http://js-grid.com/docs/#grid-fields\" rel=\"nofollow ugc\">the documentation</a></li>\n<li><code>Height</code> could be <code>auto</code>, a percent like <code>80%</code>, a number: <code>400</code></li>\n<li><code>Width</code> same as above</li>\n<li><code>Paging</code>, <code>Editing</code>, <code>Sorting</code>, <code>Autoload</code>, <code>Deleting</code>, <code>Filtering</code>, <code>Inserting</code>, <code>Page size</code> are self explanatory: allow pagination, editing, sorting, auto-loading, deleting, filtering and inserting of data. Page size determines the number of rows in one page.</li>\n<li><code>Pager format</code> can have a value of: <em>Rows: {itemCount} &#8211; Pages: {first} {prev} {pages} {next} {last} &nbsp;&nbsp; {pageIndex} of {pageCount}</em></li>\n<li><code>Page buttons</code> 5 is a good choice</li>\n</ul>\n<p>Plugin will enqueue <code>nmr-jsgrid.js</code> javascript file.<br />\nTo use the plugin on the Admin module one should add the Admin slug/hook in the filter: <code>nmr_jsgrid_admin_enqueue_scripts</code><br />\nEx:</p>\n<pre><code>add_filter('nmr_jsgrid_admin_enqueue_scripts', function ($admin_php_files) {\n    // NMR jsGrid will be available in Admin-&gt;My page-&gt;My subpage\n    $admin_php_files[] = 'admin-my_page_admin-my_subpage';\n    return $admin_php_files;\n});\n</code></pre>\n<p>If you enjoy using <em>NMR JSGrid</em> and find it useful, please consider <a href=\"https://paypal.me/mirceatm\" rel=\"nofollow ugc\"><strong>making a donation</strong></a>. Your donation will help encourage and support the plugin&#8217;s continued development and better user support.</p>\n<h4>Privacy Notices</h4>\n",
+        "installation": "<ol>\n<li>Upload the entire <code>nmr-jsgrid</code> folder to the <code>/wp-content/plugins/</code> directory.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n</ol>\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial version.</li>\n</ul>\n"
+    },
+    "short_description": "Add jsGrid http://js-grid.com tables to your website using the shortcode: [nmr_jsgrid id=&#039;your-grid-name&#039;].",
+    "description": "<p>Add jsGrid http://js-grid.com tables to your website using the shortcode: <code>[nmr_jsgrid id='your-grid-name']</code>.</p>\n<p>Data grids or tables have configurable number of columns, filters, edit, update and delete functionalities.<br />\nConfiguration of grids is performed on the admin back-end.<br />\nTables can be paginated and need back-end pagination. Ajax calls help to avoid entire page reload.</p>\n<p>Example of a toy back-end pagination:</p>\n<pre><code>add_action('wp_ajax_nopriv_sample_pagination', function () {\n    // assume HTTP GET for this example\n    $data = $_GET;\n    global $wpdb;\n    $sql_base = $wpdb-&gt;prepare(\"SELECT umeta_id, meta_key FROM {$wpdb-&gt;prefix}usermeta\");\n    $sql = $wpdb-&gt;prepare(\"SELECT COUNT(*) FROM ({$sql_base}) t\");\n    $itemsCount = $wpdb-&gt;get_var($sql);\n    $pageIndex = intval($data['pageIndex']);\n    if ($pageIndex &lt; 1) {\n        $pageIndex = 1;\n    }\n    $pageSize = intval($data['pageSize']);\n    if ($pageSize &lt; 1) {\n        $pageSize = 20;\n    }\n    $endIndex = $pageIndex * $pageSize;\n    $startIndex = $endIndex - $pageSize;\n    $limit = \"LIMIT {$pageSize} OFFSET {$startIndex}\";\n    $sql = \"SELECT t.* FROM ({$sql_base}) t {$limit}\";\n    wp_send_json(json_encode(['data' =&gt; $wpdb-&gt;get_results($sql, ARRAY_A), 'itemsCount' =&gt; $itemsCount]));\n});\n</code></pre>\n<p>Having prepared the back-end to provide paginated data, the front-end data-grid cand be built in the Admin-&gt;NMR jsGrids interface.<br />\nAdd a row and set the column values accordingly.<br />\nPlease consult <a href=\"http://js-grid.com/docs/\" rel=\"nofollow ugc\">the documentation</a> for more details:</p>\n<ul>\n<li><code>Name</code> will be used as DOM id for the data-grid</li>\n<li><code>URL</code> back-end endpoint, usually https://your-website.com/wp-admin/admin-ajax.php</li>\n<li><code>Action</code> should be sincronized with back-end. In our example <code>Action=sample_pagination</code> taken from: <code>wp_ajax_nopriv_sample_pagination</code></li>\n<li><code>Fields</code> JSON array of columns as text. In our example could be:<br />\n[{&#8220;name&#8221;: &#8220;umeta_id&#8221;,&#8221;title&#8221;: &#8220;Id&#8221;,&#8221;type&#8221;: &#8220;number&#8221;},{&#8220;name&#8221;: &#8220;meta_key&#8221;,&#8221;title&#8221;: &#8220;Key&#8221;,&#8221;type&#8221;: &#8220;text&#8221;}]<br />\nFor a complete list of possible columns check <a href=\"http://js-grid.com/docs/#grid-fields\" rel=\"nofollow ugc\">the documentation</a></li>\n<li><code>Height</code> could be <code>auto</code>, a percent like <code>80%</code>, a number: <code>400</code></li>\n<li><code>Width</code> same as above</li>\n<li><code>Paging</code>, <code>Editing</code>, <code>Sorting</code>, <code>Autoload</code>, <code>Deleting</code>, <code>Filtering</code>, <code>Inserting</code>, <code>Page size</code> are self explanatory: allow pagination, editing, sorting, auto-loading, deleting, filtering and inserting of data. Page size determines the number of rows in one page.</li>\n<li><code>Pager format</code> can have a value of: <em>Rows: {itemCount} &#8211; Pages: {first} {prev} {pages} {next} {last} &nbsp;&nbsp; {pageIndex} of {pageCount}</em></li>\n<li><code>Page buttons</code> 5 is a good choice</li>\n</ul>\n<p>Plugin will enqueue <code>nmr-jsgrid.js</code> javascript file.<br />\nTo use the plugin on the Admin module one should add the Admin slug/hook in the filter: <code>nmr_jsgrid_admin_enqueue_scripts</code><br />\nEx:</p>\n<pre><code>add_filter('nmr_jsgrid_admin_enqueue_scripts', function ($admin_php_files) {\n    // NMR jsGrid will be available in Admin-&gt;My page-&gt;My subpage\n    $admin_php_files[] = 'admin-my_page_admin-my_subpage';\n    return $admin_php_files;\n});\n</code></pre>\n<p>If you enjoy using <em>NMR JSGrid</em> and find it useful, please consider <a href=\"https://paypal.me/mirceatm\" rel=\"nofollow ugc\"><strong>making a donation</strong></a>. Your donation will help encourage and support the plugin&#8217;s continued development and better user support.</p>\n<h4>Privacy Notices</h4>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/nmr-jsgrid.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/nmr-jsgrid/assets/screenshot-1.jpg?rev=2854979",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/nmr-jsgrid/assets/screenshot-2.jpg?rev=2854979",
+            "caption": ""
+        }
+    ],
+    "tags": {
+        "jsgrid-table-jquery-javascript-ajax-pagination": "JSGrid table jquery javascript ajax pagination"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/nmr-jsgrid.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/nmr-jsgrid.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://paypal.me/mirceatm",
+    "banners": {
+        "low": "https://ps.w.org/nmr-jsgrid/assets/banner-772x250.jpg?rev=2854988",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/nmr-jsgrid/assets/icon-128x128.jpg?rev=2854988",
+        "2x": "https://ps.w.org/nmr-jsgrid/assets/icon-256x256.jpg?rev=2854988"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

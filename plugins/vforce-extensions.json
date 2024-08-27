@@ -1,0 +1,74 @@
+{
+    "name": "VForce Extensions",
+    "slug": "vforce-extensions",
+    "version": "1.0.3",
+    "author": "<a href=\"https://virtualinc.com\">Virtual Inc</a>",
+    "author_profile": "https://profiles.wordpress.org/virtualinc/",
+    "contributors": {
+        "virtualinc": {
+            "profile": "https://profiles.wordpress.org/virtualinc/",
+            "avatar": "https://secure.gravatar.com/avatar/4a3a544742434be69078725bb8f8ced8?s=96&d=monsterid&r=g",
+            "display_name": "Virtual"
+        }
+    },
+    "requires": "3.0.1",
+    "tested": "5.3.18",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/vforce-extensions/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 560,
+    "last_updated": "2020-03-25 10:23pm GMT",
+    "added": "2020-03-03",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Easily manage Vforce integrations through WordPress.  Currently supports voting forms and web to case forms through Form Assembly.  As well as adding products to a cart through Formidable.</p>\n<h3>Included Functions</h3>\n<h3>js/init-global.js</h3>\n<p>This file doesn&#8217;t actually do anything.  It only exists to be passed into the<br />\n    <code>php<br />\nwp_localize_script()</code><br />\nfunction along with an array of variables that we would like to be available to every page.</p>\n<h3>js/formidable/add-to-cart.js</h3>\n<p>This script allows you to create a formidable form with woocommerce products in a dropdown or radio buttons.  Once the user chooses a product and clicks next on the form, the product id is saved in their browser.  When they complete the form, an Ajax request is made to add the time to their cart.</p>\n<h3>js/form-assembly/hide-ballot.js</h3>\n<p>This script will show/hide a form based on the value of an input with title of Ballot Cast.  If that input is found on the page and its value is equal to Cast or cast, then the user will see a custom message instead of the voting form.  The message can be customized by going to the plugin settings (Vforce Extensions) and changing the Form Assembly Ballot Message textarea.  A default message is included.</p>\n<p>In order for this to work properly, please make sure to wrap the form in a div with the class of ballot-container.</p>\n<p>E.g.</p>\n<pre><code>`html\n</code></pre>\n<p>[formassembly formid=50 server=https://virtual.tfaforms.net]</p>\n<pre><code>`\n</code></pre>\n<p>This way the form will be hidden by default and will either appear or show the message when page loads.</p>\n<h3>js/form-assembly/web-to-case.js</h3>\n<p>Automatically adds the association id to a Form Assembly contact form embedded on any page.  The association id can be set in the plugin settings.</p>\n<h3>Global Variables</h3>\n<p>Every page should have access to an object called vforce_helper.  This object contains all custom variables from the settings pane.</p>\n<p>e.g.</p>\n<pre><code>`javascript\n</code></pre>\n<p>vforce_helper<br />\n{assocId: &#8220;&#8221;, faProductSelector: &#8220;item_meta[6]&#8221;, ballotCastMessage: &#8220;&#8221;}<br />\n    `</p>\n<p>This is accomplished by passing key/value pairs to the following function in the plugins functions.php file</p>\n<pre><code>`php\n</code></pre>\n<p>wp_localize_script( &#8216;init-global&#8217;, &#8216;vforce_helper&#8217;, array(<br />\n    &#8216;assocId&#8217; =&gt; get_option(&#8216;association_id&#8217;),<br />\n    &#8216;faProductSelector&#8217; =&gt; get_option(&#8216;form_assembly_product_selector&#8217;),<br />\n    &#8216;ballotCastMessage&#8217; =&gt; get_option(&#8216;form_assembly_ballot_message&#8217;)<br />\n)<br />\n    `</p>\n",
+        "changelog": "<h3>1.0.3</h3>\n<ul>\n<li>Cleaned up some styling.  Removed debug statements.</li>\n<li>Fixed issue with WPEngine quick links in admin bar not showing up.  </li>\n<li>Added VForce Settings quick link to admin bar.</li>\n<li>Added Association ID to VForce settings quick links.</li>\n</ul>\n<h3>1.0.2</h3>\n<ul>\n<li>Updated Formassembly integration.  Added the ability to customize the message show at the top of the page when a user is reviewing their form submission.  This can currently be accessed by checking the &#8220;Show Formassembly Settings&#8221; checkbox in the right sidebar while editing a post or page.  Note* currently you will need to reload the page to see the new Formassembly Form Settings section.  It will appear below your page/post.</li>\n<li>Fixed bug with Formidable forms not submitting.</li>\n</ul>\n<h3>1.0.1</h3>\n<ul>\n<li>Added Formassembly integration.  Now you can simply insert the <code>[vforce_form formid='id']</code> shortcode into a page or post.  If you have issues with the form displaying, make sure that the id is in single qoutes.  The server url defaults to https://virtual.tfaforms.net.  You can change this under VForce Settings-&gt;Formassembly Settings.  This plugin will not override or interfere with the official Formassembly plugin.</li>\n</ul>\n<h3>1.0</h3>\n<ul>\n<li>Removed Plugin update checker</li>\n<li>Submitted to WordPress Plugins Repo</li>\n<li>Added ACF dependency to allow for adding an Association ID override metabox to all pages/posts.</li>\n<li>All pages/posts now have an Association ID override box.  By default this box is empty.  There is a hook that runs just before each page is loaded.  This function is in the main plugin file.  It checks to see if a value has been set in the override box.  If so, it will use the value in the override meta box as the global association id, if not it will use the default site wide Association ID/</li>\n</ul>\n<p>// This function runs just before the requested page is loaded<br />\nadd_action(&#8216;template_redirect&#8217;, &#8216;vforce_hook_before_page_load&#8217;);<br />\nfunction vforce_hook_before_page_load(){<br />\n  $vforce_helper = get_option(&#8216;vforce_helper&#8217;);</p>\n<pre><code>wp_enqueue_script( 'init-global', plugin_dir_url( __FILE__ ) . 'inc/js/init-global.js', array('jquery'), '1.0', true );\n/* \n Setting the association ID variable\n Check to see if a value has been entered into the Association Id override metabox of the page.\n If so, inject that into our init-global.js as the associationId variable.  If it has not been set,\n we then use the value entered into the plugin settings.\n The code for the metabox is in functions.php\n*/\n wp_localize_script( 'init-global', 'associationId', (get_post_meta( get_the_ID(), 'vforce-metabox-settings-association_id', true) != \"\") ? get_post_meta( get_the_ID(), 'vforce-metabox-settings-association_id', true) : $vforce_helper['variable']['association-id']); \n</code></pre>\n<p>}</p>\n<ul>\n<li>vforce_helper is now a multidimensional array.</li>\n</ul>\n<p>vforce_helper.variable<br />\n{association-id: &#8220;a00f400000VQ8E6AAL&#8221;}<br />\nvforce_helper.script<br />\n{formidable_add-to-cart: &#8220;true&#8221;, fa_web-to-case: &#8220;true&#8221;}</p>\n<h4>0.6</h4>\n<p>*Added ability to update from Github releases</p>\n<h4>0.5</h4>\n<ul>\n<li>Initial Release</li>\n<li>Includes basic functionality for web to case, handling voting ballots and adding items to cart through formidable.</li>\n<li>Basic readme included.</li>\n</ul>\n"
+    },
+    "short_description": "Vforce helper tool.  To be used by any organization on the Vforce platform.",
+    "description": "<p>Easily manage Vforce integrations through WordPress.  Currently supports voting forms and web to case forms through Form Assembly.  As well as adding products to a cart through Formidable.</p>\n<h3>Included Functions</h3>\n<h3>js/init-global.js</h3>\n<p>This file doesn&#8217;t actually do anything.  It only exists to be passed into the<br />\n    <code>php<br />\nwp_localize_script()</code><br />\nfunction along with an array of variables that we would like to be available to every page.</p>\n<h3>js/formidable/add-to-cart.js</h3>\n<p>This script allows you to create a formidable form with woocommerce products in a dropdown or radio buttons.  Once the user chooses a product and clicks next on the form, the product id is saved in their browser.  When they complete the form, an Ajax request is made to add the time to their cart.</p>\n<h3>js/form-assembly/hide-ballot.js</h3>\n<p>This script will show/hide a form based on the value of an input with title of Ballot Cast.  If that input is found on the page and its value is equal to Cast or cast, then the user will see a custom message instead of the voting form.  The message can be customized by going to the plugin settings (Vforce Extensions) and changing the Form Assembly Ballot Message textarea.  A default message is included.</p>\n<p>In order for this to work properly, please make sure to wrap the form in a div with the class of ballot-container.</p>\n<p>E.g.</p>\n<pre><code>`html\n</code></pre>\n<p>[formassembly formid=50 server=https://virtual.tfaforms.net]</p>\n<pre><code>`\n</code></pre>\n<p>This way the form will be hidden by default and will either appear or show the message when page loads.</p>\n<h3>js/form-assembly/web-to-case.js</h3>\n<p>Automatically adds the association id to a Form Assembly contact form embedded on any page.  The association id can be set in the plugin settings.</p>\n<h3>Global Variables</h3>\n<p>Every page should have access to an object called vforce_helper.  This object contains all custom variables from the settings pane.</p>\n<p>e.g.</p>\n<pre><code>`javascript\n</code></pre>\n<p>vforce_helper<br />\n{assocId: &#8220;&#8221;, faProductSelector: &#8220;item_meta[6]&#8221;, ballotCastMessage: &#8220;&#8221;}<br />\n    `</p>\n<p>This is accomplished by passing key/value pairs to the following function in the plugins functions.php file</p>\n<pre><code>`php\n</code></pre>\n<p>wp_localize_script( &#8216;init-global&#8217;, &#8216;vforce_helper&#8217;, array(<br />\n    &#8216;assocId&#8217; =&gt; get_option(&#8216;association_id&#8217;),<br />\n    &#8216;faProductSelector&#8217; =&gt; get_option(&#8216;form_assembly_product_selector&#8217;),<br />\n    &#8216;ballotCastMessage&#8217; =&gt; get_option(&#8216;form_assembly_ballot_message&#8217;)<br />\n)<br />\n    `</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/vforce-extensions.1.0.3.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "formassembly": "formassembly",
+        "salesforce": "salesforce",
+        "vforce": "vforce",
+        "virtual": "virtual"
+    },
+    "stable_tag": "1.0.3",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/vforce-extensions.1.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/vforce-extensions.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/vforce-extensions.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/vforce-extensions.1.0.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/vforce-extensions.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://virtualinc.com",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/vforce-extensions.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

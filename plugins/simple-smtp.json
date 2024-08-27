@@ -1,0 +1,137 @@
+{
+    "name": "WordPress Simple SMTP",
+    "slug": "simple-smtp",
+    "version": "1.3.3",
+    "author": "<a href=\"https://github.com/soup-bowl/wp-simple-smtp\">soup-bowl & Contributors</a>",
+    "author_profile": "https://profiles.wordpress.org/soupbowl/",
+    "contributors": {
+        "soupbowl": {
+            "profile": "https://profiles.wordpress.org/soupbowl/",
+            "avatar": "https://secure.gravatar.com/avatar/691dbf0d735936b6d5b7a73ef2af0f80?s=96&d=monsterid&r=g",
+            "display_name": "Casey"
+        }
+    },
+    "requires": "5.0",
+    "tested": "6.2.6",
+    "requires_php": "7.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 10,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 10,
+    "support_url": "https://wordpress.org/support/plugin/simple-smtp/",
+    "support_threads": 1,
+    "support_threads_resolved": 0,
+    "active_installs": 1000,
+    "downloaded": 17252,
+    "last_updated": "2023-10-12 9:02pm GMT",
+    "added": "2020-03-17",
+    "homepage": "https://github.com/soup-bowl/wp-simple-smtp",
+    "sections": {
+        "description": "<p>Adds a simple, no-fuss SMTP settings to your WordPress installation that lets you define custom settings, which is especially useful for hosts with no control over the php <code>mail</code> functionality.</p>\n<p>If logging is enabled, a new segment in the settings panel will show up with a 30-day overview of recent emails, and will automatically prune older logs. Please see the FAQ if you want a more permanent solution.</p>\n<p>For more information, please see the <a href=\"https://github.com/soup-bowl/wp-simple-smtp/wiki\" rel=\"nofollow ugc\">project wiki on GitHub</a>.</p>\n<h3>Environment and constant overriding (optional)</h3>\n<p>This plugin will prefer environmental and constant-stored values over the plugin-saved equivalent settings, making it easier to use this plugin via deployment.</p>\n<p>These can be either stored in your systems env setup, or in wp-config.php as <code>define( 'SEE_BELOW', 'your_value_here' );</code>.</p>\n<h3>Accepted Parameters</h3>\n<ul>\n<li><code>SMTP_HOST</code> (string) Mail server hostname.</li>\n<li><code>SMTP_PORT</code> (integer) Port address (usually 25, 465 or 587).</li>\n<li><code>SMTP_AUTH</code> (integer, 1 or 0) Pass below credentials to your mail server.</li>\n<li><code>SMTP_USER</code> (string) The mail username for this account.</li>\n<li><code>SMTP_PASS</code> (string) The password for the mailer account.</li>\n<li><code>SMTP_FROM</code> (string) Enforce all emails come from this email address.</li>\n<li><code>SMTP_FROMNAME</code> (string) Enforce all emails to have a certain email name.</li>\n<li><code>SMTP_SEC</code> (string) Use a particular email security method (accepts &#8216;def&#8217; (default), &#8216;ssl&#8217;, &#8216;tls&#8217; and &#8216;off&#8217;).</li>\n<li><code>SMTP_NOVERIFYSSL</code> (boolean) Disable validation of the SMTP server certificate (not recommended).</li>\n<li><code>SMTP_LOG</code> (boolean) Controls the logging capability and visibility.</li>\n<li><code>SMTP_DISABLE</code> (boolean) Disables the mailer. They will still be logged if enabled, but won&#8217;t send out.</li>\n</ul>\n<p>It is recommended to store at least <code>SMTP_PASS</code> in your wp-config.php file (with the correct file permissions set). If the openssl extension is available, the plugin will attempt to encrypt the password in the database.</p>\n",
+        "faq": "\n<dt id='how%20do%20i%20fix%20smtp%20errors%3F'>\nHow do I fix SMTP errors?\n</h4>\n<p>\n<p>This plugin works by instructing <strong>PHPMailer</strong> &#8211; the mail library WordPress have chosen &#8211; to use SMTP mode, and adds in the settings you choose. 9 times out of 10, the error messages you receive are configuration errors. PHPMailer provides a good guide to help you figure out these problems.</p>\n<p><a href=\"https://github.com/PHPMailer/PHPMailer/wiki/Troubleshooting\" rel=\"nofollow ugc\">Troubleshooting &#8211; PHPMailer</a>.</p>\n<p>The one instance where an SMTP error can be caused by this plugin is if the SMTP password is stored in the database when the <strong>secret keys</strong> have been regenerated. You will need to re-save the password to refresh the encryption keys.</p>\n<p>You can always get assistance from your host and/or SMTP service provider.</p>\n</p>\n<dt id='plugin%20compatibility'>\nPlugin compatibility\n</h4>\n<p>\n<p>When using the <strong>logging</strong> functionality, the plugin will store the logged emails in the posts table, as an invisible post type. Normally this should work completely fine, but if you have a plugin that scans custom post types and sends an email about them, there&#8217;s a chance the third-party plugin might get stuck in a loop. For plugins like this, it is best to disable the functionality on the logging post type (sbss_email_log).</p>\n<p>The following plugins have had reported issues:<br />\n* <a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/115\" rel=\"nofollow ugc\">Sucuri Security</a>.</p>\n</p>\n<dt id='one%20or%20more%20of%20the%20settings%20are%20greyed%20out'>\nOne or more of the settings are greyed out\n</h4>\n<p>\n<p>This plugin supports being overridden by DEFINE, so please check to see that you are not setting a define for a WP Simple SMTP option. These are most commonly stored in the wp-config.php file.</p>\n<p>The over-ride hierachy is as follows, with top being the most important.</p>\n<ul>\n<li>Environmental variable.</li>\n<li>Constant variable (wp-config define).</li>\n<li>Multisite network settings.</li>\n<li>Locally-configured settings.</li>\n</ul>\n</p>\n<dt id='how%20do%20i%20stop%20the%20logs%20from%20automatically%20purging%3F'>\nHow do I stop the logs from automatically purging?\n</h4>\n<p>\n<p>The logs by default will auto-prune to avoid keeping sensitive details in logs and contributing to database bloat. But if you wish to keep the logs more permanently, then register the following hook (typically in your theme functions.php) to disable the auto-pruning functionality:</p>\n<pre><code>add_filter( 'simple_smtp_disable_log_prune', '__return_true' );\n</code></pre>\n</p>\n<dt id='how%20is%20the%20smtp%20password%20stored%3F'>\nHow is the SMTP password stored?\n</h4>\n<p>\n<p>If openssl is available to PHP, then the password will be <strong>encrypted</strong> (<a href=\"https://stackoverflow.com/a/4948393\" rel=\"nofollow ugc\">not hashed</a>) when stored in the database. If unavailable, the SMTP password will be saved into the database as <strong>plaintext</strong>. The more recommended way of storing the password is to define SMTP_PASS in your wp-config.php file, which should already be locked and inaccessible from the front-end.</p>\n<p>Note: Multisite over-ride password is currently <strong>not encrypted</strong>. <a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/63\" rel=\"nofollow ugc\">Please see this issue</a>.</p>\n</p>\n<dt id='can%20i%20change%20the%20amount%20of%20entries%20shown%20in%20the%20log%20view%3F'>\nCan I change the amount of entries shown in the log view?\n</h4>\n<p>\n<p>This can be adjusted by the &#8216;simple_smtp_log_table_max_per_page&#8217; filter. Returning an integer value to this filter hook will adjust the table page limit.</p>\n</p>\n<dt id='does%20this%20plugin%20support%20wordpress%20cli%3F'>\nDoes this plugin support WordPress CLI?\n</h4>\n<p>\n<p>Yes. With <a href=\"https://wp-cli.org/\" rel=\"nofollow ugc\">WP-CLI</a> you can perform the following actions:</p>\n<ul>\n<li><code>email-log</code> View the log if enabled.</li>\n<li><code>email-test</code> Send a test email.</li>\n</ul>\n<p>To view the available options and help documentation, run <code>wp help</code> or <code>wp help &lt;function name&gt;</code>.</p>\n</p>\n<dt id='does%20this%20plugin%20work%20on%20wordpress%20multisite%3F'>\nDoes this plugin work on WordPress Multisite?\n</h4>\n<p>\n<p>Yes. Each site can have unique settings, unless overriding is on. The network will use the main site settings, so network admin emails will show up in the main site log.</p>\n<p>Since version 1.2, network-activating the plugin grants special configuration options for super administrators. This includes the ability to set overrides and configure site admin access.</p>\n</p>\n<dt id='why%20do%20i%20see%20capital%20texts%20next%20to%20the%20input%20boxes%3F%20%28debugging%20disabled%20input%20boxes%29'>\nWhy do I see capital texts next to the input boxes? (Debugging disabled input boxes)\n</h4>\n<p>\n<p>To help diagnose disabled input boxes, when the WordPress site is in <a href=\"https://wordpress.org/support/article/debugging-in-wordpress/\" rel=\"ugc\">debugging mode</a>, the input fields will show a small debug text to indicate where the setting came from.</p>\n<ul>\n<li><strong>CONFIG</strong> is the standard method of saving settings via the admin menu.</li>\n<li><strong>CONST</strong> are overrides typically set in either wp-config.php or your theme&#8217;s functions.php.</li>\n<li><strong>MULTISITE</strong> are network-defined overrides set in the Network Mail panel.</li>\n<li><strong>ENV</strong> are pulled from the machine/server environmental settings.</li>\n</ul>\n</p>\n<dt id='can%20i%20report%20an%20issue%2C%20or%20contribute%20to%20development%3F'>\nCan I report an issue, or contribute to development?\n</h4>\n<p>\n<p>Yes! <a href=\"https://github.com/soup-bowl/wp-simple-smtp\" rel=\"nofollow ugc\">Please see our GitHub repository here</a> for writing issues and/or making pull requests.</p>\n<p>One of the easiest aspects to contribute to is the SMTP quick configuration segment. If you wish to maintain this aspect, suggest a new setting, or report broken entries, see the <a href=\"https://github.com/soup-bowl/wp-simple-smtp/wiki/SMTP-Quick-Config\" rel=\"nofollow ugc\">SMTP quick config wiki page</a>.</p>\n</p>\n\n",
+        "changelog": "<h4>1.3.3</h4>\n<ul>\n<li>Verified working with WordPress 6.3.</li>\n<li>Fix: $log_service deprecation notice (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/146\" rel=\"nofollow ugc\">#146</a>).</li>\n<li>Added: None encryption setting (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/148\" rel=\"nofollow ugc\">#148</a>).</li>\n</ul>\n<h4>1.3.2.2</h4>\n<ul>\n<li>Verified working with WordPress 6.1 and 6.2.</li>\n<li>Fix: PHP warning on the CLI interface (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/140\" rel=\"nofollow ugc\">#140</a>).</li>\n</ul>\n<h4>1.3.2.1</h4>\n<ul>\n<li>Rollback: #116 fix regressed due to relying on a function not found in the general scope.</li>\n</ul>\n<h4>1.3.2</h4>\n<ul>\n<li>Added: Mail view now displays from, cc, bcc &amp; the headers stored when logging is enabled.</li>\n<li>Fix: Infinite loop when a plugin hooks into the mail routine functions and sends an email (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/pull/116\" rel=\"nofollow ugc\">#116</a>).</li>\n</ul>\n<h4>1.3.1.1</h4>\n<ul>\n<li>Verified working with WordPress 6.0.</li>\n</ul>\n<h4>1.3.1</h4>\n<ul>\n<li>Added: Glance view on the dashboard to see mail usage (Thanks <a href=\"https://github.com/kebbet\" rel=\"nofollow ugc\">Kebbet</a> &#8211; <a href=\"https://github.com/soup-bowl/wp-simple-smtp/pull/101\" rel=\"nofollow ugc\">PR 101</a>, <a href=\"https://github.com/soup-bowl/wp-simple-smtp/pull/102\" rel=\"nofollow ugc\">PR 102</a>).</li>\n<li>Fix: Table view appears correctly on mobile (Thanks <a href=\"https://github.com/kebbet\" rel=\"nofollow ugc\">Kebbet</a> &#8211; <a href=\"https://github.com/soup-bowl/wp-simple-smtp/pull/93\" rel=\"nofollow ugc\">PR 93</a>).</li>\n<li>Fix: Log view table navigation (Thanks <a href=\"https://github.com/kebbet\" rel=\"nofollow ugc\">Kebbet</a> &#8211; <a href=\"https://github.com/soup-bowl/wp-simple-smtp/pull/106\" rel=\"nofollow ugc\">PR 106</a>).</li>\n</ul>\n<h4>1.3</h4>\n<ul>\n<li>Added: Read logged emails via WP-CLI.</li>\n<li>Added: Status message from testing emails (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/81\" rel=\"nofollow ugc\">#81</a>).</li>\n<li>Change: Uninstalling the plugin will remove the lingering logs (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/70\" rel=\"nofollow ugc\">#70</a>).</li>\n<li>Change: (For new installs) logs purge automatically after a month (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/71\" rel=\"nofollow ugc\">#71</a>).</li>\n<li>Change: Quick config settings now contained within plugin (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/78\" rel=\"nofollow ugc\">#78</a>).</li>\n<li>Change: Tightened permissions to the log viewer (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/74\" rel=\"nofollow ugc\">#74</a>).</li>\n<li>Fix: Incorrect capability type used by the log viewer. Thanks to <a href=\"https://github.com/benoitchantre\" rel=\"nofollow ugc\">Benoît Chantre</a> <a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/74\" rel=\"nofollow ugc\">#74</a>.</li>\n</ul>\n<h4>1.2.3</h4>\n<ul>\n<li>Add: <a href=\"https://wp-cli.org/\" rel=\"nofollow ugc\">WordPress CLI</a> support. See the FAQ for usage details.</li>\n<li>Change: Password not returned plaintext in settings (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/61\" rel=\"nofollow ugc\">#61</a>).</li>\n<li>Fix: Multisite-only config caused an instantiation error (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/67\" rel=\"nofollow ugc\">#67</a>).</li>\n</ul>\n<h4>1.2.2</h4>\n<ul>\n<li>Add: Filter for the log entries. Thanks to <a href=\"https://github.com/kebbet\" rel=\"nofollow ugc\">Kebbet</a> <a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/57\" rel=\"nofollow ugc\">#57</a>.</li>\n<li>Change: Input boxes clearer and more WordPress-standardised (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/51\" rel=\"nofollow ugc\">#51</a>, <a href=\"https://github.com/soup-bowl/wp-simple-smtp/pull/52\" rel=\"nofollow ugc\">#52</a>).</li>\n<li>Fix: Use network_admin_url instead of crafting a URL. Thanks to <a href=\"https://github.com/kebbet\" rel=\"nofollow ugc\">Kebbet</a> <a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/53\" rel=\"nofollow ugc\">#53</a>.</li>\n<li>Fix: Notice when saving settings without password being set (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/44\" rel=\"nofollow ugc\">#44</a>).</li>\n</ul>\n<h4>1.2.1</h4>\n<ul>\n<li>Change: Multisite listing table improvements. Thanks to <a href=\"https://github.com/kebbet\" rel=\"nofollow ugc\">Kebbet</a> (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/50\" rel=\"nofollow ugc\">#50</a>).</li>\n<li>Fix: Line break issue when viewing emails in the site log. Thanks to <a href=\"https://github.com/kebbet\" rel=\"nofollow ugc\">Kebbet</a> <a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/47\" rel=\"nofollow ugc\">#47</a>.</li>\n<li>Fix: Missed localisations in the multisite table. Thanks to <a href=\"https://github.com/kebbet\" rel=\"nofollow ugc\">Kebbet</a> <a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/45\" rel=\"nofollow ugc\">#45</a>.</li>\n</ul>\n<h4>1.2</h4>\n<ul>\n<li>New: Multisite settings for admin visibility and override settings (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/6\" rel=\"nofollow ugc\">#6</a>).</li>\n<li>New: Sites in debug mode will show what stage has set the configuration item in the relevant box. </li>\n<li>New: For sites using logging, &#8216;Erase Personal Data&#8217; will remove requested email address entries from the log (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/37\" rel=\"nofollow ugc\">#37</a>).</li>\n</ul>\n<h4>1.1.2</h4>\n<ul>\n<li>Verified working with WordPress 5.8.</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>Verified working with WordPress 5.7.</li>\n<li>Fix: Crash when sending emails with the email system disabled (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/35\" rel=\"nofollow ugc\">#35</a>).</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>New: You can now disable emails (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/9\" rel=\"nofollow ugc\">#9</a>).</li>\n<li>New: Attachments are now logged, and will be resent if they are still available on the system (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/14\" rel=\"nofollow ugc\">#14</a>).</li>\n<li>New: Key change detection when SMTP password encryption is used, to warn user the email dispatch may fail (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/28\" rel=\"nofollow ugc\">#28</a>).</li>\n<li>Change: Custom HTML removed in favour of translatable HTML test email. Thanks to <a href=\"https://github.com/kebbet\" rel=\"nofollow ugc\">Kebbet</a> for implementation (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/26\" rel=\"nofollow ugc\">#26</a>).</li>\n<li>Fix: JavaScript error when viewing emails (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/24\" rel=\"nofollow ugc\">#24</a>).</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Fix: Quick config translations not loading, and missing i18n entities. Thanks <a href=\"https://github.com/kebbet\" rel=\"nofollow ugc\">Kebbet</a> (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/21\" rel=\"nofollow ugc\">#21</a>).</li>\n<li>Fix: Incorrect pagination if the log count was divisible by 5. Thanks <a href=\"https://github.com/kebbet\" rel=\"nofollow ugc\">Kebbet</a> (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/18\" rel=\"nofollow ugc\">#18</a>).</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Fix: Text-domain mismatch causing translations not to load in correctly. Thank you to <a href=\"https://github.com/kebbet\" rel=\"nofollow ugc\">Kebbet</a> for the fix (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/19\" rel=\"nofollow ugc\">#19</a>).</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Bumped version to 1.0.0. Application will follow <a href=\"https://semver.org/\" rel=\"nofollow ugc\">Semantic Versioning</a> ongoing. (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/15\" rel=\"nofollow ugc\">#15</a>).</li>\n</ul>\n<h4>0.3.6</h4>\n<ul>\n<li>SMTPSecure is now a configurable option (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/11\" rel=\"nofollow ugc\">#11</a>).</li>\n<li>Log entries can now be deleted (<a href=\"https://github.com/soup-bowl/wp-simple-smtp/issues/13\" rel=\"nofollow ugc\">#13</a>).</li>\n</ul>\n<h4>0.3.5</h4>\n<ul>\n<li>When openssl is available, the password stored in the database will be encrypted.</li>\n<li>Added a quick configuration option, to guide SMTP setup (less Googling).</li>\n</ul>\n<h4>0.3.4</h4>\n<ul>\n<li>Confirmed working with WordPress 5.5.1.</li>\n<li>Added option to disable SSL verification.</li>\n<li>Multiple emails can be used in the test functionality.</li>\n</ul>\n<h4>0.3.3</h4>\n<ul>\n<li>Independent log tables deprecated for CPT.</li>\n</ul>\n<h4>0.3.2</h4>\n<ul>\n<li>Changed display format of email log.</li>\n<li>Limit resent emails to hourly.</li>\n</ul>\n<h4>0.3.1</h4>\n<ul>\n<li>Table is created or deleted upon plugin state change.</li>\n</ul>\n<h4>0.3</h4>\n<ul>\n<li>Changes to test emails.</li>\n<li>Log view changed depending on header.</li>\n</ul>\n<h4>0.2</h4>\n<ul>\n<li>SMTP error logging.</li>\n<li>View and resend emails.</li>\n<li>Test email settings.</li>\n</ul>\n<h4>0.1</h4>\n<ul>\n<li>SMTP configuration handling (overrides <code>mail()</code>).</li>\n<li>Optional SMTP logging (basic functionality).</li>\n</ul>\n"
+    },
+    "short_description": "Adds a simple mail configuration panel into your WordPress installation. Supports temporary logging and config variables.",
+    "description": "<p>Adds a simple, no-fuss SMTP settings to your WordPress installation that lets you define custom settings, which is especially useful for hosts with no control over the php <code>mail</code> functionality.</p>\n<p>If logging is enabled, a new segment in the settings panel will show up with a 30-day overview of recent emails, and will automatically prune older logs. Please see the FAQ if you want a more permanent solution.</p>\n<p>For more information, please see the <a href=\"https://github.com/soup-bowl/wp-simple-smtp/wiki\" rel=\"nofollow ugc\">project wiki on GitHub</a>.</p>\n<h3>Environment and constant overriding (optional)</h3>\n<p>This plugin will prefer environmental and constant-stored values over the plugin-saved equivalent settings, making it easier to use this plugin via deployment.</p>\n<p>These can be either stored in your systems env setup, or in wp-config.php as <code>define( 'SEE_BELOW', 'your_value_here' );</code>.</p>\n<h3>Accepted Parameters</h3>\n<ul>\n<li><code>SMTP_HOST</code> (string) Mail server hostname.</li>\n<li><code>SMTP_PORT</code> (integer) Port address (usually 25, 465 or 587).</li>\n<li><code>SMTP_AUTH</code> (integer, 1 or 0) Pass below credentials to your mail server.</li>\n<li><code>SMTP_USER</code> (string) The mail username for this account.</li>\n<li><code>SMTP_PASS</code> (string) The password for the mailer account.</li>\n<li><code>SMTP_FROM</code> (string) Enforce all emails come from this email address.</li>\n<li><code>SMTP_FROMNAME</code> (string) Enforce all emails to have a certain email name.</li>\n<li><code>SMTP_SEC</code> (string) Use a particular email security method (accepts &#8216;def&#8217; (default), &#8216;ssl&#8217;, &#8216;tls&#8217; and &#8216;off&#8217;).</li>\n<li><code>SMTP_NOVERIFYSSL</code> (boolean) Disable validation of the SMTP server certificate (not recommended).</li>\n<li><code>SMTP_LOG</code> (boolean) Controls the logging capability and visibility.</li>\n<li><code>SMTP_DISABLE</code> (boolean) Disables the mailer. They will still be logged if enabled, but won&#8217;t send out.</li>\n</ul>\n<p>It is recommended to store at least <code>SMTP_PASS</code> in your wp-config.php file (with the correct file permissions set). If the openssl extension is available, the plugin will attempt to encrypt the password in the database.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/simple-smtp.1.3.3.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "dispatch": "dispatch",
+        "email": "email",
+        "mail": "mail",
+        "sender": "sender",
+        "smtp": "smtp"
+    },
+    "stable_tag": "1.3.3",
+    "versions": {
+        "0.3.1": "https://downloads.wordpress.org/plugin/simple-smtp.0.3.1.zip",
+        "0.3.2": "https://downloads.wordpress.org/plugin/simple-smtp.0.3.2.zip",
+        "0.3.3": "https://downloads.wordpress.org/plugin/simple-smtp.0.3.3.zip",
+        "0.3.4": "https://downloads.wordpress.org/plugin/simple-smtp.0.3.4.zip",
+        "0.3.5": "https://downloads.wordpress.org/plugin/simple-smtp.0.3.5.zip",
+        "0.3.6": "https://downloads.wordpress.org/plugin/simple-smtp.0.3.6.zip",
+        "1.0.0": "https://downloads.wordpress.org/plugin/simple-smtp.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/simple-smtp.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/simple-smtp.1.0.2.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/simple-smtp.1.1.0.zip",
+        "1.1.1": "https://downloads.wordpress.org/plugin/simple-smtp.1.1.1.zip",
+        "1.1.2": "https://downloads.wordpress.org/plugin/simple-smtp.1.1.2.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/simple-smtp.1.2.zip",
+        "1.2.1": "https://downloads.wordpress.org/plugin/simple-smtp.1.2.1.zip",
+        "1.2.2": "https://downloads.wordpress.org/plugin/simple-smtp.1.2.2.zip",
+        "1.2.3": "https://downloads.wordpress.org/plugin/simple-smtp.1.2.3.zip",
+        "1.3": "https://downloads.wordpress.org/plugin/simple-smtp.1.3.zip",
+        "1.3.1": "https://downloads.wordpress.org/plugin/simple-smtp.1.3.1.zip",
+        "1.3.1.1": "https://downloads.wordpress.org/plugin/simple-smtp.1.3.1.1.zip",
+        "1.3.2": "https://downloads.wordpress.org/plugin/simple-smtp.1.3.2.zip",
+        "1.3.2.1": "https://downloads.wordpress.org/plugin/simple-smtp.1.3.2.1.zip",
+        "1.3.2.2": "https://downloads.wordpress.org/plugin/simple-smtp.1.3.2.2.zip",
+        "1.3.3": "https://downloads.wordpress.org/plugin/simple-smtp.1.3.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/simple-smtp.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/simple-smtp/assets/icon-128x128.png?rev=2707522",
+        "2x": "https://ps.w.org/simple-smtp/assets/icon-256x256.png?rev=2707522"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "simple-smtp",
+            "language": "el",
+            "version": "1.3.3",
+            "updated": "2023-03-30 13:31:41",
+            "package": "http://downloads.wordpress.org/translation/plugin/simple-smtp/1.3.3/el.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "simple-smtp",
+            "language": "es_ES",
+            "version": "1.3.3",
+            "updated": "2024-01-05 22:14:31",
+            "package": "http://downloads.wordpress.org/translation/plugin/simple-smtp/1.3.3/es_ES.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "simple-smtp",
+            "language": "fr_FR",
+            "version": "1.3.3",
+            "updated": "2023-07-27 14:32:42",
+            "package": "http://downloads.wordpress.org/translation/plugin/simple-smtp/1.3.3/fr_FR.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "simple-smtp",
+            "language": "ru_RU",
+            "version": "1.3.3",
+            "updated": "2023-05-30 11:36:10",
+            "package": "http://downloads.wordpress.org/translation/plugin/simple-smtp/1.3.3/ru_RU.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "simple-smtp",
+            "language": "sv_SE",
+            "version": "1.3.3",
+            "updated": "2023-10-13 08:09:47",
+            "package": "http://downloads.wordpress.org/translation/plugin/simple-smtp/1.3.3/sv_SE.zip"
+        }
+    ]
+}

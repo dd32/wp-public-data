@@ -1,0 +1,86 @@
+{
+    "name": "Jasmine Test Runner",
+    "slug": "jasmine-test-runner",
+    "version": "0.1",
+    "author": "<a href=\"http://tim.ph/\">Tim Elsass</a>",
+    "author_profile": "https://profiles.wordpress.org/timph/",
+    "contributors": {
+        "timph": {
+            "profile": "https://profiles.wordpress.org/timph/",
+            "avatar": "https://secure.gravatar.com/avatar/44bd2b84ffc6ca9dd03ace777009bc07?s=96&d=monsterid&r=g",
+            "display_name": "timph"
+        }
+    },
+    "requires": "4.0",
+    "tested": "4.7.29",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/jasmine-test-runner/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 728,
+    "last_updated": "2016-12-08 8:29pm GMT",
+    "added": "2016-11-24",
+    "homepage": "http://tim.ph",
+    "sections": {
+        "description": "<p>Jasmine Test Runner allows you to run Jasmine unit tests from right inside of your WordPress admin area.</p>\n",
+        "installation": "<p>You can use the built in installer and upgrader, or you can install the plugin<br />\nmanually.</p>\n<h4>From your WordPress dashboard</h4>\n<ol>\n<li>Visit &#8216;Plugins &gt; Add New&#8217;</li>\n<li>Search for &#8216;Jasmine Test Runner&#8217;</li>\n<li>Activate Jasmine Test Runner from your Plugins page.</li>\n</ol>\n<h4>From WordPress.org</h4>\n<ol>\n<li>Download Jasmine Test Runner.</li>\n<li>Upload the .zip file in the &#8216;Plugins &gt; Add New&#8217; page, or copy the unzipped directory to your &#8216;/wp-content/plugins/&#8217; directory, using your favorite method (ftp, sftp, scp, etc&#8230;)</li>\n<li>Activate Jasmine Test Runner from your Plugins page.</li>\n</ol>\n<h4>Once Activated</h4>\n<p>You can begin running your Jasmine tests as needed.  Just add a query arg to your URL like this:</p>\n<pre><code>?jtrunner=/path/to/tests\n</code></pre>\n<p><strong>Path/to/tests</strong> can have a leading or a trailing slash for the directory.  This directory is relative to <em>/wp-content/</em> directory, so that themes and plugins can utilize the test runner.  The directory should contain only your jasmine tests as it will enqueue <strong>all *.js</strong> files located in that directory.</p>\n",
+        "faq": "\n<h4>Q: How do I use Jasmine Test Runner?</h4>\n<p>\n<p><strong>A</strong>: The simplest way to utilize it is by adding a query arg to your URL that contains the path to your tests.</p>\n<p><strong>Example</strong>:</p>\n<pre><code>example.com/post.php?post=16102&amp;jtrunner=/plugins/jasmine-test-runner/tests/\n</code></pre>\n<p><strong>/plugins/jasmine-test-runner/tests</strong> is the relative path from your <em>/wp-content/</em> directory.</p>\n</p>\n<h4>Q: Can my plugin provide tests that will always run when plugin is activated?</h4>\n<p>\n<p><strong>A</strong>: Yes!  All settings for the plugin are configured with the &#8216;jasmine_test_runner&#8217; WordPress filter.</p>\n<p>This shows an example of adding specific unit tests that your plugin would run if a user has Jasmine Test Runner enabled.  This will load a set of unit tests located in a plugin&#8217;s <em>/tests/</em> directory.</p>\n<pre><code>function add_unit_tests( $settings ) {\n    $files = array();\n    foreach ( glob( __DIR__ . '/tests/*.js' ) as $filename ) {\n        $file = basename( $filename );\n        $files[] = plugins_url( \"tests/{$file}\", __FILE__ );\n    }\n\n    $settings['tests'] = array_merge( $settings['tests'], $files );\n\n    return $settings;\n}\n\nadd_filter( 'jasmine_test_runner', 'add_unit_tests' );\n</code></pre>\n</p>\n<h4>Q: Can I force the test runner to load on a specific set of pages?</h4>\n<p>\n<p><strong>A</strong>: Definitely!  You may want to have the test runner load everytime on a certain page or section the admin, so this is an example of overriding that setting as well.  This will load the Jasmine test runner on a page called &#8216;toplevel_page_boldgrid-inspirations&#8217;.</p>\n<pre><code>function load_inspirations_jtrunner( $settings ) {\n    $settings['loads_in'] = array_merge( $settings['loads_in'], array( 'toplevel_page_boldgrid-inspirations' ) );\n    return $settings;\n}\n\nadd_filter( 'jasmine_test_runner', 'load_inspirations_jtrunner' );\n</code></pre>\n</p>\n<h4>Q: What if I would like to have the test runner always running, and not append a query string to the URL each time?</h4>\n<p>\n<p><strong>A</strong>: This can also be done, but keep in mind that running it all the time, and having multiple tests running can cause negative performance impacts.  This code forces Jasmine Test Runner to always run in admin:</p>\n<pre><code>function force_load_jtrunner( $settings ) {\n    $settings['loads_in'] = array( 'all' );\n    return $settings;\n}\n\nadd_filter( 'jasmine_test_runner', 'force_load_jtrunner' );\n</code></pre>\n</p>\n<h4>Q: How can I force the tests to run randomly?</h4>\n<p>\n<p><strong>A</strong>: Jasmine Test Runner can run the tests in random order by adding &amp;random=true to your query string.</p>\n</p>\n<h4>Q: A random seed has failed, how do I recall that test?</h4>\n<p>\n<p><strong>A</strong>: The seed number and seed URL are displayed in the Jasmine Test Runner status bar when you&#8217;ve selected to run random or a seed.  For failed tests the bar appears red.  If you need to obtain this seed programatically, .jasmine-seed-bar class contains the link to run the seed, and the link text is the seed number.</p>\n</p>\n<h4>Q: Our project uses it&#8217;s own seed generation for random tests, how do I implement this?</h4>\n<p>\n<p><strong>A</strong>: If you wish to use your own seed generatator algorithm, you can specify the resulting seed directly by appending &amp;seed=YOUR_SEED.  Where YOUR_SEED is, should be the resulting seed you&#8217;ve generated.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1</h4>\n<ul>\n<li>Initial commit.</li>\n</ul>\n"
+    },
+    "short_description": "Run Jasmine tests right inside of your WordPress admin.",
+    "description": "<p>Jasmine Test Runner allows you to run Jasmine unit tests from right inside of your WordPress admin area.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/jasmine-test-runner.0.2.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/jasmine-test-runner/assets/screenshot-1.png?rev=1539599",
+            "caption": "<strong>Passed Tests</strong> - Jasmine Test Runner will give you feedback based on the tests you choose to run.  This screenshot shows you a set of passed Jasmine tests in the WordPress Page/Post editor screen."
+        },
+        {
+            "src": "https://ps.w.org/jasmine-test-runner/assets/screenshot-2.png?rev=1539599",
+            "caption": "<strong>Failed Tests</strong> Failed tests also provide you immediate feedback, so you instantly know which test failed, why, and a stack trace for debugging."
+        }
+    ],
+    "tags": {
+        "jasmine": "jasmine",
+        "javascript-testing": "javascript testing",
+        "js-unit-test": "js unit test",
+        "unit-tests": "unit tests"
+    },
+    "stable_tag": "0.2",
+    "versions": {
+        "0.1": "https://downloads.wordpress.org/plugin/jasmine-test-runner.0.1.zip",
+        "0.2": "https://downloads.wordpress.org/plugin/jasmine-test-runner.0.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/jasmine-test-runner.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://paypal.me/timph",
+    "banners": {
+        "low": "https://ps.w.org/jasmine-test-runner/assets/banner-772x250.png?rev=1539602",
+        "high": false
+    },
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/jasmine-test-runner_ece2b9.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

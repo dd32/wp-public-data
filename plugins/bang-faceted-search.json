@@ -1,0 +1,72 @@
+{
+    "name": "Bang Faceted Search",
+    "slug": "bang-faceted-search",
+    "version": "2.0",
+    "author": "<a href=\"http://www.bang-on.net/\">Marcus Downing</a>",
+    "author_profile": "https://profiles.wordpress.org/marcusdowning/",
+    "contributors": {
+        "marcusdowning": {
+            "profile": "https://profiles.wordpress.org/marcusdowning/",
+            "avatar": "https://secure.gravatar.com/avatar/85da34890f23a1fbd629bacc8b6bb81a?s=96&d=monsterid&r=g",
+            "display_name": "Marcus Downing"
+        },
+        "diddledan": {
+            "profile": "https://profiles.wordpress.org/diddledan/",
+            "avatar": "https://secure.gravatar.com/avatar/6385370667a4ca961258a210c08a9122?s=96&d=monsterid&r=g",
+            "display_name": "Dani Llewellyn"
+        }
+    },
+    "requires": "3.7",
+    "tested": "5.5.0",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 20,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 1
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/bang-faceted-search/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 2340,
+    "last_updated": "2020-11-17 2:51pm GMT",
+    "added": "2013-06-05",
+    "homepage": "http://www.bang-on.net/",
+    "sections": {
+        "description": "<p>A faceted search is one that allows you to drill down by various fields: price, size, colour, shipping location etc. It complements a free text search rather than replaces it.</p>\n<p>Using this plugin, you can create a faceted search interface for your pages, posts, or any other custom post type. You can add &#8220;facets&#8221; for:</p>\n<ul>\n<li>Taxonomies</li>\n<li>Custom fields</li>\n<li>Dates (day, week, month or year)</li>\n<li>Author</li>\n</ul>\n<p>These facets are widgets that can be easily changed in the admin interface.</p>\n<p>You can have multiple search pages for different post types. If your WordPress installation uses multi-site, you can search across the different sites.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>bang-faceted-search</code> directory to your <code>/wp-content/plugins/</code> directory</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</li>\n<li>Create a template <code>search.php</code> in your theme</li>\n<li>Go to Settings &gt; Faceted Search to set up your search pages.</li>\n</ol>\n<h4>Creating a search page</h4>\n<p>By default, you&#8217;ll have a single search address, at the site root <code>/</code>. This lines up with WordPress search.</p>\n<p>In the WordPress admin adrea, go to Settings &gt; Faceted Search. At the top is</p>\n<h4>Creating a search template</h4>\n<p>You need to create a search template in your theme called <code>search.php</code>, if you don&#8217;t already have one. This template will be used whenever the user searches your site. You can have more than one search template, each.</p>\n<p>Add this code to your <code>functions.php</code> to create a search-specific sidebar:</p>\n<pre><code>register_sidebar(array(\n  'name' =&gt; 'Search',\n  'id' =&gt; 'search'\n));\n</code></pre>\n<p>Your search template should include that sidebar:</p>\n<pre><code>&lt;?php dynamic_sidebar('search'); ?&gt;\n</code></pre>\n<p>Then in the admin interface, drag Facet widgets into that sidebar to add, customise and re-order the search widgets for your site.</p>\n<h4>Customising the faceted search</h4>\n<p>Your site can have more than the default search page, and you can use the faceted search plugin to search custom post types.</p>\n<p>To make a custom search, create a page with a custom template in your theme. For example, if you have a page called <code>/products</code>, then create a template in your theme called <code>products.php</code>. Near the start of this template, call this code:</p>\n<pre><code>$faceted_search = bang_faceted_search(null, array(\n  'force' =&gt; array(\n    'post_type' =&gt; 'product'\n  )\n));\n</code></pre>\n<p>Later on, display the results with something like:</p>\n<pre><code>if ($faceted_search-&gt;has_posts()) {\n  echo \"&lt;h1&gt;Search results&lt;/h1&gt;\";\n  $faceted_search-&gt;write_feedback();\n\n  $posts = $faceted_search-&gt;get_posts();\n  global $post;\n  $original_post = $post;\n  foreach ($posts as $post) {\n    setup_postdata($post);\n    // ... write the post ...\n  }\n  $post = $original_post;\n  setup_postdata($post);\n  echo $faceted_search-&gt;paginate();\n}\n</code></pre>\n",
+        "faq": "\n<h4>\nWhat&#8217;s wrong with a simple search field?\n</h4>\n<p>\n<p>Nothing, but faceted search makes your search richer.</p>\n<p>Faceted search doesn&#8217;t replace the normal search field, it complements it. You can have both, without any boundary between them.</p>\n</p>\n<h4>\nWhat&#8217;s a &#8220;facet&#8221;?\n</h4>\n<p>\n<p>It&#8217;s a means of narrowing down search results. A user might want to narrow down by categories or tags, by the author of a post, by the date it was published or by the contents of a taxonomy or custom field.</p>\n</p>\n<h4>\nWhy don&#8217;t I see any faceted search links?\n</h4>\n<p>\n<p>Make sure to create a search sidebar, and put some widgets into it.</p>\n<p>If a facet widget has the <strong>Hide empty terms</strong> option checked, then that facet may easily disappear from a view when all its links would produce zero results.</p>\n</p>\n<h4>\nCan I put other widgets into the same sidebar as the facet widgets?\n</h4>\n<p>\n<p>Yes. It&#8217;s a normal sidebar, you can put any widgets into it.</p>\n</p>\n<h4>\nCan I put facet widets into other sidebars?\n</h4>\n<p>\n<p>If the page you&#8217;re on isn&#8217;t a search page, facet widgets will be invisible.</p>\n</p>\n<h4>\nDoes this work with Relevanssi?\n</h4>\n<p>\n<p>Yes. If you have the Relevanssi plugin switched on at the same time, they&#8217;ll cooperate to deliver the best search results.</p>\n</p>\n<h4>\nDoes this work with my eCommerce/calendar/reviews/other plugin?\n</h4>\n<p>\n<p>You can make a faceted search on any post type, but it won&#8217;t understand any special fields like &#8216;price&#8217; or &#8216;score&#8217; if they&#8217;re implemented in a non-standard way.</p>\n</p>\n<h4>\nCan I make my own facets? Can I filter the results? Can I change how the plugin works?\n</h4>\n<p>\n<p>Yes, yes and yes.</p>\n<p>If you use a plugin that defines its own post types, such as an ecommerce or events calendar plugin, then you might want to make your own facet widgets. Create a WordPress widget and register it in the normal way. Look at the code of the included widgets to get an idea how to implement the links.</p>\n<p>There are a lot more actions and filters you can hook into &#8211; have a look through the code to find them. Here are just a few of them:</p>\n<ul>\n<li><code>bang_fs_query</code> &#8211; The parameters to <code>WP_Query</code></li>\n<li><code>bang_fs_results</code> &#8211; The posts returned</li>\n<li><code>bang_fs_count</code> &#8211; The number of results</li>\n<li><code>bang_fs_feedback_args</code> &#8211; The fields to display in the feedback</li>\n<li><code>bang_fs_options</code> &#8211; The plugin settings</li>\n</ul>\n<p>Be aware that the internal workings of the plugin are subject to change, so the names and details of these hooks may change in future version.</p>\n</p>\n\n",
+        "changelog": "<h4>2.0</h4>\n<ul>\n<li>Settings page makes this plugin suitable for non-developers</li>\n<li>Simplified widgets by moving common options to the settings page</li>\n<li>Auto switch between a list and a dropdown based on number of options</li>\n<li>Updates to work with WordPress 3.8+</li>\n<li>Better integration with Relevanssi and other plugins</li>\n<li>WPMU: Network Search allows you to search between the sites on your network</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>First version</li>\n</ul>\n"
+    },
+    "short_description": "Create a faceted search interface for any post type.",
+    "description": "<p>A faceted search is one that allows you to drill down by various fields: price, size, colour, shipping location etc. It complements a free text search rather than replaces it.</p>\n<p>Using this plugin, you can create a faceted search interface for your pages, posts, or any other custom post type. You can add &#8220;facets&#8221; for:</p>\n<ul>\n<li>Taxonomies</li>\n<li>Custom fields</li>\n<li>Dates (day, week, month or year)</li>\n<li>Author</li>\n</ul>\n<p>These facets are widgets that can be easily changed in the admin interface.</p>\n<p>You can have multiple search pages for different post types. If your WordPress installation uses multi-site, you can search across the different sites.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/bang-faceted-search.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "search": "search"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/bang-faceted-search.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 20,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

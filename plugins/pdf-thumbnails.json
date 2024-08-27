@@ -1,0 +1,86 @@
+{
+    "name": "PDF Thumbnails",
+    "slug": "pdf-thumbnails",
+    "version": "2.2.0",
+    "author": "Stian Liknes",
+    "author_profile": "https://profiles.wordpress.org/stianlik/",
+    "contributors": {
+        "stianlik": {
+            "profile": "https://profiles.wordpress.org/stianlik/",
+            "avatar": "https://secure.gravatar.com/avatar/c0848de0cd0ed4e155c21756b4651336?s=96&d=monsterid&r=g",
+            "display_name": "stianlik"
+        },
+        "mirgcire": {
+            "profile": "https://profiles.wordpress.org/mirgcire/",
+            "avatar": "https://secure.gravatar.com/avatar/443b42a76c9d24a68637615a397d9df7?s=96&d=monsterid&r=g",
+            "display_name": "mirgcire"
+        }
+    },
+    "requires": false,
+    "tested": "4.6.29",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 92,
+    "ratings": {
+        "5": 8,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 1
+    },
+    "num_ratings": 9,
+    "support_url": "https://wordpress.org/support/plugin/pdf-thumbnails/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 1000,
+    "downloaded": 32633,
+    "last_updated": "2016-10-24 8:49pm GMT",
+    "added": "2014-04-07",
+    "homepage": "",
+    "sections": {
+        "description": "<p>This plugin hooks into the media manager and generates a thumbnail everytime a<br />\nPDF is uploaded. Generated thumbnail is an image of the first page in the<br />\nuploaded document and is named <code>PDFNAME-thumbnail</code>, where <code>PDFNAME</code> is replaced<br />\nby uploaded document filename.</p>\n<p>Generated thumbnails are equivalent to <a href=\"https://codex.wordpress.org/Post_Thumbnails\" rel=\"nofollow ugc\">featured<br />\nimages</a> so that common thumbnail<br />\nfunctions like <code>get_post_thumbnail_id()</code> can be used for PDF attachments. See<br />\n<a href=\"https://codex.wordpress.org/Post_Thumbnails\" rel=\"nofollow ugc\">Post Thumbnails</a> for information<br />\non how you can use thumbnails efficiently.</p>\n<p>Integration with the javascript media API is not yet implemented, therefore, you<br />\nmay need to reload the page before you can see generated thumbnail after an<br />\nupload.</p>\n<h4>Shortcodes</h4>\n<p>It is possible to display a thumbnail linking to an uploaded PDF using the <code>[pdf_thumbnails_link]</code><br />\nshortcode. The following attributes are supported:</p>\n<ul>\n<li><code>id</code> &#8211; Attachment ID (required)</li>\n<li><code>size</code> &#8211; <a href=\"https://codex.wordpress.org/Post_Thumbnails#Thumbnail_Sizes\" rel=\"nofollow ugc\">Thumbnail size</a> (optional)</li>\n<li><code>title</code> &#8211; <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes#attr-title\" rel=\"nofollow ugc\">Anchor title attribute</a> (optional)</li>\n<li><code>target</code> &#8211; <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#attr-target\" rel=\"nofollow ugc\">Anchor target attribute</a> (optional)</li>\n<li><code>download</code> &#8211; <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#attr-download\" rel=\"nofollow ugc\">Anchor download attribute</a> (optional)</li>\n</ul>\n<p>Example 1: Display link to PDF with ID = 172 using <a href=\"https://codex.wordpress.org/Post_Thumbnails#Thumbnail_Sizes\" rel=\"nofollow ugc\">default thumbnail size</a></p>\n<pre><code>[pdf_thumbnails_link id=\"172\"]\n</code></pre>\n<p>Example 2: Display link to PDF with ID = 172 using thumbnail size (default 150&#215;150)</p>\n<pre><code>[pdf_thumbnails_link id=\"172\" size=\"thumbnail\"]\n</code></pre>\n<p>Thanks to <a href=\"https://wordpress.org/support/profile/mirgcire\" rel=\"ugc\">mirgcire</a> for providing the first<br />\nversion of the <code>[pdf_thumbnails_link]</code> shortcode.</p>\n<h4>Developer API</h4>\n<p>In most cases it should be sufficient to use built-in thumbnail functions from<br />\nthe WordPress API (<code>get_post_thumbnail</code> and similar). If you need to modify the<br />\nway thumbnails are generated, you can override image generation with<br />\nthe <code>pdf_thumbnails_generate_image_blob</code> filter.</p>\n<p>Example 1: Increase resolution for all generated PDF thumbnails</p>\n<pre><code>// $blob is the current image blob (defaults to null, can be used for chaining)\n// $filename is the PDF filename\nadd_action('pdf_thumbnails_generate_image_blob', function ($blob, $filename) {\n    $imagick = new Imagick();\n    $imagick-&gt;setResolution(200,200);\n    $imagick-&gt;readImage($filename);\n    $imagick-&gt;setIteratorIndex(0);\n    $imagick-&gt;setImageFormat('jpg');\n    return $imagick-&gt;getImageBlob();\n}, 10, 2);\n</code></pre>\n<p>It is possible to modify generated thumbnail links using the <code>pdf_thumbnails_link_shortcode</code><br />\nfilter. The following attributes are available:</p>\n<ul>\n<li><code>$html</code> &#8211; Generated HTML code to be displayed</li>\n<li><code>$attachmentId</code> &#8211; Sanitized ID of the PDF attachment</li>\n<li><code>$size</code> &#8211; Sanitized thumbnail size</li>\n<li><code>$atts</code> &#8211; <a href=\"https://codex.wordpress.org/Shortcode_API#Handling_Attributes\" rel=\"nofollow ugc\">Shortcode attributes (not sanitized)</a></li>\n<li><code>$content</code> &#8211; Shortcode content (not sanitized)</li>\n</ul>\n<p>Example 2: Wrap thumbnail link in figure and append caption</p>\n<pre><code>add_filter('pdf_thumbnails_link_shortcode', function ($html, $attachmentId, $size, $atts, $content) {\n    return \"&lt;figure&gt;$html &lt;caption&gt;Click to open image $attachmentId&lt;/caption&gt;&lt;/figure&gt;\";\n}, 10, 5);\n</code></pre>\n<h3>TODO</h3>\n<p>Add generated image to media browser after upload.</p>\n<p>Outline of an implementation based on the javascript media API:</p>\n<pre><code>// New uploads\nwp.Uploader.queue.on('add', function (attachment) {\n\n    if (attachment.subtype !== 'pdf') {\n        return;\n    }\n\n    findThumbnailFor(attachment.ID).then(function (data) {\n\n        // Add attachment thumbnail to browser\n        var attachment = wp.media.model.Attachment.get(id)\n        attachment.fetch().done(function () {\n            wp.media.editor.open().state().get('library').add(generated attachment)\n        });\n\n    });\n});\n</code></pre>\n<p>Filter: ajax_query_attachments_args</p>\n",
+        "installation": "<p>PDF Thumbnails requires ImageMagick with GhostScript support. If you are lucky,<br />\nthis is already installed on your system, otherwise, installation can be done<br />\nwith the following steps:</p>\n<ol>\n<li>Install ghostscript</li>\n<li>Install imagemagick with ghostscript support</li>\n<li>Install PHP extension for imagemagick (can use pecl)</li>\n<li>Restart web server for changes to take effect</li>\n</ol>\n<p>Details may differ based on which operating system you are running, see<br />\n<a href=\"https://wordpress.org/support/topic/nothing-but-error-messages\" rel=\"ugc\">Support</a> for<br />\nmore resources and tips on how this can be done in Windows, Linux and OSX.</p>\n<h4>Debian / Ubuntu</h4>\n<pre><code>sudo apt-get install ghostscript php5-imagick\nsudo service apache2 restart\n</code></pre>\n",
+        "changelog": "<p>This plugin use <a href=\"http://semver.org/\" rel=\"nofollow ugc\">semantic versioning</a>, i.e. breaking changes<br />\nincrease the MAJOR version.</p>\n<h4>2.2.0</h4>\n<ul>\n<li>Support title, target, and download attributes in <code>pdf_thumbnails_link</code> shortcode</li>\n</ul>\n<h4>2.1.0</h4>\n<ul>\n<li>Support thumbnail links with the <code>pdf_thumbnails_link</code> shortcode</li>\n<li>Support link customization using the <code>pdf_thumbnails_link_shortcode</code> filter</li>\n</ul>\n<h4>2.0.0</h4>\n<ul>\n<li>Replaced <code>pdf_thumbnails_before_get_image_blob</code> hook with <code>pdf_thumbnails_generate_image_blob</code> filter</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Introduced <code>pdf_thumbnails_before_get_image_blob</code> hook</li>\n</ul>\n"
+    },
+    "short_description": "This plugin generates a thumbnail everytime you upload a PDF attachment. Generated thumbnail is an image of the first page in uploaded document.",
+    "description": "<p>This plugin hooks into the media manager and generates a thumbnail everytime a<br />\nPDF is uploaded. Generated thumbnail is an image of the first page in the<br />\nuploaded document and is named <code>PDFNAME-thumbnail</code>, where <code>PDFNAME</code> is replaced<br />\nby uploaded document filename.</p>\n<p>Generated thumbnails are equivalent to <a href=\"https://codex.wordpress.org/Post_Thumbnails\" rel=\"nofollow ugc\">featured<br />\nimages</a> so that common thumbnail<br />\nfunctions like <code>get_post_thumbnail_id()</code> can be used for PDF attachments. See<br />\n<a href=\"https://codex.wordpress.org/Post_Thumbnails\" rel=\"nofollow ugc\">Post Thumbnails</a> for information<br />\non how you can use thumbnails efficiently.</p>\n<p>Integration with the javascript media API is not yet implemented, therefore, you<br />\nmay need to reload the page before you can see generated thumbnail after an<br />\nupload.</p>\n<h4>Shortcodes</h4>\n<p>It is possible to display a thumbnail linking to an uploaded PDF using the <code>[pdf_thumbnails_link]</code><br />\nshortcode. The following attributes are supported:</p>\n<ul>\n<li><code>id</code> &#8211; Attachment ID (required)</li>\n<li><code>size</code> &#8211; <a href=\"https://codex.wordpress.org/Post_Thumbnails#Thumbnail_Sizes\" rel=\"nofollow ugc\">Thumbnail size</a> (optional)</li>\n<li><code>title</code> &#8211; <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes#attr-title\" rel=\"nofollow ugc\">Anchor title attribute</a> (optional)</li>\n<li><code>target</code> &#8211; <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#attr-target\" rel=\"nofollow ugc\">Anchor target attribute</a> (optional)</li>\n<li><code>download</code> &#8211; <a href=\"https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#attr-download\" rel=\"nofollow ugc\">Anchor download attribute</a> (optional)</li>\n</ul>\n<p>Example 1: Display link to PDF with ID = 172 using <a href=\"https://codex.wordpress.org/Post_Thumbnails#Thumbnail_Sizes\" rel=\"nofollow ugc\">default thumbnail size</a></p>\n<pre><code>[pdf_thumbnails_link id=\"172\"]\n</code></pre>\n<p>Example 2: Display link to PDF with ID = 172 using thumbnail size (default 150&#215;150)</p>\n<pre><code>[pdf_thumbnails_link id=\"172\" size=\"thumbnail\"]\n</code></pre>\n<p>Thanks to <a href=\"https://wordpress.org/support/profile/mirgcire\" rel=\"ugc\">mirgcire</a> for providing the first<br />\nversion of the <code>[pdf_thumbnails_link]</code> shortcode.</p>\n<h4>Developer API</h4>\n<p>In most cases it should be sufficient to use built-in thumbnail functions from<br />\nthe WordPress API (<code>get_post_thumbnail</code> and similar). If you need to modify the<br />\nway thumbnails are generated, you can override image generation with<br />\nthe <code>pdf_thumbnails_generate_image_blob</code> filter.</p>\n<p>Example 1: Increase resolution for all generated PDF thumbnails</p>\n<pre><code>// $blob is the current image blob (defaults to null, can be used for chaining)\n// $filename is the PDF filename\nadd_action('pdf_thumbnails_generate_image_blob', function ($blob, $filename) {\n    $imagick = new Imagick();\n    $imagick-&gt;setResolution(200,200);\n    $imagick-&gt;readImage($filename);\n    $imagick-&gt;setIteratorIndex(0);\n    $imagick-&gt;setImageFormat('jpg');\n    return $imagick-&gt;getImageBlob();\n}, 10, 2);\n</code></pre>\n<p>It is possible to modify generated thumbnail links using the <code>pdf_thumbnails_link_shortcode</code><br />\nfilter. The following attributes are available:</p>\n<ul>\n<li><code>$html</code> &#8211; Generated HTML code to be displayed</li>\n<li><code>$attachmentId</code> &#8211; Sanitized ID of the PDF attachment</li>\n<li><code>$size</code> &#8211; Sanitized thumbnail size</li>\n<li><code>$atts</code> &#8211; <a href=\"https://codex.wordpress.org/Shortcode_API#Handling_Attributes\" rel=\"nofollow ugc\">Shortcode attributes (not sanitized)</a></li>\n<li><code>$content</code> &#8211; Shortcode content (not sanitized)</li>\n</ul>\n<p>Example 2: Wrap thumbnail link in figure and append caption</p>\n<pre><code>add_filter('pdf_thumbnails_link_shortcode', function ($html, $attachmentId, $size, $atts, $content) {\n    return \"&lt;figure&gt;$html &lt;caption&gt;Click to open image $attachmentId&lt;/caption&gt;&lt;/figure&gt;\";\n}, 10, 5);\n</code></pre>\n<h3>TODO</h3>\n<p>Add generated image to media browser after upload.</p>\n<p>Outline of an implementation based on the javascript media API:</p>\n<pre><code>// New uploads\nwp.Uploader.queue.on('add', function (attachment) {\n\n    if (attachment.subtype !== 'pdf') {\n        return;\n    }\n\n    findThumbnailFor(attachment.ID).then(function (data) {\n\n        // Add attachment thumbnail to browser\n        var attachment = wp.media.model.Attachment.get(id)\n        attachment.fetch().done(function () {\n            wp.media.editor.open().state().get('library').add(generated attachment)\n        });\n\n    });\n});\n</code></pre>\n<p>Filter: ajax_query_attachments_args</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/pdf-thumbnails.2.2.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "generator": "generator",
+        "pdf": "pdf",
+        "thumbnail": "thumbnail"
+    },
+    "stable_tag": "2.2.0",
+    "versions": {
+        "0.0.2": "https://downloads.wordpress.org/plugin/pdf-thumbnails.0.0.2.zip",
+        "0.0.3": "https://downloads.wordpress.org/plugin/pdf-thumbnails.0.0.3.zip",
+        "0.0.4": "https://downloads.wordpress.org/plugin/pdf-thumbnails.0.0.4.zip",
+        "0.0.5": "https://downloads.wordpress.org/plugin/pdf-thumbnails.0.0.5.zip",
+        "0.0.6": "https://downloads.wordpress.org/plugin/pdf-thumbnails.0.0.6.zip",
+        "1.0.0": "https://downloads.wordpress.org/plugin/pdf-thumbnails.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/pdf-thumbnails.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/pdf-thumbnails.1.0.2.zip",
+        "2.0.0": "https://downloads.wordpress.org/plugin/pdf-thumbnails.2.0.0.zip",
+        "2.1.0": "https://downloads.wordpress.org/plugin/pdf-thumbnails.2.1.0.zip",
+        "2.2.0": "https://downloads.wordpress.org/plugin/pdf-thumbnails.2.2.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/pdf-thumbnails.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/pdf-thumbnails.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 92,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

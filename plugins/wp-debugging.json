@@ -1,0 +1,186 @@
+{
+    "name": "WP Debugging",
+    "slug": "wp-debugging",
+    "version": "2.11.24",
+    "author": "Andy Fragen",
+    "author_profile": "https://profiles.wordpress.org/afragen/",
+    "contributors": {
+        "afragen": {
+            "profile": "https://profiles.wordpress.org/afragen/",
+            "avatar": "https://secure.gravatar.com/avatar/68d806db1b31ae8e9464b583e2aa29c6?s=96&d=monsterid&r=g",
+            "display_name": "Andy Fragen"
+        }
+    },
+    "requires": "5.2",
+    "tested": "6.6.1",
+    "requires_php": "5.6",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 18,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 18,
+    "support_url": "https://wordpress.org/support/plugin/wp-debugging/",
+    "support_threads": 1,
+    "support_threads_resolved": 1,
+    "active_installs": 10000,
+    "downloaded": 318864,
+    "last_updated": "2024-07-07 2:38pm GMT",
+    "added": "2019-02-03",
+    "homepage": "https://github.com/afragen/wp-debugging",
+    "sections": {
+        "description": "<p>This plugin sets the following debug constants in <code>wp-config.php</code> on plugin activation and removes them on plugin deactivation. Any errors will result in a PHP Exception being thrown. Debug constants per <a href=\"https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/\" rel=\"nofollow ugc\">Debugging in WordPress</a>.</p>\n<p>Default settings:</p>\n<pre><code>define( 'WP_DEBUG_LOG', true );\ndefine( 'SCRIPT_DEBUG', true );\ndefine( 'SAVEQUERIES', true );\n</code></pre>\n<p>&nbsp;<br />\n    @ini_set( &#8216;display_errors&#8217;, 1 ); is set when the plugin is active. <code>WP_DEBUG</code> is set to true when the plugin is first run, thereafter it can be turned off in the Settings.</p>\n<p>The Settings page allows the user to set the following.</p>\n<pre><code>define( 'WP_DEBUG', true ); // Default on initial plugin installation.\ndefine( 'WP_DEBUG_DISPLAY', false ); // Default when not declared is true.\ndefine( 'WP_DISABLE_FATAL_ERROR_HANDLER', true ); // WordPress 5.2 WSOD Override.\n</code></pre>\n<p>When the plugin is deactivated best efforts are made to re-add pre-existing constants to their former state. When the plugin is activated the default settings and any saved settings are restored.</p>\n<p>This plugin uses the <a href=\"https://github.com/wp-cli/wp-config-transformer\" rel=\"nofollow ugc\">wp-cli/wp-config-transformer</a> command for writing constants to <code>wp-config.php</code>.</p>\n<p><a href=\"https://github.com/norcross/debug-quick-look\" rel=\"nofollow ugc\">Debug Quick Look</a> from Andrew Norcross is included with this plugin to assist in reading the debug.log file. If you already have this plugin installed you should delete it when WP Debugging is not active.</p>\n<p><a href=\"https://wordpress.org/plugins/query-monitor/\" rel=\"ugc\">Query Monitor</a> and <a href=\"https://wordpress.org/plugins/debug-bar/\" rel=\"ugc\">Debug Bar</a> plugins are optional dependencies to aid in debugging and troubleshooting. The notice for installation will recur 45 days after being dismissed.</p>\n<p>If you have a non-standard location for your <code>wp-config.php</code> file you can use the filter <code>wp_debugging_config_path</code> to return the file path for your installation.</p>\n<p>The filter <code>wp_debugging_add_constants</code> allows the user to add constants to <code>wp-config.php</code>.</p>\n<p>The filter returns an array where the key is the name of the constant and the value is an array of data containing the value as a string and a boolean to indicate whether or not the value should be passed without quotes.</p>\n<pre><code>$my_constants = [\n    'my_test_constant' =&gt;\n    [\n        'value' =&gt; 'abc123',\n        'raw' =&gt; false,\n    ],\n    'another_test_constant' =&gt; [ 'value' =&gt; 'true' ],\n];\n</code></pre>\n<p>The <code>value</code> option contains the constant&#8217;s value as a string.</p>\n<p>The <code>raw</code> option means that instead of placing the value inside the config as a string it will become unquoted. The default is <code>true</code>. Set as <code>false</code> for non-boolean values.</p>\n<p>Example:</p>\n<pre><code>add_filter(\n    'wp_debugging_add_constants',\n    function( $added_constants ) {\n        $my_constants = [\n            'my_test_constant'      =&gt; [\n                'value' =&gt; '124xyz',\n                'raw'   =&gt; false,\n            ],\n            'another_test_constant' =&gt; [ 'value' =&gt; 'true' ],\n        ];\n        return array_merge( $added_constants, $my_constants );\n    },\n    10,\n    1\n);\n</code></pre>\n<p>This will create the following constants.</p>\n<pre><code>define( 'MY_TEST_CONSTANT', '124xyz' );\ndefine( 'ANOTHER_TEST_CONSTANT', true );\n</code></pre>\n<h3>Development</h3>\n<p>PRs are welcome against the <a href=\"https://github.com/afragen/wp-debugging\" rel=\"nofollow ugc\">develop branch on GitHub</a>.</p>\n",
+        "changelog": "<h4>2.11.24 / 2024-04-29</h4>\n<ul>\n<li>update link to Debugging in WordPress, thanks @tobifjellner</li>\n<li>cast variable to array in <code>Bootstrap::deactivate()</code> fix for PHP 8.3</li>\n</ul>\n<h4>2.11.23 / 2024-03-04</h4>\n<ul>\n<li>composer update</li>\n<li>WPCS updates</li>\n</ul>\n<h4>2.11.22 / 2023-05-31 🎂</h4>\n<ul>\n<li>update <code>afragen/wp-dismiss-notice</code></li>\n</ul>\n<h4>2.11.21 / 2023-04-29</h4>\n<ul>\n<li>update <code>afragen/wp-dismiss-notice</code></li>\n<li>update Debug Quick Look</li>\n</ul>\n<h4>2.11.18, 2.11.19, 2.11.20 / 2023-02-07</h4>\n<ul>\n<li>composer update</li>\n</ul>\n<h4>2.11.17 / 2023-01-27</h4>\n<ul>\n<li>updated link to <em>Debugging in WordPress</em> and improved text for translators</li>\n<li>composer update</li>\n</ul>\n<h4>2.11.16 / 2023-01-19</h4>\n<ul>\n<li>composer update</li>\n</ul>\n<h4>2.11.15 / 2023-01-02</h4>\n<ul>\n<li>composer update</li>\n</ul>\n<h4>2.11.14 / 2022-07-15</h4>\n<ul>\n<li>composer update</li>\n</ul>\n<h4>2.11.13 / 2022-06-23</h4>\n<ul>\n<li>make anchor <code>preg_match</code> more greedy</li>\n</ul>\n<h4>2.11.12 / 2022-05-29</h4>\n<ul>\n<li>update to latest <code>afragen/debug-quick-look</code></li>\n</ul>\n<h4>2.11.11 / 2022&#8211;5-16</h4>\n<ul>\n<li>update <code>wp-dismiss-notice</code> with transient and only poll <code>wp_remote_get()</code> weekly</li>\n</ul>\n<h4>2.11.10 / 2022-05-10</h4>\n<ul>\n<li>use <code>sanitize_key()</code> for nonces</li>\n<li>composer update</li>\n</ul>\n<h4>2.11.9 / 2022-02-05</h4>\n<ul>\n<li>composer update</li>\n</ul>\n<h4>2.11.8 / 2022-01-24</h4>\n<ul>\n<li>load call to <code>WP_Dependency_Installer()</code> in <code>plugins_loaded</code> hook to avoid loading <code>pluggable.php</code>.</li>\n<li>update <code>WP_Dependency_Installer</code></li>\n</ul>\n<h4>2.11.7 / 2022-01-18</h4>\n<ul>\n<li>fix logic in verify nonce conditional</li>\n</ul>\n<h4>2.11.6 /2022-01-18</h4>\n<ul>\n<li>proper nonce verification</li>\n<li>composer updates</li>\n</ul>\n<h4>2.11.5 / 2022-01-11</h4>\n<ul>\n<li>I messed up the release 🤦‍♂️</li>\n</ul>\n<h4>2.11.4 / 2022-01-10</h4>\n<ul>\n<li>composer updates</li>\n</ul>\n<h4>2.11.3 / 2021-12-19</h4>\n<ul>\n<li>more fixes via composer update</li>\n</ul>\n<h4>2.11.2 / 2021-09-24</h4>\n<ul>\n<li>composer update, cause of course I needed to fix something</li>\n</ul>\n<h4>2.11.1 / 2021-09-24</h4>\n<ul>\n<li>init in <code>plugins_loaded</code> hook</li>\n<li>composer update</li>\n</ul>\n<h4>2.11.0 / 2021-09-23</h4>\n<ul>\n<li>fix security issue for capabilities check, possible CSRF, and nonce checks.</li>\n</ul>\n<h4>2.10.2 / 2021-09-04</h4>\n<ul>\n<li>only use <code>esc_attr_e</code> for translating strings</li>\n</ul>\n<h4>2.10.1 / 2021-07-23</h4>\n<ul>\n<li>fix PHP Notice, <code>Settings:line 68</code></li>\n<li>update Debug Quick Look admin bar menu for mobile</li>\n</ul>\n<h4>2.10.0 / 2021-06-30</h4>\n<ul>\n<li>update Debug Quick Look to show menu on mobile</li>\n</ul>\n<h4>2.9.3 / 2021-06-22</h4>\n<ul>\n<li>update WPConfigTransformer to use alternate anchor if default not present</li>\n<li>add @10up GitHub Actions for WordPress svn integration</li>\n</ul>\n<h4>2.9.1 / 2020-11-17</h4>\n<ul>\n<li>update <code>wp-dependency-installer</code> library</li>\n<li>update <code>wp-cli/wp-config-transformer</code></li>\n<li>comment out quote normalization in <code>set_pre_activation_constants()</code>, not sure why I did that but it can cause problems <a href=\"https://github.com/afragen/wp-debugging/issues/10\" rel=\"nofollow ugc\">#10</a></li>\n</ul>\n<h4>2.9.0 / 2020-08-15</h4>\n<ul>\n<li>use try/catch around use of <code>WPConfigTransformer</code> object</li>\n</ul>\n<h4>2.8.0 / 2020-08-01</h4>\n<ul>\n<li>exit if called directly</li>\n<li>NB: I have seen the <code>WPConfigTransformer</code> Exception error live. The issue seems to be that a <code>file_get_contents()</code> on the <code>wp-config.php</code> file path, at random times, returns an empty value. I&#8217;m done chasing this random error in <code>wp-cli/wp-config-transformer</code>. Modified version of <code>wp-cli/wp-config-transformer</code> present</li>\n</ul>\n<h4>2.7.2 / 2020-06-01</h4>\n<ul>\n<li>test <code>wp-config.php</code> everywhere, still occasional WSOD reports.</li>\n</ul>\n<h4>2.7.1 / 2020-5-15</h4>\n<ul>\n<li>return early if <code>wp-config.php</code> is empty before calling <code>WPConfigTransformer</code></li>\n</ul>\n<h4>2.7.0 / 2020-04-30</h4>\n<ul>\n<li>start loading in <code>init</code> hook</li>\n<li>run <code>process_filter_constants()</code> as chained method in <code>Bootstrap</code></li>\n</ul>\n<h4>2.6.1 / 2020-03-28</h4>\n<ul>\n<li>move <code>Settings</code> action link to front</li>\n<li>change test for <code>wp-config.php</code> file empty</li>\n</ul>\n<h4>2.6.0 / 2020-02-28</h4>\n<ul>\n<li>load autoloader in main file</li>\n<li>update composer dependencies</li>\n</ul>\n<h4>2.5.8 / 2019-12-23</h4>\n<ul>\n<li>badly messed up check for empty <code>wp-config.php</code></li>\n</ul>\n<h4>2.5.7 / 2019-12-20</h4>\n<ul>\n<li>check and exit early if <code>wp-config.php</code> is empty</li>\n<li>return empty array for the above exit</li>\n</ul>\n<h4>2.5.6 / 2019-11-02</h4>\n<ul>\n<li>early exit if <code>wp-config.php</code> not set in specific functions</li>\n</ul>\n<h4>2.5.5 / 2019-09-17</h4>\n<ul>\n<li>update composer.json for wp-dependency-installer update, now requires at least PHP 5.6 for spread operator</li>\n<li>composer update</li>\n</ul>\n<h4>2.5.4 / 2019-04-25</h4>\n<ul>\n<li>added check for writable <code>wp-config.php</code>, exit with notice if not found</li>\n</ul>\n<h4>2.5.3 / 2019-04-01</h4>\n<ul>\n<li>update <code>Debug Quick Look</code> to display error log file path</li>\n</ul>\n<h4>2.5.1 / 2019-04-01</h4>\n<ul>\n<li>updated version of wp-cli/wp-config-transformer</li>\n</ul>\n<h4>2.5.0 / 2019-03-25</h4>\n<ul>\n<li>added <code>wp_debugging_add_constants</code> filter for users to add their own constants</li>\n</ul>\n<h4>2.4.3 / 2019-03-09</h4>\n<ul>\n<li>missed an output escape</li>\n</ul>\n<h4>2.4.2 / 2019-02-26</h4>\n<ul>\n<li>add <code>Domain Path</code> header</li>\n</ul>\n<h4>2.4.1 / 2019-02-10</h4>\n<ul>\n<li>refactor set/restore pre-activation constants</li>\n</ul>\n<h4>2.4.0 / 2019-02-06</h4>\n<ul>\n<li>save pre-activation constants for re-installation on deactivation ( say that 5x fast )</li>\n</ul>\n<h4>2.3.0 / 2019-02-04</h4>\n<ul>\n<li>look for <code>wp-config.php</code> in directory above <code>ABSPATH</code></li>\n<li>add filter <code>wp_debugging_config_path</code> to set non-standard path to <code>wp-config.php</code></li>\n</ul>\n<h4>2.2.0 / 2019-02-02 🏈</h4>\n<ul>\n<li>initial release on dot org</li>\n</ul>\n<h4>2.1.1 / 2019-02-01</h4>\n<ul>\n<li>only show WSOD bypass when appropriate</li>\n<li>update dependencies</li>\n</ul>\n<h4>2.1.0 / 2019-01-26</h4>\n<ul>\n<li>update Debug Quick Look, minor CSS changes</li>\n<li>Improve messaging</li>\n<li>add setting for WP_DISABLE_FATAL_ERROR_HANDLER constant (WSOD)</li>\n<li>add default setting of WP_DEBUG to true, can be changed</li>\n</ul>\n<h4>2.0.0 / 2019-01-18</h4>\n<ul>\n<li>total re-write</li>\n<li>add settings page</li>\n<li>use <code>wp-cli/wp-config-transformer</code> to change <code>wp-config.php</code></li>\n<li>include <code>norcross/debug-quick-look</code> as dependency via composer but use my fork</li>\n<li>update POT via <code>composer.json</code> and wp-cli</li>\n<li>add image assets</li>\n</ul>\n"
+    },
+    "short_description": "A support/troubleshooting plugin for WordPress.",
+    "description": "<p>This plugin sets the following debug constants in <code>wp-config.php</code> on plugin activation and removes them on plugin deactivation. Any errors will result in a PHP Exception being thrown. Debug constants per <a href=\"https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/\" rel=\"nofollow ugc\">Debugging in WordPress</a>.</p>\n<p>Default settings:</p>\n<pre><code>define( 'WP_DEBUG_LOG', true );\ndefine( 'SCRIPT_DEBUG', true );\ndefine( 'SAVEQUERIES', true );\n</code></pre>\n<p>&nbsp;<br />\n    @ini_set( &#8216;display_errors&#8217;, 1 ); is set when the plugin is active. <code>WP_DEBUG</code> is set to true when the plugin is first run, thereafter it can be turned off in the Settings.</p>\n<p>The Settings page allows the user to set the following.</p>\n<pre><code>define( 'WP_DEBUG', true ); // Default on initial plugin installation.\ndefine( 'WP_DEBUG_DISPLAY', false ); // Default when not declared is true.\ndefine( 'WP_DISABLE_FATAL_ERROR_HANDLER', true ); // WordPress 5.2 WSOD Override.\n</code></pre>\n<p>When the plugin is deactivated best efforts are made to re-add pre-existing constants to their former state. When the plugin is activated the default settings and any saved settings are restored.</p>\n<p>This plugin uses the <a href=\"https://github.com/wp-cli/wp-config-transformer\" rel=\"nofollow ugc\">wp-cli/wp-config-transformer</a> command for writing constants to <code>wp-config.php</code>.</p>\n<p><a href=\"https://github.com/norcross/debug-quick-look\" rel=\"nofollow ugc\">Debug Quick Look</a> from Andrew Norcross is included with this plugin to assist in reading the debug.log file. If you already have this plugin installed you should delete it when WP Debugging is not active.</p>\n<p><a href=\"https://wordpress.org/plugins/query-monitor/\" rel=\"ugc\">Query Monitor</a> and <a href=\"https://wordpress.org/plugins/debug-bar/\" rel=\"ugc\">Debug Bar</a> plugins are optional dependencies to aid in debugging and troubleshooting. The notice for installation will recur 45 days after being dismissed.</p>\n<p>If you have a non-standard location for your <code>wp-config.php</code> file you can use the filter <code>wp_debugging_config_path</code> to return the file path for your installation.</p>\n<p>The filter <code>wp_debugging_add_constants</code> allows the user to add constants to <code>wp-config.php</code>.</p>\n<p>The filter returns an array where the key is the name of the constant and the value is an array of data containing the value as a string and a boolean to indicate whether or not the value should be passed without quotes.</p>\n<pre><code>$my_constants = [\n    'my_test_constant' =&gt;\n    [\n        'value' =&gt; 'abc123',\n        'raw' =&gt; false,\n    ],\n    'another_test_constant' =&gt; [ 'value' =&gt; 'true' ],\n];\n</code></pre>\n<p>The <code>value</code> option contains the constant&#8217;s value as a string.</p>\n<p>The <code>raw</code> option means that instead of placing the value inside the config as a string it will become unquoted. The default is <code>true</code>. Set as <code>false</code> for non-boolean values.</p>\n<p>Example:</p>\n<pre><code>add_filter(\n    'wp_debugging_add_constants',\n    function( $added_constants ) {\n        $my_constants = [\n            'my_test_constant'      =&gt; [\n                'value' =&gt; '124xyz',\n                'raw'   =&gt; false,\n            ],\n            'another_test_constant' =&gt; [ 'value' =&gt; 'true' ],\n        ];\n        return array_merge( $added_constants, $my_constants );\n    },\n    10,\n    1\n);\n</code></pre>\n<p>This will create the following constants.</p>\n<pre><code>define( 'MY_TEST_CONSTANT', '124xyz' );\ndefine( 'ANOTHER_TEST_CONSTANT', true );\n</code></pre>\n<h3>Development</h3>\n<p>PRs are welcome against the <a href=\"https://github.com/afragen/wp-debugging\" rel=\"nofollow ugc\">develop branch on GitHub</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.24.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/wp-debugging/assets/screenshot-1.png?rev=2552243",
+            "caption": "Settings Screen"
+        }
+    ],
+    "tags": {
+        "debug": "debug",
+        "support": "support",
+        "wp-config": "wp-config"
+    },
+    "stable_tag": "2.11.24",
+    "versions": {
+        "2.10.0": "https://downloads.wordpress.org/plugin/wp-debugging.2.10.0.zip",
+        "2.10.1": "https://downloads.wordpress.org/plugin/wp-debugging.2.10.1.zip",
+        "2.10.2": "https://downloads.wordpress.org/plugin/wp-debugging.2.10.2.zip",
+        "2.11.0": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.0.zip",
+        "2.11.1": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.1.zip",
+        "2.11.10": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.10.zip",
+        "2.11.11": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.11.zip",
+        "2.11.12": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.12.zip",
+        "2.11.13": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.13.zip",
+        "2.11.14": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.14.zip",
+        "2.11.15": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.15.zip",
+        "2.11.16": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.16.zip",
+        "2.11.17": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.17.zip",
+        "2.11.18": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.18.zip",
+        "2.11.19": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.19.zip",
+        "2.11.2": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.2.zip",
+        "2.11.20": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.20.zip",
+        "2.11.21": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.21.zip",
+        "2.11.22": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.22.zip",
+        "2.11.23": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.23.zip",
+        "2.11.24": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.24.zip",
+        "2.11.3": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.3.zip",
+        "2.11.4": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.4.zip",
+        "2.11.5": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.5.zip",
+        "2.11.6": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.6.zip",
+        "2.11.7": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.7.zip",
+        "2.11.8": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.8.zip",
+        "2.11.9": "https://downloads.wordpress.org/plugin/wp-debugging.2.11.9.zip",
+        "2.2.0": "https://downloads.wordpress.org/plugin/wp-debugging.2.2.0.zip",
+        "2.3.0": "https://downloads.wordpress.org/plugin/wp-debugging.2.3.0.zip",
+        "2.4.0": "https://downloads.wordpress.org/plugin/wp-debugging.2.4.0.zip",
+        "2.4.1": "https://downloads.wordpress.org/plugin/wp-debugging.2.4.1.zip",
+        "2.4.2": "https://downloads.wordpress.org/plugin/wp-debugging.2.4.2.zip",
+        "2.4.3": "https://downloads.wordpress.org/plugin/wp-debugging.2.4.3.zip",
+        "2.5.0": "https://downloads.wordpress.org/plugin/wp-debugging.2.5.0.zip",
+        "2.5.1": "https://downloads.wordpress.org/plugin/wp-debugging.2.5.1.zip",
+        "2.5.3": "https://downloads.wordpress.org/plugin/wp-debugging.2.5.3.zip",
+        "2.5.4": "https://downloads.wordpress.org/plugin/wp-debugging.2.5.4.zip",
+        "2.5.5": "https://downloads.wordpress.org/plugin/wp-debugging.2.5.5.zip",
+        "2.5.6": "https://downloads.wordpress.org/plugin/wp-debugging.2.5.6.zip",
+        "2.5.7": "https://downloads.wordpress.org/plugin/wp-debugging.2.5.7.zip",
+        "2.5.8": "https://downloads.wordpress.org/plugin/wp-debugging.2.5.8.zip",
+        "2.6.0": "https://downloads.wordpress.org/plugin/wp-debugging.2.6.0.zip",
+        "2.6.1": "https://downloads.wordpress.org/plugin/wp-debugging.2.6.1.zip",
+        "2.7.0": "https://downloads.wordpress.org/plugin/wp-debugging.2.7.0.zip",
+        "2.7.1": "https://downloads.wordpress.org/plugin/wp-debugging.2.7.1.zip",
+        "2.7.2": "https://downloads.wordpress.org/plugin/wp-debugging.2.7.2.zip",
+        "2.8.0": "https://downloads.wordpress.org/plugin/wp-debugging.2.8.0.zip",
+        "2.9.0": "https://downloads.wordpress.org/plugin/wp-debugging.2.9.0.zip",
+        "2.9.1": "https://downloads.wordpress.org/plugin/wp-debugging.2.9.1.zip",
+        "2.9.2": "https://downloads.wordpress.org/plugin/wp-debugging.2.9.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/wp-debugging.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://thefragens.com/git-updater-donate",
+    "banners": {
+        "low": "https://ps.w.org/wp-debugging/assets/banner-772x250.png?rev=2552243",
+        "high": "https://ps.w.org/wp-debugging/assets/banner-1544x500.png?rev=2552243"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/wp-debugging/assets/icon.svg?rev=2842498",
+        "svg": "https://ps.w.org/wp-debugging/assets/icon.svg?rev=2842498"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": "1",
+    "author_block_rating": 94.11764705882399,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "wp-debugging",
+            "language": "de_DE",
+            "version": "2.11.23",
+            "updated": "2024-03-19 08:22:55",
+            "package": "http://downloads.wordpress.org/translation/plugin/wp-debugging/2.11.23/de_DE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "wp-debugging",
+            "language": "es_ES",
+            "version": "2.11.23",
+            "updated": "2023-01-27 19:53:03",
+            "package": "http://downloads.wordpress.org/translation/plugin/wp-debugging/2.11.23/es_ES.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "wp-debugging",
+            "language": "fr_FR",
+            "version": "2.11.23",
+            "updated": "2021-05-17 08:13:55",
+            "package": "http://downloads.wordpress.org/translation/plugin/wp-debugging/2.11.23/fr_FR.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "wp-debugging",
+            "language": "ja",
+            "version": "2.11.23",
+            "updated": "2023-08-05 16:33:06",
+            "package": "http://downloads.wordpress.org/translation/plugin/wp-debugging/2.11.23/ja.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "wp-debugging",
+            "language": "pt_PT",
+            "version": "2.11.23",
+            "updated": "2023-02-06 08:35:46",
+            "package": "http://downloads.wordpress.org/translation/plugin/wp-debugging/2.11.23/pt_PT.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "wp-debugging",
+            "language": "sv_SE",
+            "version": "2.11.23",
+            "updated": "2023-01-28 20:18:08",
+            "package": "http://downloads.wordpress.org/translation/plugin/wp-debugging/2.11.23/sv_SE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "wp-debugging",
+            "language": "zh_TW",
+            "version": "2.11.23",
+            "updated": "2023-01-30 09:31:34",
+            "package": "http://downloads.wordpress.org/translation/plugin/wp-debugging/2.11.23/zh_TW.zip"
+        }
+    ]
+}

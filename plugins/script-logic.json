@@ -1,0 +1,89 @@
+{
+    "name": "Script Logic",
+    "slug": "script-logic",
+    "version": "0.3",
+    "author": "<a href=\"http://scriptbaker.com/\">Tahir Yasin</a>",
+    "author_profile": "https://profiles.wordpress.org/tahiryasin/",
+    "contributors": {
+        "tahiryasin": {
+            "profile": "https://profiles.wordpress.org/tahiryasin/",
+            "avatar": "https://secure.gravatar.com/avatar/f3b78bf78395f804c4b64531d3ac42e9?s=96&d=monsterid&r=g",
+            "display_name": "Tahir Yasin"
+        }
+    },
+    "requires": "2.8",
+    "tested": "3.9.40",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 60,
+    "ratings": {
+        "5": 1,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 1
+    },
+    "num_ratings": 2,
+    "support_url": "https://wordpress.org/support/plugin/script-logic/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 2068,
+    "last_updated": "2014-07-10 10:22am GMT",
+    "added": "2014-06-16",
+    "homepage": "http://scriptbaker.com/script-logic",
+    "sections": {
+        "description": "<p>This plugin lists all JavaScripts and Style sheets with a control field that lets you control CSS &amp; JavaScript files to include only on the pages where you actually need them. The text field lets you use WP&#8217;s <a href=\"https://codex.wordpress.org/Conditional_Tags\" rel=\"nofollow ugc\">Conditional Tags</a>, or any general PHP code.</p>\n<p>NOTE: The script logic you introduce is evaluated directly. Anyone who has permission to manage options will have the right to add any code, including malicious and possibly destructive code. There is an optional filter &#8216;script_logic_eval_override&#8217; which you can use to bypass the EVAL with your own code if needed. (See <a href=\"other_notes/\" rel=\"nofollow ugc\">Other Notes</a>).</p>\n<h3>Writing Logic Code</h3>\n<p>The text in the &#8216;Logic&#8217; field can be full PHP code and should return &#8216;true&#8217; when you need the script to load. If there is no &#8216;return&#8217; in the text, an implicit &#8216;return&#8217; is added to the start and a &#8216;;&#8217; is added on the end. (This is just to make single statements like is_home() more convenient.)</p>\n<h4>The Basics</h4>\n<p>Make good use of <a href=\"https://codex.wordpress.org/Conditional_Tags\" rel=\"nofollow ugc\">WP&#8217;s own conditional tags</a>. You can vary and combine code using:</p>\n<ul>\n<li><code>!</code> (NOT) to <strong>reverse</strong> the logic, eg <code>!is_home()</code> is TRUE when this is NOT the home page.</li>\n<li><code>||</code> (OR) to <strong>combine</strong> conditions. <code>X OR Y</code> is TRUE when either X is true or Y is true.</li>\n<li><code>&amp;&amp;</code> (AND) to make conditions <strong>more specific</strong>. <code>X AND Y</code> is TRUE when both X is true and Y is true.</li>\n</ul>\n<p>There are lots of great code examples on the WP forums, and on WP sites across the net. But the WP Codex is also full of good examples to adapt, such as <a href=\"https://codex.wordpress.org/Template_Tags/in_category#Testing_if_a_post_is_in_a_descendant_category\" rel=\"nofollow ugc\">Test if post is in a descendent category</a>.</p>\n<h4>Examples</h4>\n<ul>\n<li><code>is_home()</code> &#8212; just the main blog page</li>\n<li><code>!is_page('about')</code> &#8212; everywhere EXCEPT this specific WP &#8216;page&#8217;</li>\n<li><code>!is_user_logged_in()</code> &#8212; shown when a user is not logged in</li>\n<li><code>is_category(array(5,9,10,11))</code> &#8212; category page of one of the given category IDs</li>\n<li><code>is_single() &amp;&amp; in_category('baked-goods')</code> &#8212; single post that&#8217;s in the category with this slug</li>\n<li><code>strpos($_SERVER['HTTP_REFERER'], \"google.com\")!=false</code> &#8212; script to load when clicked through from a google search</li>\n<li><code>is_category() &amp;&amp; in_array($cat, get_term_children( 5, 'category'))</code> &#8212; category page that&#8217;s a descendent of category 5</li>\n<li><code>global $post; return (in_array(77,get_post_ancestors($post)));</code> &#8212; WP page that is a child of page 77</li>\n<li><code>global $post; return (is_page('home') || ($post-&gt;post_parent==\"13\"));</code> &#8212; home page OR the page that&#8217;s a child of page 13</li>\n</ul>\n<p>Note the extra &#8216;;&#8217; on the end where there is an explicit &#8216;return&#8217;.</p>\n<h3>The &#8216;script_logic_eval_override&#8217; filter</h3>\n<p>Before the Script Logic code is evaluated for each script, the text of the Script Logic code is passed through this filter. If the filter returns a BOOLEAN result, this is used instead to determine if the script should load. Return TRUE to load.</p>\n",
+        "installation": "<ol>\n<li>Upload plugin to the <code>/wp-content/plugins/</code> directory</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</li>\n<li>Configure the plugin at <code>Settings -&gt; Script Logic</code> </li>\n<li>That&#8217;s it.</li>\n</ol>\n<h4>Configuration</h4>\n<p>On plugin configuration page you see all script and CSS files with a logic field. Lets suppose you are using Contact Form 7 plugin. You created a page Contact Us (slug = contact-us) and want to include Contact Form 7 scripts only on this page. Find the Contact Form 7 scripts on plugin&#8217;s configuration page (they have handle = contact-form-7) and put <code>is_page('contact-us')</code> in logic field</p>\n",
+        "faq": "\n<h4>Why isn&#8217;t it working?</h4>\n<p>\n<p>Try switching to the WP default theme &#8211; if the problem goes away, there is something specific to your theme that may be interfering with the WP conditional tags.</p>\n<p>Most probably the logic text on one of your scripts is invalid PHP</p>\n</p>\n<h4>How do I load a certain script X on just my &#8216;home&#8217; page? (Or on every page except that.)</h4>\n<p>\n<p>There is some confusion between the <a href=\"https://codex.wordpress.org/Conditional_Tags#The_Main_Page\" rel=\"nofollow ugc\">Main Page and the front page</a>. If you want a script on your &#8216;front page&#8217; whether that is a static page or a set of posts, use is_front_page(). If it is a page using is_page(x) does not work. If your &#8216;front page&#8217; is a page and not a series of posts, you can still use is_home() to include scripts on that main posts page (as defined in Admin &gt; Settings &gt; Reading).</p>\n</p>\n\n",
+        "changelog": "<h4>0.1</h4>\n<ul>\n<li>First stable release.</li>\n</ul>\n"
+    },
+    "short_description": "Script Logic lets you control on which pages scripts and style sheets load using WP&#039;s conditional tags.",
+    "description": "<p>This plugin lists all JavaScripts and Style sheets with a control field that lets you control CSS &amp; JavaScript files to include only on the pages where you actually need them. The text field lets you use WP&#8217;s <a href=\"https://codex.wordpress.org/Conditional_Tags\" rel=\"nofollow ugc\">Conditional Tags</a>, or any general PHP code.</p>\n<p>NOTE: The script logic you introduce is evaluated directly. Anyone who has permission to manage options will have the right to add any code, including malicious and possibly destructive code. There is an optional filter &#8216;script_logic_eval_override&#8217; which you can use to bypass the EVAL with your own code if needed. (See <a href=\"other_notes/\" rel=\"nofollow ugc\">Other Notes</a>).</p>\n<h3>Writing Logic Code</h3>\n<p>The text in the &#8216;Logic&#8217; field can be full PHP code and should return &#8216;true&#8217; when you need the script to load. If there is no &#8216;return&#8217; in the text, an implicit &#8216;return&#8217; is added to the start and a &#8216;;&#8217; is added on the end. (This is just to make single statements like is_home() more convenient.)</p>\n<h4>The Basics</h4>\n<p>Make good use of <a href=\"https://codex.wordpress.org/Conditional_Tags\" rel=\"nofollow ugc\">WP&#8217;s own conditional tags</a>. You can vary and combine code using:</p>\n<ul>\n<li><code>!</code> (NOT) to <strong>reverse</strong> the logic, eg <code>!is_home()</code> is TRUE when this is NOT the home page.</li>\n<li><code>||</code> (OR) to <strong>combine</strong> conditions. <code>X OR Y</code> is TRUE when either X is true or Y is true.</li>\n<li><code>&amp;&amp;</code> (AND) to make conditions <strong>more specific</strong>. <code>X AND Y</code> is TRUE when both X is true and Y is true.</li>\n</ul>\n<p>There are lots of great code examples on the WP forums, and on WP sites across the net. But the WP Codex is also full of good examples to adapt, such as <a href=\"https://codex.wordpress.org/Template_Tags/in_category#Testing_if_a_post_is_in_a_descendant_category\" rel=\"nofollow ugc\">Test if post is in a descendent category</a>.</p>\n<h4>Examples</h4>\n<ul>\n<li><code>is_home()</code> &#8212; just the main blog page</li>\n<li><code>!is_page('about')</code> &#8212; everywhere EXCEPT this specific WP &#8216;page&#8217;</li>\n<li><code>!is_user_logged_in()</code> &#8212; shown when a user is not logged in</li>\n<li><code>is_category(array(5,9,10,11))</code> &#8212; category page of one of the given category IDs</li>\n<li><code>is_single() &amp;&amp; in_category('baked-goods')</code> &#8212; single post that&#8217;s in the category with this slug</li>\n<li><code>strpos($_SERVER['HTTP_REFERER'], \"google.com\")!=false</code> &#8212; script to load when clicked through from a google search</li>\n<li><code>is_category() &amp;&amp; in_array($cat, get_term_children( 5, 'category'))</code> &#8212; category page that&#8217;s a descendent of category 5</li>\n<li><code>global $post; return (in_array(77,get_post_ancestors($post)));</code> &#8212; WP page that is a child of page 77</li>\n<li><code>global $post; return (is_page('home') || ($post-&gt;post_parent==\"13\"));</code> &#8212; home page OR the page that&#8217;s a child of page 13</li>\n</ul>\n<p>Note the extra &#8216;;&#8217; on the end where there is an explicit &#8216;return&#8217;.</p>\n<h3>The &#8216;script_logic_eval_override&#8217; filter</h3>\n<p>Before the Script Logic code is evaluated for each script, the text of the Script Logic code is passed through this filter. If the filter returns a BOOLEAN result, this is used instead to determine if the script should load. Return TRUE to load.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/script-logic.0.3.zip",
+    "upgrade_notice": {
+        "": "<p>NA</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/script-logic/assets/screenshot-1.png?rev=932889",
+            "caption": "screenshot-1.png"
+        },
+        {
+            "src": "https://ps.w.org/script-logic/assets/screenshot-2.png?rev=932889",
+            "caption": "screenshot-2.png"
+        }
+    ],
+    "tags": {
+        "admin": "admin",
+        "conditional-tags": "conditional-tags",
+        "script": "script",
+        "speed": "speed",
+        "style": "style"
+    },
+    "stable_tag": "0.3",
+    "versions": {
+        "0.2": "https://downloads.wordpress.org/plugin/script-logic.0.2.zip",
+        "0.3": "https://downloads.wordpress.org/plugin/script-logic.0.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/script-logic.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "http://NA",
+    "banners": {
+        "low": "https://ps.w.org/script-logic/assets/banner-772x250.png?rev=932845",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/script-logic/assets/icon-128x128.png?rev=1159173"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 60,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

@@ -1,0 +1,68 @@
+{
+    "name": "WP ProFTPd",
+    "slug": "wp-proftpd",
+    "version": "1.0.0",
+    "author": "<a href=\"https://derrick-smith.com\">Derrick Smith</a>",
+    "author_profile": "https://profiles.wordpress.org/derricksmith01/",
+    "contributors": {
+        "derricksmith01": {
+            "profile": "https://profiles.wordpress.org/derricksmith01/",
+            "avatar": "https://secure.gravatar.com/avatar/4b0923c93123d824fc150ed52f406342?s=96&d=monsterid&r=g",
+            "display_name": "derricksmith01"
+        }
+    },
+    "requires": "4.4",
+    "tested": "5.1.19",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/wp-proftpd/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 1105,
+    "last_updated": "2020-10-05 11:42pm GMT",
+    "added": "2011-05-01",
+    "homepage": "https://derrick-smith.com",
+    "sections": {
+        "description": "<p>WP ProFTPd helps Authenticate ProFTPd users to FTP, SFTP, FTPS sites using the WordPress database.  This plugin creates stored procedures in the WordPress database that can be used to query users, groups and user account information.  A dashboard shows all ProFTP logging information inside the WordPress Administration Portal.</p>\n<h3>Features</h3>\n<ul>\n<li>Uses the WordPress database for ProFTPd authentication</li>\n<li>Creates WordPress user meta to store information about access rights  </li>\n<li>Uses stored procedures to securely access the WordPress database</li>\n<li>Creates a dashboard to show valuable authentication and FTP operations information</li>\n<li>Supports FTP, SFTP, FTPS</li>\n</ul>\n<h3>Requirements</h3>\n<ul>\n<li>PHP &gt;= 5.5.0</li>\n<li>WordPress &gt;= 4.4</li>\n<li>ProFTPd</li>\n<li>WP Password Bcrypt</li>\n</ul>\n",
+        "installation": "<h3>WP Password Bcrypt WordPress Plugin Prerequisite</h3>\n<ol>\n<li>Download latest Bcyrpt plugin at https://github.com/roots/wp-password-bcrypt/wp-password-bcrypt.php.</li>\n<li>Save wp-password-bcrypt.php to /wp-content/mu-plugins &#8211; Create mu-plugins folder if it does not exist.</li>\n</ol>\n<h3>WP ProFTPd WordPress Plugin</h3>\n<ol>\n<li>Download the plugin and upload to you WordPress site.</li>\n<li>Install the plugin.</li>\n<li>Configure a user for FTP access on the user profile page.\n<ul>\n<li>Enabled = True</li>\n<li>UID = 2001</li>\n<li>GID = 2001</li>\n<li>Home Directory = /srv/ftp/{username}</li>\n<li>Shell = /sbin/nologin</li>\n</ul>\n</li>\n</ol>\n<h3>ProFTPd</h3>\n<p>(Ubuntu Installation)<br />\n1. cd /opt<br />\n2. sudo apt-get -y install build-essential gettext make g++ libwrap0-dev libsasl2-dev python-dev libmysql++-dev libpam0g-dev libssl-dev unixodbc-dev libncurses5-dev libacl1-dev libcap-dev<br />\n3. sudo wget ftp://ftp.proftpd.org/distrib/source/proftpd-1.3.7a.tar.gz<br />\n4. sudo tar -xvf proftpd-1.3.7a.tar.gz<br />\n5. cd proftpd-1.3.7a<br />\n6. sudo ./configure &#8211;prefix=/usr &#8211;with-includes=/usr/include/mysql &#8211;mandir=/usr/share/man &#8211;sysconfdir=/etc/proftpd &#8211;localstatedir=/var/run &#8211;libexecdir=/usr/lib/proftpd &#8211;enable-sendfile &#8211;enable-facl &#8211;enable-dso &#8211;enable-autoshadow &#8211;enable-ctrls &#8211;with-modules=mod_readme:mod_sql:mod_sql_passwd:mod_exec &#8211;enable-ipv6 &#8211;enable-nls &#8211;build x86_64-linux-gnu &#8211;with-shared=mod_unique_id:mod_site_misc:mod_load:mod_ban:mod_quotatab:mod_sql:mod_sql_mysql:mod_dynmasq:mod_quotatab_sql:mod_ratio:mod_tls:mod_rewrite:mod_radius:mod_wrap:mod_wrap2:mod_wrap2_file:mod_wrap2_sql:mod_quotatab_file:mod_quotatab_radius:mod_facl:mod_ctrls_admin:mod_sftp:mod_sftp_pam:mod_sftp_sql:mod_shaper:mod_sql_passwd:mod_ifsession build_alias=x86_64-linux-gnu CFLAGS=-O2<br />\n7. sudo make install<br />\n8. sudo groupadd -g 46 proftpd<br />\n9. sudo useradd -c proftpd -d /srv/ftp -g proftpd -s /usr/bin/proftpdshell -u 46 proftpd<br />\n10. sudo install -v -d -m775 -o proftpd -g proftpd /srv/ftp<br />\n11. sudo ln -v -s /bin/false /usr/bin/proftpdshell<br />\n12. sudo mkdir -p /etc/proftpd/ssl<br />\n13. sudo mkdir -p /var/log/proftpd<br />\n14. Create file &#8216;proftpd&#8217; using your favorite editor, copy script below</p>\n<pre><code>#!/bin/sh\n\n# ProFTPD files\nFTPD_BIN=/usr/sbin/proftpd\nFTPD_CONF=/etc/proftpd/proftpd.conf\nPIDFILE=/var/run/proftpd.pid\n\n# If PIDFILE exists, does it point to a proftpd process?\n\nif [ -f $PIDFILE ]; then\n    pid=`cat $PIDFILE`\nfi\n\nif [ ! -x $FTPD_BIN ]; then\n    echo \"$0: $FTPD_BIN: cannot execute\"\n    exit 1\nfi\n\ncase $1 in\n\n    start)\n        if [ -n \"$pid\" ]; then\n            echo \"$0: proftpd [PID $pid] already running\"\n            exit\n        fi\n\n        if [ -r $FTPD_CONF ]; then\n            echo \"Starting proftpd...\"\n\n            $FTPD_BIN -c $FTPD_CONF\n\n        else\n            echo \"$0: cannot start proftpd -- $FTPD_CONF missing\"\n        fi\n    ;;\n\n    stop)\n        if [ -n \"$pid\" ]; then\n            echo \"Stopping proftpd...\"\n            kill -TERM $pid\n\n        else\n            echo \"$0: proftpd not running\"\n            exit 1\n        fi\n    ;;\n\n    restart)\n        if [ -n \"$pid\" ]; then\n        echo \"Rehashing proftpd configuration\"\n        kill -TERM $pid\n\n        else\n            echo \"$0: proftpd not running\"\n            xit 1\n        fi\n    ;;\n\n    *)\n        echo \"usage: $0 {start|stop|restart}\"\n        exit 1\n    ;;\n\nesac\n\nexit 0\n</code></pre>\n<ol>\n<li>\n<p>Edit file &#8216;/etc/proftpd/proftpd.conf&#8217; using your favorite editor (FTP Type can be &#8220;ftp&#8221;,&#8221;ftps&#8221;,&#8221;sftp&#8221; depending on the virtualhost configuration)</p>\n<pre><code>    &lt;Global&gt;\n        &lt;IfModule mod_sql.c&gt;\n            SQLBackend                      mysql\n            SQLAuthTypes                    bcrypt\n            SQLPasswordEngine               on\n            SQLPasswordEncoding             base64\n            SQLPasswordRounds               8\n            SQLEngine                       on\n            AuthOrder                       mod_sql.c\n            SQLConnectInfo                  {wordpress database name}@localhost {wordpress database user} \"{wordpress database password}\"\n\n            SQLAuthenticate                 users\n            SQLGroupInfo                    wp_proftpd_groups groupname gid members\n\n            SQLUserInfo custom:/get-user-by-name\n\n            # set min UID and GID - otherwise these are 999 each\n            SQLMinID        500\n\n            # Update count every time user logs in\n            SQLLog PASS updatecount\n            SQLNamedQuery updatecount FREEFORM \"CALL wp_proftpd_update_count('%U')\"\n\n            SqlLogFile /var/log/proftpd/sql.log\n            SQLLog PASS,DELE,MKD,RETR,RMD,RNFR,RNTO,STOR,APPE extendedlog\n            SQLNamedQuery extendedlog FREEFORM \"CALL wp_proftpd_insert_log('%a', '%U', '%r')\"\n        &lt;/IfModule&gt;\n    &lt;/Global&gt;\n\n    &lt;VirtualHost {x.x.x.x}&gt;\n        SQLNamedQuery get-user-by-name FREEFORM \"CALL wp_proftpd_get_ftp_user_by_username('%U','{ftp_type}')\"\n    &lt;/VirtualHost&gt;\n</code></pre>\n</li>\n<li>\n<p>sudo mv proftpd /etc/init.d/proftpd</p>\n</li>\n<li>sudo chmod 755 /etc/init.d/proftpd</li>\n<li>sudo ln -s /etc/init.d/proftpd /etc/init.d/proftpd_start</li>\n<li>sudo mv /etc/init.d/proftpd_start /etc/rc5.d</li>\n<li>sudo /etc/init.d/proftpd start OR sudo service proftpd start</li>\n</ol>\n<h4>Log File Locations</h4>\n<ol>\n<li>Proftpd Service = /var/log/proftpd/proftpd.log</li>\n<li>Proftpd SQL = /var/log/proftpd/sql.log</li>\n<li>Proftpd Transfer = /var/log/proftpd/xfer.log</li>\n</ol>\n"
+    },
+    "short_description": "WP ProFTPd helps Authenticate ProFTPd users to FTP, SFTP, FTPS sites using the WordPress database.",
+    "description": "<p>WP ProFTPd helps Authenticate ProFTPd users to FTP, SFTP, FTPS sites using the WordPress database.  This plugin creates stored procedures in the WordPress database that can be used to query users, groups and user account information.  A dashboard shows all ProFTP logging information inside the WordPress Administration Portal.</p>\n<h3>Features</h3>\n<ul>\n<li>Uses the WordPress database for ProFTPd authentication</li>\n<li>Creates WordPress user meta to store information about access rights  </li>\n<li>Uses stored procedures to securely access the WordPress database</li>\n<li>Creates a dashboard to show valuable authentication and FTP operations information</li>\n<li>Supports FTP, SFTP, FTPS</li>\n</ul>\n<h3>Requirements</h3>\n<ul>\n<li>PHP &gt;= 5.5.0</li>\n<li>WordPress &gt;= 4.4</li>\n<li>ProFTPd</li>\n<li>WP Password Bcrypt</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/wp-proftpd.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "authentication": "authentication",
+        "ftp": "ftp"
+    },
+    "stable_tag": "trunk",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/wp-proftpd.1.0.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://derrick-smith.com",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/wp-proftpd.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

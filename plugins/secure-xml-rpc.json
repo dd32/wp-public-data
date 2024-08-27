@@ -1,0 +1,86 @@
+{
+    "name": "Secure XML-RPC",
+    "slug": "secure-xml-rpc",
+    "version": "1.0.0",
+    "author": "<a href=\"http://eamann.com\">Eric Mann</a>",
+    "author_profile": "https://profiles.wordpress.org/ericmann/",
+    "contributors": {
+        "ericmann": {
+            "profile": "https://profiles.wordpress.org/ericmann/",
+            "avatar": "https://secure.gravatar.com/avatar/46093583d8895095adb1b0071c505af2?s=96&d=monsterid&r=g",
+            "display_name": "Eric Mann"
+        }
+    },
+    "requires": "3.8",
+    "tested": "4.0.38",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 74,
+    "ratings": {
+        "5": 2,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 1
+    },
+    "num_ratings": 3,
+    "support_url": "https://wordpress.org/support/plugin/secure-xml-rpc/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 100,
+    "downloaded": 6223,
+    "last_updated": "2014-08-30 9:40pm GMT",
+    "added": "2014-01-01",
+    "homepage": "http://wordpress.org/plugins/secure-xmlrpc",
+    "sections": {
+        "description": "<p>Rather than sending usernames and passwords in plain text with every request, we&#8217;re going to use a set of public/secret keys to hash data and authenticate instead.</p>\n<p>On your WordPress profile, you will see a new &#8220;Remote Publishing Permissions&#8221; section listing out the applications that have permission to publish, along with their public and secret keys.</p>\n<p>New applications can be added whenever you want.  You can also change the names of applications, or revoke publishing permission by deleting them.</p>\n<h3>Additional Information</h3>\n<p>Lock graphic designed by Scott Lewis from the thenounproject.com</p>\n",
+        "installation": "<h4>Manual Installation</h4>\n<ol>\n<li>Upload the entire <code>/secure-xml-rpc</code> directory to the <code>/wp-content/plugins/</code> directory.</li>\n<li>Activate Secure XML-RPC through the &#8216;Plugins&#8217; menu in WordPress.</li>\n</ol>\n",
+        "faq": "\n<h4>How do I use the new authorization?</h4>\n<p>\n<p>The old username/password paradigm can still be used, but will result in a <code>X-Deprecated</code> header being returned by the server.</p>\n<p>From now on, you will send an <code>Authorization</code> header.  This header will be the publishing application&#8217;s public key, two pipe (<code>|</code>) characters, and a hash of the application&#8217;s secret key concatenated with the body of the request.</p>\n</p>\n<h4>How do I generate the message hash?</h4>\n<p>\n<p>Say your application has the following information:<br />\n* Public Key: b730db0864b0d4453ba6a26ad6613cd4<br />\n* Secret Key: 7647a19f5bf3e9fd001419900ad48a54</p>\n<p>And you want to make the following request (whitespace/indentation added for readability, but is removed when calculating hashes):</p>\n<pre><code>&lt;?xml version=\"1.0\"?&gt;\n&lt;methodCall&gt;\n  &lt;methodName&gt;wp.getPosts&lt;/methodName&gt;\n  &lt;params&gt;\n    &lt;param&gt;\n      &lt;value&gt;&lt;i4&gt;1&lt;/i4&gt;&lt;/value&gt;\n    &lt;/param&gt;\n    &lt;param&gt;\n      &lt;value&gt;&lt;string&gt;&lt;/string&gt;&lt;/value&gt;\n    &lt;/param&gt;\n    &lt;param&gt;\n      &lt;value&gt;&lt;string&gt;&lt;/string&gt;&lt;/value&gt;\n    &lt;/param&gt;\n  &lt;/params&gt;\n&lt;/methodCall&gt;\n</code></pre>\n<p>Note that the second and third parameters (traditionally <code>username</code> and <code>password</code>) are empty.  Usernames and passwords can still be specified, but will result in the server returning an <code>X-Deprecated</code> header.</p>\n<p>Your Authorization header would thus become:</p>\n<pre><code>b730db0864b0d4453ba6a26ad6613cd4||3fac15f99f7a178f922bcc4942e62dc9001b2a45118fc3a6f3aebd77d25f4d58\n</code></pre>\n<p>The second part of the header is generated in PHP by calculating:</p>\n<pre><code>hash( 'sha256', '7647a19f5bf3e9fd001419900ad48a54' . hash( 'sha256', '7647a19f5bf3e9fd001419900ad48a54' . {request_body} ) )\n</code></pre>\n<p>WordPress will read the header and log you in as usual, but you never need to send your password across the wire.</p>\n<p>In this paradigm, application secret keys should <em>also</em> be treated as passwords &#8211; they are sensitive information!</p>\n</p>\n<h4>Why are we using the secret key twice?</h4>\n<p>\n<p>Some developers raised concerns about <a href=\"https://blog.whitehatsec.com/hash-length-extension-attacks/\" rel=\"nofollow ugc\">length extension attacks</a> in previous editions of the plugin. While length extension isn&#8217;t strictly necessary when dealing with XML-based messaging, a double hash helps end the discussion around potentially-related vulnerabilities.</p>\n<p>The double-hash is similar to but simpler than HMAC and is fairly easy to implement in any programming language. Just note, PHP&#8217;s <code>hash()</code> function returns a base64-encoded string, not a raw hash of the data passed in.</p>\n</p>\n<h4>Do I have to copy/paste my application keys into remote systems?</h4>\n<p>\n<p>Not necessarily.</p>\n<p>The latest version of the plugin adds a new XML-RPC method to the system that allows for the generation of user-specific application keys remotely. <em>Please only ever call this method over a secure/trusted network connection</em> when setting up an application for the first time.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>New: Add a custom RPC method for generating application keys remotely.</li>\n<li>Dev change: Move all functional implementations inside our pseudo-namespace.</li>\n<li>Dev change: Use a constant-time string comparison method for better security and less data leakage during authentication.</li>\n<li>Dev change: Use a double-hash to prevent any potential length-extension attacks.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>First release</li>\n</ul>\n"
+    },
+    "short_description": "More secure wrapper for the WordPress XML-RPC interface.",
+    "description": "<p>Rather than sending usernames and passwords in plain text with every request, we&#8217;re going to use a set of public/secret keys to hash data and authenticate instead.</p>\n<p>On your WordPress profile, you will see a new &#8220;Remote Publishing Permissions&#8221; section listing out the applications that have permission to publish, along with their public and secret keys.</p>\n<p>New applications can be added whenever you want.  You can also change the names of applications, or revoke publishing permission by deleting them.</p>\n<h3>Additional Information</h3>\n<p>Lock graphic designed by Scott Lewis from the thenounproject.com</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/secure-xml-rpc.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>The hashing mechanism for generating authentication headers has changed slightly. Please refer to the FAWs for an example of how things work with a double-hash in the newest version.</p>",
+        "0.1.0": "<p>First Release</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/secure-xml-rpc/assets/screenshot-1.png?rev=831036",
+            "caption": "The new Remote Publishing Permissions area of the user profile."
+        }
+    ],
+    "tags": {
+        "authentication": "authentication",
+        "oauth": "oauth",
+        "security": "security",
+        "xmlrpc": "xmlrpc"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/secure-xml-rpc.0.1.0.zip",
+        "1.0.0": "https://downloads.wordpress.org/plugin/secure-xml-rpc.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/secure-xml-rpc.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "http://wordpress.org/plugins/secure-xmlrpc",
+    "banners": {
+        "low": "https://ps.w.org/secure-xml-rpc/assets/banner-772x250.png?rev=975920",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/secure-xml-rpc/assets/icon-128x128.png?rev=975920",
+        "2x": "https://ps.w.org/secure-xml-rpc/assets/icon-256x256.png?rev=975920"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 74,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

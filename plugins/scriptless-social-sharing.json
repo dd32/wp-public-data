@@ -1,0 +1,184 @@
+{
+    "name": "Scriptless Social Sharing",
+    "slug": "scriptless-social-sharing",
+    "version": "3.2.4",
+    "author": "<a href=\"https://robincornett.com\">Robin Cornett</a>",
+    "author_profile": "https://profiles.wordpress.org/littlerchicken/",
+    "contributors": {
+        "littlerchicken": {
+            "profile": "https://profiles.wordpress.org/littlerchicken/",
+            "avatar": "https://secure.gravatar.com/avatar/9f7bbe71ac0aa76444effb1cdc66488d?s=96&d=monsterid&r=g",
+            "display_name": "Robin Cornett"
+        }
+    },
+    "requires": "5.2",
+    "tested": "6.4.5",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 66,
+        "4": 1,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 67,
+    "support_url": "https://wordpress.org/support/plugin/scriptless-social-sharing/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10000,
+    "downloaded": 168581,
+    "last_updated": "2023-11-11 4:50pm GMT",
+    "added": "2016-03-01",
+    "homepage": "https://github.com/robincornett/scriptless-social-sharing",
+    "sections": {
+        "description": "<p><em>Scriptless Social Sharing</em> is a wee plugin to add buttons to your posts/pages, to make it easier for your readers to share your content on social networks.</p>\n<p>The sharing links use the most basic methods provided by each network. There is no JavaScript, nothing fancy included in this plugin, so if you want fancy, this is not the plugin you&#8217;re looking for. It just builds a set of links.</p>\n<p>The sharing buttons are accessible&#8211;even if you choose the &#8220;Icons Only&#8221; button styles, the network names are still part of the buttons, just hidden in an accessible-ready manner.</p>\n<p>There is a small settings page, so you can make decisions about which content types should have sharing buttons and where, what buttons should be added, and whether or not to use the plugin&#8217;s styles. Beyond that, developers may like to make use of filters throughout the plugin.</p>\n<p>Banner/icon image credit: <a href=\"https://gratisography.com/\" rel=\"nofollow ugc\">Ryan McGuire on Gratisography</a>.</p>\n",
+        "installation": "<ol>\n<li>Upload the entire <code>scriptless-social-sharing</code> folder to your <code>/wp-content/plugins</code> directory.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>Visit the Settings &gt; Scriptless Social Sharing page to change the default behavior of the plugin.</li>\n</ol>\n",
+        "faq": "\n<dt id='how%20are%20the%20social%20network%20icons%2Fbuttons%20displayed%3F'>\nHow are the social network icons/buttons displayed?\n</h4>\n<p>\n<p>Scriptless uses SVG files to display the social network icons, or you can revert to using the old FontAwesome webfont.</p>\n<p>Text only buttons are an option as well. And if you prefer flexbox for styling items in rows instead of table CSS, that&#8217;s now available on the settings page.</p>\n</p>\n<dt id='what%20social%20networks%20are%20supported%3F'>\nWhat social networks are supported?\n</h4>\n<p>\n<p>Scriptless Social Sharing currently supports the following social networks:</p>\n<ul>\n<li>X (Twitter)</li>\n<li>Facebook</li>\n<li>Pinterest</li>\n<li>LinkedIn</li>\n<li>Reddit</li>\n<li>WhatsApp</li>\n<li>Pocket</li>\n<li>Telegram</li>\n<li>Hatena Bookmark</li>\n<li>SMS</li>\n<li>Email</li>\n</ul>\n<p>Instagram does not support social sharing buttons.</p>\n</p>\n<dt id='can%20i%20change%20the%20svg%20icons%3F'>\nCan I change the SVG icons?\n</h4>\n<p>\n<p>Yes, using a filter, you can change which SVG icons are used. The plugin provides SVG alternatives for social networks if they are available.</p>\n<p>Here&#8217;s an example of how you could switch to using the &#8220;square&#8221; icons for each network (not all networks have one):</p>\n<pre><code>add_filter( 'scriptlesssocialsharing_svg_icons', 'rgc_use_square_icons' );\n/**\n * Change the Scriptless Social Sharing SVG icons to use the square versions when available.\n *\n * @param $icons\n *\n * @return array\n */\nfunction rgc_use_square_icons( $icons ) {\n    $square_icons = array(\n        'email'     =&gt; 'envelope-square',\n        'facebook'  =&gt; 'facebook-square',\n        'pinterest' =&gt; 'pinterest-square',\n        'reddit'    =&gt; 'reddit-square',\n        'twitter'   =&gt; 'twitter-square',\n        'whatsapp'  =&gt; 'whatsapp-square',\n    );\n\n    return array_merge( $icons, $square_icons );\n}\n</code></pre>\n<p>Want to use an icon not provided by the plugin? Load your own icons in your theme. As of version 3.2.0, the plugin uses SVG files directly, instead of sprite files. To use your own SVG files instead of the plugin&#8217;s, add them to your theme, in <code>assets/svg</code>. The plugin will use the theme icons in preference of the plugin.</p>\n</p>\n<dt id='what%20if%20i%20want%20to%20move%20where%20the%20buttons%20are%20output%3F'>\nWhat if I want to move where the buttons are output?\n</h4>\n<p>\n<p>Buttons can be added in multiple places, or easily add support so you can add buttons anywhere you like. The default button locations are:</p>\n<ul>\n<li>Before Content: at the beginning of the post/entry, within the post/entry content.</li>\n<li>After Content: at the end of the post/entry, within the post/entry content.</li>\n<li>Manual: select this if you are adding buttons with your own code (this ensures that the necessary styles are loaded, and some other housekeeping).</li>\n</ul>\n<p>To take advantage of the new location options, you must visit the plugin settings page and update your settings.</p>\n<p><strong>Note:</strong> if you have code that removes the original buttons output and adds it back by hand, make sure that you select Manual for the location for each affected content type.</p>\n<p>The best way to change the button output location is by using a filter. This example changes the locations from using <code>the_content</code> filter (with <code>hook</code> set to <code>false</code>) to using action hooks instead.</p>\n<pre><code>add_filter( 'scriptlesssocialsharing_locations', 'prefix_change_sss_locations' );\nfunction prefix_change_sss_locations( $locations ) {\n    $locations['before'] = array(\n        'hook'     =&gt; 'genesis_before_entry',\n        'filter'   =&gt; false,\n        'priority' =&gt; 8,\n    );\n    $locations['after'] = array(\n        'hook'     =&gt; 'loop_end',\n        'filter'   =&gt; false,\n        'priority' =&gt; 8,\n    );\n\n    return $locations;\n}\n</code></pre>\n<p>If you use the Genesis Framework, there is a setting to tell the plugin to use Genesis hooks instead.</p>\n</p>\n<dt id='is%20there%20a%20scriptless%20block%3F'>\nIs there a Scriptless block?\n</h4>\n<p>\n<p>Yes! Introduced in version 3.0, the new sharing block allows you to put sharing buttons anywhere in your content. Add just a few buttons, or rely on the default configuration defined on the settings page.</p>\n</p>\n<dt id='what%20about%20a%20shortcode%3F'>\nWhat about a shortcode?\n</h4>\n<p>\n<p>As of version 2.0.0, you can add sharing buttons directly to your content with a shortcode. You can tweak the output, too. For example, to add the buttons to your content, exactly as you have them set up in your settings, just use this shortcode:</p>\n<pre><code>[scriptless]\n</code></pre>\n<p>If you want to remove the heading, try it this way (or customize the heading by adding text):</p>\n<pre><code>[scriptless heading=\"\"]\n</code></pre>\n<p>Want to only show certain buttons in the shortcode? Add them as a shortcode attribute (separate with commas, no spaces). This will show just the email and facebook buttons:</p>\n<pre><code>[scriptless buttons=\"email,facebook\"]\n</code></pre>\n</p>\n<dt id='can%20i%20add%20sharing%20buttons%20to%20posts%20on%20archive%20pages%3F'>\nCan I add sharing buttons to posts on archive pages?\n</h4>\n<p>\n<p>Yes. First, you have to tell the plugin that it can, in fact, run, even on the relevant archive page:</p>\n<pre><code>add_filter( 'scriptlesssocialsharing_can_do_buttons', 'prefix_add_buttons_archives' );\nfunction prefix_add_buttons_archives( $cando ) {\n    if ( is_home() || is_tax() || is_category() ) {\n        $cando = true;\n    }\n    return $cando;\n}\n</code></pre>\n<p>Then you can add the buttons to the individual posts (this example works only with the Genesis Framework):</p>\n<pre><code>add_action( 'genesis_entry_content', 'prefix_scriptlesssocialsharing_buttons_entry_content', 25 );\nfunction prefix_scriptlesssocialsharing_buttons_entry_content() {\n    if ( ! function_exists( 'scriptlesssocialsharing_do_buttons' ) ) {\n        return;\n    }\n    $is_disabled = get_post_meta( get_the_ID(), '_scriptlesssocialsharing_disable', true );\n    if ( ! $is_disabled &amp;&amp; ! is_singular() ) {\n        echo wp_kses_post( scriptlesssocialsharing_do_buttons() );\n    }\n}\n</code></pre>\n</p>\n<dt id='some%20posts%20are%20missing%20the%20pinterest%20button.%20why%20is%20that%3F'>\nSome posts are missing the Pinterest button. Why is that?\n</h4>\n<p>\n<p>Yes, this is intentional. Pinterest really really <em>really</em> wants your posts to have an image. The Pinterest button breaks if there isn&#8217;t an image. The plugin looks in three places to find one: 1) the custom Pinterest image; 2) the post featured image; and 3) if there is no featured image set, it picks the first image uploaded to that specific post. At this point, if there is still no image, rather than putting up a button which won&#8217;t work, the plugin won&#8217;t output a Pinterest button at all on that particular post.</p>\n</p>\n<dt id='what%20is%20this%20%22custom%20pinterest%20image%22%3F'>\nWhat is this &#8220;Custom Pinterest Image&#8221;?\n</h4>\n<p>\n<p>You can add an image for the plugin to use specifically for Pinterest, instead of the post&#8217;s featured image. This image will be added to the Pinterest sharing button as well as hidden in your content, so that the Pinterest bookmarklet will be able to &#8220;see&#8221; the image. Scroll down in the post editor sidebar to find where to add the custom image.</p>\n</p>\n<dt id='how%20can%20i%20add%20a%20custom%20sharing%20button%3F'>\nHow can I add a custom sharing button?\n</h4>\n<p>\n<p>It has always been possible to add a custom sharing button with custom code, but version 3.2.0 makes this a little easier by creating a new helper function. You&#8217;ll access the helper function by using a filter. Here&#8217;s an example of how to add a button to share a post to Tumblr:</p>\n<pre><code>add_filter( 'scriptlesssocialsharing_register', 'prefix_scriptless_add_tumblr_button' );\n/**\n* Adds a custom sharing button to Scriptless Social Sharing.\n*\n* @return void\n*/\nfunction prefix_scriptless_add_tumblr_button( $buttons ) {\n    $buttons['tumblr'] = array(\n        'label'    =&gt; __( 'Tumblr', 'scriptless-social-sharing' ),\n        'url_base' =&gt; 'https://www.tumblr.com/share/link',\n        'args'     =&gt; array(\n            'query_args' =&gt; array(\n                'name' =&gt; '%%title%%',\n                'url'  =&gt; '%%permalink%%',\n            ),\n            'color'      =&gt; '#35465c',\n            'svg'        =&gt; 'tumblr-square', // Use this with the SVG icons and add the SVG file to your theme's `assets/svg` folder\n            'icon'       =&gt; 'f173', // Use this when using the FontAwesome font for icons\n        ),\n    );\n\n    return $buttons;\n}\n</code></pre>\n<p>The <code>%%</code> are used to designate placeholders for the attribute variables that the plugin will apply when building the button.</p>\n<p>Note that there is both an <code>svg</code> and an <code>icon</code> argument in the code sample. <code>svg</code> is preferred, but only applies if you are using the SVG option for the sharing icons. To add a new icon, upload it to your theme&#8217;s <code>assets/svg</code> directory and the plugin will use it automatically. If you are using the older FontAwesome option, use <code>icon</code> to add the CSS unicode for the icon.</p>\n</p>\n\n",
+        "changelog": "<h4>3.2.4</h4>\n<ul>\n<li>updated: SVG output has been updated for PHP 8 compatibility</li>\n</ul>\n<h4>3.2.3</h4>\n<ul>\n<li>updated: Twitter is now X</li>\n</ul>\n<h4>3.2.2</h4>\n<ul>\n<li>updated: script dependencies for the Scriptless block</li>\n<li>improved: Scriptless metabox can now be loaded regardless of location settings</li>\n<li>fixed: improved CSS class handling for the block</li>\n<li>dev: Scriptless now requires WordPress 5.2 or higher</li>\n<li>dev: additional filters have been added for the Pinterest button</li>\n</ul>\n<h4>3.2.1</h4>\n<ul>\n<li>fixed: fatal error for sites without the mbstring extension installed</li>\n<li>fixed: new icons should not override the original SVG filter usage</li>\n</ul>\n<h4>3.2.0</h4>\n<ul>\n<li>new: adding custom buttons is easier than ever with the new <code>scriptlesssocialsharing_register</code> filter (use described in FAQ)</li>\n<li>new/improved: SVG icons are now used directly, instead of from a sprite file</li>\n<li>added: Hatena Bookmark sharing button (props @kyontan)</li>\n<li>added: minimum PHP version is 5.6</li>\n<li>updated: FontAwesome 5.15.4</li>\n<li>fixed: block editor check for old versions of WordPress</li>\n<li>fixed: PHP constants for older versions of PHP</li>\n<li>note: this is the final version of Scriptless which will support WordPress versions earlier than 5.2</li>\n</ul>\n<h4>3.1.6</h4>\n<ul>\n<li>added: filter for the Pinterest image size</li>\n<li>improved: screen reader text on sharing buttons (buttons now say &#8220;Share on &#8230;&#8221;)</li>\n<li>fixed: post meta sanitization was using a function deprecated in PHP 7.4</li>\n</ul>\n<h4>3.1.5</h4>\n<ul>\n<li>updated: tested to WordPress 5.4</li>\n<li>fixed: the LinkedIn label</li>\n</ul>\n<h4>3.1.4</h4>\n<ul>\n<li>added: filter on button container element</li>\n<li>updated: Twitter color</li>\n<li>fixed: button class instantiation when button names are translated</li>\n<li>fixed: styles not loading on shortcodes outside of content</li>\n</ul>\n<h4>3.1.3</h4>\n<ul>\n<li>fixed: fatal error for fallback button class</li>\n</ul>\n<h4>3.1.2</h4>\n<ul>\n<li>fixed: SMS link behavior</li>\n<li>fixed: custom color CSS for custom buttons when using flexbox</li>\n<li>fixed: block script enqueue</li>\n<li>fixed: custom buttons now have access to query args, base URL filters, which are preferable to filtering the final URL</li>\n</ul>\n<h4>3.1.1</h4>\n<ul>\n<li>changed: HTML character decoding before URL encoding</li>\n<li>fixed: updated WhatsApp URL to use the API link instead of the shortened link due to issues on mobile</li>\n</ul>\n<h4>3.1.0</h4>\n<ul>\n<li>added: links opening in new tabs are no noopener, noreferrer, and nofollow by default, and can be filtered</li>\n<li>added: filter on the link target</li>\n<li>added: custom class on the hidden Pinterest image</li>\n<li>added: option to prevent the Scriptless block from being registered</li>\n<li>improved: scriptlesssocialsharing_link_markup filter has access to all link attributes</li>\n<li>improved: link parameter decoding/encoding</li>\n<li>changed: source SVG is set to role=&#8221;img&#8221;</li>\n<li>updated: Font Awesome 5.10.2</li>\n<li>fixed: SVG role and aria attributes</li>\n<li>fixed: singular post check which was always returning true</li>\n</ul>\n<h4>3.0.1</h4>\n<ul>\n<li>fixed: compatibility issue with WordPress versions before 5.0</li>\n</ul>\n<h4>3.0.0</h4>\n<ul>\n<li>added: SVG icons</li>\n<li>added: buttons for Telegram and SMS</li>\n<li>added: show buttons as icons only, icon + text, or text only</li>\n<li>added: select default CSS style: table (old) or flexbox (new, now default)</li>\n<li>added: a block!</li>\n<li>added: Finnish translation, props Hannu Jaatinen of Jargon Oy</li>\n<li>changed: icon only buttons use screen-reader-text class for label</li>\n<li>changed: shortcodes/blocks can now use any button, not just those selected in settings</li>\n<li>updated: Font Awesome is now 5.8.2 when using the webfont</li>\n<li>removed: Google+</li>\n<li>removed: media uploader no longer shows only images attached to the current post</li>\n<li>fixed: Pinterest buttons properly pass on hashtags</li>\n</ul>\n<h4>2.3.0</h4>\n<ul>\n<li>added: button for sharing on WhatsApp (props @yig)</li>\n<li>added: button for Pocket (props @rryyaanndd)</li>\n<li>added: ability to easily update the button display order</li>\n<li>added: <code>scriptlesssocialsharing_heading_element</code> filter to change heading level for sharing buttons</li>\n<li>improved: custom Pinterest image defaults to show images uploaded to the current post</li>\n</ul>\n<h4>2.2.2</h4>\n<ul>\n<li>changed: Google+ is now off for new users and will be removed in a future version</li>\n<li>changed: order of Pinterest button parameters to maybe reduce conflicts with lightbox plugins (props @pnwwebworks)</li>\n<li>fixed: overly aggressive sanitization of the custom Pinterest description which had issues with special characters (props @pnwwebworks)</li>\n</ul>\n<h4>2.2.1</h4>\n<ul>\n<li>fixed: error on settings validation</li>\n</ul>\n<h4>2.2.0</h4>\n<ul>\n<li>added: custom Pinterest description per post</li>\n<li>added: default email content setting</li>\n<li>changed: code reorganization</li>\n<li>fixed: email button should not open a new tab (props @salcode)</li>\n<li>fixed: initial Gutenberg compatibility</li>\n<li>fixed: end of content sharing buttons longer show after a shortcode if disabled</li>\n</ul>\n<h4>2.1.1</h4>\n<ul>\n<li>changed: CSS autoprefixing; buttons are now hidden on print</li>\n</ul>\n<h4>2.1.0</h4>\n<ul>\n<li>added: filter on the sharing link markup</li>\n<li>added: tabnapping fix on links</li>\n<li>fixed: button attributes on archives</li>\n<li>fixed: title encoding when special characters are present</li>\n</ul>\n<h4>2.0.1</h4>\n<ul>\n<li>fixed: possible division by zero if Pinterest is the only button and there is no image</li>\n<li>fixed: special characters in post titles breaking Twitter share</li>\n</ul>\n<h4>2.0.0</h4>\n<ul>\n<li>added: new settings to manage buttons output by content type</li>\n<li>added: a shortcode!</li>\n<li>added: link to the settings page from the Plugins page</li>\n<li>added: filter to manage button locations</li>\n<li>improved: URL construction methods now allow you to do things like add your own custom query args (props Sal Ferrarello)</li>\n<li>improved: if you&#8217;ve gone to the trouble of adding alt text to your featured images, thank you, and your Pinterest button will now use that (update from 1.5.2 applied to all featured images)</li>\n</ul>\n<h4>1.5.2</h4>\n<ul>\n<li>improved: custom Pinterest image alt text will be preferred over post title, if alt text is set</li>\n<li>fixed: URL encoding for strings with spaces</li>\n</ul>\n<h4>1.5.1</h4>\n<ul>\n<li>updated: Font Awesome (4.7.0)</li>\n</ul>\n<h4>1.5.0</h4>\n<ul>\n<li>added: ability to set a custom Pinterest image</li>\n<li>added: &#8220;related&#8221; parameter to Twitter URL (props Ben Meredith)</li>\n<li>improved: filter methods for adding new buttons</li>\n<li>fixed: disappearing post meta settings</li>\n</ul>\n<h4>1.4.0</h4>\n<ul>\n<li>added: option for button padding</li>\n<li>added: option for table width (width of all buttons)</li>\n<li>bugfix: errant + in some mail programs (props Anders Carlen)</li>\n</ul>\n<h4>1.3.0</h4>\n<ul>\n<li>added: option to only show icons on buttons, no text</li>\n<li>added: Reddit sharing button</li>\n<li>added: option to add sharing buttons to the beginning or end of content</li>\n<li>updated: code cleanup for settings and output</li>\n<li>bugfix: post type setting was not saved correctly&#8211;settings should be resaved</li>\n</ul>\n<h4>1.2.2</h4>\n<ul>\n<li>updated: Font Awesome 4.6.3</li>\n<li>fixed: error when a post is embedded in another site (feature introduced in WP 4.4) due to other checks being bypassed</li>\n</ul>\n<h4>1.2.1</h4>\n<ul>\n<li>fixed: pinterest button is now protected from an overzealous pinit script</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>added: setting to disable buttons on an individual post basis</li>\n<li>fixed: use repository language packs</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>added: filter to disable heading on output</li>\n<li>added: filter for the post fallback image (because pinterest)</li>\n<li>fixed: made CSS a bit more specific to avoid theme conflicts</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Fix CSS for buttons</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>add a fallback image method</li>\n<li>bugfix: don&#8217;t add Pinterest button if there is no image</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Added a settings page</li>\n<li>Prep for release on the WordPress repository</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release on Github</li>\n</ul>\n"
+    },
+    "short_description": "This plugin adds super simple social sharing buttons to your content.",
+    "description": "<p><em>Scriptless Social Sharing</em> is a wee plugin to add buttons to your posts/pages, to make it easier for your readers to share your content on social networks.</p>\n<p>The sharing links use the most basic methods provided by each network. There is no JavaScript, nothing fancy included in this plugin, so if you want fancy, this is not the plugin you&#8217;re looking for. It just builds a set of links.</p>\n<p>The sharing buttons are accessible&#8211;even if you choose the &#8220;Icons Only&#8221; button styles, the network names are still part of the buttons, just hidden in an accessible-ready manner.</p>\n<p>There is a small settings page, so you can make decisions about which content types should have sharing buttons and where, what buttons should be added, and whether or not to use the plugin&#8217;s styles. Beyond that, developers may like to make use of filters throughout the plugin.</p>\n<p>Banner/icon image credit: <a href=\"https://gratisography.com/\" rel=\"nofollow ugc\">Ryan McGuire on Gratisography</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.3.2.4.zip",
+    "upgrade_notice": {
+        "": "<p>3.2.4 - PHP 8 compatibility</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/scriptless-social-sharing/assets/screenshot-1.png?rev=2092998",
+            "caption": "Screenshot of the plugin settings in Settings &gt; Scriptless Social Sharing."
+        },
+        {
+            "src": "https://ps.w.org/scriptless-social-sharing/assets/screenshot-2.png?rev=1654354",
+            "caption": "Screenshot of the sharing buttons on a Post."
+        }
+    ],
+    "tags": {
+        "sharing-buttons": "sharing buttons",
+        "social-networks": "social networks",
+        "social-sharing": "social sharing"
+    },
+    "stable_tag": "3.2.4",
+    "versions": {
+        "1.0.1": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.1.0.2.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.1.1.0.zip",
+        "1.2.0": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.1.2.0.zip",
+        "1.2.1": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.1.2.1.zip",
+        "1.2.2": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.1.2.2.zip",
+        "1.3.0": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.1.3.0.zip",
+        "1.4.0": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.1.4.0.zip",
+        "1.5.0": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.1.5.0.zip",
+        "1.5.1": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.1.5.1.zip",
+        "1.5.2": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.1.5.2.zip",
+        "2.0.0": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.2.0.0.zip",
+        "2.0.1": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.2.0.1.zip",
+        "2.1.0": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.2.1.0.zip",
+        "2.1.1": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.2.1.1.zip",
+        "2.2.0": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.2.2.0.zip",
+        "2.2.1": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.2.2.1.zip",
+        "2.2.2": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.2.2.2.zip",
+        "2.3.0": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.2.3.0.zip",
+        "3.0.0": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.3.0.0.zip",
+        "3.0.1": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.3.0.1.zip",
+        "3.1.0": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.3.1.0.zip",
+        "3.1.1": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.3.1.1.zip",
+        "3.1.2": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.3.1.2.zip",
+        "3.1.3": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.3.1.3.zip",
+        "3.1.4": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.3.1.4.zip",
+        "3.1.5": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.3.1.5.zip",
+        "3.1.6": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.3.1.6.zip",
+        "3.2.0": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.3.2.0.zip",
+        "3.2.1": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.3.2.1.zip",
+        "3.2.2": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.3.2.2.zip",
+        "3.2.3": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.3.2.3.zip",
+        "3.2.4": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.3.2.4.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/scriptless-social-sharing.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://robincornett.com/donate/",
+    "banners": {
+        "low": "https://ps.w.org/scriptless-social-sharing/assets/banner-772x250.jpg?rev=1361689",
+        "high": "https://ps.w.org/scriptless-social-sharing/assets/banner-1544x500.jpg?rev=1361689"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/scriptless-social-sharing/assets/icon-128x128.jpg?rev=1361689",
+        "2x": "https://ps.w.org/scriptless-social-sharing/assets/icon-256x256.jpg?rev=1361689"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "scriptless-social-sharing",
+            "language": "en_GB",
+            "version": "3.2.4",
+            "updated": "2021-08-24 07:32:08",
+            "package": "http://downloads.wordpress.org/translation/plugin/scriptless-social-sharing/3.2.4/en_GB.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "scriptless-social-sharing",
+            "language": "en_CA",
+            "version": "3.2.4",
+            "updated": "2021-02-28 17:26:16",
+            "package": "http://downloads.wordpress.org/translation/plugin/scriptless-social-sharing/3.2.4/en_CA.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "scriptless-social-sharing",
+            "language": "es_CO",
+            "version": "3.2.4",
+            "updated": "2024-05-31 04:34:55",
+            "package": "http://downloads.wordpress.org/translation/plugin/scriptless-social-sharing/3.2.4/es_CO.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "scriptless-social-sharing",
+            "language": "es_ES",
+            "version": "3.2.4",
+            "updated": "2024-03-27 23:28:03",
+            "package": "http://downloads.wordpress.org/translation/plugin/scriptless-social-sharing/3.2.4/es_ES.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "scriptless-social-sharing",
+            "language": "es_VE",
+            "version": "3.2.4",
+            "updated": "2021-08-24 04:18:30",
+            "package": "http://downloads.wordpress.org/translation/plugin/scriptless-social-sharing/3.2.4/es_VE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "scriptless-social-sharing",
+            "language": "es_EC",
+            "version": "3.2.4",
+            "updated": "2021-08-24 06:40:29",
+            "package": "http://downloads.wordpress.org/translation/plugin/scriptless-social-sharing/3.2.4/es_EC.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "scriptless-social-sharing",
+            "language": "sv_SE",
+            "version": "3.2.4",
+            "updated": "2023-01-31 14:48:46",
+            "package": "http://downloads.wordpress.org/translation/plugin/scriptless-social-sharing/3.2.4/sv_SE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "scriptless-social-sharing",
+            "language": "zh_CN",
+            "version": "3.2.4",
+            "updated": "2021-03-31 09:08:18",
+            "package": "http://downloads.wordpress.org/translation/plugin/scriptless-social-sharing/3.2.4/zh_CN.zip"
+        }
+    ]
+}

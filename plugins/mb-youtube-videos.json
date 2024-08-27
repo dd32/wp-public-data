@@ -1,0 +1,92 @@
+{
+    "name": "(MB) YouTube Widget",
+    "slug": "mb-youtube-videos",
+    "version": "1.05",
+    "author": "<a href=\"http://www.mechabyte.com\">Mechabyte - Matthew Smith</a>",
+    "author_profile": "https://profiles.wordpress.org/mechabyte/",
+    "contributors": {
+        "mechabyte": {
+            "profile": "https://profiles.wordpress.org/mechabyte/",
+            "avatar": "https://secure.gravatar.com/avatar/85f1c7e1c4e7c05f509d1358a7107be3?s=96&d=monsterid&r=g",
+            "display_name": "Mechabyte"
+        }
+    },
+    "requires": "3.0",
+    "tested": "3.6.1",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 74,
+    "ratings": {
+        "5": 2,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 1
+    },
+    "num_ratings": 3,
+    "support_url": "https://wordpress.org/support/plugin/mb-youtube-videos/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 90,
+    "downloaded": 11758,
+    "last_updated": "2013-08-02 12:54am GMT",
+    "added": "2012-12-20",
+    "homepage": "http://www.mechabyte.com",
+    "sections": {
+        "description": "<p>The YouTube videos widget lets you quickly and easily display your most recent YouTube videos in your blog&#8217;s sidebar.</p>\n<h3>Features</h3>\n<ul>\n<li>The YouTube videos widget is fully-based on the WordPress <a href=\"https://codex.wordpress.org/Plugin_API\" rel=\"nofollow ugc\">Plugin API</a>.</li>\n<li>Uses hooks and filters to allow for maximum hackability by theme designers and developers.</li>\n<li>Organized straightforwardly so that it&#8217;s easy to modify and style.</li>\n</ul>\n<h3>Usage</h3>\n<p>The YouTube videos widget is ready to use as-is, although you can easily customize it to your liking with a bit of code.</p>\n<p>You can also insert a plain list of your recent videos into posts and pages with the shortcode <code>mechabyte_youtube</code>. For example, to load <strong>5</strong> videos from <strong>freddiew</strong> that <strong>open in new tabs</strong>, you&#8217;d use <code>[mechabyte_youtube username=\"freddiew\" videos=\"5\" tab=\"true\"]</code>.</p>\n<h3>Custom Styles</h3>\n<p>The YouTube videos widget loads it styles by hooking into WordPress&#8217; <code>wp_enqueue_scripts</code> action. To remove the default styling you need to remove the our <code>enqueue_scripts</code> function from the hook.</p>\n<pre><code>    remove_action( 'wp_enqueue_scripts', array( 'mechabyteYouTube', 'enqueue_scripts' ) );\n</code></pre>\n<h3>Custom Output</h3>\n<p>The end user has two options of displaying their YouTube videos: in plain or decorated lists. When modifying the output of the plugin you must use one of two filters that this plugin uses: <code>mbYT_construct_plain</code> and <code>mbYT_construct_decorated</code>. Before you add your own functions to either filter, you must remove the default ones that are used automatically: <code>mbYT_construct_plain_default</code> and <code>mbYT_construct_decorated_default</code>.</p>\n<pre><code>    remove_filter( 'mbYT_construct_plain', array( 'mechabyteYouTube', 'mbYT_construct_plain_default'), 10, 3  );\n    remove_filter( 'mbYT_construct_decorated', array( 'mechabyteYouTube', 'mbYT_construct_decorated_default'), 10, 3  );\n</code></pre>\n<p>Now it&#8217;s time to get creative. When creating a function that will loop through the videos you have complete control over how you want to display the content. Just keep in mind that in the end, you should be outputting <code>&lt;li&gt;</code> elements. When filters are being applied to the YouTube content, there are three arguments that are being passed through: <code>$youtube_videos</code> (<code>array</code>, the array of videos), <code>$number</code> (<code>integer</code>, the number of videos the user wishes to display), and <code>$tab</code> (<code>boolean</code>, a true/false value of whether or not the user wants to open video links in a new tab).<br />\nKeep in mind that you have access to the following pieces of information when creating your video loop:</p>\n<pre><code>    $item['title'] // Video title\n    $item['videoID'] // Video ID\n    $item['viewCount'] // Video view count\n    $item['published'] // Video publish date -- UNIX\n    $item['duration'] // Video duration in hh:mm:ss\n    $item['numLikes'] // Video likes count\n    $item['link'] // Video link\n    $item['image']['default'] // 'Default' thumbnail (low quality)\n    $item['image']['mqdefault'] // Medium quality thumbnail\n    $item['image']['hqdefault'] // High quality thumbnail\n</code></pre>\n<p>Here&#8217;s an example of some code that adds a custom function to our <code>mb_construct_plain</code> filter (assuming we&#8217;ve already removed the default functions). Keep in mind the <code>3</code> at the end. That lets WordPress expect our three arguments that will be passed through. Check out WordPress&#8217; <a href=\"https://codex.wordpress.org/Function_Reference/add_filter\" rel=\"nofollow ugc\">add_filter()</a> page for more info.</p>\n<pre><code>    add_filter( 'mb_construct_plain', 'construct_plain_example', 10, 3 );\n\n    function construct_plain_example( $youtube_videos, $number, $tab ) {\n        $output = '';\n        foreach( $youtube_videos as $youtube_video ) {\n            // If we've reached the user's display limit, end the loop\n            if( $i == $number )\n              break;\n            $output .= '&lt;li&gt;';\n            $output .= '&lt;a href=\"' . . '\"';\n            // If the user has selected to open videos in a new tab, specify the link target\n            if($tab) {\n              $output .= ' target=\"_blank\"';\n            }\n            $output .= '&gt;';\n            $output .= $youtube_video['title'];\n            $output .= '&lt;/a&gt;';\n            $output .= '&lt;/li&gt;';\n\n            $i++;\n          }\n        return $output;\n    }\n</code></pre>\n<p>Pretty basic, but it allows you to see a general example of how to loop through the objects and return the modified data.<br />\nThe above code will produce a list element like this one:</p>\n<pre><code>    &lt;li&gt;&lt;a href=\"http://www.youtube.com/watch?v=3L-rrkyvApU\" target=\"_blank\"&gt;Real Life Portal Gun&lt;/a&gt;&lt;/li&gt;\n</code></pre>\n",
+        "installation": "<ol>\n<li>Copy the <code>mb-youtube</code> directory into your <code>wp-content/plugins</code> directory</li>\n<li>Navigate to the &#8220;Plugins&#8221; dashboard page</li>\n<li>Locate the menu item that reads &#8220;(MB) YouTube Widget&#8221;</li>\n<li>Click on &#8220;Activate&#8221;</li>\n</ol>\n",
+        "faq": "\n<h4>How can I make this plugin match my WordPress theme?</h4>\n<p>\n<p>Easy! If you check out the &#8216;Description&#8217; tab, there&#8217;s documentation on how to use the plugin&#8217;s style hooks &amp; filters to modify the output. If you have trouble, try contacting your theme&#8217;s developer and ask them to include some styling rules in the theme&#8217;s <code>functions.php</code> file.</p>\n</p>\n\n",
+        "changelog": "<p>1.05 &#8211; Updated plugin with <code>mechabyte_youtube</code> shortcode to display videos in posts and pages</p>\n<p>1.01 &#8211; Updated the video data array to store the date as Unix time</p>\n<p>1.0 &#8211; Initial release</p>\n"
+    },
+    "short_description": "The YouTube videos widget lets you quickly and easily display your most recent YouTube videos in your blog&#039;s sidebar.",
+    "description": "<p>The YouTube videos widget lets you quickly and easily display your most recent YouTube videos in your blog&#8217;s sidebar.</p>\n<h3>Features</h3>\n<ul>\n<li>The YouTube videos widget is fully-based on the WordPress <a href=\"https://codex.wordpress.org/Plugin_API\" rel=\"nofollow ugc\">Plugin API</a>.</li>\n<li>Uses hooks and filters to allow for maximum hackability by theme designers and developers.</li>\n<li>Organized straightforwardly so that it&#8217;s easy to modify and style.</li>\n</ul>\n<h3>Usage</h3>\n<p>The YouTube videos widget is ready to use as-is, although you can easily customize it to your liking with a bit of code.</p>\n<p>You can also insert a plain list of your recent videos into posts and pages with the shortcode <code>mechabyte_youtube</code>. For example, to load <strong>5</strong> videos from <strong>freddiew</strong> that <strong>open in new tabs</strong>, you&#8217;d use <code>[mechabyte_youtube username=\"freddiew\" videos=\"5\" tab=\"true\"]</code>.</p>\n<h3>Custom Styles</h3>\n<p>The YouTube videos widget loads it styles by hooking into WordPress&#8217; <code>wp_enqueue_scripts</code> action. To remove the default styling you need to remove the our <code>enqueue_scripts</code> function from the hook.</p>\n<pre><code>    remove_action( 'wp_enqueue_scripts', array( 'mechabyteYouTube', 'enqueue_scripts' ) );\n</code></pre>\n<h3>Custom Output</h3>\n<p>The end user has two options of displaying their YouTube videos: in plain or decorated lists. When modifying the output of the plugin you must use one of two filters that this plugin uses: <code>mbYT_construct_plain</code> and <code>mbYT_construct_decorated</code>. Before you add your own functions to either filter, you must remove the default ones that are used automatically: <code>mbYT_construct_plain_default</code> and <code>mbYT_construct_decorated_default</code>.</p>\n<pre><code>    remove_filter( 'mbYT_construct_plain', array( 'mechabyteYouTube', 'mbYT_construct_plain_default'), 10, 3  );\n    remove_filter( 'mbYT_construct_decorated', array( 'mechabyteYouTube', 'mbYT_construct_decorated_default'), 10, 3  );\n</code></pre>\n<p>Now it&#8217;s time to get creative. When creating a function that will loop through the videos you have complete control over how you want to display the content. Just keep in mind that in the end, you should be outputting <code>&lt;li&gt;</code> elements. When filters are being applied to the YouTube content, there are three arguments that are being passed through: <code>$youtube_videos</code> (<code>array</code>, the array of videos), <code>$number</code> (<code>integer</code>, the number of videos the user wishes to display), and <code>$tab</code> (<code>boolean</code>, a true/false value of whether or not the user wants to open video links in a new tab).<br />\nKeep in mind that you have access to the following pieces of information when creating your video loop:</p>\n<pre><code>    $item['title'] // Video title\n    $item['videoID'] // Video ID\n    $item['viewCount'] // Video view count\n    $item['published'] // Video publish date -- UNIX\n    $item['duration'] // Video duration in hh:mm:ss\n    $item['numLikes'] // Video likes count\n    $item['link'] // Video link\n    $item['image']['default'] // 'Default' thumbnail (low quality)\n    $item['image']['mqdefault'] // Medium quality thumbnail\n    $item['image']['hqdefault'] // High quality thumbnail\n</code></pre>\n<p>Here&#8217;s an example of some code that adds a custom function to our <code>mb_construct_plain</code> filter (assuming we&#8217;ve already removed the default functions). Keep in mind the <code>3</code> at the end. That lets WordPress expect our three arguments that will be passed through. Check out WordPress&#8217; <a href=\"https://codex.wordpress.org/Function_Reference/add_filter\" rel=\"nofollow ugc\">add_filter()</a> page for more info.</p>\n<pre><code>    add_filter( 'mb_construct_plain', 'construct_plain_example', 10, 3 );\n\n    function construct_plain_example( $youtube_videos, $number, $tab ) {\n        $output = '';\n        foreach( $youtube_videos as $youtube_video ) {\n            // If we've reached the user's display limit, end the loop\n            if( $i == $number )\n              break;\n            $output .= '&lt;li&gt;';\n            $output .= '&lt;a href=\"' . . '\"';\n            // If the user has selected to open videos in a new tab, specify the link target\n            if($tab) {\n              $output .= ' target=\"_blank\"';\n            }\n            $output .= '&gt;';\n            $output .= $youtube_video['title'];\n            $output .= '&lt;/a&gt;';\n            $output .= '&lt;/li&gt;';\n\n            $i++;\n          }\n        return $output;\n    }\n</code></pre>\n<p>Pretty basic, but it allows you to see a general example of how to loop through the objects and return the modified data.<br />\nThe above code will produce a list element like this one:</p>\n<pre><code>    &lt;li&gt;&lt;a href=\"http://www.youtube.com/watch?v=3L-rrkyvApU\" target=\"_blank\"&gt;Real Life Portal Gun&lt;/a&gt;&lt;/li&gt;\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/mb-youtube-videos.1.05.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/mb-youtube-videos/assets/screenshot-1.png?rev=642151",
+            "caption": "Widget customization <code>/assets/screenshot-1.png</code>"
+        },
+        {
+            "src": "https://ps.w.org/mb-youtube-videos/assets/screenshot-2.png?rev=642149",
+            "caption": "Widget front-end display as a decorated list <code>/assets/screenshot-2.png</code>"
+        },
+        {
+            "src": "https://ps.w.org/mb-youtube-videos/assets/screenshot-3.png?rev=642150",
+            "caption": "Widget front-end display as a plain list <code>/assets/screenshot-3.png</code>"
+        }
+    ],
+    "tags": {
+        "recent-videos": "recent videos",
+        "social": "social",
+        "subscribe": "subscribe",
+        "videos": "videos",
+        "youtube": "youtube"
+    },
+    "stable_tag": "1.05",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/mb-youtube-videos.1.0.zip",
+        "1.01": "https://downloads.wordpress.org/plugin/mb-youtube-videos.1.01.zip",
+        "1.05": "https://downloads.wordpress.org/plugin/mb-youtube-videos.1.05.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/mb-youtube-videos.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/mb-youtube-videos/assets/banner-772x250.png?rev=749928",
+        "high": false
+    },
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/mb-youtube-videos_e05050.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 74,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

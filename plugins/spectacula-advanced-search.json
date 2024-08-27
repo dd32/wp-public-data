@@ -1,0 +1,77 @@
+{
+    "name": "Spectacu.la Advanced Search",
+    "slug": "spectacula-advanced-search",
+    "version": "1.0.3",
+    "author": "<a href=\"http://interconnectit.com\">Interconnect IT, James R Whitehead</a>",
+    "author_profile": "https://profiles.wordpress.org/spectacula/",
+    "contributors": {
+        "interconnectit": {
+            "profile": "https://profiles.wordpress.org/interconnectit/",
+            "avatar": "https://secure.gravatar.com/avatar/18ef28eb5fad11ff24918a707eceb8c1?s=96&d=monsterid&r=g",
+            "display_name": "interconnectit"
+        },
+        "spectacula": {
+            "profile": "https://profiles.wordpress.org/spectacula/",
+            "avatar": "https://secure.gravatar.com/avatar/19c4f845a52d21a68e254ef79d1e9266?s=96&d=monsterid&r=g",
+            "display_name": "Spectacula"
+        }
+    },
+    "requires": "2.7.0",
+    "tested": "2.9.2",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/spectacula-advanced-search/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 2582,
+    "last_updated": "2010-04-15 9:32am GMT",
+    "added": "2010-04-15",
+    "homepage": "http://spectacu.la",
+    "sections": {
+        "description": "<p>This plug-in provides you with more relevant search results than are currently<br />\navailable to the normal WordPress search and it should also do so with less of a<br />\nperformance hit on the db than the normal WordPress search. We use the MySQL<br />\ncommands MATCH () AGAINST () as opposed to WordPress’ use of LIKE to do our<br />\nqueries which are not as heavy on the db. The only issue we have with “match<br />\nagainst” is that we need an index on the columns we intend to search on.</p>\n",
+        "installation": "<h4>The install</h4>\n<ol>\n<li>Upload <code>spec-adv-search</code> folder to  <code>/wp-content/plugins/spec-adv-search/</code><br />\nor  the content of the folder to <code>/wp-content/mu-plugins/</code>.<br />\nIf the directory doesn&#8217;t exist then create it.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>You should now see an extra menu Advanced search show up under the<br />\nsettings menu in the main admin sidebar.</li>\n<li>Go to the new page and hit the &#8220;Create Index&#8221; button. Once the index has<br />\nbeen created you&#8217;ll then be able to tick the enable box at the top of the<br />\npage.</li>\n</ol>\n<h4>The config</h4>\n<ol>\n<li>\n<p>For these search methods to work you&#8217;ll need a FULLTEXT index on your<br />\npost_content and post_title in the wp_posts table. This can be done by using<br />\nthe &#8220;create index&#8221; button. There are some things to be aware of before you<br />\nproceed.</p>\n<ol>\n<li>Firstly adding the index will likely double the size of your wp_posts<br />\ntable, this in and of itself isn’t a problem however if you’re running up<br />\nagainst the upper limits of your hosts allowed size then creating an index<br />\nmay push you over that limit. If you do hit your size limit nothing bad<br />\nshould happen but it would be best if you backed up your database first just<br />\nin case. Always a good idea to run a backup before anything is done to<br />\nchange the db.</li>\n<li>\n<p>Second thing you should know is that the index creation is handled by a<br />\nWordpress cron job. Some hosts have problems with wp_cron and if your host<br />\nis one of those then you will see this “The index creation/deletion is<br />\nscheduled to start after {date and time}” below the button for a long time<br />\nafter the job was supposed to run. Don’t worry if it’s only a few mins as<br />\nthat is quite normal. If you do have a problem with wp_cron on your server<br />\nyou may find future dated posts don’t become live when you hoped. We can, if<br />\nyou have something like PHPMyAdmin, create the indexes manually by running<br />\nthese commands against your WordPress db:</p>\n<p>CREATE FULLTEXT INDEX spec_post_content_fulltext ON wp_posts (post_content);</p>\n<p>CREATE FULLTEXT INDEX spec_post_content_fulltext_title ON wp_posts (post_title);</p>\n</li>\n<li>\n<p>Thirdly creating the indexes could take quite some time depending upon<br />\nyour server set up. Once the index creation kicks in, unless your server<br />\ncreates the index so quickly that it completes the creation before the<br />\ncommand to collect the status has run, you should see “Creating index on<br />\npost_&#8212;&#8211;. MySQL is returning the following message:” Don’t panic if you<br />\nsee something like “repair by sorting” or “copy to tmp table” as these are<br />\nexpected messages but if you get “Repair with keycache” still don’t panic<br />\njust be prepared to wait a long while for the index to complete its<br />\ncreation.</p>\n</li>\n</ol>\n</li>\n<li>Once the index is live you should be able to tick the enable button. Now we<br />\nget to choose from up to 5 different modes of search:</p>\n<ol>\n<li>Default mode: This will find posts containing any of the term, the more<br />\nof the terms there are in a post the higher relevance score it receives<br />\nand thus the higher in the results it will appear (presuming sorting by<br />\nrank). If two or more terms are searched for but only one can be found<br />\nthen posts matching that one will be returned. Terms matched in titles<br />\ncount as one and a half as much as those in the content.</li>\n<li>Boolean mode: Very much the same as default mode but you get several<br />\nextra operators that can alter a query. Adding + or – to the head of a<br />\nterm will either make it so that you return posts that must have the<br />\nterm or must not have the term. &gt; or &lt; will increase or decrease the<br />\nimportance of a word. So for example (phone &gt;droid) would find all phone<br />\npost and droid post but droid posts would be considered more important.<br />\nA full explanation of the operators can be found here.</li>\n<li>With query expansion: This kind of search can find posts related to your<br />\nsearch terms but don’t necessarily contain any of the terms entered. So<br />\nsearch for “android” for example and it will use posts that contain the<br />\nword android to find words that are related to it. So it may deem that<br />\nyou want posts about robots too or it may also figure you want post<br />\nrelating to Google’s phone OS it really depends upon your sites content.<br />\nFor this mode you’ll need to tweak the relevance limit bases on what has<br />\nbeen returned for your content otherwise it can end up returning all<br />\nposts on your site. Not too big a problem if ordered by relevance but<br />\nif ordered by date your results will make no sense at all.</li>\n<li>In natural language mode: If you have MySQL 5.1 or better you will have<br />\ntwo more modes available to you. First is In natural language mode which<br />\nis mostly the same as default mode and in natural language more with<br />\nquery expansion which is functionally the same as the with query<br />\nexpansion.</li>\n</ol>\n</li>\n<li>If your server works with wp_cron then you can set up a periodic table<br />\noptimise that will help keep your table index in order. If your site changes<br />\nrarely then you can set it to run infrequently or not at all and just use<br />\nthe “optimise table” button to do it as and when you want/need to. The more<br />\naccurate your index is the better your search results will be and the lower<br />\nthe load on the db. All good basically. The optimise will kick in after the<br />\ntime it is set to run but wp-cron requires a visitor to kick off the job. So<br />\nif you set it to start at 3:00am and you don’t get an activity on your site<br />\nuntil 10am the next day the job won’t start until 10am. This shouldn’t be a<br />\nproblem as most optimisations apply very little load and take only a few<br />\nsecond to run.</li>\n</ol>\n",
+        "faq": "\n<h4>With query expansion mode returns some odd results?</h4>\n<p>\n<p>This mode guesses what the searcher was after from words MySQL thinks are<br />\n    related to the terms searched for. If your content implies an association<br />\n    between two otherwise unrelated terms then MySQL will make an assumption<br />\n    that they are related. For example if you mention Ducks and Strawberries<br />\n    together in a few post your index will see a relationship and searches for<br />\n    Ducks may return results for Strawberries.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.3</h4>\n<ul>\n<li>Moved out of beta and corrected a few typos.</li>\n</ul>\n<h4>1.0.2.beta</h4>\n<ul>\n<li>Fixed it so that the ranking score shouldn&#8217;t now show in anything that calls<br />\nthe_excerpt/content once the loop is complete. If you call before the loop<br />\nthen it likely still will.</li>\n</ul>\n<h4>1.0.1.beta</h4>\n<ul>\n<li>Added help text and a few other fixes and tweaks.</li>\n</ul>\n<h4>1.0.beta</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Changes the Wordpress search queries to provide more relevant results more efficiently and with options to influence the results.",
+    "description": "<p>This plug-in provides you with more relevant search results than are currently<br />\navailable to the normal WordPress search and it should also do so with less of a<br />\nperformance hit on the db than the normal WordPress search. We use the MySQL<br />\ncommands MATCH () AGAINST () as opposed to WordPress’ use of LIKE to do our<br />\nqueries which are not as heavy on the db. The only issue we have with “match<br />\nagainst” is that we need an index on the columns we intend to search on.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/spectacula-advanced-search.1.0.3.zip",
+    "upgrade_notice": {
+        "1.0.3": "<p>If you have the Beta version of this then it would be best if you got this one.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "search": "search"
+    },
+    "stable_tag": "1.0.3",
+    "versions": {
+        "1.0.3": "https://downloads.wordpress.org/plugin/spectacula-advanced-search.1.0.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/spectacula-advanced-search.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://spectacu.la/signup/signup.php",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/spectacula-advanced-search.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

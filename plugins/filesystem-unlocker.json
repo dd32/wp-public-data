@@ -1,0 +1,75 @@
+{
+    "name": "Filesystem Unlocker",
+    "slug": "filesystem-unlocker",
+    "version": "1.0",
+    "author": "<a href=\"http://marcarbour.ca\">Marc Arbour</a>",
+    "author_profile": "https://profiles.wordpress.org/duke_justice/",
+    "contributors": {
+        "duke_justice": {
+            "profile": "https://profiles.wordpress.org/duke_justice/",
+            "avatar": "https://secure.gravatar.com/avatar/6e0b5e2228f25cac22d1b660841f6da1?s=96&d=monsterid&r=g",
+            "display_name": "duke_justice"
+        }
+    },
+    "requires": "4.0.0",
+    "tested": "4.4.33",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/filesystem-unlocker/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 1060,
+    "last_updated": "2016-03-09 2:46pm GMT",
+    "added": "2016-03-09",
+    "homepage": "http://marcarbour.ca",
+    "sections": {
+        "description": "<p>I created this plugin because I am tired of having my WordPress sites being hacked. It is used to completely lock the filesystem with the help of a bash script. The said script is external from the website and ran via cron so you need cron access to make this work. Otherwise, this plugin is useless to you.</p>\n<p>This plugin has a known bug. See FAQs.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/filesystem-unlocker</code> directory, or install the plugin through the WordPress plugins screen directly.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; screen in WordPress</li>\n<li>Use the left menu Filesystem Unlocker to configure the plugin (this has to be done before configuring and cron&#8217;ing scripts)</li>\n<li>You need to put the folowing script somewhere on your filesystem, elsewhere then in the webserver&#8217;s directory. It needs to be run with the webserver&#8217;s privileges or a higher privilege that can chmod files in the webserver&#8217;s directory.</li>\n<li>Edit the script to match your users, passwords, database prefixes, paths and the like.</li>\n<li>Minimaly, cron a job that runs this script every minute of everyday</li>\n<li>Ideally, cron this job to run only when you are EFFECTIVELY playing in your ftp. You are sleeping from 10pm to 6am ? Then don&#8217;t run the script. It won&#8217;t unlock your filesystem if it&#8217;s not ran. But then, you need an additionnal script to be ran the minute after you go to sleep to ensure the ftp is locked in the scenario where there was &#8220;time left in the parking meter&#8221; when your cron stop to execute.</li>\n</ol>\n<p>The script in step 4 goes as follows:</p>\n<pre>#!/bin/bash\n####################################################################################################\n# You NEED to edit the folowing strings                                                            #\n####################################################################################################\n#                                                                                                  #\n# -uuser : -uYourMySQLUser... ex.: -umarc                                                          #\n# -ppassword : -pYourUserSPassword... ex.: -pabracadabra                                           #\n# MySQLDatabaseName : Your MySQL database name... ex.: datab1f32                                   #\n# wpTablePrefix__ : Your wordpress installation table prefixes... ex.: wp_prefix123__              #\n# /path/to/public_html : the path to your webserver's root document... ex.: /home/user/public_html #\n#                                                                                                  #\n####################################################################################################\n\n####################################################################################################\n# Note on the choice of the path to be locked...                                                   #\n####################################################################################################\n#                                                                                                  #\n# The above mention of /path/to/public_html may or may not be accurate in the case your WordPress  #\n# installation is not at the root of your webserver's tree. But take into account I suggest you    #\n# lock your WHOLE filesystem because if you choose to lock only your WordPress's files, any hacker #\n# being \"ethical\" as they are, will write outside of your \"locked zone\" and exploit your webserver.#\n# Thus, I STRONGLY suggest you lock your WHOLE filesystem.                                         #\n#                                                                                                  #\n# Should you choose otherwise, you could adapt the above                                           #\n# /path/to/public_html                                                                             #\n# with                                                                                             #\n# /path/to/public_html/wordpress/install/path                                                      #\n#                                                                                                  #\n####################################################################################################\n\ntimetolock=$(mysql -uuser -ppassword -se \"select option_value from MySQLDatabaseName.wpTablePrefix__options where option_name='filesystem_unlocker_plugin_options'\");\nisitlockedalready=$(mysql -uuser -ppassword -se \"select option_value from MySQLDatabaseName.wpTablePrefix__options where option_name='filesystem_unlocker_plugin_lock_state'\");\nif [ $timetolock -gt 0 ] &amp;&amp; [ $isitlockedalready -eq 1 ]\nthen\nfind /path/to/public_html -type d -exec chmod 755 {} \\; &amp;&amp; find /path/to/public_html -type f -exec chmod 644 {} \\;\nmysql -uuser -ppassword -se \"update MySQLDatabaseName.wpTablePrefix__options set option_value = 0 where option_name='filesystem_unlocker_plugin_lock_state'\";\nfi\n\nif [ $timetolock -eq 0 ] &amp;&amp; [ $isitlockedalready -eq 0 ]\nthen\nfind /path/to/public_html -type d -exec chmod 555 {} \\; &amp;&amp; find /path/to/public_html -type f -exec chmod 444 {} \\;\nmysql -uuser -ppassword -se \"update MySQLDatabaseName.wpTablePrefix__options set option_value = 1 where option_name='filesystem_unlocker_plugin_lock_state'\";\nfi\n\nif [ $timetolock -gt 0 ] &amp;&amp; [ $isitlockedalready -eq 0 ]\nthen\nmysql -uuser -ppassword -se \"update MySQLDatabaseName.wpTablePrefix__options set option_value = option_value-1 where option_name='filesystem_unlocker_plugin_options'\";\nfi\n</pre>\n<p>The optional script in step 7 goes as follows:</p>\n<pre>#!/bin/bash\n####################################################################################################\n# You NEED to edit the folowing strings                                                            #\n####################################################################################################\n#                                                                                                  #\n# -uuser : -uYourMySQLUser... ex.: -umarc                                                          #\n# -ppassword : -pYourUserSPassword... ex.: -pabracadabra                                           #\n# MySQLDatabaseName : Your MySQL database name... ex.: datab1f32                                   #\n# wpTablePrefix__ : Your wordpress installation table prefixes... ex.: wp_prefix123__              #\n# /path/to/public_html : the path to your webserver's root document... ex.: /home/user/public_html #\n#                                                                                                  #\n####################################################################################################\n\n####################################################################################################\n# Note on the choice of the path to be locked...                                                   #\n####################################################################################################\n#                                                                                                  #\n# The above mention of /path/to/public_html may or may not be accurate in the case your WordPress  #\n# installation is not at the root of your webserver's tree. But take into account I suggest you    #\n# lock your WHOLE filesystem because if you choose to lock only your WordPress's files, any hacker #\n# being \"ethical\" as they are, will write outside of your \"locked zone\" and exploit your webserver.#\n# Thus, I STRONGLY suggest you lock your WHOLE filesystem.                                         #\n#                                                                                                  #\n# Should you choose otherwise, you could adapt the above                                           #\n# /path/to/public_html                                                                             #\n# with                                                                                             #\n# /path/to/public_html/wordpress/install/path                                                      #\n#                                                                                                  #\n####################################################################################################\n\nfind /path/to/public_html -type d -exec chmod 555 {} \\; &amp;&amp; find /path/to/public_html -type f -exec chmod 444 {} \\;\nmysql -uuser -ppassword -se \"update MySQLDatabaseName.wpTablePrefix__options set option_value = 1 where option_name='filesystem_unlocker_plugin_lock_state'\";\n</pre>\n",
+        "faq": "\n<h4>I use a captcha, database backup or &#8220;the like&#8221; plugin that needs to write to the filesystem. Will it be locked as well ?</h4>\n<p>\n<p>Yes it will. And these plugins will &#8220;break&#8221;. Such scripts are rarely made for writing elsewhere then the webserver&#8217;s directories. As such, you could midofy the lock script to get it to unlock a specific directory after having locked them all. But what would be the point? A hacker could then use this to hack your site anyways.</p>\n</p>\n<h4>Can I still use my &#8220;the like&#8221; plugins with this locking script ?</h4>\n<p>\n<p>Yes you could. Either you get them to write elsewhere (then the webserver&#8217;s directories) and make sure that they won&#8217;t update with their respective author&#8217;s updates or you do this another way since you have cron (thus shell) access.</p>\n<p>My advice : don&#8217;t open a door. Hackers like opened doors. Change the way you do things and you&#8217;ll get results you never had&#8230;. Security and protection.</p>\n</p>\n<h4>Who can unlock the filesystem ?</h4>\n<p>\n<p>By default, only people with edit_posts permissions and up can do this. This being because if you can edit a post, well, you could need to upload a picture to put into your post.</p>\n</p>\n<h4>Are there any known bugs ?</h4>\n<p>\n<p>No known bugs exist at this time. Please notify any and all bugs to the support forums on the plugin&#8217;s page.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1</h4>\n<ul>\n<li>Transformed all admin pages request into admin_url( $path, $scheme ) instead of hardcoding paths.</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
+    },
+    "short_description": "Plugin to completely lockdown the wordpress filesystem so that no hacker can write to it.",
+    "description": "<p>I created this plugin because I am tired of having my WordPress sites being hacked. It is used to completely lock the filesystem with the help of a bash script. The said script is external from the website and ran via cron so you need cron access to make this work. Otherwise, this plugin is useless to you.</p>\n<p>This plugin has a known bug. See FAQs.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/filesystem-unlocker.zip",
+    "upgrade_notice": {
+        "1.0": "<p>Nothing to do.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "file-system": "file system",
+        "filesystem": "filesystem",
+        "ftp": "ftp",
+        "lock": "lock",
+        "security": "security"
+    },
+    "stable_tag": "trunk",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/filesystem-unlocker.1.0.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/filesystem-unlocker.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

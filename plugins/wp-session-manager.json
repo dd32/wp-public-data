@@ -1,0 +1,106 @@
+{
+    "name": "WP Session Manager",
+    "slug": "wp-session-manager",
+    "version": "4.2.0",
+    "author": "<a href=\"https://eamann.com\">Eric Mann</a>",
+    "author_profile": "https://profiles.wordpress.org/ericmann/",
+    "contributors": {
+        "ericmann": {
+            "profile": "https://profiles.wordpress.org/ericmann/",
+            "avatar": "https://secure.gravatar.com/avatar/46093583d8895095adb1b0071c505af2?s=96&d=monsterid&r=g",
+            "display_name": "Eric Mann"
+        }
+    },
+    "requires": "4.7",
+    "tested": "5.1.19",
+    "requires_php": "7.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 94,
+    "ratings": {
+        "5": 22,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 2
+    },
+    "num_ratings": 24,
+    "support_url": "https://wordpress.org/support/plugin/wp-session-manager/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 3000,
+    "downloaded": 69151,
+    "last_updated": "2019-03-31 3:37am GMT",
+    "added": "2012-12-02",
+    "homepage": "https://paypal.me/eam",
+    "sections": {
+        "description": "<p>Adds <code>$_SESSION</code> functionality to WordPress, leveraging the database where needed to power multi-server installations.</p>\n<p>Every visitor, logged in or not, will be issued a session. Session data will be stored in the WordPress database by default<br />\nto deal with load balancing issues if multiple application servers are being used. In addition, the session collection will<br />\nalso be stored <em>in memory</em> for rapid use within WordPress.</p>\n<p>Session data stored in the database can be encrypted at rest for better security.</p>\n",
+        "installation": "<h4>Manual Installation</h4>\n<ol>\n<li>Upload the entire <code>/wp-session-manager</code> folder to the <code>/wp-content/plugins/</code> directory.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>Use <code>$_SESSION</code> in your code.</li>\n</ol>\n",
+        "faq": "\n<h4>How do I add session variables?</h4>\n<p>\n<p>Merely use the superglobal <code>$_SESSION</code> array:</p>\n<pre><code>$_SESSION['user_name'] = 'User Name';                            // A string\n$_SESSION['user_contact'] = array( 'email' =&gt; 'user@name.com' ); // An array\n$_SESSION['user_obj'] = new WP_User( 1 );                        // An object\n</code></pre>\n</p>\n<h4>How long do session variables live?</h4>\n<p>\n<p>This depends on your PHP installation&#8217;s configuration. Please read the <a href=\"http://php.net/manual/en/session.configuration.php\" rel=\"nofollow ugc\">PHP manual</a><br />\nfor more details on configuration.</p>\n</p>\n<h4>Can I use this plugin without creating new tables?</h4>\n<p>\n<p>Absolutely! As of version 2.0, this plugin will create a new table for WordPress to store session data. In general, this is more efficient long-term than using options for data storage. However, if your system does not allow creating a table, add the following to <code>wp-config.php</code> to use the options table instead:</p>\n<pre><code>define( 'WP_SESSION_USE_OPTIONS', true );\n</code></pre>\n</p>\n<h4>I get an error saying my PHP version is out of date. Why?</h4>\n<p>\n<p>PHP 5.6 was designated end-of-life and stopped receiving security patches in December 2018. PHP 7.0 was <em>also</em> marked end-of-life in December 2018. The minimum version of PHP supported by WP Session Manager is now PHP 7.1.</p>\n<p>If your server is running an older version of PHP, the session system <em>will not work!</em> To avoid triggering a PHP error, the plugin will instead output this notice to upgrade and disable itself silently. You won&#8217;t see a PHP error, but you also won&#8217;t get session support.</p>\n<p>Reach out to your hosting provider or system administrator to upgrade your server.</p>\n</p>\n<h4>I get an error saying another plugin is setting up a session. What can I do?</h4>\n<p>\n<p>WP Session Manager overrides PHP&#8217;s default session implementation with its own custom handler. Unfortunately, we can&#8217;t swap in a new handler if a session is already active. This plugin hooks into the <code>plugins_loaded</code> hook to set things up as early as possible, but if you have code in <em>another</em> plugin (or your theme) that attempts to invoke <code>session_start()</code> before WP Session Manager loads, then the custom handler won&#8217;t work at all.</p>\n<p>Inspect your other plugins and try to find the one that&#8217;s interfering. Then, reach out to the developer to explain the conflict and see if they have a fix.</p>\n</p>\n\n",
+        "changelog": "<h4>4.2.0</h4>\n<ul>\n<li>Update: Change donate link to Patreon vs PayPal.</li>\n<li>Fix: Disable the initialization routine for cron runs.</li>\n</ul>\n<h4>4.1.1</h4>\n<ul>\n<li>Fix: Defensively protect deprecated functions with <code>function_exists()</code> checks to avoid conflicts with other systems.</li>\n<li>Fix: Disable the initialization routine if sessions are disabled.</li>\n</ul>\n<h4>4.1.0</h4>\n<ul>\n<li>Fix: Add some defense to ensure end users are running the correct version of PHP before loading the system.</li>\n<li>Fix: Eliminate a race condition where another plugin or the theme created the session first.</li>\n<li>Fix: Schedule a cron to auto-delete expired sessions.</li>\n</ul>\n<h4>4.0.0</h4>\n<ul>\n<li>New: Add an object cache based handler to leverage Redis or Memcached if available for faster queries.</li>\n<li>New: Adopt the Contributor Covenant (v1.4) as the project&#8217;s official code of conduct.</li>\n<li>Update: Bump minimum PHP requirements due to out-of-date version deprecations.</li>\n<li>Fix: Correct a race condition where a session was created before the database table existed.</li>\n<li>Fix: Correct a race condition where the <code>$wpdb</code> global is not yet set when a session is deleted from the database.</li>\n<li>Fix: Remove unnecessary integer session ID from the stored data table.</li>\n</ul>\n<h4>3.0.4</h4>\n<ul>\n<li>Update: Add support for the <code>wp_install</code> hook to create custom table immediately.</li>\n</ul>\n<h4>3.0.3</h4>\n<ul>\n<li>Fix: Repair code blocks in the readme</li>\n<li>Fix: Use a more defensive approach to starting sessions in the event another plugin has started one already</li>\n</ul>\n<h4>3.0.2</h4>\n<ul>\n<li>Fix: Add back in proper array access support for the deprecated <code>WP_Session</code> object.</li>\n</ul>\n<h4>3.0.1</h4>\n<ul>\n<li>Update: Pull a Sessionz fix</li>\n</ul>\n<h4>3.0.0</h4>\n<ul>\n<li>Update: Refactor to use Sessionz</li>\n<li>Update: Add encryption at rest if <code>WP_SESSION_ENC_KEY</code> is set</li>\n</ul>\n<h4>2.0.2</h4>\n<ul>\n<li>Fix: Wire the data storage migration to a session init hook to ensure it runs.</li>\n<li>Fix: Clean up sessions when all data is removed.</li>\n</ul>\n<h4>2.0.1</h4>\n<ul>\n<li>Fix: Repair data storage that was not returning actual stored session data.</li>\n</ul>\n<h4>2.0.0</h4>\n<ul>\n<li>Update: Use a table instead of options for storing session data.</li>\n</ul>\n<h4>1.2.2</h4>\n<ul>\n<li>Update: Use regex pattern matching to ensure session IDs are identical going in/out of the DB to account for encoding differences</li>\n</ul>\n<h4>1.2.1</h4>\n<ul>\n<li>Update: Additional filters for the <code>setcookie</code> parameters</li>\n<li>Update: Expose the Session ID publicly</li>\n<li>Fix: Better handling for malformed or broken session names</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Update: Enhanced plugin organization</li>\n<li>Update: Added WP_CLI support for session management</li>\n<li>Update: Add Composer definitions</li>\n<li>Fix: Break up the deletion of old sessions so queries don&#8217;t time out under load</li>\n</ul>\n<h4>1.1.2</h4>\n<ul>\n<li>Fix a race condition where session expiration options could accidentally be set to autoload</li>\n<li>Make the garbage collection routine run hourly to alleviate long-running tasks on larger sites</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>Fix a bug where session expiration was not properly set upon instantiation</li>\n</ul>\n<h4>1.1</h4>\n<ul>\n<li>Implement Recursive_ArrayAccess to provide multidimensional array support</li>\n<li>Better expiration for session data</li>\n<li>Implement garbage collection to keep the database clean</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Switch to object persistence rather than transients</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Changes implementation to avoid the use of a global variable (still registered for convenience)</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>First version</li>\n</ul>\n"
+    },
+    "short_description": "Session management for WordPress.",
+    "description": "<p>Adds <code>$_SESSION</code> functionality to WordPress, leveraging the database where needed to power multi-server installations.</p>\n<p>Every visitor, logged in or not, will be issued a session. Session data will be stored in the WordPress database by default<br />\nto deal with load balancing issues if multiple application servers are being used. In addition, the session collection will<br />\nalso be stored <em>in memory</em> for rapid use within WordPress.</p>\n<p>Session data stored in the database can be encrypted at rest for better security.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/wp-session-manager.4.2.0.zip",
+    "upgrade_notice": {
+        "4.0": "<p>This version requires PHP 7.1 or higher.</p>",
+        "3.0": "<p>This version requires PHP 5.6 or higher and uses Composer-powered autoloading to incorporate Sessionz for transparent session management.</p>",
+        "2.0": "<p>This version will create a new database table for storing session data! If you do not want such a table, please set the <code>WP_SESSION_USE_OPTIONS</code> constant to <code>true</code> in <code>wp-config.php</code>! Upgrading will delete all existing sessions!</p>",
+        "1.0": "<p>First version</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "session": "session"
+    },
+    "stable_tag": "4.2.0",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/wp-session-manager.1.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/wp-session-manager.1.0.1.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/wp-session-manager.1.1.zip",
+        "1.1.1": "https://downloads.wordpress.org/plugin/wp-session-manager.1.1.1.zip",
+        "1.1.2": "https://downloads.wordpress.org/plugin/wp-session-manager.1.1.2.zip",
+        "1.2.0": "https://downloads.wordpress.org/plugin/wp-session-manager.1.2.0.zip",
+        "1.2.1": "https://downloads.wordpress.org/plugin/wp-session-manager.1.2.1.zip",
+        "1.2.2": "https://downloads.wordpress.org/plugin/wp-session-manager.1.2.2.zip",
+        "2.0.0": "https://downloads.wordpress.org/plugin/wp-session-manager.2.0.0.zip",
+        "2.0.1": "https://downloads.wordpress.org/plugin/wp-session-manager.2.0.1.zip",
+        "2.0.2": "https://downloads.wordpress.org/plugin/wp-session-manager.2.0.2.zip",
+        "3.0.0": "https://downloads.wordpress.org/plugin/wp-session-manager.3.0.0.zip",
+        "3.0.1": "https://downloads.wordpress.org/plugin/wp-session-manager.3.0.1.zip",
+        "3.0.2": "https://downloads.wordpress.org/plugin/wp-session-manager.3.0.2.zip",
+        "3.0.3": "https://downloads.wordpress.org/plugin/wp-session-manager.3.0.3.zip",
+        "3.0.4": "https://downloads.wordpress.org/plugin/wp-session-manager.3.0.4.zip",
+        "4.0.0": "https://downloads.wordpress.org/plugin/wp-session-manager.4.0.0.zip",
+        "4.1.0": "https://downloads.wordpress.org/plugin/wp-session-manager.4.1.0.zip",
+        "4.1.1": "https://downloads.wordpress.org/plugin/wp-session-manager.4.1.1.zip",
+        "4.2.0": "https://downloads.wordpress.org/plugin/wp-session-manager.4.2.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/wp-session-manager.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.patreon.com/user?u=16402577",
+    "banners": {
+        "low": "https://ps.w.org/wp-session-manager/assets/banner-772x250.png?rev=632899",
+        "high": false
+    },
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/wp-session-manager_272e38.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 94,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "wp-session-manager",
+            "language": "da_DK",
+            "version": "4.2.0",
+            "updated": "2019-09-23 13:00:06",
+            "package": "http://downloads.wordpress.org/translation/plugin/wp-session-manager/4.2.0/da_DK.zip"
+        }
+    ]
+}

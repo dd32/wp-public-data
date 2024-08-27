@@ -1,0 +1,73 @@
+{
+    "name": "Function Cache",
+    "slug": "function-cache",
+    "version": "20150122",
+    "author": "Aaron Smith",
+    "author_profile": "https://profiles.wordpress.org/smithaa02/",
+    "contributors": {
+        "smithaa02": {
+            "profile": "https://profiles.wordpress.org/smithaa02/",
+            "avatar": "https://secure.gravatar.com/avatar/e76ab4ee810abf9f3ea57f41ded69401?s=96&d=monsterid&r=g",
+            "display_name": "smithaa02"
+        }
+    },
+    "requires": "3.0.1",
+    "tested": "4.1.41",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/function-cache/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 821,
+    "last_updated": "2015-09-28 3:25pm GMT",
+    "added": "2015-09-28",
+    "homepage": "",
+    "sections": {
+        "description": "<p>See installation.</p>\n",
+        "installation": "<p>Just activate it.  Once you do this, you&#8217;ll have access in your plugins/functions.php file/templates to use the core cache functions provided.</p>\n<p>How do you use this then?  Say you have a function that takes the server a long timer to load (say a half second).  Say your function looks like this.</p>\n<p>function get_rooms($category) {    //database intensive queries    return $output; }</p>\n<p>Wouldn&#8217;t it be nice if you could just use a cache for get_rooms?  Here is how using the new functions you get with the plugin:</p>\n<p>function get_rooms($category) {</p>\n<pre><code>/** Cache check **/ $cache_query = __FUNCTION__.serialize(func_get_args()); //really you can use anything for the query though $cache_value = function_cache::check_if_in_cache($cache_query); if ($cache_value) {return $cache_value;} /** End cache check **/ </code></pre>\n<p>//database intensive queries</p>\n<pre><code>/** Cache Load - Add output to cache with expiration triggers **/ $expiration_triggers = array(     \"post_types\" =&gt; array(\"room\",\"suite\"),     \"post_ids\" =&gt; array() );  \nfunction_cache::load_into_cache($cache_query,$o,$expiration_triggers); /** End Load Cache - Value now added to the cache database **/ \n</code></pre>\n<p>return $output; }</p>\n<p>For large sites, using function_cache::check_if_in_cache and function_cache::load_into_cache will improve performance dramatically.  The key here are the expiration triggers.</p>\n<p>When you use function_cache::load_into_cache it require three parameters.  A name, value and expiration triggers.  The name can be whatever, but should be distinct (say &#8220;Suites&#8221;).  The value would typically be the html you want to store in an output buffer.  Then the expiration triggers are an array of conditions that when changed/deleted, will expire the corresponding cache values and no more.</p>\n<p>Right now the options are &#8220;post_types&#8221; and &#8220;post_ids&#8221;, but hope to add more in the future.  So say you want to cache the contents of a page.  An easy way to do this is with the ID (get_the_ID()).  So you might use:</p>\n<pre><code>$expiration_triggers = array(     \"post_types\" =&gt; array(),     \"post_ids\" =&gt; array(get_the_ID()) );  \nfunction_cache::load_into_cache($cache_query,$o,$expiration_triggers); </code></pre>\n<p>This also works great for custom post types.  Say you have a custom post type rooms, and if any room is modified, you want to flush all cache values associated with rooms.   You could use:</p>\n<pre><code>$expiration_triggers = array(     \"post_types\" =&gt; array(\"rooms\"),     \"post_ids\" =&gt; array() );  \nfunction_cache::load_into_cache($cache_query,$o,$expiration_triggers); </code></pre>\n<p>Multiple post ids or post types are accepted (hence the nested arrays).</p>\n",
+        "faq": "<h4>There are a lot of WordPress caching plugins.  Why this one?</h4>\n<p>The big problem with most cache engines is they cache too much and the cache values don&#8217;t regenerate when you make updates.  This solves both problems, which is frankly pretty unique for WordPress cache engines.</p>\n<h4>What about W3 Total Cache?</h4>\n<p>This is probably the most popular cache plugin out there.  It can be good, but in my experience it creates a lot of stale content that frustrates users when the website doesn&#8217;t get properly updated.</p>\n<h4>What about WordPress Transients?</h4>\n<p>Couple problems.  WP puts the transients in the wp_options table which causes and is inflected with serious bloat (bloat = performance issues). WordPress function cache uses its own table to improve performance. Second issue is that transients just use a date to trigger cache deletion.  This is not practical and too limiting.  This is why this cache engine associates page ids and post types with the cache values, and deletes name/value pairs when posts are updated.</p>\n<h4>Why is my site slow?</h4>\n<p>It is either client side or server side.  To determine if it is client side, view the source of a rendered slow page. Save it as say test.html and upload it.  If that is faster, you have a server side problem.  If not, client side.  Another way to check is in Firefox and Chrome, the loading graphic spins counter clockwise for server load and clockwise for client load (rough abstraction).  If it spins say more then a half cycle &#8220;6 hours&#8221; counter clock-wise, this plugin may help.</p>\n<h4>What slows down a wordpress page from the server side?</h4>\n<p>Much of what is on a wordpress template is innocent (including get_content()).  Usually the culprits are components that use the wp_options and wp_posts table and components that incorporate looping.  95% of slow WP sites is due to slow databases.  WordPress stuffs so much in the wp_options and wp_posts table and then multiplies these together which takes a ton of computing power.  Key is to minimize the lookups you need to do to the database.  This mostly means caching the functions that contain important query loops and custom field lookups.</p>\n<h4>How do I find what specific component on my template is slowing everything down?</h4>\n<p>You could do a series of AB testing, disabling core functions to isolate the culprit.  I do highly suggest the plugin &#8220;Query Monitor&#8221; which can actually do a very good job of isolating what is slowing down a page.</p>\n<h4>How does this relate to Custom Post Types &amp; Fields?</h4>\n<p>These tend to be the biggest resource hogs.  If you use Advanced Custom Fields, this is especially bad because they multiply the wp_options table on itself (which becomes a serious issue for big sites).  ACF also uses wildcard strings for their repeater fields which turns into a performance nightmare for queries.  Custom Content Manager is much faster (20X by my benchmark for their get custom field function) and benefits from a built in cache unlike ACF.  But CCTM doesn&#8217;t cache results across sessions.  WordPress Function Cache does.</p>\n<h4>Can upgrading Apache/PHP/MySQL help with my slow website?</h4>\n<p>Yes, but usually not significantly.  WordPress performance tends to degrade in an exponential fashion whereas these improvements just improve things in an incremental fashion.  Same with hardware.  The best updates you can do would be to switch tables to Innodb, make sure you are using the latest MySQL, optimize MySQL for large table queries, and install OPcache (for PHP 5.5).  OPcache is AWESOME!  But even with that you&#8217;ll still need a plugin like this one to handle sites with large databases.</p>\n",
+        "changelog": "<h4>20150122</h4>\n<p>The very first version of the program!</p>\n"
+    },
+    "short_description": "A fragment caching framework with customizable expiration triggers.  Control what gets cached and what triggers will cycle out specific cache values.",
+    "description": "<p>See installation.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/function-cache.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "database": "database",
+        "fragment-caching": "fragment caching",
+        "function-cache": "function cache",
+        "optimization": "optimization",
+        "optimize": "Optimize",
+        "performance": "performance",
+        "speed": "speed"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/function-cache.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

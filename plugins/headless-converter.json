@@ -1,0 +1,79 @@
+{
+    "name": "Headless Converter",
+    "slug": "headless-converter",
+    "version": "1.0.6",
+    "author": "<a href=\"https://github.com/AttLii\">Atte Liimatainen</a>",
+    "author_profile": "https://profiles.wordpress.org/attlii/",
+    "contributors": {
+        "attlii": {
+            "profile": "https://profiles.wordpress.org/attlii/",
+            "avatar": "https://secure.gravatar.com/avatar/19b92872ab7f61225950d3846ab8b85d?s=96&d=monsterid&r=g",
+            "display_name": "Atte Liimatainen"
+        }
+    },
+    "requires": "5.6",
+    "tested": "5.9.10",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/headless-converter/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "downloaded": 1612,
+    "last_updated": "2022-01-28 7:15pm GMT",
+    "added": "2021-10-08",
+    "homepage": "https://github.com/AttLii/headless-converter",
+    "sections": {
+        "faq": "\n<dt id='application%20password%20doesn%27t%20show%20up%2C%20even%20though%20i%20use%20wordpress%20version%205.6%20or%20newer.%20what%20do%3F'>\nApplication Password doesn&#8217;t show up, even though I use WordPress version 5.6 or newer. What do?\n</h4>\n<p>\n<p>This seems to be a feature that is opt-in on some environments. Following hook enables it.</p>\n<pre><code>add_filter( 'wp_is_application_passwords_available' , '__return_true' );\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>1.0.0 (2020-10-08):</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n<h4>1.0.1 (2020-10-08):</h4>\n<ul>\n<li>Remove unnecessary stuff from the plugin folder</li>\n</ul>\n<h4>1.0.2 (2020-10-20):</h4>\n<ul>\n<li>Add FAQ about enabling application passwords</li>\n</ul>\n<h4>1.0.3 (2020-11-15):</h4>\n<ul>\n<li>Update and prune repository dependencies</li>\n</ul>\n<h4>1.0.4 (2020-11-15):</h4>\n<ul>\n<li>Run repository through a linter</li>\n</ul>\n<h4>1.0.5 (2020-11-16):</h4>\n<ul>\n<li>Fix documentation</li>\n</ul>\n<h4>1.0.6 (2021-01-28):</h4>\n<ul>\n<li>update tested up to version to 5.9</li>\n</ul>\n",
+        "description": "<p>Converts frontend to JSON response when request is done with certain conditions.</p>\n<h3>Inspiration</h3>\n<p>After creating a bunch of headless WordPress + Web app stacks, I wanted to find a standard and a all-round solution for fetching per page information for web applications inside WordPress. Built-in rest api works fine in basic cases, but it doesn&#8217;t support querying by path. Usually this meant that for each project developers would create a custom rest endpoint which would return expected content using content type and slug parameters.</p>\n<p>WordPress has few built-in functions to retrieve content by path, <a href=\"https://developer.wordpress.org/reference/functions/url_to_postid/\" rel=\"nofollow ugc\">url_to_postid</a> and <a href=\"https://developer.wordpress.org/reference/functions/get_page_by_path/\" rel=\"nofollow ugc\">get_page_by_path</a>, but they don&#8217;t seem to work with multilanguage plugins, taxonomy or archive pages, which means that WP doesn&#8217;t have a reliable way to fetch content this way through rest api.</p>\n<p>This plugin converts frontend to JSON which seems after above solution the best way to do things, with added layer of security through application passwords (WordPress v5.6 feature) and a filter, which let&#8217;s developers alter outgoing data.</p>\n<h3>How to start using the plugin</h3>\n<ul>\n<li>Install and activate this plugin in your environment</li>\n<li>Create application password for a user with administrator role</li>\n</ul>\n<p>After above steps have been made, make a request to a page with added <a href=\"https://en.wikipedia.org/wiki/Basic_access_authentication#Client_side\" rel=\"nofollow ugc\">Authorization header</a>. See data fetching examples at the end of this documentation for more help</p>\n<h3>Modifying the output</h3>\n<p>Plugin outputs current page&#8217;s Post object or null. This can be modified using <code>headless-converter-modify-data</code>-filter. You can either modify passed in post object or do your own logic like in the example below.</p>\n<pre><code>/**\n * Modifies Headless Converter plugin's output.\n * \n * @param WPPost|null $post - Current template's post object \n */\nfunction modify_headless_converter_output($post) {\n  if(is_404()) {\n    return \"this block renders 404 page content\";\n  } else if(is_page()) {\n    return \"this block renders page post types content\";\n  } else if (is_singular('post')) {\n    return \"this block renders single post content\";\n  } else if(is_home()) {\n    return \"this block renders post archive\";\n  } else {\n    return $post;\n  }\n}\n\nadd_filter('headless-converter-modify-data', 'modify_headless_converter_output');\n</code></pre>\n<h3>Data fetching examples</h3>\n<h4>Fetch</h4>\n<pre><code>const username = \"admin\"\nconst password = \"1111 1111 1111 1111 1111\"\nconst url = \"http://localhost:3000/?page_id=2\"\nconst opts = {\n  headers: {\n     'Authorization': 'Basic ' + btoa(username + \":\" + password) \n  }, \n}\nfetch(url, opts).then(r =&gt; r.json()).then(console.log)\n</code></pre>\n<h4>Axios</h4>\n<pre><code>const axios = require(\"axios\")\n\nconst username = \"admin\"\nconst password = \"1111 1111 1111 1111 1111\"\nconst url = \"http://localhost:3000/?page_id=2\"\nconst opts = {\n  auth: {\n    username,\n    password\n  }\n}\n\naxios(url, opts).then(r =&gt; r.data).then(console.log)\n</code></pre>\n"
+    },
+    "short_description": "Converts frontend to JSON response when request is done with certain conditions.",
+    "description": "<p>Converts frontend to JSON response when request is done with certain conditions.</p>\n<h3>Inspiration</h3>\n<p>After creating a bunch of headless WordPress + Web app stacks, I wanted to find a standard and a all-round solution for fetching per page information for web applications inside WordPress. Built-in rest api works fine in basic cases, but it doesn&#8217;t support querying by path. Usually this meant that for each project developers would create a custom rest endpoint which would return expected content using content type and slug parameters.</p>\n<p>WordPress has few built-in functions to retrieve content by path, <a href=\"https://developer.wordpress.org/reference/functions/url_to_postid/\" rel=\"nofollow ugc\">url_to_postid</a> and <a href=\"https://developer.wordpress.org/reference/functions/get_page_by_path/\" rel=\"nofollow ugc\">get_page_by_path</a>, but they don&#8217;t seem to work with multilanguage plugins, taxonomy or archive pages, which means that WP doesn&#8217;t have a reliable way to fetch content this way through rest api.</p>\n<p>This plugin converts frontend to JSON which seems after above solution the best way to do things, with added layer of security through application passwords (WordPress v5.6 feature) and a filter, which let&#8217;s developers alter outgoing data.</p>\n<h3>How to start using the plugin</h3>\n<ul>\n<li>Install and activate this plugin in your environment</li>\n<li>Create application password for a user with administrator role</li>\n</ul>\n<p>After above steps have been made, make a request to a page with added <a href=\"https://en.wikipedia.org/wiki/Basic_access_authentication#Client_side\" rel=\"nofollow ugc\">Authorization header</a>. See data fetching examples at the end of this documentation for more help</p>\n<h3>Modifying the output</h3>\n<p>Plugin outputs current page&#8217;s Post object or null. This can be modified using <code>headless-converter-modify-data</code>-filter. You can either modify passed in post object or do your own logic like in the example below.</p>\n<pre><code>/**\n * Modifies Headless Converter plugin's output.\n * \n * @param WPPost|null $post - Current template's post object \n */\nfunction modify_headless_converter_output($post) {\n  if(is_404()) {\n    return \"this block renders 404 page content\";\n  } else if(is_page()) {\n    return \"this block renders page post types content\";\n  } else if (is_singular('post')) {\n    return \"this block renders single post content\";\n  } else if(is_home()) {\n    return \"this block renders post archive\";\n  } else {\n    return $post;\n  }\n}\n\nadd_filter('headless-converter-modify-data', 'modify_headless_converter_output');\n</code></pre>\n<h3>Data fetching examples</h3>\n<h4>Fetch</h4>\n<pre><code>const username = \"admin\"\nconst password = \"1111 1111 1111 1111 1111\"\nconst url = \"http://localhost:3000/?page_id=2\"\nconst opts = {\n  headers: {\n     'Authorization': 'Basic ' + btoa(username + \":\" + password) \n  }, \n}\nfetch(url, opts).then(r =&gt; r.json()).then(console.log)\n</code></pre>\n<h4>Axios</h4>\n<pre><code>const axios = require(\"axios\")\n\nconst username = \"admin\"\nconst password = \"1111 1111 1111 1111 1111\"\nconst url = \"http://localhost:3000/?page_id=2\"\nconst opts = {\n  auth: {\n    username,\n    password\n  }\n}\n\naxios(url, opts).then(r =&gt; r.data).then(console.log)\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/headless-converter.1.0.6.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "converter": "converter",
+        "headless": "headless",
+        "json": "JSON"
+    },
+    "stable_tag": "1.0.6",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/headless-converter.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/headless-converter.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/headless-converter.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/headless-converter.1.0.3.zip",
+        "1.0.4": "https://downloads.wordpress.org/plugin/headless-converter.1.0.4.zip",
+        "1.0.5": "https://downloads.wordpress.org/plugin/headless-converter.1.0.5.zip",
+        "1.0.6": "https://downloads.wordpress.org/plugin/headless-converter.1.0.6.zip",
+        "1.0.7": "https://downloads.wordpress.org/plugin/headless-converter.1.0.7.zip",
+        "1.0.8": "https://downloads.wordpress.org/plugin/headless-converter.1.0.8.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/headless-converter.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/headless-converter.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

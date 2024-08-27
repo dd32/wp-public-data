@@ -1,0 +1,88 @@
+{
+    "name": "Stage WP Plugin Manager",
+    "slug": "stage-wp-plugin-manager",
+    "version": "1.0",
+    "author": "<a href=\"http://about.me/andrezrv\">Andr&eacute;s Villarreal</a>",
+    "author_profile": "https://profiles.wordpress.org/andrezrv/",
+    "contributors": {
+        "andrezrv": {
+            "profile": "https://profiles.wordpress.org/andrezrv/",
+            "avatar": "https://secure.gravatar.com/avatar/c93e058cc6f3babdaa135932d7bb30c8?s=96&d=monsterid&r=g",
+            "display_name": "Andrés Villarreal"
+        }
+    },
+    "requires": "3.0",
+    "tested": "4.0.38",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 3,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 3,
+    "support_url": "https://wordpress.org/support/plugin/stage-wp-plugin-manager/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 2388,
+    "last_updated": "2014-12-07 2:50am GMT",
+    "added": "2014-04-11",
+    "homepage": "http://wordpress.org/extend/plugins/stage-wp-plugin-manager/",
+    "sections": {
+        "description": "<p>If you develop in a local machine, at some point you&#8217;ll have some active plugins there that you don&#8217;t need in the servers that you&#8217;re deploying to. Sure, you can deactivate them in your local machine before deploying, or after deploying in the remote ones, but you&#8217;re gonna need them again to be active if you want to perform local work in the future, specially when you update your local database from a remote one. On such kind of scenarios, the whole process of manually activating and deactivating plugins for each stage can be really frustrating, sometimes even taking a lot of your time.</p>\n<p>Stage WP Plugin Manager is meant to solve that problem in an quick and elegant way, by doing an automatic &#8220;fake&#8221;  activation of the plugins you select for each stage: every plugin you attach to a stage will be immediatly treated as an active plugin on that stage, no matter what its previous status was, or its current status on the other stages. Since the list of active plugins is just filtered instead of rewritten, you can restore the previous status of a plugin by detaching it, and go back to your original setup by deactivating Stage WP Plugin Manager.</p>\n<p><strong>Please read the following instructions very carefully.</strong></p>\n<h4>Getting Started</h4>\n<p>Stage WP Plugin Manager works on some assumptions about your workflow:</p>\n<ul>\n<li>You have a constant named <code>WP_STAGE</code> defined in your WordPress configuration file (often <code>wp-config.php</code>).</li>\n<li>The value of <code>WP_STAGE</code> is one of the supported stages. The default supported stages are <code>local</code>, <code>staging</code> and <code>production</code>.</li>\n<li>The value of <code>WP_STAGE</code> is different in each of your stages.</li>\n</ul>\n<p>Some developers prefer to keep different configuration files for each one of their stages, or change the values of their constants based on some evaluation. For example, you could have something like this in your <code>wp-config.php</code> file:</p>\n<pre><code>if ( file_exists( dirname( __FILE__ ) . '/local-config.php' ) ) {\n    define( 'WP_STAGE', 'local' );\n} elseif ( file_exists( dirname( __FILE__ ) . '/staging-config.php' ) ) {\n    define( 'WP_STAGE', 'staging' );\n} else {\n    define( 'WP_STAGE', 'production' );\n}\n</code></pre>\n<p>If you follow this example, note that <code>local-config.php</code> should not be included in your deployments to staging and production, and both <code>local-config.php</code> and <code>staging-config.php</code> should not exist in your production stage.</p>\n<h4>Attach &amp; Detach</h4>\n<p>Once you have installed this plugin, you will notice that a new link appears under each active plugin of the list, which reads &#8220;Attach to [your-stage] stage&#8221;. By clicking that link, you are setting a plugin to be always active in the stage you&#8217;re working at, and not active on the other stages (unless you attach the plugin to the other stages too).</p>\n<p>In case you want to remove a plugin from the list of active plugins for a stage, you just need to click the &#8220;Detach from [your-stage] stage&#8221;.</p>\n<p>Additionally, you can make bulk selections of plugins to be attached or detached for each stage by going to <em>Plugins &gt; Stage Management</em>.</p>\n<h4>Add &amp; Extend Functionality</h4>\n<p>Stage WP Plugin Manager allows you to extend its functionality by offering hooks for filters and actions.</p>\n<p>For example, you can add your custom stages or even remove the default ones by hooking in the <code>stage_wp_plugin_manager_stages</code> filter, having something like this in your plugin:</p>\n<pre><code>function add_stages( $stages ) {\n    $stages[] = 'other';\n    return $stages;\n}\nadd_filter( 'stage_wp_plugin_manager_stages', 'add_stages' );\n</code></pre>\n<p>Additionally, you can give a nicer name to your new stage by hooking in the <code>stage_wp_plugin_manager_stages_txt</code> filter:</p>\n<pre><code>function add_stages_txt( $stages_txt ) {\n    $stages_txt['other'] = __( 'Other stage' );\n    return $stages_txt;\n}\nadd_filter( 'stage_wp_plugin_manager_stages_txt', 'add_stages_txt' );\n</code></pre>\n<p>Here&#8217;s the complete list of actions and filters that Stage WP Plugin Manager offers:</p>\n<p>Action hooks</p>\n<ul>\n<li><code>stage_wp_plugin_manager_before_init</code>: Perform some process before Stage WP Plugin Manager initializes.</li>\n<li><code>stage_wp_plugin_manager_init</code>: Perform some process after Stage WP Plugin Manager initializes.</li>\n</ul>\n<p>Filter hooks</p>\n<ul>\n<li><code>stage_wp_plugin_manager_stages</code>: Modifiy the current supported stages.</li>\n<li><code>stage_wp_plugin_manager_default_stage</code>: Modify the default stage.</li>\n<li><code>stage_wp_plugin_manager_managed_plugins</code>: Modify the list of plugins managed by Stage WP Plugin Manager.</li>\n<li><code>stage_wp_plugin_manager_stage_plugins</code>: Modify the list of plugins attached to the current stage.</li>\n<li><code>stage_wp_plugin_manager_non_stage_plugins</code>: Modify the list of managed plugins that are not attached to the current stage.</li>\n<li><code>stage_wp_plugin_manager_nonce_key</code>: Modify the nonce key used for data validation.</li>\n<li><code>stage_wp_plugin_manager_help_description</code>: Modify contents of &#8220;Description&#8221; help tab.</li>\n<li><code>stage_wp_plugin_manager_help_getting_started</code>: Modify contents of &#8220;Getting Started&#8221; help tab</li>\n<li><code>stage_wp_plugin_manager_help_attach_detach</code>: Modify contents of &#8220;Attach &amp; Detach Plugins&#8221; help tab</li>\n<li><code>stage_wp_plugin_manager_help_add_extend</code>: Modify contents of &#8220;Adding Stages &amp; Extending&#8221; help tab</li>\n<li><code>stage_wp_plugin_manager_help_credits</code>: Modify contents of &#8220;Credits&#8221; help tab</li>\n</ul>\n<h4>WordPress MultiSite Compatibility</h4>\n<p>If you&#8217;re using MultiSite and set this plugin to network activated, you can use it to attach plugins to stages on a sitewide basis 🙂</p>\n<h4>Improve Your Workflow</h4>\n<p>This plugin was originally meant as a complement for <a href=\"http://github.com/andrezrv/wordpress-bareboner\" rel=\"nofollow ugc\">WP Bareboner</a>, an advanced Git model repo, and <a href=\"http://github.com/andrezrv/stage-wp\" rel=\"nofollow ugc\">Stage WP</a>, a deployment tool based in Capistrano. The three projects work really well separated, but their real power can only be seen by using them together.</p>\n<h4>Contribute</h4>\n<p>You can make suggestions and submit your own modifications to this plugin on <a href=\"https://github.com/andrezrv/stage-wp-plugin-manager\" rel=\"nofollow ugc\">Github</a>.</p>\n",
+        "installation": "<ol>\n<li>Unzip <code>stage-wp-plugin-manager.zip</code> and upload the <code>stage-wp-plugin-manager</code> folder to your <code>/wp-content/plugins/</code> directory.</li>\n<li>Activate the plugin through the <strong>&#8220;Plugins&#8221;</strong> menu in WordPress.</li>\n<li>Read carefully the instructions in <a href=\"https://wordpress.org/extend/plugins/stage-wp-plugin-manager/\" rel=\"ugc\">description page</a>.</li>\n</ol>\n",
+        "changelog": "<h4>1.0</h4>\n<p>First public release.</p>\n"
+    },
+    "short_description": "Gives you the option to determine which plugins must be automatically activated either on local, staging or productions stages.",
+    "description": "<p>If you develop in a local machine, at some point you&#8217;ll have some active plugins there that you don&#8217;t need in the servers that you&#8217;re deploying to. Sure, you can deactivate them in your local machine before deploying, or after deploying in the remote ones, but you&#8217;re gonna need them again to be active if you want to perform local work in the future, specially when you update your local database from a remote one. On such kind of scenarios, the whole process of manually activating and deactivating plugins for each stage can be really frustrating, sometimes even taking a lot of your time.</p>\n<p>Stage WP Plugin Manager is meant to solve that problem in an quick and elegant way, by doing an automatic &#8220;fake&#8221;  activation of the plugins you select for each stage: every plugin you attach to a stage will be immediatly treated as an active plugin on that stage, no matter what its previous status was, or its current status on the other stages. Since the list of active plugins is just filtered instead of rewritten, you can restore the previous status of a plugin by detaching it, and go back to your original setup by deactivating Stage WP Plugin Manager.</p>\n<p><strong>Please read the following instructions very carefully.</strong></p>\n<h4>Getting Started</h4>\n<p>Stage WP Plugin Manager works on some assumptions about your workflow:</p>\n<ul>\n<li>You have a constant named <code>WP_STAGE</code> defined in your WordPress configuration file (often <code>wp-config.php</code>).</li>\n<li>The value of <code>WP_STAGE</code> is one of the supported stages. The default supported stages are <code>local</code>, <code>staging</code> and <code>production</code>.</li>\n<li>The value of <code>WP_STAGE</code> is different in each of your stages.</li>\n</ul>\n<p>Some developers prefer to keep different configuration files for each one of their stages, or change the values of their constants based on some evaluation. For example, you could have something like this in your <code>wp-config.php</code> file:</p>\n<pre><code>if ( file_exists( dirname( __FILE__ ) . '/local-config.php' ) ) {\n    define( 'WP_STAGE', 'local' );\n} elseif ( file_exists( dirname( __FILE__ ) . '/staging-config.php' ) ) {\n    define( 'WP_STAGE', 'staging' );\n} else {\n    define( 'WP_STAGE', 'production' );\n}\n</code></pre>\n<p>If you follow this example, note that <code>local-config.php</code> should not be included in your deployments to staging and production, and both <code>local-config.php</code> and <code>staging-config.php</code> should not exist in your production stage.</p>\n<h4>Attach &amp; Detach</h4>\n<p>Once you have installed this plugin, you will notice that a new link appears under each active plugin of the list, which reads &#8220;Attach to [your-stage] stage&#8221;. By clicking that link, you are setting a plugin to be always active in the stage you&#8217;re working at, and not active on the other stages (unless you attach the plugin to the other stages too).</p>\n<p>In case you want to remove a plugin from the list of active plugins for a stage, you just need to click the &#8220;Detach from [your-stage] stage&#8221;.</p>\n<p>Additionally, you can make bulk selections of plugins to be attached or detached for each stage by going to <em>Plugins &gt; Stage Management</em>.</p>\n<h4>Add &amp; Extend Functionality</h4>\n<p>Stage WP Plugin Manager allows you to extend its functionality by offering hooks for filters and actions.</p>\n<p>For example, you can add your custom stages or even remove the default ones by hooking in the <code>stage_wp_plugin_manager_stages</code> filter, having something like this in your plugin:</p>\n<pre><code>function add_stages( $stages ) {\n    $stages[] = 'other';\n    return $stages;\n}\nadd_filter( 'stage_wp_plugin_manager_stages', 'add_stages' );\n</code></pre>\n<p>Additionally, you can give a nicer name to your new stage by hooking in the <code>stage_wp_plugin_manager_stages_txt</code> filter:</p>\n<pre><code>function add_stages_txt( $stages_txt ) {\n    $stages_txt['other'] = __( 'Other stage' );\n    return $stages_txt;\n}\nadd_filter( 'stage_wp_plugin_manager_stages_txt', 'add_stages_txt' );\n</code></pre>\n<p>Here&#8217;s the complete list of actions and filters that Stage WP Plugin Manager offers:</p>\n<p>Action hooks</p>\n<ul>\n<li><code>stage_wp_plugin_manager_before_init</code>: Perform some process before Stage WP Plugin Manager initializes.</li>\n<li><code>stage_wp_plugin_manager_init</code>: Perform some process after Stage WP Plugin Manager initializes.</li>\n</ul>\n<p>Filter hooks</p>\n<ul>\n<li><code>stage_wp_plugin_manager_stages</code>: Modifiy the current supported stages.</li>\n<li><code>stage_wp_plugin_manager_default_stage</code>: Modify the default stage.</li>\n<li><code>stage_wp_plugin_manager_managed_plugins</code>: Modify the list of plugins managed by Stage WP Plugin Manager.</li>\n<li><code>stage_wp_plugin_manager_stage_plugins</code>: Modify the list of plugins attached to the current stage.</li>\n<li><code>stage_wp_plugin_manager_non_stage_plugins</code>: Modify the list of managed plugins that are not attached to the current stage.</li>\n<li><code>stage_wp_plugin_manager_nonce_key</code>: Modify the nonce key used for data validation.</li>\n<li><code>stage_wp_plugin_manager_help_description</code>: Modify contents of &#8220;Description&#8221; help tab.</li>\n<li><code>stage_wp_plugin_manager_help_getting_started</code>: Modify contents of &#8220;Getting Started&#8221; help tab</li>\n<li><code>stage_wp_plugin_manager_help_attach_detach</code>: Modify contents of &#8220;Attach &amp; Detach Plugins&#8221; help tab</li>\n<li><code>stage_wp_plugin_manager_help_add_extend</code>: Modify contents of &#8220;Adding Stages &amp; Extending&#8221; help tab</li>\n<li><code>stage_wp_plugin_manager_help_credits</code>: Modify contents of &#8220;Credits&#8221; help tab</li>\n</ul>\n<h4>WordPress MultiSite Compatibility</h4>\n<p>If you&#8217;re using MultiSite and set this plugin to network activated, you can use it to attach plugins to stages on a sitewide basis 🙂</p>\n<h4>Improve Your Workflow</h4>\n<p>This plugin was originally meant as a complement for <a href=\"http://github.com/andrezrv/wordpress-bareboner\" rel=\"nofollow ugc\">WP Bareboner</a>, an advanced Git model repo, and <a href=\"http://github.com/andrezrv/stage-wp\" rel=\"nofollow ugc\">Stage WP</a>, a deployment tool based in Capistrano. The three projects work really well separated, but their real power can only be seen by using them together.</p>\n<h4>Contribute</h4>\n<p>You can make suggestions and submit your own modifications to this plugin on <a href=\"https://github.com/andrezrv/stage-wp-plugin-manager\" rel=\"nofollow ugc\">Github</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/stage-wp-plugin-manager.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/stage-wp-plugin-manager/assets/screenshot-1.png?rev=891037",
+            "caption": "Plugins page with links to attach the plugin to the current stage."
+        },
+        {
+            "src": "https://ps.w.org/stage-wp-plugin-manager/assets/screenshot-2.png?rev=891037",
+            "caption": "Stage WP Plugin Manager settings, where you can attach plugins to any stage."
+        },
+        {
+            "src": "https://ps.w.org/stage-wp-plugin-manager/assets/screenshot-3.png?rev=891037",
+            "caption": "Advanced help."
+        }
+    ],
+    "tags": {
+        "manager": "manager",
+        "plugins": "plugins",
+        "stage": "stage",
+        "testing": "testing"
+    },
+    "stable_tag": "1.0",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/stage-wp-plugin-manager.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/stage-wp-plugin-manager.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=B7XQG5ZA36UZ4",
+    "banners": {
+        "low": "https://ps.w.org/stage-wp-plugin-manager/assets/banner-772x250.png?rev=891037",
+        "high": false
+    },
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/stage-wp-plugin-manager_5b3333.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

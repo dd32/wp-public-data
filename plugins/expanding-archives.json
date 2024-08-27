@@ -1,0 +1,115 @@
+{
+    "name": "Expanding Archives",
+    "slug": "expanding-archives",
+    "version": "2.1.0",
+    "author": "<a href=\"https://www.nosegraze.com\">Ashley Gibson</a>",
+    "author_profile": "https://profiles.wordpress.org/nosegraze/",
+    "contributors": {
+        "nosegraze": {
+            "profile": "https://profiles.wordpress.org/nosegraze/",
+            "avatar": "https://secure.gravatar.com/avatar/a4e184dfd2c1af0c5ac32cce0cd7a24d?s=96&d=monsterid&r=g",
+            "display_name": "Ashley"
+        }
+    },
+    "requires": "3.0",
+    "tested": "6.4.5",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 94,
+    "ratings": {
+        "5": 4,
+        "4": 2,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 6,
+    "support_url": "https://wordpress.org/support/plugin/expanding-archives/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 3000,
+    "downloaded": 19060,
+    "last_updated": "2024-03-23 2:55pm GMT",
+    "added": "2015-06-18",
+    "homepage": "https://shop.nosegraze.com/product/expanding-archives/",
+    "sections": {
+        "description": "<p>Expanding Archives adds a widget that shows your old posts in an expandable/collapsible format. Each post is categorized under its year and month, so you can expand all the posts in a given month and year.</p>\n<p>This plugin comes with very minimal CSS styling so you can easily customize it to match your design.</p>\n<p>JavaScript is required. No IE support.</p>\n",
+        "installation": "<ol>\n<li>Upload <code>expanding-archives</code> to the <code>/wp-content/plugins/</code> directory</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</li>\n<li>Go to Appearance -&gt; Widgets and drag the Expanding Archives widget into your sidebar.</li>\n</ol>\n",
+        "faq": "\n<dt id='how%20can%20i%20change%20the%20appearance%20of%20the%20widget%3F'>\nHow can I change the appearance of the widget?\n</h4>\n<p>\n<p>The plugin does not come with a settings panel so you have to do this with your own custom CSS. Here are a few examples:</p>\n<p>Change the year background colour:</p>\n<pre><code>.expanding-archives-title {\n    background: #000000;\n}\n</code></pre>\n<p>Change the year font colour:</p>\n<pre><code>.expanding-archives-title a {\n    color: #ffffff;\n}\n</code></pre>\n</p>\n<dt id='how%20can%20i%20limit%20the%20results%20to%20a%20specific%20category%3F'>\nHow can I limit the results to a specific category?\n</h4>\n<p>\n<p>By default, the widget includes posts in all categories. You can add the following code to a custom plugin or a child theme&#8217;s functions.php file to limit the results to posts in a specific category:</p>\n<pre><code>add_filter('expanding_archives_get_posts', function(array $args) {\n     $args['cat'] = 2; // Replace with ID of your category.\n\n     return $args;\n });\n\n add_filter('expanding_archives_query', function(string $query) {\n     $category = get_category(2); // Replace with ID of your category.\n     if (! $category instanceof \\WP_Term) {\n         return $query;\n     }\n\n     global $wpdb;\n\n     return \"\n SELECT DISTINCT MONTH(post_date) AS month, YEAR(post_date) AS year, COUNT(id) as post_count\n FROM {$wpdb-&gt;posts}\n          INNER JOIN {$wpdb-&gt;term_relationships} ON ({$wpdb-&gt;posts}.ID = {$wpdb-&gt;term_relationships}.object_id AND {$wpdb-&gt;term_relationships}.term_taxonomy_id = 2)\n WHERE post_status = 'publish'\n   AND post_date &lt;= now()\n   AND post_type = 'post'\n GROUP BY month, year\n ORDER BY post_date DESC\n     \";\n });\n</code></pre>\n<p>Be sure to set the ID of your category in both of the designated places (the examples use ID <code>2</code>).</p>\n<p>Note that the results may not update instantly, as the query to retrieve the date periods is cached for one day. To force the query to re-run, delete this transient: <code>expanding_archives_months</code></p>\n</p>\n<dt id='how%20can%20i%20specify%20a%20cut-off%20date%3F'>\nHow can I specify a cut-off date?\n</h4>\n<p>\n<p>By default, the widget will show a list of every year you&#8217;ve published posts.</p>\n<p>If you have a lot of posts, you may wish to only show results from the last few years. This can be done with the following code snippet:</p>\n<pre><code>add_filter('expanding-archives/earliest-date', fn() =&gt; '-4 years');\n</code></pre>\n<p>You can change <code>-4 years</code> to any value supported by <a href=\"https://www.php.net/manual/en/datetime.construct.php\" rel=\"nofollow ugc\">the PHP DateTime constructor</a>. This can be a relative value (as shown above), or a specific date like:</p>\n<pre><code>add_filter('expanding-archives/earliest-date', fn() =&gt; '2023-01-01');\n</code></pre>\n<p>Note that the results may not update instantly, as the query to retrieve the date periods is cached for one day. To force the query to re-run, delete this transient: <code>expanding_archives_months</code></p>\n</p>\n\n",
+        "changelog": "<h4>2.1.0 &#8211; 23 March 2024</h4>\n<ul>\n<li>New: Added support (via a filter) for specifying a cut-off date. See readme FAQ for details.</li>\n</ul>\n<h4>2.0.2 &#8211; 3 February, 2022</h4>\n<ul>\n<li>Refactor: Posts are now retrieved via a custom REST API endpoint, instead of the default. This allows developers to more easily filter the query arguments for retrieving posts.</li>\n</ul>\n<h4>2.0.1 &#8211; 31 January, 2022</h4>\n<ul>\n<li>Fix: Only showing a max of 10 posts in a month. Now it will show up to 100.</li>\n</ul>\n<h4>2.0 &#8211; 23 January, 2022</h4>\n<ul>\n<li>Dev: Plugin has been rewritten (should be backwards compatible).</li>\n<li>Dev: Removed jQuery dependency (and dropped IE support).</li>\n<li>Dev: Remove Font Awesome spinner in favour of vanilla CSS.</li>\n<li>Fix: Invalid HTML when the site has no posts.</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>Added filters that allow developers to easily modify the archive list.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Added a new option in the widget where you can choose to auto expand the current month or not.</li>\n</ul>\n<h4>1.0.5</h4>\n<ul>\n<li>Use transient for database query that fetches all the months.</li>\n</ul>\n<h4>1.0.4</h4>\n<ul>\n<li>Added <code>xhrFields: { withCredentials: true }</code> to ajax call.</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>Changed the month URLs to use get_month_link() instead of building them manually.</li>\n<li>Tested the plugin with WordPress 4.4 beta.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Tested with WordPress version 4.3.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Month names are now displayed using date_i18n() instead of date() so they will translate.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "This plugin adds a new widget where you can view your old posts by expanding certain years and months.",
+    "description": "<p>Expanding Archives adds a widget that shows your old posts in an expandable/collapsible format. Each post is categorized under its year and month, so you can expand all the posts in a given month and year.</p>\n<p>This plugin comes with very minimal CSS styling so you can easily customize it to match your design.</p>\n<p>JavaScript is required. No IE support.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/expanding-archives.zip",
+    "upgrade_notice": {
+        "2.1.0": "<ul>\n<li>Added support (via a filter) for specifying a cut-off date. See readme FAQ for details.</li>\n</ul>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/expanding-archives/assets/screenshot-1.png?rev=2662301",
+            "caption": "The widget on my blog. This version has custom CSS applied."
+        },
+        {
+            "src": "https://ps.w.org/expanding-archives/assets/screenshot-2.png?rev=2662301",
+            "caption": "The widget on the Twenty Fifteen theme, with only the default styles applied."
+        },
+        {
+            "src": "https://ps.w.org/expanding-archives/assets/screenshot-3.png?rev=2662301",
+            "caption": "No widget settings - just add and save!"
+        }
+    ],
+    "tags": {
+        "archives": "archives",
+        "navigation": "navigation",
+        "posts": "posts",
+        "sidebar": "sidebar",
+        "widget": "widget"
+    },
+    "stable_tag": "trunk",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/expanding-archives.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/expanding-archives.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/expanding-archives.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/expanding-archives.1.0.3.zip",
+        "1.0.5": "https://downloads.wordpress.org/plugin/expanding-archives.1.0.5.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/expanding-archives.1.1.0.zip",
+        "1.1.1": "https://downloads.wordpress.org/plugin/expanding-archives.1.1.1.zip",
+        "2.0": "https://downloads.wordpress.org/plugin/expanding-archives.2.0.zip",
+        "2.0.1": "https://downloads.wordpress.org/plugin/expanding-archives.2.0.1.zip",
+        "2.0.2": "https://downloads.wordpress.org/plugin/expanding-archives.2.0.2.zip",
+        "2.1.0": "https://downloads.wordpress.org/plugin/expanding-archives.2.1.0.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L2TL7ZBVUMG9C",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/expanding-archives.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 94,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "expanding-archives",
+            "language": "ja",
+            "version": "2.1.0",
+            "updated": "2018-11-26 06:01:09",
+            "package": "http://downloads.wordpress.org/translation/plugin/expanding-archives/2.1.0/ja.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "expanding-archives",
+            "language": "sv_SE",
+            "version": "2.1.0",
+            "updated": "2022-10-21 17:56:26",
+            "package": "http://downloads.wordpress.org/translation/plugin/expanding-archives/2.1.0/sv_SE.zip"
+        }
+    ]
+}

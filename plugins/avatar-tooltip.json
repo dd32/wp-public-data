@@ -1,0 +1,94 @@
+{
+    "name": "Avatar Tooltip",
+    "slug": "avatar-tooltip",
+    "version": "1.0.2",
+    "author": "<a href=\"http://www.axenso.com\">Axenso</a>",
+    "author_profile": "https://profiles.wordpress.org/axenso/",
+    "contributors": {
+        "axenso": {
+            "profile": "https://profiles.wordpress.org/axenso/",
+            "avatar": "https://secure.gravatar.com/avatar/d795c48d83ba7f5f528f0a396b12d4fc?s=96&d=monsterid&r=g",
+            "display_name": "axenso"
+        }
+    },
+    "requires": "3.0",
+    "tested": "3.5.2",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 20,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 1
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/avatar-tooltip/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 2658,
+    "last_updated": "2013-03-26 3:46pm GMT",
+    "added": "2012-06-08",
+    "homepage": "",
+    "sections": {
+        "description": "<p>You can enable a tooltip that shows info about user/author when you rollover/click on related avatar.</p>\n<p><strong>Let&#8217;s speak clearly: if you are loooking for a plugin that enables the standard Gravatar hovercards, this is not the plugin right for you. Please look for another one.</strong></p>\n<p>When you rollover/click on an avatar (e.g. of a comment author), a tooltip popups and shows:</p>\n<ul>\n<li>some additional links if the author is a <strong>registered user</strong>: e.g. to user post archive, to user external website, to user blog (if multisite)</li>\n<li>some info from <strong>Gravatar</strong> if author is registered to that service: e.g. location, &#8220;about me&#8221; description, websites, other account pages (facebook, twitter&#8230;.)</li>\n</ul>\n<p>In plugin settings you can set up the javascript and css main options.</p>\n<p>The plugin comes with some filter hooks, so you can customise the tooltip content at all.</p>\n<p>The plugin uses <a href=\"http://craigsworks.com/projects/qtip2/\" rel=\"nofollow ugc\">qTip plugin for jQuery</a>.</p>\n",
+        "installation": "<h4>INSTALLATION</h4>\n<ol>\n<li>Upload plugin directory to the <code>/wp-content/plugins/</code> directory</li>\n<li>Activate the plugin through the <code>Plugins</code> menu in WordPress</li>\n</ol>\n<h4>SETUP</h4>\n<ol>\n<li>Go to <code>Settings &gt; Avatar Tooltip</code> to set up options</li>\n<li>Edit <code>axe-avatar-tooltip.css</code> to customise tooltip styles</li>\n</ol>\n",
+        "faq": "\n<h4>Why does a tooltip show &#8220;No more info available&#8221;?</h4>\n<p>\n<p>Because the avatar owner is registered neither to the blog nor to Gravatar.</p>\n</p>\n<h4>I think some existing gravatars are missing or not shown&#8230;</h4>\n<p>\n<p>We suggest that first of all you read the <a href=\"gravatar.com/site/faq/\" rel=\"nofollow ugc\">Gravatar FAQ</a>.</p>\n</p>\n<h4>I can see that the plugin files (css, javascript) are properly loaded in my theme, but tooltips are not shown yet&#8230; What&#8217;s wrong?</h4>\n<p>\n<p>Probably the default jQuery selector (<code>#main ...</code>) is not good for your theme.<br />\nLook inside your theme html code and search for a class/id of your main content div: e.g. <code>#content</code> or something similar.<br />\nThen, go in <code>Settings &gt; Avatar Tooltip</code> and set up the new selector.<br />\nThis parent class is useful to avoid that the toolip is shown on undesired avatars (e.g. top Toolbar).</p>\n</p>\n<h4>Can I customise the tooltip aspect?</h4>\n<p>\n<p>In <code>Settings &gt; Avatar Tooltip</code> you can set up main options (main css theme, position).<br />\nThen, you can edit <code>axe-avatar-tooltip.css</code> in plugin folder.<br />\nA tip: copy this file to your theme directory and edit it there. Useful to prevent the loss of styles when you upgrade the plugin.</p>\n</p>\n<h4>I don&#8217;t care about Gravatar profile data. Can the tooltip show local user info?</h4>\n<p>\n<p>You can use the sample available at <a href=\"http://www.eventualo.net/blog/2013/01/avatar-tooltip-plugin-how-to-show-only-user-bio-and-social-links/\" rel=\"nofollow ugc\">this link</a>: the tooltips will show the user bio (description), a link to user recent posts, the links to social network profiles (as filled in profile by user). Everything taken locallly from blog, nothing from Gravatar profile.</p>\n</p>\n<h4>Can I customise the tooltip content text?</h4>\n<p>\n<p>You have some available filter hooks to manage the tooltip text.</p>\n<p>The following sample adds ugly debug info at the bottom of tooltip:</p>\n<pre><code>function my_avatar_tooltip_content_after( $text, $user, $md5email, $grav_name, $grav_profile ) {\n    if ( is_object($user) ) {\n        $text .= '&lt;br /&gt;USERDATA:&lt;br /&gt;&lt;pre style=\"color:#000\"&gt;'. print_r( $user, true ) .'&lt;/pre&gt;';\n    }\n    if ( is_array($grav_profile) ) {\n        $text .= '&lt;br /&gt;GRAVATAR PROFILE:&lt;br /&gt;&lt;pre style=\"color:#000\"&gt;'. print_r( $grav_profile, true . '&lt;/pre&gt;');\n    }   \n    return $text;\n}\nadd_filter('axe_avatar_tooltip_content_after', 'my_avatar_tooltip_content_after', 10, 5);\n</code></pre>\n<p>The following sample replaces the account list (facebook, twitter&#8230;) with a link to Gravatar full profile:</p>\n<pre><code>function my_avatar_tooltip_content_gravatar_accounts( $text, $md5email, $grav_profile ) {\n    if ( isset( $grav_profile['profileUrl'] ) ) {\n        return '&lt;a href=\"'. esc_url($grav_profile['profileUrl']) .'\" title=\"'. esc_attr( __('view complete profile on Gravatar', AXE_AT_PLUGIN_DIR) ) .'\" target=\"_blank\" rel=\"nofollow\"&gt;' . __('view complete profile on Gravatar', AXE_AT_PLUGIN_DIR) .'&lt;/a&gt;';\n    } else {\n        return $text;\n    }\n}\nadd_filter('axe_avatar_tooltip_content_gravatar_accounts', 'my_avatar_tooltip_content_gravatar_accounts', 10, 3);\n</code></pre>\n<p>You can look for more hooks inside plugin code.</p>\n<p>If you are brave, the function that returns the tooltip text is pluggable and you can replace it at all:</p>\n<ol>\n<li>create a php file in <code>mu-plugins</code> folder (if the folder does not exists, simply create it)</li>\n<li>add a new function called <code>axe_at_tooltip_content</code> (look for the orginal function inside plugin code to see how it works)</li>\n<li>from that moment, the plugin will load your custom function</li>\n</ol>\n</p>\n\n",
+        "changelog": "<h4>1.0.2</h4>\n<ul>\n<li>Updated: for a better integration with other plugins the get_avatar filter priority was increased to be sure that the [rel] attribute is added after other filters</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Fixed: bug about not showing tooltip content for not-logged user</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
+    },
+    "short_description": "To show a tooltip with info (member info and Gravatar profile) when you mouseover/click on an avatar.",
+    "description": "<p>You can enable a tooltip that shows info about user/author when you rollover/click on related avatar.</p>\n<p><strong>Let&#8217;s speak clearly: if you are loooking for a plugin that enables the standard Gravatar hovercards, this is not the plugin right for you. Please look for another one.</strong></p>\n<p>When you rollover/click on an avatar (e.g. of a comment author), a tooltip popups and shows:</p>\n<ul>\n<li>some additional links if the author is a <strong>registered user</strong>: e.g. to user post archive, to user external website, to user blog (if multisite)</li>\n<li>some info from <strong>Gravatar</strong> if author is registered to that service: e.g. location, &#8220;about me&#8221; description, websites, other account pages (facebook, twitter&#8230;.)</li>\n</ul>\n<p>In plugin settings you can set up the javascript and css main options.</p>\n<p>The plugin comes with some filter hooks, so you can customise the tooltip content at all.</p>\n<p>The plugin uses <a href=\"http://craigsworks.com/projects/qtip2/\" rel=\"nofollow ugc\">qTip plugin for jQuery</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/avatar-tooltip.1.0.2.zip",
+    "upgrade_notice": {
+        "1.0": "<p>Initial release</p>",
+        "1.0.1": "<p>Fixed a bug about not showing tooltip content for not-logged user</p>",
+        "1.0.2": "<p>Better integration with other plugins: the [rel] attribute is added after other filters</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/avatar-tooltip/trunk/screenshot-1.png?rev=1539386",
+            "caption": "Tooltip of a user registered to blog and registered to Gravatar"
+        },
+        {
+            "src": "https://ps.w.org/avatar-tooltip/trunk/screenshot-2.png?rev=1539386",
+            "caption": "Tooltip of a user not registered to blog but registered to Gravatar"
+        },
+        {
+            "src": "https://ps.w.org/avatar-tooltip/trunk/screenshot-3.png?rev=1539386",
+            "caption": "Tooltip of a user registered to blog but not registered to Gravatar"
+        }
+    ],
+    "tags": {
+        "avatar": "avatar",
+        "gravatar": "gravatar",
+        "tooltip": "tooltip"
+    },
+    "stable_tag": "1.0.2",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/avatar-tooltip.1.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/avatar-tooltip.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/avatar-tooltip.1.0.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/avatar-tooltip.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FSEGV7H8YNVLQ",
+    "banners": {
+        "low": "https://ps.w.org/avatar-tooltip/assets/banner-772x250.jpg?rev=554757",
+        "high": false
+    },
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/avatar-tooltip_769175.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 20,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

@@ -1,0 +1,110 @@
+{
+    "name": "UNFC Nörmalize",
+    "slug": "unfc-normalize",
+    "version": "1.0.6",
+    "author": "<a href=\"https://profiles.wordpress.org/gitlost\">gitlost</a>",
+    "author_profile": "https://profiles.wordpress.org/gitlost/",
+    "contributors": {
+        "gitlost": {
+            "profile": "https://profiles.wordpress.org/gitlost/",
+            "avatar": "https://secure.gravatar.com/avatar/d2ebc5603eed26b523436a486c6d6c5d?s=96&d=monsterid&r=g",
+            "display_name": "bonger"
+        },
+        "zodiac1978": {
+            "profile": "https://profiles.wordpress.org/zodiac1978/",
+            "avatar": "https://secure.gravatar.com/avatar/c82f3ac01fcf49e733b482214c7483cd?s=96&d=monsterid&r=g",
+            "display_name": "Torsten Landsiedel"
+        }
+    },
+    "requires": "3.9.13",
+    "tested": "4.7.29",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 2,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 2,
+    "support_url": "https://wordpress.org/support/plugin/unfc-normalize/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 100,
+    "downloaded": 1946,
+    "last_updated": "2017-01-19 10:31am GMT",
+    "added": "2016-08-02",
+    "homepage": "https://github.com/gitlost/unfc-normalize",
+    "sections": {
+        "description": "<p>This is a souped-up version of the <a href=\"https://wordpress.org/plugins/normalizer/\" title=\"Normalizer - WordPress Plugins\" rel=\"ugc\">Normalizer plugin</a> by <a href=\"https://profiles.wordpress.org/zodiac1978/\" rel=\"nofollow ugc\">Torsten Landsiedel</a>.</p>\n<p>It adds WP filters to normalize UTF-8 data coming into the system to the <a href=\"https://www.w3.org/International/docs/charmod-norm/#choice-of-normalization-form\" title=\"Choice of Normalization Form\" rel=\"nofollow ugc\">de facto web standard Normalization Form C</a>.  The Unicode Consortium report is at <a href=\"http://www.unicode.org/reports/tr15/\" rel=\"nofollow ugc\">Unicode Normalization Forms</a>.</p>\n<h4>Polyfills</h4>\n<p>For best performance <a href=\"http://php.net/manual/en/intl.installation.php\" rel=\"nofollow ugc\">install</a> (if possible) the <a href=\"http://php.net/manual/en/intro.intl.php\" rel=\"nofollow ugc\">PHP Internationalization extension <code>Intl</code></a>, which includes the PHP class <code>Normalizer</code>.</p>\n<p>However the plugin works without the PHP <code>Intl</code> extension being installed, as it uses (a modified version of) the <a href=\"https://github.com/symfony/polyfill/tree/master/src/Intl/Normalizer\" rel=\"nofollow ugc\">Symfony <code>Normalizer</code> polyfill</a>.</p>\n<p>Also text pasted into (most) inputs is normalized immediately using the JavaScript <a href=\"https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/String/normalize\" rel=\"nofollow ugc\"><code>normalize()</code> method</a>.  For browsers without normalization support, the <a href=\"https://github.com/walling/unorm\" rel=\"nofollow ugc\">unorm polyfill</a> is used.</p>\n<h4>Background</h4>\n<p>For further info, see the WP Trac ticket <a href=\"https://core.trac.wordpress.org/ticket/30130\" rel=\"nofollow ugc\">#30130 Normalize characters with combining marks to precomposed characters</a> and this <a href=\"https://make.wordpress.org/core/2016/05/17/may-17-feature-projects-chat-and-prompt/#comment-30300\" rel=\"nofollow ugc\">Make WP Core comment</a>.</p>\n<p>The plugin also works around the Safari-specific issues raised by the WP Trac ticket <a href=\"https://core.trac.wordpress.org/ticket/22363\" rel=\"nofollow ugc\">#22363 Accents in attachment filenames should be sanitized</a>.</p>\n<h4>Scanner</h4>\n<p>For existing data, the plugin includes an administration tool to scan and normalize the database.  <strong>Important:</strong> before using this tool to normalize, please <a href=\"https://codex.wordpress.org/WordPress_Backups\" rel=\"nofollow ugc\">backup your database</a>.  This is especially important if your database contains non-normalized serialized data, as this plugin uses the same suck-and-see technique as interconnect/it&#8217;s <a href=\"https://interconnectit.com/products/search-and-replace-for-wordpress-databases/\" rel=\"nofollow ugc\">Database Search and Replace Script in PHP</a> to deal with serialized data, and is fallible.</p>\n<h4>And</h4>\n<p>A google-cheating schoolboy French translation is supplied.</p>\n<p>The plugin should run on PHP 5.2.17 to 7.1, and on WP 3.9.13 to 4.7.1.</p>\n<p>The project is on <a href=\"https://github.com/gitlost/unfc-normalize\" rel=\"nofollow ugc\">github</a>.</p>\n",
+        "installation": "<p>Install in the standard way via the &#8216;Plugins&#8217; menu in WordPress and then activate. No further action is needed.</p>\n",
+        "faq": "\n<h4>How can I normalize extra stuff?</h4>\n<p>\n<p>You can add normalization to anything that passes its content through a filter. The canonical way is to use the <code>unfc_extra_filters</code> filter which returns an array of filter names &#8211; for instance, in your theme&#8217;s <code>functions.php</code> file, add:</p>\n<pre><code>function mytheme_unfc_extra_filters( $extra_filters ) {\n    $extra_filters[] = 'myfilter';\n    return $extra_filters;\n}\nadd_filter( 'unfc_extra_filters', 'mytheme_unfc_extra_filters' );\n</code></pre>\n<p>Note that the <code>unfc_extra_filters</code> filter is only called in the administration backend. You can also add a filter directly, to be called in the frontend or backend, by referencing the global PHP variable <code>unfc_normalize</code>, but you should ensure that the <code>Normalizer</code> polyfill is loaded if you don&#8217;t have the PHP <code>Intl</code> extension installed:</p>\n<pre><code>global $unfc_normalize;\nif ( $unfc_normalize ) {\n    if ( ! function_exists( 'normalizer_is_normalized' ) ) { // If the \"Intl\" extension is not installed...\n        $unfc_normalize-&gt;load_unfc_normalizer_class(); // ...load the polyfill.\n    }\n    add_filter( 'myfilter', array( $unfc_normalize, 'normalize' ), 6 /* Or whatever priority you choose */ );\n}\n</code></pre>\n</p>\n<h4>Does it have a tool to normalize the filenames of files uploaded prior to its enabling?</h4>\n<p>\n<p>No, it doesn&#8217;t. Alas, such files would have to re-uploaded. However if (enough &#8211; or more like any) interest were expressed&#8230;</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.6</h4>\n<ul>\n<li>Require explicit define of UNFC_DEBUG. Move load of debug file to &#8216;init&#8217;.</li>\n<li>Safari submit workaround.</li>\n<li>WP 4.7.1 compatible.</li>\n</ul>\n<h4>1.0.5</h4>\n<ul>\n<li>Do load of normalizer in slugs list constructor not items list. Fixes slugs listing crash when Intl extension not installed.</li>\n<li>Ignore case when checking charset (UNFC_Normalize::is_blog_utf8()).</li>\n<li>WP coding standards (yoda style in unfc_utf8_4range()).</li>\n<li>Add screenshots.</li>\n<li>Some extra unittests.</li>\n<li>WP 4.7.0 compatible.</li>\n</ul>\n<h4>1.0.4</h4>\n<ul>\n<li>Add _wp_old_slug on normalizing slugs.</li>\n<li>Escape title in screen reader label in db check.</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>For PHP 5 performance do preliminary preg_match on isNormalized. </li>\n<li>Improve comments in Normalizer.php, tabs -&gt; 4 spaces, UNFC_REGEX_IS_INVALID_UTF8_XXX invert &amp; rename.</li>\n<li>Fix untested admin notice and adjust tests. Fix some test bleed ($wp_scripts).</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Move all .php files bar main to includes subdir. Remove unused ajax.</li>\n<li>Fix single-byte trie. Move regex alts to tools/functions.php.</li>\n<li>Fix untested admin notice. Adjust tests for untested admin_notice change. Fix some test bleed ($wp_scripts).</li>\n<li>WP 4.6 compatible.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>First release for wordpress.org repository.</li>\n<li>Add assets.</li>\n<li>Include &#8220;class-unfc-list_table.php&#8221; in .pot file (for forward/backward compat).</li>\n<li>Remove unused variable in UNFC_DB_Check_Slugs_List_Table.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n<h4>0.9.1</h4>\n<ul>\n<li>Fix bad serialized data corruption on db check.</li>\n<li>Fix text domain tag.</li>\n</ul>\n<h4>0.9.0</h4>\n<ul>\n<li>Initial version after renaming from tl-normalize.</li>\n</ul>\n"
+    },
+    "short_description": "Normalizes UTF-8 input to Normalization Form C.",
+    "description": "<p>This is a souped-up version of the <a href=\"https://wordpress.org/plugins/normalizer/\" title=\"Normalizer - WordPress Plugins\" rel=\"ugc\">Normalizer plugin</a> by <a href=\"https://profiles.wordpress.org/zodiac1978/\" rel=\"nofollow ugc\">Torsten Landsiedel</a>.</p>\n<p>It adds WP filters to normalize UTF-8 data coming into the system to the <a href=\"https://www.w3.org/International/docs/charmod-norm/#choice-of-normalization-form\" title=\"Choice of Normalization Form\" rel=\"nofollow ugc\">de facto web standard Normalization Form C</a>.  The Unicode Consortium report is at <a href=\"http://www.unicode.org/reports/tr15/\" rel=\"nofollow ugc\">Unicode Normalization Forms</a>.</p>\n<h4>Polyfills</h4>\n<p>For best performance <a href=\"http://php.net/manual/en/intl.installation.php\" rel=\"nofollow ugc\">install</a> (if possible) the <a href=\"http://php.net/manual/en/intro.intl.php\" rel=\"nofollow ugc\">PHP Internationalization extension <code>Intl</code></a>, which includes the PHP class <code>Normalizer</code>.</p>\n<p>However the plugin works without the PHP <code>Intl</code> extension being installed, as it uses (a modified version of) the <a href=\"https://github.com/symfony/polyfill/tree/master/src/Intl/Normalizer\" rel=\"nofollow ugc\">Symfony <code>Normalizer</code> polyfill</a>.</p>\n<p>Also text pasted into (most) inputs is normalized immediately using the JavaScript <a href=\"https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/String/normalize\" rel=\"nofollow ugc\"><code>normalize()</code> method</a>.  For browsers without normalization support, the <a href=\"https://github.com/walling/unorm\" rel=\"nofollow ugc\">unorm polyfill</a> is used.</p>\n<h4>Background</h4>\n<p>For further info, see the WP Trac ticket <a href=\"https://core.trac.wordpress.org/ticket/30130\" rel=\"nofollow ugc\">#30130 Normalize characters with combining marks to precomposed characters</a> and this <a href=\"https://make.wordpress.org/core/2016/05/17/may-17-feature-projects-chat-and-prompt/#comment-30300\" rel=\"nofollow ugc\">Make WP Core comment</a>.</p>\n<p>The plugin also works around the Safari-specific issues raised by the WP Trac ticket <a href=\"https://core.trac.wordpress.org/ticket/22363\" rel=\"nofollow ugc\">#22363 Accents in attachment filenames should be sanitized</a>.</p>\n<h4>Scanner</h4>\n<p>For existing data, the plugin includes an administration tool to scan and normalize the database.  <strong>Important:</strong> before using this tool to normalize, please <a href=\"https://codex.wordpress.org/WordPress_Backups\" rel=\"nofollow ugc\">backup your database</a>.  This is especially important if your database contains non-normalized serialized data, as this plugin uses the same suck-and-see technique as interconnect/it&#8217;s <a href=\"https://interconnectit.com/products/search-and-replace-for-wordpress-databases/\" rel=\"nofollow ugc\">Database Search and Replace Script in PHP</a> to deal with serialized data, and is fallible.</p>\n<h4>And</h4>\n<p>A google-cheating schoolboy French translation is supplied.</p>\n<p>The plugin should run on PHP 5.2.17 to 7.1, and on WP 3.9.13 to 4.7.1.</p>\n<p>The project is on <a href=\"https://github.com/gitlost/unfc-normalize\" rel=\"nofollow ugc\">github</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/unfc-normalize.1.0.6.zip",
+    "upgrade_notice": {
+        "1.0.6": "<p>Less noisy when WP_DEBUG set.</p>",
+        "1.0.5": "<p>Fixes fatal error on check slugs listing in DB check tool when Intl extension not available.</p>",
+        "1.0.4": "<p>Now adds _wp_old_slug on normalizing slugs so old links will work.</p>",
+        "1.0.3": "<p>Improved PHP 5 performance on isNormalized() check.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/unfc-normalize/assets/screenshot-1.png?rev=1542706",
+            "caption": "Before and after: pasting non-normalized text into a post's title and content."
+        },
+        {
+            "src": "https://ps.w.org/unfc-normalize/assets/screenshot-2.png?rev=1542706",
+            "caption": "Before: uploading a file on macOS with Firefox and then viewing with Safari (broken in Safari)."
+        },
+        {
+            "src": "https://ps.w.org/unfc-normalize/assets/screenshot-3.png?rev=1542706",
+            "caption": "After: uploading a file on macOS with Firefox and then viewing with Safari (whee it works)."
+        },
+        {
+            "src": "https://ps.w.org/unfc-normalize/assets/screenshot-4.png?rev=1542706",
+            "caption": "Front page of the database scan administration tool."
+        }
+    ],
+    "tags": {
+        "form-c": "Form C",
+        "normalization": "Normalization",
+        "normalize": "normalize",
+        "unicode": "unicode",
+        "unicode-normalization-form-c": "Unicode Normalization Form C"
+    },
+    "stable_tag": "1.0.6",
+    "versions": {
+        "1.0.1": "https://downloads.wordpress.org/plugin/unfc-normalize.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/unfc-normalize.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/unfc-normalize.1.0.3.zip",
+        "1.0.4": "https://downloads.wordpress.org/plugin/unfc-normalize.1.0.4.zip",
+        "1.0.5": "https://downloads.wordpress.org/plugin/unfc-normalize.1.0.5.zip",
+        "1.0.6": "https://downloads.wordpress.org/plugin/unfc-normalize.1.0.6.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/unfc-normalize.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/unfc-normalize/assets/banner-772x250.png?rev=1465738",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/unfc-normalize/assets/icon-128x128.png?rev=1465738",
+        "2x": "https://ps.w.org/unfc-normalize/assets/icon-256x256.png?rev=1465738"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

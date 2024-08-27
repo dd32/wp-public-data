@@ -1,0 +1,68 @@
+{
+    "name": "Arha Routes",
+    "slug": "arha-routes",
+    "version": "1.5",
+    "author": "Atte Liimatainen",
+    "author_profile": "https://profiles.wordpress.org/attlii/",
+    "contributors": {
+        "attlii": {
+            "profile": "https://profiles.wordpress.org/attlii/",
+            "avatar": "https://secure.gravatar.com/avatar/19b92872ab7f61225950d3846ab8b85d?s=96&d=monsterid&r=g",
+            "display_name": "Atte Liimatainen"
+        }
+    },
+    "requires": "5.0",
+    "tested": "5.3.18",
+    "requires_php": "7.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/arha-routes/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 887,
+    "last_updated": "2020-05-15 6:18am GMT",
+    "added": "2019-10-05",
+    "homepage": "",
+    "sections": {
+        "description": "<p>WordPress plugin that helps to serve content through REST routes and gives<br />\ncustomizability to developers through filters.</p>\n<h3>Available Routes</h3>\n<ul>\n<li><code>/wp-json/arha/v1/post</code></li>\n<li><code>/wp-json/arha/v1/page</code></li>\n<li><code>/wp-json/arha/v1/options</code></li>\n<li><code>/wp-json/arha/v1/archive</code></li>\n</ul>\n<h3>Example queries</h3>\n<ul>\n<li><code>/wp-json/arha/v1/post?post_type=POST_TYPE&amp;slug=SLUG</code></li>\n<li><code>/wp-json/arha/v1/page?path=PATH</code></li>\n<li><code>/wp-json/arha/v1/options</code></li>\n<li><code>/wp-json/arha/v1/archive?post_type=POST_TYPE&amp;posts_per_page=POSTS_PER_PAGE&amp;paged=PAGED&amp;orderby=ORDERBY&amp;order=ORDER</code></li>\n</ul>\n<h3>tax_query and meta_query in archive-route</h3>\n<ul>\n<li><code>tax_query</code> and <code>meta_query</code> are supported and they work how the query is built for it in <code>new WP_Query()</code></li>\n<li>both needs their values to bes passed in as stringified json</li>\n</ul>\n<h3>Multiple post_types in archive-route</h3>\n<ul>\n<li>To pass multiple post_types in archive-route, use syntax that lets PHP read GET-param as an array. https://stackoverflow.com/a/9547490</li>\n</ul>\n<h3>Filters</h3>\n<ul>\n<li>\n<p>To exclude querying specific post types from <code>post</code>&#8211; and <code>archive</code>-routes, you<br />\ncan use following filters:</p>\n<p>`<br />\nadd_filter(&#8216;arha_routes/archive_excluded_post_types&#8217;, &#8216;exclude_post_types&#8217;);<br />\nadd_filter(&#8216;arha_routes/post_excluded_post_types&#8217;, &#8216;exclude_post_types&#8217;);</p>\n</li>\n</ul>\n<p>function exclude_post_types($excluded_post_types) {<br />\n  $excluded_post_types = [&#8216;post&#8217;];<br />\n  return $excluded_post_types;<br />\n}<br />\n    `</p>\n<ul>\n<li>To format <code>post</code>-route&#8217;s post before it&#8217;s served to client, use <code>arha_routes/format_post</code>-filter<br />\n`<br />\nadd_filter(&#8216;arha_routes/format_post&#8217;, &#8216;format_post&#8217;);</li>\n</ul>\n<p>function format_post($post) {<br />\n  return $post;<br />\n}<br />\n    `</p>\n<ul>\n<li>To format <code>page</code>-route&#8217;s post before it&#8217;s served to client, use <code>arha_routes/format_page</code>-filter<br />\n`<br />\nadd_filter(&#8216;arha_routes/format_page&#8217;, &#8216;format_page&#8217;);</li>\n</ul>\n<p>function format_page($page) {<br />\n  return $page;<br />\n}<br />\n    `</p>\n<ul>\n<li>\n<p>To format <code>archive</code>-route&#8217;s posts before they are served to client, use <code>arha_routes/format_archive_post</code>-filter</p>\n<p><code>add_filter('arha_routes/format_archive_post', 'format_archive_post');<br />\nfunction format_archive_post($post) {<br />\nreturn $post;<br />\n}</code></p>\n</li>\n<li>\n<p><code>options</code>-route returns empty result by default. To add content to it, use <code>arha_routes/format_options</code>-filter<br />\n`<br />\nadd_filter(&#8216;arha_routes/format_options&#8217;, &#8216;format_options&#8217;);</p>\n</li>\n</ul>\n<p>function format_options($options) {<br />\n  return $options;<br />\n}<br />\n    `</p>\n<ul>\n<li>\n<p>By default Arha Routes returns only published content with post-, page- and archive-route, this can be modified by adding following filters.<br />\n`<br />\n// for archive route<br />\nadd_filter(&#8216;arha_routes/allowed_post_statuses_archive&#8217;, &#8216;allowed_post_statuses&#8217;);<br />\n// for post route<br />\nadd_filter(&#8216;arha_routes/allowed_post_statuses_post&#8217;, &#8216;allowed_post_statuses&#8217;);<br />\n// for page route<br />\nadd_filter(&#8216;arha_routes/allowed_post_statuses_page&#8217;, &#8216;allowed_post_statuses&#8217;);<br />\nfunction allowed_post_statuses($post_statuses) {<br />\n// &#8230; change post_statuses array</p>\n<p>return $post_statuses;<br />\n}<br />\n`<br />\nAfter adding setting up these filters, request can include &#8220;post_status&#8221; parameter and it will be compared to $post_statuses array.</p>\n</li>\n</ul>\n<h3>SearchWP</h3>\n<p>Arha Routes supports SearchWP-plugin, which lets WP users to make keyword search engine for their content.</p>\n<p>Activating SearchWP-plugin adds optional keyword-search functionality to <code>archive</code>-route. This is done by adding <code>s=KEYWORD</code> to the route<br />\n&#8211; Example: <code>/wp-json/arha/v1/archive?post_type=products&amp;posts_per_page=10&amp;paged=1&amp;orderby=date&amp;order=ASC&amp;s=monitor</code></p>\n<h3>Polylang</h3>\n<p>Arha Routes supports Polylang-plugin, which allows users to create content in multiple languages.</p>\n<p>Activating Polylang changes how endpoints work:</p>\n<ul>\n<li>All routes require additional <code>lang</code>-param\n<ul>\n<li>Example: <code>/wp-json/arha/v1/archive?post_type=products&amp;posts_per_page=10&amp;paged=1&amp;orderby=date&amp;order=ASC&amp;lang=en</code></li>\n</ul>\n</li>\n<li><code>page</code>-route doesn&#8217;t support language prefix in path\n<ul>\n<li>Example: Permalink <code>/zh/info</code>, use like this <code>/wp-json/arha/v1/page?path=/info&amp;lang=zh</code></li>\n<li>Example: Permalink <code>/en/info/test</code>, use like this <code>/wp-json/arha/v1/page?path=/info/test&amp;lang=zh</code></li>\n</ul>\n</li>\n<li><code>options</code>-route passes <code>lang</code>-param forward to <code>arha_routes/format_options</code>-filter<br />\n<code>add_filter('arha_routes/format_options', 'format_options', 10, 2);<br />\nfunction format_options($options, $lang) {<br />\nreturn $options;<br />\n}</code></li>\n</ul>\n<h3>Polylang + SearchWP</h3>\n<p>In order to make these two plugins work together, you need to add extra plugin to WP installation.</p>\n<p>https://searchwp.com/extensions/polylang-integration/</p>\n"
+    },
+    "short_description": "Wordpress plugin that helps to serve content through REST routes and gives customizability to developers through filters.",
+    "description": "<p>WordPress plugin that helps to serve content through REST routes and gives<br />\ncustomizability to developers through filters.</p>\n<h3>Available Routes</h3>\n<ul>\n<li><code>/wp-json/arha/v1/post</code></li>\n<li><code>/wp-json/arha/v1/page</code></li>\n<li><code>/wp-json/arha/v1/options</code></li>\n<li><code>/wp-json/arha/v1/archive</code></li>\n</ul>\n<h3>Example queries</h3>\n<ul>\n<li><code>/wp-json/arha/v1/post?post_type=POST_TYPE&amp;slug=SLUG</code></li>\n<li><code>/wp-json/arha/v1/page?path=PATH</code></li>\n<li><code>/wp-json/arha/v1/options</code></li>\n<li><code>/wp-json/arha/v1/archive?post_type=POST_TYPE&amp;posts_per_page=POSTS_PER_PAGE&amp;paged=PAGED&amp;orderby=ORDERBY&amp;order=ORDER</code></li>\n</ul>\n<h3>tax_query and meta_query in archive-route</h3>\n<ul>\n<li><code>tax_query</code> and <code>meta_query</code> are supported and they work how the query is built for it in <code>new WP_Query()</code></li>\n<li>both needs their values to bes passed in as stringified json</li>\n</ul>\n<h3>Multiple post_types in archive-route</h3>\n<ul>\n<li>To pass multiple post_types in archive-route, use syntax that lets PHP read GET-param as an array. https://stackoverflow.com/a/9547490</li>\n</ul>\n<h3>Filters</h3>\n<ul>\n<li>\n<p>To exclude querying specific post types from <code>post</code>&#8211; and <code>archive</code>-routes, you<br />\ncan use following filters:</p>\n<p>`<br />\nadd_filter(&#8216;arha_routes/archive_excluded_post_types&#8217;, &#8216;exclude_post_types&#8217;);<br />\nadd_filter(&#8216;arha_routes/post_excluded_post_types&#8217;, &#8216;exclude_post_types&#8217;);</p>\n</li>\n</ul>\n<p>function exclude_post_types($excluded_post_types) {<br />\n  $excluded_post_types = [&#8216;post&#8217;];<br />\n  return $excluded_post_types;<br />\n}<br />\n    `</p>\n<ul>\n<li>To format <code>post</code>-route&#8217;s post before it&#8217;s served to client, use <code>arha_routes/format_post</code>-filter<br />\n`<br />\nadd_filter(&#8216;arha_routes/format_post&#8217;, &#8216;format_post&#8217;);</li>\n</ul>\n<p>function format_post($post) {<br />\n  return $post;<br />\n}<br />\n    `</p>\n<ul>\n<li>To format <code>page</code>-route&#8217;s post before it&#8217;s served to client, use <code>arha_routes/format_page</code>-filter<br />\n`<br />\nadd_filter(&#8216;arha_routes/format_page&#8217;, &#8216;format_page&#8217;);</li>\n</ul>\n<p>function format_page($page) {<br />\n  return $page;<br />\n}<br />\n    `</p>\n<ul>\n<li>\n<p>To format <code>archive</code>-route&#8217;s posts before they are served to client, use <code>arha_routes/format_archive_post</code>-filter</p>\n<p><code>add_filter('arha_routes/format_archive_post', 'format_archive_post');<br />\nfunction format_archive_post($post) {<br />\nreturn $post;<br />\n}</code></p>\n</li>\n<li>\n<p><code>options</code>-route returns empty result by default. To add content to it, use <code>arha_routes/format_options</code>-filter<br />\n`<br />\nadd_filter(&#8216;arha_routes/format_options&#8217;, &#8216;format_options&#8217;);</p>\n</li>\n</ul>\n<p>function format_options($options) {<br />\n  return $options;<br />\n}<br />\n    `</p>\n<ul>\n<li>\n<p>By default Arha Routes returns only published content with post-, page- and archive-route, this can be modified by adding following filters.<br />\n`<br />\n// for archive route<br />\nadd_filter(&#8216;arha_routes/allowed_post_statuses_archive&#8217;, &#8216;allowed_post_statuses&#8217;);<br />\n// for post route<br />\nadd_filter(&#8216;arha_routes/allowed_post_statuses_post&#8217;, &#8216;allowed_post_statuses&#8217;);<br />\n// for page route<br />\nadd_filter(&#8216;arha_routes/allowed_post_statuses_page&#8217;, &#8216;allowed_post_statuses&#8217;);<br />\nfunction allowed_post_statuses($post_statuses) {<br />\n// &#8230; change post_statuses array</p>\n<p>return $post_statuses;<br />\n}<br />\n`<br />\nAfter adding setting up these filters, request can include &#8220;post_status&#8221; parameter and it will be compared to $post_statuses array.</p>\n</li>\n</ul>\n<h3>SearchWP</h3>\n<p>Arha Routes supports SearchWP-plugin, which lets WP users to make keyword search engine for their content.</p>\n<p>Activating SearchWP-plugin adds optional keyword-search functionality to <code>archive</code>-route. This is done by adding <code>s=KEYWORD</code> to the route<br />\n&#8211; Example: <code>/wp-json/arha/v1/archive?post_type=products&amp;posts_per_page=10&amp;paged=1&amp;orderby=date&amp;order=ASC&amp;s=monitor</code></p>\n<h3>Polylang</h3>\n<p>Arha Routes supports Polylang-plugin, which allows users to create content in multiple languages.</p>\n<p>Activating Polylang changes how endpoints work:</p>\n<ul>\n<li>All routes require additional <code>lang</code>-param\n<ul>\n<li>Example: <code>/wp-json/arha/v1/archive?post_type=products&amp;posts_per_page=10&amp;paged=1&amp;orderby=date&amp;order=ASC&amp;lang=en</code></li>\n</ul>\n</li>\n<li><code>page</code>-route doesn&#8217;t support language prefix in path\n<ul>\n<li>Example: Permalink <code>/zh/info</code>, use like this <code>/wp-json/arha/v1/page?path=/info&amp;lang=zh</code></li>\n<li>Example: Permalink <code>/en/info/test</code>, use like this <code>/wp-json/arha/v1/page?path=/info/test&amp;lang=zh</code></li>\n</ul>\n</li>\n<li><code>options</code>-route passes <code>lang</code>-param forward to <code>arha_routes/format_options</code>-filter<br />\n<code>add_filter('arha_routes/format_options', 'format_options', 10, 2);<br />\nfunction format_options($options, $lang) {<br />\nreturn $options;<br />\n}</code></li>\n</ul>\n<h3>Polylang + SearchWP</h3>\n<p>In order to make these two plugins work together, you need to add extra plugin to WP installation.</p>\n<p>https://searchwp.com/extensions/polylang-integration/</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/arha-routes.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "bilingual": "bilingual",
+        "endpoint": "endpoint",
+        "language": "language",
+        "multilingual": "multilingual",
+        "rest": "rest"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/arha-routes.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

@@ -1,0 +1,116 @@
+{
+    "name": "SEPA QR-Code for Woocommerce (GDPR-compliant)",
+    "slug": "mxp-sepa-qr-code-addon-for-woocommerce",
+    "version": "1.1.0",
+    "author": "<a href=\"https://github.com/Coernel82/SEPA-QR-for-Woocommerce\">https://github.com/Coernel82/SEPA-QR-for-Woocommerce</a>",
+    "author_profile": "https://profiles.wordpress.org/thedoctorcoernel/",
+    "contributors": {
+        "thedoctorcoernel": {
+            "profile": "https://profiles.wordpress.org/thedoctorcoernel/",
+            "avatar": "https://secure.gravatar.com/avatar/f4ffad477f6927abe4f771b0b85411a7?s=96&d=monsterid&r=g",
+            "display_name": "thedoctorcoernel"
+        }
+    },
+    "requires": "5.0",
+    "tested": "6.3.5",
+    "requires_php": "7.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 1,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/mxp-sepa-qr-code-addon-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 200,
+    "downloaded": 1899,
+    "last_updated": "2023-08-03 8:48am GMT",
+    "added": "2022-10-05",
+    "homepage": "https://github.com/Coernel82/SEPA-QR-for-Woocommerce",
+    "sections": {
+        "installation": "<p>Nothing special:<br />\n* Click install and activate</p>\n",
+        "faq": "\n<dt id='i%20can%27t%20see%20the%20qr-code%20in%20a%20specific%20email%20client'>\nI can&#8217;t see the QR-Code in a specific email client\n</h4>\n<p>\n<p>This surely is due to the fact that some email clients won&#8217;t show Base64-encoded images. Your help is appreciated! Have a look at https://github.com/Coernel82/SEPA-QR-for-Woocommerce/issues/17<br />\nWorkaround: Hook it into your PDF-invoices! (see above!)</p>\n</p>\n<dt id='what%20about%20privacy%20%2F%20gdpr'>\nWhat about privacy / GDPR\n</h4>\n<p>\n<p>The plugin creates the QR-Code on your server and it does not use any external resources.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.0</h4>\n<ul>\n<li>added loacalization</li>\n<li>added prefix muxp to the bacs-qrcode css class for the QR code. If you have used .bacs-qrcode you have to change it to muxp-bacs-qrcode</li>\n</ul>\n<h4>1.0.4</h4>\n<ul>\n<li>initial commit to the wordpress directory</li>\n</ul>\n",
+        "description": "<p>Adds a SEPA-QR Code for bank transfer payments (bacs) in the WooCommerce Thankyou page and Woocommerce emails. The QR-Code can be hooked into other plugins.</p>\n<h3>Before you start</h3>\n<p>The plugin comes as is and free. However a real person has put real work into it. So if you use it please do s.th. good. Use your efforts, your time for beneficial projects or whatever!</p>\n<h3>Prerequisite</h3>\n<p>php GD2 extension must be installed as the QR-Code generator by <a href=\"https://github.com/fellwell5/bezahlcode/\" rel=\"nofollow ugc\">fellwell15</a> requires this.</p>\n<h3>Hooking into other plugins</h3>\n<p>I use a plugin for <a href=\"https://docs.wpovernight.com/home/woocommerce-pdf-invoices-packing-slips/pdf-template-action-hooks/\" rel=\"nofollow ugc\">PDF-invoices and packaging slips</a>.  Refer to this sample to hook the QR-Code into whatever you like:</p>\n<pre><code>/wp-content/themes/Your(Child)Theme/functions.php\n\n\n/* QR-Code in invoices */\nadd_action( 'wpo_wcpdf_after_order_details', 'wpo_wcpdf_qr_code', 10, 2 );\nfunction wpo_wcpdf_qr_code ($document_type, $order) {\n    require_once WP_PLUGIN_DIR . '/mxp-sepa-qr-code-addon-for-woocommerce/muxp-sepaqr.php';\n    $muxp_order = wc_get_order( $order);\n    $order_id  = $order-&gt;get_id();\n    if ( !empty($muxp_order-&gt;get_total()) &amp;&amp; (float)$order-&gt;get_total() &gt; 0 ) {\n        echo '&lt;h1&gt;QR-Code for your online banking app&lt;h1&gt;';\n        echo '&lt;img class=\"muxp-bacs-qrcode\" src=\"' . esc_attr(muxp_get_qrcode($order-&gt;get_total(), $order_id)) . '\" alt=\"qr-code\"&gt;&lt;/p&gt;';\n    } \n}\n</code></pre>\n<h3>What happens in the backend:</h3>\n<ul>\n<li>the QR code generator creates the QR-code locally. There is <strong>no Google-API nor external server in use</strong>!</li>\n<li>the QR code generator is from <a href=\"https://github.com/fellwell5/bezahlcode/\" rel=\"nofollow ugc\">fellwell15</a></li>\n<li>plugin registers a get-parameter (configurable, default mxp_qr) for testing purposes and, if desired, to create links to the cached QR codes.</li>\n<li>the prefix mxp is used throghout the plugin to avoid collisions with other plugins and functions. mxp stands for www.musicalexperten.de (musical experts). Remember where you&#8217;ve seen it first! 😉</li>\n</ul>\n<h3>Testing and troubleshooting</h3>\n<h3>Simple way</h3>\n<p>Install the plugin and order s.th. in your shop using BACS (direct bank transfer).</p>\n<h3>To test if the QR-Code generator is working</h3>\n<p>www.yourwebpage.de/?mxp_qr=something  = creates a real QR with dummyvalues 11-11<br />\n<a href=\"https://www.musicalexperten.de/?mxp_qr=something\" rel=\"nofollow ugc\">Working example</a></p>\n<h3>To find an existing cached QR-Code, query for a valid md5 string == If it does not exist in cache or transients, a sad smiley will appear.</h3>\n<p>www.yourwebpage.de/?mxp_qr=351436ef4b279e1811a6c68a2dd58b1b<br />\nresults in a sad smiley. <a href=\"https://www.musicalexperten.de/?mxp_qr=351436ef4b279e1811a6c68a2dd58b1b\" rel=\"nofollow ugc\">Working example</a></p>\n<h3>Remarks</h3>\n<p>Storing the QR code in cache or transients is only needed if you want to use a link instead of a picture inside the email. Details in the program code.</p>\n<h3>Support</h3>\n<p>The program has been written by a professional programmer &#8211; however fully free of charge and without detailed knowledge about WooCommerce. I try to assist you in the support forum or on GitHub the best I can but my knowledge is limited.</p>\n<h3>Full integration in Woocommerce</h3>\n<p>I am more then happy if someone integrates the code into the Woocommerce core! The topic is discussed here: https://github.com/woocommerce/woocommerce/issues/27661</p>\n"
+    },
+    "short_description": "Adds a SEPA-QR Code for bank transfer payments (bacs) in the WooCommerce Thankyou page and Woocommerce emails. The QR-Code can be hooked into other pl &hellip;",
+    "description": "<p>Adds a SEPA-QR Code for bank transfer payments (bacs) in the WooCommerce Thankyou page and Woocommerce emails. The QR-Code can be hooked into other plugins.</p>\n<h3>Before you start</h3>\n<p>The plugin comes as is and free. However a real person has put real work into it. So if you use it please do s.th. good. Use your efforts, your time for beneficial projects or whatever!</p>\n<h3>Prerequisite</h3>\n<p>php GD2 extension must be installed as the QR-Code generator by <a href=\"https://github.com/fellwell5/bezahlcode/\" rel=\"nofollow ugc\">fellwell15</a> requires this.</p>\n<h3>Hooking into other plugins</h3>\n<p>I use a plugin for <a href=\"https://docs.wpovernight.com/home/woocommerce-pdf-invoices-packing-slips/pdf-template-action-hooks/\" rel=\"nofollow ugc\">PDF-invoices and packaging slips</a>.  Refer to this sample to hook the QR-Code into whatever you like:</p>\n<pre><code>/wp-content/themes/Your(Child)Theme/functions.php\n\n\n/* QR-Code in invoices */\nadd_action( 'wpo_wcpdf_after_order_details', 'wpo_wcpdf_qr_code', 10, 2 );\nfunction wpo_wcpdf_qr_code ($document_type, $order) {\n    require_once WP_PLUGIN_DIR . '/mxp-sepa-qr-code-addon-for-woocommerce/muxp-sepaqr.php';\n    $muxp_order = wc_get_order( $order);\n    $order_id  = $order-&gt;get_id();\n    if ( !empty($muxp_order-&gt;get_total()) &amp;&amp; (float)$order-&gt;get_total() &gt; 0 ) {\n        echo '&lt;h1&gt;QR-Code for your online banking app&lt;h1&gt;';\n        echo '&lt;img class=\"muxp-bacs-qrcode\" src=\"' . esc_attr(muxp_get_qrcode($order-&gt;get_total(), $order_id)) . '\" alt=\"qr-code\"&gt;&lt;/p&gt;';\n    } \n}\n</code></pre>\n<h3>What happens in the backend:</h3>\n<ul>\n<li>the QR code generator creates the QR-code locally. There is <strong>no Google-API nor external server in use</strong>!</li>\n<li>the QR code generator is from <a href=\"https://github.com/fellwell5/bezahlcode/\" rel=\"nofollow ugc\">fellwell15</a></li>\n<li>plugin registers a get-parameter (configurable, default mxp_qr) for testing purposes and, if desired, to create links to the cached QR codes.</li>\n<li>the prefix mxp is used throghout the plugin to avoid collisions with other plugins and functions. mxp stands for www.musicalexperten.de (musical experts). Remember where you&#8217;ve seen it first! 😉</li>\n</ul>\n<h3>Testing and troubleshooting</h3>\n<h3>Simple way</h3>\n<p>Install the plugin and order s.th. in your shop using BACS (direct bank transfer).</p>\n<h3>To test if the QR-Code generator is working</h3>\n<p>www.yourwebpage.de/?mxp_qr=something  = creates a real QR with dummyvalues 11-11<br />\n<a href=\"https://www.musicalexperten.de/?mxp_qr=something\" rel=\"nofollow ugc\">Working example</a></p>\n<h3>To find an existing cached QR-Code, query for a valid md5 string == If it does not exist in cache or transients, a sad smiley will appear.</h3>\n<p>www.yourwebpage.de/?mxp_qr=351436ef4b279e1811a6c68a2dd58b1b<br />\nresults in a sad smiley. <a href=\"https://www.musicalexperten.de/?mxp_qr=351436ef4b279e1811a6c68a2dd58b1b\" rel=\"nofollow ugc\">Working example</a></p>\n<h3>Remarks</h3>\n<p>Storing the QR code in cache or transients is only needed if you want to use a link instead of a picture inside the email. Details in the program code.</p>\n<h3>Support</h3>\n<p>The program has been written by a professional programmer &#8211; however fully free of charge and without detailed knowledge about WooCommerce. I try to assist you in the support forum or on GitHub the best I can but my knowledge is limited.</p>\n<h3>Full integration in Woocommerce</h3>\n<p>I am more then happy if someone integrates the code into the Woocommerce core! The topic is discussed here: https://github.com/woocommerce/woocommerce/issues/27661</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/mxp-sepa-qr-code-addon-for-woocommerce.1.1.0.zip",
+    "upgrade_notice": {
+        "1.1.0": "<ul>\n<li>added loacalization</li>\n</ul>",
+        "1.0.4": "<ul>\n<li>initial commit to the wordpress directory</li>\n</ul>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/mxp-sepa-qr-code-addon-for-woocommerce/assets/screenshot-1.jpg?rev=2794367",
+            "caption": "the QR-Code gets added to the WooCommerce order email"
+        },
+        {
+            "src": "https://ps.w.org/mxp-sepa-qr-code-addon-for-woocommerce/assets/screenshot-2.png?rev=2794367",
+            "caption": "example how the qr-code is hooked into a pdf envoice"
+        }
+    ],
+    "tags": {
+        "bacs": "bacs",
+        "payment": "payment",
+        "qr-code": "qr code",
+        "sepa-qr": "Sepa-QR",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.1.0",
+    "versions": {
+        "1.0.4": "https://downloads.wordpress.org/plugin/mxp-sepa-qr-code-addon-for-woocommerce.1.0.4.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/mxp-sepa-qr-code-addon-for-woocommerce.1.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/mxp-sepa-qr-code-addon-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/mxp-sepa-qr-code-addon-for-woocommerce/assets/banner-772x250.jpg?rev=2794367",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/mxp-sepa-qr-code-addon-for-woocommerce/assets/icon-256x256.jpg?rev=2794367",
+        "2x": "https://ps.w.org/mxp-sepa-qr-code-addon-for-woocommerce/assets/icon-256x256.jpg?rev=2794367"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "mxp-sepa-qr-code-addon-for-woocommerce",
+            "language": "de_DE",
+            "version": "1.1.0",
+            "updated": "2022-10-10 09:44:29",
+            "package": "http://downloads.wordpress.org/translation/plugin/mxp-sepa-qr-code-addon-for-woocommerce/1.1.0/de_DE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "mxp-sepa-qr-code-addon-for-woocommerce",
+            "language": "de_DE_formal",
+            "version": "1.1.0",
+            "updated": "2022-10-11 06:49:31",
+            "package": "http://downloads.wordpress.org/translation/plugin/mxp-sepa-qr-code-addon-for-woocommerce/1.1.0/de_DE_formal.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "mxp-sepa-qr-code-addon-for-woocommerce",
+            "language": "nl_NL",
+            "version": "1.1.0",
+            "updated": "2024-08-07 10:55:32",
+            "package": "http://downloads.wordpress.org/translation/plugin/mxp-sepa-qr-code-addon-for-woocommerce/1.1.0/nl_NL.zip"
+        }
+    ]
+}

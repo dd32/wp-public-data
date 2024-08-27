@@ -1,0 +1,233 @@
+{
+    "name": "Simple User Listing",
+    "slug": "simple-user-listing",
+    "version": "2.0.3",
+    "author": "<a href=\"http://kathyisawesome.com\">Kathy Darling</a>",
+    "author_profile": "https://profiles.wordpress.org/helgatheviking/",
+    "contributors": {
+        "helgatheviking": {
+            "profile": "https://profiles.wordpress.org/helgatheviking/",
+            "avatar": "https://secure.gravatar.com/avatar/e59280745b3f6f86a4cc6fad485647e9?s=96&d=monsterid&r=g",
+            "display_name": "HelgaTheViking"
+        }
+    },
+    "requires": "6.1.0",
+    "tested": "6.5.0",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 17,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 17,
+    "support_url": "https://wordpress.org/support/plugin/simple-user-listing/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 1000,
+    "downloaded": 43749,
+    "last_updated": "2024-03-29 6:50pm GMT",
+    "added": "2013-01-31",
+    "homepage": "http://www.kathyisawesome.com/489/simple-user-listing/",
+    "sections": {
+        "description": "<p>Other plugins output paginated lists of users, but I needed to be able to customize and style this list to fit my theme.  So I created this plugin to use templates that can be overridden and customized by theme developers.</p>\n<p>To customize any of the templates, copy the file from the plugin&#8217;s &#8220;templates&#8221; folder to your themes &#8220;simple-user-listing&#8221; folder.</p>\n<h4>Usage</h4>\n<p>Place this shortcode anywhere you&#8217;d like to display a full list of all your blog&#8217;s users.</p>\n<pre><code>[userlist]\n</code></pre>\n<p>By default the plugin will print out the users based on the &#8220;Posts per Page&#8221; setting under Settings-&gt;Reading, but this and many other settings can be changed via the shortcode&#8217;s parameters.</p>\n<h4>Support</h4>\n<p>If after reading the <a href=\"https://wordpress.org/plugins/simple-user-listing/faq\" rel=\"ugc\">FAQ</a> you still need help, support is handled in the <a href=\"https://wordpress.org/support/plugin/simple-user-listing\" rel=\"ugc\">WordPress forums</a>. Please note that support is limited and does not cover any custom implementation of the plugin.</p>\n<p>Please report any bugs, errors, warnings, code problems to <a href=\"https://github.com/helgatheviking/simple-user-listing/issues\" rel=\"nofollow ugc\">Github</a></p>\n",
+        "installation": "<ol>\n<li>Upload the <code>plugin</code> folder to the <code>/wp-content/plugins/</code> directory</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</li>\n<li>Add the shortcode [userlist] anywhere you wish to display a list of users</li>\n</ol>\n",
+        "faq": "<p><a></a></p>\n\n<dt id='how%20can%20i%20customize%20the%20output%3F'>\nHow Can I Customize the Output?\n</h4>\n<p>\n<p>The whole reason I wrote this was that other similar plugins had too much control over the output.  You can style the output anyway you&#8217;d like by adding your own template parts to your theme.</p>\n<p>Copy the files you wish to modify from the <code>simple-user-listing/templates</code> folder of the plugin and paste them into a <code>simple-user-listing</code> folder in the root of your theme (so <code>my-theme/simple-user-listing</code>).  Now you can change the markup any way you please.  It will be similar to template parts for post loops, except you will have access to each user&#8217;s <code>$user</code> object instead of the $post object.</p>\n<p>For more details on what is available in the <code>$user</code> object <a href=\"https://codex.wordpress.org/Class_Reference/WP_User\" rel=\"nofollow ugc\">see the Codex reference on WP_User()</a></p>\n<p><a></a></p>\n</p>\n<dt id='how%20do%20i%20remove%20the%20search%20input%3F'>\nHow Do I Remove the Search Input?\n</h4>\n<p>\n<p>There are two ways to remove the search input. The search is added to a hook by the plugin, so you can remove it by adding the following to your theme&#8217;s <code>functions.php</code> file:</p>\n<pre><code>function remove_SUL_search() {\n    remove_action( 'simple_user_listing_before_loop',   'sul_template_user_search' );\n}\nadd_action( 'simple_user_listing_before_loop', 'remove_SUL_search', 5 );\n</code></pre>\n<p>Or you could copy the <code>search-author.php</code> from the plugin&#8217;s template folder to a <code>simple-user-listing folder</code> in your theme (so <code>simple-user-listing/searcch-author.php</code>) and remove all the code from it so that it is blank.</p>\n<p><a></a></p>\n</p>\n<dt id='shortcode%20paramaters%3A%20how%20can%20i%20customize%20the%20user%20query%3F'>\nShortcode Paramaters: How Can I Customize the User Query?\n</h4>\n<p>\n<p>Simple User Listing supports most of the parameters of the <code>WP_User_Query</code> class as parameters for the shortcode.  For example you can pass it a role defining which type of users you&#8217;d like to list.  You can also adjust the number of users displayed per page. Roles must be in lowercase.</p>\n<pre><code>[userlist role=\"author\" number=\"5\"]\n</code></pre>\n<p>As of version 1.2 you can now sort the user list by and of the sort parameters supported by <code>WP_User_Query()</code>.  For example, the following would list your users based on number of posts written, with the highest first.</p>\n<pre><code>[userlist orderby=\"post_count\" order=\"DESC\"]\n</code></pre>\n<p>As of version 1.4 you can now list users by a meta key. Be careful with this as this is not exactly an efficient query.</p>\n<pre><code>[userlist meta_key=\"foo\" meta_value=\"widgets\"]\n</code></pre>\n<p>As of version 1.4.2 you can now include and exclude users with a comma separated list of IDs.</p>\n<pre><code>[userlist exclude=\"1,2,3\"]\n</code></pre>\n<p>The full list of supported parameters (shown with default value) is:</p>\n<pre><code>'query_id' =&gt; 'simple_user_listing', // This allows for targeted filtering of pre_get_user which allows for very custom queries.\n'role' =&gt; '', // Multiple roles can be defined in a comma separated list [userlist role=\"infield,outfield\"]\n'role__in' =&gt; '', // Multiple roles can be defined in a comma separated list \n'role__not_in' =&gt; // Multiple roles can be defined in a comma separated list\n'include' =&gt; '', // Multiple user IDs can be defined in a comma separated list\n'exclude' =&gt; '', // Multiple user IDs can be defined in a comma separated lis\n'blog_id' =&gt; '',\n'number' =&gt; get_option( 'posts_per_page', 10 ),\n'order' =&gt; 'ASC',\n'orderby' =&gt; 'login',\n'meta_key' =&gt; '',\n'meta_value' =&gt; '',\n'meta_compare' =&gt; '=',\n'meta_type' =&gt; 'CHAR',\n'count_total' =&gt; true,\n'template' =&gt; 'author' // Corresponds to content-author.php template, can accept different templates per shortcode.\n</code></pre>\n<p><a></a></p>\n</p>\n<dt id='how%20can%20i%20sort%20the%20users%20by%20last%20name%3F'>\nHow Can I Sort the Users by Last Name?\n</h4>\n<p>\n<p>As of verison 1.5.2 you could simply use the following as your shortcode:</p>\n<pre><code>[userlist meta_key=\"last_name\" orderby=\"meta_value\" order=\"ASC\"]\n</code></pre>\n<p><a></a></p>\n</p>\n<dt id='how%20can%20i%20search%20by%20a%20meta%20field%3F%20ex%3A%20last%20name'>\nHow can I search by a meta field? ex: Last Name\n</h4>\n<p>\n<p>While you could modify the <code>search-author.php</code> template, if you are only searching by one field it isn&#8217;t really neccessary. You will, however, need to modify the shortcode&#8217;s arguments for <code>WP_User_Query</code>.  You can do that by filtering <code>sul_user_query_args</code>.</p>\n<p>Add the following to your theme&#8217;s functions.php:</p>\n<pre><code>/**\n * Place this in your theme's functions.php file\n * Or a site-specific plugin\n *\n */\n// Switch the WP_User_Query args to a meta search\nfunction kia_meta_search( $args ) {\n\n    // This $_GET is the name field of the custom input in search-author.php.\n    $search = ( isset($_GET['as']) ) ? sanitize_text_field($_GET['as']) : false ;\n\n    if ( $search ) {\n        // If your shortcode has a 'role' parameter defined it will be maintained.\n        // Unless you choose to unset the role parameter by uncommenting the following:\n        //  unset( $args['role'] );\n        $args['meta_key'] = 'last_name';\n        $args['meta_value'] = $search;\n        $args['meta_compare'] = '=';\n\n        // Need to unset the original search args.\n        if ( isset( $args['search'] ) ) unset($args['search']);\n    }\n\n    return $args;\n}\nadd_filter( 'sul_user_query_args', 'kia_meta_search' );\n</code></pre>\n<p>Now the search will return users that match the entered &#8220;last_name&#8221;.  You can adjust as needed or use the <code>meta_query</code> array for more complicated meta queries.</p>\n<p><a></a></p>\n</p>\n<dt id='how%20can%20i%20search%20by%20display%20name%3F'>\nHow Can I Search By Display Name?\n</h4>\n<p>\n<p>By default the WordPress search relies on username, though wih the <code>search_columns</code> parameter can be made to search the user&#8217;s email or ID. Frankly, I think this is weird, but that&#8217;s how WordPress works.</p>\n<p>It is much more useful to search by the user&#8217;s display name, however this requires some trickery via the <code>pre_user_query</code> hook. Similar to <code>pre_get_posts</code> this is your last chance to change the <code>WP_User_Query</code> query before it is executed. I’ve built in a <code>query_id</code> variable so that you don’t go willy-nilly filtering all user queries which could have some unintended side effects.</p>\n<pre><code>// Switch user search from user_login to display_name via query_where \nfunction kia_search_users_by_display_name( $query ) {\n\n  if ( isset( $query-&gt;query_vars['query_id'] ) &amp;&amp; $query-&gt;query_vars['query_id'] === 'simple_user_listing' ) {\n     $query-&gt;query_where = str_replace( \"user_login\", \"display_name\", $query-&gt;query_where );\n  }\n\n} \nadd_action( 'pre_user_query', 'kia_search_users_by_display_name' ); \n</code></pre>\n<p><a></a></p>\n</p>\n<dt id='how%20to%20create%20very%20complex%20user%20queries%20%7C%20how%20to%20query%20multiple%20meta%20keys'>\nHow to create very complex user queries | How to query multiple meta keys\n</h4>\n<p>\n<p>It isn&#8217;t worth the effort to get the shortcode parameters to handle complex arrays. And in the end it isn&#8217;t necessary as there are several filters in place to permit you to run a complex query. The key will be using the <code>query_id</code> parameter.</p>\n<p>For example you could pass a specific ID via shortcode:</p>\n<pre><code>[userlist query_id=\"my_custom_meta_query\"]\n</code></pre>\n<p>And then in your theme&#8217;s <code>functions.php</code> or a site-specific plugin, you could filter the user query args:</p>\n<pre><code>add_filter( 'sul_user_query_args', 'sul_custom_meta_query', 10, 2 );\n\nfunction sul_custom_meta_query( $args, $query_id ) {\n    // Checking the query ID allows us to only target a specific shortcode.\n    if ( $query_id === 'my_custom_meta_query' ) {\n        $args['meta_query'] = array(\n            'relation' =&gt; 'OR',\n            array(\n                'key'       =&gt; 'billing_city',\n                'value'     =&gt; 'oslo',\n                'compare'   =&gt; '=',\n                'type'      =&gt; 'CHAR',\n            ),\n            array(\n                'key'       =&gt; 'first_name',\n                'value'     =&gt; 'bobby',\n                'compare'   =&gt; '=',\n                'type'      =&gt; 'CHAR',\n            )\n        );\n    }\n    return $args;\n}\n</code></pre>\n<p>For complex queries, you will want to read the <a href=\"https://codex.wordpress.org/Class_Reference/WP_User_Query#Parameters\" rel=\"nofollow ugc\">WP Codex reference on WP_User_Query</a>.</p>\n<p><a></a></p>\n</p>\n<dt id='does%20simple%20user%20listing%20work%20with%20wp_pagenavi%3F'>\nDoes Simple User Listing work with WP_Pagenavi?\n</h4>\n<p>\n<p>Yes! <a href=\"https://wordpress.org/plugins/wp-pagenavi/\" rel=\"ugc\">WP Pagenavi</a> supports pagination for <code>WP_User_Query</code> and I configured the navigation-author.php template to automatically use WP Pagenavi if it is installed and activated.</p>\n<p><a></a></p>\n</p>\n<dt id='i%20can%27t%20get%20the%20search%20users%20to%20work%3F'>\nI can&#8217;t get the search users to work?\n</h4>\n<p>\n<p>The search form will not work with the default permalinks. Try changing your permalinks to some other structure.  The reason is form submits via the GET method and so adding those parameters to the URL seem to clash with the parameters already on the URL from the default permalink setup.</p>\n<p><a></a></p>\n</p>\n<dt id='s2%20member%20conflicts%20%7C%20the%20search%20doesn%27t%20respect%20the%20shortcode%20parameters'>\nS2 Member Conflicts | The search doesn&#8217;t respect the shortcode parameters\n</h4>\n<p>\n<p>Likely you are experiencing a conflict with another plugin, specifically one that is filtering <code>pre_user_query</code> to modify all user queries. The S2 Member plugin is a known culprit of this. To disable S2 Member&#8217;s modifications on all Simple User Listing lists, add the following to your theme&#8217;s functions.php or to a site-specific plugin. Ensure you are using at least SUL 1.5.3.</p>\n<pre><code>function kia_protect_sul_from_s2() {\n    remove_action('pre_user_query', 'c_ws_plugin__s2member_users_list::users_list_query');\n}\nadd_action( 'simple_user_listing_before_loop', 'kia_protect_sul_from_s2' );\n\nfunction kia_restore_s2() {\n    add_action('pre_user_query', 'c_ws_plugin__s2member_users_list::users_list_query');\n}\nadd_action( 'simple_user_listing_after_loop', 'kia_restore_s2' );\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>2.0.3</h4>\n<ul>\n<li>Fix: No plugin changes. Fix SVN chaos caused by autodeploy scripts.</li>\n</ul>\n<h4>2.0.2</h4>\n<ul>\n<li>New: Bump tested WordPress version to 6.5</li>\n<li>Fix: Try deploy one more time :/</li>\n</ul>\n<h4>2.0.1</h4>\n<ul>\n<li>Fix: Deploy build routine failure :/</li>\n</ul>\n<h4>2.0.0</h4>\n<ul>\n<li>New: Introduce first pass at block editor support. Supports relatively simple queries only. Complex queries (including based on user meta) will still need to use the shortcode.</li>\n</ul>\n<h4>1.9.3</h4>\n<ul>\n<li>Fix: Additional sanitization/security fixes. Props @WPprodigy.</li>\n</ul>\n<h4>1.9.2</h4>\n<ul>\n<li>Fix: Sanitize &#8216;as&#8217; input value in search-author.php form.</li>\n</ul>\n<h4>1.9.1</h4>\n<ul>\n<li>New: Move all template functions out of main class. @see: includes/simple-user-listing-template-functions.php</li>\n<li>New: Attach all template functiosn to hooks on after_setup_theme hook. @see: includes/simple-user-listing-template-hooks.php</li>\n</ul>\n<h4>1.9.0</h4>\n<ul>\n<li>New: Add hooks in content-author.php</li>\n<li>New: use define( &#8216;SUL_QUERY_DEBUG_MODE&#8217;, true ); to bypass transients for debugging.</li>\n</ul>\n<h4>1.8.5</h4>\n<ul>\n<li>New: Display entire user loop on new <code>simple_user_listing_loop</code> hook. </li>\n<li>New: Accept passing custom templates for the author template via <code>template=\"template-name\"</code>.</li>\n<li>Fix: Add support for <code>has_published_post</code> user query parameter.</li>\n</ul>\n<h4>1.8.4</h4>\n<ul>\n<li>Fix: Use core WordPress function page_num_link() to generate navigation links.</li>\n</ul>\n<h4>1.8.3</h4>\n<ul>\n<li>New: Filter the users output via <code>simple_user_listing_users</code> filter. Props @Birmania.</li>\n<li>Fix: Use custom get_current_url() instead of permalinks to generate navigation links.</li>\n<li>Fix: <code>simple_user_listing_before_shortcode</code> and <code>simple_user_listing_after_shortcode</code> hooks should now work, though by working they should now be redundant. Please continue using <code>simple_user_listing_before_loop</code> and <code>simple_user_listing_after_loop</code>. </li>\n</ul>\n<h4>1.8.2</h4>\n<ul>\n<li>New: Use different content templates per shortcode via template shortcode parameter. Props @nerdworker. </li>\n<li>Ex: [userlist template=&#8221;tacos&#8221;] looks for a simple-user-listing/content-tacos.php template in your theme.</li>\n<li>New: Add filter sul_get_template_part</li>\n</ul>\n<h4>1.8.1</h4>\n<ul>\n<li>Fix: Role broken parameter sanitization. Replace santize_text_input with actual function sanitize_text_field</li>\n</ul>\n<h4>1.8.0</h4>\n<ul>\n<li>New: Add support for <code>role__in</code> and <code>role__not_in</code> parameters</li>\n<li>New: Add wrapper div for easy grid styling</li>\n<li>Update donation link</li>\n<li>Update required and tested against versions</li>\n</ul>\n<h4>1.7.4</h4>\n<ul>\n<li>remove stray }</li>\n<li>restore transients in repo</li>\n</ul>\n<h4>1.7.3</h4>\n<ul>\n<li>use array of attributes instead of extract()</li>\n<li>pass attributes to sul_user_query_args filter. allows for more custom queries, ex: User Taxonomies: https://git.io/vKsW6</li>\n</ul>\n<h4>1.7.2</h4>\n<ul>\n<li>Clear transients when a user is deleted</li>\n</ul>\n<h4>1.7.1</h4>\n<ul>\n<li>only show author description if exists</li>\n<li>tested up to WordPress 4.4.0</li>\n</ul>\n<h4>1.7.0</h4>\n<ul>\n<li>Use transients to cache queries</li>\n</ul>\n<h4>1.6.3</h4>\n<ul>\n<li>Add Finnish translation. props @Teemu Jönkkäri</li>\n</ul>\n<h4>1.6.2</h4>\n<ul>\n<li>Add Danish translation. props @Frank Pedersen</li>\n</ul>\n<h4>1.6.1</h4>\n<ul>\n<li>move simple_user_listing_before_loop to after query is run to have pagination available</li>\n</ul>\n<h4>1.6.0</h4>\n<ul>\n<li>Remove is_page() restriction on shortcode display. Can now be echoed anywhere.</li>\n</ul>\n<h4>1.5.4</h4>\n<ul>\n<li>fix untranslatable strings in templates</li>\n<li>stop linking to authors that have no posts (this causes 404)</li>\n<li>change content-author.php template</li>\n<li>update docs</li>\n</ul>\n<h4>1.5.3</h4>\n<ul>\n<li>use has_shortcode() built-in function for is_user_listing()</li>\n<li>move simple_user_listing_before_loop hook so that S2 member can be disabled for SUL</li>\n</ul>\n<h4>1.5.2</h4>\n<ul>\n<li>separate meta_key param so you can sort by meta_value from shortcode</li>\n</ul>\n<h4>1.5.1</h4>\n<ul>\n<li>tested against WordPress 3.8</li>\n<li>French translation (by me, so open to improvement!)</li>\n<li>German translation props @Nico Bartes</li>\n</ul>\n<h4>1.5</h4>\n<ul>\n<li>improved docbloc </li>\n<li>fixed conflicting blog_id/role parameters</li>\n</ul>\n<h4>1.4.2</h4>\n<ul>\n<li>Support for include and exclude parameters</li>\n</ul>\n<h4>1.4.1</h4>\n<ul>\n<li>Move changelog back to readme.txt #facepalm</li>\n</ul>\n<h4>1.4</h4>\n<ul>\n<li>Add support for meta queries and custom query IDs</li>\n<li>Rename list_id parameter to query_id</li>\n<li>Move changelog to separate file</li>\n</ul>\n<h4>1.3.3</h4>\n<ul>\n<li>Fixed the content-author.php template</li>\n</ul>\n<h4>1.3.2</h4>\n<ul>\n<li>Return shortcode instead of echo #facepalm</li>\n</ul>\n<h4>1.3.1</h4>\n<ul>\n<li>Maintain role parameter on search</li>\n</ul>\n<h4>1.3</h4>\n<ul>\n<li>Fix pagination on search</li>\n<li>Add support for WP_Pagenavi</li>\n<li>Better support for customizing meta search queries</li>\n</ul>\n<h4>1.2.2</h4>\n<ul>\n<li>Add FAQ</li>\n</ul>\n<h4>1.2.1</h4>\n<ul>\n<li>Fix readme.txt markdown</li>\n</ul>\n<h4>1.2</h4>\n<ul>\n<li>Add support for orderby and order parameters</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>Fix divide by zero warning in navigation-author.php template</li>\n</ul>\n<h4>1.1</h4>\n<ul>\n<li>Add translation .pot</li>\n<li>Fix &#8220;1 posts&#8221; error in content-author.php template</li>\n<li>HTML encode arrows in navigation-author.php template</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "A shortcode for displaying paginated lists of users.",
+    "description": "<p>Other plugins output paginated lists of users, but I needed to be able to customize and style this list to fit my theme.  So I created this plugin to use templates that can be overridden and customized by theme developers.</p>\n<p>To customize any of the templates, copy the file from the plugin&#8217;s &#8220;templates&#8221; folder to your themes &#8220;simple-user-listing&#8221; folder.</p>\n<h4>Usage</h4>\n<p>Place this shortcode anywhere you&#8217;d like to display a full list of all your blog&#8217;s users.</p>\n<pre><code>[userlist]\n</code></pre>\n<p>By default the plugin will print out the users based on the &#8220;Posts per Page&#8221; setting under Settings-&gt;Reading, but this and many other settings can be changed via the shortcode&#8217;s parameters.</p>\n<h4>Support</h4>\n<p>If after reading the <a href=\"https://wordpress.org/plugins/simple-user-listing/faq\" rel=\"ugc\">FAQ</a> you still need help, support is handled in the <a href=\"https://wordpress.org/support/plugin/simple-user-listing\" rel=\"ugc\">WordPress forums</a>. Please note that support is limited and does not cover any custom implementation of the plugin.</p>\n<p>Please report any bugs, errors, warnings, code problems to <a href=\"https://github.com/helgatheviking/simple-user-listing/issues\" rel=\"nofollow ugc\">Github</a></p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/simple-user-listing.2.0.3.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "authors": "authors",
+        "directory": "directory",
+        "users": "users"
+    },
+    "stable_tag": "2.0.3",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/simple-user-listing.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/simple-user-listing.1.1.zip",
+        "1.1.1": "https://downloads.wordpress.org/plugin/simple-user-listing.1.1.1.zip",
+        "1.2.1": "https://downloads.wordpress.org/plugin/simple-user-listing.1.2.1.zip",
+        "1.3.1": "https://downloads.wordpress.org/plugin/simple-user-listing.1.3.1.zip",
+        "1.3.2": "https://downloads.wordpress.org/plugin/simple-user-listing.1.3.2.zip",
+        "1.4": "https://downloads.wordpress.org/plugin/simple-user-listing.1.4.zip",
+        "1.4.2": "https://downloads.wordpress.org/plugin/simple-user-listing.1.4.2.zip",
+        "1.5": "https://downloads.wordpress.org/plugin/simple-user-listing.1.5.zip",
+        "1.5.2": "https://downloads.wordpress.org/plugin/simple-user-listing.1.5.2.zip",
+        "1.5.3": "https://downloads.wordpress.org/plugin/simple-user-listing.1.5.3.zip",
+        "1.6.1": "https://downloads.wordpress.org/plugin/simple-user-listing.1.6.1.zip",
+        "1.6.2": "https://downloads.wordpress.org/plugin/simple-user-listing.1.6.2.zip",
+        "1.6.3": "https://downloads.wordpress.org/plugin/simple-user-listing.1.6.3.zip",
+        "1.7.0": "https://downloads.wordpress.org/plugin/simple-user-listing.1.7.0.zip",
+        "1.7.3": "https://downloads.wordpress.org/plugin/simple-user-listing.1.7.3.zip",
+        "1.8.0": "https://downloads.wordpress.org/plugin/simple-user-listing.1.8.0.zip",
+        "1.8.1": "https://downloads.wordpress.org/plugin/simple-user-listing.1.8.1.zip",
+        "1.8.2": "https://downloads.wordpress.org/plugin/simple-user-listing.1.8.2.zip",
+        "1.8.3": "https://downloads.wordpress.org/plugin/simple-user-listing.1.8.3.zip",
+        "1.8.4": "https://downloads.wordpress.org/plugin/simple-user-listing.1.8.4.zip",
+        "1.8.5": "https://downloads.wordpress.org/plugin/simple-user-listing.1.8.5.zip",
+        "1.9.0": "https://downloads.wordpress.org/plugin/simple-user-listing.1.9.0.zip",
+        "1.9.1": "https://downloads.wordpress.org/plugin/simple-user-listing.1.9.1.zip",
+        "1.9.2": "https://downloads.wordpress.org/plugin/simple-user-listing.1.9.2.zip",
+        "1.9.3": "https://downloads.wordpress.org/plugin/simple-user-listing.1.9.3.zip",
+        "2.0.0": "https://downloads.wordpress.org/plugin/simple-user-listing.2.0.0.zip",
+        "2.0.1": "https://downloads.wordpress.org/plugin/simple-user-listing.2.0.1.zip",
+        "2.0.2": "https://downloads.wordpress.org/plugin/simple-user-listing.2.0.2.zip",
+        "2.0.3": "https://downloads.wordpress.org/plugin/simple-user-listing.2.0.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/simple-user-listing.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.paypal.me/kathyisawesome",
+    "banners": {
+        "low": "https://ps.w.org/simple-user-listing/assets/banner-772x250.png?rev=3061308",
+        "high": "https://ps.w.org/simple-user-listing/assets/banner-1544x500.png?rev=3061308"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/simple-user-listing/assets/icon-128x128.png?rev=3061308",
+        "2x": "https://ps.w.org/simple-user-listing/assets/icon-256x256.png?rev=3061308"
+    },
+    "blocks": {
+        "simple-user-listing/directory-block": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "attributes": {
+                "align": {
+                    "type": "string",
+                    "default": "center"
+                },
+                "columns": {
+                    "type": "number",
+                    "default": 2
+                },
+                "excludeRoles": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "excludeUsers": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "showAllUsers": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "order": {
+                    "type": "string",
+                    "default": "asc"
+                },
+                "orderBy": {
+                    "type": "string",
+                    "default": "name"
+                },
+                "roles": {
+                    "type": "string",
+                    "default": ""
+                },
+                "users": {
+                    "type": "string",
+                    "default": ""
+                },
+                "usersPerPage": {
+                    "type": "number",
+                    "default": 10
+                },
+                "queryId": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "category": "design",
+            "description": "List the site's users",
+            "editorScript": "file:index.js",
+            "icon": "id",
+            "keywords": [
+                "authors",
+                "directory",
+                "listing",
+                "user"
+            ],
+            "name": "simple-user-listing/directory-block",
+            "render": "file:render.php",
+            "supports": {
+                "anchor": true,
+                "align": true,
+                "className": true,
+                "html": false
+            },
+            "textdomain": "simple-user-listing",
+            "title": "User Directory",
+            "styles": [
+                {
+                    "name": "unstyled",
+                    "label": "Unstyled"
+                },
+                {
+                    "name": "grid",
+                    "label": "Grid"
+                },
+                {
+                    "name": "list",
+                    "label": "List",
+                    "isDefault": true
+                }
+            ],
+            "style": [
+                "file:./style-index.css"
+            ],
+            "version": "1.0.0"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 100,
+    "blueprints": [
+        {
+            "filename": "blueprint.json",
+            "url": "https://wordpress.org/plugins/wp-json/plugins/v1/plugin/simple-user-listing/blueprint.json?rev=3065656"
+        }
+    ],
+    "preview_link": "https://wordpress.org/plugins/simple-user-listing/?preview=1",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "simple-user-listing",
+            "language": "de_DE_formal",
+            "version": "2.0.3",
+            "updated": "2024-04-11 15:49:35",
+            "package": "http://downloads.wordpress.org/translation/plugin/simple-user-listing/2.0.3/de_DE_formal.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "simple-user-listing",
+            "language": "de_DE",
+            "version": "2.0.3",
+            "updated": "2018-03-15 23:00:44",
+            "package": "http://downloads.wordpress.org/translation/plugin/simple-user-listing/2.0.3/de_DE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "simple-user-listing",
+            "language": "it_IT",
+            "version": "2.0.3",
+            "updated": "2021-05-31 16:18:23",
+            "package": "http://downloads.wordpress.org/translation/plugin/simple-user-listing/2.0.3/it_IT.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "simple-user-listing",
+            "language": "sv_SE",
+            "version": "2.0.3",
+            "updated": "2024-03-25 19:10:03",
+            "package": "http://downloads.wordpress.org/translation/plugin/simple-user-listing/2.0.3/sv_SE.zip"
+        }
+    ]
+}

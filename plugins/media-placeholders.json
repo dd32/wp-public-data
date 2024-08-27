@@ -1,0 +1,77 @@
+{
+    "name": "Media Placeholders",
+    "slug": "media-placeholders",
+    "version": "0.9.2",
+    "author": "<a href=\"http://x-team.com/wordpress/\">X-Team</a>",
+    "author_profile": "https://profiles.wordpress.org/westonruter/",
+    "contributors": {
+        "xwp": {
+            "profile": "https://profiles.wordpress.org/xwp/",
+            "avatar": "https://secure.gravatar.com/avatar/98d36ee8047719c185f19a00f7184c2c?s=96&d=monsterid&r=g",
+            "display_name": "XWP"
+        },
+        "westonruter": {
+            "profile": "https://profiles.wordpress.org/westonruter/",
+            "avatar": "https://secure.gravatar.com/avatar/22ed378fbf1d918ef43a45b2a1f34634?s=96&d=monsterid&r=g",
+            "display_name": "Weston Ruter"
+        }
+    },
+    "requires": "3.5",
+    "tested": "3.6.1",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 2,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 2,
+    "support_url": "https://wordpress.org/support/plugin/media-placeholders/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 100,
+    "downloaded": 2720,
+    "last_updated": "2015-02-25 1:45am GMT",
+    "added": "2013-08-12",
+    "homepage": "http://github.com/x-team/wp-missing-upload-placeholders",
+    "sections": {
+        "description": "<p>Activate this plugin to redirect all requests for missing uploaded images on your blog to your favorite placeholder image service, such as <a href=\"http://placehold.it\" rel=\"nofollow ugc\">placehold.it</a> or <a href=\"http://placekitten.com/\" rel=\"nofollow ugc\">placekitten.com</a>. Note that although kittens are cute, the placehold.it service is actually more useful because the background and foreground color can remain consistant across all image sizes (e.g. full size vs thumbnail in a gallery), and so it is easier to see which images in a page are related to each other. (You can change the default placehold.it service to placekitten.com by defining <code>MISSING_UPLOADED_IMAGE_PLACEHOLDER_BUILTIN</code> to be <code>placekitten_color</code> or <code>placekitten_grayscale</code>, or supplying those same values via the <code>missing_uploaded_image_placeholder_builtin</code> filter).</p>\n<p><strong>This plugin is for use during development only.</strong> It is expected that this plugin will be activated on your local development environment (e.g. on Vagrant or XAMPP), or on your staging server. This plugin is especially useful when working on a team where you share around a database dump but not the uploaded images (which should always be omitted from the code repository), so if you give a database dump to another developer but don&#8217;t include the uploaded images, with this plugin enabled they will see a placeholder where the uploaded image appears. This plugin is an alternative approach to what is offered by the <a href=\"https://wordpress.org/plugins/uploads-by-proxy/\" rel=\"ugc\">Uploads by Proxy</a> plugin.</p>\n<p>If you have applied the production database to another environment which lacks the uploaded files, but you know that all images referenced in the database do exist on production, you can define the <code>MISSING_UPLOADED_IMAGE_REDIRECT_SERVER</code> constant or filter <code>missing_uploaded_image_redirect_server</code> to short-circuit the placeholder service and redirect the image request to that server.</p>\n<p>This plugin will not work if you are on a multisite network that uses the old system for referring to uploaded files, where the URL includes <code>/files/</code> which is intercepted by a rewrite rule and passed directly to <code>ms-files.php</code>. See <a href=\"https://core.trac.wordpress.org/ticket/19235\" title=\"Turn ms-files.php off by default\" rel=\"nofollow ugc\">#19235</a>. Similarly, make sure that missing uploaded files get served by the WordPress 404 handler, not Apache/Nginx. If you are using Nginx with the default Varying Vagrant Vagrants config, you&#8217;ll want to remove <code>png|jpg|jpeg|gif</code> from the following location rule in <code>nginx-wp-common.conf</code> (or remove it altogether):</p>\n<pre><code># Handle all static assets by serving the file directly. Add directives \n# to send expires headers and turn off 404 error logging.\nlocation ~* \\.(js|css|png|jpg|jpeg|gif|ico)$ {\n    expires 24h;\n    log_not_found off;\n}\n</code></pre>\n<p>You can add support for your own favorite placeholder services by filtering <code>missing_uploaded_image_placeholder</code>.<br />\nFor example, you can add this to your <code>functions.php</code> or drop it into a <code>mu-plugin</code>:</p>\n<pre><code>&lt;?php\n/**\n * Use Flickholdr as placeholder service\n * @param null|string $url\n * @param array $args  {attached_file, width, height, attachment_id}\n */\nfunction my_filter_missing_uploaded_image_placeholder( $url, $args ) {\n    $attachment = get_post( $args['attachment_id'] );\n    $tags = join( ' ', array(\n        $attachment-&gt;post_title,\n        $attachment-&gt;post_excerpt,\n        $attachment-&gt;post_content,\n        $attachment-&gt;_wp_attachment_image_alt\n    ) );\n    $tags = strtolower( preg_replace( '#[^A-Za-z0-9]+#', ',', $tags ) );\n    $tags = trim( $tags, ',' );\n    $url = sprintf( 'http://flickholdr.com/%d/%d/%s', $args['width'], $args['height'], $tags );\n    return $url;\n}\nadd_filter( 'missing_uploaded_image_placeholder', 'my_filter_missing_uploaded_image_placeholder', 10, 2 );\n</code></pre>\n<p><strong>Development of this plugin is done <a href=\"https://github.com/x-team/wp-media-placeholders\" rel=\"nofollow ugc\">on GitHub</a>. Pull requests welcome. Please see <a href=\"https://github.com/x-team/wp-media-placeholders/issues\" rel=\"nofollow ugc\">issues</a> reported there before going to the plugin forum.</strong></p>\n",
+        "changelog": "<h4>0.9.2</h4>\n<p>Apply PHPCS fixes and integrate Travis CI</p>\n<h4>0.9.1</h4>\n<p>Prevent default WordPress 404 handler from breaking placeholder redirect (<a href=\"https://github.com/x-team/wp-media-placeholders/pull/5\" rel=\"nofollow ugc\">#5</a>)</p>\n<h4>0.9</h4>\n<p>First Release</p>\n"
+    },
+    "short_description": "Redirect requests to non-existent uploaded images to a placeholder service like placehold.it or placekitten.com. For use during development.",
+    "description": "<p>Activate this plugin to redirect all requests for missing uploaded images on your blog to your favorite placeholder image service, such as <a href=\"http://placehold.it\" rel=\"nofollow ugc\">placehold.it</a> or <a href=\"http://placekitten.com/\" rel=\"nofollow ugc\">placekitten.com</a>. Note that although kittens are cute, the placehold.it service is actually more useful because the background and foreground color can remain consistant across all image sizes (e.g. full size vs thumbnail in a gallery), and so it is easier to see which images in a page are related to each other. (You can change the default placehold.it service to placekitten.com by defining <code>MISSING_UPLOADED_IMAGE_PLACEHOLDER_BUILTIN</code> to be <code>placekitten_color</code> or <code>placekitten_grayscale</code>, or supplying those same values via the <code>missing_uploaded_image_placeholder_builtin</code> filter).</p>\n<p><strong>This plugin is for use during development only.</strong> It is expected that this plugin will be activated on your local development environment (e.g. on Vagrant or XAMPP), or on your staging server. This plugin is especially useful when working on a team where you share around a database dump but not the uploaded images (which should always be omitted from the code repository), so if you give a database dump to another developer but don&#8217;t include the uploaded images, with this plugin enabled they will see a placeholder where the uploaded image appears. This plugin is an alternative approach to what is offered by the <a href=\"https://wordpress.org/plugins/uploads-by-proxy/\" rel=\"ugc\">Uploads by Proxy</a> plugin.</p>\n<p>If you have applied the production database to another environment which lacks the uploaded files, but you know that all images referenced in the database do exist on production, you can define the <code>MISSING_UPLOADED_IMAGE_REDIRECT_SERVER</code> constant or filter <code>missing_uploaded_image_redirect_server</code> to short-circuit the placeholder service and redirect the image request to that server.</p>\n<p>This plugin will not work if you are on a multisite network that uses the old system for referring to uploaded files, where the URL includes <code>/files/</code> which is intercepted by a rewrite rule and passed directly to <code>ms-files.php</code>. See <a href=\"https://core.trac.wordpress.org/ticket/19235\" title=\"Turn ms-files.php off by default\" rel=\"nofollow ugc\">#19235</a>. Similarly, make sure that missing uploaded files get served by the WordPress 404 handler, not Apache/Nginx. If you are using Nginx with the default Varying Vagrant Vagrants config, you&#8217;ll want to remove <code>png|jpg|jpeg|gif</code> from the following location rule in <code>nginx-wp-common.conf</code> (or remove it altogether):</p>\n<pre><code># Handle all static assets by serving the file directly. Add directives \n# to send expires headers and turn off 404 error logging.\nlocation ~* \\.(js|css|png|jpg|jpeg|gif|ico)$ {\n    expires 24h;\n    log_not_found off;\n}\n</code></pre>\n<p>You can add support for your own favorite placeholder services by filtering <code>missing_uploaded_image_placeholder</code>.<br />\nFor example, you can add this to your <code>functions.php</code> or drop it into a <code>mu-plugin</code>:</p>\n<pre><code>&lt;?php\n/**\n * Use Flickholdr as placeholder service\n * @param null|string $url\n * @param array $args  {attached_file, width, height, attachment_id}\n */\nfunction my_filter_missing_uploaded_image_placeholder( $url, $args ) {\n    $attachment = get_post( $args['attachment_id'] );\n    $tags = join( ' ', array(\n        $attachment-&gt;post_title,\n        $attachment-&gt;post_excerpt,\n        $attachment-&gt;post_content,\n        $attachment-&gt;_wp_attachment_image_alt\n    ) );\n    $tags = strtolower( preg_replace( '#[^A-Za-z0-9]+#', ',', $tags ) );\n    $tags = trim( $tags, ',' );\n    $url = sprintf( 'http://flickholdr.com/%d/%d/%s', $args['width'], $args['height'], $tags );\n    return $url;\n}\nadd_filter( 'missing_uploaded_image_placeholder', 'my_filter_missing_uploaded_image_placeholder', 10, 2 );\n</code></pre>\n<p><strong>Development of this plugin is done <a href=\"https://github.com/x-team/wp-media-placeholders\" rel=\"nofollow ugc\">on GitHub</a>. Pull requests welcome. Please see <a href=\"https://github.com/x-team/wp-media-placeholders/issues\" rel=\"nofollow ugc\">issues</a> reported there before going to the plugin forum.</strong></p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/media-placeholders.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "404": "404",
+        "development": "development",
+        "images": "images",
+        "placeholders": "placeholders",
+        "uploads": "uploads"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/media-placeholders/assets/banner-772x250.png?rev=755312",
+        "high": "https://ps.w.org/media-placeholders/assets/banner-1544x500.png?rev=755312"
+    },
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/media-placeholders_696969.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

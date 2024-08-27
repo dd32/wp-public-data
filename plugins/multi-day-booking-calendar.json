@@ -1,0 +1,94 @@
+{
+    "name": "Multi-day Booking Calendar",
+    "slug": "multi-day-booking-calendar",
+    "version": "1.0.1",
+    "author": "matorel",
+    "author_profile": "https://profiles.wordpress.org/matorel/",
+    "contributors": {
+        "matorel": {
+            "profile": "https://profiles.wordpress.org/matorel/",
+            "avatar": "https://secure.gravatar.com/avatar/28d83d393901513739491f0c07203275?s=96&d=monsterid&r=g",
+            "display_name": "matorel"
+        }
+    },
+    "requires": "4.9",
+    "tested": "6.0.9",
+    "requires_php": "7.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/multi-day-booking-calendar/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 1087,
+    "last_updated": "2022-08-14 11:51pm GMT",
+    "added": "2022-07-31",
+    "homepage": "",
+    "sections": {
+        "description": "<p>This plugin allows you to link an existing form with a reservation calendar that allows multiple day and time selections.<br />\nThe administration screen is a simple configuration screen that can be used to set business days, business hours, and reserved dates and times, and can issue embedded shortcodes.<br />\nSince the form itself does not provide any functionality, it can be linked directly to existing forms.<br />\nThe simplicity and lack of extra features makes it easy to get started without confusion.<br />\nIt can be used for car rental reservations, lodging reservations, event reservations, seminar reservations, meeting room reservations, lesson reservations, etc.</p>\n<p>このプラグインは複数日の選択・時間の選択ができる予約カレンダーを既存のフォームに連携させることができます。<br />\n管理画面はシンプルな設定画面で営業日や営業時間、予約済みの日時などの設定ができ、埋め込みショートコードの発行が可能です。<br />\nフォーム自体の機能は提供しないため、既存のフォームにそのまま連携させることができます。<br />\nシンプルで余計な機能がないので混乱せずに簡単に始めることができます。<br />\nレンタカー予約、宿泊予約、イベント予約、セミナー予約、会議室予約、レッスン予約など様々な用途でご利用いただけます。</p>\n<p><strong>How to Use</strong></p>\n<ol>\n<li>After activating the plugin, open the Common Settings page of the Calendar. The Common Settings page allows you to set holidays, regular holidays, and periods and times when appointments can be made.<br />\nプラグインを有効化したらカレンダーの共通設定ページを開きます。共通設定画面では、休日や定休日、予約可能な期間や時間帯を設定することができます。</li>\n<li>The new submission page of the Calendar allows for day and time status management for each event.<br />\nカレンダーの新規投稿ページでは、イベントごとに日にち・時間帯のステータス管理が可能です。</li>\n<li>Once the shortcode is issued on the above page, insert it into a form submission containing inputs, such as Contact Form 7. Refer to &#8220;Shortcode Settings&#8221; below for the attributes of the shortcode, and only the calendar for viewing will be displayed on article pages without inputs. In such cases, do not enter any attribute values other than id.<br />\n上記ページでショートコードが発行されたら、Contact Form 7 などのinputの含まれたフォーム投稿に挿入します。ショートコードの各属性は下記の「Shortcode Settings」を参照してください。inputのない記事ページなどでは閲覧用のカレンダーのみが表示されます。その場合、id以外の属性値は記述しないでください。</li>\n<li>The front screen displays the registered calendar, and selecting a day and time is reflected in the input.<br />\nフロント画面では登録したカレンダーを表示させ、日にち・時間を選択するとinputに反映されます。</li>\n</ol>\n<p><strong>Shortcode Settings</strong></p>\n<pre><code>[multi-day-booking-calendar id='' start-name='' end-name='' start-time-name='' end-time-name='' mode='static']\n</code></pre>\n<ul>\n<li><strong>id</strong><br />\nSubmission ID of registered calendar. Required.</li>\n<li><strong>start-name</strong><br />\nThe name attribute of the input tag for the start date.</li>\n<li><strong>start-time-name</strong><br />\nThe name attribute of the input tag for the start time.</li>\n<li><strong>end-name</strong><br />\nThe name attribute of the input tag for the end date.</li>\n<li><strong>end-time-name</strong><br />\nThe name attribute of the input tag for the end time.</li>\n<li><strong>mode</strong><br />\n<em>static</em> : Embed the calendar in the page. default.<br />\n<em>inline</em> : A calendar dialog box appears when you click on the input tag.</li>\n</ul>\n<p><strong>API</strong><br />\nBy the time the form is submitted, the reservation may have been available or changed.<br />\nThe plugin does not provide form functionality, so to find out exactly what is happening, please hit the API provided by the plugin before submitting the form.</p>\n<p>フォームを送信するまでに、予約が可能か変更されている可能性があります。<br />\n当プラグインではフォーム機能は提供していないため、厳密に調べるためには、フォーム送信前に当プラグインが提供しているAPIを叩いてください。</p>\n<p><strong><em>Example for Contact Form 7</em></strong><br />\nPlease insert the ID of the registered calendar in the form content.<br />\nフォーム内容に下記のように登録カレンダーのIDを仕込んでください。</p>\n<pre><code>[hidden mdbc-id \"2115\"]\n</code></pre>\n<pre><code>add_filter('wpcf7_validate', array($this, 'custom_wpcf7_validate'), 11, 2);\n\nfunction custom_wpcf7_validate($result, $tags)\n  {\n    $mdbc_id = null;\n    foreach ($tags as $tag) {\n      $name = $tag['name'];\n      switch ($name) {\n        case 'start-day': //input tag name\n          $start_date = Date('Y-m-d', strtotime($_POST[$name]));\n          break;\n        case 'start-time': //input tag name\n          $start_time = $_POST[$name] ? $_POST[$name] : \"00:00\";\n          break;\n        case 'end-day': //input tag name\n          $end_date =  Date('Y-m-d', strtotime($_POST[$name]));\n          break;\n        case 'end-time': //input tag name\n          $end_time = $_POST[$name] ? $_POST[$name] : \"00:00\";\n          break;\n        case 'mdbc-id': //ID of registered calendar\n          $mdbc_id =  $_POST[$name];\n        default:\n          break;\n      }\n    }\n    if ($mdbc_id) {\n      $request = WP_REST_Request::from_url(home_url('/?rest_route=/mdbc/v1/check_reserve'));\n      $request-&gt;set_method('POST');\n      $request-&gt;set_param(\"postid\", $mdbc_id);\n      $request-&gt;set_param(\"start\", $start_date . \" \" . $start_time);\n      $request-&gt;set_param(\"end\", $end_date . \" \" . $end_time);\n      $response = rest_do_request($request);\n      if ($response-&gt;is_error()) {\n        $result-&gt;invalidate(\"start-day\", 'You cannot make reservations during that specified time period.');//Output error.\n      } else {\n        $data = $response-&gt;get_data();\n        if (!$data[\"can_reserve\"])\n          $result-&gt;invalidate(\"start-day\", 'You cannot make reservations during that specified time period.');//Output error.\n      }\n    }\n    return $result;\n  }\n</code></pre>\n",
+        "installation": "<ol>\n<li>From the WP admin panel, click “Plugins” -&gt; “Add new”.</li>\n<li>In the browser input box, type “Multi-day Booking Calendar”.</li>\n<li>Select the “Multi-day Booking Calendar” plugin and click “Install”.</li>\n<li>Activate the plugin.</li>\n</ol>\n<p>OR…</p>\n<ol>\n<li>Download the plugin from this page.</li>\n<li>Save the .zip file to a location on your computer.</li>\n<li>Open the WP admin panel, and click “Plugins” -&gt; “Add new”.</li>\n<li>Click “upload”.. then browse to the .zip file downloaded from this page.</li>\n<li>Click “Install”.. and then “Activate plugin”.</li>\n</ol>\n",
+        "faq": "\n<dt id='%E9%96%8B%E5%A7%8B%E6%97%A5%E3%81%AE%E3%81%BF%E9%81%B8%E6%8A%9E%E3%81%95%E3%81%9B%E3%81%9F%E3%81%84'>\n開始日のみ選択させたい\n</h4>\n<p>\n<p>可能です。ショートコードのend-nameとend-time-nameを削除して下さい。<br />\n[multi-day-booking-calendar id=&#8221; start-name=&#8221; end-name=&#8221; start-time-name=&#8221; end-time-name=&#8221; mode=&#8217;static&#8217;]</p>\n</p>\n<dt id='%E4%BA%88%E7%B4%84%E6%8C%87%E5%AE%9A%E9%96%93%E9%9A%94%E3%82%92%E5%A4%89%E6%9B%B4%E3%81%97%E3%81%9F%E3%81%84'>\n予約指定間隔を変更したい\n</h4>\n<p>\n<p>プロ版で可能です。 <a href=\"https://matorel.com/multi-day-booking-calendar-pro\" rel=\"nofollow ugc\">こちら</a> より購入してください。</p>\n</p>\n<dt id='%E4%BA%88%E7%B4%84%E5%8F%AF%E8%83%BD%E6%9C%9F%E9%96%93%E3%82%92%E5%A4%89%E6%9B%B4%E3%81%97%E3%81%9F%E3%81%84'>\n予約可能期間を変更したい\n</h4>\n<p>\n<p>プロ版で可能です。 <a href=\"https://matorel.com/multi-day-booking-calendar-pro\" rel=\"nofollow ugc\">こちら</a> より購入してください。</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<p>First commit.</p>\n<h4>1.0.1</h4>\n<p>終了時間も選択可能に修正。</p>\n"
+    },
+    "short_description": "This plugin allows you to link an existing form with a reservation calendar that allows multiple day and time selections.",
+    "description": "<p>This plugin allows you to link an existing form with a reservation calendar that allows multiple day and time selections.<br />\nThe administration screen is a simple configuration screen that can be used to set business days, business hours, and reserved dates and times, and can issue embedded shortcodes.<br />\nSince the form itself does not provide any functionality, it can be linked directly to existing forms.<br />\nThe simplicity and lack of extra features makes it easy to get started without confusion.<br />\nIt can be used for car rental reservations, lodging reservations, event reservations, seminar reservations, meeting room reservations, lesson reservations, etc.</p>\n<p>このプラグインは複数日の選択・時間の選択ができる予約カレンダーを既存のフォームに連携させることができます。<br />\n管理画面はシンプルな設定画面で営業日や営業時間、予約済みの日時などの設定ができ、埋め込みショートコードの発行が可能です。<br />\nフォーム自体の機能は提供しないため、既存のフォームにそのまま連携させることができます。<br />\nシンプルで余計な機能がないので混乱せずに簡単に始めることができます。<br />\nレンタカー予約、宿泊予約、イベント予約、セミナー予約、会議室予約、レッスン予約など様々な用途でご利用いただけます。</p>\n<p><strong>How to Use</strong></p>\n<ol>\n<li>After activating the plugin, open the Common Settings page of the Calendar. The Common Settings page allows you to set holidays, regular holidays, and periods and times when appointments can be made.<br />\nプラグインを有効化したらカレンダーの共通設定ページを開きます。共通設定画面では、休日や定休日、予約可能な期間や時間帯を設定することができます。</li>\n<li>The new submission page of the Calendar allows for day and time status management for each event.<br />\nカレンダーの新規投稿ページでは、イベントごとに日にち・時間帯のステータス管理が可能です。</li>\n<li>Once the shortcode is issued on the above page, insert it into a form submission containing inputs, such as Contact Form 7. Refer to &#8220;Shortcode Settings&#8221; below for the attributes of the shortcode, and only the calendar for viewing will be displayed on article pages without inputs. In such cases, do not enter any attribute values other than id.<br />\n上記ページでショートコードが発行されたら、Contact Form 7 などのinputの含まれたフォーム投稿に挿入します。ショートコードの各属性は下記の「Shortcode Settings」を参照してください。inputのない記事ページなどでは閲覧用のカレンダーのみが表示されます。その場合、id以外の属性値は記述しないでください。</li>\n<li>The front screen displays the registered calendar, and selecting a day and time is reflected in the input.<br />\nフロント画面では登録したカレンダーを表示させ、日にち・時間を選択するとinputに反映されます。</li>\n</ol>\n<p><strong>Shortcode Settings</strong></p>\n<pre><code>[multi-day-booking-calendar id='' start-name='' end-name='' start-time-name='' end-time-name='' mode='static']\n</code></pre>\n<ul>\n<li><strong>id</strong><br />\nSubmission ID of registered calendar. Required.</li>\n<li><strong>start-name</strong><br />\nThe name attribute of the input tag for the start date.</li>\n<li><strong>start-time-name</strong><br />\nThe name attribute of the input tag for the start time.</li>\n<li><strong>end-name</strong><br />\nThe name attribute of the input tag for the end date.</li>\n<li><strong>end-time-name</strong><br />\nThe name attribute of the input tag for the end time.</li>\n<li><strong>mode</strong><br />\n<em>static</em> : Embed the calendar in the page. default.<br />\n<em>inline</em> : A calendar dialog box appears when you click on the input tag.</li>\n</ul>\n<p><strong>API</strong><br />\nBy the time the form is submitted, the reservation may have been available or changed.<br />\nThe plugin does not provide form functionality, so to find out exactly what is happening, please hit the API provided by the plugin before submitting the form.</p>\n<p>フォームを送信するまでに、予約が可能か変更されている可能性があります。<br />\n当プラグインではフォーム機能は提供していないため、厳密に調べるためには、フォーム送信前に当プラグインが提供しているAPIを叩いてください。</p>\n<p><strong><em>Example for Contact Form 7</em></strong><br />\nPlease insert the ID of the registered calendar in the form content.<br />\nフォーム内容に下記のように登録カレンダーのIDを仕込んでください。</p>\n<pre><code>[hidden mdbc-id \"2115\"]\n</code></pre>\n<pre><code>add_filter('wpcf7_validate', array($this, 'custom_wpcf7_validate'), 11, 2);\n\nfunction custom_wpcf7_validate($result, $tags)\n  {\n    $mdbc_id = null;\n    foreach ($tags as $tag) {\n      $name = $tag['name'];\n      switch ($name) {\n        case 'start-day': //input tag name\n          $start_date = Date('Y-m-d', strtotime($_POST[$name]));\n          break;\n        case 'start-time': //input tag name\n          $start_time = $_POST[$name] ? $_POST[$name] : \"00:00\";\n          break;\n        case 'end-day': //input tag name\n          $end_date =  Date('Y-m-d', strtotime($_POST[$name]));\n          break;\n        case 'end-time': //input tag name\n          $end_time = $_POST[$name] ? $_POST[$name] : \"00:00\";\n          break;\n        case 'mdbc-id': //ID of registered calendar\n          $mdbc_id =  $_POST[$name];\n        default:\n          break;\n      }\n    }\n    if ($mdbc_id) {\n      $request = WP_REST_Request::from_url(home_url('/?rest_route=/mdbc/v1/check_reserve'));\n      $request-&gt;set_method('POST');\n      $request-&gt;set_param(\"postid\", $mdbc_id);\n      $request-&gt;set_param(\"start\", $start_date . \" \" . $start_time);\n      $request-&gt;set_param(\"end\", $end_date . \" \" . $end_time);\n      $response = rest_do_request($request);\n      if ($response-&gt;is_error()) {\n        $result-&gt;invalidate(\"start-day\", 'You cannot make reservations during that specified time period.');//Output error.\n      } else {\n        $data = $response-&gt;get_data();\n        if (!$data[\"can_reserve\"])\n          $result-&gt;invalidate(\"start-day\", 'You cannot make reservations during that specified time period.');//Output error.\n      }\n    }\n    return $result;\n  }\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/multi-day-booking-calendar.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/multi-day-booking-calendar/assets/screenshot-1.png?rev=2765590",
+            "caption": "The common settings screen allows you to set holidays, regular holidays, and available reservation periods and hours. 共通設定画面では、休日や定休日、予約可能な期間や時間帯を設定することができます。"
+        },
+        {
+            "src": "https://ps.w.org/multi-day-booking-calendar/assets/screenshot-2.png?rev=2765590",
+            "caption": "The calendar registration screen allows status management by date and time. カレンダー登録画面では、日にち・時間帯のステータス管理が可能です。"
+        },
+        {
+            "src": "https://ps.w.org/multi-day-booking-calendar/assets/screenshot-3.png?rev=2765590",
+            "caption": "Insert shortcodes into article submission pages, Contact Form 7 submission pages, etc. ショートコードを記事投稿ページや Contact Form 7 投稿ページなどに挿入します。"
+        },
+        {
+            "src": "https://ps.w.org/multi-day-booking-calendar/assets/screenshot-4.png?rev=2765590",
+            "caption": "The front screen displays the registered calendar, and the day and time can be selected. フロント画面では登録したカレンダーを表示させ、日にち・時間が選択できます。"
+        }
+    ],
+    "tags": {
+        "booking": "booking",
+        "calendar": "calendar",
+        "form": "form",
+        "reserve": "reserve",
+        "schedule": "schedule"
+    },
+    "stable_tag": "trunk",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/multi-day-booking-calendar.1.0.0.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/multi-day-booking-calendar/assets/banner-772×250.jpg?rev=2764020",
+        "high": "https://ps.w.org/multi-day-booking-calendar/assets/banner-1544×500.jpg?rev=2764020"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/multi-day-booking-calendar/assets/icon-128×128.png?rev=2764020",
+        "2x": "https://ps.w.org/multi-day-booking-calendar/assets/icon-256×256.png?rev=2764020"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

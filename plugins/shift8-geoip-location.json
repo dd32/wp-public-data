@@ -1,0 +1,80 @@
+{
+    "name": "Shift8 GEO IP Location",
+    "slug": "shift8-geoip-location",
+    "version": "1.08",
+    "author": "<a href=\"https://www.shift8web.ca\">Shift8 Web</a>",
+    "author_profile": "https://profiles.wordpress.org/shift8/",
+    "contributors": {
+        "shift8": {
+            "profile": "https://profiles.wordpress.org/shift8/",
+            "avatar": "https://secure.gravatar.com/avatar/8478b3f3abc1166294cfd688e78d9390?s=96&d=monsterid&r=g",
+            "display_name": "shift8"
+        }
+    },
+    "requires": "3.0.1",
+    "tested": "6.2.6",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/shift8-geoip-location/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "downloaded": 1240,
+    "last_updated": "2023-04-10 2:52pm GMT",
+    "added": "2017-09-27",
+    "homepage": "https://github.com/stardothosting/shift8-geoip",
+    "sections": {
+        "installation": "<p>This section describes how to install the plugin and get it working.</p>\n<p>e.g.</p>\n<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/shif8-geoip</code> directory, or install the plugin through the WordPress plugins screen directly.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; screen in WordPress</li>\n<li>Navigate to the plugin settings page and define your settings</li>\n<li>Once enabled, the system should trigger for every site visit.</li>\n</ol>\n",
+        "faq": "\n<dt id='i%20tested%20it%20on%20myself%20and%20its%20not%20working%20for%20me%21'>\nI tested it on myself and its not working for me!\n</h4>\n<p>\n<p>Try clearing all cookies and re-visit the website. Then examine the cookies set by the website in your browser. The cookie name should be &#8220;shift8_geoip&#8221;.</p>\n</p>\n<dt id='how%20do%20i%20read%20and%20use%20the%20shift8_geoip%20cookie%3F'>\nHow do I read and use the shift8_geoip cookie?\n</h4>\n<p>\n<p>The plugin will set the cookie after successful geolocation and encrypt the value using OpenSSL with wp_salt(&#8216;auth&#8217;) as a key. This means in order to access the geolocation data you have to write code (in functions.php for example) such as the following :</p>\n<pre><code>$cookie_data = explode('_', shift8_geoip_decrypt(wp_salt('auth'), $_COOKIE['shift8_geoip']));\n</code></pre>\n<p>The cookie data when decrypted will look like the following :</p>\n<pre><code>ipaddress_latitude_longitude\n</code></pre>\n<p>Which means you can use php&#8217;s explode function to convert it into an array as in the above example</p>\n</p>\n<dt id='how%20can%20i%20decrypt%20the%20cookie%20data%3F%20you%20encrypted%20it%21'>\nHow can I decrypt the cookie data? You encrypted it!\n</h4>\n<p>\n<p>Well the data could be construed as somewhat sensitive and could be used maliciously to (for the most part) geographically place the end user. The decision to encrypt the cookie data was made to protect the user from the data falling into the wrong hands. In the plugin code, we are using OpenSSL to encrypt/decrypt the geo-location data. You can use the function below to decrypt the cookie data :</p>\n<pre><code>// Function to decrypt session data\nfunction shift8_geoip_decrypt($key, $garble) {\n    if (!empty($key) &amp;&amp; !empty($garble)) {\n        list($encrypted_data, $iv) = explode('::', base64_decode($garble), 2);\n        return openssl_decrypt($encrypted_data, 'aes-256-cbc', $key, 0, $iv);\n    } else {\n        return false;\n    }\n}\n</code></pre>\n<p>So to actually use the above function, you could do the following :</p>\n<pre><code>shift8_geoip_decrypt(wp_salt('auth'), $_COOKIE['shift8_geoip']);\n</code></pre>\n</p>\n<dt id='what%20is%20wp_salt%3F'>\nWhat is wp_salt?\n</h4>\n<p>\n<p>You can read more about the wp_salt function by <a href=\"https://codex.wordpress.org/Function_Reference/wp_salt\" rel=\"nofollow ugc\">clicking here</a></p>\n</p>\n\n",
+        "changelog": "<h4>1.0</h4>\n<ul>\n<li>Stable version created</li>\n</ul>\n<h4>1.01</h4>\n<ul>\n<li>Switched from stored session variable to encrypted cookie using wp_salt function. This is to easily allow development options to read and process the cookie data</li>\n</ul>\n<h4>1.02</h4>\n<ul>\n<li>Updated readme with helpful FAQ entries</li>\n</ul>\n<h4>1.03</h4>\n<ul>\n<li>Better error checking with geoip class and returned array</li>\n</ul>\n<h4>1.04</h4>\n<ul>\n<li>If no valid IP is found in the get_ip function, the last return value still needs to be chcecked if a valid IP, otherwise return false</li>\n</ul>\n<h4>1.05</h4>\n<ul>\n<li>Now including country code in geoip encrypted cookie</li>\n</ul>\n<h4>1.06</h4>\n<ul>\n<li>WordPress 5 compatibility</li>\n</ul>\n<h4>1.07</h4>\n<ul>\n<li>WordPress 5.5 compatibility</li>\n</ul>\n<h4>1.08</h4>\n<ul>\n<li>WordPress 6.2 compatibility</li>\n</ul>\n",
+        "description": "<p>Plugin that utilizes <a href=\"http://ip-api.com\" rel=\"nofollow ugc\">ip-api</a> to get geolocation coordinates based on the end-users&#8217; IP address. Read the <a href=\"https://www.shift8web.ca/2018/01/wordpress-plugin-get-geolocation-coordinates-visitors-ip-address/\" rel=\"nofollow ugc\">blog post detailing how to interact with the plugin</a>.</p>\n<h3>Want to see the plugin in action?</h3>\n<p>You can view three example sites where this plugin is live :</p>\n<ul>\n<li>Example Site 1 : <a href=\"https://www.stackstar.com\" title=\"Wordpress Hosting\" rel=\"nofollow ugc\">WordPress Hosting</a></li>\n<li>Example Site 2 : <a href=\"https://www.shift8web.ca\" title=\"Web Design in Toronto\" rel=\"nofollow ugc\">Web Design in Toronto</a></li>\n</ul>\n<h4>Features</h4>\n<ul>\n<li>Cookie session established with IP address and latitude / longitude coordinates of the end-user browsing the site</li>\n</ul>\n"
+    },
+    "short_description": "Plugin that utilizes ip-api to get geolocation coordinates based on the end-users&#039; IP address. Read the blog post detailing how to interact with  &hellip;",
+    "description": "<p>Plugin that utilizes <a href=\"http://ip-api.com\" rel=\"nofollow ugc\">ip-api</a> to get geolocation coordinates based on the end-users&#8217; IP address. Read the <a href=\"https://www.shift8web.ca/2018/01/wordpress-plugin-get-geolocation-coordinates-visitors-ip-address/\" rel=\"nofollow ugc\">blog post detailing how to interact with the plugin</a>.</p>\n<h3>Want to see the plugin in action?</h3>\n<p>You can view three example sites where this plugin is live :</p>\n<ul>\n<li>Example Site 1 : <a href=\"https://www.stackstar.com\" title=\"Wordpress Hosting\" rel=\"nofollow ugc\">WordPress Hosting</a></li>\n<li>Example Site 2 : <a href=\"https://www.shift8web.ca\" title=\"Web Design in Toronto\" rel=\"nofollow ugc\">Web Design in Toronto</a></li>\n</ul>\n<h4>Features</h4>\n<ul>\n<li>Cookie session established with IP address and latitude / longitude coordinates of the end-user browsing the site</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/shift8-geoip-location.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/shift8-geoip-location/assets/screenshot-1.jpg?rev=1737334",
+            "caption": "Admin area"
+        }
+    ],
+    "tags": {
+        "geo-location": "geo location",
+        "geographic-location": "geographic location",
+        "geolocation": "geolocation",
+        "ip-address-location": "ip address location",
+        "ip-geolocation": "ip geolocation"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.shift8web.ca",
+    "banners": {
+        "low": "https://ps.w.org/shift8-geoip-location/assets/banner-772x250.png?rev=2124769",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/shift8-geoip-location/assets/icon-128x128.png?rev=2124769",
+        "2x": "https://ps.w.org/shift8-geoip-location/assets/icon-256x256.png?rev=2124769"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

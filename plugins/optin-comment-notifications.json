@@ -1,0 +1,101 @@
+{
+    "name": "Optin Comment Notifications",
+    "slug": "optin-comment-notifications",
+    "version": "1.4",
+    "author": "<a href=\"http://coffee2code.com/\">Scott Reilly</a>",
+    "author_profile": "https://profiles.wordpress.org/coffee2code/",
+    "contributors": {
+        "coffee2code": {
+            "profile": "https://profiles.wordpress.org/coffee2code/",
+            "avatar": "https://secure.gravatar.com/avatar/5af525fba95b93c4e0c8a03b639c9486?s=96&d=monsterid&r=g",
+            "display_name": "Scott Reilly"
+        }
+    },
+    "requires": "4.6",
+    "tested": "5.1.19",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 3,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 3,
+    "support_url": "https://wordpress.org/support/plugin/optin-comment-notifications/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 90,
+    "downloaded": 3583,
+    "last_updated": "2019-03-27 5:14am GMT",
+    "added": "2015-01-12",
+    "homepage": "http://coffee2code.com/wp-plugins/optin-comment-notifications/",
+    "sections": {
+        "description": "<p>This plugin adds a checkbox to the profile page for users which allows them to opt into receiving a notification email whenever a comment is made to the site.</p>\n<p>If a comment goes into moderation, only users who have the ability to manage comments on the site will receive the moderation notification email.</p>\n<p>By default, all users of the site have the ability to subscribe to notifications about comments. A filter is provided to facilitate use of code to customize the feature&#8217;s availability to users.</p>\n<p>Note: a &#8220;user&#8221; is a person with an actual login account for the site. The plugin does not facilitate permitting visitors who do not have an account on the site to be able to subscribe to all comments.</p>\n<p>Links: <a href=\"http://coffee2code.com/wp-plugins/optin-comment-notifications/\" rel=\"nofollow ugc\">Plugin Homepage</a> | <a href=\"https://wordpress.org/plugins/optin-comment-notifications/\" rel=\"ugc\">Plugin Directory Page</a> | <a href=\"https://github.com/coffee2code/optin-comment-notifications/\" rel=\"nofollow ugc\">GitHub</a> | <a href=\"http://coffee2code.com\" rel=\"nofollow ugc\">Author Homepage</a></p>\n",
+        "installation": "<ol>\n<li>Install via the built-in WordPress plugin installer. Or download and unzip <code>optin-comment-notifications.zip</code> inside the plugins directory for your site (typically <code>wp-content/plugins/</code>)</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; admin menu in WordPress</li>\n<li>Users wishing to opt into receiving notifications for new comments should visit their profile page and check the checkbox labeled &#8220;Email me whenever a comment is submitted to the site.&#8221;</li>\n</ol>\n",
+        "faq": "\n<h4>Who can sign up to receive notifications about comments to the site?</h4>\n<p>\n<p>Any user account on the site can sign up for comment notifications. Comments that go into moderation will only trigger notifications to users who can moderate comments. Visitors who do not have an account on the site cannot make use of the plugin to subscribe to comments.</p>\n</p>\n<h4>How do I sign up to receive notifications?</h4>\n<p>\n<p>On your profile page, there is a checkbox next to &#8220;New Comment Emails&#8221; that is labeled &#8220;Email me whenever a comment is submitted to the site.&#8221;. Check the checkbox and click the button to update your profile. If you wish to discontinue receiving such notifications, simply uncheck the checkbox and save the change.</p>\n</p>\n<h4>Does this plugin include unit tests?</h4>\n<p>\n<p>Yes.</p>\n</p>\n<h4>How can I restrict the plugin to only offer the ability to subscribe to all comments to administrators and editors?</h4>\n<p>\n<p>Use the &#8216;c2c_optin_comment_notifications_has_cap&#8217; filter to customize the capability as needed. The following code can be used or adapted for that purpose. Such code should ideally be put into a mu-plugin or site-specific plugin (which is beyond the scope of this readme to explain).</p>\n<pre><code>/**\n * Only permits administrators and editors to subscribe to comment notifications.\n *\n * @param bool  $default The default. Default true.\n * @param array $caps    Array of user capabilities.\n * @return string\n */\nfunction restrict_optin_comment_notifications( $default, $caps ) {\n    // Only administrators and editors can subscribe to all comments.\n    return !! array_intersect(\n        wp_get_current_user()-&gt;roles,      // Get current user's roles.\n        array( 'administrator', 'editor' ) // Roles to allow to subscribe to all comments.\n    );\n}\nadd_filter( 'c2c_optin_comment_notifications_has_cap', 'restrict_optin_comment_notifications', 10, 2 );\n</code></pre>\n</p>\n<h4>Can an administrator configure the setting for another user?</h4>\n<p>\n<p>Yes. Users with the &#8216;edit_users&#8217; capability (administrators, basically) and can edit the profile of another user can configure this plugin for that user. The checkbox is labeled &#8220;Email this user whenever a comment is submitted to the site.&#8221;.</p>\n</p>\n\n",
+        "changelog": "<h4>1.4 (2019-03-26)</h4>\n<ul>\n<li>New: Add CHANGELOG.md file and move all but most recent changelog entries into it</li>\n<li>Change: Initialize plugin on &#8216;plugins_loaded&#8217; action instead of on load</li>\n<li>Change: Merge <code>do_init()</code> into <code>init()</code></li>\n<li>Change: Note compatibility through WP 5.1+</li>\n<li>Change: Update copyright date (2019)</li>\n<li>Change: Update License URI to be HTTPS</li>\n<li>Change: Split paragraph in README.md&#8217;s &#8220;Support&#8221; section into two</li>\n</ul>\n<h4>1.3 (2018-05-07)</h4>\n<ul>\n<li>Bugfix: Ensure comment notifications are sent even if core&#8217;s &#8216;comments_notify&#8217; or &#8216;notify_moderator&#8217; settings is false</li>\n<li>Change: Don&#8217;t notify users of spam comments</li>\n<li>New: Add README.md</li>\n<li>New: Add GitHub link to readme</li>\n<li>Unit tests:\n<ul>\n<li>Change: Test notifications by invoking <code>wp_new_comment_notify_postauthor()</code> rather than plugin class method</li>\n<li>Change: Add and improve tests relating to &#8216;notify_moderator&#8217;</li>\n<li>Change: Remove unnecessary mocking of posts</li>\n<li>Change: Minor whitespace tweaks to bootstrap</li>\n<li>Change: Use correct header @package name in bootstrap</li>\n</ul>\n</li>\n<li>Change: Note compatibility through WP 4.9+</li>\n<li>Change: Update copyright date (2018)</li>\n</ul>\n<h4>1.2 (2017-01-04)</h4>\n<ul>\n<li>New: Permit admins (or more specifically, those who can &#8216;edit_users&#8217;) to control the setting for other users.\n<ul>\n<li>Add new capability &#8216;c2c_subscribe_to_all_comments_edit_others&#8217;</li>\n<li>Add &#8216;c2c_optin_comment_notifications_has_cap_edit_others&#8217; filter to allow customizing capability for editing setting for other users</li>\n<li>Show checkbox via &#8216;personal_options&#8217; action instead of &#8216;profile_personal_options&#8217;</li>\n<li>Hook &#8216;edit_user_profile_update&#8217; to potentially save the setting when another user is being edited</li>\n</ul>\n</li>\n<li>Change: Enable more error output for unit tests.</li>\n<li>Change: Default <code>WP_TESTS_DIR</code> to <code>/tmp/wordpress-tests-lib</code> rather than erroring out if not defined via environment variable.</li>\n<li>Change: Minor tweaks to code documentation.</li>\n<li>Change: Note compatibility through WP 4.7+.</li>\n<li>Change: Remove support for WordPress older than 4.6 (should still work for earlier versions)</li>\n<li>Change: Update copyright date (2017).</li>\n<li>Change: Update installation instruction to prefer built-in installer over .zip file</li>\n</ul>\n<p><em>Full changelog is available in <a href=\"https://github.com/coffee2code/optin-comment-notifications/blob/master/CHANGELOG.md\" rel=\"nofollow ugc\">CHANGELOG.md</a>.</em></p>\n"
+    },
+    "short_description": "Allows users to opt into receiving a notification email whenever a comment is made to the site.",
+    "description": "<p>This plugin adds a checkbox to the profile page for users which allows them to opt into receiving a notification email whenever a comment is made to the site.</p>\n<p>If a comment goes into moderation, only users who have the ability to manage comments on the site will receive the moderation notification email.</p>\n<p>By default, all users of the site have the ability to subscribe to notifications about comments. A filter is provided to facilitate use of code to customize the feature&#8217;s availability to users.</p>\n<p>Note: a &#8220;user&#8221; is a person with an actual login account for the site. The plugin does not facilitate permitting visitors who do not have an account on the site to be able to subscribe to all comments.</p>\n<p>Links: <a href=\"http://coffee2code.com/wp-plugins/optin-comment-notifications/\" rel=\"nofollow ugc\">Plugin Homepage</a> | <a href=\"https://wordpress.org/plugins/optin-comment-notifications/\" rel=\"ugc\">Plugin Directory Page</a> | <a href=\"https://github.com/coffee2code/optin-comment-notifications/\" rel=\"nofollow ugc\">GitHub</a> | <a href=\"http://coffee2code.com\" rel=\"nofollow ugc\">Author Homepage</a></p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/optin-comment-notifications.1.4.zip",
+    "upgrade_notice": {
+        "1.4": "<p>Minor update: tweaked plugin initialization, dropped compatibility with WP older than 4.6, noted compatibility through WP 5.1+, created CHANGELOG.md to store historical changelog outside of readme.txt, and updated copyright date (2019)</p>",
+        "1.3": "<p>Recommended update: bugfix to ensure advertised functionality works even if related core settings are disabled, prevented notifications for spam comments, added README.md, noted compatibility through WP 4.9+, and updated copyright date (2018)</p>",
+        "1.2": "<p>Minor feature update: added ability for admins to edit the setting for other users, updated unit test bootstrap file, noted compatibility through WP 4.7+, and updated copyright date (2017)</p>",
+        "1.1": "<p>Minor update: improve support for localization; verified compatibility through WP 4.4; removed compatibility with WP earlier than 4.1; updated copyright date (2016)</p>",
+        "1.0": "<p>Initial public release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/optin-comment-notifications/assets/screenshot-1.png?rev=1066513",
+            "caption": "A screenshot of the checkbox added to user profiles."
+        }
+    ],
+    "tags": {
+        "comment": "comment",
+        "commenting": "commenting",
+        "comments": "comments",
+        "email": "email",
+        "notifications": "Notifications"
+    },
+    "stable_tag": "1.4",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/optin-comment-notifications.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/optin-comment-notifications.1.1.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/optin-comment-notifications.1.2.zip",
+        "1.3": "https://downloads.wordpress.org/plugin/optin-comment-notifications.1.3.zip",
+        "1.4": "https://downloads.wordpress.org/plugin/optin-comment-notifications.1.4.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/optin-comment-notifications.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6ARCFJ9TX3522",
+    "banners": {
+        "low": "https://ps.w.org/optin-comment-notifications/assets/banner-772x250.png?rev=1066502",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/optin-comment-notifications/assets/icon-128x128.png?rev=1066502"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "optin-comment-notifications",
+            "language": "cs_CZ",
+            "version": "1.4",
+            "updated": "2021-03-25 17:09:24",
+            "package": "http://downloads.wordpress.org/translation/plugin/optin-comment-notifications/1.4/cs_CZ.zip"
+        }
+    ]
+}

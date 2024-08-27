@@ -1,0 +1,90 @@
+{
+    "name": "Get Tweets in PHP",
+    "slug": "get-tweets-in-php",
+    "version": "1.2",
+    "author": "<a href=\"http://netgloo.com\">Netgloo</a>",
+    "author_profile": "https://profiles.wordpress.org/azanelli/",
+    "contributors": {
+        "netgloo": {
+            "profile": "https://profiles.wordpress.org/netgloo/",
+            "avatar": "https://secure.gravatar.com/avatar/ae747663d8072b48e2bf1279eb7fd387?s=96&d=monsterid&r=g",
+            "display_name": "Netgloo"
+        },
+        "azanelli": {
+            "profile": "https://profiles.wordpress.org/azanelli/",
+            "avatar": "https://secure.gravatar.com/avatar/abaff99a1bcf0fe7024fb96654816449?s=96&d=monsterid&r=g",
+            "display_name": "azanelli"
+        },
+        "aboutnick": {
+            "profile": "https://profiles.wordpress.org/aboutnick/",
+            "avatar": "https://secure.gravatar.com/avatar/23980e817deff0c93f9ad83a6f0e843e?s=96&d=monsterid&r=g",
+            "display_name": "aboutnick"
+        }
+    },
+    "requires": "4.0",
+    "tested": "4.7.29",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 2,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 2,
+    "support_url": "https://wordpress.org/support/plugin/get-tweets-in-php/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 100,
+    "downloaded": 2425,
+    "last_updated": "2016-12-28 2:59pm GMT",
+    "added": "2015-08-24",
+    "homepage": "",
+    "sections": {
+        "description": "<p>This plugin will add the PHP class <code>GetTweetsInPhp</code>. You can use this class as described below for retrieving <strong>latest tweets</strong> from a Twitter account, then handle the tweets as you want in your PHP code.</p>\n<p><strong>Note</strong>: you should create a Twitter app before using this plugin. You can do it from here: <a href=\"http://apps.twitter.com\" rel=\"nofollow ugc\">http://apps.twitter.com</a>.</p>\n<h4>Features</h4>\n<ul>\n<li>Get latest N tweets from a Twitter account.</li>\n<li>Get the tweet&#8217;s text formatted as HTML (with links for each entities).</li>\n<li>Cache support.</li>\n<li>Made for developers.</li>\n<li>Really light and simple.</li>\n<li>Works with the v1.1 Twitter API.</li>\n<li>Trivial install/uninstall (only add/remove the plugin&#8217;s files).</li>\n<li>No any data will be permanently stored in your database (only transient data<br />\nif the cache is enabled).</li>\n<li>Proudly coded by <a href=\"http://netgloo.com/en\" rel=\"nofollow ugc\">Netgloo</a>.</li>\n</ul>\n<h4>Example usage</h4>\n<p>Get and show latest tweets from <a href=\"http://twitter.com/netglooweb\" rel=\"nofollow ugc\">@netglooweb</a>:</p>\n<pre><code>// Set configurations\n$configs = [\n  // Set here tokens from your Twitter's app\n  'consumer_key' =&gt; 'CONSUMER_KEY', \n  'consumer_secret' =&gt; 'CONSUMER_SECRET',\n\n  // The Twitter account name\n  'screen_name' =&gt; 'netglooweb',\n\n  // The number of tweets\n  'count' =&gt; 5,\n];\n\n// Get latest tweets using the function get_tweets\n$tweets = \\Netgloo\\GetTweetsInPhp::get_tweets($configs);\n\n// ...\n\n// For each tweet show the HTML text and the attached image\nforeach ($tweets as $tweet) {\n\n  echo \"&lt;p&gt;\";\n  echo $tweet-&gt;n_html_text;\n\n  if ($tweet-&gt;n_has_media_photo) {\n    echo \"&lt;img src='{$tweet-&gt;n_media_photo_url}' width='100%' /&gt;\";\n  }\n\n  echo \"&lt;/p&gt;\";\n\n}\n\n// ...\n</code></pre>\n<p>That&#8217;s all! Have fun!</p>\n<h4>Configurations</h4>\n<p>The <code>get_tweets()</code> function takes an array of configurations:</p>\n<pre><code>$configs = [\n\n  // --- Required ---\n\n  // The tokens from your Twitter's app\n  'consumer_key' =&gt; '...',\n  'consumer_secret' =&gt; '...',\n\n  // The Twitter account name\n  'screen_name' =&gt; '...',\n\n\n  // --- Optional ---\n\n  // The number of tweets\n  'count' =&gt; 20,\n\n  // Include also the retweets\n  'include_rts' =&gt; true,\n\n  // In the HTML text will be showed \"Retweeted by ...\" if the tweet\n  // is a retweet\n  'show_retweeted_by' =&gt; true,\n\n  // Enable the cache\n  // It is recommended to activate the cache, when you put live \n  // your website, in order to avoid to reach the Twitter's api rate\n  // limit of 300 requests / 15-min.\n  'cache_enabled' =&gt; false,\n\n  // Cache expiration (in seconds)\n  // Increase the value to optimize the website's speed, decrease\n  // the value if you want a more real-time behaviour (but not\n  // less than 4 seconds to avoid to reach the rate limit).\n  'cache_expiration' =&gt; 60,\n\n  // Templates\n\n  // Retweeted by text template\n  'retweeted_by_template' =&gt; \n    '&lt;em&gt; Retweeted by {{user_name}}&lt;/em&gt;',\n\n  // Hash tag link template\n  'hashtag_link_template' =&gt; \n    '&lt;a href=\"{{hashtag_link}}\" rel=\"nofollow\" target=\"_blank\"&gt;' .\n    '#{{hashtag_text}}&lt;/a&gt;',\n\n  // Url link template\n  'url_link_template' =&gt; \n    '&lt;a href=\"{{url_link}}\" rel=\"nofollow\" target=\"_blank\" ' .\n    'title=\"{{url_title}}\"&gt;{{url_text}}&lt;/a&gt;',\n\n  // User mention link template\n  'user_mention_link_template' =&gt; \n    '&lt;a href=\"{{user_mention_link}}\" rel=\"nofollow\" target=\"_blank\" ' .\n    'title=\"{{user_mention_title}}\"&gt;@{{user_mention_text}}&lt;/a&gt;',\n\n  // Media link template\n  'media_link_template' =&gt; \n    '&lt;a href=\"{{media_link}}\" rel=\"nofollow\" target=\"_blank\" ' .\n    'title=\"{{media_title}}\"&gt;{{media_text}}&lt;/a&gt;'\n\n];\n\n$tweets = \\Netgloo\\GetTweetsInPhp::get_tweets($configs);\n</code></pre>\n<h4>Returned values</h4>\n<p>The <code>get_tweets()</code> function will return an Array of tweets. On each tweet object are available these properties:</p>\n<ul>\n<li><code>n_html_text</code> (String) The tweet text formatted as HTML, with links on each entities.</li>\n<li><code>n_is_retweeted</code> (Boolean) True if the curret tweet is a retweet.</li>\n<li><code>n_has_media_photo</code> (Boolean) True if the current tweet has an attached photo.</li>\n<li><code>n_media_photo_url</code> (String) The url of the tweet&#8217;s attached photo.</li>\n<li><code>n_media_photo_urls</code> (Array) If the tweet has more than one attached photos this properties contains all the urls.</li>\n</ul>\n<p>Other available properties are those returned from the <a href=\"https://dev.twitter.com/rest/reference/get/statuses/user_timeline\" rel=\"nofollow ugc\">user_timeline Twitter&#8217;s API</a>.<br />\nThese are some useful ones:</p>\n<ul>\n<li><code>created_at</code></li>\n<li><code>retweet_count</code></li>\n<li><code>user-&gt;name</code></li>\n<li><code>user-&gt;screen_name</code></li>\n<li><code>user-&gt;profile_image_url</code></li>\n</ul>\n<p>If the properties <code>n_is_retweeted</code> is true the current tweet is a &#8220;re-tweet&#8221; and the <code>retweeted_status</code> object is available:</p>\n<ul>\n<li><code>retweeted_status-&gt;user-&gt;name</code></li>\n<li><code>retweeted_status-&gt;user-&gt;screen_name</code></li>\n<li><code>retweeted_status-&gt;retweet_count</code></li>\n</ul>\n<p><strong>Example</strong></p>\n<p>This code use some of the above properties:</p>\n<pre><code>// ...\n\n$tweets = \\Netgloo\\GetTweetsInPhp::get_tweets($configs);\n\nforeach ($tweets as $tweet) {\n  echo $tweet-&gt;created_at . \"&lt;br/&gt;\";\n  echo $tweet-&gt;n_html_text . \"&lt;br/&gt;\";\n  if ($tweet-&gt;n_has_media_photo) {\n    echo $tweet-&gt;n_media_photo_url  . \"&lt;br/&gt;\";\n  }\n}\n\n// ...\n</code></pre>\n<h4>Limitations</h4>\n<p>Since we rely on the Twitter&#8217;s <code>user_timeline</code> API, you should read the following docs for taking in account any API&#8217;s limitation:</p>\n<ul>\n<li>https://dev.twitter.com/rest/reference/get/statuses/user_timeline</li>\n<li>https://dev.twitter.com/rest/public/timelines</li>\n</ul>\n<h4>Contributing</h4>\n<p>For patches, bug reports, suggestions, requests for features there is a Git repository on GitHub here:<br />\nhttps://github.com/netgloo/get-tweets-in-php</p>\n",
+        "installation": "<h4>Requirements</h4>\n<p>To work this plugin, following component need to be installed in your server.</p>\n<ul>\n<li>PHP version 5.3 or higher</li>\n<li>cURL</li>\n<li>WordPress 4.2.2 or higher</li>\n</ul>\n<h4>Install</h4>\n<p>Put the plugin to your WordPress&#8217; plugins folder and activate it from the Admin Backend.</p>\n<h4>Uninstall</h4>\n<p>Just delete the plugin from WordPress.</p>\n",
+        "faq": "\n<h4>Why the &#8220;n&#8221; before your custom tweet&#8217;s properties?</h4>\n<p>\n<p>Our custom properties (i.e. properties not from the Twitter&#8217;s API) are prefixed with an &#8220;n&#8221;. The &#8220;n&#8221; is the first character in &#8220;Netgloo&#8221; ;).</p>\n</p>\n\n",
+        "changelog": "<h4>1.2</h4>\n<ul>\n<li>Custom HTML templates for links and &#8220;retweeted by&#8221; text.</li>\n<li>New hashtag link: https://twitter.com/hashtag.</li>\n<li>Get media urls with https.</li>\n<li>Cache disabled by default (as in the documentation).</li>\n</ul>\n<h4>1.1</h4>\n<ul>\n<li>Bug fix setting transient cache name.</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "Get latest tweets from a Twitter account with a couple of lines of PHP, and do anything you want with them.",
+    "description": "<p>This plugin will add the PHP class <code>GetTweetsInPhp</code>. You can use this class as described below for retrieving <strong>latest tweets</strong> from a Twitter account, then handle the tweets as you want in your PHP code.</p>\n<p><strong>Note</strong>: you should create a Twitter app before using this plugin. You can do it from here: <a href=\"http://apps.twitter.com\" rel=\"nofollow ugc\">http://apps.twitter.com</a>.</p>\n<h4>Features</h4>\n<ul>\n<li>Get latest N tweets from a Twitter account.</li>\n<li>Get the tweet&#8217;s text formatted as HTML (with links for each entities).</li>\n<li>Cache support.</li>\n<li>Made for developers.</li>\n<li>Really light and simple.</li>\n<li>Works with the v1.1 Twitter API.</li>\n<li>Trivial install/uninstall (only add/remove the plugin&#8217;s files).</li>\n<li>No any data will be permanently stored in your database (only transient data<br />\nif the cache is enabled).</li>\n<li>Proudly coded by <a href=\"http://netgloo.com/en\" rel=\"nofollow ugc\">Netgloo</a>.</li>\n</ul>\n<h4>Example usage</h4>\n<p>Get and show latest tweets from <a href=\"http://twitter.com/netglooweb\" rel=\"nofollow ugc\">@netglooweb</a>:</p>\n<pre><code>// Set configurations\n$configs = [\n  // Set here tokens from your Twitter's app\n  'consumer_key' =&gt; 'CONSUMER_KEY', \n  'consumer_secret' =&gt; 'CONSUMER_SECRET',\n\n  // The Twitter account name\n  'screen_name' =&gt; 'netglooweb',\n\n  // The number of tweets\n  'count' =&gt; 5,\n];\n\n// Get latest tweets using the function get_tweets\n$tweets = \\Netgloo\\GetTweetsInPhp::get_tweets($configs);\n\n// ...\n\n// For each tweet show the HTML text and the attached image\nforeach ($tweets as $tweet) {\n\n  echo \"&lt;p&gt;\";\n  echo $tweet-&gt;n_html_text;\n\n  if ($tweet-&gt;n_has_media_photo) {\n    echo \"&lt;img src='{$tweet-&gt;n_media_photo_url}' width='100%' /&gt;\";\n  }\n\n  echo \"&lt;/p&gt;\";\n\n}\n\n// ...\n</code></pre>\n<p>That&#8217;s all! Have fun!</p>\n<h4>Configurations</h4>\n<p>The <code>get_tweets()</code> function takes an array of configurations:</p>\n<pre><code>$configs = [\n\n  // --- Required ---\n\n  // The tokens from your Twitter's app\n  'consumer_key' =&gt; '...',\n  'consumer_secret' =&gt; '...',\n\n  // The Twitter account name\n  'screen_name' =&gt; '...',\n\n\n  // --- Optional ---\n\n  // The number of tweets\n  'count' =&gt; 20,\n\n  // Include also the retweets\n  'include_rts' =&gt; true,\n\n  // In the HTML text will be showed \"Retweeted by ...\" if the tweet\n  // is a retweet\n  'show_retweeted_by' =&gt; true,\n\n  // Enable the cache\n  // It is recommended to activate the cache, when you put live \n  // your website, in order to avoid to reach the Twitter's api rate\n  // limit of 300 requests / 15-min.\n  'cache_enabled' =&gt; false,\n\n  // Cache expiration (in seconds)\n  // Increase the value to optimize the website's speed, decrease\n  // the value if you want a more real-time behaviour (but not\n  // less than 4 seconds to avoid to reach the rate limit).\n  'cache_expiration' =&gt; 60,\n\n  // Templates\n\n  // Retweeted by text template\n  'retweeted_by_template' =&gt; \n    '&lt;em&gt; Retweeted by {{user_name}}&lt;/em&gt;',\n\n  // Hash tag link template\n  'hashtag_link_template' =&gt; \n    '&lt;a href=\"{{hashtag_link}}\" rel=\"nofollow\" target=\"_blank\"&gt;' .\n    '#{{hashtag_text}}&lt;/a&gt;',\n\n  // Url link template\n  'url_link_template' =&gt; \n    '&lt;a href=\"{{url_link}}\" rel=\"nofollow\" target=\"_blank\" ' .\n    'title=\"{{url_title}}\"&gt;{{url_text}}&lt;/a&gt;',\n\n  // User mention link template\n  'user_mention_link_template' =&gt; \n    '&lt;a href=\"{{user_mention_link}}\" rel=\"nofollow\" target=\"_blank\" ' .\n    'title=\"{{user_mention_title}}\"&gt;@{{user_mention_text}}&lt;/a&gt;',\n\n  // Media link template\n  'media_link_template' =&gt; \n    '&lt;a href=\"{{media_link}}\" rel=\"nofollow\" target=\"_blank\" ' .\n    'title=\"{{media_title}}\"&gt;{{media_text}}&lt;/a&gt;'\n\n];\n\n$tweets = \\Netgloo\\GetTweetsInPhp::get_tweets($configs);\n</code></pre>\n<h4>Returned values</h4>\n<p>The <code>get_tweets()</code> function will return an Array of tweets. On each tweet object are available these properties:</p>\n<ul>\n<li><code>n_html_text</code> (String) The tweet text formatted as HTML, with links on each entities.</li>\n<li><code>n_is_retweeted</code> (Boolean) True if the curret tweet is a retweet.</li>\n<li><code>n_has_media_photo</code> (Boolean) True if the current tweet has an attached photo.</li>\n<li><code>n_media_photo_url</code> (String) The url of the tweet&#8217;s attached photo.</li>\n<li><code>n_media_photo_urls</code> (Array) If the tweet has more than one attached photos this properties contains all the urls.</li>\n</ul>\n<p>Other available properties are those returned from the <a href=\"https://dev.twitter.com/rest/reference/get/statuses/user_timeline\" rel=\"nofollow ugc\">user_timeline Twitter&#8217;s API</a>.<br />\nThese are some useful ones:</p>\n<ul>\n<li><code>created_at</code></li>\n<li><code>retweet_count</code></li>\n<li><code>user-&gt;name</code></li>\n<li><code>user-&gt;screen_name</code></li>\n<li><code>user-&gt;profile_image_url</code></li>\n</ul>\n<p>If the properties <code>n_is_retweeted</code> is true the current tweet is a &#8220;re-tweet&#8221; and the <code>retweeted_status</code> object is available:</p>\n<ul>\n<li><code>retweeted_status-&gt;user-&gt;name</code></li>\n<li><code>retweeted_status-&gt;user-&gt;screen_name</code></li>\n<li><code>retweeted_status-&gt;retweet_count</code></li>\n</ul>\n<p><strong>Example</strong></p>\n<p>This code use some of the above properties:</p>\n<pre><code>// ...\n\n$tweets = \\Netgloo\\GetTweetsInPhp::get_tweets($configs);\n\nforeach ($tweets as $tweet) {\n  echo $tweet-&gt;created_at . \"&lt;br/&gt;\";\n  echo $tweet-&gt;n_html_text . \"&lt;br/&gt;\";\n  if ($tweet-&gt;n_has_media_photo) {\n    echo $tweet-&gt;n_media_photo_url  . \"&lt;br/&gt;\";\n  }\n}\n\n// ...\n</code></pre>\n<h4>Limitations</h4>\n<p>Since we rely on the Twitter&#8217;s <code>user_timeline</code> API, you should read the following docs for taking in account any API&#8217;s limitation:</p>\n<ul>\n<li>https://dev.twitter.com/rest/reference/get/statuses/user_timeline</li>\n<li>https://dev.twitter.com/rest/public/timelines</li>\n</ul>\n<h4>Contributing</h4>\n<p>For patches, bug reports, suggestions, requests for features there is a Git repository on GitHub here:<br />\nhttps://github.com/netgloo/get-tweets-in-php</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/get-tweets-in-php.1.2.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "developers": "developers",
+        "latest-tweets": "latest tweets",
+        "tweet": "tweet",
+        "tweets": "tweets",
+        "twitter": "twitter"
+    },
+    "stable_tag": "1.2",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/get-tweets-in-php.1.0.zip",
+        "1.1": "https://downloads.wordpress.org/plugin/get-tweets-in-php.1.1.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/get-tweets-in-php.1.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/get-tweets-in-php.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/get-tweets-in-php/assets/banner-772x250.png?rev=1240948",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/get-tweets-in-php/assets/icon.svg?rev=1240948",
+        "svg": "https://ps.w.org/get-tweets-in-php/assets/icon.svg?rev=1240948"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

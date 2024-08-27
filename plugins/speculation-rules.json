@@ -1,0 +1,150 @@
+{
+    "name": "Speculative Loading",
+    "slug": "speculation-rules",
+    "version": "1.3.1",
+    "author": "<a href=\"https://make.wordpress.org/performance/\">WordPress Performance Team</a>",
+    "author_profile": "https://profiles.wordpress.org/performanceteam/",
+    "contributors": {
+        "wordpressdotorg": {
+            "profile": "https://profiles.wordpress.org/wordpressdotorg/",
+            "avatar": "https://secure.gravatar.com/avatar/61ee2579b8905e62b4b4045bdc92c11a?s=96&d=monsterid&r=g",
+            "display_name": "WordPress.org"
+        }
+    },
+    "requires": "6.4",
+    "tested": "6.6.1",
+    "requires_php": "7.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 16,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 16,
+    "support_url": "https://wordpress.org/support/plugin/speculation-rules/",
+    "support_threads": 3,
+    "support_threads_resolved": 2,
+    "active_installs": 30000,
+    "downloaded": 98729,
+    "last_updated": "2024-07-15 7:16pm GMT",
+    "added": "2024-01-19",
+    "homepage": "https://github.com/WordPress/performance/tree/trunk/plugins/speculation-rules",
+    "sections": {
+        "description": "<p>This plugin adds support for the <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API\" rel=\"nofollow ugc\">Speculation Rules API</a>, which allows defining rules by which certain URLs are dynamically prefetched or prerendered based on user interaction.</p>\n<p>See the <a href=\"https://wicg.github.io/nav-speculation/speculation-rules.html\" rel=\"nofollow ugc\">Speculation Rules WICG specification draft</a>.</p>\n<p>By default, the plugin is configured to prerender WordPress frontend URLs when the user hovers over a relevant link. This can be customized via the &#8220;Speculative Loading&#8221; section under <em>Settings &gt; Reading</em>.</p>\n<p>A filter can be used to exclude certain URL paths from being eligible for prefetching and prerendering (see FAQ section). Alternatively, you can add the &#8216;no-prerender&#8217; CSS class to any link (<code>&lt;a&gt;</code> tag) that should not be prerendered. See FAQ for more information.</p>\n<h4>Browser support</h4>\n<p>The Speculation Rules API is a new web API, and the functionality used by the plugin is supported in Chromium-based browsers such as Chrome, Edge, or Opera using version 121 or above. Other browsers such as Safari and Firefox will ignore the functionality with no ill effects but will not benefit from the speculative loading. Note that extensions may disable preloading by default (for example, uBlock Origin does this).</p>\n<p>Other browsers will not see any adverse effects, however the feature will not work for those clients.</p>\n<ul>\n<li><a href=\"https://caniuse.com/mdn-html_elements_script_type_speculationrules\" rel=\"nofollow ugc\">Browser support for the Speculation Rules API in general</a></li>\n<li><a href=\"https://developer.chrome.com/blog/chrome-121-beta#speculation_rules_api\" rel=\"nofollow ugc\">Information on document rules syntax support used by the plugin</a></li>\n</ul>\n<p><em>This plugin was formerly known as Speculation Rules.</em></p>\n",
+        "installation": "<h4>Installation from within WordPress</h4>\n<ol>\n<li>Visit <strong>Plugins &gt; Add New</strong>.</li>\n<li>Search for <strong>Speculative Loading</strong>.</li>\n<li>Install and activate the <strong>Speculative Loading</strong> plugin.</li>\n</ol>\n<h4>Manual installation</h4>\n<ol>\n<li>Upload the entire <code>speculation-rules</code> folder to the <code>/wp-content/plugins/</code> directory.</li>\n<li>Visit <strong>Plugins</strong>.</li>\n<li>Activate the <strong>Speculative Loading</strong> plugin.</li>\n</ol>\n",
+        "faq": "\n<dt id='how%20can%20i%20prevent%20certain%20urls%20from%20being%20prefetched%20and%20prerendered%3F'>\nHow can I prevent certain URLs from being prefetched and prerendered?\n</h4>\n<p>\n<p>Not every URL can be reasonably prerendered. Prerendering static content is typically reliable, however prerendering interactive content, such as a logout URL, can lead to issues. For this reason, certain WordPress core URLs such as <code>/wp-login.php</code> and <code>/wp-admin/*</code> are excluded from prefetching and prerendering. Additionally, any URL generated with <code>wp_nonce_url()</code> (or which contain the <code>_wpnonce</code> query var) is also ignored. You can exclude additional URL patterns by using the <code>plsr_speculation_rules_href_exclude_paths</code> filter.</p>\n<p>This example would ensure that URLs like <code>https://example.com/cart/</code> or <code>https://example.com/cart/foo</code> would be excluded from prefetching and prerendering.</p>\n<pre><code>&lt;?php\n\nadd_filter(\n    'plsr_speculation_rules_href_exclude_paths',\n    function ( array $exclude_paths ): array {\n        $exclude_paths[] = '/cart/*';\n        return $exclude_paths;\n    }\n);\n</code></pre>\n<p>Keep in mind that sometimes it may be useful to exclude a URL from prerendering while still allowing it to be prefetched. For example, a page with client-side JavaScript to update user state should probably not be prerendered, but it would be reasonable to prefetch.</p>\n<p>For this purpose, the <code>plsr_speculation_rules_href_exclude_paths</code> filter receives the current mode (either &#8220;prefetch&#8221; or &#8220;prerender&#8221;) to provide conditional exclusions.</p>\n<p>The following example would ensure that URLs like <code>https://example.com/products/...</code> cannot be prerendered, while still allowing them to be prefetched.</p>\n<pre><code>&lt;?php\n\nadd_filter(\n    'plsr_speculation_rules_href_exclude_paths',\n    function ( array $exclude_paths, string $mode ): array {\n        if ( 'prerender' === $mode ) {\n            $exclude_paths[] = '/products/*';\n        }\n        return $exclude_paths;\n    },\n    10,\n    2\n);\n</code></pre>\n<p>As mentioned above, adding the <code>no-prerender</code> CSS class to a link will prevent it from being prerendered (but not prefetched). Additionally, links with <code>rel=nofollow</code> will neither be prefetched nor prerendered because some plugins add this to non-idempotent links (e.g. add to cart); such links ideally should rather be buttons which trigger a POST request or at least they should use <code>wp_nonce_url()</code>.</p>\n</p>\n<dt id='how%20will%20this%20impact%20analytics%20and%20personalization%3F'>\nHow will this impact analytics and personalization?\n</h4>\n<p>\n<p>Prerendering can affect analytics and personalization.</p>\n<p>For client-side JavaScript, is recommended to delay these until the page clicks and some solutions (like Google Analytics) already do this automatically for prerender. See <a href=\"https://developer.chrome.com/docs/web-platform/prerender-pages#impact-on-analytics\" rel=\"nofollow ugc\">Impact on Analytics</a>. Additionally, cross-origin iframes are not loaded until activation which can further avoid issues here.</p>\n<p>Speculating on hover (moderate) increases the chance the page will be loaded, over preloading without this signal, and thus reduces the risk here. Alternatively, the plugin offers to only speculate on mouse/pointer down (conservative) which further reduces the risk here and is an option for sites which are concerned about this, at the cost of having less of a lead time and so less of a performance gain.</p>\n<p>A prerendered page is linked to the page that prerenders it, so personalisation may already be known by this point and changes (e.g. browsing other products, or logging in/out) may require a new page load, and hence a new prerender anyway, which will take these into account. But it definitely is something to be aware of and test!</p>\n</p>\n<dt id='where%20can%20i%20submit%20my%20plugin%20feedback%3F'>\nWhere can I submit my plugin feedback?\n</h4>\n<p>\n<p>Feedback is encouraged and much appreciated, especially since this plugin may contain future WordPress core features. If you have suggestions or requests for new features, you can <a href=\"https://github.com/WordPress/performance/issues/new/choose\" rel=\"nofollow ugc\">submit them as an issue in the WordPress Performance Team&#8217;s GitHub repository</a>. If you need help with troubleshooting or have a question about the plugin, please <a href=\"https://wordpress.org/support/plugin/speculation-rules/#new-topic-0\" rel=\"ugc\">create a new topic on our support forum</a>.</p>\n</p>\n<dt id='where%20can%20i%20report%20security%20bugs%3F'>\nWhere can I report security bugs?\n</h4>\n<p>\n<p>The Performance team and WordPress community take security bugs seriously. We appreciate your efforts to responsibly disclose your findings, and will make every effort to acknowledge your contributions.</p>\n<p>To report a security issue, please visit the <a href=\"https://hackerone.com/wordpress\" rel=\"nofollow ugc\">WordPress HackerOne</a> program.</p>\n</p>\n<dt id='how%20can%20i%20contribute%20to%20the%20plugin%3F'>\nHow can I contribute to the plugin?\n</h4>\n<p>\n<p>Contributions are always welcome! Learn more about how to get involved in the <a href=\"https://make.wordpress.org/performance/handbook/get-involved/\" rel=\"nofollow ugc\">Core Performance Team Handbook</a>.</p>\n</p>\n\n",
+        "changelog": "<h4>1.3.1</h4>\n<p><strong>Bug Fixes</strong></p>\n<ul>\n<li>Check if rel contains nofollow instead of being just nofollow when excluding speculative loading. (<a href=\"https://github.com/WordPress/performance/pull/1232\" rel=\"nofollow ugc\">1232</a>)</li>\n</ul>\n<h4>1.3.0</h4>\n<p><strong>Enhancements</strong></p>\n<ul>\n<li>Prevent speculatively loading links to the uploads, content, plugins, template, or stylesheet directories. (<a href=\"https://github.com/WordPress/performance/pull/1167\" rel=\"nofollow ugc\">1167</a>)</li>\n<li>Facilitate embedding Speculative Loading in other plugins/themes. (<a href=\"https://github.com/WordPress/performance/pull/1159\" rel=\"nofollow ugc\">1159</a>)</li>\n<li>Improve overall code quality with stricter static analysis checks. (<a href=\"https://github.com/WordPress/performance/issues/775\" rel=\"nofollow ugc\">775</a>)</li>\n<li>Bump minimum PHP requirement to 7.2. (<a href=\"https://github.com/WordPress/performance/pull/1130\" rel=\"nofollow ugc\">1130</a>)</li>\n</ul>\n<h4>1.2.2</h4>\n<p><strong>Bug Fixes</strong></p>\n<ul>\n<li>Fix composition of href exclude paths to account for JSON encoding and differing site/home URLs. (<a href=\"https://github.com/WordPress/performance/pull/1164\" rel=\"nofollow ugc\">1164</a>)</li>\n</ul>\n<p><strong>Documentation</strong></p>\n<ul>\n<li>Update readme with browser support and FAQ section about analytics and personalization. (<a href=\"https://github.com/WordPress/performance/pull/1155\" rel=\"nofollow ugc\">1155</a>)</li>\n</ul>\n<h4>1.2.1</h4>\n<p><strong>Enhancements</strong></p>\n<ul>\n<li>Add settings link to Speculative Loading plugin action links. (<a href=\"https://github.com/WordPress/performance/pull/1145\" rel=\"nofollow ugc\">1145</a>)</li>\n<li>Bump minimum PHP version to 7.2. (<a href=\"https://github.com/WordPress/performance/pull/1130\" rel=\"nofollow ugc\">1130</a>)</li>\n</ul>\n<p><strong>Bug Fixes</strong></p>\n<ul>\n<li>Exclude _wpnonce URLs in speculation rules. (<a href=\"https://github.com/WordPress/performance/pull/1143\" rel=\"nofollow ugc\">1143</a>)</li>\n<li>Exclude rel=nofollow links from prefetch/prerender. (<a href=\"https://github.com/WordPress/performance/pull/1142\" rel=\"nofollow ugc\">1142</a>)</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Add missing uninstall.php to remove plugin&#8217;s database option. (<a href=\"https://github.com/WordPress/performance/pull/1128\" rel=\"nofollow ugc\">1128</a>)</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Allow excluding URL patterns from prerendering or prefetching specifically. (<a href=\"https://github.com/WordPress/performance/pull/1025\" rel=\"nofollow ugc\">1025</a>)</li>\n<li>Rename plugin to &#8220;Speculative Loading&#8221;. (<a href=\"https://github.com/WordPress/performance/pull/1101\" rel=\"nofollow ugc\">1101</a>)</li>\n<li>Add Speculative Loading generator tag. (<a href=\"https://github.com/WordPress/performance/pull/1102\" rel=\"nofollow ugc\">1102</a>)</li>\n<li>Bump minimum required WP version to 6.4. (<a href=\"https://github.com/WordPress/performance/pull/1062\" rel=\"nofollow ugc\">1062</a>)</li>\n<li>Update tested WordPress version to 6.5. (<a href=\"https://github.com/WordPress/performance/pull/1027\" rel=\"nofollow ugc\">1027</a>)</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Escape path prefix and restrict it to be a pathname in Speculation Rules. (<a href=\"https://github.com/WordPress/performance/pull/951\" rel=\"nofollow ugc\">951</a>)</li>\n<li>Force HTML5 script theme support when printing JSON script. (<a href=\"https://github.com/WordPress/performance/pull/952\" rel=\"nofollow ugc\">952</a>)</li>\n<li>Add icon and banner assets for plugin directory. (<a href=\"https://github.com/WordPress/performance/pull/987\" rel=\"nofollow ugc\">987</a>)</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release of the Speculative Loading plugin as a standalone plugin. (<a href=\"https://github.com/WordPress/performance/pull/733\" rel=\"nofollow ugc\">733</a>)</li>\n</ul>\n"
+    },
+    "short_description": "Enables browsers to speculatively prerender or prefetch pages when hovering over links.",
+    "description": "<p>This plugin adds support for the <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API\" rel=\"nofollow ugc\">Speculation Rules API</a>, which allows defining rules by which certain URLs are dynamically prefetched or prerendered based on user interaction.</p>\n<p>See the <a href=\"https://wicg.github.io/nav-speculation/speculation-rules.html\" rel=\"nofollow ugc\">Speculation Rules WICG specification draft</a>.</p>\n<p>By default, the plugin is configured to prerender WordPress frontend URLs when the user hovers over a relevant link. This can be customized via the &#8220;Speculative Loading&#8221; section under <em>Settings &gt; Reading</em>.</p>\n<p>A filter can be used to exclude certain URL paths from being eligible for prefetching and prerendering (see FAQ section). Alternatively, you can add the &#8216;no-prerender&#8217; CSS class to any link (<code>&lt;a&gt;</code> tag) that should not be prerendered. See FAQ for more information.</p>\n<h4>Browser support</h4>\n<p>The Speculation Rules API is a new web API, and the functionality used by the plugin is supported in Chromium-based browsers such as Chrome, Edge, or Opera using version 121 or above. Other browsers such as Safari and Firefox will ignore the functionality with no ill effects but will not benefit from the speculative loading. Note that extensions may disable preloading by default (for example, uBlock Origin does this).</p>\n<p>Other browsers will not see any adverse effects, however the feature will not work for those clients.</p>\n<ul>\n<li><a href=\"https://caniuse.com/mdn-html_elements_script_type_speculationrules\" rel=\"nofollow ugc\">Browser support for the Speculation Rules API in general</a></li>\n<li><a href=\"https://developer.chrome.com/blog/chrome-121-beta#speculation_rules_api\" rel=\"nofollow ugc\">Information on document rules syntax support used by the plugin</a></li>\n</ul>\n<p><em>This plugin was formerly known as Speculation Rules.</em></p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/speculation-rules.1.3.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "javascript": "javascript",
+        "performance": "performance",
+        "prefetch": "prefetch",
+        "prerender": "prerender",
+        "speculation-rules": "speculation rules"
+    },
+    "stable_tag": "1.3.1",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/speculation-rules.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/speculation-rules.1.0.1.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/speculation-rules.1.1.0.zip",
+        "1.2.0": "https://downloads.wordpress.org/plugin/speculation-rules.1.2.0.zip",
+        "1.2.1": "https://downloads.wordpress.org/plugin/speculation-rules.1.2.1.zip",
+        "1.2.2": "https://downloads.wordpress.org/plugin/speculation-rules.1.2.2.zip",
+        "1.3.0": "https://downloads.wordpress.org/plugin/speculation-rules.1.3.0.zip",
+        "1.3.1": "https://downloads.wordpress.org/plugin/speculation-rules.1.3.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/speculation-rules.zip"
+    },
+    "business_model": "community",
+    "repository_url": "https://github.com/WordPress/performance",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/speculation-rules/assets/banner-772x250.png?rev=3098224",
+        "high": "https://ps.w.org/speculation-rules/assets/banner-1544x500.png?rev=3098224"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/speculation-rules/assets/icon.svg?rev=3098224",
+        "svg": "https://ps.w.org/speculation-rules/assets/icon.svg?rev=3098224"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "speculation-rules",
+            "language": "es_ES",
+            "version": "1.3.1",
+            "updated": "2024-06-21 08:04:00",
+            "package": "http://downloads.wordpress.org/translation/plugin/speculation-rules/1.3.1/es_ES.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "speculation-rules",
+            "language": "hi_IN",
+            "version": "1.3.1",
+            "updated": "2024-04-21 12:32:24",
+            "package": "http://downloads.wordpress.org/translation/plugin/speculation-rules/1.3.1/hi_IN.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "speculation-rules",
+            "language": "ko_KR",
+            "version": "1.3.1",
+            "updated": "2024-07-08 00:46:02",
+            "package": "http://downloads.wordpress.org/translation/plugin/speculation-rules/1.3.1/ko_KR.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "speculation-rules",
+            "language": "nb_NO",
+            "version": "1.3.1",
+            "updated": "2024-04-09 20:31:15",
+            "package": "http://downloads.wordpress.org/translation/plugin/speculation-rules/1.3.1/nb_NO.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "speculation-rules",
+            "language": "pt_PT",
+            "version": "1.3.1",
+            "updated": "2024-04-12 14:49:43",
+            "package": "http://downloads.wordpress.org/translation/plugin/speculation-rules/1.3.1/pt_PT.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "speculation-rules",
+            "language": "sv_SE",
+            "version": "1.3.1",
+            "updated": "2024-05-17 18:12:41",
+            "package": "http://downloads.wordpress.org/translation/plugin/speculation-rules/1.3.1/sv_SE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "speculation-rules",
+            "language": "vi",
+            "version": "1.3.1",
+            "updated": "2024-07-29 11:39:52",
+            "package": "http://downloads.wordpress.org/translation/plugin/speculation-rules/1.3.1/vi.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "speculation-rules",
+            "language": "zh_TW",
+            "version": "1.3.1",
+            "updated": "2024-04-18 06:42:33",
+            "package": "http://downloads.wordpress.org/translation/plugin/speculation-rules/1.3.1/zh_TW.zip"
+        }
+    ]
+}

@@ -1,0 +1,93 @@
+{
+    "name": "Mention comment&#039;s Authors by Wabeo",
+    "slug": "mention-comments-authors",
+    "version": "0.9.8",
+    "author": "<a href=\"http://wabeo.fr\">Willy Bahuaud</a>",
+    "author_profile": "https://profiles.wordpress.org/willybahuaud/",
+    "contributors": {
+        "willybahuaud": {
+            "profile": "https://profiles.wordpress.org/willybahuaud/",
+            "avatar": "https://secure.gravatar.com/avatar/954f71b7723f0ba503514acb65c24293?s=96&d=monsterid&r=g",
+            "display_name": "Willy Bahuaud"
+        }
+    },
+    "requires": "3.5",
+    "tested": "4.5.32",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 90,
+    "ratings": {
+        "5": 10,
+        "4": 0,
+        "3": 1,
+        "2": 0,
+        "1": 1
+    },
+    "num_ratings": 12,
+    "support_url": "https://wordpress.org/support/plugin/mention-comments-authors/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 100,
+    "downloaded": 8048,
+    "last_updated": "2016-05-30 2:57pm GMT",
+    "added": "2013-05-16",
+    "homepage": "http://wabeo.fr",
+    "sections": {
+        "description": "<p>&#8220;Mention comment&#8217;s authors&#8221; is a plugin that improves the WordPress comments fonctionality, adding a response system between authors.<br />\nWhen adding a comment, your readers can directly mentioning the author of another comment, like facebook or twitter do,using the &#8220;@&#8221; symbol.</p>\n<p>This mention plugin add two features :</p>\n<ul>\n<li>In the comments field, when an user entered the &#8220;@&#8221; symbol, it allows, through an autocompletion system, to quote (or poke) a preceding commentator.</li>\n<li>Once comments validated, the mentioned names take the appearance of buttons. When the user clicks on it, window scrolls to the preceding comment from the person named. A class is added to it, for temporarily customize it in CSS.</li>\n</ul>\n<p>This WordPress plugin is based on <a href=\"https://github.com/tactivos/jquery-sew\" rel=\"nofollow ugc\">&#8220;jquery-sew&#8221; jQuery plugin</a>, by <a href=\"https://mural.ly/\" rel=\"nofollow ugc\">mural.ly</a>.</p>\n<p>You can find more information on this post : <a href=\"http://wabeo.fr/blog/systeme-reponse-commentaires/\" rel=\"nofollow ugc\">wabeo : Un système de réponse dans les commentaires</a></p>\n",
+        "installation": "<h4>For a non-ajax website</h4>\n<ol>\n<li>Upload the plugin&#8217;s folder into <code>/wp-content/plugins/</code> directory</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</li>\n<li>All done !</li>\n</ol>\n<h4>For an ajax-based website</h4>\n<ol>\n<li>Upload the plugin&#8217;s folder into <code>/wp-content/plugins/</code> directory</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</li>\n<li>Add the line <code>add_filter( 'mcaajaxenable', '__return_true' );</code> to your fonctions.php theme file</li>\n<li>Call the function <code>mcaAjaxChange();</code> in your javascript after each succefull ajax refresh</li>\n<li>Be sure to apply the filter &#8220;commment_text&#8221; each time you load comments in ajax </li>\n<li>All done ! 😉</li>\n</ol>\n",
+        "faq": "\n<h4>How to customize Mention Comment&#8217;s Authors apparence ?</h4>\n<p>\n<p>You can Easaly overide MCA style, in CSS, because all style use only one class (refer to the <em>mca-styles.css</em> file)<br />\nBut if you prefer, you can dequeue plugin&#8217;s style and include (and modify) the plugin&#8217;s stylesheet into your own theme file.</p>\n<p>To disable the inclusion of the style sheet, just add this code to the functions.php file of your theme :<br />\n    add_filter( &#8216;mca-load-styles&#8217;, &#8216;__return_false&#8217; );</p>\n</p>\n<h4>Why the plugin isn&#8217;t working ?</h4>\n<p>\n<p>There are several reasons why the plugin does not work:</p>\n<ul>\n<li>make sure your theme uses properly &#8220;comment_text&#8221; filter hook to display the comments</li>\n<li>make sure your theme uses properly &#8220;comment_form&#8221; action hook after the comment form</li>\n<li>make sure your theme uses properly &#8220;comment_post&#8221; action hook after publishing comments (if you&#8217;re running an ajax based comment system). Don&#8217;t forget to pass the arguments to this hook.</li>\n<li>make sure there are no conflit between the plugin and your javascripts file (regards to dependancies !), maybe your script have to load after the plugin&#8230;</li>\n</ul>\n</p>\n<h4>How to disable (or filter) mail sending ?</h4>\n<p>\n<p>The plugin automatically sends an email to comment&#8217;s authors having been mentioned by another user.<br />\nIf you want to disable this feature, just paste this code to the functions.php file of your theme :<br />\n    add_filter( &#8216;mca_send_email_on_mention&#8217;, &#8216;__return_false&#8217; );</p>\n<p>But if you want, you can also and conditions.<br />\nTo help you filter, the hook embeds the comment and the list of recipients expected.</p>\n<p>For example, if you want to doesn&#8217;t send mail to commentators already mailed by the &#8220;subscribe to comments&#8221; plugin, You can do this :<br />\n    add_filter( &#8216;mca_filter_recipient&#8217;,&#8217;dont_send_user_who_already_subscribe&#8217;, 100, 2 );<br />\n    function dont_send_user_who_already_subscribe( $recipients, $comment ) {<br />\n        global $wpdb;<br />\n        $su = $wpdb-&gt;get_results( &#8221;<br />\n            SELECT comment_author<br />\n            FROM {$wpdb-&gt;comments}<br />\n            WHERE comment_subscribe = &#8216;Y&#8217;<br />\n            AND comment_post_ID = {$comment-&gt;comment_post_ID};&#8221;, ARRAY_N );</p>\n<pre><code>    foreach( $su as $val )\n        if( array_key_exists( sanitize_title( $val ), $recipients ) )\n            unset( $recipients[ sanitize_title( $val ) ] );\n\n    return $recipients;\n}\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>0.9.8</h4>\n<ul>\n<li>fix bug reported by <a href=\"http://sadler-jerome.fr\" rel=\"nofollow ugc\">@G3r0nimo</a>, (plugin conflict with plugins uninstall page)</li>\n</ul>\n<h4>0.9.6</h4>\n<ul>\n<li>Regex improvement (preserve spaces and commas around mentions)</li>\n<li>Send mail notifications only when comment is approved (thanks to @wpformation)</li>\n</ul>\n<h4>0.9.5</h4>\n<ul>\n<li>Now compatible with nested comments</li>\n</ul>\n<h4>0.9.4</h4>\n<ul>\n<li>Add filter hook &#8220;mca_comment_form&#8221; to target the comment form textarea</li>\n<li>Compact javascripts into one package, compatible with jQuery 1.9 (embed browser detection)</li>\n<li>Solve bugs&#8230;</li>\n</ul>\n<h4>0.9.2</h4>\n<ul>\n<li>Improve filtering recipients system</li>\n<li>Solve minor bugs</li>\n</ul>\n<h4>0.9.1</h4>\n<ul>\n<li>Prevent fatal error of mcaAuthors undefined</li>\n<li>On non-ajax mod, return only approved prevent commentators</li>\n<li>add filter hooks for mail composition and mail sending</li>\n</ul>\n<h4>0.9</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
+    },
+    "short_description": "When adding a comment, your users can directly mentioning the author of another comment, like facebook or twitter do,using the &quot;@&quot; symbol.",
+    "description": "<p>&#8220;Mention comment&#8217;s authors&#8221; is a plugin that improves the WordPress comments fonctionality, adding a response system between authors.<br />\nWhen adding a comment, your readers can directly mentioning the author of another comment, like facebook or twitter do,using the &#8220;@&#8221; symbol.</p>\n<p>This mention plugin add two features :</p>\n<ul>\n<li>In the comments field, when an user entered the &#8220;@&#8221; symbol, it allows, through an autocompletion system, to quote (or poke) a preceding commentator.</li>\n<li>Once comments validated, the mentioned names take the appearance of buttons. When the user clicks on it, window scrolls to the preceding comment from the person named. A class is added to it, for temporarily customize it in CSS.</li>\n</ul>\n<p>This WordPress plugin is based on <a href=\"https://github.com/tactivos/jquery-sew\" rel=\"nofollow ugc\">&#8220;jquery-sew&#8221; jQuery plugin</a>, by <a href=\"https://mural.ly/\" rel=\"nofollow ugc\">mural.ly</a>.</p>\n<p>You can find more information on this post : <a href=\"http://wabeo.fr/blog/systeme-reponse-commentaires/\" rel=\"nofollow ugc\">wabeo : Un système de réponse dans les commentaires</a></p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/mention-comments-authors.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/mention-comments-authors/assets/screenshot-1.jpg?rev=715533",
+            "caption": "Screen capture of Mention comment's Authors in action"
+        },
+        {
+            "src": "https://ps.w.org/mention-comments-authors/assets/screenshot-2.jpg?rev=1063927",
+            "caption": ""
+        }
+    ],
+    "tags": {
+        "comments": "comments",
+        "facebook": "facebook",
+        "mention": "mention",
+        "poke": "poke",
+        "twitter": "twitter"
+    },
+    "stable_tag": "trunk",
+    "versions": {
+        "0.9.1": "https://downloads.wordpress.org/plugin/mention-comments-authors.0.9.1.zip",
+        "0.9.2": "https://downloads.wordpress.org/plugin/mention-comments-authors.0.9.2.zip",
+        "0.9.3": "https://downloads.wordpress.org/plugin/mention-comments-authors.0.9.3.zip",
+        "0.9.4": "https://downloads.wordpress.org/plugin/mention-comments-authors.0.9.4.zip",
+        "0.9.5": "https://downloads.wordpress.org/plugin/mention-comments-authors.0.9.5.zip",
+        "0.9.6": "https://downloads.wordpress.org/plugin/mention-comments-authors.0.9.6.zip",
+        "0.9.7": "https://downloads.wordpress.org/plugin/mention-comments-authors.0.9.7.zip",
+        "0.9.8": "https://downloads.wordpress.org/plugin/mention-comments-authors.0.9.8.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=A4P2WCN4TZK26&lc=FR&item_name=Wabeo&item_number=3",
+    "banners": {
+        "low": "https://ps.w.org/mention-comments-authors/assets/banner-772x250.png?rev=714446",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/mention-comments-authors/assets/icon-128x128.png?rev=1066074",
+        "2x": "https://ps.w.org/mention-comments-authors/assets/icon-256x256.png?rev=1066074"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 90,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

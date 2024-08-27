@@ -1,0 +1,112 @@
+{
+    "name": "Whereabouts",
+    "slug": "whereabouts",
+    "version": "0.7.1",
+    "author": "<a href=\"https://florianziegler.de/\">Florian Ziegler</a>",
+    "author_profile": "https://profiles.wordpress.org/florianziegler/",
+    "contributors": {
+        "florianziegler": {
+            "profile": "https://profiles.wordpress.org/florianziegler/",
+            "avatar": "https://secure.gravatar.com/avatar/a0a2961cf0cc88c1253c4666b8f51194?s=96&d=monsterid&r=g",
+            "display_name": "Florian Ziegler"
+        }
+    },
+    "requires": "3.9",
+    "tested": "4.6.29",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 5,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 5,
+    "support_url": "https://wordpress.org/support/plugin/whereabouts/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 40,
+    "downloaded": 5220,
+    "last_updated": "2023-07-25 3:41pm GMT",
+    "added": "2014-09-10",
+    "homepage": "https://where.abouts.io/",
+    "sections": {
+        "description": "<p>Each user can save his/her current location and the corresponding time (zone). The information is stored as user meta data.</p>\n<p>The Whereabouts widget displays the location and time (zone) of a specified user (select user in the widget options).</p>\n<p>You can &#8211; of course &#8211; add multiple widgets to show more than one user/location.</p>\n<h4>Dashboard-Widget</h4>\n<p>Each user can comfortably set her/his current location directly on the WordPress dashboard.</p>\n<h4>A little help from Google</h4>\n<p>Activate the use of the Google Geocoding and Timezone API in the settings:</p>\n<p>You can then use the browser&#8217;s geolocation API to determine your location, and the Plugin will automatically fetch the time zone of your whereabouts.</p>\n<p>Want to use another location? Just type in a location name and the plugin will get all the relevant information for you.</p>\n<p>You can also set the language in which the results of the api requests are returned.</p>\n<h4>Requirements</h4>\n<ul>\n<li>PHP 5.3</li>\n<li>WordPress 3.9.2</li>\n<li>In some modern browsers your website needs to have a working SSL-certificate in order to use the geolocation api.</li>\n</ul>\n<h4>Support</h4>\n<ul>\n<li><a href=\"https://wordpress.org/support/plugin/whereabouts\" rel=\"ugc\">Open a new topic here</a></li>\n</ul>\n<h4>Website</h4>\n<ul>\n<li><a href=\"https://where.abouts.io/\" rel=\"nofollow ugc\">Whereabouts</a></li>\n<li><a href=\"https://github.com/florianziegler/whereabouts\" rel=\"nofollow ugc\">Github</a></li>\n</ul>\n<h4>Author</h4>\n<ul>\n<li><a href=\"https://florianziegler.de/\" rel=\"nofollow ugc\">Website</a></li>\n<li><a href=\"https://twitter.com/damndirty\" rel=\"nofollow ugc\">Twitter</a></li>\n</ul>\n",
+        "installation": "<ol>\n<li>\n<p>Upload the <code>whereabouts</code> folder to your <code>/wp-content/plugins</code> directory.</p>\n</li>\n<li>\n<p>Activate the &#8220;Whereabouts&#8221; plugin in the WordPress administration interface.</p>\n</li>\n<li>\n<p>Go to &#8220;Settings&#8221; -&gt; &#8220;Whereabouts&#8221; and activate &#8220;Use Google to get location data&#8221;, enter you API key and set the &#8220;API Request Language&#8221;.</p>\n</li>\n<li>\n<p>On the dashboard, set your location.</p>\n</li>\n<li>\n<p>Go to &#8220;Appearance&#8221; -&gt; &#8220;Widgets&#8221; and add a Wherebouts widget to a sidebar of your choosing. (You have the options to chose the user, whose location you want to display, link the location to Google Maps and display the time zone name.)</p>\n</li>\n</ol>\n<p><strong>Please note:</strong> The widget will only be displayed if the specified user has set his/her location.</p>\n<h4>Styling</h4>\n<p>There is <strong>no extra styling</strong> for the widget. You can however do it yourself, in your theme. This is what the HTML looks like:</p>\n<pre><code>&lt;dl class=\"whab-info\"&gt;\n    &lt;dt class=\"whab-label whab-label-location\"&gt;Current Location:&lt;/dt&gt;\n    &lt;dd class=\"whab-location\"&gt;...&lt;/dd&gt;\n    &lt;dt class=\"whab-label whab-label-time\"&gt;Local Time:&lt;/dt&gt;\n    &lt;dd class=\"whab-time\"&gt;12:34 &lt;span class=\"whab-timezone-name\"&gt;...&lt;/span&gt;&lt;/dd&gt;\n&lt;/dl&gt;\n</code></pre>\n<h4>Shortcode</h4>\n<p>You can also generate this HTML code anywhere in your theme by using this shortcode:</p>\n<pre><code>[whereabouts user=\"2\" link_location=\"1\" time_format=\"H:i\" show_tz=\"1\"]\n</code></pre>\n<p>You need to enter a valid user id and the specified user must have saved his/her location for the widget to be displayed.</p>\n<h4>Filter</h4>\n<p>There is a filter available to change the html output of the widget/shortcode:</p>\n<p><strong>whab_widget_output</strong></p>\n<p>Three argument variables are availabe:</p>\n<ul>\n<li><code>$output</code> The html Whereabouts generates by default as a string</li>\n<li><code>$args</code> The widget settings as an array</li>\n<li><code>$location</code> The location values as an array</li>\n</ul>\n<p>You could use it in your theme&#8217;s <code>functions.php</code> like this:</p>\n<pre><code>add_filter( 'whab_widget_output', 'my_function_to_change_location_widget', 10, 3 );\n\nfunction my_function_to_change_location_widget( $output, $args, $location ) {\n\n    $output = '&lt;p class=\"my-location\"&gt;' . $location['location_name'] . ', ';\n\n    $output .= date( $args['time_format'], time() + $location['utc_difference'] );\n    if ( $args['show_tz'] ) {\n        $output .= ' (' . $location['timezone_name'] . ')';\n    }\n    return $output . '&lt;/p&gt;';\n}\n</code></pre>\n<p>This will change the html output to:</p>\n<pre><code>&lt;p class=\"my-location\"&gt;Paris, France, 12:34 (Central European Standard Time)&lt;/p&gt;\n</code></pre>\n",
+        "faq": "\n<dt id='why%20am%20i%20not%20getting%20any%20results%20when%20i%20use%20my%20browser%27s%20geolocation%20api%3F'>\nWhy am I not getting any results when I use my browser&#8217;s geolocation api?\n</h4>\n<p>\n<p>Usually it is a privacy issue: Make sure your browser and your website are allowed to use the location functionality of your device (eg. your smartphone). In general these settings are found in your device&#8217;s privacy or location settings.</p>\n</p>\n<dt id='upgrade%20from%20version%200.3.0'>\nUpgrade from version 0.3.0\n</h4>\n<p>\n<p>When you upgrade from 0.3.0 to a newer version, you have to (re) enter you location and (re) add the Whereabouts widget.</p>\n<p>Go to &#8220;Appearance &gt; Widgets&#8221; and drag the Whereabouts widget to the sidebar of your choosing.</p>\n<p>From version 0.4.0 (or newer) the location is saved <em>per user</em>. You can choose the user, whose location you want to display, in the widget&#8217;s options.</p>\n</p>\n\n",
+        "changelog": "<h4>0.7.0</h4>\n<ul>\n<li>Adapt to changes in Google&#8217;s APIs</li>\n<li>Important: You now need a Google API key to use the geolocation feature!</li>\n<li>Also: In most modern browser your website needs a working SSL-certificate to use the geolocation feature!</li>\n</ul>\n<h4>0.6.1</h4>\n<ul>\n<li>Update Google Maps API language selector</li>\n<li>Fix PHP 7 issues</li>\n</ul>\n<h4>0.6.0</h4>\n<ul>\n<li>You can now use the browser&#8217;s geolocation API to set your current location.</li>\n</ul>\n<h4>0.5.6</h4>\n<ul>\n<li>Bugfix</li>\n</ul>\n<h4>0.5.5</h4>\n<ul>\n<li>Added a filter function, which you can use to change the widget&#8217;s html output to your heart&#8217;s content.</li>\n</ul>\n<h4>0.5.0</h4>\n<ul>\n<li>The admin can now allow/deny access to the dashboard widget by user role</li>\n<li>Display the location anywhere in your theme by using the shortcode [whereabouts]</li>\n</ul>\n<h4>0.4.0</h4>\n<ul>\n<li>Per user location: Each user can now set her/his individual location via the WordPress dashboard.</li>\n<li>You can also choose which user&#8217;s location to display per widget.</li>\n</ul>\n<h4>0.3.0</h4>\n<ul>\n<li>You can now choose the time format in which the local time is displayed</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>Whereabouts is live</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Somehow this got skipped&#8230;</li>\n</ul>\n"
+    },
+    "short_description": "Users can set their current location via the WordPress dashboard. A widget displays the location and the corresponding time (zone).",
+    "description": "<p>Each user can save his/her current location and the corresponding time (zone). The information is stored as user meta data.</p>\n<p>The Whereabouts widget displays the location and time (zone) of a specified user (select user in the widget options).</p>\n<p>You can &#8211; of course &#8211; add multiple widgets to show more than one user/location.</p>\n<h4>Dashboard-Widget</h4>\n<p>Each user can comfortably set her/his current location directly on the WordPress dashboard.</p>\n<h4>A little help from Google</h4>\n<p>Activate the use of the Google Geocoding and Timezone API in the settings:</p>\n<p>You can then use the browser&#8217;s geolocation API to determine your location, and the Plugin will automatically fetch the time zone of your whereabouts.</p>\n<p>Want to use another location? Just type in a location name and the plugin will get all the relevant information for you.</p>\n<p>You can also set the language in which the results of the api requests are returned.</p>\n<h4>Requirements</h4>\n<ul>\n<li>PHP 5.3</li>\n<li>WordPress 3.9.2</li>\n<li>In some modern browsers your website needs to have a working SSL-certificate in order to use the geolocation api.</li>\n</ul>\n<h4>Support</h4>\n<ul>\n<li><a href=\"https://wordpress.org/support/plugin/whereabouts\" rel=\"ugc\">Open a new topic here</a></li>\n</ul>\n<h4>Website</h4>\n<ul>\n<li><a href=\"https://where.abouts.io/\" rel=\"nofollow ugc\">Whereabouts</a></li>\n<li><a href=\"https://github.com/florianziegler/whereabouts\" rel=\"nofollow ugc\">Github</a></li>\n</ul>\n<h4>Author</h4>\n<ul>\n<li><a href=\"https://florianziegler.de/\" rel=\"nofollow ugc\">Website</a></li>\n<li><a href=\"https://twitter.com/damndirty\" rel=\"nofollow ugc\">Twitter</a></li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/whereabouts.0.7.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/whereabouts/assets/screenshot-1.png?rev=2943192",
+            "caption": "Use the Whereabouts dashboard widget to enter your location. If activated, Google will fill out the time zone information for you."
+        },
+        {
+            "src": "https://ps.w.org/whereabouts/assets/screenshot-2.png?rev=2943192",
+            "caption": "Customize the Whereabouts widget"
+        }
+    ],
+    "tags": {
+        "digitalnomad": "digitalnomad",
+        "location": "location",
+        "nomad": "nomad",
+        "timezone": "timezone",
+        "travel": "travel"
+    },
+    "stable_tag": "0.7.1",
+    "versions": {
+        "0.2.0": "https://downloads.wordpress.org/plugin/whereabouts.0.2.0.zip",
+        "0.3.0": "https://downloads.wordpress.org/plugin/whereabouts.0.3.0.zip",
+        "0.4.0": "https://downloads.wordpress.org/plugin/whereabouts.0.4.0.zip",
+        "0.5.0": "https://downloads.wordpress.org/plugin/whereabouts.0.5.0.zip",
+        "0.5.5": "https://downloads.wordpress.org/plugin/whereabouts.0.5.5.zip",
+        "0.5.6": "https://downloads.wordpress.org/plugin/whereabouts.0.5.6.zip",
+        "0.6.1": "https://downloads.wordpress.org/plugin/whereabouts.0.6.1.zip",
+        "0.7.0": "https://downloads.wordpress.org/plugin/whereabouts.0.7.0.zip",
+        "0.7.1": "https://downloads.wordpress.org/plugin/whereabouts.0.7.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/whereabouts.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/whereabouts/assets/banner-772x250.jpg?rev=2943192",
+        "high": "https://ps.w.org/whereabouts/assets/banner-1544x500.jpg?rev=2943192"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/whereabouts/assets/icon-128x128.png?rev=2943192",
+        "2x": "https://ps.w.org/whereabouts/assets/icon-256x256.png?rev=2943192"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "whereabouts",
+            "language": "de_DE",
+            "version": "0.7.1",
+            "updated": "2016-09-12 10:19:09",
+            "package": "http://downloads.wordpress.org/translation/plugin/whereabouts/0.7.1/de_DE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "whereabouts",
+            "language": "it_IT",
+            "version": "0.7.1",
+            "updated": "2019-08-18 12:19:47",
+            "package": "http://downloads.wordpress.org/translation/plugin/whereabouts/0.7.1/it_IT.zip"
+        }
+    ]
+}
