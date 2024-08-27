@@ -30,7 +30,7 @@ do {
 		fwrite( STDERR, "\t$slug\n" );
 
 		// Fetch full plugin data.
-		$data = json_decode( file_get_contents( 'https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&fields[]=language_packs&slug=' . $slug ) );
+		$data = json_decode( file_get_contents( 'https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&fields[]=language_packs&slug=' . $slug ), true );
 
 		if ( ! $data ) {
 			$data = $plugin_data; // Partial. meh.
