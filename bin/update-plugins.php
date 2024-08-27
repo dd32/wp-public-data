@@ -1,4 +1,12 @@
 <?php
+/**
+ * Updates the plugin .json files by refreshing the plugins based on the last days worth of updated plugins.
+ * This is not 100% accurate, in that some data within the .json will be outdated, such as the download count.
+ *
+ * TODO:
+ *  - Remove Download count from the .jsons?
+ *  - Use a proper user agent
+ */
 
 $per_page = 1;
 do {
