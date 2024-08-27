@@ -41,6 +41,9 @@ do {
 		// Ensure screenshots are always an array.
 		$data['screenshots'] = array_values( $data['screenshots'] );
 
+		// Store the Last updated value in a more sane manner.
+		$data['last_updated'] = gmdate( 'Y-m-d H:i:s', strtotime( $data['last_updated'] ) );
+
 		file_put_contents( dirname( __DIR__ ) . '/plugins/' . $slug . '.json', json_encode( $data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) );
 		usleep( 250000 ); // 250ms Slow we go.
 	}
