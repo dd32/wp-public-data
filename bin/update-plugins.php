@@ -26,7 +26,12 @@ do {
 
 		$slug = $plugin_data->slug;
 
-		fwrite( STDERR, "\t$slug {$plugin_data->version} ({$plugin_data->last_updated})\n" );
+		$mins_ago = intval( ( time() - $updated_timestamp ) / 60 ) . 'm';
+		if ( intval( $mins_ago ) > 60 ) {
+			$mins_ago = intval( $mins_ago / 60 ) . 'h ' . ( $mins_ago % 60 ) . 'm';
+		}
+
+		fwrite( STDERR, "\t$slug {$plugin_data->version} (updated {$mins_ago} ago)\n" );
 
 		// Fetch full plugin data.
 		$data = json_decode( file_get_contents( 'https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&fields=language_packs,compatibility,short_description,description,icons,blocks,block_assets,author_block_count,author_block_rating,blueprints,stable_tag,downloaded&slug=' . $slug ), true );
