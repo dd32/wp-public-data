@@ -8,11 +8,12 @@
  *  - Use a proper user agent
  */
 
-$per_page = 1;
+$page = 0;
 do {
-	fwrite( STDERR, "Processing page $per_page\n" );
+	$page++; // Pages start at 1.
+	fwrite( STDERR, "Processing page $page\n" );
 
-	$url = 'https://api.wordpress.org/plugins/info/1.2/?action=query_plugins&browse=updated&posts_per_page=100&paged=' . $per_page++;
+	$url = 'https://api.wordpress.org/plugins/info/1.2/?action=query_plugins&browse=updated&posts_per_page=100&page=' . $page;
 
 	$plugins = json_decode( file_get_contents( $url ) );
 	if ( ! $plugins || ! $plugins->plugins ) {
