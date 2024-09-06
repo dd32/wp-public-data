@@ -1,10 +1,9 @@
 <?php
 /**
  * Updates the plugin .json files by refreshing the plugins based on the last days worth of updated plugins.
- *
- * TODO:
- *  - Use a proper user agent
  */
+
+include __DIR__ . '/common.php';
 
 $page = 0;
 do {
@@ -13,7 +12,7 @@ do {
 
 	$url = 'https://api.wordpress.org/plugins/info/1.2/?action=query_plugins&browse=updated&posts_per_page=100&page=' . $page;
 
-	$plugins = json_decode( file_get_contents( $url ) );
+	$plugins = json_decode( fetch( $url ) );
 	if ( ! $plugins || ! $plugins->plugins ) {
 		break;
 	}
@@ -35,7 +34,7 @@ do {
 		fwrite( STDERR, "\t$slug {$plugin_data->version} (updated {$mins_ago} ago)\n" );
 
 		// Fetch full plugin data.
-		$data = json_decode( file_get_contents( 'https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&fields=language_packs,compatibility,short_description,description,icons,blocks,block_assets,author_block_count,author_block_rating,blueprints,stable_tag,downloaded&slug=' . $slug ), true );
+		$data = json_decode( fetch( 'https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&fields=language_packs,compatibility,short_description,description,icons,blocks,block_assets,author_block_count,author_block_rating,blueprints,stable_tag,downloaded&slug=' . $slug ), true );
 
 		if ( ! $data ) {
 			$data = $plugin_data; // Partial. meh.
