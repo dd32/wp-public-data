@@ -1,7 +1,7 @@
 {
     "name": "WooCommerce Cart PDF",
     "slug": "wc-cart-pdf",
-    "version": "3.0.0",
+    "version": "3.0.1",
     "author": "<a href=\"https://cloudcatch.io\">CloudCatch LLC</a>",
     "author_profile": "https://profiles.wordpress.org/cloudcatch/",
     "contributors": {
@@ -46,22 +46,22 @@
     },
     "num_ratings": 22,
     "support_url": "https://wordpress.org/support/plugin/wc-cart-pdf/",
-    "support_threads": 11,
+    "support_threads": 12,
     "support_threads_resolved": 5,
     "active_installs": 1000,
-    "downloaded": 22809,
-    "last_updated": "2024-09-13 10:49:00",
+    "downloaded": 23229,
+    "last_updated": "2024-09-17 19:24:00",
     "added": "2019-02-20",
     "homepage": "",
     "sections": {
         "description": "<p>Adds ability for users and guests to download their WooCommerce cart as PDF. Useful for many cases such as if a user needs a quote before completing purchase.</p>\n<h4>Features</h4>\n<ul>\n<li>Full PDF template customization</li>\n<li>Send copy of each generated cart PDF to admin</li>\n<li>Capture customer / guest information from checkout and display on generated PDF</li>\n</ul>\n",
         "installation": "<ol>\n<li>Upload plugin and then activate</li>\n<li>Ensure WooCommerce is installed and activated as well</li>\n</ol>\n",
         "faq": "\n<dt id='how%20to%20view%20or%20open%20pdf%20instead%20of%20download%3F'>\nHow to view or open PDF instead of download?\n</h4>\n<p>\n<p>Add the following code snippet to your themes functions.php:</p>\n<pre><code>function child_theme_wc_cart_pdf_destination( $dest ) {\n    if ( class_exists( '\\WCCartPDF\\Mpdf\\Output\\Destination' ) ) {\n        $dest = \\WCCartPDF\\Mpdf\\Output\\Destination::INLINE;\n    }\n\n    return $dest;\n}\nadd_filter( 'wc_cart_pdf_destination', 'child_theme_wc_cart_pdf_destination' );\n</code></pre>\n</p>\n<dt id='how%20to%20require%20user%20to%20be%20logged%20in%20to%20download%20cart%20as%20pdf%3F'>\nHow to require user to be logged in to download cart as PDF?\n</h4>\n<p>\n<p>Add the following code snippet to your themes functions.php:</p>\n<pre><code>/**\n* Remove the default download cart button\n*/\nremove_action( 'woocommerce_proceed_to_checkout', 'wc_cart_pdf_button', 21 );\n\n\n/**\n* Replace the default download cart button with our own logic to display a login notice for guests\n*/\nfunction child_theme_wc_cart_pdf_button() {\n    if( ! is_cart() || WC()-&gt;cart-&gt;is_empty() ) {\n        return;\n    }\n\n    if ( is_user_logged_in() ) :\n    ?&gt;\n\n    &lt;a href=\"&lt;?php echo esc_url( wp_nonce_url( add_query_arg( array( 'cart-pdf' =&gt; '1' ), wc_get_cart_url() ), 'cart-pdf' ) );?&gt;\" class=\"cart-pdf-button button\" target=\"_blank\"&gt;\n        &lt;?php esc_html_e( 'Download Cart as PDF', 'wc-cart-pdf' ); ?&gt;\n    &lt;/a&gt;\n\n    &lt;?php else : ?&gt;\n\n    &lt;p&gt;&lt;a href=\"&lt;?php echo get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ); ?&gt;\" class=\"cart-pdf-login\"&gt;&lt;?php esc_html_e( 'Please login to download your cart as a PDF', 'wc-cart-pdf' ); ?&gt;&lt;/a&gt;&lt;/p&gt;\n\n    &lt;?php \n    endif;\n}\nadd_action( 'woocommerce_proceed_to_checkout', 'child_theme_wc_cart_pdf_button', 21 );\n</code></pre>\n</p>\n<dt id='product%20images%20are%20not%20showing%20on%20pdf'>\nProduct images are not showing on PDF\n</h4>\n<p>\n<p>Try adding the following to your <strong>wp-config.php</strong> file:</p>\n<pre><code>define( 'WC_CART_PDF_THUMBNAIL_COMPATIBILITY', true );\n</code></pre>\n</p>\n<dt id='how%20can%20i%20customize%20the%20pdf%20template%3F'>\nHow can I customize the PDF template?\n</h4>\n<p>\n<p>Copy the PDF template from the plugin folder <strong>wc-cart-pdf/templates/cart-table.php</strong> into your child theme folder <strong>child-theme/woocommerce/wc-cart-pdf/cart-table.php</strong>.</p>\n<p>From there you can modify the PDF template in your child theme.</p>\n</p>\n\n",
-        "changelog": "<p>3.0.0<br />\n* <strong>BREAKING CHANGE</strong>: Scoped dependencies to prevent collisions. References to namespace <code>\\Mpdf</code> is now <code>\\WCCartPDF\\Mpdf</code></p>\n<p>2.10.0<br />\n* Set minimum compatibility to PHP 8+</p>\n<p>2.9.4<br />\n* Fix fatal error due to missing second parameter on <code>woocommerce_email_styles</code> filter. (Filter removed)</p>\n<p>2.9.3<br />\n* Fix <code>wc_cart_pdf_filename</code> filter not being applied to admin copy</p>\n<p>2.9.2<br />\n* Update compatibility with WooCommerce cart and checkout blocks</p>\n<p>2.9.1<br />\n* Fix Georgian language not displaying all characters</p>\n<p>2.9.0<br />\n* Compatbility with All Products for Woo Subscriptions<br />\n* Improve PDF product thumbnail compatibility</p>\n<p>2.8.0<br />\n* Migrate settings to WooCommerce &gt; Settings &gt; Integration &gt; Cart PDF<br />\n* Add ability to capture customer details via modal popup before downloading cart as PDF<br />\n* Additional compatbility with WooCommerce blocks</p>\n<p>2.7.0<br />\n* Add Cart PDF Button block</p>\n<p>2.6.0<br />\n* HPOS (high performance order storage) compatibility</p>\n<p>2.5.0<br />\n* TranslatePress compatibility</p>\n<p>2.4.0<br />\n* Update broken image compatibility<br />\n* Add debug capability using constant <code>define( 'WC_CART_PDF_DEBUG', true );</code> to <strong>wp-config.php</strong></p>\n<p>2.3.1<br />\n* Update compatibility</p>\n<p>2.3.0<br />\n* Improve multilingual capabilities<br />\n* Add customizer control to open PDF in new tab</p>\n<p>2.2.3<br />\n* Update compatibility</p>\n<p>2.2.2<br />\n* Update compatibility</p>\n<p>2.2.1<br />\n* Fix capture customer not working properly for logged in users</p>\n<p>2.2.0<br />\n* Add customizer option to display unique generated PDF number on PDF</p>\n<p>2.1.7<br />\n* Disable lazy loading product thumbnails by default<br />\n* Add <code>define( 'WC_CART_PDF_THUMBNAIL_COMPATIBILITY', true );</code> to <strong>wp-config.php</strong> in an attempt to fix product thumbnails not loading</p>\n<p>2.1.6<br />\n* Fix logo rendering on cart table PDF template</p>\n<p>2.1.5<br />\n* Fix capture customer feature to only capture certain checkout fields</p>\n<p>2.1.4<br />\n* Customizer option to show Download Cart as PDF button on checkout<br />\n* Ability to capture customer and guest information from checkout and display on PDF</p>\n<p>2.1.3<br />\n* Add language translation file<br />\n* Stylesheet changes</p>\n<p>2.1.2<br />\n* Add compatibility with Gravity PDF plugin</p>\n<p>2.1.1<br />\n* Send admin email as HTML</p>\n<p>2.1.0<br />\n* Ability to send an emailed copy of generated PDF to admin<br />\n* Add date to PDF<br />\n* Add customer details to PDF</p>\n<p>2.0.6<br />\n* Update compatibility tag<br />\n* Two new hooks to modify PDF output</p>\n<p>2.0.5<br />\n* WordPress 5.4 compatibility<br />\n* Add support for coupons displaying on PDF<br />\n* Add minimum PHP requirements admin notice and prevent loading if not satisfied<br />\n* Minor styling update to PDF</p>\n<p>2.0.4<br />\n* Added compatibility with Visual Products Configurator<br />\n* Perform WC cart calculate_totals() method prior to generating PDF<br />\n* Added customizer setting to modify download cart as PDF button label</p>\n<p>2.0.3<br />\n* Fix composer dependencies</p>\n<p>2.0.2<br />\n* Update compatibility</p>\n<p>2.0.1<br />\n* Fix product thumbnails too large</p>\n<p>2.0.0<br />\n* Change PDF library from Dompdf to mPDF<br />\n* Add support for RTL languages</p>\n<p>1.0.5<br />\n* Fix CSS for language support<br />\n* Default font to Noto Sans for language support<br />\n* Update Dompdf</p>\n<p>1.0.4<br />\n* Add PDF template actions hooks <code>wc_cart_pdf_before_template</code> and <code>wc_cart_pdf_after_template</code></p>\n<p>1.0.3<br />\n* Add customizer option to change PDF header logo, width and alignment<br />\n* Adjustments to default widths and styling of PDF cart table<br />\n* Bug fix: Expand {site_title} variable placeholder in PDF footer text</p>\n<p>1.0.2<br />\n* Tested up to WordPress 5.1<br />\n* Add <code>wc_cart_pdf_stream_options</code> filter for stream options</p>\n<p>1.0.1<br />\n* Add compatibility with TM Extra Product Options<br />\n* Add ability to override PDF template and CSS through the theme folder woocommerce/wc-cart-pdf/<br />\n* Add filter to change PDF filename<br />\n* Add shipping and taxes to PDF<br />\n* Add WooCommerce error notice if nonce is invalid<br />\n* Add action hook before PDF is generated</p>\n<p>1.0.0<br />\n* Initial plugin release</p>\n"
+        "changelog": "<p>3.0.1<br />\n* Fix PDF not generating when changing shipping method</p>\n<p>3.0.0<br />\n* <strong>BREAKING CHANGE</strong>: Scoped dependencies to prevent collisions. References to namespace <code>\\Mpdf</code> is now <code>\\WCCartPDF\\Mpdf</code></p>\n<p>2.10.0<br />\n* Set minimum compatibility to PHP 8+</p>\n<p>2.9.4<br />\n* Fix fatal error due to missing second parameter on <code>woocommerce_email_styles</code> filter. (Filter removed)</p>\n<p>2.9.3<br />\n* Fix <code>wc_cart_pdf_filename</code> filter not being applied to admin copy</p>\n<p>2.9.2<br />\n* Update compatibility with WooCommerce cart and checkout blocks</p>\n<p>2.9.1<br />\n* Fix Georgian language not displaying all characters</p>\n<p>2.9.0<br />\n* Compatbility with All Products for Woo Subscriptions<br />\n* Improve PDF product thumbnail compatibility</p>\n<p>2.8.0<br />\n* Migrate settings to WooCommerce &gt; Settings &gt; Integration &gt; Cart PDF<br />\n* Add ability to capture customer details via modal popup before downloading cart as PDF<br />\n* Additional compatbility with WooCommerce blocks</p>\n<p>2.7.0<br />\n* Add Cart PDF Button block</p>\n<p>2.6.0<br />\n* HPOS (high performance order storage) compatibility</p>\n<p>2.5.0<br />\n* TranslatePress compatibility</p>\n<p>2.4.0<br />\n* Update broken image compatibility<br />\n* Add debug capability using constant <code>define( 'WC_CART_PDF_DEBUG', true );</code> to <strong>wp-config.php</strong></p>\n<p>2.3.1<br />\n* Update compatibility</p>\n<p>2.3.0<br />\n* Improve multilingual capabilities<br />\n* Add customizer control to open PDF in new tab</p>\n<p>2.2.3<br />\n* Update compatibility</p>\n<p>2.2.2<br />\n* Update compatibility</p>\n<p>2.2.1<br />\n* Fix capture customer not working properly for logged in users</p>\n<p>2.2.0<br />\n* Add customizer option to display unique generated PDF number on PDF</p>\n<p>2.1.7<br />\n* Disable lazy loading product thumbnails by default<br />\n* Add <code>define( 'WC_CART_PDF_THUMBNAIL_COMPATIBILITY', true );</code> to <strong>wp-config.php</strong> in an attempt to fix product thumbnails not loading</p>\n<p>2.1.6<br />\n* Fix logo rendering on cart table PDF template</p>\n<p>2.1.5<br />\n* Fix capture customer feature to only capture certain checkout fields</p>\n<p>2.1.4<br />\n* Customizer option to show Download Cart as PDF button on checkout<br />\n* Ability to capture customer and guest information from checkout and display on PDF</p>\n<p>2.1.3<br />\n* Add language translation file<br />\n* Stylesheet changes</p>\n<p>2.1.2<br />\n* Add compatibility with Gravity PDF plugin</p>\n<p>2.1.1<br />\n* Send admin email as HTML</p>\n<p>2.1.0<br />\n* Ability to send an emailed copy of generated PDF to admin<br />\n* Add date to PDF<br />\n* Add customer details to PDF</p>\n<p>2.0.6<br />\n* Update compatibility tag<br />\n* Two new hooks to modify PDF output</p>\n<p>2.0.5<br />\n* WordPress 5.4 compatibility<br />\n* Add support for coupons displaying on PDF<br />\n* Add minimum PHP requirements admin notice and prevent loading if not satisfied<br />\n* Minor styling update to PDF</p>\n<p>2.0.4<br />\n* Added compatibility with Visual Products Configurator<br />\n* Perform WC cart calculate_totals() method prior to generating PDF<br />\n* Added customizer setting to modify download cart as PDF button label</p>\n<p>2.0.3<br />\n* Fix composer dependencies</p>\n<p>2.0.2<br />\n* Update compatibility</p>\n<p>2.0.1<br />\n* Fix product thumbnails too large</p>\n<p>2.0.0<br />\n* Change PDF library from Dompdf to mPDF<br />\n* Add support for RTL languages</p>\n<p>1.0.5<br />\n* Fix CSS for language support<br />\n* Default font to Noto Sans for language support<br />\n* Update Dompdf</p>\n<p>1.0.4<br />\n* Add PDF template actions hooks <code>wc_cart_pdf_before_template</code> and <code>wc_cart_pdf_after_template</code></p>\n<p>1.0.3<br />\n* Add customizer option to change PDF header logo, width and alignment<br />\n* Adjustments to default widths and styling of PDF cart table<br />\n* Bug fix: Expand {site_title} variable placeholder in PDF footer text</p>\n<p>1.0.2<br />\n* Tested up to WordPress 5.1<br />\n* Add <code>wc_cart_pdf_stream_options</code> filter for stream options</p>\n<p>1.0.1<br />\n* Add compatibility with TM Extra Product Options<br />\n* Add ability to override PDF template and CSS through the theme folder woocommerce/wc-cart-pdf/<br />\n* Add filter to change PDF filename<br />\n* Add shipping and taxes to PDF<br />\n* Add WooCommerce error notice if nonce is invalid<br />\n* Add action hook before PDF is generated</p>\n<p>1.0.0<br />\n* Initial plugin release</p>\n"
     },
     "short_description": "Adds ability for users and guests to download their WooCommerce cart as PDF",
     "description": "<p>Adds ability for users and guests to download their WooCommerce cart as PDF. Useful for many cases such as if a user needs a quote before completing purchase.</p>\n<h4>Features</h4>\n<ul>\n<li>Full PDF template customization</li>\n<li>Send copy of each generated cart PDF to admin</li>\n<li>Capture customer / guest information from checkout and display on generated PDF</li>\n</ul>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/wc-cart-pdf.3.0.0.zip",
+    "download_link": "https://downloads.wordpress.org/plugin/wc-cart-pdf.3.0.1.zip",
     "upgrade_notice": {
         "": "<p>2.0.0\n* PDF generation library changed from Dompdf to mPDF\n* Requires PHP &gt;= 5.6.0</p>"
     },
@@ -76,7 +76,7 @@
         }
     ],
     "tags": [],
-    "stable_tag": "3.0.0",
+    "stable_tag": "3.0.1",
     "versions": {
         "1.0.2": "https://downloads.wordpress.org/plugin/wc-cart-pdf.1.0.2.zip",
         "1.0.3": "https://downloads.wordpress.org/plugin/wc-cart-pdf.1.0.3.zip",
@@ -115,6 +115,7 @@
         "2.9.3": "https://downloads.wordpress.org/plugin/wc-cart-pdf.2.9.3.zip",
         "2.9.4": "https://downloads.wordpress.org/plugin/wc-cart-pdf.2.9.4.zip",
         "3.0.0": "https://downloads.wordpress.org/plugin/wc-cart-pdf.3.0.0.zip",
+        "3.0.1": "https://downloads.wordpress.org/plugin/wc-cart-pdf.3.0.1.zip",
         "trunk": "https://downloads.wordpress.org/plugin/wc-cart-pdf.zip"
     },
     "business_model": false,
@@ -229,41 +230,41 @@
             "type": "plugin",
             "slug": "wc-cart-pdf",
             "language": "es_VE",
-            "version": "2.9.1",
+            "version": "3.0.0",
             "updated": "2021-12-01 00:19:55",
-            "package": "https://downloads.wordpress.org/translation/plugin/wc-cart-pdf/2.9.1/es_VE.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/wc-cart-pdf/3.0.0/es_VE.zip"
         },
         {
             "type": "plugin",
             "slug": "wc-cart-pdf",
             "language": "es_ES",
-            "version": "2.9.1",
+            "version": "3.0.0",
             "updated": "2024-05-26 11:33:20",
-            "package": "https://downloads.wordpress.org/translation/plugin/wc-cart-pdf/2.9.1/es_ES.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/wc-cart-pdf/3.0.0/es_ES.zip"
         },
         {
             "type": "plugin",
             "slug": "wc-cart-pdf",
             "language": "es_CO",
-            "version": "2.9.1",
+            "version": "3.0.0",
             "updated": "2021-12-01 00:20:21",
-            "package": "https://downloads.wordpress.org/translation/plugin/wc-cart-pdf/2.9.1/es_CO.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/wc-cart-pdf/3.0.0/es_CO.zip"
         },
         {
             "type": "plugin",
             "slug": "wc-cart-pdf",
             "language": "ru_RU",
-            "version": "2.9.1",
+            "version": "3.0.0",
             "updated": "2023-06-19 19:24:33",
-            "package": "https://downloads.wordpress.org/translation/plugin/wc-cart-pdf/2.9.1/ru_RU.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/wc-cart-pdf/3.0.0/ru_RU.zip"
         },
         {
             "type": "plugin",
             "slug": "wc-cart-pdf",
             "language": "uk",
-            "version": "2.9.1",
-            "updated": "2022-08-28 12:41:20",
-            "package": "https://downloads.wordpress.org/translation/plugin/wc-cart-pdf/2.9.1/uk.zip"
+            "version": "3.0.0",
+            "updated": "2024-09-13 11:25:13",
+            "package": "https://downloads.wordpress.org/translation/plugin/wc-cart-pdf/3.0.0/uk.zip"
         }
     ]
 }
