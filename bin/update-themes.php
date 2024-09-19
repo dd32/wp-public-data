@@ -45,6 +45,9 @@ do {
 			return "https://themes.trac.wordpress.org/ticket/{$id}";
 		}, $data['trac_tickets'] ?? [] );
 
+		// Don't include Downloads, they're meaningless.
+		unset( $data['downloaded'] );
+
 		file_put_contents( dirname( __DIR__ ) . '/themes/' . $slug . '.json', json_encode( $data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) );
 		usleep( 250000 ); // 250ms Slow we go.
 	}

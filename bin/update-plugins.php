@@ -42,6 +42,8 @@ do {
 
 		// Cleanup.. We're not storing reviews or duplicated screenshot HTML here.
 		unset( $data['sections']['reviews'], $data['sections']['screenshots'] );
+		// Don't include Downloads, they're meaningless.
+		unset( $data['downloaded'] );
 
 		// Ensure screenshots are always an array.
 		$data['screenshots'] = array_values( $data['screenshots'] );
