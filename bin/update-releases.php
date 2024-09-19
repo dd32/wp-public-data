@@ -48,7 +48,7 @@ foreach ( array_filter( explode( "\0", $output[0] ) ) as $line ) {
 		$type === 'plugins' ? $plugin_releases : $theme_releases,
 		[
 			$new_data->slug,
-			$new_data->name,
+			html_entity_decode( $new_data->name ),
 			$new_data->version,
 			$old_data->version ?? '',
 			$new_data->download_link,
