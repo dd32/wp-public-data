@@ -18,8 +18,8 @@ do {
 
 	foreach ( $themes->themes as $theme_data ) {
 		$updated_timestamp = strtotime( $theme_data->last_updated_time );
-		if ( $updated_timestamp < time() - 60 * 60 * 12 ) {
-			break 2; // Stop processing if we hit a theme that hasn't been updated in the 12hrs
+		if ( $updated_timestamp < time() - 60 * 60 * 6 ) {
+			break 2; // Stop processing if we hit a theme that hasn't been updated in the 6hrs
 		}
 
 		$slug = $theme_data->slug;
