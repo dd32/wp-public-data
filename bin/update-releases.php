@@ -19,7 +19,7 @@ $theme_releases  = fopen( __DIR__ . '/../theme-releases.csv', 'a' );
 
 $count = 0;
 
-foreach ( array_filter( explode( "\0", $output[0] ) ) as $line ) {
+foreach ( array_filter( explode( "\0", $output[0] ?? '' ) ) as $line ) {
 	$state    = substr( $line, 0, 2 );
 	$filename = substr( $line, 3 );
 	$type     = explode( '/', $filename )[0];
@@ -61,3 +61,21 @@ foreach ( array_filter( explode( "\0", $output[0] ) ) as $line ) {
 }
 
 echo "Recorded $count new releases.\n";
+
+fclose( $plugin_releases );
+
+echo "Generating latest-versions.json.gz\n";
+
+// Create a compressed latest-versions file from all of the assets.
+$latest_versions = [ 'plugins' => [], 'themes' => [] ];
+foreach ( [ 'plugins', 'themes' ] as $type ) {
+	foreach ( glob( __DIR__ . "/../{$type}/*.json" ) as $file ) {
+		$data = json_decode( file_get_contents( $file ) );
+		if ( empty( $data->slug ) ) {
+			continue;
+		}
+
+		$latest_versions[ $type ][ $data->slug ] = $data->version;
+	}
+}
+file_put_contents( 'compress.zlib://' . __DIR__ . '/../latest-versions.json.gz', json_encode( $latest_versions ) );
