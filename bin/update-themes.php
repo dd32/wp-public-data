@@ -32,23 +32,8 @@ do {
 
 		fwrite( STDERR, "\t$slug {$theme_data->version} (updated {$mins_ago} ago)\n" );
 
-		// Fetch full theme data.
-		$all_fields = 'description,downloaded,downloadlink,last_updated,creation_time,parent,rating,ratings,reviews_url,screenshot_count,screenshot_url,screenshots,sections,tags,template,versions,theme_url,homepage,extended_author,photon_screenshots,active_installs,requires,requires_php,trac_tickets,is_commercial,is_community,external_repository_url,external_support_url,upload_date';
-		$data = json_decode( fetch( 'https://api.wordpress.org/themes/info/1.2/?action=theme_information&fields=' . $all_fields . '&slug=' . $slug ), true );
+		fetch_and_save_theme( $slug, $theme_data );
 
-		if ( ! $data ) {
-			$data = $theme_data; // Partial. meh.
-		}
-
-		// Transform the 'trac_tickets' field into something useful.
-		$data['trac_tickets'] = array_map( function( $id ) {
-			return "https://themes.trac.wordpress.org/ticket/{$id}";
-		}, $data['trac_tickets'] ?? [] );
-
-		// Don't include Downloads, they're meaningless.
-		unset( $data['downloaded'] );
-
-		file_put_contents( dirname( __DIR__ ) . '/themes/' . $slug . '.json', json_encode( $data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) );
 		usleep( 250000 ); // 250ms Slow we go.
 	}
 

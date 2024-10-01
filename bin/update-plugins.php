@@ -33,25 +33,8 @@ do {
 
 		fwrite( STDERR, "\t$slug {$plugin_data->version} (updated {$mins_ago} ago)\n" );
 
-		// Fetch full plugin data.
-		$data = json_decode( fetch( 'https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&fields=language_packs,compatibility,short_description,description,icons,blocks,block_assets,author_block_count,author_block_rating,blueprints,stable_tag,downloaded&slug=' . $slug ), true );
+		fetch_and_save_plugin( $slug, $plugin_data );
 
-		if ( ! $data ) {
-			$data = $plugin_data; // Partial. meh.
-		}
-
-		// Cleanup.. We're not storing reviews or duplicated screenshot HTML here.
-		unset( $data['sections']['reviews'], $data['sections']['screenshots'] );
-		// Don't include Downloads, they're meaningless.
-		unset( $data['downloaded'] );
-
-		// Ensure screenshots are always an array.
-		$data['screenshots'] = array_values( $data['screenshots'] );
-
-		// Store the Last updated value in a more sane manner.
-		$data['last_updated'] = gmdate( 'Y-m-d H:i:s', strtotime( $data['last_updated'] ) );
-
-		file_put_contents( dirname( __DIR__ ) . '/plugins/' . $slug . '.json', json_encode( $data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) );
 		usleep( 250000 ); // 250ms Slow we go.
 	}
 
