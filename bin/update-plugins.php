@@ -19,8 +19,8 @@ do {
 
 	foreach ( $plugins->plugins as $plugin_data ) {
 		$updated_timestamp = strtotime( $plugin_data->last_updated );
-		if ( $updated_timestamp < time() - 60 * 60 * 6 ) {
-			break 2; // Stop processing if we hit a plugin that hasn't been updated in the 6hrs
+		if ( $updated_timestamp < time() - 60 * 60 * 3 ) {
+			break 2; // Stop processing if we hit a plugin that hasn't been updated in the 3hrs
 		}
 
 		$slug = $plugin_data->slug;
