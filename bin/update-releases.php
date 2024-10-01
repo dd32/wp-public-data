@@ -52,7 +52,7 @@ foreach ( array_filter( explode( "\0", $output[0] ) ) as $line ) {
 			$new_data->version,
 			$old_data->version ?? '',
 			$new_data->download_link,
-			$new_data->last_updated,
+			$new_data->last_updated_time ?? $new_data->last_updated, // Themes: last_updated_time; plugins: last_updated.
 			"https://wordpress.org/{$type}/{$new_data->slug}/",
 		]
 	);
