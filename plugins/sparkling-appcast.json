@@ -1,0 +1,69 @@
+{
+    "name": "Sparkling Appcast",
+    "slug": "sparkling-appcast",
+    "version": "0.6",
+    "author": "<a href=\"https://profiles.wordpress.org/usielriedl/\">usielriedl</a>",
+    "author_profile": "https://profiles.wordpress.org/usielriedl/",
+    "contributors": {
+        "usielriedl": {
+            "profile": "https://profiles.wordpress.org/usielriedl/",
+            "avatar": "https://secure.gravatar.com/avatar/120a77d3c69d0b04b95e52ba89a9d8602d69685d893d0be75e22541f71b27d9b?s=96&d=monsterid&r=g",
+            "display_name": "usielriedl"
+        }
+    },
+    "requires": "5.0",
+    "tested": "6.7.2",
+    "requires_php": false,
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/sparkling-appcast/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2025-02-26 14:02:00",
+    "added": "2025-02-23",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Sparkling Appcast is a WordPress plugin. It allows you to use your WordPress site to distribute your macOS App via <a href=\"https://sparkle-project.org/\" rel=\"nofollow ugc\">Sparkle</a>. Sparkling Appcast supports multiple tracks (alpha, beta, &#8230;).</p>\n<p>Sparkling Appcast exposes a new shortcode to display a list of app builds.</p>\n<pre><code>[sappcast_display_builds sappcast_track=\"{track-id-or-slug}\"]\n</code></pre>\n<p>Configure Sparkle to ingest the appcast.xml at https://your.site/wp-json/sparkling-appcast/v1/track/{track-id-or-slug}/appcast.xml. You will see something like the following XML.</p>\n<pre><code>&lt;rss xmlns:sparkle=\"http://www.andymatuschak.org/xml-namespaces/sparkle\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" version=\"2.0\"&gt;\n    &lt;channel&gt;\n        &lt;title&gt;MyApp - Production&lt;/title&gt;\n        &lt;link&gt;/wp-json/sparkling-appcast/v1/track/production/appcast.xml&lt;/link&gt;\n        &lt;item&gt;\n            &lt;title&gt;Version 1.0.1 (2)&lt;/title&gt;\n            &lt;description&gt;&lt;![CDATA[ This version is better! ]]&gt;&lt;/description&gt;\n            &lt;sparkle:version&gt;2&lt;/sparkle:version&gt;\n            &lt;sparkle:shortVersionString&gt;1.0.1&lt;/sparkle:shortVersionString&gt;\n            &lt;pubDate&gt;Wed, 08 Jan 2025 08:56:19 +0000&lt;/pubDate&gt;\n            &lt;sparkle:minimumSystemVersion&gt;14.0&lt;/sparkle:minimumSystemVersion&gt;\n            &lt;enclosure url=\"http://localhost:8088/wp-content/uploads/2025/01/app_v2.zip\" length=\"4713394\" type=\"application/octet-stream\"/&gt;\n        &lt;/item&gt;\n        &lt;item&gt;\n            &lt;title&gt;Version 1.0.0 (1)&lt;/title&gt;\n            &lt;description&gt;&lt;![CDATA[ - New features - New bugs ]]&gt;&lt;/description&gt;\n            &lt;sparkle:version&gt;1&lt;/sparkle:version&gt;\n            &lt;sparkle:shortVersionString&gt;1.0.0&lt;/sparkle:shortVersionString&gt;\n            &lt;pubDate&gt;Wed, 08 Jan 2025 07:43:06 +0000&lt;/pubDate&gt;\n            &lt;sparkle:minimumSystemVersion&gt;14.0&lt;/sparkle:minimumSystemVersion&gt;\n            &lt;enclosure url=\"http://localhost:8088/wp-content/uploads/2025/01/app_v1.zip\" length=\"4713394\" type=\"application/octet-stream\"/&gt;\n        &lt;/item&gt;\n    &lt;/channel&gt;\n&lt;/rss&gt;\n</code></pre>\n<h3>Configuration</h3>\n<p>To get started name the application you want to distribute on your WordPress site. You can find the settings page under the App Builds menu.</p>\n<p>If you have multiple tracks besides Production, you can should add them on wp-admin under the App Builds menu.</p>\n<h3>Usage</h3>\n<h3>Fastlane</h3>\n<p>We recommend you use the <a href=\"https://github.com/Usiel/fastlane-plugin-wp_sparkling_appcast\" rel=\"nofollow ugc\"><code>wp_sparkling_appcast</code> plugin</a> to upload assets and create builds.</p>\n<h3>Other</h3>\n<p>To distribute a new build, you must upload the asset (1), create a build draft (2), after which you can finalize the build and publish it (3). Steps 1 and 2 are typically executed by your build server, while step 3 is done by a human.</p>\n<h3>1. Uploading Asset</h3>\n<pre><code>`\n</code></pre>\n<p>curl &#8211;location &#8220;localhost:8088/wp-json/wp/v2/media?status=publish&amp;title=MyApp%20${VERSION}%20(${BUILD_NUMBER})&#8221; \\<br />\n    &#8211;header &#8220;Content-Disposition: attachment; filename=\\&#8221;myapp_v${VERSION}_${BUILD_NUMBER}.zip\\&#8221;&#8221; \\<br />\n    &#8211;header &#8216;Content-Type: application/zip&#8217; \\<br />\n    &#8211;user &#8220;${USER}:${APPLICATION_PASSWORD}&#8221; \\<br />\n    &#8211;data-binary &#8216;@/path/to/asset.zip&#8217;<br />\n    `</p>\n<h3>2. Create Build Draft</h3>\n<pre><code>`\n</code></pre>\n<p>curl &#8211;location &#8216;localhost:8088/wp-json/wp/v2/sappcast_app_build&#8217; \\<br />\n    &#8211;header &#8216;Content-Type: application/json&#8217; \\<br />\n    &#8211;user &#8220;${USER}:${APPLICATION_PASSWORD}&#8221; \\<br />\n    &#8211;data &#8216;{<br />\n        &#8220;meta&#8221;: {<br />\n            &#8220;sappcast_app_build_version&#8221;: string,<br />\n            &#8220;sappcast_app_build_number&#8221;: int,<br />\n            &#8220;sappcast_app_build_min_system_version&#8221;: string,<br />\n            &#8220;sappcast_app_build_attachment_id&#8221;: int,<br />\n            &#8220;sappcast_app_build_changelog&#8221;: string,<br />\n        },<br />\n        &#8220;sappcast_track&#8221;: int,<br />\n        &#8220;status&#8221;: &#8220;draft&#8221;<br />\n    }&#8217;<br />\n    `</p>\n<h3>3. Publish Build</h3>\n<p>The user may now go to &#8220;App Build&#8221; on wp-admin and publish the draft after verifying the build. After publishing the build will appear on the relevant appcast (<code>/wp-json/sparkling-appcast/v1/track/&lt;track-id-or-slug&gt;/appcast.xml</code>).</p>\n"
+    },
+    "short_description": "Sparkling Appcast allows you to use your WordPress site to distribute your macOS App via Sparkle offering an appcast.xml endpoint.",
+    "description": "<p>Sparkling Appcast is a WordPress plugin. It allows you to use your WordPress site to distribute your macOS App via <a href=\"https://sparkle-project.org/\" rel=\"nofollow ugc\">Sparkle</a>. Sparkling Appcast supports multiple tracks (alpha, beta, &#8230;).</p>\n<p>Sparkling Appcast exposes a new shortcode to display a list of app builds.</p>\n<pre><code>[sappcast_display_builds sappcast_track=\"{track-id-or-slug}\"]\n</code></pre>\n<p>Configure Sparkle to ingest the appcast.xml at https://your.site/wp-json/sparkling-appcast/v1/track/{track-id-or-slug}/appcast.xml. You will see something like the following XML.</p>\n<pre><code>&lt;rss xmlns:sparkle=\"http://www.andymatuschak.org/xml-namespaces/sparkle\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" version=\"2.0\"&gt;\n    &lt;channel&gt;\n        &lt;title&gt;MyApp - Production&lt;/title&gt;\n        &lt;link&gt;/wp-json/sparkling-appcast/v1/track/production/appcast.xml&lt;/link&gt;\n        &lt;item&gt;\n            &lt;title&gt;Version 1.0.1 (2)&lt;/title&gt;\n            &lt;description&gt;&lt;![CDATA[ This version is better! ]]&gt;&lt;/description&gt;\n            &lt;sparkle:version&gt;2&lt;/sparkle:version&gt;\n            &lt;sparkle:shortVersionString&gt;1.0.1&lt;/sparkle:shortVersionString&gt;\n            &lt;pubDate&gt;Wed, 08 Jan 2025 08:56:19 +0000&lt;/pubDate&gt;\n            &lt;sparkle:minimumSystemVersion&gt;14.0&lt;/sparkle:minimumSystemVersion&gt;\n            &lt;enclosure url=\"http://localhost:8088/wp-content/uploads/2025/01/app_v2.zip\" length=\"4713394\" type=\"application/octet-stream\"/&gt;\n        &lt;/item&gt;\n        &lt;item&gt;\n            &lt;title&gt;Version 1.0.0 (1)&lt;/title&gt;\n            &lt;description&gt;&lt;![CDATA[ - New features - New bugs ]]&gt;&lt;/description&gt;\n            &lt;sparkle:version&gt;1&lt;/sparkle:version&gt;\n            &lt;sparkle:shortVersionString&gt;1.0.0&lt;/sparkle:shortVersionString&gt;\n            &lt;pubDate&gt;Wed, 08 Jan 2025 07:43:06 +0000&lt;/pubDate&gt;\n            &lt;sparkle:minimumSystemVersion&gt;14.0&lt;/sparkle:minimumSystemVersion&gt;\n            &lt;enclosure url=\"http://localhost:8088/wp-content/uploads/2025/01/app_v1.zip\" length=\"4713394\" type=\"application/octet-stream\"/&gt;\n        &lt;/item&gt;\n    &lt;/channel&gt;\n&lt;/rss&gt;\n</code></pre>\n<h3>Configuration</h3>\n<p>To get started name the application you want to distribute on your WordPress site. You can find the settings page under the App Builds menu.</p>\n<p>If you have multiple tracks besides Production, you can should add them on wp-admin under the App Builds menu.</p>\n<h3>Usage</h3>\n<h3>Fastlane</h3>\n<p>We recommend you use the <a href=\"https://github.com/Usiel/fastlane-plugin-wp_sparkling_appcast\" rel=\"nofollow ugc\"><code>wp_sparkling_appcast</code> plugin</a> to upload assets and create builds.</p>\n<h3>Other</h3>\n<p>To distribute a new build, you must upload the asset (1), create a build draft (2), after which you can finalize the build and publish it (3). Steps 1 and 2 are typically executed by your build server, while step 3 is done by a human.</p>\n<h3>1. Uploading Asset</h3>\n<pre><code>`\n</code></pre>\n<p>curl &#8211;location &#8220;localhost:8088/wp-json/wp/v2/media?status=publish&amp;title=MyApp%20${VERSION}%20(${BUILD_NUMBER})&#8221; \\<br />\n    &#8211;header &#8220;Content-Disposition: attachment; filename=\\&#8221;myapp_v${VERSION}_${BUILD_NUMBER}.zip\\&#8221;&#8221; \\<br />\n    &#8211;header &#8216;Content-Type: application/zip&#8217; \\<br />\n    &#8211;user &#8220;${USER}:${APPLICATION_PASSWORD}&#8221; \\<br />\n    &#8211;data-binary &#8216;@/path/to/asset.zip&#8217;<br />\n    `</p>\n<h3>2. Create Build Draft</h3>\n<pre><code>`\n</code></pre>\n<p>curl &#8211;location &#8216;localhost:8088/wp-json/wp/v2/sappcast_app_build&#8217; \\<br />\n    &#8211;header &#8216;Content-Type: application/json&#8217; \\<br />\n    &#8211;user &#8220;${USER}:${APPLICATION_PASSWORD}&#8221; \\<br />\n    &#8211;data &#8216;{<br />\n        &#8220;meta&#8221;: {<br />\n            &#8220;sappcast_app_build_version&#8221;: string,<br />\n            &#8220;sappcast_app_build_number&#8221;: int,<br />\n            &#8220;sappcast_app_build_min_system_version&#8221;: string,<br />\n            &#8220;sappcast_app_build_attachment_id&#8221;: int,<br />\n            &#8220;sappcast_app_build_changelog&#8221;: string,<br />\n        },<br />\n        &#8220;sappcast_track&#8221;: int,<br />\n        &#8220;status&#8221;: &#8220;draft&#8221;<br />\n    }&#8217;<br />\n    `</p>\n<h3>3. Publish Build</h3>\n<p>The user may now go to &#8220;App Build&#8221; on wp-admin and publish the draft after verifying the build. After publishing the build will appear on the relevant appcast (<code>/wp-json/sparkling-appcast/v1/track/&lt;track-id-or-slug&gt;/appcast.xml</code>).</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/sparkling-appcast.0.6.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "appcast": "appcast",
+        "distribution": "distribution",
+        "macos": "macos",
+        "sparkle": "sparkle"
+    },
+    "stable_tag": "0.6",
+    "versions": {
+        "0.6": "https://downloads.wordpress.org/plugin/sparkling-appcast.0.6.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/sparkling-appcast.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/sparkling-appcast.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
