@@ -56,6 +56,7 @@ foreach ( array_filter( explode( "\0", $output[0] ?? '' ) ) as $line ) {
 			"https://wordpress.org/{$type}/{$new_data->slug}/",
 			$new_data->requires ?? '',
 			$new_data->requires_php ?? '',
+			$new_data->active_installs ?? 0,
 		]
 	);
 }
