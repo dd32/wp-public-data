@@ -70,7 +70,7 @@ echo "Generating latest-versions.json.gz\n";
 // Create a compressed latest-versions file from all of the assets.
 $latest_versions = [ 'plugins' => [], 'themes' => [] ];
 foreach ( [ 'plugins', 'themes' ] as $type ) {
-	foreach ( glob( __DIR__ . "/../{$type}/*.json" ) as $file ) {
+	foreach ( glob( __DIR__ . "/../{$type}/*/*.json" ) as $file ) {
 		$data = json_decode( file_get_contents( $file ) );
 		if ( empty( $data->slug ) ) {
 			continue;

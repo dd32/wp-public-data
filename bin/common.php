@@ -54,7 +54,7 @@ function fetch_and_save_plugin( $slug, $fallback_data = false ) {
 		$data['last_updated'] = gmdate( 'Y-m-d H:i:s', strtotime( $data['last_updated'] ) );
 	}
 
-	file_put_contents( dirname( __DIR__ ) . '/plugins/' . $slug . '.json', json_encode( $data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) );
+	file_put_contents( dirname( __DIR__ ) . '/plugins/' . $slug[0] . '/' . $slug . '.json', json_encode( $data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) );
 
 	return (object) $data;
 }
@@ -80,7 +80,7 @@ function fetch_and_save_theme( $slug, $fallback_data = false ) {
 	// Don't include Downloads, they're meaningless.
 	unset( $data['downloaded'] );
 
-	file_put_contents( dirname( __DIR__ ) . '/themes/' . $slug . '.json', json_encode( $data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) );
+	file_put_contents( dirname( __DIR__ ) . '/themes/' . $slug[0] . '/' . $slug . '.json', json_encode( $data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) );
 
 	return (object) $data;
 }
