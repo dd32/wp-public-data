@@ -72,7 +72,7 @@ $latest_versions = [ 'plugins' => [], 'themes' => [] ];
 foreach ( [ 'plugins', 'themes' ] as $type ) {
 	foreach ( glob( __DIR__ . "/../{$type}/*/*.json" ) as $file ) {
 		$data = json_decode( file_get_contents( $file ) );
-		if ( empty( $data->slug ) ) {
+		if ( empty( $data->slug ) || ! isset( $data->version ) ) {
 			continue;
 		}
 
