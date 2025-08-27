@@ -1,0 +1,91 @@
+{
+    "name": "PoPayPOS Reports for WooCommerce",
+    "slug": "popaypos-reports",
+    "version": "1.0.3",
+    "author": "<a href=\"https://profiles.wordpress.org/amitrotem/\">Matat Technologies</a>",
+    "author_profile": "https://profiles.wordpress.org/amitrotem/",
+    "contributors": {
+        "amitrotem": {
+            "profile": "https://profiles.wordpress.org/amitrotem/",
+            "avatar": "https://secure.gravatar.com/avatar/b98d0e81c7c795a052f18ed8a5df4fe44c4200f1622047bb5688d73f8d51e3da?s=96&d=monsterid&r=g",
+            "display_name": "Matat Technologies"
+        }
+    },
+    "requires": "5.0",
+    "tested": "6.8.2",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/popaypos-reports/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2025-08-27 04:24:00",
+    "added": "2025-08-27",
+    "homepage": "https://matat.co.il/",
+    "sections": {
+        "description": "<p>PoPayPOS Reports for WooCommerce is a WordPress plugin for generating detailed reports of orders created via the Omni POS application.</p>\n<p>The plugin allows site administrators to view detailed analytics for POS orders, including:<br />\n&#8211; Comparison between POS orders and regular orders<br />\n&#8211; Daily detailed reports<br />\n&#8211; Visual graphs<br />\n&#8211; Export data to CSV/Excel<br />\n&#8211; Detailed statistics<br />\n&#8211; <strong>Full compatibility with High-Performance Order Storage (HPOS)</strong></p>\n<h3>System Requirements</h3>\n<ul>\n<li>WordPress 5.0 or higher</li>\n<li>WooCommerce 5.0 or higher</li>\n<li>PHP 7.4 or higher</li>\n</ul>\n<h3>Compatibility</h3>\n<p>This plugin is fully compatible with WooCommerce High-Performance Order Storage (HPOS).<br />\nIt uses the WooCommerce Data Store API instead of direct SQL queries, ensuring compatibility with future database changes.</p>\n<p>Supported features:<br />\n&#8211; HPOS enabled<br />\n&#8211; HPOS disabled (traditional database)<br />\n&#8211; Automatic switching between systems<br />\n&#8211; Support for WooCommerce 5.0+</p>\n<h3>Usage</h3>\n<p>= Accessing Reports =<br />\n1. Go to the WordPress admin panel<br />\n2. Navigate to <strong>WooCommerce &gt; POS Reports</strong></p>\n<h4>Creating a Report</h4>\n<ol>\n<li>Select a start date and end date</li>\n<li>Click <strong>Generate Report</strong></li>\n<li>View results in summary cards, graphs, and tables</li>\n</ol>\n<h4>Exporting Data</h4>\n<ol>\n<li>Generate a report</li>\n<li>Select an export format (CSV or Excel)</li>\n<li>Click <strong>Export Report</strong></li>\n</ol>\n<h3>Features</h3>\n<p>= Summary Cards =<br />\n&#8211; Number of POS orders<br />\n&#8211; Total POS order amount<br />\n&#8211; Number of regular orders<br />\n&#8211; Total regular order amount<br />\n&#8211; Total revenue<br />\n&#8211; Percentage of POS orders from all orders</p>\n<h4>Graphs</h4>\n<ul>\n<li>Line chart comparing daily revenue</li>\n<li>Bar chart comparing daily order counts</li>\n</ul>\n<h4>Detailed Tables</h4>\n<ul>\n<li>List of all POS orders with direct links</li>\n<li>Daily breakdown of orders and revenue</li>\n</ul>\n<h4>Data Export</h4>\n<ul>\n<li>Export to CSV</li>\n<li>Export to Excel (basic)</li>\n</ul>\n<h3>Data Structure</h3>\n<p>The plugin identifies orders with the meta field:<br />\n    order_source = <code>pos</code><br />\nOrders without this field or with a different value are considered regular orders.</p>\n<h3>Technical Architecture</h3>\n<p>= WooCommerce Data Store API =<br />\nInstead of direct SQL queries:<br />\n    <code>php<br />\n$orders = wc_get_orders(array(<br />\n    'limit' =&gt; -1,<br />\n    'status' =&gt; array('completed', 'processing', 'on-hold'),<br />\n    'meta_query' =&gt; array(<br />\n        array(<br />\n            'key' =&gt; 'order_source',<br />\n            'value' =&gt; 'pos',<br />\n            'compare' =&gt; '='<br />\n        )<br />\n    )<br />\n));</code></p>\n<h4>HPOS Detection</h4>\n<pre><code>`php\n</code></pre>\n<p>if (class_exists(&#8216;Automattic\\WooCommerce\\Utilities\\OrderUtil&#8217;)) {<br />\n    $hpos_enabled = \\Automattic\\WooCommerce\\Utilities\\OrderUtil::custom_orders_table_usage_is_enabled();<br />\n}<br />\n    <code>&lt;h3&gt;Customization&lt;/h3&gt;= Adding More Fields =<br />\nEdit the</code>get_orders_by_source<code>function:</code>php<br />\nprivate function get_orders_by_source($source, $start_date, $end_date) {<br />\n    $args = array(<br />\n        &#8216;limit&#8217; =&gt; -1,<br />\n        &#8216;status&#8217; =&gt; array(&#8216;completed&#8217;, &#8216;processing&#8217;, &#8216;on-hold&#8217;),<br />\n        &#8216;date_created&#8217; =&gt; $start_date . &#8216;&#8230;&#8217; . $end_date,<br />\n        &#8216;orderby&#8217; =&gt; &#8216;date&#8217;,<br />\n        &#8216;order&#8217; =&gt; &#8216;DESC&#8217;,<br />\n        &#8216;meta_query&#8217; =&gt; array(<br />\n            array(<br />\n                &#8216;key&#8217; =&gt; &#8216;your_custom_field&#8217;,<br />\n                &#8216;value&#8217; =&gt; &#8216;your_value&#8217;,<br />\n                &#8216;compare&#8217; =&gt; &#8216;=&#8217;<br />\n            )<br />\n        )<br />\n    );<br />\n    return wc_get_orders($args);<br />\n}<br />\n    `</p>\n<h4>Styling</h4>\n<p>Edit <code>assets/css/admin.css</code>.</p>\n<h3>Troubleshooting</h3>\n<ul>\n<li><strong>Plugin not in menu</strong>: Ensure WooCommerce is active and you have <code>manage_woocommerce</code> permissions.</li>\n<li><strong>No data in reports</strong>: Make sure orders contain <code>order_source</code> = <code>pos</code> and check the date range.</li>\n<li><strong>JavaScript errors</strong>: Verify all assets are loading and check browser console.</li>\n<li><strong>HPOS issues</strong>: Ensure WooCommerce is updated.</li>\n</ul>\n<h3>Performance</h3>\n<ul>\n<li>Uses WooCommerce Data Store API for efficiency</li>\n<li>HPOS improves performance</li>\n<li>Optimized queries for the active database</li>\n<li>Loads orders in small batches to save memory</li>\n</ul>\n<h3>Support</h3>\n<p>For questions or support, contact the plugin developer.</p>\n<h3>License</h3>\n<p>This plugin is licensed under the GPL v2 or later.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>wc-pos-reports</code> folder to <code>/wp-content/plugins/</code></li>\n<li>Go to the WordPress admin panel</li>\n<li>Navigate to <strong>Plugins</strong></li>\n<li>Find <strong>POS Reports for WooCommerce</strong> and activate it</li>\n</ol>\n",
+        "changelog": "<h4>1.0.3</h4>\n<ul>\n<li>Rename for compatibility with WordPress repository</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Full HPOS compatibility</li>\n<li>Uses WooCommerce Data Store API</li>\n<li>Automatic HPOS detection</li>\n<li>Admin interface compatibility notices</li>\n<li>Significant performance improvements</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release</li>\n<li>Basic reports</li>\n<li>Visual graphs</li>\n<li>Data export</li>\n<li>Modern user interface</li>\n</ul>\n"
+    },
+    "short_description": "Generate detailed WooCommerce reports for orders created via the Omni POS system.",
+    "description": "<p>PoPayPOS Reports for WooCommerce is a WordPress plugin for generating detailed reports of orders created via the Omni POS application.</p>\n<p>The plugin allows site administrators to view detailed analytics for POS orders, including:<br />\n&#8211; Comparison between POS orders and regular orders<br />\n&#8211; Daily detailed reports<br />\n&#8211; Visual graphs<br />\n&#8211; Export data to CSV/Excel<br />\n&#8211; Detailed statistics<br />\n&#8211; <strong>Full compatibility with High-Performance Order Storage (HPOS)</strong></p>\n<h3>System Requirements</h3>\n<ul>\n<li>WordPress 5.0 or higher</li>\n<li>WooCommerce 5.0 or higher</li>\n<li>PHP 7.4 or higher</li>\n</ul>\n<h3>Compatibility</h3>\n<p>This plugin is fully compatible with WooCommerce High-Performance Order Storage (HPOS).<br />\nIt uses the WooCommerce Data Store API instead of direct SQL queries, ensuring compatibility with future database changes.</p>\n<p>Supported features:<br />\n&#8211; HPOS enabled<br />\n&#8211; HPOS disabled (traditional database)<br />\n&#8211; Automatic switching between systems<br />\n&#8211; Support for WooCommerce 5.0+</p>\n<h3>Usage</h3>\n<p>= Accessing Reports =<br />\n1. Go to the WordPress admin panel<br />\n2. Navigate to <strong>WooCommerce &gt; POS Reports</strong></p>\n<h4>Creating a Report</h4>\n<ol>\n<li>Select a start date and end date</li>\n<li>Click <strong>Generate Report</strong></li>\n<li>View results in summary cards, graphs, and tables</li>\n</ol>\n<h4>Exporting Data</h4>\n<ol>\n<li>Generate a report</li>\n<li>Select an export format (CSV or Excel)</li>\n<li>Click <strong>Export Report</strong></li>\n</ol>\n<h3>Features</h3>\n<p>= Summary Cards =<br />\n&#8211; Number of POS orders<br />\n&#8211; Total POS order amount<br />\n&#8211; Number of regular orders<br />\n&#8211; Total regular order amount<br />\n&#8211; Total revenue<br />\n&#8211; Percentage of POS orders from all orders</p>\n<h4>Graphs</h4>\n<ul>\n<li>Line chart comparing daily revenue</li>\n<li>Bar chart comparing daily order counts</li>\n</ul>\n<h4>Detailed Tables</h4>\n<ul>\n<li>List of all POS orders with direct links</li>\n<li>Daily breakdown of orders and revenue</li>\n</ul>\n<h4>Data Export</h4>\n<ul>\n<li>Export to CSV</li>\n<li>Export to Excel (basic)</li>\n</ul>\n<h3>Data Structure</h3>\n<p>The plugin identifies orders with the meta field:<br />\n    order_source = <code>pos</code><br />\nOrders without this field or with a different value are considered regular orders.</p>\n<h3>Technical Architecture</h3>\n<p>= WooCommerce Data Store API =<br />\nInstead of direct SQL queries:<br />\n    <code>php<br />\n$orders = wc_get_orders(array(<br />\n    'limit' =&gt; -1,<br />\n    'status' =&gt; array('completed', 'processing', 'on-hold'),<br />\n    'meta_query' =&gt; array(<br />\n        array(<br />\n            'key' =&gt; 'order_source',<br />\n            'value' =&gt; 'pos',<br />\n            'compare' =&gt; '='<br />\n        )<br />\n    )<br />\n));</code></p>\n<h4>HPOS Detection</h4>\n<pre><code>`php\n</code></pre>\n<p>if (class_exists(&#8216;Automattic\\WooCommerce\\Utilities\\OrderUtil&#8217;)) {<br />\n    $hpos_enabled = \\Automattic\\WooCommerce\\Utilities\\OrderUtil::custom_orders_table_usage_is_enabled();<br />\n}<br />\n    <code>&lt;h3&gt;Customization&lt;/h3&gt;= Adding More Fields =<br />\nEdit the</code>get_orders_by_source<code>function:</code>php<br />\nprivate function get_orders_by_source($source, $start_date, $end_date) {<br />\n    $args = array(<br />\n        &#8216;limit&#8217; =&gt; -1,<br />\n        &#8216;status&#8217; =&gt; array(&#8216;completed&#8217;, &#8216;processing&#8217;, &#8216;on-hold&#8217;),<br />\n        &#8216;date_created&#8217; =&gt; $start_date . &#8216;&#8230;&#8217; . $end_date,<br />\n        &#8216;orderby&#8217; =&gt; &#8216;date&#8217;,<br />\n        &#8216;order&#8217; =&gt; &#8216;DESC&#8217;,<br />\n        &#8216;meta_query&#8217; =&gt; array(<br />\n            array(<br />\n                &#8216;key&#8217; =&gt; &#8216;your_custom_field&#8217;,<br />\n                &#8216;value&#8217; =&gt; &#8216;your_value&#8217;,<br />\n                &#8216;compare&#8217; =&gt; &#8216;=&#8217;<br />\n            )<br />\n        )<br />\n    );<br />\n    return wc_get_orders($args);<br />\n}<br />\n    `</p>\n<h4>Styling</h4>\n<p>Edit <code>assets/css/admin.css</code>.</p>\n<h3>Troubleshooting</h3>\n<ul>\n<li><strong>Plugin not in menu</strong>: Ensure WooCommerce is active and you have <code>manage_woocommerce</code> permissions.</li>\n<li><strong>No data in reports</strong>: Make sure orders contain <code>order_source</code> = <code>pos</code> and check the date range.</li>\n<li><strong>JavaScript errors</strong>: Verify all assets are loading and check browser console.</li>\n<li><strong>HPOS issues</strong>: Ensure WooCommerce is updated.</li>\n</ul>\n<h3>Performance</h3>\n<ul>\n<li>Uses WooCommerce Data Store API for efficiency</li>\n<li>HPOS improves performance</li>\n<li>Optimized queries for the active database</li>\n<li>Loads orders in small batches to save memory</li>\n</ul>\n<h3>Support</h3>\n<p>For questions or support, contact the plugin developer.</p>\n<h3>License</h3>\n<p>This plugin is licensed under the GPL v2 or later.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/popaypos-reports.1.0.3.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/popaypos-reports/assets/screenshot-1.png?rev=3350786",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/popaypos-reports/assets/screenshot-2.png?rev=3350786",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/popaypos-reports/assets/screenshot-3.png?rev=3350786",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/popaypos-reports/assets/screenshot-4.png?rev=3350786",
+            "caption": ""
+        }
+    ],
+    "tags": {
+        "reports": "reports",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.3",
+    "versions": {
+        "1.0.3": "https://downloads.wordpress.org/plugin/popaypos-reports.1.0.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/popaypos-reports.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/popaypos-reports/assets/banner-772x250.png?rev=3350786",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/popaypos-reports/assets/icon-128x128.png?rev=3350786"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
