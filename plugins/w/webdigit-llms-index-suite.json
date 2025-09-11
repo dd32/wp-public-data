@@ -1,0 +1,77 @@
+{
+    "name": "WebDigit LLMs Index Suite",
+    "slug": "webdigit-llms-index-suite",
+    "version": "0.2.29",
+    "author": "<a href=\"https://profiles.wordpress.org/webdigit/\">webdigit</a>",
+    "author_profile": "https://profiles.wordpress.org/webdigit/",
+    "contributors": {
+        "webdigit": {
+            "profile": "https://profiles.wordpress.org/webdigit/",
+            "avatar": "https://secure.gravatar.com/avatar/d4c12aabaf0e58d4edc30b767573f2a14ba9aa90579811479fb1066daeffa7a3?s=96&d=monsterid&r=g",
+            "display_name": "webdigit"
+        }
+    },
+    "requires": "6.2",
+    "tested": "6.6.3",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/webdigit-llms-index-suite/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2025-09-11 20:17:00",
+    "added": "2025-09-11",
+    "homepage": "",
+    "sections": {
+        "description": "<p><strong>WebDigit LLMs Index Suite</strong> makes your WordPress site <strong>GEO / AI-SEO ready</strong> by publishing compact, machine-readable indexes for AI agents.</p>\n<p><strong>Key features</strong><br />\n&#8211; <strong>Synchronized trio</strong>: <code>llms.txt</code>, <code>llms-full.txt</code>, <strong><code>llms.json</code></strong><br />\n&#8211; <strong>Image inventory</strong>: <code>images.md</code> (Markdown table) + <strong><code>images.jsonld</code></strong> (<code>ImageObject</code>)<br />\n&#8211; <strong>Public URLs</strong>: <code>/llms.txt</code> (root) and <code>/llms/*</code> (virtual directory)<br />\n&#8211; <strong>REST API with caching</strong>: <code>GET /wp-json/wdlis/v1/index</code>, <code>GET /wp-json/wdlis/v1/images</code> (ETag + 304)<br />\n&#8211; <strong>Automation</strong>: cron every 6h + <strong>WP-CLI</strong> (<code>wp llms-suite regenerate</code>)<br />\n&#8211; <strong>Controls</strong>: include post types, exclude URL patterns, image MIME filters, customizable <strong>license meta key</strong><br />\n&#8211; <strong>Security</strong>: Only published content is indexed (drafts, private posts excluded)<br />\n&#8211; <strong>Developer hooks</strong>: <code>wdlis_index_query_args</code>, <code>wdlis_index_entries</code>, <code>wdlis_images_query_args</code>, …</p>\n<p><strong>Storage &amp; exposure</strong><br />\n&#8211; Files are written to <strong><code>/wp-content/uploads/llms/</code></strong>.<br />\n&#8211; Public exposure is clean: <strong><code>/llms.txt</code></strong> (root) and <strong><code>/llms/&lt;file&gt;</code></strong> served via rewrite rules (no write needed at web root).</p>\n<p><strong>Why this matters (GEO / AI-SEO)</strong><br />\nGenerative engines and AI copilots prefer <strong>clean, structured</strong> sources. This plugin publishes a compact <strong>text index</strong> plus a <strong>first-class image inventory</strong> to help LLMs discover and summarize your content reliably.</p>\n<blockquote>\n<p>This plugin does <strong>not</strong> modify your existing robots.txt or sitemaps and does not call external APIs.</p>\n</blockquote>\n<h3>Developer Notes</h3>\n<p><strong>Filters</strong><br />\n/**<br />\n * Adjust the WP_Query for index entries.<br />\n */<br />\napply_filters( &#8216;wdlis_index_query_args&#8217;, array $args ): array;</p>\n<p>/**<br />\n * Final pass on index entries before output.<br />\n * Each entry: [&#8216;url&#8217; =&gt; string, &#8216;title&#8217; =&gt; string, &#8216;lastmod&#8217; =&gt; string]<br />\n */<br />\napply_filters( &#8216;wdlis_index_entries&#8217;, array $entries ): array;</p>\n<p>/**<br />\n * Adjust the WP_Query for image entries (attachments).<br />\n */<br />\napply_filters( &#8216;wdlis_images_query_args&#8217;, array $args ): array;</p>\n<p>/**<br />\n * Decide if a URL/file should be included after pattern checks.<br />\n */<br />\napply_filters( &#8216;wdlis_index_url_should_include&#8217;, bool $include, string $url, int $post_id, string $matched_pattern ): bool;<br />\napply_filters( &#8216;wdlis_images_should_include&#8217;, bool $include, string $filepath, int $attachment_id, string $matched_pattern ): bool;</p>\n<p>REST</p>\n<p>GET /wp-json/wdlis/v1/index <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> JSON (with ETag headers)</p>\n<p>GET /wp-json/wdlis/v1/images <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> JSON-LD ItemList (with ETag headers)</p>\n<h3>Privacy</h3>\n<p>This plugin:</p>\n<p>does not collect personal data,</p>\n<p>does not transmit data to remote servers,</p>\n<p>writes only static helper files to /wp-content/uploads/llms/.</p>\n<p>Site owners are responsible for the accuracy of license metadata on images and for excluding private/PII content via settings.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to <code>/wp-content/plugins/</code> (or clone it there).</li>\n<li>Activate <strong>LLMs.txt Suite</strong> from <strong>Plugins</strong>.</li>\n<li>Go to <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> LLMs.txt Suite</strong> and click <strong>Generate now</strong>.</li>\n<li>Verify public URLs:\n<ul>\n<li><code>https://example.com/llms.txt</code></li>\n<li><code>https://example.com/llms/llms-full.txt</code></li>\n<li><code>https://example.com/llms/llms.json</code></li>\n<li><code>https://example.com/llms/images.md</code></li>\n<li><code>https://example.com/llms/images.jsonld</code></li>\n</ul>\n</li>\n</ol>\n",
+        "faq": "\n<dt id='where%20are%20files%20stored%3F'>\nWhere are files stored?\n</h4>\n<p>\n<p>In <code>/wp-content/uploads/llms/</code>. Public routes expose them at <code>/llms.txt</code> (root) and <code>/llms/*</code> (virtual directory).</p>\n</p>\n<dt id='does%20this%20plugin%20change%20robots.txt%20or%20xml%20sitemaps%3F'>\nDoes this plugin change robots.txt or XML sitemaps?\n</h4>\n<p>\n<p>No. It only reads public content and writes its own helper files. Your SEO stack remains unchanged.</p>\n</p>\n<dt id='how%20do%20i%20include%20or%20exclude%20content%3F'>\nHow do I include or exclude content?\n</h4>\n<p>\n<p>In <strong>Settings</strong>:<br />\n&#8211; Select <strong>post types</strong> to include.<br />\n&#8211; Add <strong>exclude URL patterns</strong> (one per line, e.g. <code>/tag/</code>, <code>/author/</code>).<br />\n&#8211; For images, pick <strong>MIME types</strong> and optionally exclude folders (e.g. <code>/cache/</code>, <code>/tmp/</code>).</p>\n</p>\n<dt id='what%20about%20image%20licenses%3F'>\nWhat about image licenses?\n</h4>\n<p>\n<p>Set the <strong>License meta key</strong> (default <code>license</code>). If present on an attachment, it will be surfaced in <code>images.md</code> and <code>images.jsonld</code>.</p>\n</p>\n<dt id='can%20i%20trigger%20generation%20via%20cli%20or%20schedule%20it%3F'>\nCan I trigger generation via CLI or schedule it?\n</h4>\n<p>\n<p>Yes. Cron runs automatically every 6 hours. WP-CLI:<br />\nwp llms-suite regenerate [&#8211;only=index|images|all] [&#8211;force]</p>\n</p>\n<dt id='does%20it%20work%20on%20multisite%3F'>\nDoes it work on Multisite?\n</h4>\n<p>\n<p>Network install is supported; generation runs <strong>per site</strong>. (A network “super-index” is planned for a future version.)</p>\n</p>\n<dt id='does%20it%20phone%20home%20or%20collect%20data%3F'>\nDoes it phone home or collect data?\n</h4>\n<p>\n<p>No telemetry and no external requests. All processing happens locally.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<p>MVP: llms.txt, llms-full.txt, llms.json, images.md, images.jsonld</p>\n<p>Public URLs (/llms.txt, /llms/*), REST (ETag), cron (6h), WP-CLI</p>\n<p>Options (include/exclude), developer hooks</p>\n"
+    },
+    "short_description": "Generate llms.txt, llms-full.txt, llms.json and AI-ready image indexes (Markdown + JSON-LD). Public URLs, REST API (ETag), cron and WP-CLI included.",
+    "description": "<p><strong>WebDigit LLMs Index Suite</strong> makes your WordPress site <strong>GEO / AI-SEO ready</strong> by publishing compact, machine-readable indexes for AI agents.</p>\n<p><strong>Key features</strong><br />\n&#8211; <strong>Synchronized trio</strong>: <code>llms.txt</code>, <code>llms-full.txt</code>, <strong><code>llms.json</code></strong><br />\n&#8211; <strong>Image inventory</strong>: <code>images.md</code> (Markdown table) + <strong><code>images.jsonld</code></strong> (<code>ImageObject</code>)<br />\n&#8211; <strong>Public URLs</strong>: <code>/llms.txt</code> (root) and <code>/llms/*</code> (virtual directory)<br />\n&#8211; <strong>REST API with caching</strong>: <code>GET /wp-json/wdlis/v1/index</code>, <code>GET /wp-json/wdlis/v1/images</code> (ETag + 304)<br />\n&#8211; <strong>Automation</strong>: cron every 6h + <strong>WP-CLI</strong> (<code>wp llms-suite regenerate</code>)<br />\n&#8211; <strong>Controls</strong>: include post types, exclude URL patterns, image MIME filters, customizable <strong>license meta key</strong><br />\n&#8211; <strong>Security</strong>: Only published content is indexed (drafts, private posts excluded)<br />\n&#8211; <strong>Developer hooks</strong>: <code>wdlis_index_query_args</code>, <code>wdlis_index_entries</code>, <code>wdlis_images_query_args</code>, …</p>\n<p><strong>Storage &amp; exposure</strong><br />\n&#8211; Files are written to <strong><code>/wp-content/uploads/llms/</code></strong>.<br />\n&#8211; Public exposure is clean: <strong><code>/llms.txt</code></strong> (root) and <strong><code>/llms/&lt;file&gt;</code></strong> served via rewrite rules (no write needed at web root).</p>\n<p><strong>Why this matters (GEO / AI-SEO)</strong><br />\nGenerative engines and AI copilots prefer <strong>clean, structured</strong> sources. This plugin publishes a compact <strong>text index</strong> plus a <strong>first-class image inventory</strong> to help LLMs discover and summarize your content reliably.</p>\n<blockquote>\n<p>This plugin does <strong>not</strong> modify your existing robots.txt or sitemaps and does not call external APIs.</p>\n</blockquote>\n<h3>Developer Notes</h3>\n<p><strong>Filters</strong><br />\n/**<br />\n * Adjust the WP_Query for index entries.<br />\n */<br />\napply_filters( &#8216;wdlis_index_query_args&#8217;, array $args ): array;</p>\n<p>/**<br />\n * Final pass on index entries before output.<br />\n * Each entry: [&#8216;url&#8217; =&gt; string, &#8216;title&#8217; =&gt; string, &#8216;lastmod&#8217; =&gt; string]<br />\n */<br />\napply_filters( &#8216;wdlis_index_entries&#8217;, array $entries ): array;</p>\n<p>/**<br />\n * Adjust the WP_Query for image entries (attachments).<br />\n */<br />\napply_filters( &#8216;wdlis_images_query_args&#8217;, array $args ): array;</p>\n<p>/**<br />\n * Decide if a URL/file should be included after pattern checks.<br />\n */<br />\napply_filters( &#8216;wdlis_index_url_should_include&#8217;, bool $include, string $url, int $post_id, string $matched_pattern ): bool;<br />\napply_filters( &#8216;wdlis_images_should_include&#8217;, bool $include, string $filepath, int $attachment_id, string $matched_pattern ): bool;</p>\n<p>REST</p>\n<p>GET /wp-json/wdlis/v1/index <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> JSON (with ETag headers)</p>\n<p>GET /wp-json/wdlis/v1/images <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> JSON-LD ItemList (with ETag headers)</p>\n<h3>Privacy</h3>\n<p>This plugin:</p>\n<p>does not collect personal data,</p>\n<p>does not transmit data to remote servers,</p>\n<p>writes only static helper files to /wp-content/uploads/llms/.</p>\n<p>Site owners are responsible for the accuracy of license metadata on images and for excluding private/PII content via settings.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/webdigit-llms-index-suite.0.2.29.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "ai-seo": "ai seo",
+        "geo": "geo",
+        "json-ld": "JSON-LD",
+        "llms-txt": "llms.txt",
+        "sitemap": "sitemap"
+    },
+    "stable_tag": "0.2.29",
+    "versions": {
+        "0.2.29": "https://downloads.wordpress.org/plugin/webdigit-llms-index-suite.0.2.29.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/webdigit-llms-index-suite.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/webdigit-llms-index-suite/assets/banner-772x250.png?rev=3360154",
+        "high": "https://ps.w.org/webdigit-llms-index-suite/assets/banner-1544x500.png?rev=3360154"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/webdigit-llms-index-suite/assets/icon-128x128.png?rev=3360154",
+        "2x": "https://ps.w.org/webdigit-llms-index-suite/assets/icon-256x256.png?rev=3360154"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
