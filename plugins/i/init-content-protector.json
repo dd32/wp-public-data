@@ -1,7 +1,7 @@
 {
     "name": "Init Content Protector – Anti-Copy, Anti-Scrape, Encrypt-All",
     "slug": "init-content-protector",
-    "version": "1.1",
+    "version": "1.3",
     "author": "<a href=\"https://profiles.wordpress.org/brokensmile2103-1/\">Hao Nguyen</a>",
     "author_profile": "https://profiles.wordpress.org/brokensmile2103-1/",
     "contributors": {
@@ -12,7 +12,7 @@
         }
     },
     "requires": "5.7",
-    "tested": "6.8.2",
+    "tested": "6.9",
     "requires_php": "7.4",
     "requires_plugins": [],
     "compatibility": [],
@@ -28,23 +28,23 @@
     "support_url": "https://wordpress.org/support/plugin/init-content-protector/",
     "support_threads": 0,
     "support_threads_resolved": 0,
-    "active_installs": 0,
-    "last_updated": "2025-08-16 07:11:00",
+    "active_installs": 10,
+    "last_updated": "2025-11-14 14:17:00",
     "added": "2025-08-08",
     "homepage": "https://inithtml.com/plugin/init-content-protector/",
     "sections": {
         "description": "<p><strong>Init Content Protector</strong> is a powerful yet lightweight plugin that safeguards your post content from unauthorized copying, scraping tools, and inspection via browser developer tools.</p>\n<p>This plugin is part of the <a href=\"https://en.inithtml.com/init-plugin-suite-minimalist-powerful-and-free-wordpress-plugins/\" rel=\"nofollow ugc\">Init Plugin Suite</a> — a collection of minimalist, fast, and developer-focused tools for WordPress.</p>\n<p>GitHub repository: <a href=\"https://github.com/brokensmile2103/init-content-protector\" rel=\"nofollow ugc\">https://github.com/brokensmile2103/init-content-protector</a></p>\n<p><strong>Features:</strong><br />\n&#8211; JavaScript-based copy protection (blocks selection, right-click, print, DevTools access)<br />\n&#8211; Full content encryption with client-side decryption using CryptoJS<br />\n&#8211; Keyword cloaking using CSS pseudo-elements<br />\n&#8211; Invisible noise injection to confuse crawlers<br />\n&#8211; Per-post type configuration<br />\n&#8211; Custom encryption key per site<br />\n&#8211; Custom content selector support</p>\n<p>Use this plugin to harden your site&#8217;s content visibility while maintaining a smooth reading experience for real users.</p>\n<h3>Source Code</h3>\n<p>This plugin uses <a href=\"https://github.com/brix/crypto-js\" rel=\"nofollow ugc\">CryptoJS</a> for encryption.<br />\n&#8211; Minified version: <code>assets/js/crypto-js.min.js</code><br />\n&#8211; Source version: <a href=\"https://github.com/brix/crypto-js\" rel=\"nofollow ugc\">GitHub Repo</a></p>\n<h3>License</h3>\n<p>This plugin is licensed under the GPLv2 or later.<br />\nYou are free to use, modify, and distribute it under the same license.</p>\n",
         "installation": "<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/init-content-protector</code> directory, or install via the WordPress plugin screen.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>Go to <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Init Content Protector</strong> and configure your preferred options.</li>\n</ol>\n",
         "faq": "\n<dt id='will%20this%20affect%20seo%3F'>\nWill this affect SEO?\n</h4>\n<p>\n<p>If you enable full content encryption, search engines will not be able to see the content. Only use this option if SEO visibility is not required.</p>\n</p>\n<dt id='does%20this%20plugin%20support%20custom%20post%20types%3F'>\nDoes this plugin support custom post types?\n</h4>\n<p>\n<p>Yes. You can choose which post types are protected in the settings page.</p>\n</p>\n<dt id='can%20i%20use%20my%20own%20encryption%20key%3F'>\nCan I use my own encryption key?\n</h4>\n<p>\n<p>Yes. You can set a custom key per site for added security.</p>\n</p>\n\n",
-        "changelog": "<h4>1.1 – August 16, 2025</h4>\n<ul>\n<li>Changed minimum WordPress requirement to 5.7 to leverage wp_get_inline_script_tag for safer inline script output</li>\n<li>Replaced wp_add_inline_script with direct inline  injection for guaranteed execution across all single post pages</li>\n<li>Added inline script nonce/type support via wp_get_inline_script_tag for enhanced security</li>\n<li>Ensured encrypted payload is always available early in content, even if certain script handles are missing</li>\n<li>Added CustomEvent trigger (init-content-payload-ready) to allow frontend scripts to react when encrypted content is ready</li>\n<li>Prevented duplicate inline script injection when content filters run multiple times</li>\n</ul>\n<h4>1.0 – July 23, 2025</h4>\n<ul>\n<li>Initial release</li>\n<li>JavaScript-based content protection (block copy, right-click, print, DevTools)</li>\n<li>Full AES-256 content encryption with CryptoJS decryption</li>\n<li>Invisible keyword cloaking via ::before and randomized CSS class</li>\n<li>Random noise injection (hidden spans) to confuse crawlers</li>\n<li>Supports multiple post types (customizable)</li>\n<li>Custom encryption key per site</li>\n<li>Custom content selector for JS targeting</li>\n<li>Fallback styling compatible with light/dark themes</li>\n<li>Modular settings page with sanitize and validation</li>\n</ul>\n"
+        "changelog": "<h4>1.3 – November 15, 2025</h4>\n<ul>\n<li>Fully decoupled <strong>encryption</strong> and <strong>JS content protection</strong> into separate script modules (<code>decrypt.js</code> and <code>content-protector.js</code>)</li>\n<li>Split script loading into <strong>two independent wp_enqueue_scripts hooks</strong>, eliminating unwanted cross-dependencies</li>\n<li>Renamed localized JS object for encryption to <strong>InitContentDecryptData</strong> for clearer separation of responsibilities</li>\n<li>Ensured JS protection (block copy, right-click, print, DevTools) works independently even when encryption is disabled</li>\n<li>Improved maintainability by isolating crypto loading (<code>crypto-js.min.js</code>) strictly to encrypt mode</li>\n<li>Refined initialization order to guarantee consistent behavior across all themes and page builders</li>\n</ul>\n<h4>1.2 – November 14, 2025</h4>\n<ul>\n<li>Added option to <strong>exclude specific user roles</strong> from all protection layers (encryption, JS protection, noise injection, keyword cloaking)</li>\n<li>Implemented role-based bypass at both <strong>filter level</strong> and <strong>asset enqueue level</strong> for consistent behavior across frontend</li>\n<li>Refactored protection flow so encryption, JS protection, and noise injection operate <strong>independently</strong>, preventing unwanted coupling</li>\n<li>Improved script enqueue logic to load CryptoJS <strong>only when encryption is enabled</strong></li>\n<li>Optimized hook processing to avoid unnecessary filtering for excluded roles and unsupported post types</li>\n<li>Ensured clean fallback behavior when mixed protection settings are enabled</li>\n</ul>\n<h4>1.1 – August 16, 2025</h4>\n<ul>\n<li>Changed minimum WordPress requirement to 5.7 to leverage wp_get_inline_script_tag for safer inline script output</li>\n<li>Replaced wp_add_inline_script with direct inline  injection for guaranteed execution across all single post pages</li>\n<li>Added inline script nonce/type support via wp_get_inline_script_tag for enhanced security</li>\n<li>Ensured encrypted payload is always available early in content, even if certain script handles are missing</li>\n<li>Added CustomEvent trigger (init-content-payload-ready) to allow frontend scripts to react when encrypted content is ready</li>\n<li>Prevented duplicate inline script injection when content filters run multiple times</li>\n</ul>\n<h4>1.0 – July 23, 2025</h4>\n<ul>\n<li>Initial release</li>\n<li>JavaScript-based content protection (block copy, right-click, print, DevTools)</li>\n<li>Full AES-256 content encryption with CryptoJS decryption</li>\n<li>Invisible keyword cloaking via ::before and randomized CSS class</li>\n<li>Random noise injection (hidden spans) to confuse crawlers</li>\n<li>Supports multiple post types (customizable)</li>\n<li>Custom encryption key per site</li>\n<li>Custom content selector for JS targeting</li>\n<li>Fallback styling compatible with light/dark themes</li>\n<li>Modular settings page with sanitize and validation</li>\n</ul>\n"
     },
     "short_description": "Protect your content from copying, scraping, and inspection using JS blocking, keyword cloaking, noise injection, and optional full encryption.",
     "description": "<p><strong>Init Content Protector</strong> is a powerful yet lightweight plugin that safeguards your post content from unauthorized copying, scraping tools, and inspection via browser developer tools.</p>\n<p>This plugin is part of the <a href=\"https://en.inithtml.com/init-plugin-suite-minimalist-powerful-and-free-wordpress-plugins/\" rel=\"nofollow ugc\">Init Plugin Suite</a> — a collection of minimalist, fast, and developer-focused tools for WordPress.</p>\n<p>GitHub repository: <a href=\"https://github.com/brokensmile2103/init-content-protector\" rel=\"nofollow ugc\">https://github.com/brokensmile2103/init-content-protector</a></p>\n<p><strong>Features:</strong><br />\n&#8211; JavaScript-based copy protection (blocks selection, right-click, print, DevTools access)<br />\n&#8211; Full content encryption with client-side decryption using CryptoJS<br />\n&#8211; Keyword cloaking using CSS pseudo-elements<br />\n&#8211; Invisible noise injection to confuse crawlers<br />\n&#8211; Per-post type configuration<br />\n&#8211; Custom encryption key per site<br />\n&#8211; Custom content selector support</p>\n<p>Use this plugin to harden your site&#8217;s content visibility while maintaining a smooth reading experience for real users.</p>\n<h3>Source Code</h3>\n<p>This plugin uses <a href=\"https://github.com/brix/crypto-js\" rel=\"nofollow ugc\">CryptoJS</a> for encryption.<br />\n&#8211; Minified version: <code>assets/js/crypto-js.min.js</code><br />\n&#8211; Source version: <a href=\"https://github.com/brix/crypto-js\" rel=\"nofollow ugc\">GitHub Repo</a></p>\n<h3>License</h3>\n<p>This plugin is licensed under the GPLv2 or later.<br />\nYou are free to use, modify, and distribute it under the same license.</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/init-content-protector.1.1.zip",
+    "download_link": "https://downloads.wordpress.org/plugin/init-content-protector.1.3.zip",
     "upgrade_notice": [],
     "screenshots": [
         {
-            "src": "https://ps.w.org/init-content-protector/assets/screenshot-1.png?rev=3341703",
+            "src": "https://ps.w.org/init-content-protector/assets/screenshot-1.png?rev=3395775",
             "caption": "<strong>Settings Page</strong> – Configure protection methods, encryption, keyword cloaking, and per-post type options."
         }
     ],
@@ -55,10 +55,12 @@
         "copy-protection": "copy protection",
         "encryption": "encryption"
     },
-    "stable_tag": "1.1",
+    "stable_tag": "1.3",
     "versions": {
         "1.0": "https://downloads.wordpress.org/plugin/init-content-protector.1.0.zip",
         "1.1": "https://downloads.wordpress.org/plugin/init-content-protector.1.1.zip",
+        "1.2": "https://downloads.wordpress.org/plugin/init-content-protector.1.2.zip",
+        "1.3": "https://downloads.wordpress.org/plugin/init-content-protector.1.3.zip",
         "trunk": "https://downloads.wordpress.org/plugin/init-content-protector.zip"
     },
     "business_model": false,
