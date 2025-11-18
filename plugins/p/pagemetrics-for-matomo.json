@@ -1,0 +1,84 @@
+{
+    "name": "Pagemetrics for Matomo",
+    "slug": "pagemetrics-for-matomo",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/pagemachine/\">Pagemachine</a>",
+    "author_profile": "https://profiles.wordpress.org/pagemachine/",
+    "contributors": {
+        "pagemachine": {
+            "profile": "https://profiles.wordpress.org/pagemachine/",
+            "avatar": "https://secure.gravatar.com/avatar/012f6a3220e72cb60c55f0e82c391e29514c4e63c82444260dd86ca1cc6c02a1?s=96&d=monsterid&r=g",
+            "display_name": "Pagemachine"
+        },
+        "maltamirano": {
+            "profile": "https://profiles.wordpress.org/maltamirano/",
+            "avatar": "https://secure.gravatar.com/avatar/2b6cf07f6c091617be96ad731f038e4db1852701a372446ed3db591d2611a28a?s=96&d=monsterid&r=g",
+            "display_name": "Mauricio Altamirano"
+        }
+    },
+    "requires": "6.1",
+    "tested": "6.8.3",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/pagemetrics-for-matomo/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2025-11-18 10:01:00",
+    "added": "2025-11-18",
+    "homepage": "https://wordpress.org/plugins/pagemetrics-for-matomo/",
+    "sections": {
+        "description": "<p>Pagemetrics for Matomo adds privacy-friendly, server-side analytics to WordPress by<br />\nleveraging the <code>pagemachine/matomo-tracking</code> PHP library. When enabled, the<br />\nplugin sends page view and optional download events from your WordPress site<br />\ndirectly to a Matomo instance without loading Matomo&#8217;s JavaScript tracker.</p>\n<p>Key benefits:</p>\n<ul>\n<li>Track page views on the server with full control over attributes such as title, URL and referrer.</li>\n<li>Optional download tracking rewrites file links and records the click before redirecting visitors.</li>\n<li>Multisite aware – network admins can define defaults, individual sites can override them.</li>\n<li>Respects Do Not Track and Global Privacy Control headers through the underlying library.</li>\n<li>Logs issues to the WordPress debug log when <code>WP_DEBUG</code> is enabled.</li>\n</ul>\n<p>Looking for expert help with Matomo or server-side tracking? <strong>Pagemachine</strong> offers<br />\nconsulting, implementation and ongoing support via our <strong>Pagemetrics</strong> solution.<br />\nMore info: <a href=\"https://pagemetrics.eu/\" rel=\"nofollow ugc\">Pagemetrics.eu</a></p>\n<h3>Developer Hooks</h3>\n<ul>\n<li><code>pm_matomo_tracking_should_track_request</code> — Return <code>false</code> to skip tracking for the current request.</li>\n<li><code>pm_matomo_tracking_should_rewrite_downloads</code> — Return <code>false</code> to keep original download URLs for the current post.</li>\n<li><code>pm_matomo_tracking_is_download_url</code> — Decide whether a specific URL should be rewritten (receives URL and default extension list).</li>\n<li><code>pm_matomo_tracking_download_extensions</code> — Adjust the list of file extensions that count as downloads.</li>\n<li><code>pm_matomo_tracking_download_url</code> — Customize the generated redirect URL used for download tracking.</li>\n<li><code>pm_matomo_tracking_download_redirect_status</code> — Change the HTTP status code used when redirecting to the original file.</li>\n<li><code>pm_matomo_tracking_log_message</code> — Listen to debug messages emitted while <code>WP_DEBUG</code> is enabled.</li>\n</ul>\n<h3>Example usages</h3>\n<pre><code>// Skip tracking for administrators.\nadd_filter('pm_matomo_tracking_should_track_request', static function ($shouldTrack) {\n    return current_user_can('manage_options') ? false : $shouldTrack;\n});\n\n// Keep original download URLs on the privacy policy page.\nadd_filter('pm_matomo_tracking_should_rewrite_downloads', static function ($shouldRewrite) {\n    return is_page('privacy-policy') ? false : $shouldRewrite;\n});\n\n// Force CDN assets to be treated as downloads.\nadd_filter('pm_matomo_tracking_is_download_url', static function ($decision, $url) {\n    return str_contains($url, 'cdn.example.com/assets/') ? true : $decision;\n}, 10, 2);\n\n// Add extra file types to download tracking.\nadd_filter('pm_matomo_tracking_download_extensions', static function ($extensions) {\n    $extensions = array_merge($extensions, ['svg', 'heic']);\n    return array_unique($extensions);\n});\n\n// Append a checksum to rewritten download URLs.\nadd_filter('pm_matomo_tracking_download_url', static function ($trackingUrl, $target, $label) {\n    $checksum = substr(hash('sha256', $target . $label), 0, 12);\n    return add_query_arg('pm_checksum', $checksum, $trackingUrl);\n}, 10, 3);\n\n// Use a 307 redirect instead of the default 302.\nadd_filter('pm_matomo_tracking_download_redirect_status', static function () {\n    return 307;\n});\n\n// Forward debug messages to the PHP error log while developing.\nadd_action('pm_matomo_tracking_log_message', static function ($level, $message) {\n    if (!defined('WP_DEBUG') || WP_DEBUG !== true) {\n        return;\n    }\n\n    // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log\n    error_log(sprintf('[Pagemetrics for Matomo][%s] %s', strtoupper((string) $level), $message));\n}, 10, 2);\n</code></pre>\n",
+        "installation": "<ol>\n<li>Upload the <code>pagemetrics-for-matomo</code> plugin directory (including the bundled <code>vendor/</code><br />\nfolder) to your site&#8217;s <code>wp-content/plugins</code> path.</li>\n<li>Activate the plugin through the <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Pagemetrics for Matomo</strong> screen in WordPress.</li>\n<li>Open <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Pagemetrics for Matomo</strong> and configure:\n<ul>\n<li>Matomo URL (e.g. <code>https://matomo.example.com/</code>)</li>\n<li>Default Matomo site ID</li>\n<li>Optional auth token (required for IP tracking and other privileged attributes)</li>\n<li>HTTP timeout for Matomo requests</li>\n<li>Download tracking toggle, if you want the plugin to rewrite file links automatically</li>\n</ul>\n</li>\n<li>(Multisite) Network administrators can define defaults under <strong>Network Admin <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Pagemetrics for Matomo</strong>. Individual sites can override those values on their local settings page.</li>\n</ol>\n<p>The plugin starts sending data as soon as the Matomo URL and site ID are set.</p>\n",
+        "faq": "\n<dt id='do%20i%20need%20to%20share%20my%20matomo%20auth%20token%3F'>\nDo I need to share my Matomo auth token?\n</h4>\n<p>\n<p>No. The auth token is optional. Provide it only if you need to forward visitor<br />\nIP addresses or rely on Matomo parameters that require authentication. The<br />\ntoken is stored server-side and never exposed to browsers.</p>\n</p>\n<dt id='can%20i%20disable%20download%20link%20rewriting%3F'>\nCan I disable download link rewriting?\n</h4>\n<p>\n<p>Yes. Leave the <em>Track downloads</em> toggle unchecked in the settings page. You can<br />\nalso use the <code>pm_matomo_tracking_should_rewrite_downloads</code> filter to disable<br />\nrewriting programmatically for specific posts or file types.</p>\n</p>\n<dt id='what%20happens%20if%20matomo%20is%20down%3F'>\nWhat happens if Matomo is down?\n</h4>\n<p>\n<p>Requests use a configurable HTTP timeout (default three seconds). When Matomo<br />\nis unreachable, tracking is skipped and a warning is logged (only when<br />\n    WP_DEBUG is enabled). Page rendering continues normally.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release with server-side page view tracking, optional download tracking and multisite support.</li>\n</ul>\n"
+    },
+    "short_description": "Pagemetrics for Matomo adds server-side, privacy-friendly analytics to WordPress. It tracks page views and downloads without using JavaScript.",
+    "description": "<p>Pagemetrics for Matomo adds privacy-friendly, server-side analytics to WordPress by<br />\nleveraging the <code>pagemachine/matomo-tracking</code> PHP library. When enabled, the<br />\nplugin sends page view and optional download events from your WordPress site<br />\ndirectly to a Matomo instance without loading Matomo&#8217;s JavaScript tracker.</p>\n<p>Key benefits:</p>\n<ul>\n<li>Track page views on the server with full control over attributes such as title, URL and referrer.</li>\n<li>Optional download tracking rewrites file links and records the click before redirecting visitors.</li>\n<li>Multisite aware – network admins can define defaults, individual sites can override them.</li>\n<li>Respects Do Not Track and Global Privacy Control headers through the underlying library.</li>\n<li>Logs issues to the WordPress debug log when <code>WP_DEBUG</code> is enabled.</li>\n</ul>\n<p>Looking for expert help with Matomo or server-side tracking? <strong>Pagemachine</strong> offers<br />\nconsulting, implementation and ongoing support via our <strong>Pagemetrics</strong> solution.<br />\nMore info: <a href=\"https://pagemetrics.eu/\" rel=\"nofollow ugc\">Pagemetrics.eu</a></p>\n<h3>Developer Hooks</h3>\n<ul>\n<li><code>pm_matomo_tracking_should_track_request</code> — Return <code>false</code> to skip tracking for the current request.</li>\n<li><code>pm_matomo_tracking_should_rewrite_downloads</code> — Return <code>false</code> to keep original download URLs for the current post.</li>\n<li><code>pm_matomo_tracking_is_download_url</code> — Decide whether a specific URL should be rewritten (receives URL and default extension list).</li>\n<li><code>pm_matomo_tracking_download_extensions</code> — Adjust the list of file extensions that count as downloads.</li>\n<li><code>pm_matomo_tracking_download_url</code> — Customize the generated redirect URL used for download tracking.</li>\n<li><code>pm_matomo_tracking_download_redirect_status</code> — Change the HTTP status code used when redirecting to the original file.</li>\n<li><code>pm_matomo_tracking_log_message</code> — Listen to debug messages emitted while <code>WP_DEBUG</code> is enabled.</li>\n</ul>\n<h3>Example usages</h3>\n<pre><code>// Skip tracking for administrators.\nadd_filter('pm_matomo_tracking_should_track_request', static function ($shouldTrack) {\n    return current_user_can('manage_options') ? false : $shouldTrack;\n});\n\n// Keep original download URLs on the privacy policy page.\nadd_filter('pm_matomo_tracking_should_rewrite_downloads', static function ($shouldRewrite) {\n    return is_page('privacy-policy') ? false : $shouldRewrite;\n});\n\n// Force CDN assets to be treated as downloads.\nadd_filter('pm_matomo_tracking_is_download_url', static function ($decision, $url) {\n    return str_contains($url, 'cdn.example.com/assets/') ? true : $decision;\n}, 10, 2);\n\n// Add extra file types to download tracking.\nadd_filter('pm_matomo_tracking_download_extensions', static function ($extensions) {\n    $extensions = array_merge($extensions, ['svg', 'heic']);\n    return array_unique($extensions);\n});\n\n// Append a checksum to rewritten download URLs.\nadd_filter('pm_matomo_tracking_download_url', static function ($trackingUrl, $target, $label) {\n    $checksum = substr(hash('sha256', $target . $label), 0, 12);\n    return add_query_arg('pm_checksum', $checksum, $trackingUrl);\n}, 10, 3);\n\n// Use a 307 redirect instead of the default 302.\nadd_filter('pm_matomo_tracking_download_redirect_status', static function () {\n    return 307;\n});\n\n// Forward debug messages to the PHP error log while developing.\nadd_action('pm_matomo_tracking_log_message', static function ($level, $message) {\n    if (!defined('WP_DEBUG') || WP_DEBUG !== true) {\n        return;\n    }\n\n    // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log\n    error_log(sprintf('[Pagemetrics for Matomo][%s] %s', strtoupper((string) $level), $message));\n}, 10, 2);\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/pagemetrics-for-matomo.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/pagemetrics-for-matomo/assets/screenshot-1.png?rev=3397906",
+            "caption": "Pagemetrics for Matomo settings"
+        }
+    ],
+    "tags": {
+        "analytics": "analytics",
+        "matomo": "matomo",
+        "privacy": "privacy",
+        "server-side": "server side",
+        "tracking": "tracking"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/pagemetrics-for-matomo.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/pagemetrics-for-matomo.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/pagemetrics-for-matomo/assets/icon.svg?rev=3397906",
+        "svg": "https://ps.w.org/pagemetrics-for-matomo/assets/icon.svg?rev=3397906"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
