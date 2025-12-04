@@ -2,8 +2,8 @@
     "name": "Popup Builder + Bar Builder + Flyout Builder &#8211; FooConvert for Lead Generation",
     "slug": "fooconvert",
     "version": "1.2.3",
-    "author": "<a href=\"https://profiles.wordpress.org/bradvin/\">bradvin</a>",
-    "author_profile": "https://profiles.wordpress.org/bradvin/",
+    "author": "<a href=\"https://profiles.wordpress.org/fooplugins/\">FooPlugins</a>",
+    "author_profile": "https://profiles.wordpress.org/fooplugins/",
     "contributors": {
         "fooplugins": {
             "profile": "https://profiles.wordpress.org/fooplugins/",
@@ -22,7 +22,7 @@
         }
     },
     "requires": "6.5",
-    "tested": "6.8.1",
+    "tested": "6.9",
     "requires_php": "7.4",
     "requires_plugins": [],
     "compatibility": [],
@@ -39,7 +39,7 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 10,
-    "last_updated": "2025-07-14 12:41:00",
+    "last_updated": "2025-12-04 08:54:00",
     "added": "2024-10-26",
     "homepage": "https://fooplugins.com/fooconvert/",
     "sections": {
@@ -110,11 +110,11 @@
         "2x": "https://ps.w.org/fooconvert/assets/icon-256x256.png?rev=3176091"
     },
     "blocks": {
-        "fc/example-block": {
+        "fc/popup": {
             "apiVersion": 3,
-            "name": "fc/example-block",
-            "title": "FooConvert - Example Block",
-            "description": "This block serves no purpose other than to be an example.",
+            "name": "fc/popup",
+            "title": "Popup",
+            "description": "A popup element to display content to visitors.",
             "category": "fooconvert",
             "editorScript": "file:./editor/index.js",
             "editorStyle": "file:./editor/index.css",
@@ -128,12 +128,40 @@
                 "html": false
             },
             "attributes": {
+                "postId": {
+                    "type": "number"
+                },
+                "postType": {
+                    "type": "string"
+                },
+                "template": {
+                    "type": "string"
+                },
                 "styles": {
                     "type": "object"
                 },
+                "settings": {
+                    "type": "object"
+                },
+                "closeButton": {
+                    "type": "object"
+                },
                 "content": {
-                    "type": "string"
+                    "type": "object"
                 }
+            },
+            "usesContext": [
+                "postId",
+                "postType"
+            ],
+            "providesContext": {
+                "fc/postId": "postId",
+                "fc/postType": "postType",
+                "fc/template": "template",
+                "fc-popup/settings": "settings",
+                "fc-popup/styles": "styles",
+                "fc-popup/closeButton": "closeButton",
+                "fc-popup/content": "content"
             }
         },
         "fc/bar": {
@@ -260,11 +288,11 @@
                 "fc-flyout/closeButton": "closeButton"
             }
         },
-        "fc/popup": {
+        "fc/example-block": {
             "apiVersion": 3,
-            "name": "fc/popup",
-            "title": "Popup",
-            "description": "A popup element to display content to visitors.",
+            "name": "fc/example-block",
+            "title": "FooConvert - Example Block",
+            "description": "This block serves no purpose other than to be an example.",
             "category": "fooconvert",
             "editorScript": "file:./editor/index.js",
             "editorStyle": "file:./editor/index.css",
@@ -278,50 +306,45 @@
                 "html": false
             },
             "attributes": {
-                "postId": {
-                    "type": "number"
-                },
-                "postType": {
-                    "type": "string"
-                },
-                "template": {
-                    "type": "string"
-                },
                 "styles": {
                     "type": "object"
                 },
-                "settings": {
-                    "type": "object"
-                },
-                "closeButton": {
-                    "type": "object"
-                },
                 "content": {
-                    "type": "object"
+                    "type": "string"
                 }
-            },
-            "usesContext": [
-                "postId",
-                "postType"
-            ],
-            "providesContext": {
-                "fc/postId": "postId",
-                "fc/postType": "postType",
-                "fc/template": "template",
-                "fc-popup/settings": "settings",
-                "fc-popup/styles": "styles",
-                "fc-popup/closeButton": "closeButton",
-                "fc-popup/content": "content"
             }
         },
-        "fc/bar-open-button": {
+        "fc/popup-container": {
             "apiVersion": 3,
-            "name": "fc/bar-open-button",
-            "title": "Open Button",
-            "description": "The button displayed when the bar is closed.",
+            "name": "fc/popup-container",
+            "title": "Container",
+            "description": "Wraps the popup content and close button and positions it within the viewport.",
             "category": "fooconvert",
             "parent": [
-                "fc/bar"
+                "fc/popup"
+            ],
+            "editorScript": "file:./index.js",
+            "editorStyle": "file:./index.css",
+            "supports": {
+                "lock": false,
+                "multiple": false,
+                "reusable": false,
+                "className": false,
+                "html": false,
+                "inserter": false
+            },
+            "usesContext": [
+                "fc/postId"
+            ]
+        },
+        "fc/popup-close-button": {
+            "apiVersion": 3,
+            "name": "fc/popup-close-button",
+            "title": "Close Button",
+            "description": "The button used to close the popup.",
+            "category": "fooconvert",
+            "parent": [
+                "fc/popup-container"
             ],
             "editorScript": "file:./index.js",
             "editorStyle": "file:./index.css",
@@ -332,6 +355,28 @@
                 "className": false,
                 "html": false
             }
+        },
+        "fc/popup-content": {
+            "apiVersion": 3,
+            "name": "fc/popup-content",
+            "title": "Content",
+            "description": "The primary content container of the popup.",
+            "category": "fooconvert",
+            "parent": [
+                "fc/popup-container"
+            ],
+            "editorScript": "file:./index.js",
+            "editorStyle": "file:./index.css",
+            "supports": {
+                "lock": false,
+                "multiple": false,
+                "reusable": false,
+                "className": false,
+                "html": false
+            },
+            "usesContext": [
+                "fc/postId"
+            ]
         },
         "fc/bar-container": {
             "apiVersion": 3,
@@ -397,14 +442,14 @@
                 "fc/postId"
             ]
         },
-        "fc/flyout-open-button": {
+        "fc/bar-open-button": {
             "apiVersion": 3,
-            "name": "fc/flyout-open-button",
+            "name": "fc/bar-open-button",
             "title": "Open Button",
-            "description": "The button displayed when the flyout is closed.",
+            "description": "The button displayed when the bar is closed.",
             "category": "fooconvert",
             "parent": [
-                "fc/flyout"
+                "fc/bar"
             ],
             "editorScript": "file:./index.js",
             "editorStyle": "file:./index.css",
@@ -480,37 +525,14 @@
                 "fc/postId"
             ]
         },
-        "fc/popup-container": {
+        "fc/flyout-open-button": {
             "apiVersion": 3,
-            "name": "fc/popup-container",
-            "title": "Container",
-            "description": "Wraps the popup content and close button and positions it within the viewport.",
+            "name": "fc/flyout-open-button",
+            "title": "Open Button",
+            "description": "The button displayed when the flyout is closed.",
             "category": "fooconvert",
             "parent": [
-                "fc/popup"
-            ],
-            "editorScript": "file:./index.js",
-            "editorStyle": "file:./index.css",
-            "supports": {
-                "lock": false,
-                "multiple": false,
-                "reusable": false,
-                "className": false,
-                "html": false,
-                "inserter": false
-            },
-            "usesContext": [
-                "fc/postId"
-            ]
-        },
-        "fc/popup-close-button": {
-            "apiVersion": 3,
-            "name": "fc/popup-close-button",
-            "title": "Close Button",
-            "description": "The button used to close the popup.",
-            "category": "fooconvert",
-            "parent": [
-                "fc/popup-container"
+                "fc/flyout"
             ],
             "editorScript": "file:./index.js",
             "editorStyle": "file:./index.css",
@@ -521,28 +543,6 @@
                 "className": false,
                 "html": false
             }
-        },
-        "fc/popup-content": {
-            "apiVersion": 3,
-            "name": "fc/popup-content",
-            "title": "Content",
-            "description": "The primary content container of the popup.",
-            "category": "fooconvert",
-            "parent": [
-                "fc/popup-container"
-            ],
-            "editorScript": "file:./index.js",
-            "editorStyle": "file:./index.css",
-            "supports": {
-                "lock": false,
-                "multiple": false,
-                "reusable": false,
-                "className": false,
-                "html": false
-            },
-            "usesContext": [
-                "fc/postId"
-            ]
         }
     },
     "block_assets": [],
