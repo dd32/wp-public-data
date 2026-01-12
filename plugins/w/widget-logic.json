@@ -1,7 +1,7 @@
 {
     "name": "Widget Logic",
     "slug": "widget-logic",
-    "version": "6.07",
+    "version": "6.08",
     "author": "<a href=\"https://profiles.wordpress.org/widgetlogics/\">Widgetlogic.org</a>",
     "author_profile": "https://profiles.wordpress.org/widgetlogics/",
     "contributors": {
@@ -29,7 +29,7 @@
     "support_threads": 2,
     "support_threads_resolved": 1,
     "active_installs": 100000,
-    "last_updated": "2026-01-07 15:33:00",
+    "last_updated": "2026-01-12 13:03:00",
     "added": "2008-02-28",
     "homepage": "",
     "sections": {
@@ -39,7 +39,7 @@
     },
     "short_description": "Widget Logic lets you control on which pages widgets appear using WP&#039;s conditional tags.",
     "description": "<p>This plugin gives every widget an extra control field called &#8220;Widget logic&#8221; that lets you control the pages that the widget will appear on. The text field lets you use WP&#8217;s <a href=\"https://codex.wordpress.org/Conditional_Tags\" rel=\"nofollow ugc\">Conditional Tags</a>, or any general PHP code.</p>\n<p>PLEASE NOTE The widget logic you introduce is EVAL&#8217;d directly. Anyone who has access to edit widget appearance will have the right to add any code, including malicious and possibly destructive functions. There is an optional filter &#8216;widget_logic_eval_override&#8217; which you can use to bypass the EVAL with your own code if needed. (See <a href=\"other_notes/\" rel=\"nofollow ugc\">Other Notes</a>).</p>\n<p>The configuring and options are in the usual widget admin interface.</p>\n<p>BIG UPDATE:</p>\n<ul>\n<li>\n<p>Now you can control widget in Gutenberg Widgets editor as well as in Classic Editor. It is just as easy as before but also in gutenberg view.</p>\n</li>\n<li>\n<p>Pre-installed widgets let you add special widget with one click of the mouse. First pre-installed widget is Live Match that let you add widget of one random live football game with real time score updates (teams logos, livescore, minute of the match, tournament name). And more interesting widgets to come!</p>\n</li>\n</ul>\n<p><strong>NOTE ON DEFAULT FUNCTIONS:</strong> Widget Logic includes a whitelist of common WordPress conditional tags and safe functions. If you need additional WordPress functions that are not currently whitelisted, please create a topic in our <a href=\"https://wordpress.org/support/plugin/widget-logic/\" rel=\"ugc\">support forum</a> to request them. We regularly add commonly requested functions in new releases.</p>\n<h4>Configuration</h4>\n<p>Aside from logic against your widgets, there are three options added to the foot of the widget admin page (see screenshots).</p>\n<ul>\n<li>\n<p>Use &#8216;wp_reset_query&#8217; fix &#8212; Many features of WP, as well as the many themes and plugins out there, can mess with the conditional tags, such that is_home is NOT true on the home page. This can often be fixed with a quick wp_reset_query() statement just before the widgets are called, and this option puts that in for you rather than having to resort to code editing</p>\n</li>\n<li>\n<p>Load logic &#8212; This option allows you to set the point in the page load at which your widget logic if first checked. Pre v.50 it was when the &#8216;wp_head&#8217; trigger happened, ie during the creation of the HTML&#8217;s HEAD block. Many themes didn&#8217;t call wp_head, which was a problem. From v.50 it happens, by default, as early as possible, which is as soon as the plugin loads. You can now specify these &#8216;late load&#8217; points (in chronological order):</p>\n<ul>\n<li>after the theme loads (after_setup_theme trigger)</li>\n<li>when all PHP loaded (wp_loaded trigger)</li>\n<li>after query variables set (parse_query) – this is the default</li>\n<li>during page header (wp_head trigger)</li>\n</ul>\n<p>You may need to delay the load if your logic depends on functions defined, eg in the theme functions.php file. Conversely you may want the load early so that the widget count is calculated correctly, eg to show an alternative layour or content when a sidebar has no widgets.</p>\n</li>\n<li>\n<p>Don&#8217;t cache widget logic results &#8212; From v .58 the widget logic code should only execute once, but that might cause unexpected results with some themes, so this option is here to turn that behaviour off. (The truth/false of the code will be evaluated every time the sidebars_widgets filter is called.</p>\n</li>\n<li>\n<p>Custom PHP Functions &#8212; From v.6.0.6 you can use the <code>widget_logic_allowed_functions</code> filter to add custom PHP functions that will be allowed in Widget Logic fields. By default, only WordPress conditional tags and a whitelist of safe functions are available. This filter allows you to extend the functionality and use your own custom functions.</p>\n<p>To add a custom function, add the following code to your theme&#8217;s <code>functions.php</code> file:<br />\n    add_filter(&#8216;widget_logic_allowed_functions&#8217;, &#8216;my_allowed_functions&#8217;);<br />\n        function my_allowed_functions($functions) {<br />\n            $functions[] = &#8216;<em>my_custom_function_name</em>&#8216;;<br />\n            return $functions;<br />\n        }</p>\n<p>You can add multiple functions by using one wrapper function:<br />\n    add_filter(&#8216;widget_logic_allowed_functions&#8217;, &#8216;my_allowed_functions&#8217;);<br />\n        function my_allowed_functions($functions) {<br />\n            $functions[] = &#8216;is_special_page&#8217;;<br />\n            $functions[] = &#8216;is_user_verified&#8217;;<br />\n            $functions[] = &#8216;get_sidebar_title&#8217;;<br />\n            return $functions;<br />\n        }</p>\n<p><strong>IMPORTANT NOTE ON VARIABLES:</strong> Widget Logic is designed to work with simple data types (strings, numbers, booleans). If you need to use complex variables, global state, or conditional logic that depends on many factors, create a custom function in your theme&#8217;s <code>functions.php</code> file and call it from Widget Logic:</p>\n<p><strong>Good approach (in functions.php):</strong><br />\n    function is_special_page() {<br />\n            global $post;<br />\n            $special_ids = array(5, 10, 15);<br />\n            $conditions = some_complex_function();</p>\n<pre><code>        return is_page() &amp;&amp; in_array($post-&gt;ID, $special_ids) &amp;&amp; $conditions;\n    }\n</code></pre>\n<p>Then in Widget Logic field, simply use: <code>is_special_page()</code></p>\n<p><strong>Less ideal approach (in Widget Logic field):</strong><br />\nAvoid putting complex logic directly in the Widget Logic field. Keep it simple and let your custom function handle the complexity. This keeps your widget settings clean and maintainable.</p>\n</li>\n</ul>\n<h4>Interaction with External Services</h4>\n<p>Widget Logic uses the external service to obtain up-to-date information about the results of football matches. <a href=\"https://widgetlogic.org\" rel=\"nofollow ugc\">widgetlogic.org</a> is a source of sports information, that provides a wide range of information about football, including various leagues, tournaments, and championships from around the world.</p>\n<p>The functioning of the <a href=\"https://widgetlogic.org\" rel=\"nofollow ugc\">widgetlogic.org</a> service is based on delivering real-time data about selected matches without the need to refresh the page. This means that data is automatically updated without requiring page reload. This approach ensures users quick and uninterrupted access to the latest sports data without the effort of manually updating information, allowing them to stay informed about ongoing events in real-time.</p>\n<h3>Writing Logic Code</h3>\n<p>The text in the &#8216;Widget logic&#8217; field can be full PHP code and should return &#8216;true&#8217; when you need the widget to appear. If there is no &#8216;return&#8217; in the text, an implicit &#8216;return&#8217; is added to the start and a &#8216;;&#8217; is added on the end. (This is just to make single statements like is_home() more convenient.)</p>\n<h4>The Basics</h4>\n<p>Make good use of <a href=\"https://codex.wordpress.org/Conditional_Tags\" rel=\"nofollow ugc\">WP&#8217;s own conditional tags</a>. You can vary and combine code using:</p>\n<ul>\n<li><code>!</code> (NOT) to <strong>reverse</strong> the logic, eg <code>!is_home()</code> is TRUE when this is NOT the home page.</li>\n<li><code>||</code> (OR) to <strong>combine</strong> conditions. <code>X OR Y</code> is TRUE when either X is true or Y is true.</li>\n<li><code>&amp;&amp;</code> (AND) to make conditions <strong>more specific</strong>. <code>X AND Y</code> is TRUE when both X is true and Y is true.</li>\n</ul>\n<p>There are lots of great code examples on the WP forums, and on WP sites across the net. But the WP Codex is also full of good examples to adapt, such as <a href=\"https://codex.wordpress.org/Template_Tags/in_category#Testing_if_a_post_is_in_a_descendant_category\" rel=\"nofollow ugc\">Test if post is in a descendent category</a>.</p>\n<h4>Examples</h4>\n<ul>\n<li><code>is_home()</code> &#8212; just the main blog page</li>\n<li><code>!is_page('about')</code> &#8212; everywhere EXCEPT this specific WP &#8216;page&#8217;</li>\n<li><code>!is_user_logged_in()</code> &#8212; shown when a user is not logged in</li>\n<li><code>is_category(array(5,9,10,11))</code> &#8212; category page of one of the given category IDs</li>\n<li><code>is_single() &amp;&amp; in_category('baked-goods')</code> &#8212; single post that&#8217;s in the category with this slug</li>\n<li><code>current_user_can('level_10')</code> &#8212; admin only widget</li>\n<li><code>strpos($_SERVER['HTTP_REFERER'], \"google.com\")!=false</code> &#8212; widget to show when clicked through from a google search</li>\n<li><code>is_category() &amp;&amp; in_array($cat, get_term_children( 5, 'category'))</code> &#8212; category page that&#8217;s a descendent of category 5</li>\n<li><code>global $post; return (in_array(77,get_post_ancestors($post)));</code> &#8212; WP page that is a child of page 77</li>\n<li><code>global $post; return (is_page('home') || ($post-&gt;post_parent==\"13\"));</code> &#8212; home page OR the page that&#8217;s a child of page 13</li>\n</ul>\n<p>Note the extra &#8216;;&#8217; on the end where there is an explicit &#8216;return&#8217;.</p>\n<h3>The &#8216;widget_logic_eval_override&#8217; filter</h3>\n<p>Before the Widget Logic code is evaluated for each widget, the text of the Widget Logic code is passed through this filter. If the filter returns a BOOLEAN result, this is used instead to determine if the widget is visible. Return TRUE for visible.</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/widget-logic.6.07.zip",
+    "download_link": "https://downloads.wordpress.org/plugin/widget-logic.6.08.zip",
     "upgrade_notice": {
         "0.58": "<p>Important change to the default of when your Widget Logic is evaluated. It is now on the &quot;parse_query&quot; action, and just once. Those defaults can be overridden.</p>",
         "0.46": "<p>Required with WP2.8 cos of changes in Widget admin AJAX</p>",
@@ -74,7 +74,7 @@
         "sidebar": "sidebar",
         "widget": "widget"
     },
-    "stable_tag": "6.07",
+    "stable_tag": "6.08",
     "versions": {
         "0.2": "https://downloads.wordpress.org/plugin/widget-logic.0.2.zip",
         "0.3": "https://downloads.wordpress.org/plugin/widget-logic.0.3.zip",
@@ -114,6 +114,7 @@
         "6.0.6": "https://downloads.wordpress.org/plugin/widget-logic.6.0.6.zip",
         "6.02": "https://downloads.wordpress.org/plugin/widget-logic.6.02.zip",
         "6.07": "https://downloads.wordpress.org/plugin/widget-logic.6.07.zip",
+        "6.08": "https://downloads.wordpress.org/plugin/widget-logic.6.08.zip",
         "trunk": "https://downloads.wordpress.org/plugin/widget-logic.zip"
     },
     "business_model": false,
@@ -139,169 +140,169 @@
             "type": "plugin",
             "slug": "widget-logic",
             "language": "ca",
-            "version": "6.02",
+            "version": "6.07",
             "updated": "2019-07-16 17:37:41",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/ca.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/ca.zip"
         },
         {
             "type": "plugin",
             "slug": "widget-logic",
             "language": "de_DE",
-            "version": "6.02",
-            "updated": "2019-07-28 18:14:19",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/de_DE.zip"
+            "version": "6.07",
+            "updated": "2025-01-08 14:34:44",
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/de_DE.zip"
         },
         {
             "type": "plugin",
             "slug": "widget-logic",
             "language": "de_DE_formal",
-            "version": "6.02",
-            "updated": "2022-10-05 02:21:19",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/de_DE_formal.zip"
+            "version": "6.07",
+            "updated": "2025-01-08 14:34:55",
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/de_DE_formal.zip"
         },
         {
             "type": "plugin",
             "slug": "widget-logic",
             "language": "en_CA",
-            "version": "6.02",
+            "version": "6.07",
             "updated": "2024-08-06 08:24:39",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/en_CA.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/en_CA.zip"
         },
         {
             "type": "plugin",
             "slug": "widget-logic",
             "language": "en_GB",
-            "version": "6.02",
+            "version": "6.07",
             "updated": "2019-11-02 17:09:15",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/en_GB.zip"
-        },
-        {
-            "type": "plugin",
-            "slug": "widget-logic",
-            "language": "es_VE",
-            "version": "6.02",
-            "updated": "2019-10-10 11:31:32",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/es_VE.zip"
-        },
-        {
-            "type": "plugin",
-            "slug": "widget-logic",
-            "language": "es_ES",
-            "version": "6.02",
-            "updated": "2024-09-05 16:15:31",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/es_ES.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/en_GB.zip"
         },
         {
             "type": "plugin",
             "slug": "widget-logic",
             "language": "es_CL",
-            "version": "6.0.6",
+            "version": "6.07",
             "updated": "2025-10-12 23:38:00",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.0.6/es_CL.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/es_CL.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "widget-logic",
+            "language": "es_ES",
+            "version": "6.07",
+            "updated": "2025-08-28 15:11:40",
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/es_ES.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "widget-logic",
+            "language": "es_VE",
+            "version": "6.07",
+            "updated": "2019-10-10 11:31:32",
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/es_VE.zip"
         },
         {
             "type": "plugin",
             "slug": "widget-logic",
             "language": "fr_CA",
-            "version": "6.02",
+            "version": "6.07",
             "updated": "2019-07-28 12:47:19",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/fr_CA.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/fr_CA.zip"
         },
         {
             "type": "plugin",
             "slug": "widget-logic",
             "language": "fr_FR",
-            "version": "6.02",
+            "version": "6.07",
             "updated": "2020-03-30 19:04:10",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/fr_FR.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/fr_FR.zip"
         },
         {
             "type": "plugin",
             "slug": "widget-logic",
             "language": "gl_ES",
-            "version": "6.02",
+            "version": "6.07",
             "updated": "2019-10-09 09:14:04",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/gl_ES.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/gl_ES.zip"
         },
         {
             "type": "plugin",
             "slug": "widget-logic",
             "language": "he_IL",
-            "version": "6.02",
+            "version": "6.07",
             "updated": "2024-08-06 08:24:46",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/he_IL.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/he_IL.zip"
         },
         {
             "type": "plugin",
             "slug": "widget-logic",
             "language": "hr",
-            "version": "6.02",
+            "version": "6.07",
             "updated": "2017-09-20 17:10:23",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/hr.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/hr.zip"
         },
         {
             "type": "plugin",
             "slug": "widget-logic",
             "language": "ja",
-            "version": "6.02",
+            "version": "6.07",
             "updated": "2022-01-18 15:53:38",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/ja.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/ja.zip"
         },
         {
             "type": "plugin",
             "slug": "widget-logic",
             "language": "nl_NL",
-            "version": "6.02",
-            "updated": "2024-08-28 19:08:49",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/nl_NL.zip"
-        },
-        {
-            "type": "plugin",
-            "slug": "widget-logic",
-            "language": "nl_NL_formal",
-            "version": "6.02",
-            "updated": "2024-08-29 19:50:30",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/nl_NL_formal.zip"
+            "version": "6.07",
+            "updated": "2025-07-28 14:00:27",
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/nl_NL.zip"
         },
         {
             "type": "plugin",
             "slug": "widget-logic",
             "language": "nl_BE",
-            "version": "6.02",
-            "updated": "2024-08-30 07:28:42",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/nl_BE.zip"
+            "version": "6.07",
+            "updated": "2025-03-31 09:27:54",
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/nl_BE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "widget-logic",
+            "language": "nl_NL_formal",
+            "version": "6.07",
+            "updated": "2025-07-28 14:11:14",
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/nl_NL_formal.zip"
         },
         {
             "type": "plugin",
             "slug": "widget-logic",
             "language": "pt_BR",
-            "version": "6.02",
+            "version": "6.07",
             "updated": "2017-10-02 00:47:10",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/pt_BR.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/pt_BR.zip"
         },
         {
             "type": "plugin",
             "slug": "widget-logic",
             "language": "ru_RU",
-            "version": "6.02",
+            "version": "6.07",
             "updated": "2022-11-21 16:25:48",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/ru_RU.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/ru_RU.zip"
         },
         {
             "type": "plugin",
             "slug": "widget-logic",
             "language": "sv_SE",
-            "version": "6.02",
-            "updated": "2020-04-23 18:52:39",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/sv_SE.zip"
+            "version": "6.07",
+            "updated": "2025-09-25 11:49:02",
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/sv_SE.zip"
         },
         {
             "type": "plugin",
             "slug": "widget-logic",
             "language": "uk",
-            "version": "6.02",
-            "updated": "2018-06-08 09:46:23",
-            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.02/uk.zip"
+            "version": "6.07",
+            "updated": "2024-11-03 08:40:59",
+            "package": "https://downloads.wordpress.org/translation/plugin/widget-logic/6.07/uk.zip"
         }
     ]
 }
