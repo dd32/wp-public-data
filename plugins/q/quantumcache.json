@@ -1,0 +1,75 @@
+{
+    "name": "QuantumCache",
+    "slug": "quantumcache",
+    "version": "0.1.5",
+    "author": "<a href=\"https://profiles.wordpress.org/adelong01/\">adelong01</a>",
+    "author_profile": "https://profiles.wordpress.org/adelong01/",
+    "contributors": {
+        "adelong01": {
+            "profile": "https://profiles.wordpress.org/adelong01/",
+            "avatar": "https://secure.gravatar.com/avatar/91f2e70913337cff44aec655cfeb289b80b8f3d35d7e767ad49b66ba5ef95a1c?s=96&d=monsterid&r=g",
+            "display_name": "adelong01"
+        }
+    },
+    "requires": "6.0",
+    "tested": "6.9",
+    "requires_php": "8.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/quantumcache/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-01-25 16:30:00",
+    "added": "2026-01-25",
+    "homepage": "",
+    "sections": {
+        "description": "<p>QuantumCache speeds up WordPress by caching database query results (not full pages). It integrates with WordPress query execution to cache post ID lists and content fragments that WordPress uses to build pages, reducing database load while preserving correct invalidation.</p>\n<p>It is <em>not</em> an output buffer or page cache, and it does not replace existing page caching solutions.</p>\n<h3>Features</h3>\n<ul>\n<li>Caches the results of the main front-end <code>WP_Query</code> for anonymous requests.</li>\n<li>Tag-based invalidation: purge by post ID, post type, or taxonomy.</li>\n<li>Fragment caching for <code>the_content</code> (classic) and core blocks such as <code>core/post-content</code>, <code>core/latest-posts</code>, <code>core/archives</code>, and <code>core/navigation</code>.</li>\n<li>Multiple storage modes:\n<ul>\n<li>Auto – use Redis if available, otherwise fall back to MySQL.</li>\n<li>Redis – fastest mode; uses the PHP Redis extension.</li>\n<li>MySQL – portable fallback using compact tables (<code>qc_entries</code>, <code>qc_tagmap</code>).</li>\n</ul>\n</li>\n<li>Compatible with the Redis Object Cache drop-in.</li>\n<li>Avoids wp_options and postmeta storage – all cache data is stored in Redis or<br />\nQuantumCache-owned database tables.</li>\n<li>Multisite-aware: per-site prefixes and per-site tables.</li>\n</ul>\n<h3>Performance summary</h3>\n<p>In local benchmarks, QuantumCache reduced database query execution by approximately 70–75% on cached pages and achieved cache hit rates above 95% when using Redis.</p>\n<p>Under production-like load with a networked database, these reductions translated to roughly 20–40% higher throughput and 20–35% lower 95th-percentile response latency compared to baseline WordPress.</p>\n<p>Actual results depend on theme, plugins, database topology, and traffic patterns.</p>\n<h3>Debug headers (optional)</h3>\n<p>Enable <em>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> QuantumCache <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Send X-QC debug headers</em> to view cache status in HTTP responses:<br />\n* <code>X-QC-Main: HIT | MISS | STORE</code><br />\n* <code>X-QC-Store: AUTO | redis | mysql</code><br />\n* <code>X-QC-Hydrated:</code> number of posts loaded from cache</p>\n<p>Append <code>?qc_nocache=1</code> to any URL to bypass caching for that request.</p>\n<p>Debug headers are sent only when explicitly enabled in settings and contain no<br />\npersonal or user-specific data.</p>\n<h3>Privacy</h3>\n<p>QuantumCache does not collect, send, or log personal data.<br />\nIt stores cache entries in Redis or its own MySQL tables.<br />\nOther plugins on your site may handle cookies or data independently.<br />\nNo remote requests are made, and no data is transmitted to external servers.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>quantumcache</code> folder to <code>/wp-content/plugins/</code> and activate it.</li>\n<li>(Optional) You may install the Redis Object Cache plugin for additional Redis features. QuantumCache works independently.</li>\n<li>Go to <em>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> QuantumCache</em>:\n<ul>\n<li>Choose a store mode: Auto, Redis, or MySQL.</li>\n<li>Configure Redis host/port if not already set by constants.</li>\n<li>Optionally enable debug headers.</li>\n</ul>\n</li>\n<li>Load a public page twice. On the second load, the response should include <code>X-QC-Main: HIT</code>.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20it%20cache%20logged-in%20users%3F\">\nDoes it cache logged-in users?\n</h4>\n<p>\n<p>No. QuantumCache focuses on anonymous (front-end) traffic to ensure safe invalidation. Logged-in caching is not included.</p>\n</p>\n<dt id=\"do%20i%20need%20redis%3F\">\nDo I need Redis?\n</h4>\n<p>\n<p>Redis is recommended for best performance, but not required. QuantumCache automatically falls back to its internal MySQL store.</p>\n</p>\n<dt id=\"does%20it%20cache%20admin%20pages%2C%20feeds%2C%20or%20searches%3F\">\nDoes it cache admin pages, feeds, or searches?\n</h4>\n<p>\n<p>No. Those are intentionally excluded.</p>\n</p>\n<dt id=\"is%20it%20multisite-compatible%3F\">\nIs it Multisite-compatible?\n</h4>\n<p>\n<p>Yes. Each site uses its own prefix and tables. Purge actions apply per site.</p>\n</p>\n<dt id=\"how%20do%20i%20purge%20the%20cache%3F\">\nHow do I purge the cache?\n</h4>\n<p>\n<p>From <em>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> QuantumCache</em>:<br />\n* Purge Everything – clears all QuantumCache entries for this site.<br />\n* Purge by Tag – e.g. <code>post:123</code> or <code>taxonomy:category</code>.<br />\n* Purge by URL – resolves to post/taxonomy tags automatically.</p>\n</p>\n<dt id=\"which%20fragments%20are%20cached%3F\">\nWhich fragments are cached?\n</h4>\n<p>\n<ul>\n<li>Classic themes – <code>the_content</code> on singulars.</li>\n<li>Block themes – <code>core/post-content</code> and common navigation/listing blocks.</li>\n</ul>\n</p>\n<dt id=\"does%20it%20cache%20dynamic%20content%20or%20nonces%3F\">\nDoes it cache dynamic content or nonces?\n</h4>\n<p>\n<p>No. Fragments containing nonces, tokens, or user-specific data are skipped automatically.</p>\n</p>\n<dt id=\"does%20this%20replace%20my%20page%20cache%20or%20cdn%3F\">\nDoes this replace my page cache or CDN?\n</h4>\n<p>\n<p>No. QuantumCache operates below page caches and CDNs by reducing database and<br />\nrendering overhead. It is designed to complement, not replace, page caching<br />\nsolutions.</p>\n</p>\n<dt id=\"what%20happens%20on%20uninstall%3F\">\nWhat happens on uninstall?\n</h4>\n<p>\n<p>Unless the <code>quantumcache_preserve_data_on_uninstall</code> filter returns true, QuantumCache removes its own tables and options. No wp_options or postmeta entries are left behind.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.5</h4>\n<ul>\n<li>Security: Hardened direct database access by validating and escaping internal<br />\ntable identifiers to satisfy PluginCheck and reviewer requirements.</li>\n<li>Code: Resolved all PluginCheck warnings; no functional behavior changes.</li>\n<li>Cleanup: Removed development-only tooling files from the release package.</li>\n<li>Stability: Minor internal cleanup following load testing and runtime validation.</li>\n</ul>\n<h4>0.1.4</h4>\n<ul>\n<li>Fix: Fixed incomplete Stats.php code concerning MySQL reporting</li>\n<li>Fix: Prefixed all global functions and variables (qc_* <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> quantumcache_*) to satisfy Plugin Check naming requirements.</li>\n<li>Fix: Updated uninstall routine to use prefixed globals and updated option names.</li>\n<li>Fix: Added defensive table-name validation and explicit casting in Maintenance and Stats to address Plugin Check warnings.</li>\n<li>Fix: Corrected several internal calls referencing the old function names (qc_should_debug_headers, etc.), preventing runtime errors.</li>\n</ul>\n<h4>0.1.3</h4>\n<ul>\n<li>Fix: Updated MySQLStore write operations to use $wpdb-&gt;insert() with format arrays, resolving the PHPCS / reviewer-required change.</li>\n<li>Fix: Corrected StoreFactory to pass the required $wpdb instance when constructing MySQLStore, restoring MySQL fallback functionality.</li>\n</ul>\n<h4>0.1.2</h4>\n<ul>\n<li>Admin: refined settings layout, help text, and capability/nonce checks.</li>\n<li>Code: PHPCS/WPCS compliance (sanitization, escaping, Yoda, no short ternaries).</li>\n<li>Store: Redis “Purge Everything” via SCAN/DEL with site prefix.</li>\n<li>Store: MySQL tag mapping writes via <code>wpdb-&gt;insert()</code> with formats.</li>\n<li>Read path: safe request URI normalization for keys and display.</li>\n</ul>\n<h4>0.1.1</h4>\n<ul>\n<li>Fix: hydration logic in <code>on_posts_pre_query()</code> (now primes and hydrates safely).</li>\n<li>Perf: archive hit path uses <code>update_post_caches()</code> without taxonomy overhead.</li>\n<li>Safety: skip caching very small archives (fewer than 12 IDs).</li>\n<li>Headers: ensure <code>X-QC-Store-Actual</code> reflects real backend.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial public release.</li>\n<li>Query-level caching with tag-based invalidation.</li>\n<li>Fragment caching for <code>the_content</code> and key blocks.</li>\n<li>Redis (preferred) and MySQL stores.</li>\n<li>Multisite support.</li>\n<li>Admin UI: store selection, Redis config, debug headers, purge controls, live stats.</li>\n<li>PHPCS clean (WordPress coding standards).</li>\n</ul>\n"
+    },
+    "short_description": "Speeds up WordPress by caching database queries and fragments for anonymous visitors using Redis or MySQL, without storing cache data in wp_options.",
+    "description": "<p>QuantumCache speeds up WordPress by caching database query results (not full pages). It integrates with WordPress query execution to cache post ID lists and content fragments that WordPress uses to build pages, reducing database load while preserving correct invalidation.</p>\n<p>It is <em>not</em> an output buffer or page cache, and it does not replace existing page caching solutions.</p>\n<h3>Features</h3>\n<ul>\n<li>Caches the results of the main front-end <code>WP_Query</code> for anonymous requests.</li>\n<li>Tag-based invalidation: purge by post ID, post type, or taxonomy.</li>\n<li>Fragment caching for <code>the_content</code> (classic) and core blocks such as <code>core/post-content</code>, <code>core/latest-posts</code>, <code>core/archives</code>, and <code>core/navigation</code>.</li>\n<li>Multiple storage modes:\n<ul>\n<li>Auto – use Redis if available, otherwise fall back to MySQL.</li>\n<li>Redis – fastest mode; uses the PHP Redis extension.</li>\n<li>MySQL – portable fallback using compact tables (<code>qc_entries</code>, <code>qc_tagmap</code>).</li>\n</ul>\n</li>\n<li>Compatible with the Redis Object Cache drop-in.</li>\n<li>Avoids wp_options and postmeta storage – all cache data is stored in Redis or<br />\nQuantumCache-owned database tables.</li>\n<li>Multisite-aware: per-site prefixes and per-site tables.</li>\n</ul>\n<h3>Performance summary</h3>\n<p>In local benchmarks, QuantumCache reduced database query execution by approximately 70–75% on cached pages and achieved cache hit rates above 95% when using Redis.</p>\n<p>Under production-like load with a networked database, these reductions translated to roughly 20–40% higher throughput and 20–35% lower 95th-percentile response latency compared to baseline WordPress.</p>\n<p>Actual results depend on theme, plugins, database topology, and traffic patterns.</p>\n<h3>Debug headers (optional)</h3>\n<p>Enable <em>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> QuantumCache <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Send X-QC debug headers</em> to view cache status in HTTP responses:<br />\n* <code>X-QC-Main: HIT | MISS | STORE</code><br />\n* <code>X-QC-Store: AUTO | redis | mysql</code><br />\n* <code>X-QC-Hydrated:</code> number of posts loaded from cache</p>\n<p>Append <code>?qc_nocache=1</code> to any URL to bypass caching for that request.</p>\n<p>Debug headers are sent only when explicitly enabled in settings and contain no<br />\npersonal or user-specific data.</p>\n<h3>Privacy</h3>\n<p>QuantumCache does not collect, send, or log personal data.<br />\nIt stores cache entries in Redis or its own MySQL tables.<br />\nOther plugins on your site may handle cookies or data independently.<br />\nNo remote requests are made, and no data is transmitted to external servers.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/quantumcache.0.1.5.zip",
+    "upgrade_notice": {
+        "0.1.2": "<p>Admin refinements, PHPCS compliance, Redis purge, and safer URI handling.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "caching": "caching",
+        "database": "database",
+        "multisite": "multisite",
+        "performance": "performance",
+        "redis": "redis"
+    },
+    "stable_tag": "0.1.5",
+    "versions": {
+        "0.1.5": "https://downloads.wordpress.org/plugin/quantumcache.0.1.5.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/quantumcache.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://paypal.me/quantumcache",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/quantumcache.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
