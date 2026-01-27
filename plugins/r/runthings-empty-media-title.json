@@ -1,0 +1,85 @@
+{
+    "name": "Clear Media Title On Upload",
+    "slug": "runthings-empty-media-title",
+    "version": "2.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/runthingsdev/\">runthings.dev</a>",
+    "author_profile": "https://profiles.wordpress.org/runthingsdev/",
+    "contributors": {
+        "runthingsdev": {
+            "profile": "https://profiles.wordpress.org/runthingsdev/",
+            "avatar": "https://secure.gravatar.com/avatar/09d9bae35a8fb1c50dc96f85e642abb2dc3f8e687f1325e7fb2a7f40d70ab622?s=96&d=monsterid&r=g",
+            "display_name": "runthings.dev"
+        }
+    },
+    "requires": "6.0",
+    "tested": "6.9",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/runthings-empty-media-title/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-01-27 12:13:00",
+    "added": "2026-01-27",
+    "homepage": "https://runthings.dev/wordpress-plugins/empty-media-title/",
+    "sections": {
+        "description": "<p>When you upload media to WordPress, the title field is automatically set to a slugified version of the filename. This often results in messy, unoptimized titles like &#8220;IMG-20240115-photo-final-v2&#8221; appearing in gallery captions, alt tags, or title attributes.</p>\n<p>This plugin clears the title field for newly uploaded media, ensuring that if a title is displayed anywhere, it&#8217;s one you&#8217;ve intentionally set yourself.</p>\n<h4>Features</h4>\n<ul>\n<li>Automatically clears the title field for new media uploads</li>\n<li>Bulk action to clear titles on existing media library items</li>\n<li>Lightweight with no settings page required</li>\n<li>Developer-friendly with filters</li>\n</ul>\n<h4>How It Works</h4>\n<p>The plugin hooks into WordPress&#8217;s <code>wp_insert_attachment_data</code> filter and clears the <code>post_title</code> field for new uploads before they are saved to the database.</p>\n<h3>Filters</h3>\n<h4>runthings_emt_skip</h4>\n<p>Skip clearing the title for specific attachments.</p>\n<p><strong>Parameters:</strong></p>\n<ul>\n<li><code>$skip</code> (bool) &#8211; Whether to skip clearing the title. Default false.</li>\n<li><code>$data</code> (array) &#8211; Attachment post data (slashed, sanitized, processed).</li>\n<li><code>$postarr</code> (array) &#8211; Sanitized post data (not processed).</li>\n<li><code>$unsanitized_postarr</code> (array) &#8211; Unsanitized post data.</li>\n<li><code>$update</code> (bool) &#8211; Whether this is an update (always false for new uploads).</li>\n</ul>\n<p><strong>Example:</strong></p>\n<pre><code>// Skip clearing title for uploads by specific user\nadd_filter('runthings_emt_skip', function($skip, $data, $postarr) {\n    if (get_current_user_id() === 1) {\n        return true; // Admin keeps auto-generated titles\n    }\n    return $skip;\n}, 10, 3);\n\n\n\n// Skip clearing title if filename contains \"keep-title\"\nadd_filter('runthings_emt_skip', function($skip, $data, $postarr) {\n    $filename = $postarr['post_title'] ?? '';\n    if (strpos($filename, 'keep-title') !== false) {\n        return true;\n    }\n    return $skip;\n}, 10, 3);\n</code></pre>\n<h4>runthings_emt_mime_types</h4>\n<p>Filter which MIME types should have their title cleared. By default, all media types are affected.</p>\n<p><strong>Parameters:</strong></p>\n<ul>\n<li><code>$allowed_mime_types</code> (array) &#8211; Array of MIME type patterns. Default <code>[]</code> (all types).</li>\n<li><code>$attachment_mime_type</code> (string) &#8211; The attachment&#8217;s MIME type.</li>\n<li><code>$postarr</code> (array) &#8211; Sanitized post data.</li>\n</ul>\n<p><strong>Example:</strong></p>\n<pre><code>// Restrict to images only\nadd_filter('runthings_emt_mime_types', function($allowed_mime_types) {\n    return ['image'];\n});\n\n\n\n// Restrict to images and PDFs only\nadd_filter('runthings_emt_mime_types', function($allowed_mime_types) {\n    return ['image', 'application/pdf'];\n});\n</code></pre>\n<h3>Additional Notes</h3>\n<p>Built by Matthew Harris of runthings.dev, copyright 2022-2026.</p>\n<p>Visit <a href=\"https://runthings.dev/\" rel=\"nofollow ugc\">runthings.dev</a> for more WordPress plugins and resources.</p>\n<p>Contribute or report issues at the <a href=\"https://github.com/runthings-dev/runthings-empty-media-title\" rel=\"nofollow ugc\">GitHub repository</a>.</p>\n<p>Insert space by Xinh Studio from Noun Project, https://thenounproject.com/browse/icons/term/insert-space/ (CC BY 3.0) &#8211; https://thenounproject.com/icon/insert-space-239543/</p>\n<p>Image by David Khai from Noun Project, https://thenounproject.com/browse/icons/term/image/ (CC BY 3.0) &#8211; https://thenounproject.com/icon/image-661355/</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/runthings-empty-media-title</code> directory, or install the plugin through the WordPress plugins screen directly.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; screen in WordPress.</li>\n<li>That&#8217;s it! New media uploads will now have an empty title field.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20affect%20existing%20media%20in%20my%20library%3F\">\nDoes this affect existing media in my library?\n</h4>\n<p>\n<p>New uploads are cleared automatically. For existing media, you can use the bulk action in the Media Library to clear titles on selected items.</p>\n</p>\n<dt id=\"can%20i%20restrict%20this%20to%20certain%20file%20types%3F\">\nCan I restrict this to certain file types?\n</h4>\n<p>\n<p>Yes! Use the <code>runthings_emt_mime_types</code> filter to limit which MIME types are affected. See the Filters section below.</p>\n</p>\n<dt id=\"can%20i%20exclude%20certain%20uploads%20from%20having%20their%20title%20cleared%3F\">\nCan I exclude certain uploads from having their title cleared?\n</h4>\n<p>\n<p>Yes! Use the <code>runthings_emt_skip</code> filter to conditionally skip clearing the title. See the Filters section below.</p>\n</p>\n<dt id=\"why%20would%20i%20want%20an%20empty%20title%3F\">\nWhy would I want an empty title?\n</h4>\n<p>\n<p>Many themes and plugins display the media title in various places &#8211; gallery captions, lightbox overlays, or HTML title attributes. An auto-generated slugified filename like &#8220;DSC-0042-final-edit&#8221; looks unprofessional. With an empty title, you&#8217;re in control of what gets displayed.</p>\n</p>\n\n",
+        "changelog": "<h4>2.0.1 &#8211; 23rd January 2026</h4>\n<ul>\n<li>Improved bulk action messages</li>\n<li>Add confirmation prompt to bulk edit list view</li>\n<li>Fixed nonce verification in bulk action processing</li>\n</ul>\n<h4>2.0.0 &#8211; 23rd January 2026</h4>\n<ul>\n<li>Complete plugin refactor with namespaced class structure</li>\n<li>Added bulk action &#8220;Clear media title&#8221; to clear titles on existing media items</li>\n<li>Changed default from <code>['image']</code> to <code>[]</code> (all media types)</li>\n<li>Added <code>runthings_emt_skip</code> filter for developer customization</li>\n<li>Added <code>runthings_emt_mime_types</code> filter to extend beyond images</li>\n</ul>\n<h4>1.0.0 &#8211; 6th January 2022</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
+    },
+    "short_description": "Clears the media title field on upload, instead of setting it to the slugified filename.",
+    "description": "<p>When you upload media to WordPress, the title field is automatically set to a slugified version of the filename. This often results in messy, unoptimized titles like &#8220;IMG-20240115-photo-final-v2&#8221; appearing in gallery captions, alt tags, or title attributes.</p>\n<p>This plugin clears the title field for newly uploaded media, ensuring that if a title is displayed anywhere, it&#8217;s one you&#8217;ve intentionally set yourself.</p>\n<h4>Features</h4>\n<ul>\n<li>Automatically clears the title field for new media uploads</li>\n<li>Bulk action to clear titles on existing media library items</li>\n<li>Lightweight with no settings page required</li>\n<li>Developer-friendly with filters</li>\n</ul>\n<h4>How It Works</h4>\n<p>The plugin hooks into WordPress&#8217;s <code>wp_insert_attachment_data</code> filter and clears the <code>post_title</code> field for new uploads before they are saved to the database.</p>\n<h3>Filters</h3>\n<h4>runthings_emt_skip</h4>\n<p>Skip clearing the title for specific attachments.</p>\n<p><strong>Parameters:</strong></p>\n<ul>\n<li><code>$skip</code> (bool) &#8211; Whether to skip clearing the title. Default false.</li>\n<li><code>$data</code> (array) &#8211; Attachment post data (slashed, sanitized, processed).</li>\n<li><code>$postarr</code> (array) &#8211; Sanitized post data (not processed).</li>\n<li><code>$unsanitized_postarr</code> (array) &#8211; Unsanitized post data.</li>\n<li><code>$update</code> (bool) &#8211; Whether this is an update (always false for new uploads).</li>\n</ul>\n<p><strong>Example:</strong></p>\n<pre><code>// Skip clearing title for uploads by specific user\nadd_filter('runthings_emt_skip', function($skip, $data, $postarr) {\n    if (get_current_user_id() === 1) {\n        return true; // Admin keeps auto-generated titles\n    }\n    return $skip;\n}, 10, 3);\n\n\n\n// Skip clearing title if filename contains \"keep-title\"\nadd_filter('runthings_emt_skip', function($skip, $data, $postarr) {\n    $filename = $postarr['post_title'] ?? '';\n    if (strpos($filename, 'keep-title') !== false) {\n        return true;\n    }\n    return $skip;\n}, 10, 3);\n</code></pre>\n<h4>runthings_emt_mime_types</h4>\n<p>Filter which MIME types should have their title cleared. By default, all media types are affected.</p>\n<p><strong>Parameters:</strong></p>\n<ul>\n<li><code>$allowed_mime_types</code> (array) &#8211; Array of MIME type patterns. Default <code>[]</code> (all types).</li>\n<li><code>$attachment_mime_type</code> (string) &#8211; The attachment&#8217;s MIME type.</li>\n<li><code>$postarr</code> (array) &#8211; Sanitized post data.</li>\n</ul>\n<p><strong>Example:</strong></p>\n<pre><code>// Restrict to images only\nadd_filter('runthings_emt_mime_types', function($allowed_mime_types) {\n    return ['image'];\n});\n\n\n\n// Restrict to images and PDFs only\nadd_filter('runthings_emt_mime_types', function($allowed_mime_types) {\n    return ['image', 'application/pdf'];\n});\n</code></pre>\n<h3>Additional Notes</h3>\n<p>Built by Matthew Harris of runthings.dev, copyright 2022-2026.</p>\n<p>Visit <a href=\"https://runthings.dev/\" rel=\"nofollow ugc\">runthings.dev</a> for more WordPress plugins and resources.</p>\n<p>Contribute or report issues at the <a href=\"https://github.com/runthings-dev/runthings-empty-media-title\" rel=\"nofollow ugc\">GitHub repository</a>.</p>\n<p>Insert space by Xinh Studio from Noun Project, https://thenounproject.com/browse/icons/term/insert-space/ (CC BY 3.0) &#8211; https://thenounproject.com/icon/insert-space-239543/</p>\n<p>Image by David Khai from Noun Project, https://thenounproject.com/browse/icons/term/image/ (CC BY 3.0) &#8211; https://thenounproject.com/icon/image-661355/</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/runthings-empty-media-title.2.0.1.zip",
+    "upgrade_notice": {
+        "2.0.1": "<p>Improved bulk action messages and security fix for nonce verification.</p>",
+        "2.0.0": "<p>Added bulk action, and added filters.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/runthings-empty-media-title/assets/screenshot-1.png?rev=3447837",
+            "caption": "Before: Image uploaded with auto-generated slugified title. After: Image uploaded with empty title field."
+        }
+    ],
+    "tags": {
+        "attachment": "attachment",
+        "images": "images",
+        "media": "media",
+        "title": "title",
+        "upload": "upload"
+    },
+    "stable_tag": "2.0.1",
+    "versions": {
+        "2.0.1": "https://downloads.wordpress.org/plugin/runthings-empty-media-title.2.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/runthings-empty-media-title.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/runthings-empty-media-title/assets/banner-772x250.png?rev=3447837",
+        "high": "https://ps.w.org/runthings-empty-media-title/assets/banner-1544x500.png?rev=3447837"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/runthings-empty-media-title/assets/icon-128x128.png?rev=3447837",
+        "2x": "https://ps.w.org/runthings-empty-media-title/assets/icon-256x256.png?rev=3447837"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
