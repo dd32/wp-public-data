@@ -1,7 +1,7 @@
 {
     "name": "SELFiT Payment Gateway for WooCommerce",
     "slug": "selfit",
-    "version": "1.0.0",
+    "version": "1.0.5",
     "author": "<a href=\"https://profiles.wordpress.org/selfit/\">selfit</a>",
     "author_profile": "https://profiles.wordpress.org/selfit/",
     "contributors": {
@@ -9,6 +9,11 @@
             "profile": "https://profiles.wordpress.org/selfit/",
             "avatar": "https://secure.gravatar.com/avatar/c8cd7b0f920e6af29a9a80b6b228de884d01fe14b22dd771b8f858aa0ef7f22f?s=96&d=monsterid&r=g",
             "display_name": "selfit"
+        },
+        "abdiscript": {
+            "profile": "https://profiles.wordpress.org/abdiscript/",
+            "avatar": "https://secure.gravatar.com/avatar/29a5ab559414d933ffcc7ec6d1af469a1072c8407c7145889929d1bbf5886931?s=96&d=monsterid&r=g",
+            "display_name": "AbdiScript"
         }
     },
     "requires": "5.0",
@@ -29,18 +34,18 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2025-12-02 08:23:00",
+    "last_updated": "2026-02-09 11:07:00",
     "added": "2025-12-02",
     "homepage": "https://selfit.ir/",
     "sections": {
         "description": "<p>This plugin connects your WooCommerce store to SELFiT and lets customers pay securely via the SELFiT wallet.<br />\nIf you are upgrading from a previous version, please read the Upgrade Notice.</p>\n<p><strong>Highlights</strong><br />\n&#8211; Direct integration with the SELFiT API to create secure payment links<br />\n&#8211; Compatible with WooCommerce (min 5.0), tested up to 8.5<br />\n&#8211; HPOS-ready (High-Performance Order Storage)<br />\n&#8211; Full refund from the WooCommerce order screen<br />\n&#8211; Auto-detects the billing phone; optionally reads Digits plugin fields if present<br />\n&#8211; Optional request/error logging in a dedicated “SELFiT Logs” admin page<br />\n&#8211; Supports IRR/Toman (auto-converts IRR by dividing by 10)</p>\n<p><strong>Requirements</strong><br />\n&#8211; WordPress 5.0+ (tested up to 6.8)<br />\n&#8211; WooCommerce 5.0+ (tested up to 8.5)<br />\n&#8211; PHP 7.4+<br />\n&#8211; A SELFiT merchant account and API credentials</p>\n<h4>External services</h4>\n<p>This plugin uses an API to connect to the payment gateway. This connection is required to perform the transaction.<br />\nThe information sent via the API is derived from the order details, including:<br />\n* Item name, price and quantity<br />\n* Shipping method<br />\n* buyer&#8217;s information (Name and phone number)<br />\nFor more detailed description about how Selfit API works, please visit <strong><a href=\"https://selfit.ir/about\" rel=\"nofollow ugc\">Selfit Terms of Use</a></strong>.</p>\n<h3>Privacy</h3>\n<p>To create and verify payments, the plugin sends the following to <code>api.selfit.ir</code>:<br />\n&#8211; Customer phone number (to validate SELFiT user existence)<br />\n&#8211; Order ID, amount, and optionally line items (as metadata)</p>\n<p>If <strong>logging</strong> is enabled, limited request/response data are stored in the database for troubleshooting. Store owners are responsible for informing users according to their local privacy laws.</p>\n<h3>Notes for Developers</h3>\n<ul>\n<li>Gateway ID: <code>selfit</code></li>\n<li>Internal confirmation endpoint: <code>woocommerce_api_wc_selfit_gateway</code></li>\n<li>Important hooks: <code>woocommerce_order_status_cancelled</code>, <code>woocommerce_order_status_refunded</code></li>\n<li>HPOS compatibility declared with <code>FeaturesUtil::declare_compatibility('custom_order_tables', ...)</code></li>\n<li>Log table: <code>{prefix}selfit_debug_logs</code></li>\n</ul>\n<h3>Support</h3>\n<p>For support or merchant onboarding, please contact: https://selfit.ir</p>\n",
         "installation": "<ol>\n<li>Upload the plugin folder to <code>/wp-content/plugins/</code> or upload the ZIP via <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New</strong>.</li>\n<li>Activate the plugin.</li>\n<li>Go to <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Payments</strong> and enable <strong>SELFiT</strong>.</li>\n<li>Open the gateway settings and enter your <strong>API Username</strong> and <strong>Password</strong>. Save to authenticate and receive tokens.</li>\n<li>(Optional) Enable request/error logging for troubleshooting.</li>\n<li>Set your store currency (IRR or Toman). In IRR mode, amounts are automatically divided by 10 before sending to SELFiT.</li>\n</ol>\n",
-        "faq": "\n<dt id='the%20gateway%20doesn%E2%80%99t%20appear%20on%20checkout'>\nThe gateway doesn’t appear on checkout\n</h4>\n<p>\n<ul>\n<li>Make sure WooCommerce is active.</li>\n<li>Enter and save your SELFiT API credentials so the plugin can authenticate.</li>\n<li>A valid customer phone number is required. The plugin uses <code>billing_phone</code> (and Digits fields if Digits is installed).</li>\n<li>If the SELFiT user doesn’t exist, the gateway may be hidden.</li>\n</ul>\n</p>\n<dt id='do%20you%20support%20toman%3F'>\nDo you support Toman?\n</h4>\n<p>\n<p>Yes. If your store uses <strong>IRR (Rial)</strong>, the amount sent to SELFiT is automatically divided by 10. If you use <strong>Toman</strong>, the amount is sent as-is.</p>\n</p>\n<dt id='can%20i%20refund%20from%20woocommerce%3F'>\nCan I refund from WooCommerce?\n</h4>\n<p>\n<p>Yes. Use a <strong>Full Refund</strong> from the order screen; the plugin will submit a refund request to SELFiT and log the result.</p>\n</p>\n<dt id='how%20is%20the%20callback%20url%20configured%3F'>\nHow is the callback URL configured?\n</h4>\n<p>\n<p>The plugin automatically generates the return URL based on the internal WooCommerce endpoint and sends it to the API.</p>\n</p>\n<dt id='where%20can%20i%20see%20logs%3F'>\nWhere can I see logs?\n</h4>\n<p>\n<p>Go to <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> SELFiT Logs</strong>.</p>\n</p>\n\n",
-        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
+        "faq": "\n<dt id=\"the%20gateway%20doesn%E2%80%99t%20appear%20on%20checkout\">\nThe gateway doesn’t appear on checkout\n</h4>\n<p>\n<ul>\n<li>Make sure WooCommerce is active.</li>\n<li>Enter and save your SELFiT API credentials so the plugin can authenticate.</li>\n<li>A valid customer phone number is required. The plugin uses <code>billing_phone</code> (and Digits fields if Digits is installed).</li>\n<li>If the SELFiT user doesn’t exist, the gateway may be hidden.</li>\n</ul>\n</p>\n<dt id=\"do%20you%20support%20toman%3F\">\nDo you support Toman?\n</h4>\n<p>\n<p>Yes. If your store uses <strong>IRR (Rial)</strong>, the amount sent to SELFiT is automatically divided by 10. If you use <strong>Toman</strong>, the amount is sent as-is.</p>\n</p>\n<dt id=\"can%20i%20refund%20from%20woocommerce%3F\">\nCan I refund from WooCommerce?\n</h4>\n<p>\n<p>Yes. Use a <strong>Full Refund</strong> from the order screen; the plugin will submit a refund request to SELFiT and log the result.</p>\n</p>\n<dt id=\"how%20is%20the%20callback%20url%20configured%3F\">\nHow is the callback URL configured?\n</h4>\n<p>\n<p>The plugin automatically generates the return URL based on the internal WooCommerce endpoint and sends it to the API.</p>\n</p>\n<dt id=\"where%20can%20i%20see%20logs%3F\">\nWhere can I see logs?\n</h4>\n<p>\n<p>Go to <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> SELFiT Logs</strong>.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.5</h4>\n<ul>\n<li>«Partial Refund» problem fixed!</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
     },
     "short_description": "Official SELFiT payment gateway for WooCommerce.",
     "description": "<p>This plugin connects your WooCommerce store to SELFiT and lets customers pay securely via the SELFiT wallet.<br />\nIf you are upgrading from a previous version, please read the Upgrade Notice.</p>\n<p><strong>Highlights</strong><br />\n&#8211; Direct integration with the SELFiT API to create secure payment links<br />\n&#8211; Compatible with WooCommerce (min 5.0), tested up to 8.5<br />\n&#8211; HPOS-ready (High-Performance Order Storage)<br />\n&#8211; Full refund from the WooCommerce order screen<br />\n&#8211; Auto-detects the billing phone; optionally reads Digits plugin fields if present<br />\n&#8211; Optional request/error logging in a dedicated “SELFiT Logs” admin page<br />\n&#8211; Supports IRR/Toman (auto-converts IRR by dividing by 10)</p>\n<p><strong>Requirements</strong><br />\n&#8211; WordPress 5.0+ (tested up to 6.8)<br />\n&#8211; WooCommerce 5.0+ (tested up to 8.5)<br />\n&#8211; PHP 7.4+<br />\n&#8211; A SELFiT merchant account and API credentials</p>\n<h4>External services</h4>\n<p>This plugin uses an API to connect to the payment gateway. This connection is required to perform the transaction.<br />\nThe information sent via the API is derived from the order details, including:<br />\n* Item name, price and quantity<br />\n* Shipping method<br />\n* buyer&#8217;s information (Name and phone number)<br />\nFor more detailed description about how Selfit API works, please visit <strong><a href=\"https://selfit.ir/about\" rel=\"nofollow ugc\">Selfit Terms of Use</a></strong>.</p>\n<h3>Privacy</h3>\n<p>To create and verify payments, the plugin sends the following to <code>api.selfit.ir</code>:<br />\n&#8211; Customer phone number (to validate SELFiT user existence)<br />\n&#8211; Order ID, amount, and optionally line items (as metadata)</p>\n<p>If <strong>logging</strong> is enabled, limited request/response data are stored in the database for troubleshooting. Store owners are responsible for informing users according to their local privacy laws.</p>\n<h3>Notes for Developers</h3>\n<ul>\n<li>Gateway ID: <code>selfit</code></li>\n<li>Internal confirmation endpoint: <code>woocommerce_api_wc_selfit_gateway</code></li>\n<li>Important hooks: <code>woocommerce_order_status_cancelled</code>, <code>woocommerce_order_status_refunded</code></li>\n<li>HPOS compatibility declared with <code>FeaturesUtil::declare_compatibility('custom_order_tables', ...)</code></li>\n<li>Log table: <code>{prefix}selfit_debug_logs</code></li>\n</ul>\n<h3>Support</h3>\n<p>For support or merchant onboarding, please contact: https://selfit.ir</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/selfit.1.0.0.zip",
+    "download_link": "https://downloads.wordpress.org/plugin/selfit.1.0.5.zip",
     "upgrade_notice": [],
     "screenshots": [],
     "tags": {
@@ -50,9 +55,10 @@
         "toman": "toman",
         "woocommerce": "woocommerce"
     },
-    "stable_tag": "1.0.0",
+    "stable_tag": "1.0.5",
     "versions": {
         "1.0.0": "https://downloads.wordpress.org/plugin/selfit.1.0.0.zip",
+        "1.0.5": "https://downloads.wordpress.org/plugin/selfit.1.0.5.zip",
         "trunk": "https://downloads.wordpress.org/plugin/selfit.zip"
     },
     "business_model": false,
