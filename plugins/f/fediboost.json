@@ -1,0 +1,80 @@
+{
+    "name": "FediBoost",
+    "slug": "fediboost",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/kraftbj/\">Brandon Kraft</a>",
+    "author_profile": "https://profiles.wordpress.org/kraftbj/",
+    "contributors": {
+        "kraftbj": {
+            "profile": "https://profiles.wordpress.org/kraftbj/",
+            "avatar": "https://secure.gravatar.com/avatar/7c839032ff595a75d8b9f88abb3522a56065f5ca890d92094796ab7cdf8dfb85?s=96&d=monsterid&r=g",
+            "display_name": "Brandon Kraft"
+        }
+    },
+    "requires": "6.9",
+    "tested": "6.9.1",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "activitypub"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/fediboost/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-02-13 05:02:00",
+    "added": "2026-02-13",
+    "homepage": "https://github.com/kraftbj/fediboost",
+    "sections": {
+        "description": "<p>FediBoost extends the ActivityPub plugin by automatically boosting your WordPress posts on your connected Mastodon accounts when they are published.</p>\n<p>When you publish a new post on your WordPress site, FediBoost will automatically boost (reblog) that post on your linked Mastodon account, helping increase visibility across the fediverse.</p>\n<p><strong>Features:</strong></p>\n<ul>\n<li>Automatic boosting of new posts to connected Mastodon accounts</li>\n<li>Seamless integration with the ActivityPub plugin</li>\n<li>No additional configuration required after setup</li>\n</ul>\n<p><strong>Requirements:</strong></p>\n<ul>\n<li>The <a href=\"https://wordpress.org/plugins/activitypub/\" rel=\"ugc\">ActivityPub plugin</a> must be installed and configured</li>\n<li>A connected Mastodon account via ActivityPub</li>\n</ul>\n<h3>Developer Hooks</h3>\n<p>FediBoost provides several filters that allow developers to customize its behavior. All filters follow WordPress coding standards and can be added to your theme&#8217;s functions.php file or a custom plugin.</p>\n<h4>fediboost_should_boost_post</h4>\n<p>Control whether a specific post should be boosted. Return false to skip boosting for the given post. Default: true.</p>\n<p><strong>Parameters:</strong></p>\n<ul>\n<li><code>$should_boost</code> (bool) — Whether the post should be boosted.</li>\n<li><code>$post</code> (WP_Post) — The post object being published.</li>\n</ul>\n<p><strong>Example:</strong></p>\n<pre><code>add_filter( 'fediboost_should_boost_post', function( $should_boost, $post ) {\n    // Don't boost posts in the \"internal\" category.\n    if ( has_category( 'internal', $post ) ) {\n        return false;\n    }\n    return $should_boost;\n}, 10, 2 );\n</code></pre>\n<h4>fediboost_boost_delay</h4>\n<p>Delay in seconds between post publication and the boost action. Default: 30.</p>\n<p><strong>Parameters:</strong></p>\n<ul>\n<li><code>$delay</code> (int) — The delay in seconds.</li>\n</ul>\n<p><strong>Example:</strong></p>\n<pre><code>add_filter( 'fediboost_boost_delay', function( $delay ) {\n    // Wait 2 minutes before boosting.\n    return 120;\n} );\n</code></pre>\n<h4>fediboost_manage_capability</h4>\n<p>WordPress capability required to manage FediBoost settings. Default: &#8216;manage_options&#8217;. Note: a floor of &#8216;edit_others_posts&#8217; is enforced regardless of this filter&#8217;s return value, so you cannot lower the requirement below that capability.</p>\n<p><strong>Parameters:</strong></p>\n<ul>\n<li><code>$capability</code> (string) — The required capability.</li>\n</ul>\n<p><strong>Example:</strong></p>\n<pre><code>add_filter( 'fediboost_manage_capability', function( $capability ) {\n    // Allow editors to manage FediBoost settings.\n    return 'edit_others_posts';\n} );\n</code></pre>\n<h4>fediboost_max_accounts</h4>\n<p>Maximum number of connected Mastodon accounts. Default: 10.</p>\n<p><strong>Parameters:</strong></p>\n<ul>\n<li><code>$max</code> (int) — The maximum number of accounts.</li>\n</ul>\n<p><strong>Example:</strong></p>\n<pre><code>add_filter( 'fediboost_max_accounts', function( $max ) {\n    // Allow up to 25 connected accounts.\n    return 25;\n} );&lt;h3&gt;External Services&lt;/h3&gt;\n</code></pre>\n<p>FediBoost connects to external Mastodon instances that you configure (e.g., mastodon.social). This communication is essential for the plugin to function and is initiated only with the instance you explicitly provide.</p>\n<p><strong>During setup:</strong></p>\n<ul>\n<li>FediBoost registers an OAuth application on your Mastodon instance and performs an authorization flow so it can act on your behalf.</li>\n</ul>\n<p><strong>When a post is published:</strong></p>\n<ul>\n<li>FediBoost searches for the post on your Mastodon instance and performs a reblog (boost) via the Mastodon API.</li>\n</ul>\n<p><strong>Data sent to your Mastodon instance:</strong></p>\n<ul>\n<li>Your instance URL</li>\n<li>OAuth authorization codes</li>\n<li>Search queries to locate your posts</li>\n<li>Reblog (boost) requests</li>\n</ul>\n<p><strong>Data stored locally on your WordPress site:</strong></p>\n<ul>\n<li>Encrypted OAuth tokens</li>\n<li>Your Mastodon username</li>\n<li>Your Mastodon instance URL</li>\n</ul>\n<p>Each Mastodon instance has its own privacy policy and terms of service. You can find a list of instances and their policies at <a href=\"https://joinmastodon.org/servers\" rel=\"nofollow ugc\">joinmastodon.org/servers</a>.</p>\n<p>This plugin does not send data to any third-party service other than the Mastodon instance(s) you explicitly configure.</p>\n",
+        "installation": "<ol>\n<li>Ensure the ActivityPub plugin is installed and activated.</li>\n<li>Upload the <code>fediboost</code> folder to <code>/wp-content/plugins/</code> or install via the WordPress plugin installer.</li>\n<li>Activate FediBoost through the Plugins menu.</li>\n<li>Go to Settings &gt; FediBoost.</li>\n<li>Enter your Mastodon instance URL (e.g., mastodon.social) and authorize the connection.</li>\n<li>New posts will automatically be boosted to your connected Mastodon account when published.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20plugin%20work%20without%20the%20activitypub%20plugin%3F\">\nDoes this plugin work without the ActivityPub plugin?\n</h4>\n<p>\n<p>No, FediBoost requires the ActivityPub plugin to be installed and properly configured. FediBoost extends ActivityPub&#8217;s functionality to add automatic boosting capabilities.</p>\n</p>\n<dt id=\"can%20i%20choose%20which%20posts%20get%20boosted%3F\">\nCan I choose which posts get boosted?\n</h4>\n<p>\n<p>Currently, FediBoost will boost all newly published posts. Future versions may include options to selectively boost posts based on categories, tags, or other criteria. Developers can use the <code>fediboost_should_boost_post</code> filter to programmatically control which posts are boosted. See the Developer Hooks section below for details.</p>\n</p>\n<dt id=\"what%20happens%20if%20i%20change%20my%20wordpress%20authentication%20salts%3F\">\nWhat happens if I change my WordPress authentication salts?\n</h4>\n<p>\n<p>FediBoost encrypts OAuth tokens using your WordPress authentication salts (defined in wp-config.php). If these salts are changed — for example, by a security plugin, during a security incident response, or by manually editing wp-config.php — all stored tokens will become invalid. You will need to reconnect your Mastodon accounts under Settings &gt; FediBoost after any salt change. This is standard behavior for WordPress plugins that encrypt sensitive data using the built-in salts.</p>\n<p>The OpenSSL PHP extension is required for token encryption. If OpenSSL is not available, FediBoost will not be able to store account credentials securely and will display an admin notice.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release</li>\n<li>Automatic boosting of published posts to connected Mastodon accounts</li>\n</ul>\n"
+    },
+    "short_description": "Automatically boost WordPress posts on connected Mastodon accounts when published via ActivityPub.",
+    "description": "<p>FediBoost extends the ActivityPub plugin by automatically boosting your WordPress posts on your connected Mastodon accounts when they are published.</p>\n<p>When you publish a new post on your WordPress site, FediBoost will automatically boost (reblog) that post on your linked Mastodon account, helping increase visibility across the fediverse.</p>\n<p><strong>Features:</strong></p>\n<ul>\n<li>Automatic boosting of new posts to connected Mastodon accounts</li>\n<li>Seamless integration with the ActivityPub plugin</li>\n<li>No additional configuration required after setup</li>\n</ul>\n<p><strong>Requirements:</strong></p>\n<ul>\n<li>The <a href=\"https://wordpress.org/plugins/activitypub/\" rel=\"ugc\">ActivityPub plugin</a> must be installed and configured</li>\n<li>A connected Mastodon account via ActivityPub</li>\n</ul>\n<h3>Developer Hooks</h3>\n<p>FediBoost provides several filters that allow developers to customize its behavior. All filters follow WordPress coding standards and can be added to your theme&#8217;s functions.php file or a custom plugin.</p>\n<h4>fediboost_should_boost_post</h4>\n<p>Control whether a specific post should be boosted. Return false to skip boosting for the given post. Default: true.</p>\n<p><strong>Parameters:</strong></p>\n<ul>\n<li><code>$should_boost</code> (bool) — Whether the post should be boosted.</li>\n<li><code>$post</code> (WP_Post) — The post object being published.</li>\n</ul>\n<p><strong>Example:</strong></p>\n<pre><code>add_filter( 'fediboost_should_boost_post', function( $should_boost, $post ) {\n    // Don't boost posts in the \"internal\" category.\n    if ( has_category( 'internal', $post ) ) {\n        return false;\n    }\n    return $should_boost;\n}, 10, 2 );\n</code></pre>\n<h4>fediboost_boost_delay</h4>\n<p>Delay in seconds between post publication and the boost action. Default: 30.</p>\n<p><strong>Parameters:</strong></p>\n<ul>\n<li><code>$delay</code> (int) — The delay in seconds.</li>\n</ul>\n<p><strong>Example:</strong></p>\n<pre><code>add_filter( 'fediboost_boost_delay', function( $delay ) {\n    // Wait 2 minutes before boosting.\n    return 120;\n} );\n</code></pre>\n<h4>fediboost_manage_capability</h4>\n<p>WordPress capability required to manage FediBoost settings. Default: &#8216;manage_options&#8217;. Note: a floor of &#8216;edit_others_posts&#8217; is enforced regardless of this filter&#8217;s return value, so you cannot lower the requirement below that capability.</p>\n<p><strong>Parameters:</strong></p>\n<ul>\n<li><code>$capability</code> (string) — The required capability.</li>\n</ul>\n<p><strong>Example:</strong></p>\n<pre><code>add_filter( 'fediboost_manage_capability', function( $capability ) {\n    // Allow editors to manage FediBoost settings.\n    return 'edit_others_posts';\n} );\n</code></pre>\n<h4>fediboost_max_accounts</h4>\n<p>Maximum number of connected Mastodon accounts. Default: 10.</p>\n<p><strong>Parameters:</strong></p>\n<ul>\n<li><code>$max</code> (int) — The maximum number of accounts.</li>\n</ul>\n<p><strong>Example:</strong></p>\n<pre><code>add_filter( 'fediboost_max_accounts', function( $max ) {\n    // Allow up to 25 connected accounts.\n    return 25;\n} );&lt;h3&gt;External Services&lt;/h3&gt;\n</code></pre>\n<p>FediBoost connects to external Mastodon instances that you configure (e.g., mastodon.social). This communication is essential for the plugin to function and is initiated only with the instance you explicitly provide.</p>\n<p><strong>During setup:</strong></p>\n<ul>\n<li>FediBoost registers an OAuth application on your Mastodon instance and performs an authorization flow so it can act on your behalf.</li>\n</ul>\n<p><strong>When a post is published:</strong></p>\n<ul>\n<li>FediBoost searches for the post on your Mastodon instance and performs a reblog (boost) via the Mastodon API.</li>\n</ul>\n<p><strong>Data sent to your Mastodon instance:</strong></p>\n<ul>\n<li>Your instance URL</li>\n<li>OAuth authorization codes</li>\n<li>Search queries to locate your posts</li>\n<li>Reblog (boost) requests</li>\n</ul>\n<p><strong>Data stored locally on your WordPress site:</strong></p>\n<ul>\n<li>Encrypted OAuth tokens</li>\n<li>Your Mastodon username</li>\n<li>Your Mastodon instance URL</li>\n</ul>\n<p>Each Mastodon instance has its own privacy policy and terms of service. You can find a list of instances and their policies at <a href=\"https://joinmastodon.org/servers\" rel=\"nofollow ugc\">joinmastodon.org/servers</a>.</p>\n<p>This plugin does not send data to any third-party service other than the Mastodon instance(s) you explicitly configure.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/fediboost.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "activitypub": "activitypub",
+        "boost": "boost",
+        "fediverse": "fediverse",
+        "mastodon": "mastodon",
+        "social": "social"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/fediboost.0.1.0.zip",
+        "1.0.0": "https://downloads.wordpress.org/plugin/fediboost.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/fediboost.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/fediboost/assets/banner-772x250.png?rev=3460488",
+        "high": "https://ps.w.org/fediboost/assets/banner-1544x500.png?rev=3460488"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/fediboost/assets/icon-128x128.png?rev=3460488",
+        "2x": "https://ps.w.org/fediboost/assets/icon-256x256.png?rev=3460488"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
