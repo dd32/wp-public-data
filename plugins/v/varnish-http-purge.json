@@ -1,7 +1,7 @@
 {
     "name": "Proxy Cache Purge",
     "slug": "varnish-http-purge",
-    "version": "5.6.4",
+    "version": "5.6.5",
     "author": "<a href=\"https://profiles.wordpress.org/dvershinin/\">Danila Vershinin</a>",
     "author_profile": "https://profiles.wordpress.org/dvershinin/",
     "contributors": {
@@ -32,24 +32,24 @@
         }
     },
     "requires": "5.0",
-    "tested": "6.9",
+    "tested": "6.9.1",
     "requires_php": "5.6",
     "requires_plugins": [],
     "compatibility": [],
     "rating": 88,
     "ratings": {
-        "5": 18,
+        "5": 19,
         "4": 2,
         "3": 3,
         "2": 1,
         "1": 1
     },
-    "num_ratings": 25,
+    "num_ratings": 26,
     "support_url": "https://wordpress.org/support/plugin/varnish-http-purge/",
     "support_threads": 2,
     "support_threads_resolved": 2,
     "active_installs": 40000,
-    "last_updated": "2026-01-25 15:52:00",
+    "last_updated": "2026-02-18 06:41:00",
     "added": "2011-07-15",
     "homepage": "https://github.com/dvershinin/varnish-http-purge",
     "sections": {
@@ -60,7 +60,7 @@
     },
     "short_description": "Automatically empty proxy cached content when your site is modified.",
     "description": "<p><strong>This plugin <em>does not</em> install nor configure a cache proxy. It acts as an interface with such services.</strong></p>\n<p>One common method of caching content for websites is via the use of reverse proxy caching. Common examples of this are <a href=\"https://www.varnish-cache.org/\" rel=\"nofollow ugc\">Varnish</a> and <a href=\"https://www.nginx.org/\" rel=\"nofollow ugc\">NGINX</a>. These systems allow a website to update content and have the visitor&#8217;s experience cached without the need for complex plugins storing the files locally and using up a user&#8217;s disk space.</p>\n<p>A reverse proxy cache is installed in front of a server and reviews requests. If the page being requested is already cached, it delivers the cached content. Otherwise it generates the page and the cache on demand.</p>\n<p><strong>The Proxy Cache Purge plugin sends a request to delete (aka flush) the cached data of a page or post every time it&#8217;s modified.</strong></p>\n<h4>How It Works</h4>\n<p>When content on a site is updated by WordPress, the plugin reaches out to the proxy cache service with the URL of the page, requesting the cache be deleted.</p>\n<p>Not all pages are deleted from the cache on every change. For example, when a post, page, or custom post type is edited, or a new comment is added, <em>only</em> the following pages will purge:</p>\n<ul>\n<li>The front page</li>\n<li>The post/page edited</li>\n<li>Any categories, tags, and/or custom taxonomies associated with the page</li>\n<li>Related feeds</li>\n<li>Associated JSON API pages</li>\n</ul>\n<p>In addition, your <em>entire</em> cache will be deleted on the following actions:</p>\n<ul>\n<li>Changing themes</li>\n<li>Pressing the <strong>Empty Cache</strong> button on the toolbar</li>\n</ul>\n<p>Plugins can hook into the purge actions as well, to filter their own events to trigger a purge.</p>\n<p>On a multisite network using subfolders, only <strong>network admins</strong> can purge the main site.</p>\n<h4>Development Mode</h4>\n<p>If you&#8217;re working on a site and need to turn off caching in one of two ways:</p>\n<ol>\n<li>Add <code>define( 'VHP_DEVMODE', true );</code> to your <code>wp-config.php</code> file</li>\n<li>Go to Proxy Cache -&gt; Settings and enable Debug Mode for 24 hours at a time</li>\n</ol>\n<p>That will break cache on page loads. It is <em>not</em> recommended for production!</p>\n<h4>Cache Tags (BETA)</h4>\n<p>As of version 5.4.0, Proxy Cache Purge includes an <strong>optional Cache Tags / Surrogate Keys purge mode</strong>. This feature is marked as <strong>BETA</strong> and is disabled by default.</p>\n<p>When enabled, the plugin:</p>\n<ul>\n<li>Adds cache-tag headers to WordPress responses (for example, tagging pages by post ID, post type, taxonomy terms, author, and archives).</li>\n<li>Uses tag-based purges instead of individual URL purges when content is updated, which can reduce purge traffic and improve consistency on complex sites.</li>\n</ul>\n<p>Requirements:</p>\n<ul>\n<li>A proxy cache that supports Cache Tags / Surrogate Keys and advertises this via standard <code>Surrogate-Capability</code> headers (for example, <code>Surrogate-Capability: vhp=\"Surrogate/1.0 tags/1\"</code>).</li>\n</ul>\n<p>How to enable:</p>\n<ul>\n<li>Go to <strong>Proxy Cache <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Purge Method</strong> and check <strong>“Use Cache Tags (Surrogate Keys)”</strong>. The checkbox is only enabled when your cache tells WordPress it supports tags (or when you explicitly enable it via a define).</li>\n<li>\n<p>Alternatively, you can force-enable or force-disable detection via <code>wp-config.php</code>:</p>\n<p>define( &#8216;VHP_VARNISH_TAGS&#8217;, true );  // Force treat cache as tag-capable<br />\ndefine( &#8216;VHP_VARNISH_TAGS&#8217;, false ); // Force treat cache as not tag-capable</p>\n</li>\n</ul>\n<p>Because this feature depends on your cache configuration, it is recommended that you test it carefully in staging before enabling it on production.</p>\n<h4>Background Purging with WP-Cron</h4>\n<p>On busy sites, sending many PURGE requests directly from admin requests can slow things down. When you define <code>DISABLE_WP_CRON</code> as <code>true</code> in <code>wp-config.php</code> (because you are running a real system cron that calls <code>wp-cron.php</code>), Proxy Cache Purge automatically switches to an asynchronous mode:</p>\n<ul>\n<li>Purge requests (both URL-based and tag-based, when Cache Tags are enabled) are collected into a small per-site queue.</li>\n<li>The queue is processed by WP-Cron in the background, keeping your admin and content-editing actions responsive even when many URLs or tags must be invalidated.</li>\n</ul>\n<p>Object-cache purges (the &#8220;Purge Database Cache&#8221; option) remain synchronous and are not affected by this behaviour. The Proxy Cache settings page and Site Health integration expose basic queue status so you can verify that background purging is healthy; if the queue appears large or very old, check that your system cron is correctly invoking WordPress cron.</p>\n<p><strong>Important: Cron Frequency and Cache Freshness</strong></p>\n<p>When using background purging, the frequency of your system cron determines how quickly cache invalidations are processed. The longer the interval between cron runs, the longer visitors may see stale content after updates.</p>\n<p>For minimal stale content, run your system cron every minute:</p>\n<pre><code>* * * * * /usr/bin/php /var/www/html/wp-cron.php\n</code></pre>\n<p>If you can tolerate slightly longer delays, every 2-5 minutes is also acceptable. However, running cron less frequently (e.g., every 15 minutes) means cache purges may be delayed by that amount after content changes.</p>\n<p><strong>Note:</strong> Scheduled posts are handled specially. When a scheduled post is published via WP-Cron, the cache is purged synchronously within the same cron run, ensuring immediate cache invalidation without waiting for the next cron execution.</p>\n<p>For detailed instructions on setting up a proper Linux-based WordPress cron, see: <a href=\"https://www.getpagespeed.com/web-apps/wordpress/wordpress-cron-optimization\" rel=\"nofollow ugc\">WordPress Cron Optimization</a>.</p>\n<p><strong>Disabling Background Purging</strong></p>\n<p>If you have <code>DISABLE_WP_CRON</code> defined but do not want background purging (for example, on low-traffic sites where immediate purges are preferred), you can force-disable cron-based purging by adding this to your <code>wp-config.php</code>:</p>\n<pre><code>define( 'VHP_DISABLE_CRON_PURGING', true );\n</code></pre>\n<p>With this constant set, all cache purges will execute immediately during the request, regardless of the <code>DISABLE_WP_CRON</code> setting.</p>\n<h3>WP-CLI</h3>\n<p><strong>Purge</strong></p>\n<p>Purge commands let you empty the cache.</p>\n<ul>\n<li><code>wp varnish purge</code> &#8211; Flush the entire site cache (equivalent to clicking &#8220;Empty Cache&#8221; in admin)</li>\n<li><code>wp varnish purge --all</code> &#8211; Explicitly flush the entire site cache</li>\n<li><code>wp varnish purge &lt;url&gt;</code> &#8211; Flush cache for a specific URL and all content below it (wildcard)</li>\n<li><code>wp varnish purge &lt;url&gt; --url-only</code> &#8211; Flush cache for only the exact URL specified (no wildcard)</li>\n<li><code>wp varnish purge --tag=&lt;tag&gt;</code> &#8211; Flush cache by tag (requires Cache Tags mode to be enabled)</li>\n</ul>\n<p>Examples:</p>\n<ul>\n<li><code>wp varnish purge</code> &#8211; Purge entire site</li>\n<li><code>wp varnish purge --all</code> &#8211; Same as above, more explicit</li>\n<li><code>wp varnish purge https://example.com/hello-world/</code> &#8211; Purge this URL and everything below it</li>\n<li><code>wp varnish purge https://example.com/hello-world/ --url-only</code> &#8211; Purge only this exact URL</li>\n<li><code>wp varnish purge https://example.com/wp-content/themes/ --wildcard</code> &#8211; Purge all theme files</li>\n<li><code>wp varnish purge --tag=p-123</code> &#8211; Purge all pages tagged with post ID 123</li>\n<li><code>wp varnish purge --tag=pt-post</code> &#8211; Purge all cached pages of post type &#8220;post&#8221;</li>\n</ul>\n<p><strong>Debug</strong></p>\n<p>Debugging can help you figure out why your cache isn&#8217;t working as well as it could. The default is for your home page, but you can pass any URL on your domain.</p>\n<ul>\n<li><code>wp varnish debug [&lt;url&gt;]</code></li>\n</ul>\n<p>Available parameters:</p>\n<ul>\n<li><code>[--include-headers]</code> &#8212;  Include headers in debug check output</li>\n<li><code>[--include-grep]</code> &#8212; Grep active theme and plugin directories for common issues</li>\n</ul>\n<p><strong>DevMode</strong></p>\n<p>Development mode allows you to disable the cache, temporarily.</p>\n<ul>\n<li><code>wp varnish devmode [&lt;activate|deactivate|toggle&gt;]</code> &#8211; Change development mode state</li>\n</ul>\n<p><strong>Async purge queue (cron-mode)</strong></p>\n<p>When you define <code>DISABLE_WP_CRON</code> as <code>true</code> and run a real system cron for WordPress, Proxy Cache Purge can move heavy purge work into a small background queue that is processed by WP‑Cron.</p>\n<p>You can inspect and manage that queue via WP‑CLI:</p>\n<ul>\n<li><code>wp varnish queue status</code> – show whether cron-mode is active, if a full purge is queued, counts of queued URLs/tags, and the last queue run time.</li>\n<li><code>wp varnish queue process</code> – process any items currently in the queue (useful to run after deploys or cache‑sensitive operations).</li>\n<li><code>wp varnish queue clear</code> – clear the queue without sending any PURGE requests.</li>\n</ul>\n<p>These commands do not replace your normal WordPress cron (you still need a cron entry that calls <code>wp cron event run --due-now</code> or hits <code>wp-cron.php</code>), but they give you a simple operational handle when using cron‑mode.</p>\n<h4>Understanding Purge Behavior</h4>\n<p>There are different types of cache purges, and they behave differently:</p>\n<p><strong>Manual Purges (Admin Bar)</strong></p>\n<ul>\n<li><strong>&#8220;Purge Cache (All Pages)&#8221;</strong> – Sends a single regex purge request to invalidate the entire cache. Always executes immediately.</li>\n<li><strong>&#8220;Purge Cache (this page)&#8221;</strong> – Purges only the exact URL you&#8217;re viewing. Always executes immediately.</li>\n</ul>\n<p>Manual purges are always immediate, even when background cron-mode is enabled. This is intentional: when you click a button, you expect immediate results.</p>\n<p><strong>Automatic Purges (Post Save/Update)</strong></p>\n<p>When you save or update a post, the plugin automatically purges:</p>\n<ul>\n<li>The post&#8217;s URL</li>\n<li>The homepage</li>\n<li>Category archive pages</li>\n<li>Tag archive pages</li>\n<li>Author archive page</li>\n<li>Date-based archives</li>\n<li>RSS feeds</li>\n<li>Related REST API endpoints</li>\n</ul>\n<p>This can be 20-50+ URLs depending on your site structure. When cron-mode is enabled, these automatic purges are queued and processed in the background to avoid slowing down the post editor.</p>\n<p><strong>Key Difference</strong></p>\n<p>  Action<br />\n  URLs Purged<br />\n  Uses Cron Queue?</p>\n<p>  &#8220;Purge Cache (All Pages)&#8221;<br />\n  1 (regex)<br />\n  No – always immediate</p>\n<p>  &#8220;Purge Cache (this page)&#8221;<br />\n  1<br />\n  No – always immediate</p>\n<p>  Post save/update<br />\n  20-50+<br />\n  Yes (if cron-mode enabled)</p>\n<p>If you need to immediately purge all URLs related to a specific post (not just the post URL), save the post – the automatic purge will handle all related URLs.</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/varnish-http-purge.5.6.4.zip",
+    "download_link": "https://downloads.wordpress.org/plugin/varnish-http-purge.5.6.5.zip",
     "upgrade_notice": [],
     "screenshots": [
         {
@@ -99,7 +99,7 @@
         "purge": "Purge",
         "varnish": "varnish"
     },
-    "stable_tag": "5.6.4",
+    "stable_tag": "5.6.5",
     "versions": {
         "4.4.0": "https://downloads.wordpress.org/plugin/varnish-http-purge.4.4.0.zip",
         "4.5.0": "https://downloads.wordpress.org/plugin/varnish-http-purge.4.5.0.zip",
@@ -127,6 +127,7 @@
         "5.6.2": "https://downloads.wordpress.org/plugin/varnish-http-purge.5.6.2.zip",
         "5.6.3": "https://downloads.wordpress.org/plugin/varnish-http-purge.5.6.3.zip",
         "5.6.4": "https://downloads.wordpress.org/plugin/varnish-http-purge.5.6.4.zip",
+        "5.6.5": "https://downloads.wordpress.org/plugin/varnish-http-purge.5.6.5.zip",
         "trunk": "https://downloads.wordpress.org/plugin/varnish-http-purge.zip"
     },
     "business_model": false,
@@ -152,49 +153,49 @@
             "type": "plugin",
             "slug": "varnish-http-purge",
             "language": "en_CA",
-            "version": "5.6.2",
+            "version": "5.6.4",
             "updated": "2021-03-31 23:02:45",
-            "package": "https://downloads.wordpress.org/translation/plugin/varnish-http-purge/5.6.2/en_CA.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/varnish-http-purge/5.6.4/en_CA.zip"
         },
         {
             "type": "plugin",
             "slug": "varnish-http-purge",
             "language": "en_GB",
-            "version": "5.6.2",
+            "version": "5.6.4",
             "updated": "2024-03-27 20:37:41",
-            "package": "https://downloads.wordpress.org/translation/plugin/varnish-http-purge/5.6.2/en_GB.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/varnish-http-purge/5.6.4/en_GB.zip"
         },
         {
             "type": "plugin",
             "slug": "varnish-http-purge",
             "language": "fr_FR",
-            "version": "5.6.2",
+            "version": "5.6.4",
             "updated": "2021-11-19 08:39:37",
-            "package": "https://downloads.wordpress.org/translation/plugin/varnish-http-purge/5.6.2/fr_FR.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/varnish-http-purge/5.6.4/fr_FR.zip"
         },
         {
             "type": "plugin",
             "slug": "varnish-http-purge",
             "language": "gl_ES",
-            "version": "5.6.2",
+            "version": "5.6.4",
             "updated": "2026-01-17 15:26:59",
-            "package": "https://downloads.wordpress.org/translation/plugin/varnish-http-purge/5.6.2/gl_ES.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/varnish-http-purge/5.6.4/gl_ES.zip"
         },
         {
             "type": "plugin",
             "slug": "varnish-http-purge",
             "language": "nl_NL",
-            "version": "5.6.2",
+            "version": "5.6.4",
             "updated": "2022-02-17 08:59:27",
-            "package": "https://downloads.wordpress.org/translation/plugin/varnish-http-purge/5.6.2/nl_NL.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/varnish-http-purge/5.6.4/nl_NL.zip"
         },
         {
             "type": "plugin",
             "slug": "varnish-http-purge",
             "language": "ru_RU",
-            "version": "5.6.2",
+            "version": "5.6.4",
             "updated": "2025-12-14 19:14:27",
-            "package": "https://downloads.wordpress.org/translation/plugin/varnish-http-purge/5.6.2/ru_RU.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/varnish-http-purge/5.6.4/ru_RU.zip"
         }
     ]
 }
