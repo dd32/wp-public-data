@@ -1,0 +1,78 @@
+{
+    "name": "SmallPict",
+    "slug": "smallpict",
+    "version": "1.1.6",
+    "author": "<a href=\"https://profiles.wordpress.org/c0redump/\">c0redump</a>",
+    "author_profile": "https://profiles.wordpress.org/c0redump/",
+    "contributors": {
+        "c0redump": {
+            "profile": "https://profiles.wordpress.org/c0redump/",
+            "avatar": "https://secure.gravatar.com/avatar/1425ae0252c6c97640f879584934e68f9e1898d76849bc8bfefda1461d10c605?s=96&d=monsterid&r=g",
+            "display_name": "c0redump"
+        },
+        "wam": {
+            "profile": "https://profiles.wordpress.org/wam/",
+            "avatar": "https://secure.gravatar.com/avatar/222b75d6993f03dc900e19f3404bc5bcdc17f46f663b706acc56301cb7878033?s=96&d=monsterid&r=g",
+            "display_name": "wam"
+        }
+    },
+    "requires": "5.8",
+    "tested": "6.9.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/smallpict/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-03-04 14:09:00",
+    "added": "2026-03-04",
+    "homepage": "https://smallpict.tuxnoob.com/",
+    "sections": {
+        "description": "<p>SmallPict is the simplest way to speed up your WordPress site. We automatically compress and convert your images to modern formats (WebP &amp; AVIF), making your pages load instantly without sacrificing visual quality.</p>\n<p><strong>Everything you need for a super fast WordPress website:</strong></p>\n<ul>\n<li><strong>Simply Magical</strong>: Install, activate, and done. No confusing server configuration or complicated API keys.</li>\n<li><strong>Zero Server Load</strong>: Compression happens in our cloud, so your hosting server stays light and fast. Works with all hosting types.</li>\n<li><strong>Premium Quality</strong>: Smart AI technology ensures the smallest possible file size without sacrificing visual quality.</li>\n<li><strong>Your Images Stay Safe</strong>: We never store your images. After optimization, files go directly back to your WordPress — no copies kept on our servers.</li>\n<li><strong>Modern Formats</strong>: Automatically serves next-gen formats like WebP and AVIF (Pro) for superior speed.</li>\n</ul>\n<p><strong>Why SmallPict?</strong><br />\n*   Faster WordPress website<br />\n*   Sharp images<br />\n*   No complex settings<br />\n*   Your images stay private</p>\n<h3>External services</h3>\n<p>This plugin connects to a 3rd-party external API at https://7jq2u3l69a.execute-api.ap-southeast-1.amazonaws.com/v1 to compress and optimize your uploaded images without impacting your local server performance.</p>\n<ul>\n<li><strong>Data sent</strong>: The plugin sends the raw uploaded image file along with your compression preferences (e.g., target format and quality level). This data is sent automatically in real-time every time you upload a new media file to the WordPress Media Library.</li>\n<li><strong>Service Details</strong>: The API receives the data, converting images to modern formats like WebP or AVIF based on your settings, and immediately returns the optimized image to your WordPress site. We do not permanently store or retain your images.</li>\n<li><strong>Terms of Service</strong>: https://smallpict.tuxnoob.com/en/terms</li>\n<li><strong>Privacy Policy</strong>: https://smallpict.tuxnoob.com/en/privacy</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/smallpict</code> directory, or install the plugin through the WordPress plugins screen directly.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; screen in WordPress.</li>\n<li>Follow the opt-in wizard to connect your Freemius account.</li>\n<li>Configure your compression settings in Settings -&gt; SmallPict.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20plugin%20require%20an%20account%3F\">\nDoes this plugin require an account?\n</h4>\n<p>\n<p>Yes, it requires a free SmallPict account (managed via Freemius) to securely access the cloud processing API.</p>\n</p>\n<dt id=\"what%20happens%20if%20i%20reach%20my%20quota%3F\">\nWhat happens if I reach my quota?\n</h4>\n<p>\n<p>Your images will stop being optimized until your quota resets next month or you upgrade your plan.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.6</h4>\n<ul>\n<li>Fix: Corrected GitHub Actions deploy workflow — moved <code>SLUG</code> and <code>BUILD_DIR</code> to env vars (were incorrectly passed as <code>with:</code> inputs to <code>10up/action-wordpress-plugin-deploy</code>).</li>\n<li>Fix: Replaced deprecated <code>buttonizer/freemius-deploy</code> GitHub Action with a direct Freemius API Python script, eliminating the <code>set-output</code> deprecation warning.</li>\n<li>Fix: Corrected Freemius API HMAC-SHA256 signing to match PHP SDK — uses RFC 2822 date, hex HMAC digest, and URL-safe base64 without padding.</li>\n</ul>\n<h4>1.1.5</h4>\n<ul>\n<li>Security: Server-side quota enforcement — monthly usage now tracked in DynamoDB and enforced before each job starts.</li>\n<li>Security: File size limit per plan is now validated server-side before processing begins (prevents oversized uploads bypassing plan limits).</li>\n<li>Security: Removed hardcoded JWT fallback secret — API now returns 500 if <code>JWT_SECRET</code> env var is missing.</li>\n<li>Security: <code>is_sandbox</code> mode is now determined by a server-side environment variable (<code>ALLOW_SANDBOX</code>), not a client-supplied flag (prevents quota bypass).</li>\n<li>Security: S3 object key is now validated to belong to the authenticated tenant (prevents path traversal attacks).</li>\n<li>Security: Replaced <code>file_get_contents()</code> S3 upload with streaming cURL (<code>CURLOPT_INFILE</code>) to prevent PHP OOM errors on large files.</li>\n<li>Security: Admin JS now receives a nonce via <code>wp_localize_script</code> for future AJAX request verification.</li>\n<li>Performance: Upload polling now uses exponential backoff (2s<span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span>5s, max 20 attempts) replacing a flat 60-second blocking loop.</li>\n<li>Performance: Bulk imports via WP-CLI and REST API now skip synchronous blocking optimization to prevent timeouts.</li>\n<li>Performance: Lambda <code>/tmp</code> directory is now fully cleaned after each job (input + output files) to prevent storage leaks across warm invocations.</li>\n<li>Performance: Presigned S3 download URLs extended from 15 minutes to 1 hour to support longer async processing jobs.</li>\n<li>Fix: <code>get_usage</code> API endpoint now returns real usage data from DynamoDB instead of a hardcoded placeholder.</li>\n<li>Fix: <code>image/gif</code> added to allowed upload content types for animated image support on paid plans.</li>\n<li>Fix: Free-tier engine now respects the user-configured quality setting instead of hardcoding 80.</li>\n<li>Fix: JWT session token expiry reduced from 7 days to 24 hours for improved security posture.</li>\n<li>Compliance: All output variables pass <code>WordPress.Security.EscapeOutput</code> PHPCS/WPCS sniffs (confirmed zero violations).</li>\n<li>Compliance: cURL streaming usage justified with <code>phpcs:disable</code> blocks and documented rationale.</li>\n</ul>\n<h4>1.1.4</h4>\n<ul>\n<li>Fix: Addressed WordPress.org review feedback regarding strict late escaping for all output data.</li>\n<li>Fix: Replaced raw <code>json_encode</code> with <code>wp_json_encode</code> to comply with WordPress Coding Standards.</li>\n<li>Remove: Stripped Pro UI capabilities and Freemius gating from WordPress.org build.</li>\n</ul>\n<h4>1.1.3</h4>\n<ul>\n<li>Fix: Freemius library conflict check.</li>\n<li>Fix: Escaping inline CSS outputs.</li>\n<li>Update: Added c0redump to Contributors list.</li>\n<li>Update: Detailed External Services endpoint in readme.</li>\n</ul>\n<h4>1.1.2</h4>\n<ul>\n<li>Fix: Replaced <code>rename()</code> function with <code>WP_Filesystem::move()</code> to comply with WordPress standards.</li>\n<li>Fix: Added <code>smallpict.pot</code> template file to satisfy Domain Path requirement.</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>Security: Improved output escaping and sanitization across settings and admin pages.</li>\n<li>Security: Added direct file access protection to all remaining PHP files.</li>\n<li>Fix: Removed development logging functions for cleaner production operation.</li>\n<li>Fix: Standardized timezone handling to use <code>gmdate()</code>.</li>\n<li>Fix: Replaced <code>unlink</code> with <code>wp_delete_file</code> for better filesystem compatibility.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>New: Fully managed SaaS architecture (Serverless).</li>\n<li>New: Freemius integration for plans, billing, and quota management.</li>\n<li>New: Strict backend validation for plan capabilities.</li>\n<li>New: Added &#8220;Hard Reset&#8221; trigger for debugging localhost states (<code>?sp_reset_license=1</code>).</li>\n<li>Improvement: Enhanced file handling with fallback strategies for Docker/NAS.</li>\n<li>Improvement: Adaptive SSL verification for better compatibility.</li>\n<li>Fix: Comprehensive cleanup of data during uninstallation.</li>\n<li>Fix: Resolved &#8220;headers already sent&#8221; issues during activation.</li>\n<li>Fix: UI synchronization for &#8220;Keep Original&#8221; format restrictions.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial Release.</li>\n<li>Serverless Image Optimization via AWS Lambda.</li>\n<li>Freemius Integration for Licensing.</li>\n<li>WebP Support.</li>\n</ul>\n"
+    },
+    "short_description": "Slow WordPress website? SmallPict automatically reduces image sizes to make your site faster — without complex settings.",
+    "description": "<p>SmallPict is the simplest way to speed up your WordPress site. We automatically compress and convert your images to modern formats (WebP &amp; AVIF), making your pages load instantly without sacrificing visual quality.</p>\n<p><strong>Everything you need for a super fast WordPress website:</strong></p>\n<ul>\n<li><strong>Simply Magical</strong>: Install, activate, and done. No confusing server configuration or complicated API keys.</li>\n<li><strong>Zero Server Load</strong>: Compression happens in our cloud, so your hosting server stays light and fast. Works with all hosting types.</li>\n<li><strong>Premium Quality</strong>: Smart AI technology ensures the smallest possible file size without sacrificing visual quality.</li>\n<li><strong>Your Images Stay Safe</strong>: We never store your images. After optimization, files go directly back to your WordPress — no copies kept on our servers.</li>\n<li><strong>Modern Formats</strong>: Automatically serves next-gen formats like WebP and AVIF (Pro) for superior speed.</li>\n</ul>\n<p><strong>Why SmallPict?</strong><br />\n*   Faster WordPress website<br />\n*   Sharp images<br />\n*   No complex settings<br />\n*   Your images stay private</p>\n<h3>External services</h3>\n<p>This plugin connects to a 3rd-party external API at https://7jq2u3l69a.execute-api.ap-southeast-1.amazonaws.com/v1 to compress and optimize your uploaded images without impacting your local server performance.</p>\n<ul>\n<li><strong>Data sent</strong>: The plugin sends the raw uploaded image file along with your compression preferences (e.g., target format and quality level). This data is sent automatically in real-time every time you upload a new media file to the WordPress Media Library.</li>\n<li><strong>Service Details</strong>: The API receives the data, converting images to modern formats like WebP or AVIF based on your settings, and immediately returns the optimized image to your WordPress site. We do not permanently store or retain your images.</li>\n<li><strong>Terms of Service</strong>: https://smallpict.tuxnoob.com/en/terms</li>\n<li><strong>Privacy Policy</strong>: https://smallpict.tuxnoob.com/en/privacy</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/smallpict.1.1.6.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "avif": "AVIF",
+        "compression": "compression",
+        "image-optimization": "image optimization",
+        "speed": "speed",
+        "webp": "webp"
+    },
+    "stable_tag": "1.1.6",
+    "versions": {
+        "1.1.6": "https://downloads.wordpress.org/plugin/smallpict.1.1.6.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/smallpict.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/smallpict.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
