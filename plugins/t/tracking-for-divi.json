@@ -1,0 +1,71 @@
+{
+    "name": "Tracking for Divi",
+    "slug": "tracking-for-divi",
+    "version": "1.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/kubawtf/\">Kuba Serafinowski</a>",
+    "author_profile": "https://profiles.wordpress.org/kubawtf/",
+    "contributors": {
+        "kubawtf": {
+            "profile": "https://profiles.wordpress.org/kubawtf/",
+            "avatar": "https://secure.gravatar.com/avatar/f0722546af010088ff0e60d671d1bb5746039b6146fda93ae069ab0400fa56cc?s=96&d=monsterid&r=g",
+            "display_name": "Kuba Serafinowski"
+        }
+    },
+    "requires": "5.3",
+    "tested": "6.9.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/tracking-for-divi/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-03-04 18:05:00",
+    "added": "2026-03-04",
+    "homepage": "https://github.com/zizzfizzix/tracking-for-divi",
+    "sections": {
+        "description": "<p>Ever wanted to track the built-in contact form from Divi? If you tried using Google Tag Manager&#8217;s built-in form submit events to do it you probably noticed an inflated number of events flowing.</p>\n<p>This is because the form submission event is triggered even if there are form validation errors or the server returns another error.</p>\n<p>Since Divi doesn&#8217;t provide any JavaScript events to hook into there is no straightforward way to find out if a message has actually been sent.</p>\n<p>To get around this, this plugin listens to the network communication that is happening underneath. It&#8217;s based on the same mechanism Divi itself uses.</p>\n<p>There are three options now:</p>\n<ol>\n<li>a <a href=\"https://developers.google.com/tag-platform/tag-manager/datalayer\" rel=\"nofollow ugc\">dataLayer</a> event</li>\n<li>a <a href=\"https://support.google.com/analytics/answer/12229021\" rel=\"nofollow ugc\">Google Analytics 4 event</a> (using gtag.js)</li>\n<li>a <a href=\"https://support.google.com/google-ads/answer/1722022\" rel=\"nofollow ugc\">Google Ads conversion</a> (also using gtag.js)</li>\n</ol>\n<p>You can use either one of them or event all of them together.</p>\n<p>You&#8217;ll be able to customize the dataLayer variable if you&#8217;re <a href=\"https://developers.google.com/tag-platform/tag-manager/datalayer#rename_the_data_layer\" rel=\"nofollow ugc\">not using the standard naming</a>, and the event names, separately for dataLayer and gtag.</p>\n<h4>Data layer reporting</h4>\n<p>The structure of the object pushed to the dataLayer is the following, with the default naming:</p>\n<pre><code>`typescript\n</code></pre>\n<p>{<br />\n  event: &#8220;contact_form_submit&#8221;,<br />\n  formId: string,<br />\n  postId: number,<br />\n  formData: {<br />\n    name: string,<br />\n    email: string,<br />\n    message: string,<br />\n  },<br />\n  allFormData?: Record&lt;string, unknown&gt;, // when &#8220;Include all form data&#8221; is enabled<br />\n}<br />\n    `</p>\n<p>It&#8217;s up to you to use or discard the form data.</p>\n<h4>Google Analytics 4 reporting</h4>\n<p>The Google Analytics event is sent with flattened parameters:</p>\n<pre><code>`typescript\n</code></pre>\n<p>gtag(<br />\n  &#8220;event&#8221;,<br />\n  &#8220;contact_form_submit&#8221;,<br />\n  {<br />\n    form_id: &#8220;divi/contact-form-0&#8221;,<br />\n    name: &#8220;John&#8221;,<br />\n    email: &#8220;john@example.com&#8221;,<br />\n    message: &#8220;Hello&#8221;,<br />\n    // additional fields when &#8220;Include all form data&#8221; is enabled<br />\n  }<br />\n);<br />\n    `</p>\n<p>Form data (name, email, message) is included by default. When &#8220;Include all form data&#8221; is enabled, all form fields are flattened into the event parameters.</p>\n<p><em>This will only work if you have a <a href=\"https://support.google.com/google-ads/answer/11994839\" rel=\"nofollow ugc\">Google Tag</a> already deployed on the website i.e. the <code>gtag()</code> function is available.</em> Otherwise, you will see a warning in your console like this:</p>\n<blockquote>\n<p>Tracking for Divi: gtag event failed, gtag is not defined</p>\n</blockquote>\n<h4>Google Ads conversion reporting</h4>\n<p>The Google Ads conversion is sent like so:</p>\n<pre><code>`typescript\n</code></pre>\n<p>gtag(<br />\n  &#8220;event&#8221;,<br />\n  &#8220;conversion&#8221;,<br />\n  {<br />\n    send_to: &#8220;/&#8221;,<br />\n  }<br />\n);<br />\n    `</p>\n<p>There is no default for <code>conversion_id</code> and <code>conversion_label</code> as they are always created individually in Google Ads.</p>\n<p><em>This will only work if you have a <a href=\"https://support.google.com/google-ads/answer/11994839\" rel=\"nofollow ugc\">Google Tag</a> already deployed on the website i.e. the <code>gtag()</code> function is available.</em> Otherwise, you will see a warning in your console like this:</p>\n<blockquote>\n<p>Tracking for Divi: Google Ads conversion event failed, gtag is not defined</p>\n</blockquote>\n<p><strong>Note:</strong> This plugin hasn&#8217;t been thoroughly tested with Divi forms that redirect to a success page. The tracking works just as well, however the redirect could interrupt the tracking flow e.g. if Google Tag Manager has a lot of logic and doesn&#8217;t trigger the tags in time. The tags themselves these days <a href=\"https://support.google.com/analytics/answer/9964640#event-batching\" rel=\"nofollow ugc\">use the beacon API</a> (see <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Beacon_API\" rel=\"nofollow ugc\">MDN</a> for reference) so the requests shouldn&#8217;t be interrupted as long as they are fired before website unload.</p>\n",
+        "installation": "<p>All you need is to install it by uploading the zip file or using the plugin directory from within your WordPress website when the plugin is approved.</p>\n<p>There is no configuration necessary if you only plan to use the dataLayer. Activate and you&#8217;re ready to go. However, it will only work if your current theme is <em>Divi</em> or its child theme.</p>\n",
+        "faq": "\n<dt id=\"how%20do%20i%20track%20form%20submissions%20with%20google%20analytics%3F\">\nHow do I track form submissions with Google Analytics?\n</h4>\n<p>\n<p>You can use Google Tag Manager to set up a trigger on the <code>contact_form_submit</code> event (default name) and set up a Google Analytics event tag that will be sent on the trigger.</p>\n<p>Alternatively, if you have gtag.js deployed on your website you can opt for direct reporting on the Settings page.</p>\n</p>\n<dt id=\"can%20i%20use%20a%20renamed%20datalayer%20variable%3F\">\nCan I use a renamed dataLayer variable?\n</h4>\n<p>\n<p>Yes, by default this plugin uses a variable named <code>dataLayer</code>, however you can change that on the Settings page.</p>\n</p>\n<dt id=\"can%20i%20use%20a%20different%20event%20name%3F\">\nCan I use a different event name?\n</h4>\n<p>\n<p>Yes, by default this plugin uses a <code>contact_form_submit</code> event, however you can change that on the Settings page.</p>\n</p>\n\n"
+    },
+    "short_description": "Track successful Divi contact form submissions with dataLayer events, Google Analytics, and Google Ads conversions.",
+    "description": "<p>Ever wanted to track the built-in contact form from Divi? If you tried using Google Tag Manager&#8217;s built-in form submit events to do it you probably noticed an inflated number of events flowing.</p>\n<p>This is because the form submission event is triggered even if there are form validation errors or the server returns another error.</p>\n<p>Since Divi doesn&#8217;t provide any JavaScript events to hook into there is no straightforward way to find out if a message has actually been sent.</p>\n<p>To get around this, this plugin listens to the network communication that is happening underneath. It&#8217;s based on the same mechanism Divi itself uses.</p>\n<p>There are three options now:</p>\n<ol>\n<li>a <a href=\"https://developers.google.com/tag-platform/tag-manager/datalayer\" rel=\"nofollow ugc\">dataLayer</a> event</li>\n<li>a <a href=\"https://support.google.com/analytics/answer/12229021\" rel=\"nofollow ugc\">Google Analytics 4 event</a> (using gtag.js)</li>\n<li>a <a href=\"https://support.google.com/google-ads/answer/1722022\" rel=\"nofollow ugc\">Google Ads conversion</a> (also using gtag.js)</li>\n</ol>\n<p>You can use either one of them or event all of them together.</p>\n<p>You&#8217;ll be able to customize the dataLayer variable if you&#8217;re <a href=\"https://developers.google.com/tag-platform/tag-manager/datalayer#rename_the_data_layer\" rel=\"nofollow ugc\">not using the standard naming</a>, and the event names, separately for dataLayer and gtag.</p>\n<h4>Data layer reporting</h4>\n<p>The structure of the object pushed to the dataLayer is the following, with the default naming:</p>\n<pre><code>`typescript\n</code></pre>\n<p>{<br />\n  event: &#8220;contact_form_submit&#8221;,<br />\n  formId: string,<br />\n  postId: number,<br />\n  formData: {<br />\n    name: string,<br />\n    email: string,<br />\n    message: string,<br />\n  },<br />\n  allFormData?: Record&lt;string, unknown&gt;, // when &#8220;Include all form data&#8221; is enabled<br />\n}<br />\n    `</p>\n<p>It&#8217;s up to you to use or discard the form data.</p>\n<h4>Google Analytics 4 reporting</h4>\n<p>The Google Analytics event is sent with flattened parameters:</p>\n<pre><code>`typescript\n</code></pre>\n<p>gtag(<br />\n  &#8220;event&#8221;,<br />\n  &#8220;contact_form_submit&#8221;,<br />\n  {<br />\n    form_id: &#8220;divi/contact-form-0&#8221;,<br />\n    name: &#8220;John&#8221;,<br />\n    email: &#8220;john@example.com&#8221;,<br />\n    message: &#8220;Hello&#8221;,<br />\n    // additional fields when &#8220;Include all form data&#8221; is enabled<br />\n  }<br />\n);<br />\n    `</p>\n<p>Form data (name, email, message) is included by default. When &#8220;Include all form data&#8221; is enabled, all form fields are flattened into the event parameters.</p>\n<p><em>This will only work if you have a <a href=\"https://support.google.com/google-ads/answer/11994839\" rel=\"nofollow ugc\">Google Tag</a> already deployed on the website i.e. the <code>gtag()</code> function is available.</em> Otherwise, you will see a warning in your console like this:</p>\n<blockquote>\n<p>Tracking for Divi: gtag event failed, gtag is not defined</p>\n</blockquote>\n<h4>Google Ads conversion reporting</h4>\n<p>The Google Ads conversion is sent like so:</p>\n<pre><code>`typescript\n</code></pre>\n<p>gtag(<br />\n  &#8220;event&#8221;,<br />\n  &#8220;conversion&#8221;,<br />\n  {<br />\n    send_to: &#8220;/&#8221;,<br />\n  }<br />\n);<br />\n    `</p>\n<p>There is no default for <code>conversion_id</code> and <code>conversion_label</code> as they are always created individually in Google Ads.</p>\n<p><em>This will only work if you have a <a href=\"https://support.google.com/google-ads/answer/11994839\" rel=\"nofollow ugc\">Google Tag</a> already deployed on the website i.e. the <code>gtag()</code> function is available.</em> Otherwise, you will see a warning in your console like this:</p>\n<blockquote>\n<p>Tracking for Divi: Google Ads conversion event failed, gtag is not defined</p>\n</blockquote>\n<p><strong>Note:</strong> This plugin hasn&#8217;t been thoroughly tested with Divi forms that redirect to a success page. The tracking works just as well, however the redirect could interrupt the tracking flow e.g. if Google Tag Manager has a lot of logic and doesn&#8217;t trigger the tags in time. The tags themselves these days <a href=\"https://support.google.com/analytics/answer/9964640#event-batching\" rel=\"nofollow ugc\">use the beacon API</a> (see <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/Beacon_API\" rel=\"nofollow ugc\">MDN</a> for reference) so the requests shouldn&#8217;t be interrupted as long as they are fired before website unload.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/tracking-for-divi.1.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "datalayer": "datalayer",
+        "divi": "divi",
+        "tag-manager": "tag manager",
+        "tracking": "tracking"
+    },
+    "stable_tag": "1.1.0",
+    "versions": {
+        "1.1.0": "https://downloads.wordpress.org/plugin/tracking-for-divi.1.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/tracking-for-divi.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://ko-fi.com/kubaserafinowski",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/tracking-for-divi.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
