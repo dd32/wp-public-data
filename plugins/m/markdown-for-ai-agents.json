@@ -1,0 +1,80 @@
+{
+    "name": "Markdown for AI Agents",
+    "slug": "markdown-for-ai-agents",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/selvasudar/\">Selvakumar Duraipandian</a>",
+    "author_profile": "https://profiles.wordpress.org/selvasudar/",
+    "contributors": {
+        "selvasudar": {
+            "profile": "https://profiles.wordpress.org/selvasudar/",
+            "avatar": "https://secure.gravatar.com/avatar/598a03a0d6c70edf2fae86944d11ff93705c65537bef578bd77a3345743ebab9?s=96&d=monsterid&r=g",
+            "display_name": "Selvakumar Duraipandian"
+        }
+    },
+    "requires": "6.9",
+    "tested": "6.9.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/markdown-for-ai-agents/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-03-09 01:32:00",
+    "added": "2026-03-09",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Markdown for AI Agents is a lightweight WordPress plugin that enables HTTP content negotiation for your site&#8217;s content. When a client (like an AI agent or a custom script) requests a page with the <code>Accept: text/markdown</code> header, the plugin intercepts the request and returns a clean, structured Markdown representation of the post or page content.</p>\n<p>This is ideal for AI crawlers, RAG (Retrieval-Augmented Generation) systems, and non-browser clients that prefer machine-friendly text over complex HTML.</p>\n<p><strong>Important note:</strong> This plugin is primarily a developer/integration tool. Human visitors browsing your site will never see any difference — the Markdown output is only served when explicitly requested via the <code>Accept: text/markdown</code> HTTP header. Normal browser requests always receive the standard HTML page.</p>\n<p><strong>Key Features:</strong></p>\n<ul>\n<li>Automatically detects <code>Accept: text/markdown</code> headers.</li>\n<li>Converts HTML content to clean Markdown using the League HTMLToMarkdown library.</li>\n<li>Strips away theme layout, navigation, headers, footers, and sidebars — serving only the main content.</li>\n<li>Adds useful HTTP response headers: <code>Content-Type: text/markdown</code>, <code>Vary: Accept</code>, and <code>X-Markdown-Word-Count</code>.</li>\n<li>Respects WordPress visibility rules and filters.</li>\n<li>No configuration required — works out of the box for posts, pages, and custom post types.</li>\n</ul>\n<h3>How It Works</h3>\n<p>This plugin uses a standard web technique called <strong>HTTP content negotiation</strong>. The same URL on your site can serve different representations of the same content depending on what the client asks for:</p>\n<ul>\n<li>A regular browser sends <code>Accept: text/html</code> <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> receives your normal HTML page.</li>\n<li>An AI agent sends <code>Accept: text/markdown</code> <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> receives a clean Markdown version of the same page.</li>\n</ul>\n<p>No extra URLs, no duplicate content, no configuration needed. The plugin hooks into WordPress&#8217;s <code>template_redirect</code> action, detects the <code>Accept</code> header, captures the rendered HTML, converts it to Markdown, and returns it with appropriate headers.</p>\n<h3>Why Markdown for AI Agents?</h3>\n<p>When building RAG (Retrieval-Augmented Generation) applications or AI pipelines that ingest web content, HTML is extremely noisy. A typical WordPress page contains thousands of tokens worth of HTML tags, inline styles, navigation menus, scripts, and layout markup — none of which carries meaning for an AI model.</p>\n<p>Serving clean Markdown instead can reduce token consumption by up to 60%, which means:</p>\n<ul>\n<li><strong>Lower API costs</strong> — fewer tokens ingested when loading pages into vector stores or LLM pipelines.</li>\n<li><strong>Faster processing</strong> — less text for the model to parse, filter, and discard.</li>\n<li><strong>Better retrieval accuracy</strong> — higher signal-to-noise ratio improves the quality of RAG results.</li>\n<li><strong>Simpler pipelines</strong> — no need for custom HTML stripping logic on the client side; the plugin handles it server-side.</li>\n</ul>\n<p>Any AI agent, crawler, or ingestion script that sends <code>Accept: text/markdown</code> in its request header will automatically receive the clean Markdown version — no extra URLs, no separate endpoints, no changes to your content workflow.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>markdown-for-ai-agents</code> folder to the <code>/wp-content/plugins/</code> directory, or install it directly via the WordPress Plugins screen.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> menu in WordPress.</li>\n<li>The plugin works immediately with no settings to configure.</li>\n</ol>\n<p><strong>Verifying it works — Option 1: Using curl (recommended for developers)</strong></p>\n<p>Open your terminal and run the following command, replacing the URL with any post or page on your site:</p>\n<pre><code>curl -H \"Accept: text/markdown\" https://your-site.com/sample-page/\n</code></pre>\n<p>You should see plain Markdown text returned instead of HTML. For example:</p>\n<pre><code>curl -H \"Accept: text/markdown\" https://your-site.com/hello-world/\n</code></pre>\n<p>A successful response will begin with the post title as a Markdown heading (e.g. <code># Hello World</code>) followed by the post content in Markdown format, with no HTML tags, navigation, or sidebar content.</p>\n<p><strong>Verifying it works — Option 2: Using a browser extension (no terminal required)</strong></p>\n<ol>\n<li>Install the <strong>ModHeader</strong> extension for Chrome or Firefox (free, available in their respective extension stores).</li>\n<li>Open ModHeader and add a new request header: Name = <code>Accept</code>, Value = <code>text/markdown</code>.</li>\n<li>Enable the header and visit any post or page on your WordPress site.</li>\n<li>Your browser will display the raw Markdown text of that page instead of the styled HTML version.</li>\n<li>Disable or remove the header in ModHeader when you are done to return to normal browsing.</li>\n</ol>\n<p><strong>Verifying it works — Option 3: Using an online HTTP client</strong></p>\n<p>Tools like <a href=\"https://hoppscotch.io\" rel=\"nofollow ugc\">Hoppscotch</a> (free, browser-based) allow you to make HTTP requests with custom headers without installing anything:</p>\n<ol>\n<li>Go to https://hoppscotch.io</li>\n<li>Enter any post or page URL from your site.</li>\n<li>Under <strong>Headers</strong>, add <code>Accept</code> = <code>text/markdown</code>.</li>\n<li>Click <strong>Send</strong> and you will see the Markdown response in the response panel.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20change%20what%20human%20visitors%20see%3F\">\nDoes this change what human visitors see?\n</h4>\n<p>\n<p>No. Standard browser requests always receive the normal HTML version of your pages. The Markdown output is only served when a client explicitly includes <code>Accept: text/markdown</code> in its HTTP request header. No regular browser sends this header by default.</p>\n</p>\n<dt id=\"which%20post%20types%20are%20supported%3F\">\nWhich post types are supported?\n</h4>\n<p>\n<p>All singular content types are supported: standard Posts, Pages, and any registered Custom Post Types. Archive pages, category pages, and the homepage (if set to a blog feed) are not served as Markdown.</p>\n</p>\n<dt id=\"how%20do%20i%20know%20the%20plugin%20is%20working%3F\">\nHow do I know the plugin is working?\n</h4>\n<p>\n<p>Use any of the three verification methods described in the Installation section above. The quickest check is: <code>curl -H \"Accept: text/markdown\" https://your-site.com/sample-page/</code>. A working response will return plain text starting with your post title as a Markdown <code>#</code> heading.</p>\n</p>\n<dt id=\"what%20content%20is%20included%20in%20the%20markdown%20output%3F\">\nWhat content is included in the Markdown output?\n</h4>\n<p>\n<p>The Markdown output contains the full rendered post or page content — the title and body — converted to Markdown. Navigation menus, sidebars, footers, and <code>&lt;script&gt;</code> and <code>&lt;style&gt;</code> tags are automatically stripped out to provide a clean, token-efficient result for AI consumption.</p>\n</p>\n<dt id=\"what%20http%20headers%20does%20the%20plugin%20send%20with%20the%20markdown%20response%3F\">\nWhat HTTP headers does the plugin send with the Markdown response?\n</h4>\n<p>\n<p>The response includes:</p>\n<ul>\n<li><code>Content-Type: text/markdown; charset=utf-8</code> — tells the client the content format.</li>\n<li><code>Vary: Accept</code> — informs caches that the response varies based on the Accept header, preventing cached HTML from being served to Markdown clients.</li>\n<li><code>X-Markdown-Generator: Markdown for AI Agents</code> — identifies the plugin.</li>\n<li><code>X-Markdown-Word-Count: [number]</code> — the word count of the Markdown content.</li>\n</ul>\n</p>\n<dt id=\"will%20this%20affect%20my%20seo%20or%20page%20caching%3F\">\nWill this affect my SEO or page caching?\n</h4>\n<p>\n<p>No. The <code>Vary: Accept</code> header is set on Markdown responses so that HTTP caches (including CDNs) correctly cache HTML and Markdown separately. Search engine crawlers do not send <code>Accept: text/markdown</code> headers, so they will always receive and index the normal HTML version of your pages.</p>\n</p>\n<dt id=\"does%20the%20plugin%20require%20any%20additional%20libraries%3F\">\nDoes the plugin require any additional libraries?\n</h4>\n<p>\n<p>The League HTMLToMarkdown library is bundled inside the plugin under <code>includes/lib/HtmlToMarkdown/</code>. No additional installation steps are required.</p>\n</p>\n<dt id=\"is%20this%20compatible%20with%20page%20builders%20or%20block%20themes%3F\">\nIs this compatible with page builders or block themes?\n</h4>\n<p>\n<p>Yes. Because the plugin captures the fully rendered HTML output (after WordPress and any theme or plugin has finished building the page), it works regardless of whether your content is built with the Classic Editor, Gutenberg blocks, Elementor, or any other page builder.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Serve clean Markdown versions of WordPress content to AI agents using HTTP content negotiation.",
+    "description": "<p>Markdown for AI Agents is a lightweight WordPress plugin that enables HTTP content negotiation for your site&#8217;s content. When a client (like an AI agent or a custom script) requests a page with the <code>Accept: text/markdown</code> header, the plugin intercepts the request and returns a clean, structured Markdown representation of the post or page content.</p>\n<p>This is ideal for AI crawlers, RAG (Retrieval-Augmented Generation) systems, and non-browser clients that prefer machine-friendly text over complex HTML.</p>\n<p><strong>Important note:</strong> This plugin is primarily a developer/integration tool. Human visitors browsing your site will never see any difference — the Markdown output is only served when explicitly requested via the <code>Accept: text/markdown</code> HTTP header. Normal browser requests always receive the standard HTML page.</p>\n<p><strong>Key Features:</strong></p>\n<ul>\n<li>Automatically detects <code>Accept: text/markdown</code> headers.</li>\n<li>Converts HTML content to clean Markdown using the League HTMLToMarkdown library.</li>\n<li>Strips away theme layout, navigation, headers, footers, and sidebars — serving only the main content.</li>\n<li>Adds useful HTTP response headers: <code>Content-Type: text/markdown</code>, <code>Vary: Accept</code>, and <code>X-Markdown-Word-Count</code>.</li>\n<li>Respects WordPress visibility rules and filters.</li>\n<li>No configuration required — works out of the box for posts, pages, and custom post types.</li>\n</ul>\n<h3>How It Works</h3>\n<p>This plugin uses a standard web technique called <strong>HTTP content negotiation</strong>. The same URL on your site can serve different representations of the same content depending on what the client asks for:</p>\n<ul>\n<li>A regular browser sends <code>Accept: text/html</code> <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> receives your normal HTML page.</li>\n<li>An AI agent sends <code>Accept: text/markdown</code> <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> receives a clean Markdown version of the same page.</li>\n</ul>\n<p>No extra URLs, no duplicate content, no configuration needed. The plugin hooks into WordPress&#8217;s <code>template_redirect</code> action, detects the <code>Accept</code> header, captures the rendered HTML, converts it to Markdown, and returns it with appropriate headers.</p>\n<h3>Why Markdown for AI Agents?</h3>\n<p>When building RAG (Retrieval-Augmented Generation) applications or AI pipelines that ingest web content, HTML is extremely noisy. A typical WordPress page contains thousands of tokens worth of HTML tags, inline styles, navigation menus, scripts, and layout markup — none of which carries meaning for an AI model.</p>\n<p>Serving clean Markdown instead can reduce token consumption by up to 60%, which means:</p>\n<ul>\n<li><strong>Lower API costs</strong> — fewer tokens ingested when loading pages into vector stores or LLM pipelines.</li>\n<li><strong>Faster processing</strong> — less text for the model to parse, filter, and discard.</li>\n<li><strong>Better retrieval accuracy</strong> — higher signal-to-noise ratio improves the quality of RAG results.</li>\n<li><strong>Simpler pipelines</strong> — no need for custom HTML stripping logic on the client side; the plugin handles it server-side.</li>\n</ul>\n<p>Any AI agent, crawler, or ingestion script that sends <code>Accept: text/markdown</code> in its request header will automatically receive the clean Markdown version — no extra URLs, no separate endpoints, no changes to your content workflow.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/markdown-for-ai-agents.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>This is the initial release of the plugin. No upgrade notice is applicable at this time.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/markdown-for-ai-agents/assets/screenshot-1.png?rev=3477684",
+            "caption": "Sample Markdown output returned in a terminal using <code>curl -H \"Accept: text/markdown\"</code> on a WordPress post. The response shows the post title as a top-level Markdown heading, followed by the post body in plain Markdown, with all HTML, navigation, and theme chrome stripped away."
+        }
+    ],
+    "tags": {
+        "ai": "AI",
+        "content-negotiation": "content negotiation",
+        "llm": "LLM",
+        "markdown": "markdown",
+        "rag": "rag"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/markdown-for-ai-agents.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/markdown-for-ai-agents.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://github.com/selvasudar",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/markdown-for-ai-agents.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
