@@ -1,0 +1,83 @@
+{
+    "name": "JuZ Rich Text Extender",
+    "slug": "juz-rich-text-extender",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/juzed/\">Ju'Z[ed]</a>",
+    "author_profile": "https://profiles.wordpress.org/juzed/",
+    "contributors": {
+        "juzed": {
+            "profile": "https://profiles.wordpress.org/juzed/",
+            "avatar": "https://secure.gravatar.com/avatar/c4415fbe4a152b97e4cc5ac4cc3f11461a3ff1bbff3f85c34a5f6beb1b3beb00?s=96&d=monsterid&r=g",
+            "display_name": "Ju'Z[ed]"
+        }
+    },
+    "requires": "6.1",
+    "tested": "6.9.4",
+    "requires_php": "7.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/juz-rich-text-extender/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-03-19 21:39:00",
+    "added": "2026-03-19",
+    "homepage": "https://juzed.dev/projets/juz-rich-text-extender",
+    "sections": {
+        "description": "<p>JuZ Rich Text Extender allows developers to register custom inline format buttons in the Gutenberg (block editor) toolbar. Each button applies a specific HTML inline tag with an optional CSS class to the selected text.</p>\n<p>The plugin includes a built-in nesting validation system: buttons are automatically disabled when their use would produce invalid HTML nesting (e.g. <code>&lt;a&gt;</code> inside <code>&lt;a&gt;</code>). When a format is already active, its button remains enabled so it can always be toggled off.</p>\n<p><strong>Key features:</strong></p>\n<ul>\n<li>Register custom inline formats (tag + CSS class) via a WordPress filter</li>\n<li><code>tagName</code> defaults to <code>span</code>, which is strongly recommended for compatibility</li>\n<li>Smart nesting validation against the full active tag stack (for non-span tags)</li>\n<li>Buttons are visually disabled when nesting is not allowed</li>\n<li>Exhaustive inline tag ruleset (<code>span</code>, <code>a</code>, <code>strong</code>, <code>em</code>, <code>mark</code>, <code>code</code>, <code>u</code>, <code>s</code>, <code>i</code>, <code>b</code>, <code>q</code>, <code>cite</code>, <code>abbr</code>, <code>small</code>, <code>sub</code>, <code>sup</code>)</li>\n<li>Inline tag rules are filterable for full customisation by themes or other plugins</li>\n</ul>\n<p><strong>For developers:</strong></p>\n<p>Formats and inline tag rules are both exposed via WordPress filters, making the plugin fully extensible without modifying core files.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>juz-rich-text-extender</code> folder to the <code>/wp-content/plugins/</code> directory.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> menu in WordPress.</li>\n<li>Use the <code>juz_rich_text_extender/formats</code> filter to register your custom inline formats.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"how%20do%20i%20register%20a%20custom%20format%3F\">\nHow do I register a custom format?\n</h4>\n<p>\n<p>Use the <code>juz_rich_text_extender/formats</code> filter to add your formats. Each format must be an associative array with the following keys:</p>\n<ul>\n<li><code>name</code> &#8211; unique identifier (used as the format type slug)</li>\n<li><code>title</code> &#8211; label shown in the toolbar tooltip</li>\n<li><code>tagName</code> &#8211; HTML inline tag to apply. Optional, defaults to <code>span</code>. See the caution note below.</li>\n<li><code>className</code> &#8211; CSS class applied to the tag</li>\n<li><code>icon</code> &#8211; a Dashicon slug or SVG string</li>\n</ul>\n<p>Example:</p>\n<pre><code>add_filter( 'juz_rich_text_extender/formats', function( $formats ) {\n    $formats[] = [\n        'name'      =&gt; 'highlight',\n        'title'     =&gt; __( 'Highlight', 'your-text-domain' ),\n        'className' =&gt; 'my-highlight',\n        'icon'      =&gt; 'editor-textcolor',\n    ];\n    return $formats;\n} );\n</code></pre>\n<p><strong>CAUTION:</strong> <code>tagName</code> is optional and defaults to <code>span</code>, which is strongly recommended. Using any other tag may produce invalid HTML nesting or conflict with Gutenberg&#8217;s internal formats (e.g. <code>core/link</code> for <code>&lt;a&gt;</code> tags). If you do specify a custom tag, the nesting validation system will still protect against invalid HTML where possible, but you may encounter editor limitations. See &#8220;How do I apply a custom class to a link?&#8221; for more details.</p>\n</p>\n<dt id=\"how%20do%20i%20customise%20the%20inline%20tag%20nesting%20rules%3F\">\nHow do I customise the inline tag nesting rules?\n</h4>\n<p>\n<p>Use the <code>juz_rich_text_extender/inline_tags</code> filter. Each tag entry has three keys: <code>canSelfNest</code> (bool), <code>canNestIn</code> (array of tag names), and <code>canContain</code> (array of tag names).</p>\n<p>Example:</p>\n<pre><code>add_filter( 'juz_rich_text_extender/inline_tags', function( $tags ) {\n    // Allow &lt;kbd&gt; as a custom inline tag\n    $tags['kbd'] = [\n        'canSelfNest' =&gt; false,\n        'canNestIn'   =&gt; [ 'p', 'li', 'span', 'strong', 'em' ],\n        'canContain'  =&gt; [],\n    ];\n    return $tags;\n} );\n</code></pre>\n</p>\n<dt id=\"why%20is%20a%20button%20greyed%20out%20in%20the%20toolbar%3F\">\nWhy is a button greyed out in the toolbar?\n</h4>\n<p>\n<p>The nesting validation system detected that applying this format at the current cursor position would produce invalid HTML. For example, clicking <code>&lt;a&gt;</code> while already inside an <code>&lt;a&gt;</code> tag is forbidden by the HTML specification, so the button is disabled. This validation only applies to formats using a non-span <code>tagName</code>.</p>\n</p>\n<dt id=\"can%20i%20override%20nesting%20rules%20for%20an%20existing%20tag%3F\">\nCan I override nesting rules for an existing tag?\n</h4>\n<p>\n<p>Yes. Use the <code>juz_rich_text_extender/inline_tags</code> filter and modify the entry for the tag you want to change before returning the array.</p>\n</p>\n<dt id=\"how%20do%20i%20apply%20a%20custom%20class%20to%20a%20link%3F\">\nHow do I apply a custom class to a link?\n</h4>\n<p>\n<p>Gutenberg manages <code>&lt;a&gt;</code> tags internally via its own <code>core/link</code> format, which makes it unreliable to apply a custom <code>&lt;a&gt;</code>-based format on top of an existing link. The recommended approach is to leave <code>tagName</code> unset (defaults to <code>span</code>) and target it in CSS using the <code>:has()</code> selector:</p>\n<pre><code>add_filter( 'juz_rich_text_extender/formats', function( $formats ) {\n    $formats[] = [\n        'name'      =&gt; 'button',\n        'title'     =&gt; __( 'Button', 'your-text-domain' ),\n        'className' =&gt; 'btn',\n        'icon'      =&gt; 'button',\n    ];\n    return $formats;\n} );\n</code></pre>\n<p>Then in your CSS:</p>\n<pre><code>a:has(&gt; .btn) {\n    display: inline-block;\n    padding: 0.5em 1em;\n    background: #0073aa;\n    color: #fff;\n    border-radius: 4px;\n    text-decoration: none;\n}\n</code></pre>\n<p>This approach produces valid HTML (<code>&lt;a href=\"...\"&gt;&lt;span class=\"btn\"&gt;text&lt;/span&gt;&lt;/a&gt;</code>), survives the HTML <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">↔</span> visual editor round-trip without issues, and is supported by all modern browsers.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>Custom inline format registration via filter.</li>\n<li>tagName defaults to span for maximum compatibility.</li>\n<li>Smart nesting validation on the full active tag stack for non-span tags.</li>\n<li>Exhaustive inline tag ruleset covering all standard HTML inline elements.</li>\n<li>Filterable inline tag rules for themes and plugins.</li>\n</ul>\n"
+    },
+    "short_description": "Extends the Gutenberg block editor toolbar with custom inline format buttons, with smart nesting validation based on HTML spec rules.",
+    "description": "<p>JuZ Rich Text Extender allows developers to register custom inline format buttons in the Gutenberg (block editor) toolbar. Each button applies a specific HTML inline tag with an optional CSS class to the selected text.</p>\n<p>The plugin includes a built-in nesting validation system: buttons are automatically disabled when their use would produce invalid HTML nesting (e.g. <code>&lt;a&gt;</code> inside <code>&lt;a&gt;</code>). When a format is already active, its button remains enabled so it can always be toggled off.</p>\n<p><strong>Key features:</strong></p>\n<ul>\n<li>Register custom inline formats (tag + CSS class) via a WordPress filter</li>\n<li><code>tagName</code> defaults to <code>span</code>, which is strongly recommended for compatibility</li>\n<li>Smart nesting validation against the full active tag stack (for non-span tags)</li>\n<li>Buttons are visually disabled when nesting is not allowed</li>\n<li>Exhaustive inline tag ruleset (<code>span</code>, <code>a</code>, <code>strong</code>, <code>em</code>, <code>mark</code>, <code>code</code>, <code>u</code>, <code>s</code>, <code>i</code>, <code>b</code>, <code>q</code>, <code>cite</code>, <code>abbr</code>, <code>small</code>, <code>sub</code>, <code>sup</code>)</li>\n<li>Inline tag rules are filterable for full customisation by themes or other plugins</li>\n</ul>\n<p><strong>For developers:</strong></p>\n<p>Formats and inline tag rules are both exposed via WordPress filters, making the plugin fully extensible without modifying core files.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/juz-rich-text-extender.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release — no upgrade steps required.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/juz-rich-text-extender/assets/screenshot-1.png?rev=3486837",
+            "caption": "Custom inline format buttons added to the Gutenberg toolbar."
+        }
+    ],
+    "tags": {
+        "gutenberg": "gutenberg",
+        "inline-formats": "inline formats",
+        "rich-text": "rich text",
+        "toolbar": "toolbar"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/juz-rich-text-extender.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/juz-rich-text-extender.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/juz-rich-text-extender/assets/banner-772x250.jpg?rev=3486837",
+        "high": "https://ps.w.org/juz-rich-text-extender/assets/banner-1544x500.jpg?rev=3486837"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/juz-rich-text-extender/assets/icon-128x128.png?rev=3486837",
+        "2x": "https://ps.w.org/juz-rich-text-extender/assets/icon-256x256.png?rev=3486837"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
