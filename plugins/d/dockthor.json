@@ -1,0 +1,71 @@
+{
+    "name": "DockTHOR",
+    "slug": "dockthor",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/jacycha/\">Jacek Labudda</a>",
+    "author_profile": "https://profiles.wordpress.org/jacycha/",
+    "contributors": {
+        "jacycha": {
+            "profile": "https://profiles.wordpress.org/jacycha/",
+            "avatar": "https://secure.gravatar.com/avatar/ab12acda93236bdd0f4976f387bd99171d0becdf94af094b3f9663fb3e30753c?s=96&d=monsterid&r=g",
+            "display_name": "Jacek Labudda"
+        }
+    },
+    "requires": "5.6",
+    "tested": "6.9.4",
+    "requires_php": "7.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/dockthor/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-03-24 17:04:00",
+    "added": "2026-03-24",
+    "homepage": "https://thor.dock.codes",
+    "sections": {
+        "description": "<p>DockTHOR integrates WordPress with the THOR monitoring platform and automatically reports PHP errors and uncaught exceptions.</p>\n<p>The plugin is designed to work silently in the background and has no admin interface. After installation you only need to configure your THOR project credentials.</p>\n<h3>Features:</h3>\n<ul>\n<li>Automatic reporting of PHP errors and uncaught exceptions</li>\n<li>Support for custom error filtering</li>\n<li>Optional user context information</li>\n<li>Customizable configuration via WordPress constants and filters</li>\n<li>Minimal performance overhead</li>\n</ul>\n<p>This plugin is intended for developers and teams who want to monitor errors occurring in WordPress installations.</p>\n<p>Installation</p>\n<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/dockthor</code> directory, or install the plugin through the WordPress plugins screen.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> menu in WordPress.</li>\n<li>Configure your THOR credentials in <code>wp-config.php</code>.</li>\n</ol>\n<p>Example configuration:<br />\n    <code>php<br />\ndefine( 'DOCK_THOR_TOKEN', 'YOUR_THOR_TOKEN' );<br />\ndefine( 'DOCK_THOR_PRIVATE_KEY', 'YOUR_PRIVATE_KEY' );</code><br />\nOnce configured, the plugin will automatically begin reporting PHP errors.</p>\n<p>Configuration</p>\n<p>Add the following constants to your <code>wp-config.php</code> file.</p>\n<h3>DockTHOR Token</h3>\n<p><code>php<br />\ndefine( 'DOCK_THOR_TOKEN', 'YOUR_THOR_TOKEN' );<br />\n    `&lt;h3&gt;Private Key&lt;/h3&gt;</code>php<br />\ndefine( &#8216;DOCK_THOR_PRIVATE_KEY&#8217;, &#8216;YOUR_PRIVATE_KEY&#8217; );<br />\n    `</p>\n<h3>Error Types (optional)</h3>\n<p>&#8220;`php<br />\ndefine( &#8216;DOCK_THOR_ERROR_TYPES&#8217;, E_ALL &amp; ~E_DEPRECATED &amp; ~E_NOTICE &amp; ~E_USER_DEPRECATED );<br />\n    <code>Define which PHP errors should be captured.&lt;h3&gt;Send Default PII (optional)&lt;/h3&gt;<br />\nIf enabled, additional context such as the logged-in user and IP address will be attached to the event.</code>php<br />\ndefine( &#8216;DOCK_THOR_SEND_DEFAULT_PII&#8217;, true );<br />\n    <code>&lt;h3&gt;Site Version (optional)&lt;/h3&gt;<br />\nDefine the version of your website. This can help track which version of the site generated an error.</code>php<br />\ndefine( &#8216;DOCK_THOR_VERSION&#8217;, &#8216;v1.0.0&#8217; );<br />\n    <code>&lt;h3&gt;Environment (optional)&lt;/h3&gt;<br />\nDefine the current environment.</code>php<br />\ndefine( &#8216;DOCK_THOR_ENV&#8217;, &#8216;production&#8217; );<br />\n    `</p>\n<p>Filters</p>\n<p>DockTHOR provides several filters that allow developers to customize behavior.</p>\n<h3>dock_thor_user_context</h3>\n<p>Allows extending the user context sent to THOR.</p>\n<p>Example:<br />\n    <code>php<br />\nadd_filter( 'dock_thor_user_context', function ( array $user ) {<br />\n    return array_merge( $user, ['custom_meta' =&gt; 'value'] );<br />\n});</code></p>\n<p>Note: These values may be exposed publicly when used in JavaScript trackers.</p>\n<h3>dock_thor_token</h3>\n<p>Allows overriding the THOR token.</p>\n<p>Example:<br />\n    <code>php<br />\nadd_filter( 'dock_thor_token', function ( $token ) {<br />\n    return 'xxxxxxxxxxxxxxxxxxxx';<br />\n});</code><br />\nUsing the <code>DOCK_THOR_TOKEN</code> constant is recommended instead.</p>\n<h3>dock_thor_scope</h3>\n<p>Allows modifying the THOR scope before events are sent.</p>\n<p>Example:<br />\n    <code>php<br />\nadd_filter( 'dock_thor_scope', function ( \\Dock\\Thor\\State\\Scope $scope ) {<br />\n    $scope-&gt;setTag('custom-tag', 'value');<br />\n    return $scope;<br />\n});</code></p>\n<h3>dock_thor_options</h3>\n<p>Allows customizing THOR SDK options.</p>\n<p>Example:<br />\n    <code>php<br />\nadd_filter( 'dock_thor_options', function ( \\Dock\\Thor\\Options $options ) {<br />\n    $options-&gt;setSampleRate(0.9);<br />\n    return $options;<br />\n});</code></p>\n<p>Advanced Usage</p>\n<h3>High volume of notices</h3>\n<p>Some plugins generate large amounts of PHP notices. You can filter them out:<br />\n    <code>php<br />\ndefine( 'DOCK_THOR_ERROR_TYPES', E_ALL &amp; ~E_NOTICE );</code></p>\n<h3>Capturing handled exceptions</h3>\n<p>If you want to report handled exceptions:<br />\n    <code>php<br />\ntry {<br />\n    myMethodThatCanThrowAnException();<br />\n} catch ( \\Exception $e ) {<br />\n    if ( function_exists( 'dock_thor_safe' ) ) {<br />\n        dock_thor_safe( function ( \\Dock\\Thor\\State\\HubInterface $client ) use ( $e ) {<br />\n            $client-&gt;captureException( $e );<br />\n        });<br />\n    }<br />\n    wp_die( 'An error occurred.' );<br />\n}</code></p>\n<p>Frequently Asked Questions</p>\n<h4>Does this plugin have an admin panel?</h4>\n<p>No. DockTHOR works automatically after configuration in <code>wp-config.php</code>.</p>\n<h4>Will this slow down my site?</h4>\n<p>The plugin is designed to have minimal performance impact. Error events are sent asynchronously when possible.</p>\n<h4>Can I disable certain errors?</h4>\n<p>Yes. You can configure the error types captured using the <code>DOCK_THOR_ERROR_TYPES</code> constant.</p>\n",
+        "changelog": "<h3>1.0.0</h3>\n<ul>\n<li>Initial release.</li>\n</ul>\n<p>License</p>\n<p>The Assist For WCAG plugin is licensed under the GNU General Public License v2.0 or later (GPLv2+), as required by WordPress. This means the plugin’s source code is open and can be modified, copied, and redistributed under the terms of the GPL.</p>\n"
+    },
+    "short_description": "DockTHOR is a lightweight WordPress integration for sending PHP errors and exceptions to the THOR monitoring platform.",
+    "description": "<p>DockTHOR integrates WordPress with the THOR monitoring platform and automatically reports PHP errors and uncaught exceptions.</p>\n<p>The plugin is designed to work silently in the background and has no admin interface. After installation you only need to configure your THOR project credentials.</p>\n<h3>Features:</h3>\n<ul>\n<li>Automatic reporting of PHP errors and uncaught exceptions</li>\n<li>Support for custom error filtering</li>\n<li>Optional user context information</li>\n<li>Customizable configuration via WordPress constants and filters</li>\n<li>Minimal performance overhead</li>\n</ul>\n<p>This plugin is intended for developers and teams who want to monitor errors occurring in WordPress installations.</p>\n<p>Installation</p>\n<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/dockthor</code> directory, or install the plugin through the WordPress plugins screen.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> menu in WordPress.</li>\n<li>Configure your THOR credentials in <code>wp-config.php</code>.</li>\n</ol>\n<p>Example configuration:<br />\n    <code>php<br />\ndefine( 'DOCK_THOR_TOKEN', 'YOUR_THOR_TOKEN' );<br />\ndefine( 'DOCK_THOR_PRIVATE_KEY', 'YOUR_PRIVATE_KEY' );</code><br />\nOnce configured, the plugin will automatically begin reporting PHP errors.</p>\n<p>Configuration</p>\n<p>Add the following constants to your <code>wp-config.php</code> file.</p>\n<h3>DockTHOR Token</h3>\n<p><code>php<br />\ndefine( 'DOCK_THOR_TOKEN', 'YOUR_THOR_TOKEN' );<br />\n    `&lt;h3&gt;Private Key&lt;/h3&gt;</code>php<br />\ndefine( &#8216;DOCK_THOR_PRIVATE_KEY&#8217;, &#8216;YOUR_PRIVATE_KEY&#8217; );<br />\n    `</p>\n<h3>Error Types (optional)</h3>\n<p>&#8220;`php<br />\ndefine( &#8216;DOCK_THOR_ERROR_TYPES&#8217;, E_ALL &amp; ~E_DEPRECATED &amp; ~E_NOTICE &amp; ~E_USER_DEPRECATED );<br />\n    <code>Define which PHP errors should be captured.&lt;h3&gt;Send Default PII (optional)&lt;/h3&gt;<br />\nIf enabled, additional context such as the logged-in user and IP address will be attached to the event.</code>php<br />\ndefine( &#8216;DOCK_THOR_SEND_DEFAULT_PII&#8217;, true );<br />\n    <code>&lt;h3&gt;Site Version (optional)&lt;/h3&gt;<br />\nDefine the version of your website. This can help track which version of the site generated an error.</code>php<br />\ndefine( &#8216;DOCK_THOR_VERSION&#8217;, &#8216;v1.0.0&#8217; );<br />\n    <code>&lt;h3&gt;Environment (optional)&lt;/h3&gt;<br />\nDefine the current environment.</code>php<br />\ndefine( &#8216;DOCK_THOR_ENV&#8217;, &#8216;production&#8217; );<br />\n    `</p>\n<p>Filters</p>\n<p>DockTHOR provides several filters that allow developers to customize behavior.</p>\n<h3>dock_thor_user_context</h3>\n<p>Allows extending the user context sent to THOR.</p>\n<p>Example:<br />\n    <code>php<br />\nadd_filter( 'dock_thor_user_context', function ( array $user ) {<br />\n    return array_merge( $user, ['custom_meta' =&gt; 'value'] );<br />\n});</code></p>\n<p>Note: These values may be exposed publicly when used in JavaScript trackers.</p>\n<h3>dock_thor_token</h3>\n<p>Allows overriding the THOR token.</p>\n<p>Example:<br />\n    <code>php<br />\nadd_filter( 'dock_thor_token', function ( $token ) {<br />\n    return 'xxxxxxxxxxxxxxxxxxxx';<br />\n});</code><br />\nUsing the <code>DOCK_THOR_TOKEN</code> constant is recommended instead.</p>\n<h3>dock_thor_scope</h3>\n<p>Allows modifying the THOR scope before events are sent.</p>\n<p>Example:<br />\n    <code>php<br />\nadd_filter( 'dock_thor_scope', function ( \\Dock\\Thor\\State\\Scope $scope ) {<br />\n    $scope-&gt;setTag('custom-tag', 'value');<br />\n    return $scope;<br />\n});</code></p>\n<h3>dock_thor_options</h3>\n<p>Allows customizing THOR SDK options.</p>\n<p>Example:<br />\n    <code>php<br />\nadd_filter( 'dock_thor_options', function ( \\Dock\\Thor\\Options $options ) {<br />\n    $options-&gt;setSampleRate(0.9);<br />\n    return $options;<br />\n});</code></p>\n<p>Advanced Usage</p>\n<h3>High volume of notices</h3>\n<p>Some plugins generate large amounts of PHP notices. You can filter them out:<br />\n    <code>php<br />\ndefine( 'DOCK_THOR_ERROR_TYPES', E_ALL &amp; ~E_NOTICE );</code></p>\n<h3>Capturing handled exceptions</h3>\n<p>If you want to report handled exceptions:<br />\n    <code>php<br />\ntry {<br />\n    myMethodThatCanThrowAnException();<br />\n} catch ( \\Exception $e ) {<br />\n    if ( function_exists( 'dock_thor_safe' ) ) {<br />\n        dock_thor_safe( function ( \\Dock\\Thor\\State\\HubInterface $client ) use ( $e ) {<br />\n            $client-&gt;captureException( $e );<br />\n        });<br />\n    }<br />\n    wp_die( 'An error occurred.' );<br />\n}</code></p>\n<p>Frequently Asked Questions</p>\n<h4>Does this plugin have an admin panel?</h4>\n<p>No. DockTHOR works automatically after configuration in <code>wp-config.php</code>.</p>\n<h4>Will this slow down my site?</h4>\n<p>The plugin is designed to have minimal performance impact. Error events are sent asynchronously when possible.</p>\n<h4>Can I disable certain errors?</h4>\n<p>Yes. You can configure the error types captured using the <code>DOCK_THOR_ERROR_TYPES</code> constant.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/dockthor.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "debugging": "debugging",
+        "error-tracking": "error tracking",
+        "logging": "logging",
+        "monitoring": "monitoring"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/dockthor.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/dockthor.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/dockthor/assets/icon-256x256.jpg?rev=3490219",
+        "2x": "https://ps.w.org/dockthor/assets/icon-256x256.jpg?rev=3490219"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
