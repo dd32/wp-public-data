@@ -1,0 +1,78 @@
+{
+    "name": "Paydibs Payment Gateway",
+    "slug": "paydibs-gateway",
+    "version": "3.0.8",
+    "author": "<a href=\"https://profiles.wordpress.org/paydibs/\">paydibs</a>",
+    "author_profile": "https://profiles.wordpress.org/paydibs/",
+    "contributors": {
+        "paydibs": {
+            "profile": "https://profiles.wordpress.org/paydibs/",
+            "avatar": "https://secure.gravatar.com/avatar/ea42f83b73617cadcd9899d7b2a35ba60179a405c7d047c1e662e5eed0c3d311?s=96&d=monsterid&r=g",
+            "display_name": "paydibs"
+        }
+    },
+    "requires": "5.8",
+    "tested": "6.9.4",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/paydibs-gateway/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-04-19 04:41:00",
+    "added": "2026-04-19",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Paydibs Gateway adds Paydibs payments to WooCommerce for fast, secure checkout.</p>\n<p>This plugin connects to the Paydibs payment service. By using this plugin you agree to Paydibs terms and privacy policy available on the Paydibs website: https://paydibs.com/</p>\n<h3>External services</h3>\n<p>This plugin relies on Paydibs-hosted payment APIs to process WooCommerce orders. The service is required to send the shopper to Paydibs to pay, to receive payment status callbacks, and to verify transactions.</p>\n<ul>\n<li><strong>Live API endpoint:</strong> <code>https://v3api.paydibs.com/PPG/trigger</code> — used when Test mode is disabled in the gateway settings.</li>\n<li><strong>Staging API endpoint:</strong> <code>https://stgapi.paydibs.com/PPG/trigger</code> — used when Test mode is enabled.</li>\n</ul>\n<p>Technical reference for request/response fields and signing (Pay Request, Pay Response, Query Request): <a href=\"https://v3api-docs.paydibs.com/docs/api-reference/pay-request\" rel=\"nofollow ugc\">Paydibs API v3 documentation</a>.</p>\n<p><strong>When data is sent</strong></p>\n<ul>\n<li><strong>Checkout redirect (customer’s browser):</strong> When the customer places an order and chooses Paydibs, the plugin builds a signed request and redirects the browser to the Paydibs URL above. Data includes order amount, currency, order and payment reference IDs, your configured merchant ID, return and callback URLs on your site, product description, and customer details needed for payment and fraud checks (for example billing name, email, phone, IP address, user agent, and optional billing or shipping address fields). If Cash on Delivery fields are enabled, receiver and parcel details are included as required by Paydibs for COD channels.</li>\n<li><strong>Server callback:</strong> Paydibs sends payment result data to your store’s WooCommerce callback URL (JSON or form fields). The plugin reads only the parameters required for that callback, verifies the signature, and may call the same Paydibs API with a read-only <strong>QUERY</strong> request to confirm the transaction before updating the order.</li>\n</ul>\n<p><strong>Legal</strong></p>\n<p>Paydibs provides this service. Terms and privacy:</p>\n<ul>\n<li>Terms of service: https://paydibs.com/paydibs-service-agreement/</li>\n<li>Privacy policy: https://paydibs.com/privacy-policy/</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/paydibs-gateway</code> directory, or install the plugin through the WordPress plugins screen.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; screen in WordPress.</li>\n<li>Go to WooCommerce &gt; Settings &gt; Payments and enable Paydibs Gateway.</li>\n<li>Configure your Paydibs credentials in the gateway settings.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20plugin%20support%20test%20mode%3F\">\nDoes this plugin support test mode?\n</h4>\n<p>\n<p>Yes. Enable Test mode in the gateway settings and enter your test credentials.</p>\n</p>\n\n",
+        "changelog": "<h4>3.0.8</h4>\n<ul>\n<li>Declare WooCommerce as a required plugin in readme/plugin headers. Translate the checkout test-mode description line.</li>\n<li>Plugin Check: remove manual <code>load_plugin_textdomain()</code> (discouraged for WordPress.org-hosted plugins; core loads translations for the plugin slug). PHPCS ignore for the integer <code>RuntimeException</code> HTTP status argument (<code>ExceptionNotEscaped</code> false positive).</li>\n</ul>\n<h4>3.0.7</h4>\n<ul>\n<li>Plugin Check: do not ship hidden files (for example <code>.gitignore</code>) in the WordPress.org zip. Escape exception messages for <code>WordPress.Security.EscapeOutput.ExceptionNotEscaped</code>; translate previously hard-coded exception strings.</li>\n</ul>\n<h4>3.0.6</h4>\n<ul>\n<li>Harden QUERY (sendQueryRequest) handling: require HTTP 200, decode JSON with strict error handling, allowlist fields before signature verification, sanitize returned fields after verification, and use translatable/safe error messages.</li>\n</ul>\n<h4>3.0.5</h4>\n<ul>\n<li>Use is_plugin_active for WooCommerce detection (multisite / network-friendly); remove unreachable code after payment responses; drop unused large asset; minor cleanup.</li>\n</ul>\n<h4>3.0.4</h4>\n<ul>\n<li>QUERY requests include all validated Pay Response fields again (same as before), rebuilt from a strict allowlist with outbound sanitization so no extra parameters are sent; Pay Response signature check uses hash_equals with case-normalized hex; escape payment icon URL/alt; clarify JSON decode handling for gateway responses; link official API docs from readme.</li>\n</ul>\n<h4>3.0.3</h4>\n<ul>\n<li>WordPress.org review: document external services in readme; sanitize and validate Paydibs callback input without reading full superglobals; use wp_json_encode for callback responses; rename gateway classes to Paydibs-prefixed names (avoid WC_ prefix). Developer note: paydibs_gateway_* filters renamed to paydibs_payment_gateway_*.</li>\n</ul>\n<h4>3.0.2</h4>\n<ul>\n<li>Fix Plugin Check warnings and cleanup.</li>\n</ul>\n<h4>3.0.0</h4>\n<ul>\n<li>Add optional customer details to Pay Request payload.</li>\n<li>Code cleanup and repo compliance updates.</li>\n<li>Add COD fields and settings.</li>\n</ul>\n<h4>2.1.0</h4>\n<ul>\n<li>Add optional customer details to Pay Request payload.</li>\n<li>Code cleanup and repo compliance updates.</li>\n</ul>\n<h4>2.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Accept secure WooCommerce payments with Paydibs, a Malaysian gateway supporting cards, online banking, e-wallets, and COD.",
+    "description": "<p>Paydibs Gateway adds Paydibs payments to WooCommerce for fast, secure checkout.</p>\n<p>This plugin connects to the Paydibs payment service. By using this plugin you agree to Paydibs terms and privacy policy available on the Paydibs website: https://paydibs.com/</p>\n<h3>External services</h3>\n<p>This plugin relies on Paydibs-hosted payment APIs to process WooCommerce orders. The service is required to send the shopper to Paydibs to pay, to receive payment status callbacks, and to verify transactions.</p>\n<ul>\n<li><strong>Live API endpoint:</strong> <code>https://v3api.paydibs.com/PPG/trigger</code> — used when Test mode is disabled in the gateway settings.</li>\n<li><strong>Staging API endpoint:</strong> <code>https://stgapi.paydibs.com/PPG/trigger</code> — used when Test mode is enabled.</li>\n</ul>\n<p>Technical reference for request/response fields and signing (Pay Request, Pay Response, Query Request): <a href=\"https://v3api-docs.paydibs.com/docs/api-reference/pay-request\" rel=\"nofollow ugc\">Paydibs API v3 documentation</a>.</p>\n<p><strong>When data is sent</strong></p>\n<ul>\n<li><strong>Checkout redirect (customer’s browser):</strong> When the customer places an order and chooses Paydibs, the plugin builds a signed request and redirects the browser to the Paydibs URL above. Data includes order amount, currency, order and payment reference IDs, your configured merchant ID, return and callback URLs on your site, product description, and customer details needed for payment and fraud checks (for example billing name, email, phone, IP address, user agent, and optional billing or shipping address fields). If Cash on Delivery fields are enabled, receiver and parcel details are included as required by Paydibs for COD channels.</li>\n<li><strong>Server callback:</strong> Paydibs sends payment result data to your store’s WooCommerce callback URL (JSON or form fields). The plugin reads only the parameters required for that callback, verifies the signature, and may call the same Paydibs API with a read-only <strong>QUERY</strong> request to confirm the transaction before updating the order.</li>\n</ul>\n<p><strong>Legal</strong></p>\n<p>Paydibs provides this service. Terms and privacy:</p>\n<ul>\n<li>Terms of service: https://paydibs.com/paydibs-service-agreement/</li>\n<li>Privacy policy: https://paydibs.com/privacy-policy/</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/paydibs-gateway.3.0.8.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "checkout": "checkout",
+        "paydibs": "paydibs",
+        "payment-gateway": "payment gateway",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "3.0.8",
+    "versions": {
+        "3.0.8": "https://downloads.wordpress.org/plugin/paydibs-gateway.3.0.8.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/paydibs-gateway.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/paydibs-gateway/assets/banner-772x250.png?rev=3509875",
+        "high": "https://ps.w.org/paydibs-gateway/assets/banner-1544x500.png?rev=3509875"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/paydibs-gateway/assets/icon-128x128.png?rev=3509875",
+        "2x": "https://ps.w.org/paydibs-gateway/assets/icon-256x256.png?rev=3509875"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
