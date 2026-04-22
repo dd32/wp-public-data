@@ -1,0 +1,74 @@
+{
+    "name": "Keeal for WooCommerce",
+    "slug": "keeal-for-woocommerce",
+    "version": "1.0.5",
+    "author": "<a href=\"https://profiles.wordpress.org/keeal/\">keeal</a>",
+    "author_profile": "https://profiles.wordpress.org/keeal/",
+    "contributors": {
+        "keeal": {
+            "profile": "https://profiles.wordpress.org/keeal/",
+            "avatar": "https://secure.gravatar.com/avatar/5a9c3da98dc74be69a0c0d31ded25aa3c38c6dfe6968ff844026b158433080db?s=96&d=monsterid&r=g",
+            "display_name": "keeal"
+        }
+    },
+    "requires": "6.5",
+    "tested": "6.9.4",
+    "requires_php": "8.1",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/keeal-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-04-22 22:50:00",
+    "added": "2026-04-22",
+    "homepage": "https://keeal.com",
+    "sections": {
+        "description": "<p>This plugin adds a <strong>Keeal Payment</strong> gateway (hosted checkout redirect):</p>\n<ul>\n<li>Builds a checkout session from the WooCommerce order (line items, shipping, fees).</li>\n<li>Sends the customer to Keeal’s hosted payment page.</li>\n<li>Marks the order <strong>Processing / Paid</strong> when Keeal sends <code>checkout.session.completed</code> to your WordPress REST webhook.</li>\n<li>Verifies webhook signatures using your <strong><code>whsec_…</code></strong> secret (recommended).</li>\n</ul>\n<p><strong>Production API:</strong> The plugin uses the fixed Keeal production endpoint <code>https://api.keeal.com/api</code> unless you define <strong><code>KEEAL_WC_DEV_MODE</code></strong> as <code>true</code> in <code>wp-config.php</code> (then add a custom base URL in payment settings for local/staging).</p>\n<p><strong>Requirements:</strong> After copying the plugin, run <code>composer install</code> inside the plugin folder so <code>vendor/</code> pulls <strong><code>keeal/keeal-php</code></strong> from <a href=\"https://packagist.org/packages/keeal/keeal-php\" rel=\"nofollow ugc\">Packagist</a>.</p>\n<h3>External services</h3>\n<p>This plugin relies on <strong>Keeal</strong> (hosted checkout and merchant API) so customers can pay on Keeal’s pages and your store can confirm payment status.</p>\n<p><strong>What is used for</strong></p>\n<ul>\n<li>Creating a Keeal checkout session from the WooCommerce order and redirecting the buyer to Keeal’s hosted payment flow.</li>\n<li>Optional: a connection test from <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Keeal</strong> that calls the merchant API to confirm your API key and base URL work.</li>\n</ul>\n<p><strong>What data is sent and when</strong></p>\n<ul>\n<li><strong>When checkout runs:</strong> Your server sends HTTPS requests to the Keeal API (production: <code>https://api.keeal.com/api</code>; or your custom base URL when <code>KEEAL_WC_DEV_MODE</code> is enabled in <code>wp-config.php</code>). Each session request includes your configured <strong>API key</strong> (for authentication) and information derived from the order: <strong>currency</strong>; <strong>line items</strong> (product names and payable amounts, plus shipping and fee lines where applicable); the customer <strong>billing email</strong>; <strong>order ID</strong> and <strong>order key</strong> as references; <strong>success</strong> and <strong>cancel</strong> return URLs; and your <strong>site URL</strong> in metadata so Keeal can complete the redirect flow.</li>\n<li><strong>When you use “Ping Keeal merchant API”:</strong> An administrator with <strong>manage_woocommerce</strong> triggers a short authenticated request (listing merchant sessions, limited to one row) to verify connectivity. No order payload is sent for that test.</li>\n</ul>\n<p><strong>Inbound traffic:</strong> Keeal’s servers send <strong>webhooks</strong> (signed HTTP <code>POST</code> requests) to the REST URL you configure in the Keeal dashboard, so your site can update order status when payment completes or fails. Card data is handled by Keeal, not collected or stored by this plugin on your site.</p>\n<p><strong>Legal links (Keeal)</strong></p>\n<ul>\n<li><a href=\"https://keeal.com/terms\" rel=\"nofollow ugc\">Terms of Service</a></li>\n<li><a href=\"https://keeal.com/privacy\" rel=\"nofollow ugc\">Privacy Policy</a></li>\n</ul>\n",
+        "installation": "<ol>\n<li>Copy <code>keeal-for-woocommerce</code> into <code>wp-content/plugins/</code>.</li>\n<li>In that directory, run: <code>composer install</code></li>\n<li>Activate <strong>Keeal for WooCommerce</strong> and <strong>WooCommerce</strong> in WordPress.</li>\n<li>Go to <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Payments <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Keeal</strong> and enter your <strong>API key</strong> and (recommended) <strong>webhook signing secret</strong>. For dev-only custom API hosts, set <code>KEEAL_WC_DEV_MODE</code> in <code>wp-config.php</code> and fill <strong>Keeal API base URL (dev)</strong>.</li>\n<li>Use <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Keeal</strong> for a status overview, copy-paste webhook URL, and “Ping Keeal merchant API” (connection test).</li>\n<li>In Keeal (API key <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Webhook), set the webhook URL (same environment as the key).</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20support%20woocommerce%20cart%20%26%20checkout%20blocks%3F\">\nDoes this support WooCommerce Cart &amp; Checkout Blocks?\n</h4>\n<p>\n<p>Yes. The plugin registers with the Blocks payment API and ships a small <code>assets/js/keeal-blocks.js</code> handler. It also declares compatibility with the <code>cart_checkout_blocks</code> feature where supported. If your WooCommerce version behaves differently, fall back to classic checkout or report the WC version.</p>\n</p>\n<dt id=\"where%20do%20i%20find%20the%20webhook%20url%3F\">\nWhere do I find the webhook URL?\n</h4>\n<p>\n<p><strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Keeal</strong> (copy field), or <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Payments <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Keeal</strong> under “Webhook endpoint”. Example: <code>https://yoursite.com/wp-json/keeal-wc/v1/webhook</code>.</p>\n</p>\n<dt id=\"what%20data%20is%20sent%20to%20keeal%3F\">\nWhat data is sent to Keeal?\n</h4>\n<p>\n<p>Order and customer data needed to create a payment session is transmitted to Keeal’s API over HTTPS when checkout runs. Webhooks are sent to your site. Add details to your privacy policy as required by your jurisdiction.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.5</h4>\n<ul>\n<li>Readme: add <strong>External services</strong> section (Keeal API usage, data sent, webhook flow, Terms and Privacy links) for WordPress.org guidelines.</li>\n</ul>\n<h4>1.0.4</h4>\n<ul>\n<li>Fix payment settings: do not run gateway settings HTML through <code>wp_kses_post()</code> (it stripped password/API inputs). Documented PHPCS exception for WC-generated markup.</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>Transactions list: <code>meta_key</code> order query with Plugin Check annotation; Plugin Check pass (ABSPATH, i18n, escaping, no redundant <code>load_plugin_textdomain</code>).</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Transactions list: use WooCommerce <code>meta_key</code> order query instead of <code>meta_query</code> (Plugin Check compatibility).</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Plugin Check: ABSPATH guards in all includes; fix text domain and escaping on gateway settings; remove redundant load_plugin_textdomain (WordPress.org loads translations); PHPCS annotations for safe GET usage.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First public release: hosted checkout redirect, REST webhooks with signature verification, HPOS compatibility, Cart &amp; Checkout Blocks payment registration.</li>\n</ul>\n"
+    },
+    "short_description": "WooCommerce gateway for Keeal Payment: buyers pay on Keeal’s hosted checkout, with orders confirmed through signed webhooks.",
+    "description": "<p>This plugin adds a <strong>Keeal Payment</strong> gateway (hosted checkout redirect):</p>\n<ul>\n<li>Builds a checkout session from the WooCommerce order (line items, shipping, fees).</li>\n<li>Sends the customer to Keeal’s hosted payment page.</li>\n<li>Marks the order <strong>Processing / Paid</strong> when Keeal sends <code>checkout.session.completed</code> to your WordPress REST webhook.</li>\n<li>Verifies webhook signatures using your <strong><code>whsec_…</code></strong> secret (recommended).</li>\n</ul>\n<p><strong>Production API:</strong> The plugin uses the fixed Keeal production endpoint <code>https://api.keeal.com/api</code> unless you define <strong><code>KEEAL_WC_DEV_MODE</code></strong> as <code>true</code> in <code>wp-config.php</code> (then add a custom base URL in payment settings for local/staging).</p>\n<p><strong>Requirements:</strong> After copying the plugin, run <code>composer install</code> inside the plugin folder so <code>vendor/</code> pulls <strong><code>keeal/keeal-php</code></strong> from <a href=\"https://packagist.org/packages/keeal/keeal-php\" rel=\"nofollow ugc\">Packagist</a>.</p>\n<h3>External services</h3>\n<p>This plugin relies on <strong>Keeal</strong> (hosted checkout and merchant API) so customers can pay on Keeal’s pages and your store can confirm payment status.</p>\n<p><strong>What is used for</strong></p>\n<ul>\n<li>Creating a Keeal checkout session from the WooCommerce order and redirecting the buyer to Keeal’s hosted payment flow.</li>\n<li>Optional: a connection test from <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Keeal</strong> that calls the merchant API to confirm your API key and base URL work.</li>\n</ul>\n<p><strong>What data is sent and when</strong></p>\n<ul>\n<li><strong>When checkout runs:</strong> Your server sends HTTPS requests to the Keeal API (production: <code>https://api.keeal.com/api</code>; or your custom base URL when <code>KEEAL_WC_DEV_MODE</code> is enabled in <code>wp-config.php</code>). Each session request includes your configured <strong>API key</strong> (for authentication) and information derived from the order: <strong>currency</strong>; <strong>line items</strong> (product names and payable amounts, plus shipping and fee lines where applicable); the customer <strong>billing email</strong>; <strong>order ID</strong> and <strong>order key</strong> as references; <strong>success</strong> and <strong>cancel</strong> return URLs; and your <strong>site URL</strong> in metadata so Keeal can complete the redirect flow.</li>\n<li><strong>When you use “Ping Keeal merchant API”:</strong> An administrator with <strong>manage_woocommerce</strong> triggers a short authenticated request (listing merchant sessions, limited to one row) to verify connectivity. No order payload is sent for that test.</li>\n</ul>\n<p><strong>Inbound traffic:</strong> Keeal’s servers send <strong>webhooks</strong> (signed HTTP <code>POST</code> requests) to the REST URL you configure in the Keeal dashboard, so your site can update order status when payment completes or fails. Card data is handled by Keeal, not collected or stored by this plugin on your site.</p>\n<p><strong>Legal links (Keeal)</strong></p>\n<ul>\n<li><a href=\"https://keeal.com/terms\" rel=\"nofollow ugc\">Terms of Service</a></li>\n<li><a href=\"https://keeal.com/privacy\" rel=\"nofollow ugc\">Privacy Policy</a></li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/keeal-for-woocommerce.1.0.5.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "checkout": "checkout",
+        "keeal": "keeal",
+        "payment": "payment",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.5",
+    "versions": {
+        "1.0.5": "https://downloads.wordpress.org/plugin/keeal-for-woocommerce.1.0.5.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/keeal-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/keeal-for-woocommerce.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
