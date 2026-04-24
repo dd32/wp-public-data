@@ -1,14 +1,14 @@
 {
-    "name": "HoatzinMedia — Library Cleaner &amp; Storage Optimizer",
+    "name": "HoatzinMedia — Media Cleaner &amp; Storage Optimizer",
     "slug": "hoatzinmedia-library-cleaner",
-    "version": "1.0.0",
-    "author": "<a href=\"https://profiles.wordpress.org/wpfeaturekits22/\">YH Sajib</a>",
+    "version": "1.2.0",
+    "author": "<a href=\"https://profiles.wordpress.org/wpfeaturekits22/\">Hoatzinlabs</a>",
     "author_profile": "https://profiles.wordpress.org/wpfeaturekits22/",
     "contributors": {
         "wpfeaturekits22": {
             "profile": "https://profiles.wordpress.org/wpfeaturekits22/",
             "avatar": "https://secure.gravatar.com/avatar/ece95feddeb397b7a3d5558b6ca3ea513ba62c62f524d21965dc7b89fa11fc51?s=96&d=monsterid&r=g",
-            "display_name": "YH Sajib"
+            "display_name": "Hoatzinlabs"
         }
     },
     "requires": "5.8",
@@ -29,43 +29,52 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2026-04-05 17:04:00",
+    "last_updated": "2026-04-24 12:31:00",
     "added": "2026-04-05",
     "homepage": "",
     "sections": {
-        "description": "<p>HoatzinMedia scans your WordPress media library for unused files, large attachments and storage pressure signals. It provides a dashboard overview, safe trash mechanism and batch-based scanning that is friendly to large sites.</p>\n<p>Core features:</p>\n<ol>\n<li>Dashboard with media health score and live metrics</li>\n<li>Unused media scanner with batch processing and locking</li>\n<li>Safe trash table for reversible deletions</li>\n<li>Large file explorer by size threshold</li>\n<li>Translation-ready UI and REST responses</li>\n</ol>\n<h3>Usage</h3>\n<ol>\n<li>Review the media health score and high-level stats on the dashboard.</li>\n<li>Run an unused media scan from the Unused media scanner panel.</li>\n<li>Inspect results and move files to the HoatzinMedia trash.</li>\n<li>Use the large file explorer to identify heavy attachments by size.</li>\n</ol>\n",
+        "description": "<p>HoatzinMedia is a WordPress media cleaner and storage optimizer that helps you reclaim disk space and improve site performance by identifying unused attachments, oversized uploads, and storage pressure signals. It includes a clear dashboard, a reversible trash workflow, and batch-based scanning designed for large media libraries.</p>\n<p>Benefits:</p>\n<ol>\n<li>Reduce storage usage by finding unused and heavy media files</li>\n<li>Improve WordPress performance by keeping uploads lean and organized</li>\n<li>Delete with confidence using a safe trash table with restore support</li>\n<li>Scale to large sites with batch processing and scan locking</li>\n</ol>\n<h3>Modules</h3>\n<ol>\n<li>\n<p>Dashboard</p>\n<ul>\n<li>What it does: Shows media health score, server/storage signals, and library breakdowns.</li>\n<li>REST endpoints: GET /wp-json/hoatzinmedia/v1/dashboard, GET /wp-json/hoatzinmedia/v1/dashboard/uploads-breakdown</li>\n<li>Hook points: Refreshes automatically after content changes via save_post cache bump; scan completion clears the dashboard transient.</li>\n</ul>\n</li>\n<li>\n<p>Smart Scan &amp; Unused Media</p>\n<ul>\n<li>What it does: Batch-based scanning to detect unused attachments, then review and delete safely.</li>\n<li>REST endpoints: POST /wp-json/hoatzinmedia/v1/scan, GET /wp-json/hoatzinmedia/v1/unused-results, POST /wp-json/hoatzinmedia/v1/delete-unused, POST /wp-json/hoatzinmedia/v1/delete-unused-all</li>\n<li>Hook points: WP-Cron action hoatzinmedia_scheduled_scan runs a full scan when scheduling is enabled; the scanner uses posts_where during content search to reduce query overhead.</li>\n</ul>\n</li>\n<li>\n<p>Large Files Explorer</p>\n<ul>\n<li>What it does: Lists media files over a size threshold so you can quickly reclaim space.</li>\n<li>REST endpoints: GET /wp-json/hoatzinmedia/v1/large-files?size=1|3|5 (MB threshold)</li>\n</ul>\n</li>\n<li>\n<p>Duplicate Checker</p>\n<ul>\n<li>What it does: Finds likely duplicate attachments and helps you validate before removal.</li>\n<li>REST endpoints: GET /wp-json/hoatzinmedia/v1/duplicates, GET /wp-json/hoatzinmedia/v1/attachment-usage?attachment_id=123</li>\n<li>Hook points: Adds Media Library UI enhancements via manage_upload_columns, manage_media_columns, and manage_media_custom_column.</li>\n</ul>\n</li>\n<li>\n<p>Convert to WebP / AVIF</p>\n<ul>\n<li>What it does: Converts images to modern formats (WebP/AVIF) and manages converted variants.</li>\n<li>REST endpoints:\n<ul>\n<li>Settings: GET/POST /wp-json/hoatzinmedia/v1/converter-settings, GET /wp-json/hoatzinmedia/v1/converter-settings/scan</li>\n<li>Converter: /wp-json/hoatzinmedia/v1/image-formats/library, /image-formats/convert, /image-formats/background, /image-formats/background/status, /image-formats/background/log, /image-formats/background/cancel, /image-formats/background/pause, /image-formats/background/resume, /image-formats/delete</li>\n</ul>\n</li>\n<li>Hook points: add_attachment can auto-convert new JPEG/PNG uploads based on settings; delete_attachment cleans up converted variants; background jobs run on the hoatzinmedia_convert_job_run action.</li>\n</ul>\n</li>\n<li>\n<p>Regenerate Thumbnails</p>\n<ul>\n<li>What it does: Rebuilds WordPress image sizes for selected attachments (useful after theme changes).</li>\n<li>REST endpoints: GET /wp-json/hoatzinmedia/v1/regenerate/library, GET /wp-json/hoatzinmedia/v1/regenerate/sizes, POST /wp-json/hoatzinmedia/v1/regenerate, plus background endpoints under /regenerate/background/*</li>\n<li>Hook points: Background jobs run on the hoatzinmedia_regenerate_job_run action.</li>\n</ul>\n</li>\n<li>\n<p>Modules &amp; Settings</p>\n<ul>\n<li>What it does: Enables/disables features and stores global plugin settings.</li>\n<li>REST endpoints: GET/POST /wp-json/hoatzinmedia/v1/modules, GET/POST /wp-json/hoatzinmedia/v1/settings, GET /wp-json/hoatzinmedia/v1/status</li>\n<li>Hook points: admin_menu registers the HoatzinMedia admin pages; init ensures scan scheduling and updates WebP serving rules when enabled.</li>\n</ul>\n</li>\n<li>\n<p>SVG Upload Support (optional)</p>\n<ul>\n<li>What it does: Allows SVG uploads with sanitization safeguards (including Elementor compatibility).</li>\n<li>Hook points: upload_mimes, wp_check_filetype_and_ext, wp_handle_upload_prefilter, wp_handle_sideload_prefilter, elementor/files/allow_unfiltered_upload, elementor/files/allow-file-type/svg</li>\n</ul>\n</li>\n</ol>\n<p>Core features:</p>\n<ol>\n<li>Dashboard with media health score and live metrics</li>\n<li>Unused media scanner with batch processing and locking</li>\n<li>Safe trash table for reversible deletions</li>\n<li>Large file explorer by size threshold</li>\n<li>Translation-ready UI and REST responses</li>\n</ol>\n<h3>Usage</h3>\n<ol>\n<li>Review the media health score and high-level stats on the dashboard.</li>\n<li>Run an unused media scan from the Unused media scanner panel.</li>\n<li>Inspect results and move files to the HoatzinMedia trash.</li>\n<li>Use the large file explorer to identify heavy attachments by size.</li>\n</ol>\n",
         "installation": "<ol>\n<li>Upload the hoatzinmedia-library-cleaner folder to the /wp-content/plugins/ directory.</li>\n<li>Activate HoatzinMedia through the Plugins menu in WordPress.</li>\n<li>Open the HoatzinMedia page under the main admin menu.</li>\n</ol>\n",
         "faq": "\n<dt id=\"does%20hoatzinmedia%20delete%20files%20immediately%3F\">\nDoes HoatzinMedia delete files immediately?\n</h4>\n<p>\n<p>No. By default, deletions use a custom HoatzinMedia trash table so items can be restored before permanent removal.</p>\n</p>\n<dt id=\"is%20it%20safe%20on%20large%20libraries%3F\">\nIs it safe on large libraries?\n</h4>\n<p>\n<p>Yes. Scans run in batches with locking to avoid concurrent runs and to keep requests small.</p>\n</p>\n\n",
-        "changelog": "<h4>1.0.0</h4>\n<p>Initial release.</p>\n"
+        "changelog": "<h4>1.2.0</h4>\n<p>Updated the UI/UX<br />\nFixes convert functionality issues<br />\nMaintenance release with improvements and fixes.</p>\n<h4>1.0.0</h4>\n<p>Initial release.</p>\n"
     },
     "short_description": "Smart media cleaner: detect unused files, duplicates and large attachments; optimize storage safely.",
-    "description": "<p>HoatzinMedia scans your WordPress media library for unused files, large attachments and storage pressure signals. It provides a dashboard overview, safe trash mechanism and batch-based scanning that is friendly to large sites.</p>\n<p>Core features:</p>\n<ol>\n<li>Dashboard with media health score and live metrics</li>\n<li>Unused media scanner with batch processing and locking</li>\n<li>Safe trash table for reversible deletions</li>\n<li>Large file explorer by size threshold</li>\n<li>Translation-ready UI and REST responses</li>\n</ol>\n<h3>Usage</h3>\n<ol>\n<li>Review the media health score and high-level stats on the dashboard.</li>\n<li>Run an unused media scan from the Unused media scanner panel.</li>\n<li>Inspect results and move files to the HoatzinMedia trash.</li>\n<li>Use the large file explorer to identify heavy attachments by size.</li>\n</ol>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/hoatzinmedia-library-cleaner.1.0.0.zip",
+    "description": "<p>HoatzinMedia is a WordPress media cleaner and storage optimizer that helps you reclaim disk space and improve site performance by identifying unused attachments, oversized uploads, and storage pressure signals. It includes a clear dashboard, a reversible trash workflow, and batch-based scanning designed for large media libraries.</p>\n<p>Benefits:</p>\n<ol>\n<li>Reduce storage usage by finding unused and heavy media files</li>\n<li>Improve WordPress performance by keeping uploads lean and organized</li>\n<li>Delete with confidence using a safe trash table with restore support</li>\n<li>Scale to large sites with batch processing and scan locking</li>\n</ol>\n<h3>Modules</h3>\n<ol>\n<li>\n<p>Dashboard</p>\n<ul>\n<li>What it does: Shows media health score, server/storage signals, and library breakdowns.</li>\n<li>REST endpoints: GET /wp-json/hoatzinmedia/v1/dashboard, GET /wp-json/hoatzinmedia/v1/dashboard/uploads-breakdown</li>\n<li>Hook points: Refreshes automatically after content changes via save_post cache bump; scan completion clears the dashboard transient.</li>\n</ul>\n</li>\n<li>\n<p>Smart Scan &amp; Unused Media</p>\n<ul>\n<li>What it does: Batch-based scanning to detect unused attachments, then review and delete safely.</li>\n<li>REST endpoints: POST /wp-json/hoatzinmedia/v1/scan, GET /wp-json/hoatzinmedia/v1/unused-results, POST /wp-json/hoatzinmedia/v1/delete-unused, POST /wp-json/hoatzinmedia/v1/delete-unused-all</li>\n<li>Hook points: WP-Cron action hoatzinmedia_scheduled_scan runs a full scan when scheduling is enabled; the scanner uses posts_where during content search to reduce query overhead.</li>\n</ul>\n</li>\n<li>\n<p>Large Files Explorer</p>\n<ul>\n<li>What it does: Lists media files over a size threshold so you can quickly reclaim space.</li>\n<li>REST endpoints: GET /wp-json/hoatzinmedia/v1/large-files?size=1|3|5 (MB threshold)</li>\n</ul>\n</li>\n<li>\n<p>Duplicate Checker</p>\n<ul>\n<li>What it does: Finds likely duplicate attachments and helps you validate before removal.</li>\n<li>REST endpoints: GET /wp-json/hoatzinmedia/v1/duplicates, GET /wp-json/hoatzinmedia/v1/attachment-usage?attachment_id=123</li>\n<li>Hook points: Adds Media Library UI enhancements via manage_upload_columns, manage_media_columns, and manage_media_custom_column.</li>\n</ul>\n</li>\n<li>\n<p>Convert to WebP / AVIF</p>\n<ul>\n<li>What it does: Converts images to modern formats (WebP/AVIF) and manages converted variants.</li>\n<li>REST endpoints:\n<ul>\n<li>Settings: GET/POST /wp-json/hoatzinmedia/v1/converter-settings, GET /wp-json/hoatzinmedia/v1/converter-settings/scan</li>\n<li>Converter: /wp-json/hoatzinmedia/v1/image-formats/library, /image-formats/convert, /image-formats/background, /image-formats/background/status, /image-formats/background/log, /image-formats/background/cancel, /image-formats/background/pause, /image-formats/background/resume, /image-formats/delete</li>\n</ul>\n</li>\n<li>Hook points: add_attachment can auto-convert new JPEG/PNG uploads based on settings; delete_attachment cleans up converted variants; background jobs run on the hoatzinmedia_convert_job_run action.</li>\n</ul>\n</li>\n<li>\n<p>Regenerate Thumbnails</p>\n<ul>\n<li>What it does: Rebuilds WordPress image sizes for selected attachments (useful after theme changes).</li>\n<li>REST endpoints: GET /wp-json/hoatzinmedia/v1/regenerate/library, GET /wp-json/hoatzinmedia/v1/regenerate/sizes, POST /wp-json/hoatzinmedia/v1/regenerate, plus background endpoints under /regenerate/background/*</li>\n<li>Hook points: Background jobs run on the hoatzinmedia_regenerate_job_run action.</li>\n</ul>\n</li>\n<li>\n<p>Modules &amp; Settings</p>\n<ul>\n<li>What it does: Enables/disables features and stores global plugin settings.</li>\n<li>REST endpoints: GET/POST /wp-json/hoatzinmedia/v1/modules, GET/POST /wp-json/hoatzinmedia/v1/settings, GET /wp-json/hoatzinmedia/v1/status</li>\n<li>Hook points: admin_menu registers the HoatzinMedia admin pages; init ensures scan scheduling and updates WebP serving rules when enabled.</li>\n</ul>\n</li>\n<li>\n<p>SVG Upload Support (optional)</p>\n<ul>\n<li>What it does: Allows SVG uploads with sanitization safeguards (including Elementor compatibility).</li>\n<li>Hook points: upload_mimes, wp_check_filetype_and_ext, wp_handle_upload_prefilter, wp_handle_sideload_prefilter, elementor/files/allow_unfiltered_upload, elementor/files/allow-file-type/svg</li>\n</ul>\n</li>\n</ol>\n<p>Core features:</p>\n<ol>\n<li>Dashboard with media health score and live metrics</li>\n<li>Unused media scanner with batch processing and locking</li>\n<li>Safe trash table for reversible deletions</li>\n<li>Large file explorer by size threshold</li>\n<li>Translation-ready UI and REST responses</li>\n</ol>\n<h3>Usage</h3>\n<ol>\n<li>Review the media health score and high-level stats on the dashboard.</li>\n<li>Run an unused media scan from the Unused media scanner panel.</li>\n<li>Inspect results and move files to the HoatzinMedia trash.</li>\n<li>Use the large file explorer to identify heavy attachments by size.</li>\n</ol>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/hoatzinmedia-library-cleaner.1.2.0.zip",
     "upgrade_notice": [],
     "screenshots": [
         {
-            "src": "https://ps.w.org/hoatzinmedia-library-cleaner/assets/screenshot-1.png?rev=3499236",
-            "caption": "HoatzinMedia dashboard with health score and metrics"
-        },
-        {
-            "src": "https://ps.w.org/hoatzinmedia-library-cleaner/assets/screenshot-2.png?rev=3499236",
+            "src": "https://ps.w.org/hoatzinmedia-library-cleaner/assets/screenshot-1.png?rev=3514636",
             "caption": "Unused media scanner with progress and badges"
         },
         {
-            "src": "https://ps.w.org/hoatzinmedia-library-cleaner/assets/screenshot-3.png?rev=3499236",
-            "caption": "Large file explorer with filters and table view"
+            "src": "https://ps.w.org/hoatzinmedia-library-cleaner/assets/screenshot-2.png?rev=3514636",
+            "caption": "Module enable/disable panel"
+        },
+        {
+            "src": "https://ps.w.org/hoatzinmedia-library-cleaner/assets/screenshot-3.png?rev=3514636",
+            "caption": "Convert images to webp/avif panel"
+        },
+        {
+            "src": "https://ps.w.org/hoatzinmedia-library-cleaner/assets/screenshot-4.png?rev=3514636",
+            "caption": "Regenerate thumbnails panel"
+        },
+        {
+            "src": "https://ps.w.org/hoatzinmedia-library-cleaner/assets/screenshot-5.png?rev=3514636",
+            "caption": "Duplicates checker panel"
         }
     ],
     "tags": {
-        "cleanup": "cleanup",
-        "media": "media",
-        "optimization": "optimization",
+        "cleanup-media": "cleanup media",
+        "convert-to-webp": "convert to webp",
         "performance": "performance",
-        "storage": "storage"
+        "storage": "storage",
+        "unused-media": "unused media"
     },
-    "stable_tag": "1.0.0",
+    "stable_tag": "1.2.0",
     "versions": {
         "1.0.0": "https://downloads.wordpress.org/plugin/hoatzinmedia-library-cleaner.1.0.0.zip",
+        "1.2.0": "https://downloads.wordpress.org/plugin/hoatzinmedia-library-cleaner.1.2.0.zip",
         "trunk": "https://downloads.wordpress.org/plugin/hoatzinmedia-library-cleaner.zip"
     },
     "business_model": false,
@@ -73,12 +82,12 @@
     "commercial_support_url": "",
     "donate_link": "",
     "banners": {
-        "low": "https://ps.w.org/hoatzinmedia-library-cleaner/assets/banner-772x250.png?rev=3499236",
-        "high": "https://ps.w.org/hoatzinmedia-library-cleaner/assets/banner-1544x500.png?rev=3499236"
+        "low": "https://ps.w.org/hoatzinmedia-library-cleaner/assets/banner-772x250.png?rev=3514636",
+        "high": "https://ps.w.org/hoatzinmedia-library-cleaner/assets/banner-1544x500.png?rev=3514636"
     },
     "icons": {
-        "1x": "https://ps.w.org/hoatzinmedia-library-cleaner/assets/icon-128x128.jpeg?rev=3499236",
-        "2x": "https://ps.w.org/hoatzinmedia-library-cleaner/assets/icon-256x256.jpeg?rev=3499236"
+        "1x": "https://ps.w.org/hoatzinmedia-library-cleaner/assets/icon-128x128.png?rev=3514636",
+        "2x": "https://ps.w.org/hoatzinmedia-library-cleaner/assets/icon-256x256.png?rev=3514636"
     },
     "blocks": [],
     "block_assets": [],
