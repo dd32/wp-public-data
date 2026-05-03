@@ -1,0 +1,98 @@
+{
+    "name": "WEARFITS Shoes Tryon",
+    "slug": "wearfits-shoes-tryon",
+    "version": "0.2.4",
+    "author": "<a href=\"https://profiles.wordpress.org/wearfits/\">wearfits</a>",
+    "author_profile": "https://profiles.wordpress.org/wearfits/",
+    "contributors": {
+        "wearfits": {
+            "profile": "https://profiles.wordpress.org/wearfits/",
+            "avatar": "https://secure.gravatar.com/avatar/0c7d1a6366b724aa086ff39d841cf9b32b23b958c2d6172d4e0363bf87d4b110?s=96&d=monsterid&r=g",
+            "display_name": "wearfits"
+        }
+    },
+    "requires": "6.2",
+    "tested": "6.9.4",
+    "requires_php": "8.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/wearfits-shoes-tryon/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-05-03 09:42:00",
+    "added": "2026-05-03",
+    "homepage": "",
+    "sections": {
+        "description": "<p>WEARFITS Shoe Try-On lets your WooCommerce shop offer augmented-reality try-on for shoes, straight from the single product page.</p>\n<ul>\n<li>Adds a <strong>Virtual Try-On</strong> button to each eligible shoe product.</li>\n<li>On desktop, clicking the button opens a modal with a QR code — customers scan it with their phone to enter AR.</li>\n<li>On mobile, the button opens the WEARFITS AR viewer directly.</li>\n<li>In <strong>Product Data <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> WEARFITS Try-On</strong>, set a try-on URL manually or click <strong>Digitize with WEARFITS</strong> to generate one automatically from the product&#8217;s gallery images.</li>\n<li>Automatic digitization uses the WEARFITS API (api.wearfits.com). Jobs run asynchronously; the viewer URL lands on the product when processing finishes.</li>\n</ul>\n<p>WEARFITS is a virtual try-on platform for clothing and footwear. For shoes, it can automatically turn your product photos into 3D models and AR try-on links — no manual modeling required. Learn more at <a href=\"https://wearfits.com\" rel=\"nofollow ugc\">wearfits.com</a>, or sign up for an API key at <a href=\"https://dash.wearfits.com\" rel=\"nofollow ugc\">dash.wearfits.com</a>.</p>\n<h3>Requirements</h3>\n<ul>\n<li>WooCommerce 8.0 or later.</li>\n<li>WordPress 6.2 or later.</li>\n<li>PHP 8.0 or later.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the WEARFITS API to turn your product photos into 3D models and AR try-on links. WEARFITS is a third-party service operated by Wearfits sp. z o.o. — you need a WEARFITS account (free at <a href=\"https://dash.wearfits.com\" rel=\"nofollow ugc\">dash.wearfits.com</a>) to obtain the API key used by this plugin.</p>\n<p><strong>When the plugin sends data, what it sends, and why</strong></p>\n<ul>\n<li>On every click of the <strong>Digitize with WEARFITS</strong> button in the product editor, the plugin sends a POST request to <code>https://api.wearfits.com/api/v1/shoe-3d</code>. The request body contains the public URLs of that product&#8217;s gallery images so that WEARFITS can generate a 3D model and return a try-on viewer URL.</li>\n<li>The plugin then periodically polls <code>https://api.wearfits.com/api/v1/jobs/{jobId}</code> (GET) to check the job&#8217;s progress until it completes.</li>\n<li>No customer data (no names, emails, orders, IP addresses) is ever sent.</li>\n<li>The plugin does <strong>not</strong> make any outbound request without the merchant explicitly clicking Digitize.</li>\n</ul>\n<p><strong>Terms and privacy</strong></p>\n<ul>\n<li>WEARFITS Terms of Service: <a href=\"https://wearfits.com/terms\" rel=\"nofollow ugc\">https://wearfits.com/terms</a></li>\n<li>WEARFITS Privacy Policy: <a href=\"https://wearfits.com/privacy\" rel=\"nofollow ugc\">https://wearfits.com/privacy</a></li>\n</ul>\n<p>By using the automatic digitization feature you agree to let WEARFITS process your product images for the purpose of generating 3D models and viewer URLs. You can stop using the feature at any time by not clicking Digitize — the plugin will not contact WEARFITS.</p>\n<h3>Privacy</h3>\n<p>The plugin stores the following in your WordPress database:</p>\n<ul>\n<li><code>wearfits_shoes_tryon_api_key</code> option — your WEARFITS API key (required for the Digitize feature; can be provided via the <code>WEARFITS_SHOES_TRYON_API_KEY</code> PHP constant instead to keep it out of the database).</li>\n<li>Per-product meta <code>_wearfits_tryon_url</code>, <code>_wearfits_tryon_enabled</code>, <code>_wearfits_job_*</code> — the viewer URL and digitization job state for each product.</li>\n</ul>\n<p>The plugin does not set cookies and does not collect analytics.</p>\n<h3>Developer hooks</h3>\n<ul>\n<li><code>wearfits_shoes_tryon_is_eligible_product</code> (filter, bool) — override the default category-based eligibility check.</li>\n<li><code>wearfits_shoes_tryon_image_urls</code> (filter, string[]) — override the image URL list sent to the WEARFITS API (e.g. for shops on a non-public media CDN).</li>\n<li><code>wearfits_shoes_tryon_should_render</code> (filter, bool) — control whether the Virtual Try-On button renders on a given product.</li>\n<li><code>wearfits_shoes_tryon_button_html</code> (filter, string) — replace the button markup. Output is sanitized with <code>wp_kses</code>.</li>\n</ul>\n<h3>Source code</h3>\n<p>The plugin ships with its full source, not just compiled assets. Inside the plugin folder:</p>\n<ul>\n<li><code>src/tryon-modal/</code> — JavaScript + SCSS source for the storefront QR modal.</li>\n<li><code>build/</code> — compiled output generated by <code>npm run build</code> (Webpack via @wordpress/scripts).</li>\n<li><code>package.json</code> + <code>webpack.config.js</code> — build tools.</li>\n<li><code>bin/build-release-zip.sh</code> — produces a shippable zip.</li>\n</ul>\n<p>To rebuild the assets from source:</p>\n<pre><code>`\n</code></pre>\n<p>cd wp-content/plugins/wearfits-shoes-tryon<br />\nnpm install<br />\nnpm run build<br />\n    `</p>\n<p>Node 18+ is recommended.</p>\n<h3>Support</h3>\n<p>Need help? Contact the WEARFITS team at <a href=\"https://wearfits.com/contact\" rel=\"nofollow ugc\">wearfits.com/contact</a>.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin zip via <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin</strong>, then <strong>Install Now</strong> and <strong>Activate</strong>.</li>\n<li>Open <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> WEARFITS Try-On</strong> and paste your API key (available at <a href=\"https://dash.wearfits.com\" rel=\"nofollow ugc\">dash.wearfits.com</a>). If you prefer, define <code>WEARFITS_SHOES_TRYON_API_KEY</code> in <code>wp-config.php</code> instead.</li>\n<li>Edit a product in the <em>Shoes</em> (or similar footwear) category, open the <strong>Product Data <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> WEARFITS Try-On</strong> tab, and either paste a try-on URL manually or click <strong>Digitize with WEARFITS</strong> to generate one from the product&#8217;s images.</li>\n<li>The button appears on the product page as soon as a valid try-on URL is stored.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20the%20plugin%20send%20my%20product%20images%20anywhere%3F\">\nDoes the plugin send my product images anywhere?\n</h4>\n<p>\n<p>Only when you click <strong>Digitize with WEARFITS</strong>. In that case, the plugin submits the product&#8217;s gallery image URLs to <code>api.wearfits.com/api/v1/shoe-3d</code>, which generates a 3D model and returns a try-on viewer URL. No data is sent during normal browsing or product editing.</p>\n</p>\n<dt id=\"which%20products%20are%20eligible%20for%20automatic%20digitization%3F\">\nWhich products are eligible for automatic digitization?\n</h4>\n<p>\n<p>By default, any product in a category whose slug or name contains <em>shoe</em>, <em>footwear</em>, <em>buty</em>, or <em>obuwie</em>. Override the rule via the <code>wearfits_shoes_tryon_is_eligible_product</code> filter if your shop uses different taxonomy.</p>\n</p>\n<dt id=\"can%20i%20use%20the%20plugin%20without%20the%20wearfits%20api%3F\">\nCan I use the plugin without the WEARFITS API?\n</h4>\n<p>\n<p>Yes. Leave the API key empty and paste a try-on URL manually per product (Stage 1 flow). The storefront button behaves the same either way.</p>\n</p>\n<dt id=\"what%20happens%20if%20a%20digitization%20job%20fails%3F\">\nWhat happens if a digitization job fails?\n</h4>\n<p>\n<p>The plugin shows the failure reason reported by WEARFITS directly on the product edit screen and leaves any existing manual try-on URL untouched. You can click <strong>Retry digitization</strong> to submit another job.</p>\n</p>\n\n",
+        "changelog": "<h4>0.2.4</h4>\n<ul>\n<li>Bumped <code>Tested up to: 6.9</code> to <code>Tested up to: 6.9.4</code> and <code>WC tested up to: 9.4</code> to <code>10.7</code> so the Woo Marketplace Validation Test accepts the headers. No functional changes.</li>\n</ul>\n<h4>0.2.3</h4>\n<ul>\n<li>Plugin Name header changed to &#8220;WEARFITS Shoes Tryon&#8221; so the WordPress.org-derived slug matches the plugin folder, text domain, and meta-key prefix (<code>wearfits-shoes-tryon</code>). Visible admin menu, button labels, and frontend UI copy still read &#8220;WEARFITS Try-On&#8221;; this change affects only the plugins-list title and the WP.org permalink.</li>\n<li>Release zip now includes the full source tree (<code>src/</code>, <code>package.json</code>, <code>webpack.config.js</code>, <code>bin/</code>) alongside compiled assets, satisfying the WP.org &#8220;human-readable code&#8221; guideline without requiring a public development repository.</li>\n<li>Added a &#8220;Source code&#8221; section to the readme listing where source lives and how to rebuild.</li>\n</ul>\n<h4>0.2.2</h4>\n<ul>\n<li>Plugin directory readme: tag list trimmed to five (WordPress.org cap), added an External services section documenting every outbound request to api.wearfits.com with links to the WEARFITS Terms of Service and Privacy Policy, and an expanded Privacy section listing the exact option and post-meta keys the plugin stores.</li>\n</ul>\n<h4>0.2.1</h4>\n<ul>\n<li>Admin product tab now updates job status live (Queued <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Processing <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Completed) without a page reload; polls an internal AJAX endpoint every 3 s.</li>\n<li>Removed the post-completion page reload that could race with classic/TinyMCE editor init and trigger &#8220;Can&#8217;t create duplicate variable: &#8216;LocaleTimestampParser'&#8221; errors.</li>\n<li>First Action Scheduler poll after a digitize submission is scheduled 5 s out (was 30 s) so the admin UI reflects progress within one poll cycle.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>Added settings page for the WEARFITS API key (WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> WEARFITS Try-On).</li>\n<li>Added <strong>Digitize with WEARFITS</strong> button in the product editor; Action Scheduler polls job status with exponential backoff and writes the returned viewer URL into product meta.</li>\n<li>Failure reasons reported by WEARFITS (e.g. upload errors) now surface directly on the product edit screen.</li>\n<li>Server-side guards: atomic per-product submission lock, shoe/footwear category eligibility check, strict public-URL validation for both submitted images and returned viewer URLs.</li>\n<li>Desktop QR modal: focus trap, Esc to close, improved mobile detection (iPadOS correctly treated as mobile).</li>\n<li>Admin styling moved to versioned CSS/JS assets.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial MVP release. Manual per-product try-on URL + Virtual Try-On button with desktop QR modal and mobile deep link.</li>\n</ul>\n"
+    },
+    "short_description": "Virtual Try-On button for WooCommerce shoe products, powered by WEARFITS AR.",
+    "description": "<p>WEARFITS Shoe Try-On lets your WooCommerce shop offer augmented-reality try-on for shoes, straight from the single product page.</p>\n<ul>\n<li>Adds a <strong>Virtual Try-On</strong> button to each eligible shoe product.</li>\n<li>On desktop, clicking the button opens a modal with a QR code — customers scan it with their phone to enter AR.</li>\n<li>On mobile, the button opens the WEARFITS AR viewer directly.</li>\n<li>In <strong>Product Data <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> WEARFITS Try-On</strong>, set a try-on URL manually or click <strong>Digitize with WEARFITS</strong> to generate one automatically from the product&#8217;s gallery images.</li>\n<li>Automatic digitization uses the WEARFITS API (api.wearfits.com). Jobs run asynchronously; the viewer URL lands on the product when processing finishes.</li>\n</ul>\n<p>WEARFITS is a virtual try-on platform for clothing and footwear. For shoes, it can automatically turn your product photos into 3D models and AR try-on links — no manual modeling required. Learn more at <a href=\"https://wearfits.com\" rel=\"nofollow ugc\">wearfits.com</a>, or sign up for an API key at <a href=\"https://dash.wearfits.com\" rel=\"nofollow ugc\">dash.wearfits.com</a>.</p>\n<h3>Requirements</h3>\n<ul>\n<li>WooCommerce 8.0 or later.</li>\n<li>WordPress 6.2 or later.</li>\n<li>PHP 8.0 or later.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the WEARFITS API to turn your product photos into 3D models and AR try-on links. WEARFITS is a third-party service operated by Wearfits sp. z o.o. — you need a WEARFITS account (free at <a href=\"https://dash.wearfits.com\" rel=\"nofollow ugc\">dash.wearfits.com</a>) to obtain the API key used by this plugin.</p>\n<p><strong>When the plugin sends data, what it sends, and why</strong></p>\n<ul>\n<li>On every click of the <strong>Digitize with WEARFITS</strong> button in the product editor, the plugin sends a POST request to <code>https://api.wearfits.com/api/v1/shoe-3d</code>. The request body contains the public URLs of that product&#8217;s gallery images so that WEARFITS can generate a 3D model and return a try-on viewer URL.</li>\n<li>The plugin then periodically polls <code>https://api.wearfits.com/api/v1/jobs/{jobId}</code> (GET) to check the job&#8217;s progress until it completes.</li>\n<li>No customer data (no names, emails, orders, IP addresses) is ever sent.</li>\n<li>The plugin does <strong>not</strong> make any outbound request without the merchant explicitly clicking Digitize.</li>\n</ul>\n<p><strong>Terms and privacy</strong></p>\n<ul>\n<li>WEARFITS Terms of Service: <a href=\"https://wearfits.com/terms\" rel=\"nofollow ugc\">https://wearfits.com/terms</a></li>\n<li>WEARFITS Privacy Policy: <a href=\"https://wearfits.com/privacy\" rel=\"nofollow ugc\">https://wearfits.com/privacy</a></li>\n</ul>\n<p>By using the automatic digitization feature you agree to let WEARFITS process your product images for the purpose of generating 3D models and viewer URLs. You can stop using the feature at any time by not clicking Digitize — the plugin will not contact WEARFITS.</p>\n<h3>Privacy</h3>\n<p>The plugin stores the following in your WordPress database:</p>\n<ul>\n<li><code>wearfits_shoes_tryon_api_key</code> option — your WEARFITS API key (required for the Digitize feature; can be provided via the <code>WEARFITS_SHOES_TRYON_API_KEY</code> PHP constant instead to keep it out of the database).</li>\n<li>Per-product meta <code>_wearfits_tryon_url</code>, <code>_wearfits_tryon_enabled</code>, <code>_wearfits_job_*</code> — the viewer URL and digitization job state for each product.</li>\n</ul>\n<p>The plugin does not set cookies and does not collect analytics.</p>\n<h3>Developer hooks</h3>\n<ul>\n<li><code>wearfits_shoes_tryon_is_eligible_product</code> (filter, bool) — override the default category-based eligibility check.</li>\n<li><code>wearfits_shoes_tryon_image_urls</code> (filter, string[]) — override the image URL list sent to the WEARFITS API (e.g. for shops on a non-public media CDN).</li>\n<li><code>wearfits_shoes_tryon_should_render</code> (filter, bool) — control whether the Virtual Try-On button renders on a given product.</li>\n<li><code>wearfits_shoes_tryon_button_html</code> (filter, string) — replace the button markup. Output is sanitized with <code>wp_kses</code>.</li>\n</ul>\n<h3>Source code</h3>\n<p>The plugin ships with its full source, not just compiled assets. Inside the plugin folder:</p>\n<ul>\n<li><code>src/tryon-modal/</code> — JavaScript + SCSS source for the storefront QR modal.</li>\n<li><code>build/</code> — compiled output generated by <code>npm run build</code> (Webpack via @wordpress/scripts).</li>\n<li><code>package.json</code> + <code>webpack.config.js</code> — build tools.</li>\n<li><code>bin/build-release-zip.sh</code> — produces a shippable zip.</li>\n</ul>\n<p>To rebuild the assets from source:</p>\n<pre><code>`\n</code></pre>\n<p>cd wp-content/plugins/wearfits-shoes-tryon<br />\nnpm install<br />\nnpm run build<br />\n    `</p>\n<p>Node 18+ is recommended.</p>\n<h3>Support</h3>\n<p>Need help? Contact the WEARFITS team at <a href=\"https://wearfits.com/contact\" rel=\"nofollow ugc\">wearfits.com/contact</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/wearfits-shoes-tryon.0.2.4.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/wearfits-shoes-tryon/assets/screenshot-1.png?rev=3521358",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/wearfits-shoes-tryon/assets/screenshot-2.png?rev=3521358",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/wearfits-shoes-tryon/assets/screenshot-3.png?rev=3521358",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/wearfits-shoes-tryon/assets/screenshot-4.png?rev=3521358",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/wearfits-shoes-tryon/assets/screenshot-5.png?rev=3521358",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/wearfits-shoes-tryon/assets/screenshot-6.png?rev=3521358",
+            "caption": ""
+        }
+    ],
+    "tags": {
+        "3d": "3d",
+        "ar": "AR",
+        "shoes": "Shoes",
+        "virtual-try-on": "virtual try on",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "0.2.4",
+    "versions": {
+        "0.2.4": "https://downloads.wordpress.org/plugin/wearfits-shoes-tryon.0.2.4.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/wearfits-shoes-tryon.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/wearfits-shoes-tryon.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
