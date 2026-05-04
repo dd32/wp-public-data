@@ -1,0 +1,84 @@
+{
+    "name": "42flows SEO Meta",
+    "slug": "42flows-seo-meta",
+    "version": "1.2.0",
+    "author": "<a href=\"https://profiles.wordpress.org/42flows/\">42flows</a>",
+    "author_profile": "https://profiles.wordpress.org/42flows/",
+    "contributors": {
+        "42flows": {
+            "profile": "https://profiles.wordpress.org/42flows/",
+            "avatar": "https://secure.gravatar.com/avatar/52a3c28f96526a29e0ab2f15c7ac4f4e268c3063ff4ee9b1f5406acec1f30a31?s=96&d=monsterid&r=g",
+            "display_name": "42flows"
+        }
+    },
+    "requires": "5.6",
+    "tested": "6.9.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/42flows-seo-meta/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-05-04 18:11:00",
+    "added": "2026-04-14",
+    "homepage": "",
+    "sections": {
+        "description": "<p>42flows SEO Meta enables REST API write access to SEO meta fields for posts and pages. It auto-detects your active SEO plugin (Yoast SEO, Rank Math, or All in One SEO) and registers only the relevant meta fields with <code>show_in_rest</code>.</p>\n<p>This plugin is required if you use <a href=\"https://42flows.com\" rel=\"nofollow ugc\">42flows</a> to publish SEO-optimized content to your WordPress site. Without it, SEO titles, meta descriptions, and focus keyphrases cannot be set via the REST API.</p>\n<h4>Supported SEO plugins</h4>\n<ul>\n<li><strong>Yoast SEO</strong> — <code>_yoast_wpseo_title</code>, <code>_yoast_wpseo_metadesc</code>, <code>_yoast_wpseo_focuskw</code></li>\n<li><strong>Rank Math</strong> — <code>rank_math_title</code>, <code>rank_math_description</code>, <code>rank_math_focus_keyword</code></li>\n<li><strong>All in One SEO</strong> — <code>_aioseo_title</code>, <code>_aioseo_description</code>, <code>_aioseo_keywords</code></li>\n</ul>\n<h4>What it does</h4>\n<ul>\n<li>Detects which SEO plugin is active on your site</li>\n<li>Registers that plugin&#8217;s meta fields with <code>show_in_rest =&gt; true</code> for posts and pages</li>\n<li>Adds <code>sanitize_callback</code> (sanitize_text_field) and <code>auth_callback</code> (requires edit_posts capability)</li>\n<li>Does nothing if no supported SEO plugin is detected</li>\n</ul>\n<h4>What it does NOT do</h4>\n<ul>\n<li>Does not modify your existing SEO data</li>\n<li>Does not add any admin pages, settings, or UI</li>\n<li>Does not load any JavaScript or CSS</li>\n<li>Does not store any data</li>\n</ul>\n<h4>Companion plugin installation and upgrades</h4>\n<p>When your site is connected to <a href=\"https://42flows.com\" rel=\"nofollow ugc\">42flows</a>, 42flows may request that this plugin install, activate, or upgrade a companion plugin (<code>42flows-content</code>) that enables render-time features for posts delivered by the 42flows pipeline (schema markup, attribution footer, page-optimizer REST surface). The companion plugin is downloaded from <code>https://42flows.com/plugins/42flows-content-latest.zip</code> via the <code>/wp-json/42flows/v1/install-companion</code> REST route.</p>\n<p>The route requires the requesting user to hold:</p>\n<ul>\n<li><code>install_plugins</code> and <code>activate_plugins</code> for fresh installs (typically Administrator role)</li>\n<li><code>delete_plugins</code> additionally when a <code>min_version</code> parameter is supplied that exceeds the currently-installed companion version, because the upgrade path deletes the existing companion folder before reinstalling</li>\n</ul>\n<p>The companion zip URL is hard-coded in the plugin source — it is never user-supplied — so the route presents no SSRF surface. No installation, upgrade, or deletion occurs unless your site is connected to 42flows and the request is authenticated by an administrator-capability user.</p>\n",
+        "installation": "<ol>\n<li>Install the plugin from the WordPress plugin directory, or upload the ZIP file via Plugins &gt; Add New &gt; Upload Plugin.</li>\n<li>Activate the plugin.</li>\n<li>No configuration needed — the plugin auto-detects your SEO plugin.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20this%20plugin%3F\">\nDo I need this plugin?\n</h4>\n<p>\n<p>Only if you use 42flows to publish content to your WordPress site and want SEO meta fields (title, description, focus keyphrase) set automatically via the REST API.</p>\n</p>\n<dt id=\"what%20if%20i%20don%27t%20have%20an%20seo%20plugin%3F\">\nWhat if I don&#8217;t have an SEO plugin?\n</h4>\n<p>\n<p>The plugin does nothing if no supported SEO plugin (Yoast, Rank Math, or AIOSEO) is detected. It is safe to keep installed.</p>\n</p>\n<dt id=\"is%20it%20safe%3F\">\nIs it safe?\n</h4>\n<p>\n<p>Yes. It only registers existing meta fields for REST API access with proper sanitization and authentication. Only users with the <code>edit_posts</code> capability can write to these fields. All input is sanitized with <code>sanitize_text_field</code>.</p>\n<p>The companion-install REST route requires <code>install_plugins</code> + <code>activate_plugins</code> capabilities, and additionally <code>delete_plugins</code> for in-place upgrades. The companion plugin source URL is hard-coded — never accepted from request input — so there is no SSRF surface. The optional <code>min_version</code> parameter is validated against a strict <code>X.Y.Z</code> regex before being passed to PHP&#8217;s <code>version_compare</code>.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20custom%20post%20types%3F\">\nDoes it work with custom post types?\n</h4>\n<p>\n<p>Currently it registers meta fields for posts and pages. Support for custom post types can be added in a future version.</p>\n</p>\n\n",
+        "changelog": "<h4>1.2.0</h4>\n<ul>\n<li>Add optional <code>min_version</code> parameter to <code>/wp-json/42flows/v1/install-companion</code>. When supplied (semver <code>X.Y.Z</code>), the route compares the installed companion version against <code>min_version</code> and performs an in-place upgrade (deactivate <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> delete <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> reinstall <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> activate) if the installed version is older. Required because WordPress&#8217;s <code>Plugin_Upgrader::install</code> refuses to overwrite an existing plugin folder. Without this parameter, behavior is unchanged: idempotent ensure-installed-and-active.</li>\n<li>Upgrade path additionally requires the authenticated user to hold the <code>delete_plugins</code> capability, in line with the principle of least privilege.</li>\n<li><code>min_version</code> is validated as <code>^\\d+\\.\\d+\\.\\d+$</code> before reaching <code>version_compare()</code> to reject arbitrary input.</li>\n<li>Code refactored: install logic deduplicated into a shared helper used by both fresh-install and upgrade paths.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Add REST route <code>/wp-json/42flows/v1/install-companion</code> for authenticated companion-plugin installation (requires <code>install_plugins</code> capability). Used only when the site is connected to 42flows.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>Support for Yoast SEO, Rank Math, and All in One SEO.</li>\n<li>Meta fields registered for posts and pages.</li>\n</ul>\n"
+    },
+    "short_description": "Registers SEO meta fields for WordPress REST API write access. Required for 42flows content delivery.",
+    "description": "<p>42flows SEO Meta enables REST API write access to SEO meta fields for posts and pages. It auto-detects your active SEO plugin (Yoast SEO, Rank Math, or All in One SEO) and registers only the relevant meta fields with <code>show_in_rest</code>.</p>\n<p>This plugin is required if you use <a href=\"https://42flows.com\" rel=\"nofollow ugc\">42flows</a> to publish SEO-optimized content to your WordPress site. Without it, SEO titles, meta descriptions, and focus keyphrases cannot be set via the REST API.</p>\n<h4>Supported SEO plugins</h4>\n<ul>\n<li><strong>Yoast SEO</strong> — <code>_yoast_wpseo_title</code>, <code>_yoast_wpseo_metadesc</code>, <code>_yoast_wpseo_focuskw</code></li>\n<li><strong>Rank Math</strong> — <code>rank_math_title</code>, <code>rank_math_description</code>, <code>rank_math_focus_keyword</code></li>\n<li><strong>All in One SEO</strong> — <code>_aioseo_title</code>, <code>_aioseo_description</code>, <code>_aioseo_keywords</code></li>\n</ul>\n<h4>What it does</h4>\n<ul>\n<li>Detects which SEO plugin is active on your site</li>\n<li>Registers that plugin&#8217;s meta fields with <code>show_in_rest =&gt; true</code> for posts and pages</li>\n<li>Adds <code>sanitize_callback</code> (sanitize_text_field) and <code>auth_callback</code> (requires edit_posts capability)</li>\n<li>Does nothing if no supported SEO plugin is detected</li>\n</ul>\n<h4>What it does NOT do</h4>\n<ul>\n<li>Does not modify your existing SEO data</li>\n<li>Does not add any admin pages, settings, or UI</li>\n<li>Does not load any JavaScript or CSS</li>\n<li>Does not store any data</li>\n</ul>\n<h4>Companion plugin installation and upgrades</h4>\n<p>When your site is connected to <a href=\"https://42flows.com\" rel=\"nofollow ugc\">42flows</a>, 42flows may request that this plugin install, activate, or upgrade a companion plugin (<code>42flows-content</code>) that enables render-time features for posts delivered by the 42flows pipeline (schema markup, attribution footer, page-optimizer REST surface). The companion plugin is downloaded from <code>https://42flows.com/plugins/42flows-content-latest.zip</code> via the <code>/wp-json/42flows/v1/install-companion</code> REST route.</p>\n<p>The route requires the requesting user to hold:</p>\n<ul>\n<li><code>install_plugins</code> and <code>activate_plugins</code> for fresh installs (typically Administrator role)</li>\n<li><code>delete_plugins</code> additionally when a <code>min_version</code> parameter is supplied that exceeds the currently-installed companion version, because the upgrade path deletes the existing companion folder before reinstalling</li>\n</ul>\n<p>The companion zip URL is hard-coded in the plugin source — it is never user-supplied — so the route presents no SSRF surface. No installation, upgrade, or deletion occurs unless your site is connected to 42flows and the request is authenticated by an administrator-capability user.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/42flows-seo-meta.1.2.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "aioseo": "aioseo",
+        "rank-math": "rank math",
+        "rest-api": "rest-api",
+        "seo": "seo",
+        "yoast": "Yoast"
+    },
+    "stable_tag": "1.2.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/42flows-seo-meta.1.0.0.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/42flows-seo-meta.1.1.0.zip",
+        "1.2.0": "https://downloads.wordpress.org/plugin/42flows-seo-meta.1.2.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/42flows-seo-meta.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/42flows-seo-meta.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "42flows-seo-meta",
+            "language": "ru_RU",
+            "version": "1.1.0",
+            "updated": "2026-04-17 08:24:17",
+            "package": "https://downloads.wordpress.org/translation/plugin/42flows-seo-meta/1.1.0/ru_RU.zip"
+        }
+    ]
+}
