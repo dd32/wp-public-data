@@ -1,0 +1,93 @@
+{
+    "name": "WT Waitlist",
+    "slug": "wt-waitlist",
+    "version": "1.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/webmastersteam/\">Webmasters.Team</a>",
+    "author_profile": "https://profiles.wordpress.org/webmastersteam/",
+    "contributors": {
+        "webmastersteam": {
+            "profile": "https://profiles.wordpress.org/webmastersteam/",
+            "avatar": "https://secure.gravatar.com/avatar/06a622b56ecd0321a4dac896b70ded0b50b26cd498aae17dcadb395d111ac56b?s=96&d=monsterid&r=g",
+            "display_name": "Webmasters.Team"
+        }
+    },
+    "requires": "6.0",
+    "tested": "6.9.4",
+    "requires_php": "8.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/wt-waitlist/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-05-11 05:47:00",
+    "added": "2026-05-11",
+    "homepage": "https://webmasters.team/en/plugins/wt-waitlist/",
+    "sections": {
+        "description": "<p><strong>WT Waitlist</strong> is a &#8220;back in stock&#8221; waitlist for WooCommerce without bloat. Customers leave their email on an out-of-stock product page, and when the stock returns — the plugin sends a notification in the background through Action Scheduler.</p>\n<p>Built by the <a href=\"https://webmasters.team\" rel=\"nofollow ugc\">webmasters.team</a> team. Open-source code, no external APIs, all data stored locally in the WordPress database.</p>\n<h4>Key features</h4>\n<ul>\n<li><strong>Signup form replaces Add to cart</strong> for out-of-stock products, with variation support (per size/color).</li>\n<li><strong>Custom database tables</strong> (<code>{prefix}_waitlist_subscriptions</code>) — we do not clutter <code>wp_postmeta</code>, the plugin scales to tens of thousands of subscriptions.</li>\n<li><strong>Action Scheduler queue</strong> (bundled with WooCommerce): batch of 50 emails per tick, automatic retries, retry log visible in <code>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Status <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Scheduled Actions</code>.</li>\n<li><strong>5 min throttle</strong> per product — prevents duplicate sends when multiple hooks fire (e.g. quantity change followed by status change).</li>\n<li><strong>One-click unsubscribe</strong> via a link in the email (SHA-256 token), no confirmation or login required.</li>\n<li><strong>GDPR-ready</strong>: consent logging (anonymized IP, timestamp, user agent), integration with WordPress Privacy Tools (export and erasure of data per email).</li>\n<li><strong>CSV export</strong> of subscribers from the admin panel (streamed, no timeouts on large lists).</li>\n<li><strong>Anti-spam</strong>: honeypot plus rate limiter per IP (10 submissions per hour).</li>\n<li><strong>Theme compatibility</strong>: classic themes (Storefront, Twenty Twenty-One/Two/Three) plus block themes (Twenty Twenty-Four/Five) — the form attaches through a hook for classic templates and through a <code>render_block</code> filter for FSE.</li>\n<li><strong>Zero external dependencies</strong>: apart from WooCommerce, requires only plain PHP 8.0+.</li>\n</ul>\n<h4>Shortcode fallback</h4>\n<pre><code>[wt_waitlist product_id=\"123\"] — use this if your custom product template does not fire the standard hooks.\n</code></pre>\n<h4>What WT Waitlist does NOT do (by design)</h4>\n<ul>\n<li>No SMS, no Mailchimp/MailerLite integrations in the free version.</li>\n<li>No double opt-in (minimal flow — leave email, get notification).</li>\n<li>No WYSIWYG editor for email templates (HTML template lives in the plugin file, override with the <code>wt_waitlist/notification_context</code> filter).</li>\n</ul>\n<p>These features are planned for the Pro edition. The free edition covers 100% of the core waitlist flow.</p>\n",
+        "installation": "<ol>\n<li>Install and activate WooCommerce (required).</li>\n<li>Install <strong>WT Waitlist</strong> via WP Admin <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add new, or manually over FTP (folder <code>wt-waitlist</code> in <code>wp-content/plugins/</code>).</li>\n<li>Activate the plugin.</li>\n<li>Open the <strong>WT Waitlist</strong> menu in the admin panel and configure data retention plus the administrator notification email address.</li>\n</ol>\n<p>On first activation the plugin creates its database tables and schedules a daily job that purges old subscriptions.</p>\n",
+        "faq": "\n<dt id=\"how%20does%20the%20form%20appear%20on%20the%20product%20page%3F\">\nHow does the form appear on the product page?\n</h4>\n<p>\n<p>Automatically — the plugin hooks into the standard WooCommerce action (<code>woocommerce_single_product_summary</code>) for classic themes and into the <code>render_block</code> filter for block themes (FSE). The form is shown only when the product is out of stock.</p>\n</p>\n<dt id=\"what%20if%20my%20theme%20or%20template%20does%20not%20fire%20woocommerce%20hooks%3F\">\nWhat if my theme or template does not fire WooCommerce hooks?\n</h4>\n<p>\n<p>Use the shortcode <code>[wt_waitlist product_id=\"123\"]</code> — it works everywhere, from page builders to custom single product templates.</p>\n</p>\n<dt id=\"how%20many%20emails%20are%20sent%20at%20once%3F\">\nHow many emails are sent at once?\n</h4>\n<p>\n<p>Action Scheduler processes batches of 50 subscribers per tick. For a product with 1000 subscribers we queue 20 batches, each processed asynchronously, without blocking the PHP request.</p>\n</p>\n<dt id=\"do%20emails%20go%20through%20my%20wp%20mail%20configuration%3F\">\nDo emails go through my WP Mail configuration?\n</h4>\n<p>\n<p>Yes. We use <code>wp_mail()</code> — if you have WP Mail SMTP, SendGrid, Amazon SES etc. configured, the mail travels through them. The plugin does not hardcode any provider.</p>\n</p>\n<dt id=\"what%20happens%20to%20the%20data%20after%20uninstalling%20the%20plugin%3F\">\nWhat happens to the data after uninstalling the plugin?\n</h4>\n<p>\n<p>The <code>uninstall.php</code> file drops the tables and deletes the options. Clean. If you deactivate without deleting, the data stays — you can reactivate without losing subscriptions.</p>\n</p>\n<dt id=\"gdpr%20compliance%3F\">\nGDPR compliance?\n</h4>\n<p>\n<p>The plugin stores anonymized IPs (last octet zeroed), consent timestamp and user agent. It integrates with WordPress Privacy Tools — a customer can request data export or deletion through the standard WordPress flow.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.1</h4>\n<ul>\n<li>Fix: replaced inline <code>&lt;style&gt;</code> block in the unsubscribe page with <code>wp_register_style()</code> + <code>wp_print_styles()</code> (WP guideline compliance).</li>\n</ul>\n<h4>1.0.0</h4>\n<p>First public release.</p>\n<ul>\n<li>Waitlist form on product pages (simple + variable), classic and block theme support.</li>\n<li>Custom database tables (<code>{prefix}_waitlist_subscriptions</code>, <code>{prefix}_waitlist_email_log</code>).</li>\n<li>Stock-status change detection through WooCommerce hooks.</li>\n<li>Notification queue through Action Scheduler with 5 min throttle and batches of 50.</li>\n<li>One-click unsubscribe with SHA-256 token.</li>\n<li>Admin panel: subscriber list with filters and CSV export.</li>\n<li>Product-edit widget showing waitlist count.</li>\n<li>Integration with WordPress Privacy Tools (export + eraser).</li>\n<li>Shortcode <code>[wt_waitlist]</code> as fallback.</li>\n<li>Honeypot plus rate limiter (10/hour per IP).</li>\n<li>Automatic purge of old subscriptions (configurable retention).</li>\n</ul>\n"
+    },
+    "short_description": "Lightweight waitlist for WooCommerce — automatic email notifications when an out-of-stock product (or variation) is back in stock.",
+    "description": "<p><strong>WT Waitlist</strong> is a &#8220;back in stock&#8221; waitlist for WooCommerce without bloat. Customers leave their email on an out-of-stock product page, and when the stock returns — the plugin sends a notification in the background through Action Scheduler.</p>\n<p>Built by the <a href=\"https://webmasters.team\" rel=\"nofollow ugc\">webmasters.team</a> team. Open-source code, no external APIs, all data stored locally in the WordPress database.</p>\n<h4>Key features</h4>\n<ul>\n<li><strong>Signup form replaces Add to cart</strong> for out-of-stock products, with variation support (per size/color).</li>\n<li><strong>Custom database tables</strong> (<code>{prefix}_waitlist_subscriptions</code>) — we do not clutter <code>wp_postmeta</code>, the plugin scales to tens of thousands of subscriptions.</li>\n<li><strong>Action Scheduler queue</strong> (bundled with WooCommerce): batch of 50 emails per tick, automatic retries, retry log visible in <code>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Status <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Scheduled Actions</code>.</li>\n<li><strong>5 min throttle</strong> per product — prevents duplicate sends when multiple hooks fire (e.g. quantity change followed by status change).</li>\n<li><strong>One-click unsubscribe</strong> via a link in the email (SHA-256 token), no confirmation or login required.</li>\n<li><strong>GDPR-ready</strong>: consent logging (anonymized IP, timestamp, user agent), integration with WordPress Privacy Tools (export and erasure of data per email).</li>\n<li><strong>CSV export</strong> of subscribers from the admin panel (streamed, no timeouts on large lists).</li>\n<li><strong>Anti-spam</strong>: honeypot plus rate limiter per IP (10 submissions per hour).</li>\n<li><strong>Theme compatibility</strong>: classic themes (Storefront, Twenty Twenty-One/Two/Three) plus block themes (Twenty Twenty-Four/Five) — the form attaches through a hook for classic templates and through a <code>render_block</code> filter for FSE.</li>\n<li><strong>Zero external dependencies</strong>: apart from WooCommerce, requires only plain PHP 8.0+.</li>\n</ul>\n<h4>Shortcode fallback</h4>\n<pre><code>[wt_waitlist product_id=\"123\"] — use this if your custom product template does not fire the standard hooks.\n</code></pre>\n<h4>What WT Waitlist does NOT do (by design)</h4>\n<ul>\n<li>No SMS, no Mailchimp/MailerLite integrations in the free version.</li>\n<li>No double opt-in (minimal flow — leave email, get notification).</li>\n<li>No WYSIWYG editor for email templates (HTML template lives in the plugin file, override with the <code>wt_waitlist/notification_context</code> filter).</li>\n</ul>\n<p>These features are planned for the Pro edition. The free edition covers 100% of the core waitlist flow.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/wt-waitlist.1.0.1.zip",
+    "upgrade_notice": {
+        "1.0.1": "<p>Compliance fix for the unsubscribe page styling. No behavior changes.</p>",
+        "1.0.0": "<p>First public release. Requires WooCommerce ≥ 7.0 and PHP 8.0+.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/wt-waitlist/assets/screenshot-1.png?rev=3528253",
+            "caption": "Waitlist form on a WooCommerce out-of-stock product page."
+        },
+        {
+            "src": "https://ps.w.org/wt-waitlist/assets/screenshot-2.png?rev=3528253",
+            "caption": "Subscriber management screen in the admin with filters, statuses and CSV export."
+        },
+        {
+            "src": "https://ps.w.org/wt-waitlist/assets/screenshot-3.png?rev=3528253",
+            "caption": "Notification email delivered when the product is back in stock."
+        }
+    ],
+    "tags": {
+        "back-in-stock": "back in stock",
+        "notifications": "Notifications",
+        "stock-notifier": "stock notifier",
+        "waitlist": "waitlist",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.1",
+    "versions": {
+        "1.0.1": "https://downloads.wordpress.org/plugin/wt-waitlist.1.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/wt-waitlist.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://webmasters.team/",
+    "banners": {
+        "low": "https://ps.w.org/wt-waitlist/assets/banner-772x250.png?rev=3528253",
+        "high": "https://ps.w.org/wt-waitlist/assets/banner-1544x500.png?rev=3528253"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/wt-waitlist/assets/icon-128x128.png?rev=3528253",
+        "2x": "https://ps.w.org/wt-waitlist/assets/icon-256x256.png?rev=3528253"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
