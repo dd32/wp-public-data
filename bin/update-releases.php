@@ -1,9 +1,15 @@
 <?php
 /**
  * Updates the releases files based on the current git diff.
+ *
+ * Releases are written to releases/{plugins,themes}/YYYY-MM.csv, bucketed by
+ * the release date of each row. The top-level plugin-releases.csv and
+ * theme-releases.csv are symlinks pointing at the most recent month.
  */
 
 include __DIR__ . '/common.php';
+
+$root = dirname( __DIR__ );
 
 exec(
 	'git status plugins themes -z --porcelain=v1',
@@ -14,8 +20,41 @@ if ( $return_code !== 0 ) {
 	echo "Error: git status failed.\n";
 }
 
-$plugin_releases = fopen( __DIR__ . '/../plugin-releases.csv', 'a' );
-$theme_releases  = fopen( __DIR__ . '/../theme-releases.csv', 'a' );
+$header = [
+	'Slug',
+	'Name',
+	'Version',
+	'Previous Version',
+	'Download Link',
+	'Released',
+	'WordPress.org URL',
+	'Required WP',
+	'Required PHP',
+	'Active Installs',
+];
+
+$handles      = []; // "{type}/{YYYY-MM}" => file pointer
+$latest_month = [ 'plugins' => '', 'themes' => '' ];
+
+$get_handle = function ( $type, $month ) use ( $root, $header, &$handles, &$latest_month ) {
+	$key = "{$type}/{$month}";
+	if ( ! isset( $handles[ $key ] ) ) {
+		$dir = "{$root}/releases/{$type}";
+		if ( ! is_dir( $dir ) ) {
+			mkdir( $dir, 0755, true );
+		}
+		$path     = "{$dir}/{$month}.csv";
+		$is_new   = ! file_exists( $path );
+		$handles[ $key ] = fopen( $path, 'a' );
+		if ( $is_new ) {
+			fputcsv( $handles[ $key ], $header );
+		}
+	}
+	if ( $month > $latest_month[ $type ] ) {
+		$latest_month[ $type ] = $month;
+	}
+	return $handles[ $key ];
+};
 
 $count = 0;
 
@@ -41,18 +80,25 @@ foreach ( array_filter( explode( "\0", $output[0] ?? '' ) ) as $line ) {
 		continue;
 	}
 
-	// Stats for logs.
+	$released = $new_data->last_updated_time ?? $new_data->last_updated; // Themes: last_updated_time; plugins: last_updated.
+	$month    = substr( $released, 0, 7 );
+
+	if ( ! preg_match( '/^\d{4}-\d{2}$/', $month ) ) {
+		echo "Skipping {$filename}: unparseable release date '{$released}'.\n";
+		continue;
+	}
+
 	$count++;
 
 	fputcsv(
-		$type === 'plugins' ? $plugin_releases : $theme_releases,
+		$get_handle( $type, $month ),
 		[
 			$new_data->slug,
 			html_entity_decode( $new_data->name ),
 			$new_data->version,
 			$old_data->version ?? '',
 			$new_data->download_link,
-			$new_data->last_updated_time ?? $new_data->last_updated, // Themes: last_updated_time; plugins: last_updated.
+			$released,
 			"https://wordpress.org/{$type}/{$new_data->slug}/",
 			$new_data->requires ?? '',
 			$new_data->requires_php ?? '',
@@ -63,7 +109,28 @@ foreach ( array_filter( explode( "\0", $output[0] ?? '' ) ) as $line ) {
 
 echo "Recorded $count new releases.\n";
 
-fclose( $plugin_releases );
+foreach ( $handles as $h ) {
+	fclose( $h );
+}
+
+// Refresh top-level symlinks to point at the most recent month present on disk.
+foreach ( [ 'plugins' => 'plugin-releases.csv', 'themes' => 'theme-releases.csv' ] as $type => $symlink_name ) {
+	$months = glob( "{$root}/releases/{$type}/*.csv" );
+	if ( ! $months ) {
+		continue;
+	}
+	sort( $months );
+	$target  = 'releases/' . $type . '/' . basename( end( $months ) );
+	$link    = "{$root}/{$symlink_name}";
+	$current = is_link( $link ) ? readlink( $link ) : null;
+	if ( $current !== $target ) {
+		if ( file_exists( $link ) || is_link( $link ) ) {
+			unlink( $link );
+		}
+		symlink( $target, $link );
+		echo "Updated {$symlink_name} -> {$target}\n";
+	}
+}
 
 echo "Generating latest-versions.json.gz\n";
 
