@@ -45,15 +45,9 @@ To consume the full history, glob `releases/plugins/*.csv` (or `releases/themes/
 
 WordPress core releases live at `releases/core.csv` (a single file — volume is negligible, a handful of rows per year). `core-releases.csv` at the repo root is a symlink to it.
 
-### Viewing in a browser
+### A note on browsing
 
-GitHub's web UI **does not render** these CSVs as a table: every monthly file is well over the 512 KB limit, so `github.com/.../blob/...` shows the raw text or refuses to display the file.
-
-For a browsable table view, use [Flat Viewer](https://flatgithub.com/dd32/wp-public-data?sha=trunk) — pick a file from the sidebar, or link directly:
-
-- Plugins (current month): <https://flatgithub.com/dd32/wp-public-data?sha=trunk&filename=plugin-releases.csv>
-- Themes (current month): <https://flatgithub.com/dd32/wp-public-data?sha=trunk&filename=theme-releases.csv>
-- Any specific month, e.g.: <https://flatgithub.com/dd32/wp-public-data?sha=trunk&filename=releases/plugins/2026-04.csv>
+GitHub's web UI **does not render** these CSVs as a table: every monthly file is well over the 512 KB limit, so `github.com/.../blob/...` shows the raw text or refuses to display the file. To work with the data, clone the repo or pull a specific month's file via `curl` / `wget`.
 
 ### Other artifacts
 
