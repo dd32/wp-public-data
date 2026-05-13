@@ -49,7 +49,7 @@ WordPress core releases live at `releases/core.csv` (a single file — volume is
 
 GitHub's web UI **does not render** these CSVs as a table: every monthly file is well over the 512 KB limit, so `github.com/.../blob/...` shows the raw text or refuses to display the file.
 
-For a browsable table view, use [Flat Viewer](https://flatgithub.com/dd32/wp-public-data?sha=trunk) (the `sha=trunk` parameter is required — Flat Viewer defaults to `main`/`master` and this repo uses `trunk`) — pick a file from the sidebar, or link directly:
+For a browsable table view, use [Flat Viewer](https://flatgithub.com/dd32/wp-public-data?sha=trunk) — pick a file from the sidebar, or link directly:
 
 - Plugins (current month): <https://flatgithub.com/dd32/wp-public-data?sha=trunk&filename=plugin-releases.csv>
 - Themes (current month): <https://flatgithub.com/dd32/wp-public-data?sha=trunk&filename=theme-releases.csv>
