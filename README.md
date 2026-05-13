@@ -47,7 +47,40 @@ WordPress core releases live at `releases/core.csv` (a single file — volume is
 
 ### A note on browsing
 
-GitHub's web UI **does not render** these CSVs as a table: every monthly file is well over the 512 KB limit, so `github.com/.../blob/...` shows the raw text or refuses to display the file. To work with the data, clone the repo or pull a specific month's file via `curl` / `wget`.
+GitHub's web UI **does not render** these CSVs as a table: every monthly file is well over the 512 KB limit, so `github.com/.../blob/...` shows the raw text or refuses to display the file. To work with the data, clone the repo, pull a specific month via `curl` / `wget`, or query directly with DuckDB (see below).
+
+### Querying with DuckDB
+
+[DuckDB](https://duckdb.org) can read these CSVs directly from raw.githubusercontent.com URLs — no clone needed. The same queries work in the browser via the [DuckDB Web Shell](https://shell.duckdb.org) or locally via the `duckdb` CLI.
+
+A single month:
+
+```sql
+SELECT *
+FROM 'https://raw.githubusercontent.com/dd32/wp-public-data/trunk/releases/plugins/2026-05.csv'
+LIMIT 20;
+```
+
+All months at once (glob over the raw URLs is not supported, but you can `UNION ALL` or list explicitly; locally, after a clone, the glob works):
+
+```sql
+-- Local, after `git clone`:
+SELECT Slug, Version, Released
+FROM read_csv('releases/plugins/*.csv', union_by_name = true)
+WHERE Released >= '2026-01-01'
+ORDER BY Released DESC
+LIMIT 50;
+```
+
+Top plugins by release frequency this year:
+
+```sql
+SELECT Slug, COUNT(*) AS releases
+FROM read_csv('releases/plugins/2026-*.csv', union_by_name = true)
+GROUP BY Slug
+ORDER BY releases DESC
+LIMIT 20;
+```
 
 ### Other artifacts
 
