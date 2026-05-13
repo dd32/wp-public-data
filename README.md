@@ -39,11 +39,21 @@ Slug, Name, Version, Previous Version, Download Link, Released,
 WordPress.org URL, Required WP, Required PHP, Active Installs
 ```
 
-For convenience, `plugin-releases.csv` and `theme-releases.csv` at the repo root are **symlinks** to the most recent month. GitHub's raw URLs follow symlinks, so `https://raw.githubusercontent.com/.../plugin-releases.csv` always serves the current month.
+For convenience, `plugin-releases.csv` and `theme-releases.csv` at the repo root are **symlinks** to the most recent month. The `github.com/.../blob/...` UI follows the link and so does `git clone`. (Note: `raw.githubusercontent.com` does **not** follow symlinks — it returns the target path as a string. Use the `blob/` URL, or pull the underlying `releases/plugins/YYYY-MM.csv` directly.)
 
 To consume the full history, glob `releases/plugins/*.csv` (or `releases/themes/*.csv`) and concatenate — every file uses the same header row.
 
 WordPress core releases live at `releases/core.csv` (a single file — volume is negligible, a handful of rows per year). `core-releases.csv` at the repo root is a symlink to it.
+
+### Viewing in a browser
+
+GitHub's web UI **does not render** these CSVs as a table: every monthly file is well over the 512 KB limit, so `github.com/.../blob/...` shows the raw text or refuses to display the file.
+
+For a browsable table view, use [Flat Viewer](https://flatgithub.com/dd32/wp-public-data) — pick a file from the sidebar, or link directly:
+
+- Plugins (current month): <https://flatgithub.com/dd32/wp-public-data?filename=plugin-releases.csv>
+- Themes (current month): <https://flatgithub.com/dd32/wp-public-data?filename=theme-releases.csv>
+- Any specific month, e.g.: <https://flatgithub.com/dd32/wp-public-data?filename=releases/plugins/2026-04.csv>
 
 ### Other artifacts
 
