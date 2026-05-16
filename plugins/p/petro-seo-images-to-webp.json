@@ -1,0 +1,88 @@
+{
+    "name": "Petro SEO Images to WebP",
+    "slug": "petro-seo-images-to-webp",
+    "version": "1.1.2",
+    "author": "<a href=\"https://profiles.wordpress.org/diegopetroncari/\">diegopetroncari</a>",
+    "author_profile": "https://profiles.wordpress.org/diegopetroncari/",
+    "contributors": {
+        "diegopetroncari": {
+            "profile": "https://profiles.wordpress.org/diegopetroncari/",
+            "avatar": "https://secure.gravatar.com/avatar/e3c66b164411f84f42b367b9542776875678d06821808381cbb4777e6bf7f654?s=96&d=monsterid&r=g",
+            "display_name": "diegopetroncari"
+        }
+    },
+    "requires": "5.8",
+    "tested": "6.9.4",
+    "requires_php": "7.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/petro-seo-images-to-webp/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-05-16 17:15:00",
+    "added": "2026-05-16",
+    "homepage": "",
+    "sections": {
+        "description": "<p><strong>Petro SEO Images to WebP</strong> converts your existing JPEG and PNG attachments to WebP in bulk, then serves them on the front-end through the standard <code>&lt;picture&gt;</code> element with a full responsive <code>srcset</code>. The original files stay untouched on disk, so reverting is as simple as flipping a switch.</p>\n<p>Designed to be small, dependency-free and predictable. No external services, no images uploaded anywhere, no opaque queue.</p>\n<h4>What it does</h4>\n<ul>\n<li>Converts every registered image size (full + thumbnails) to <code>.webp</code> next to the original (e.g. <code>photo.jpg</code> <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> <code>photo.jpg.webp</code>).</li>\n<li>Wraps <code>&lt;img&gt;</code> tags from <code>wp_get_attachment_image()</code> and <code>the_content</code> in <code>&lt;picture&gt;&lt;source type=\"image/webp\"&gt;…&lt;/picture&gt;</code>, preserving full <code>srcset</code> and <code>sizes</code>.</li>\n<li>Skips images automatically if a previous run failed because of filesystem permissions, so you can retry on demand without reprocessing the whole library.</li>\n<li>Ramps the WebP quality down (75 <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> 60 <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> 45 <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> 40) when the encoded file ends up larger than the original, so you never ship a &#8220;WebP&#8221; that is heavier than the JPEG.</li>\n<li>Idempotent: re-running the bulk job only touches new or updated images.</li>\n</ul>\n<h4>What it does NOT do</h4>\n<ul>\n<li>It does not delete or modify your original JPG/PNG files.</li>\n<li>It does not require Imagick or a specific image library beyond what WordPress already uses (<code>wp_get_image_editor()</code>).</li>\n<li>It does not phone home, register endpoints, or load remote scripts.</li>\n</ul>\n<h4>Privacy</h4>\n<p>The plugin processes images locally using WordPress&#8217;s built-in image editor. No data is sent to third-party services.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>petro-seo-images-to-webp</code> folder to <code>/wp-content/plugins/</code>, or install via the Plugins screen.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> screen.</li>\n<li>Go to <strong>Media <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Petro SEO Images to WebP</strong>.</li>\n<li>Click <strong>Convert all</strong> to process the existing library.</li>\n<li>Make sure <strong>Serve WebP</strong> is enabled to wrap front-end images in <code>&lt;picture&gt;</code>.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"will%20this%20overwrite%20my%20original%20images%3F\">\nWill this overwrite my original images?\n</h4>\n<p>\n<p>No. Originals stay on disk. The plugin writes a sibling file with the <code>.webp</code> extension (e.g. <code>photo.jpg</code> and <code>photo.jpg.webp</code>).</p>\n</p>\n<dt id=\"how%20can%20i%20undo%20the%20conversion%3F\">\nHow can I undo the conversion?\n</h4>\n<p>\n<p>On <strong>Media <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Petro SEO Images to WebP</strong>, click <strong>Revert all</strong>. Every generated <code>.webp</code> file is removed and the tracking metadata is cleared.</p>\n</p>\n<dt id=\"some%20images%20were%20skipped.%20why%3F\">\nSome images were skipped. Why?\n</h4>\n<p>\n<p>The most common cause is a write-permission issue on the uploads folder. Fix the directory permissions (e.g. <code>chown www-data:www-data</code> on Linux) and click <strong>Retry skipped</strong> to reprocess only those.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20responsive%20images%20%2F%20srcset%3F\">\nDoes it work with responsive images / srcset?\n</h4>\n<p>\n<p>Yes. The <code>&lt;source&gt;</code> element inside <code>&lt;picture&gt;</code> carries the full <code>srcset</code> and <code>sizes</code>, with each URL pointing to its <code>.webp</code> counterpart. URLs whose <code>.webp</code> is missing on disk are silently dropped from the WebP <code>srcset</code> so the browser falls back to the original <code>&lt;img&gt;</code>.</p>\n</p>\n<dt id=\"can%20i%20serve%20%60.webp%60%20files%20without%20using%20the%20%60%3Cpicture%3E%60%20tag%3F\">\nCan I serve `.webp` files without using the &#8220; tag?\n</h4>\n<p>\n<p>If you uncheck <strong>Serve WebP</strong> the files stay on disk but the plugin will not wrap your <code>&lt;img&gt;</code> markup. You can then serve them yourself (e.g. via Nginx Accept negotiation or a CDN rule).</p>\n</p>\n<dt id=\"what%20if%20the%20webp%20version%20ends%20up%20larger%20than%20the%20original%3F\">\nWhat if the WebP version ends up larger than the original?\n</h4>\n<p>\n<p>The plugin retries with progressively lower quality (down to 40). If even at the lowest quality the WebP is still bigger than the source, it logs a diagnostic line and uses what it has — most browsers will still benefit from the format.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.2</h4>\n<ul>\n<li>Admin UI polish: ASCII-art header on <strong>Media <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Petro SEO Images to WebP</strong> and a discreet author credit linking to the wordpress.org profile. No functional changes — purely cosmetic.</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>Plugin Check pass: drop empty <code>.gitkeep</code> placeholders from <code>includes/</code> and <code>assets/</code> (they no longer make it into the release zip).</li>\n<li>Replace direct <code>is_writable()</code> / <code>chmod()</code> filesystem calls with <code>wp_is_writable()</code>; the opportunistic <code>chmod 0755</code> self-heal is gone — read-only directories now surface a clean permission error instead of being silently patched.</li>\n<li>Drop the <code>load_plugin_textdomain()</code> call; wordpress.org auto-loads translations since WP 4.6.</li>\n<li>Wrap <code>uninstall.php</code> logic in a <code>psitw_uninstall()</code> function so locals stay out of the file scope.</li>\n<li>Annotate the unavoidable direct <code>$wpdb</code> queries (uninstall sweep, namespace migration, skipped-meta cleanup) and <code>meta_query</code> / <code>post__not_in</code> calls with justified <code>phpcs:ignore</code> comments.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Rebrand to <strong>Petro SEO Images to WebP</strong>: new plugin slug <code>petro-seo-images-to-webp</code>, new internal prefix <code>Psitw_*</code> / <code>psitw_*</code> (5-letter prefix per WordPress plugin guidelines). A one-time auto-migration on first load forwards every legacy storage key (<code>siw_*</code> and <code>plugin_images_*</code>) into the new namespace, so existing conversion state is preserved.</li>\n<li>The admin page moved to <strong>Media <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Petro SEO Images to WebP</strong>.</li>\n</ul>\n<h4>1.0.4</h4>\n<ul>\n<li>Rename internal class prefix and storage keys to <code>siw_*</code> for unique namespacing — a one-time auto-migration runs on first load and copies legacy data forward.</li>\n<li>Replace <code>@unlink</code> with <code>wp_delete_file()</code> and add <code>Plugin URI</code>, <code>Author URI</code>, <code>Requires at least</code> headers for wordpress.org compliance.</li>\n<li>Trim readme tags to 5, bump tested-up-to, exclude dev-only docs from the release zip.</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>Skip attachments that fail because of filesystem permissions and offer a one-click retry flow.</li>\n<li>Ramp quality down when the resulting WebP is larger than the original.</li>\n<li>Keep the bulk loop alive when an entire batch fails by excluding failed IDs.</li>\n<li>Preserve full responsive <code>srcset</code> inside the generated <code>&lt;picture&gt;&lt;source&gt;</code>.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial public release.</li>\n</ul>\n"
+    },
+    "short_description": "Bulk-convert media library images to WebP for better SEO and Core Web Vitals. Originals stay on disk; the front-end serves WebP via the  tag.",
+    "description": "<p><strong>Petro SEO Images to WebP</strong> converts your existing JPEG and PNG attachments to WebP in bulk, then serves them on the front-end through the standard <code>&lt;picture&gt;</code> element with a full responsive <code>srcset</code>. The original files stay untouched on disk, so reverting is as simple as flipping a switch.</p>\n<p>Designed to be small, dependency-free and predictable. No external services, no images uploaded anywhere, no opaque queue.</p>\n<h4>What it does</h4>\n<ul>\n<li>Converts every registered image size (full + thumbnails) to <code>.webp</code> next to the original (e.g. <code>photo.jpg</code> <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> <code>photo.jpg.webp</code>).</li>\n<li>Wraps <code>&lt;img&gt;</code> tags from <code>wp_get_attachment_image()</code> and <code>the_content</code> in <code>&lt;picture&gt;&lt;source type=\"image/webp\"&gt;…&lt;/picture&gt;</code>, preserving full <code>srcset</code> and <code>sizes</code>.</li>\n<li>Skips images automatically if a previous run failed because of filesystem permissions, so you can retry on demand without reprocessing the whole library.</li>\n<li>Ramps the WebP quality down (75 <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> 60 <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> 45 <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> 40) when the encoded file ends up larger than the original, so you never ship a &#8220;WebP&#8221; that is heavier than the JPEG.</li>\n<li>Idempotent: re-running the bulk job only touches new or updated images.</li>\n</ul>\n<h4>What it does NOT do</h4>\n<ul>\n<li>It does not delete or modify your original JPG/PNG files.</li>\n<li>It does not require Imagick or a specific image library beyond what WordPress already uses (<code>wp_get_image_editor()</code>).</li>\n<li>It does not phone home, register endpoints, or load remote scripts.</li>\n</ul>\n<h4>Privacy</h4>\n<p>The plugin processes images locally using WordPress&#8217;s built-in image editor. No data is sent to third-party services.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/petro-seo-images-to-webp.1.1.2.zip",
+    "upgrade_notice": {
+        "1.1.2": "<p>Cosmetic admin UI refresh — ASCII header and author credit on the plugin&#039;s settings page. Safe drop-in upgrade with no behavior changes.</p>",
+        "1.1.1": "<p>Plugin Check / wordpress.org compliance pass. No user-facing behavior change beyond the removal of an opportunistic <code>chmod 0755</code> self-heal — read-only upload directories now have to be fixed manually (which was already the documented path).</p>",
+        "1.1.0": "<p>Rebrand to Petro SEO Images to WebP. A one-time auto-migration forwards all existing conversion state from the previous <code>siw_*</code> / <code>plugin_images_*</code> namespaces, so no manual action is required.</p>",
+        "1.0.4": "<p>Internal refactor for wordpress.org compliance with a one-time storage-key migration. No user-facing changes.</p>",
+        "1.0.3": "<p>Adds permission-skip handling, a quality ramp-down for oversized WebPs, and full responsive srcset preservation.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/petro-seo-images-to-webp/assets/screenshot-1.png?rev=3533935",
+            "caption": "Admin page under <strong>Media → Petro SEO Images to WebP</strong> — settings, bulk-conversion counters, and Convert / Revert / Retry controls."
+        }
+    ],
+    "tags": {
+        "images": "images",
+        "performance": "performance",
+        "picture": "picture",
+        "seo": "seo",
+        "webp": "webp"
+    },
+    "stable_tag": "1.1.2",
+    "versions": {
+        "1.1.2": "https://downloads.wordpress.org/plugin/petro-seo-images-to-webp.1.1.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/petro-seo-images-to-webp.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/petro-seo-images-to-webp/assets/banner-772x250.png?rev=3533935",
+        "high": "https://ps.w.org/petro-seo-images-to-webp/assets/banner-1544x500.png?rev=3533935"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/petro-seo-images-to-webp/assets/icon-128x128.png?rev=3533935",
+        "2x": "https://ps.w.org/petro-seo-images-to-webp/assets/icon-256x256.png?rev=3533935"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
