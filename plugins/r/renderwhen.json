@@ -1,0 +1,100 @@
+{
+    "name": "RenderWhen for Blocks",
+    "slug": "renderwhen",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/abhishekfdd/\">Abhishek Kumar</a>",
+    "author_profile": "https://profiles.wordpress.org/abhishekfdd/",
+    "contributors": {
+        "abhishekfdd": {
+            "profile": "https://profiles.wordpress.org/abhishekfdd/",
+            "avatar": "https://secure.gravatar.com/avatar/73e0d054734ff38c1d5fde97aac6607d2577d6345395b8528d5a2b820a6ce4e7?s=96&d=monsterid&r=g",
+            "display_name": "Abhishek Kumar"
+        }
+    },
+    "requires": "6.5",
+    "tested": "6.9.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/renderwhen/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-05-17 09:08:00",
+    "added": "2026-05-17",
+    "homepage": "https://github.com/abhishekfdd/renderwhen",
+    "sections": {
+        "description": "<p>RenderWhen for Blocks adds conditional visibility to every block in the WordPress block editor. Decide who sees what, and when, with a panel that reads exactly how you&#8217;d say it out loud:</p>\n<blockquote>\n<p><em>Show this block when the user is logged in.</em><br />\n  <em>Show this block when the date is between March 1 and March 31.</em><br />\n  <em>Show this block when the device is mobile.</em></p>\n</blockquote>\n<p>RenderWhen is built around two ideas that set it apart from other visibility plugins:</p>\n<ul>\n<li><strong>Server-side rendering only.</strong> When a block is hidden by a condition, it is not rendered into the page output at all. No CSS <code>display: none</code>, no DOM bloat, no leaked content in view-source. Search engines, screen readers, and your page weight all benefit.</li>\n<li><strong>Public Conditions API.</strong> The three built-in conditions are registered through the same public API your plugin or theme can use to add your own. No hacks, no internal-only code paths.</li>\n</ul>\n<p>In the editor, a subtle dashed border marks every block that carries a visibility rule, so a rule-bearing block never disappears from the published page as a surprise. A &#8220;Preview as audience&#8221; sidebar lets you simulate a logged-out visitor, a specific role, or a different device class right in the editor — blocks whose rule would hide them fade out with a clear badge, no save-and-reload cycle required.</p>\n<h4>Built-in conditions (v1.0)</h4>\n<ul>\n<li><strong>User state</strong> — show to logged-in users, logged-out users, or specific roles</li>\n<li><strong>Date range</strong> — show between two datetimes, timezone-aware</li>\n<li><strong>Device type</strong> — show on desktop, tablet, or mobile</li>\n</ul>\n<h4>Designed for</h4>\n<ul>\n<li>Agencies and freelancers building client sites who want a clean, predictable visibility tool</li>\n<li>Developers who need an extension point, not another walled garden</li>\n<li>Anyone who cares about page weight and SEO hygiene</li>\n</ul>\n<h4>What this plugin deliberately does NOT do</h4>\n<p>It does one thing well rather than ten things adequately. Out of scope in v1.0:</p>\n<ul>\n<li>Multi-condition AND/OR groups (planned for v1.1)</li>\n<li>URL / cookie / referrer / geolocation conditions</li>\n<li>WooCommerce, ACF, or membership integrations</li>\n<li>A settings dashboard</li>\n</ul>\n<p>If you need those today, <a href=\"https://wordpress.org/plugins/conditional-blocks/\" rel=\"ugc\">Conditional Blocks</a> and <a href=\"https://wordpress.org/plugins/block-visibility/\" rel=\"ugc\">Block Visibility</a> are excellent and well-established choices.</p>\n<h4>For developers</h4>\n<p>Register a custom condition in three steps. Implement the interface, add it to the registry, ship.</p>\n<pre><code>add_action( 'renderwhen_register_conditions', function ( $registry ) {\n    $registry-&gt;register( new My_Plugin\\\\Conditions\\\\Country_Condition() );\n} );\n</code></pre>\n<p>Your condition class implements <code>RenderWhen\\Conditions\\Interface_Condition</code>:</p>\n<pre><code>namespace My_Plugin\\Conditions;\n\nuse RenderWhen\\Conditions\\Interface_Condition;\n\nclass Country_Condition implements Interface_Condition {\n    public function get_id(): string {\n        return 'country';\n    }\n\n    public function get_label(): string {\n        return __( 'Visitor country', 'my-plugin' );\n    }\n\n    public function get_schema(): array {\n        return array(\n            'type'       =&gt; 'object',\n            'properties' =&gt; array(\n                'countries' =&gt; array(\n                    'type'  =&gt; 'array',\n                    'items' =&gt; array( 'type' =&gt; 'string' ),\n                ),\n            ),\n        );\n    }\n\n    public function evaluate( array $settings, array $context ): bool {\n        $current = my_plugin_detect_country();\n        return in_array( $current, $settings['countries'] ?? array(), true );\n    }\n}\n</code></pre>\n<p>The full set of public filters:</p>\n<ul>\n<li><code>renderwhen_register_conditions</code> — register your conditions here</li>\n<li><code>renderwhen_evaluate_{condition_id}</code> — last-mile override of any condition&#8217;s result</li>\n<li><code>renderwhen_render_block_hidden</code> — fires when a block is hidden, useful for cache busters and SEO tools</li>\n<li><code>renderwhen_device_type</code> — swap in your own device detection</li>\n</ul>\n<p>The plugin is developed openly on GitHub. Issues, PRs, and architecture discussions welcome: https://github.com/abhishekfdd/renderwhen</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>renderwhen</code> folder to <code>/wp-content/plugins/</code>, or install through the <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New</strong> screen</li>\n<li>Activate the plugin</li>\n<li>Edit any post or page, select a block, and find the <strong>Visibility</strong> panel in the block inspector</li>\n</ol>\n<p>There is no settings page. By design.</p>\n",
+        "faq": "\n<dt id=\"does%20this%20work%20with%20the%20site%20editor%3F\">\nDoes this work with the Site Editor?\n</h4>\n<p>\n<p>Yes. Conditions apply to blocks anywhere they render — posts, pages, template parts, navigation menus, and patterns.</p>\n</p>\n<dt id=\"does%20this%20work%20with%20third-party%20blocks%3F\">\nDoes this work with third-party blocks?\n</h4>\n<p>\n<p>Yes. The visibility attribute is registered on every registered block, including blocks from other plugins (ACF Blocks, GenerateBlocks, Stackable, etc.).</p>\n</p>\n<dt id=\"will%20hidden%20blocks%20affect%20seo%3F\">\nWill hidden blocks affect SEO?\n</h4>\n<p>\n<p>Hidden blocks are never rendered into the page HTML. Search engines see what your visitors see — not the hidden content. This is the opposite of CSS-based hiding, where the content is still in the DOM.</p>\n</p>\n<dt id=\"can%20i%20combine%20multiple%20conditions%20on%20one%20block%3F\">\nCan I combine multiple conditions on one block?\n</h4>\n<p>\n<p>Not in v1.0 — one rule per block. AND/OR condition groups are planned for v1.1.</p>\n</p>\n<dt id=\"what%20does%20the%20dashed%20border%20on%20some%20blocks%20mean%3F\">\nWhat does the dashed border on some blocks mean?\n</h4>\n<p>\n<p>The dashed left border indicates a block has a visibility rule attached. It&#8217;s editor-only — visitors never see it. The cue helps prevent confusion when blocks disappear from the published version.</p>\n</p>\n<dt id=\"why%20do%20role-restricted%20blocks%20appear%20hidden%20when%20i%20preview%20as%20%22any%20role%22%3F\">\nWhy do role-restricted blocks appear hidden when I preview as &#8220;Any role&#8221;?\n</h4>\n<p>\n<p>The preview can&#8217;t know which roles an arbitrary visitor would have. When you preview as &#8220;Any role,&#8221; role-restricted blocks appear hidden because the safest assumption is that an unknown visitor doesn&#8217;t have the required role. To verify a role-restricted block actually shows for that role, pick the specific role from the preview dropdown.</p>\n</p>\n<dt id=\"how%20does%20this%20compare%20to%20block%20visibility%20or%20conditional%20blocks%3F\">\nHow does this compare to Block Visibility or Conditional Blocks?\n</h4>\n<p>\n<p>Both are excellent, mature plugins with broader feature sets. RenderWhen is intentionally smaller in surface area, server-side-only in rendering, and built around a public extension API. If you need ACF/WooCommerce/cookie conditions today, use one of those. If you want a small, fast, extensible foundation, this is for you.</p>\n</p>\n<dt id=\"how%20does%20device%20detection%20work%3F\">\nHow does device detection work?\n</h4>\n<p>\n<p>By default, via <code>wp_is_mobile()</code> plus a user-agent check for tablets. The result is filterable via <code>renderwhen_device_type</code> so you can plug in a more sophisticated library.</p>\n</p>\n<dt id=\"is%20this%20caching-friendly%3F\">\nIs this caching-friendly?\n</h4>\n<p>\n<p>Mostly yes — visibility is evaluated at render time, so server-side page caches will cache whatever was rendered for that request. For varying-by-user content (login state, role), you&#8217;ll want a cache layer that varies on cookies. The <code>renderwhen_render_block_hidden</code> action is provided so cache plugins and edge integrations can hook in.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>Three built-in conditions: user state, date range, device type.</li>\n<li>Public Conditions API.</li>\n<li>Editor indicator and &#8220;Preview as&#8230;&#8221; mode.</li>\n</ul>\n"
+    },
+    "short_description": "Show or hide any block when conditions match. Developer-first API and true server-side rendering — hidden blocks never reach the browser.",
+    "description": "<p>RenderWhen for Blocks adds conditional visibility to every block in the WordPress block editor. Decide who sees what, and when, with a panel that reads exactly how you&#8217;d say it out loud:</p>\n<blockquote>\n<p><em>Show this block when the user is logged in.</em><br />\n  <em>Show this block when the date is between March 1 and March 31.</em><br />\n  <em>Show this block when the device is mobile.</em></p>\n</blockquote>\n<p>RenderWhen is built around two ideas that set it apart from other visibility plugins:</p>\n<ul>\n<li><strong>Server-side rendering only.</strong> When a block is hidden by a condition, it is not rendered into the page output at all. No CSS <code>display: none</code>, no DOM bloat, no leaked content in view-source. Search engines, screen readers, and your page weight all benefit.</li>\n<li><strong>Public Conditions API.</strong> The three built-in conditions are registered through the same public API your plugin or theme can use to add your own. No hacks, no internal-only code paths.</li>\n</ul>\n<p>In the editor, a subtle dashed border marks every block that carries a visibility rule, so a rule-bearing block never disappears from the published page as a surprise. A &#8220;Preview as audience&#8221; sidebar lets you simulate a logged-out visitor, a specific role, or a different device class right in the editor — blocks whose rule would hide them fade out with a clear badge, no save-and-reload cycle required.</p>\n<h4>Built-in conditions (v1.0)</h4>\n<ul>\n<li><strong>User state</strong> — show to logged-in users, logged-out users, or specific roles</li>\n<li><strong>Date range</strong> — show between two datetimes, timezone-aware</li>\n<li><strong>Device type</strong> — show on desktop, tablet, or mobile</li>\n</ul>\n<h4>Designed for</h4>\n<ul>\n<li>Agencies and freelancers building client sites who want a clean, predictable visibility tool</li>\n<li>Developers who need an extension point, not another walled garden</li>\n<li>Anyone who cares about page weight and SEO hygiene</li>\n</ul>\n<h4>What this plugin deliberately does NOT do</h4>\n<p>It does one thing well rather than ten things adequately. Out of scope in v1.0:</p>\n<ul>\n<li>Multi-condition AND/OR groups (planned for v1.1)</li>\n<li>URL / cookie / referrer / geolocation conditions</li>\n<li>WooCommerce, ACF, or membership integrations</li>\n<li>A settings dashboard</li>\n</ul>\n<p>If you need those today, <a href=\"https://wordpress.org/plugins/conditional-blocks/\" rel=\"ugc\">Conditional Blocks</a> and <a href=\"https://wordpress.org/plugins/block-visibility/\" rel=\"ugc\">Block Visibility</a> are excellent and well-established choices.</p>\n<h4>For developers</h4>\n<p>Register a custom condition in three steps. Implement the interface, add it to the registry, ship.</p>\n<pre><code>add_action( 'renderwhen_register_conditions', function ( $registry ) {\n    $registry-&gt;register( new My_Plugin\\\\Conditions\\\\Country_Condition() );\n} );\n</code></pre>\n<p>Your condition class implements <code>RenderWhen\\Conditions\\Interface_Condition</code>:</p>\n<pre><code>namespace My_Plugin\\Conditions;\n\nuse RenderWhen\\Conditions\\Interface_Condition;\n\nclass Country_Condition implements Interface_Condition {\n    public function get_id(): string {\n        return 'country';\n    }\n\n    public function get_label(): string {\n        return __( 'Visitor country', 'my-plugin' );\n    }\n\n    public function get_schema(): array {\n        return array(\n            'type'       =&gt; 'object',\n            'properties' =&gt; array(\n                'countries' =&gt; array(\n                    'type'  =&gt; 'array',\n                    'items' =&gt; array( 'type' =&gt; 'string' ),\n                ),\n            ),\n        );\n    }\n\n    public function evaluate( array $settings, array $context ): bool {\n        $current = my_plugin_detect_country();\n        return in_array( $current, $settings['countries'] ?? array(), true );\n    }\n}\n</code></pre>\n<p>The full set of public filters:</p>\n<ul>\n<li><code>renderwhen_register_conditions</code> — register your conditions here</li>\n<li><code>renderwhen_evaluate_{condition_id}</code> — last-mile override of any condition&#8217;s result</li>\n<li><code>renderwhen_render_block_hidden</code> — fires when a block is hidden, useful for cache busters and SEO tools</li>\n<li><code>renderwhen_device_type</code> — swap in your own device detection</li>\n</ul>\n<p>The plugin is developed openly on GitHub. Issues, PRs, and architecture discussions welcome: https://github.com/abhishekfdd/renderwhen</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/renderwhen.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/renderwhen/assets/screenshot-1.png?rev=3534394",
+            "caption": "The Visibility panel in the block inspector"
+        },
+        {
+            "src": "https://ps.w.org/renderwhen/assets/screenshot-2.png?rev=3534394",
+            "caption": "User State condition with role selector"
+        },
+        {
+            "src": "https://ps.w.org/renderwhen/assets/screenshot-3.png?rev=3534394",
+            "caption": "Date Range condition with start/end pickers"
+        },
+        {
+            "src": "https://ps.w.org/renderwhen/assets/screenshot-4.png?rev=3534394",
+            "caption": "Device type condition with three checkboxes"
+        },
+        {
+            "src": "https://ps.w.org/renderwhen/assets/screenshot-5.png?rev=3534394",
+            "caption": "Editor indicator showing dashed border on rule-bearing blocks"
+        }
+    ],
+    "tags": {
+        "block-editor": "block-editor",
+        "blocks": "blocks",
+        "conditional": "conditional",
+        "gutenberg": "gutenberg",
+        "visibility": "visibility"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/renderwhen.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/renderwhen.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/renderwhen/assets/banner-772x250.png?rev=3534394",
+        "high": "https://ps.w.org/renderwhen/assets/banner-1544x500.png?rev=3534394"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/renderwhen/assets/icon-128x128.png?rev=3534394",
+        "2x": "https://ps.w.org/renderwhen/assets/icon-256x256.png?rev=3534394"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
