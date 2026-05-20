@@ -1,0 +1,84 @@
+{
+    "name": "MyFast Login Guard – Login Protection &amp; Server Info",
+    "slug": "myfast-login-guard",
+    "version": "1.3.6",
+    "author": "<a href=\"https://profiles.wordpress.org/myfastwebhosting/\">myfastwebhosting</a>",
+    "author_profile": "https://profiles.wordpress.org/myfastwebhosting/",
+    "contributors": {
+        "myfastwebhosting": {
+            "profile": "https://profiles.wordpress.org/myfastwebhosting/",
+            "avatar": "https://secure.gravatar.com/avatar/92c447c67e4f98259df90719d5e4e8622d09b179677e9b43c999d8d578cafb1a?s=96&d=monsterid&r=g",
+            "display_name": "myfastwebhosting"
+        }
+    },
+    "requires": "6.0",
+    "tested": "6.9.4",
+    "requires_php": "8.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/myfast-login-guard/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-05-20 02:20:00",
+    "added": "2026-05-20",
+    "homepage": "",
+    "sections": {
+        "description": "<p>MyFast Login Guard provides two things hosting clients actually need:</p>\n<p><strong>Login protection</strong></p>\n<ul>\n<li>Rename your login page to a custom URL — direct access to /wp-login.php returns a 404</li>\n<li>Limit login attempts — lock out an IP after a configurable number of failures</li>\n<li>Configurable lockout duration (default: 5 attempts, 30-minute lockout)</li>\n<li>IP whitelist — your own IPs are never locked out</li>\n<li>Optional email notification when a lockout is triggered</li>\n<li>Manual unlock from the Lockout Log page</li>\n</ul>\n<p><strong>Server information and error log</strong></p>\n<ul>\n<li>Full PHP environment: version, memory, OPcache, extensions, disabled functions, error log path</li>\n<li>WordPress environment: version, debug flags, memory limits, active plugin count</li>\n<li>Server details: software, IP, document root, HTTPS status, OS</li>\n<li>Database: MySQL/MariaDB version, database size</li>\n<li>Disk usage: total, used, free</li>\n<li>Scheduled cron events with overdue detection</li>\n<li>Error log viewer: reads WordPress debug.log (or PHP error log), filterable by Fatal / Warning / Notice, with one-click clear</li>\n</ul>\n<p><strong>Design principles</strong></p>\n<ul>\n<li>No external API calls</li>\n<li>No cronjobs</li>\n<li>No .htaccess rewriting</li>\n<li>No front-end database queries</li>\n<li>Assets load only on the plugin&#8217;s own admin pages</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>myfast-login-guard</code> folder to <code>/wp-content/plugins/</code></li>\n<li>Activate the plugin through the Plugins screen in WordPress</li>\n<li>Go to <strong>MyFast Login Guard</strong> in the admin menu to configure</li>\n</ol>\n",
+        "faq": "\n<dt id=\"will%20renaming%20my%20login%20page%20break%20anything%3F\">\nWill renaming my login page break anything?\n</h4>\n<p>\n<p>No. WordPress internal redirects (logout, password reset, registration) continue to work. Only direct access to /wp-login.php returns a 404 for logged-out visitors.</p>\n</p>\n<dt id=\"what%20happens%20if%20i%20forget%20my%20custom%20login%20slug%3F\">\nWhat happens if I forget my custom login slug?\n</h4>\n<p>\n<p>You have two options:</p>\n<ol>\n<li>Visit /wp-admin/ — WordPress will redirect you to the login page at the correct URL.</li>\n<li>Add <code>define( 'MFLG_DISABLE_LOGIN_SLUG', true );</code> to your wp-config.php to temporarily restore /wp-login.php access without deactivating the plugin.</li>\n</ol>\n</p>\n<dt id=\"what%20happens%20if%20i%20lock%20myself%20out%3F\">\nWhat happens if I lock myself out?\n</h4>\n<p>\n<p>Add your IP address to the Whitelist IPs field in Settings. If you are already locked out, connect via FTP/SSH, open wp-config.php, and add:<br />\n    define( &#8216;MFLG_DISABLE_LOGIN_SLUG&#8217;, true );<br />\nThen log in normally, unlock your IP from the Lockout Log page, and remove the constant.</p>\n</p>\n<dt id=\"does%20this%20replace%20a%20firewall%20or%20security%20plugin%3F\">\nDoes this replace a firewall or security plugin?\n</h4>\n<p>\n<p>No. It is a lightweight complement — it stops brute-force login attempts and gives you visibility into your server environment. It does not scan files, block requests at the firewall level, or monitor for malware.</p>\n</p>\n<dt id=\"how%20are%20ip%20addresses%20detected%3F\">\nHow are IP addresses detected?\n</h4>\n<p>\n<p>The plugin uses <code>REMOTE_ADDR</code> (the actual TCP connection IP) as the primary source. If the site is behind Cloudflare, the <code>CF-Connecting-IP</code> header is trusted only when the connection originates from a verified Cloudflare IP range. Forwarded headers such as <code>X-Forwarded-For</code> that can be spoofed by clients are intentionally ignored.</p>\n</p>\n<dt id=\"is%20the%20lockout%20data%20cleaned%20up%20on%20uninstall%3F\">\nIs the lockout data cleaned up on uninstall?\n</h4>\n<p>\n<p>Yes. Uninstalling the plugin removes all plugin settings and lockout records from <code>wp_options</code>.</p>\n</p>\n\n",
+        "changelog": "<h4>1.3.6</h4>\n<ul>\n<li>Renamed: Plugin renamed to MyFast Login Guard &amp; Server Info with new slug myfast-login-guard and mflg_ prefix throughout.</li>\n<li>Fixed: All CSS class names updated from lssi- to mflg- prefix for uniqueness compliance.</li>\n<li>Fixed: Inline  block removed from lockout log page — now uses enqueued lockouts.js.</li>\n<li>Fixed: Removed unused lockouts database table — lockout data stored cleanly in wp_options.</li>\n<li>Fixed: Activation/deactivation hooks converted from anonymous closures to named functions.</li>\n<li>Fixed: Transient cleanup queries now use $wpdb-&gt;prepare() for full PHPCS compliance.</li>\n<li>Fixed: Cloudflare cache purge hook removed entirely per WP.org reviewer requirement.</li>\n<li>Fixed: wp_cache_delete() added before wp_localize_script() to guarantee fresh settings on page load.</li>\n<li>Fixed: Login slug reserved-word validation added client-side with clear error message.</li>\n<li>Fixed: Emergency escape hatch constant renamed to MFLG_DISABLE_LOGIN_SLUG.</li>\n<li>Improved: Error log path detection now checks ini_get(&#8216;error_log&#8217;) as first candidate.</li>\n<li>Improved: Server info table stacks label above value on mobile instead of horizontal scroll.</li>\n<li>Improved: Export for Support button min-height corrected on mobile.</li>\n</ul>\n<h4>1.3.1</h4>\n<ul>\n<li>Fixed: Text domain reverted to login-shield-server-info to match plugin folder name (Plugin Check compliance).</li>\n<li>Fixed: Removed discouraged load_plugin_textdomain() call (auto-loaded by WordPress.org since WP 4.6).</li>\n<li>Fixed: Replaced fopen/fclose with WP_Filesystem in error-log.php and server-info.php.</li>\n<li>Fixed: Replaced parse_url() with wp_parse_url() in login-protect.php.</li>\n<li>Fixed: Added wp_unslash() to all $_SERVER reads in server-info.php.</li>\n<li>Fixed: Unescaped output — $status_label now uses wp_kses(), $icon uses wp_kses(), min() wrapped in esc_attr().</li>\n<li>Fixed: Ordered placeholders (%1$d, %2$s) and added translators comments in server-info.php and login-protect.php.</li>\n<li>Fixed: Added phpcs:ignore with justification for third-party hook names, read-only GET params, and socket fclose.</li>\n<li>Fixed: uninstall.php table variable renamed with lssi_ prefix.</li>\n<li>Fixed: Upgrade notices trimmed to under 300 characters.</li>\n</ul>\n<h4>1.3.0</h4>\n<ul>\n<li>Updated text domain from login-shield-server-info to fastshield-security to match the approved WordPress.org plugin slug.</li>\n</ul>\n<h4>1.2.9</h4>\n<ul>\n<li>Fixed: Updated &#8220;Tested up to&#8221; to WordPress 6.9.</li>\n</ul>\n<h4>1.2.8</h4>\n<ul>\n<li>Fixed: Removed duplicate Plugin URI (was identical to Author URI) per WordPress.org submission requirements.</li>\n</ul>\n<h4>1.2.7</h4>\n<ul>\n<li>Renamed plugin to MyFast Login Guard – Login Protection &amp; Server Info to comply with WordPress.org naming guidelines.</li>\n</ul>\n<h4>1.2.6</h4>\n<ul>\n<li>Security: Validate error log tab parameter against known tab whitelist before use in URL output (was sanitize_key only).</li>\n<li>Code quality: Added phpcs ignore with full justification comment for shell_exec inode check — path escaped via escapeshellarg(), output parsed as integers only.</li>\n</ul>\n<h4>1.2.5</h4>\n<ul>\n<li>Fixed: Missing return statements after wp_send_json_error() in AJAX handlers — code after the error response could execute.</li>\n<li>Fixed: Uninstall now also removes the lssi_lockouts option from wp_options (previously only the DB table was dropped).</li>\n<li>Fixed: Removed dead lssi_utilities_page() function — the page was unreachable with no menu entry.</li>\n<li>Fixed: Removed wp-components from script dependencies (only wp-element is actually used).</li>\n</ul>\n<h4>1.2.4</h4>\n<ul>\n<li>Fixed: Removed the Utilities submenu page which was causing 404 errors on some hosts. The AJAX cache clear remains available in Settings. Any bookmarked lssi-utilities URLs now redirect cleanly to Settings.</li>\n</ul>\n<h4>1.2.3</h4>\n<ul>\n<li>Security: Rewrote IP detection to use REMOTE_ADDR as ground truth; CF-Connecting-IP is now only trusted when REMOTE_ADDR is a verified Cloudflare edge IP. X-Forwarded-For and X-Real-IP removed to prevent spoofing.</li>\n<li>Code quality: Moved login-page CSS from inline output to enqueued assets/css/login.css per WordPress coding standards.</li>\n<li>Usability: Added MFLG_DISABLE_LOGIN_SLUG constant as an emergency escape hatch for locked-out administrators.</li>\n<li>Docs: Expanded readme.txt FAQ with lockout recovery instructions and IP detection explanation.</li>\n</ul>\n<h4>1.2.2</h4>\n<ul>\n<li>Mobile: Lockout log table now stacks as labelled cards on small screens.</li>\n<li>Mobile: Custom login slug and lockout email inputs stack full-width on mobile.</li>\n<li>Error log: Tabs moved inside the log card for discoverability on both mobile and desktop.</li>\n</ul>\n<h4>1.2.1</h4>\n<ul>\n<li>Fixed: wp_login_failed hook signature made compatible with WordPress &lt; 5.4.</li>\n<li>Fixed: authenticate filter now only runs on POST submissions, not every page load.</li>\n<li>Added: Attempts-remaining counter shown on the login page after a failed attempt.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Added brute-force lockout engine: tracks failed attempts per IP, locks out after configurable threshold, sends email notification, auto-expires lockouts.</li>\n<li>Added Unlock and Clear All buttons to Lockout Log page.</li>\n</ul>\n<h4>1.1.9</h4>\n<ul>\n<li>Fixed asset paths, admin menu parent slug, activation hook, and lssi_get() signature.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "MyFast Login Guard renames your login page, blocks brute-force attempts, and lets you inspect your full server environment — all from one lightweight  &hellip;",
+    "description": "<p>MyFast Login Guard provides two things hosting clients actually need:</p>\n<p><strong>Login protection</strong></p>\n<ul>\n<li>Rename your login page to a custom URL — direct access to /wp-login.php returns a 404</li>\n<li>Limit login attempts — lock out an IP after a configurable number of failures</li>\n<li>Configurable lockout duration (default: 5 attempts, 30-minute lockout)</li>\n<li>IP whitelist — your own IPs are never locked out</li>\n<li>Optional email notification when a lockout is triggered</li>\n<li>Manual unlock from the Lockout Log page</li>\n</ul>\n<p><strong>Server information and error log</strong></p>\n<ul>\n<li>Full PHP environment: version, memory, OPcache, extensions, disabled functions, error log path</li>\n<li>WordPress environment: version, debug flags, memory limits, active plugin count</li>\n<li>Server details: software, IP, document root, HTTPS status, OS</li>\n<li>Database: MySQL/MariaDB version, database size</li>\n<li>Disk usage: total, used, free</li>\n<li>Scheduled cron events with overdue detection</li>\n<li>Error log viewer: reads WordPress debug.log (or PHP error log), filterable by Fatal / Warning / Notice, with one-click clear</li>\n</ul>\n<p><strong>Design principles</strong></p>\n<ul>\n<li>No external API calls</li>\n<li>No cronjobs</li>\n<li>No .htaccess rewriting</li>\n<li>No front-end database queries</li>\n<li>Assets load only on the plugin&#8217;s own admin pages</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/myfast-login-guard.1.3.6.zip",
+    "upgrade_notice": {
+        "1.3.6": "<p>Renamed to MyFast Login Guard with new mflg_ prefix. Deactivate and delete the old plugin before installing this version.</p>",
+        "1.3.1": "<p>Plugin Check compliance fixes: escaping, WP_Filesystem, wp_parse_url, translators comments, uninstall cleanup.</p>",
+        "1.3.0": "<p>Text domain updated to match plugin folder slug.</p>",
+        "1.2.9": "<p>Updated Tested up to WordPress 6.9.</p>",
+        "1.2.8": "<p>Removed duplicate Plugin URI header.</p>",
+        "1.2.3": "<p>Security: IP detection now uses REMOTE_ADDR as ground truth. Spoofable proxy headers removed.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "brute-force": "Brute Force",
+        "error-log": "error log",
+        "limit-login-attempts": "limit login attempts",
+        "login-protection": "login protection",
+        "server-info": "server info"
+    },
+    "stable_tag": "1.3.6",
+    "versions": {
+        "1.3.6": "https://downloads.wordpress.org/plugin/myfast-login-guard.1.3.6.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/myfast-login-guard.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/myfast-login-guard/assets/banner-772x250.jpg?rev=3538149",
+        "high": "https://ps.w.org/myfast-login-guard/assets/banner-1544x500.jpg?rev=3538148"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/myfast-login-guard/assets/icon-128x128.png?rev=3538130",
+        "2x": "https://ps.w.org/myfast-login-guard/assets/icon-256x256.png?rev=3538131"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
