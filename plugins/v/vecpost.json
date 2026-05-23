@@ -1,0 +1,93 @@
+{
+    "name": "VecPost AI Search for Posts",
+    "slug": "vecpost",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/krunalbalas/\">krunalbalas</a>",
+    "author_profile": "https://profiles.wordpress.org/krunalbalas/",
+    "contributors": {
+        "krunalb18": {
+            "profile": "https://profiles.wordpress.org/krunalb18/",
+            "avatar": "https://secure.gravatar.com/avatar/282f4be2ff1c0fd29c2c4acc8dfd753fbc7cb905ff56359e64c57ca39a3fd538?s=96&d=monsterid&r=g",
+            "display_name": "krunalb18"
+        }
+    },
+    "requires": "6.1",
+    "tested": "6.9.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/vecpost/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-05-23 10:33:00",
+    "added": "2026-05-23",
+    "homepage": "https://github.com/krunalb18/vecpost",
+    "sections": {
+        "description": "<p>VecPost AI Search for Posts replaces WordPress&#8217;s default SQL LIKE search with vector-based semantic search. Instead of matching exact words, it understands the <em>meaning</em> of a search query.</p>\n<p><strong>Example:</strong> A user searching &#8220;heart workouts&#8221; will find your post titled &#8220;Best cardiovascular exercises&#8221; &#8211; even though no words overlap &#8211; because the meanings are similar.</p>\n<h4>How It Works</h4>\n<ol>\n<li>When you publish a post, the plugin sends its content to your chosen AI provider (OpenAI or Google Gemini) to generate a vector embedding &#8211; a list of numbers that represents the meaning of the text.</li>\n<li>These numbers are stored in your database.</li>\n<li>When a user searches, their query is also converted to numbers, and the plugin finds posts whose numbers are closest &#8211; meaning most semantically similar.</li>\n</ol>\n<h4>Features</h4>\n<ul>\n<li>Semantic search powered by OpenAI (<code>text-embedding-3-small</code> or <code>text-embedding-3-large</code>) or Google Gemini (<code>gemini-embedding-001</code>)</li>\n<li>Hybrid re-ranking: combines semantic similarity with keyword matching for best results</li>\n<li>Gutenberg block and shortcode <code>[vecpost_semantic_search]</code> for easy placement</li>\n<li>Bulk indexer with progress bar for existing posts</li>\n<li>WP-CLI support: <code>wp vecpost-semantic-search index</code>, <code>wp vecpost-semantic-search status</code>, <code>wp vecpost-semantic-search search \"query\"</code></li>\n<li>Configurable scoring thresholds via Settings -&gt; VecPost &#8211; AI Semantic Search for Posts</li>\n<li>Automatic re-indexing when you switch embedding models</li>\n<li>Results cached via WordPress object cache (Redis/Memcached compatible)</li>\n</ul>\n<h4>Third-Party Services</h4>\n<p>This plugin sends post content to external AI APIs to generate embeddings. By using this plugin, you agree to the terms of service and privacy policies of your chosen provider:</p>\n<ul>\n<li><strong>OpenAI:</strong> https://openai.com/policies/privacy-policy | https://openai.com/policies/terms-of-use</li>\n<li><strong>Google Gemini:</strong> https://policies.google.com/privacy | https://ai.google.dev/terms</li>\n</ul>\n<p>No data is sent without your API key being configured. Data is only transmitted when posts are published or during bulk indexing.</p>\n<h4>Performance Note</h4>\n<p>Semantic search requires loading all embeddings into PHP memory for comparison. This works well for sites with up to approximately 1,500 posts. For larger sites, a dedicated vector database (pgvector, Qdrant, or Pinecone) is recommended.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to <code>/wp-content/plugins/</code></li>\n<li>Activate the plugin through the <strong>Plugins</strong> menu in WordPress</li>\n<li>Go to <strong>Settings -&gt; VecPost &#8211; AI Semantic Search for Posts</strong></li>\n<li>Enter your OpenAI or Google Gemini API key</li>\n<li>Click <strong>Test Connection</strong> to verify the key works</li>\n<li>Click <strong>Start Bulk Index</strong> to index your existing posts</li>\n<li>Add the search block to any page via the Gutenberg editor, or use the shortcode <code>[vecpost_semantic_search]</code></li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20an%20openai%20account%3F\">\nDo I need an OpenAI account?\n</h4>\n<p>\n<p>Yes. You need either an OpenAI API key (https://platform.openai.com) or a Google Gemini API key (https://aistudio.google.com). Both have free tiers that are sufficient for small sites.</p>\n</p>\n<dt id=\"does%20this%20replace%20the%20default%20wordpress%20search%3F\">\nDoes this replace the default WordPress search?\n</h4>\n<p>\n<p>No. This plugin adds a separate search widget/block. Your default WordPress search continues to work unchanged. You can place the semantic search widget on any page alongside or instead of the default search.</p>\n</p>\n<dt id=\"is%20my%20content%20sent%20to%20openai%2Fgoogle%3F\">\nIs my content sent to OpenAI/Google?\n</h4>\n<p>\n<p>Yes &#8211; post content is sent to the embedding API when you publish a post or run bulk indexing. The API returns numbers (the embedding vector) and does not store or use your content for training. See their privacy policies for full details.</p>\n</p>\n<dt id=\"how%20much%20does%20it%20cost%3F\">\nHow much does it cost?\n</h4>\n<p>\n<p>Using <code>text-embedding-3-small</code> (the default), indexing costs approximately $0.002 per 1,000 posts. Each search query costs a fraction of a cent. For most sites, monthly costs are under $1.</p>\n</p>\n<dt id=\"what%20happens%20if%20i%20change%20the%20embedding%20model%3F\">\nWhat happens if I change the embedding model?\n</h4>\n<p>\n<p>The plugin detects the model change and automatically re-indexes all posts using the new model. During re-indexing, searches will return no results until indexing is complete.</p>\n</p>\n<dt id=\"can%20i%20use%20this%20on%20a%20multisite%20installation%3F\">\nCan I use this on a multisite installation?\n</h4>\n<p>\n<p>The plugin has not been tested on WordPress Multisite and is not officially supported in that environment.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial public release</li>\n<li>OpenAI and Google Gemini embedding support</li>\n<li>Hybrid semantic + keyword re-ranking (BM25)</li>\n<li>Gutenberg block and shortcode</li>\n<li>WP-CLI commands</li>\n<li>Bulk indexer with progress UI</li>\n<li>Configurable scoring thresholds</li>\n<li>Redis/Memcached compatible caching</li>\n<li>API connection test in admin</li>\n<li>Automatic re-index on model change</li>\n</ul>\n"
+    },
+    "short_description": "AI-powered semantic search for WordPress posts. Understands meaning, not just keywords. Powered by OpenAI or Google Gemini.",
+    "description": "<p>VecPost AI Search for Posts replaces WordPress&#8217;s default SQL LIKE search with vector-based semantic search. Instead of matching exact words, it understands the <em>meaning</em> of a search query.</p>\n<p><strong>Example:</strong> A user searching &#8220;heart workouts&#8221; will find your post titled &#8220;Best cardiovascular exercises&#8221; &#8211; even though no words overlap &#8211; because the meanings are similar.</p>\n<h4>How It Works</h4>\n<ol>\n<li>When you publish a post, the plugin sends its content to your chosen AI provider (OpenAI or Google Gemini) to generate a vector embedding &#8211; a list of numbers that represents the meaning of the text.</li>\n<li>These numbers are stored in your database.</li>\n<li>When a user searches, their query is also converted to numbers, and the plugin finds posts whose numbers are closest &#8211; meaning most semantically similar.</li>\n</ol>\n<h4>Features</h4>\n<ul>\n<li>Semantic search powered by OpenAI (<code>text-embedding-3-small</code> or <code>text-embedding-3-large</code>) or Google Gemini (<code>gemini-embedding-001</code>)</li>\n<li>Hybrid re-ranking: combines semantic similarity with keyword matching for best results</li>\n<li>Gutenberg block and shortcode <code>[vecpost_semantic_search]</code> for easy placement</li>\n<li>Bulk indexer with progress bar for existing posts</li>\n<li>WP-CLI support: <code>wp vecpost-semantic-search index</code>, <code>wp vecpost-semantic-search status</code>, <code>wp vecpost-semantic-search search \"query\"</code></li>\n<li>Configurable scoring thresholds via Settings -&gt; VecPost &#8211; AI Semantic Search for Posts</li>\n<li>Automatic re-indexing when you switch embedding models</li>\n<li>Results cached via WordPress object cache (Redis/Memcached compatible)</li>\n</ul>\n<h4>Third-Party Services</h4>\n<p>This plugin sends post content to external AI APIs to generate embeddings. By using this plugin, you agree to the terms of service and privacy policies of your chosen provider:</p>\n<ul>\n<li><strong>OpenAI:</strong> https://openai.com/policies/privacy-policy | https://openai.com/policies/terms-of-use</li>\n<li><strong>Google Gemini:</strong> https://policies.google.com/privacy | https://ai.google.dev/terms</li>\n</ul>\n<p>No data is sent without your API key being configured. Data is only transmitted when posts are published or during bulk indexing.</p>\n<h4>Performance Note</h4>\n<p>Semantic search requires loading all embeddings into PHP memory for comparison. This works well for sites with up to approximately 1,500 posts. For larger sites, a dedicated vector database (pgvector, Qdrant, or Pinecone) is recommended.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/vecpost.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release. Run bulk indexing after activation to index existing posts.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "ai-search": "ai search",
+        "embeddings": "embeddings",
+        "openai": "openai",
+        "search": "search",
+        "semantic-search": "semantic search"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/vecpost.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/vecpost.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/vecpost/assets/icon-256x256.png?rev=3545010",
+        "2x": "https://ps.w.org/vecpost/assets/icon-256x256.png?rev=3545010"
+    },
+    "blocks": {
+        "vecpost-ai-search-for-posts/search-block": {
+            "apiVersion": 3,
+            "name": "vecpost-ai-search-for-posts/search-block",
+            "title": "VecPost AI Search for Posts",
+            "category": "widgets",
+            "icon": "search",
+            "description": "A basic search block for VecPost AI Search for Posts.",
+            "textdomain": "vecpost",
+            "attributes": {
+                "placeholder": {
+                    "type": "string",
+                    "default": "Search..."
+                }
+            },
+            "editorScript": "file:./index.js"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
