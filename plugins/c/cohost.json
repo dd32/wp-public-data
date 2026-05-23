@@ -1,0 +1,101 @@
+{
+    "name": "Cohost",
+    "slug": "cohost",
+    "version": "0.1.1",
+    "author": "<a href=\"https://profiles.wordpress.org/cohost/\">cohost</a>",
+    "author_profile": "https://profiles.wordpress.org/cohost/",
+    "contributors": {
+        "cohost": {
+            "profile": "https://profiles.wordpress.org/cohost/",
+            "avatar": "https://secure.gravatar.com/avatar/16cc457e7c11edbbf05b20a957e3cfbe57132b8badb162ec35a1ca8105c77ed5?s=96&d=monsterid&r=g",
+            "display_name": "cohost"
+        }
+    },
+    "requires": "5.8",
+    "tested": "7.0",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/cohost/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-05-23 16:11:00",
+    "added": "2026-05-23",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Connect your WordPress site to your Cohost account and show upcoming events as a list, with click-through to per-event profile pages — natively in your theme. No iframes. No redirect to a third-party ticketing page.</p>\n<p>Cohost is the headless platform for event managers — events, attendees, ticketing, scanning, check-in, and workflows — and this plugin embeds your event catalog into any WordPress theme.</p>\n<p><strong>Authentication:</strong> API token (Bearer). OAuth support is planned.</p>\n<p><strong>Brand-aligned UI:</strong> uses the canonical Cohost palette (dark <code>#161616</code>, light <code>#F2F2F2</code>, accent square <code>#f97316</code>) and Inter typography. Easy to override from your theme.</p>\n<h3>Shortcodes</h3>\n<pre><code>[cohost_events] — events grid. All attributes are optional:\n</code></pre>\n<ul>\n<li><code>limit</code> — events per page (default 12)</li>\n<li><code>columns</code> — grid columns 1–6 (default 3, display only)</li>\n<li><code>from</code>, <code>to</code> — ISO date range (e.g. <code>from=\"2026-06-01\" to=\"2026-12-31\"</code>)</li>\n<li><code>sort</code>, <code>order</code> — e.g. <code>sort=\"startDate\" order=\"asc\"</code></li>\n</ul>\n<p>Example: <code>[cohost_events from=\"2026-06-01\" to=\"2026-12-31\" limit=\"6\" columns=\"2\"]</code></p>\n<pre><code>[cohost_event id=\"…\"] — single event profile. **The `id` attribute accepts either an event ID or an event slug** — the Cohost API resolves both at the same endpoint, so `[cohost_event id=\"evt_abc123\"]` and `[cohost_event id=\"summer-festival-2026\"]` both work.\n</code></pre>\n<p>When a configured &#8220;Events page&#8221; exists, clicking a card navigates to <code>/{page-slug}/{event-id-or-slug}</code> and the same page renders the profile.</p>\n<h3>Brand</h3>\n<p>The plugin ships the canonical Cohost dark &#8220;C&#8221; app icon and dark wordmark. The accent square is always <code>#f97316</code>. The full Cohost brand guide is published at https://cohost.vip/brand.</p>\n<h3>Privacy &amp; data</h3>\n<p>This plugin makes outbound HTTP requests to two Cohost-operated services:</p>\n<ol>\n<li>\n<p><strong>Cohost API</strong> (default <code>https://api.cohost.vip/v1</code>) — fetches the events the site displays. Each request includes the Bearer API token configured in <strong>Cohost <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings</strong>. No user data leaves your site; only your token is sent. The base URL is configurable for self-hosted or staging Cohost environments.</p>\n</li>\n<li>\n<p><strong>Cohost templates manifest</strong> (default <code>https://templates.cohost.vip/wp/templates.json</code>) — fetched when an admin opens the <strong>Cohost <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Templates</strong> page. Returns a list of starter layouts the admin can apply. No user data is sent. The URL is configurable under Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Advanced.</p>\n</li>\n</ol>\n<p>The plugin does not:</p>\n<ul>\n<li>Track end-users or store cookies.</li>\n<li>Send page-view analytics, telemetry, or installation pings.</li>\n<li>Embed third-party scripts on the public-facing site.</li>\n</ul>\n<p>The plugin caches API responses in WP transients (60-second TTL for events, 15-minute TTL for templates) to minimize outbound traffic. All cached data is removed when the plugin is uninstalled.</p>\n<p>For Cohost&#8217;s privacy policy covering data on the Cohost side, see https://cohost.vip/legal/privacy.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to /wp-content/plugins/ (or upload the zip via Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New).</li>\n<li>Activate it in WP Admin <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Plugins.</li>\n<li>Open Cohost in the admin menu (or Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Cohost).</li>\n<li>Paste your Cohost API token and save.</li>\n<li>Pick the WordPress page that will host the events list and add <code>[cohost_events]</code> to it.</li>\n</ol>\n",
+        "changelog": "<h4>0.1.1</h4>\n<ul>\n<li>Fix privacy policy URL.</li>\n<li>Bump &#8220;Tested up to&#8221; to 7.0.</li>\n<li>Remove <code>?cohost_event=</code> query-string fallback for event profiles — profiles now route exclusively through the registered rewrite rule (<code>cohost_event_id</code> query var), eliminating the unauthenticated <code>$_GET</code> read flagged in review. Event profiles now require pretty permalinks; the settings page shows a warning if WordPress is on &#8220;Plain&#8221; permalinks and event cards render unlinked in that case.</li>\n<li>Replace <code>$_GET</code>-based admin notice flags with one-shot user-scoped transients (settings page + templates page). No <code>$_GET</code>/<code>$_POST</code> reads happen outside nonce-verified handlers.</li>\n<li>Escape rendered event content blocks via <code>wp_kses_post()</code> on the front-end profile template; drop the silencing <code>phpcs:ignore</code>.</li>\n<li>Escape the concatenated &#8220;View page&#8221; link in template-applied admin notices via <code>wp_kses()</code> with an explicit allowed-HTML allowlist.</li>\n<li>Prefix <code>uninstall.php</code> locals (<code>$cohost_wp_options</code>, <code>$cohost_wp_option</code>) so they don&#8217;t trip Plugin Check&#8217;s PrefixAllGlobals scanner.</li>\n<li>Annotate the two intentional bulk-transient-purge <code>$wpdb-&gt;query()</code> calls (API client + uninstall) with explicit <code>phpcs:ignore</code> and rationale.</li>\n<li>Suppress PrefixAllGlobals file-wide in the two included template files, where locals are template-scoped (not globals) but the scanner can&#8217;t tell.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>Events list + event profile shortcodes.</li>\n<li>Filters: <code>limit</code>, <code>columns</code>, <code>from</code>, <code>to</code>, <code>sort</code>, <code>order</code>.</li>\n<li><code>[cohost_event]</code> accepts ID or slug.</li>\n<li>API token authentication.</li>\n<li>Pretty URLs via rewrite rule.</li>\n<li>Branded admin chrome and brand-aligned frontend styles.</li>\n</ul>\n"
+    },
+    "short_description": "Show your Cohost events on your own WordPress site — your branding, your domain, your audience.",
+    "description": "<p>Connect your WordPress site to your Cohost account and show upcoming events as a list, with click-through to per-event profile pages — natively in your theme. No iframes. No redirect to a third-party ticketing page.</p>\n<p>Cohost is the headless platform for event managers — events, attendees, ticketing, scanning, check-in, and workflows — and this plugin embeds your event catalog into any WordPress theme.</p>\n<p><strong>Authentication:</strong> API token (Bearer). OAuth support is planned.</p>\n<p><strong>Brand-aligned UI:</strong> uses the canonical Cohost palette (dark <code>#161616</code>, light <code>#F2F2F2</code>, accent square <code>#f97316</code>) and Inter typography. Easy to override from your theme.</p>\n<h3>Shortcodes</h3>\n<pre><code>[cohost_events] — events grid. All attributes are optional:\n</code></pre>\n<ul>\n<li><code>limit</code> — events per page (default 12)</li>\n<li><code>columns</code> — grid columns 1–6 (default 3, display only)</li>\n<li><code>from</code>, <code>to</code> — ISO date range (e.g. <code>from=\"2026-06-01\" to=\"2026-12-31\"</code>)</li>\n<li><code>sort</code>, <code>order</code> — e.g. <code>sort=\"startDate\" order=\"asc\"</code></li>\n</ul>\n<p>Example: <code>[cohost_events from=\"2026-06-01\" to=\"2026-12-31\" limit=\"6\" columns=\"2\"]</code></p>\n<pre><code>[cohost_event id=\"…\"] — single event profile. **The `id` attribute accepts either an event ID or an event slug** — the Cohost API resolves both at the same endpoint, so `[cohost_event id=\"evt_abc123\"]` and `[cohost_event id=\"summer-festival-2026\"]` both work.\n</code></pre>\n<p>When a configured &#8220;Events page&#8221; exists, clicking a card navigates to <code>/{page-slug}/{event-id-or-slug}</code> and the same page renders the profile.</p>\n<h3>Brand</h3>\n<p>The plugin ships the canonical Cohost dark &#8220;C&#8221; app icon and dark wordmark. The accent square is always <code>#f97316</code>. The full Cohost brand guide is published at https://cohost.vip/brand.</p>\n<h3>Privacy &amp; data</h3>\n<p>This plugin makes outbound HTTP requests to two Cohost-operated services:</p>\n<ol>\n<li>\n<p><strong>Cohost API</strong> (default <code>https://api.cohost.vip/v1</code>) — fetches the events the site displays. Each request includes the Bearer API token configured in <strong>Cohost <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings</strong>. No user data leaves your site; only your token is sent. The base URL is configurable for self-hosted or staging Cohost environments.</p>\n</li>\n<li>\n<p><strong>Cohost templates manifest</strong> (default <code>https://templates.cohost.vip/wp/templates.json</code>) — fetched when an admin opens the <strong>Cohost <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Templates</strong> page. Returns a list of starter layouts the admin can apply. No user data is sent. The URL is configurable under Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Advanced.</p>\n</li>\n</ol>\n<p>The plugin does not:</p>\n<ul>\n<li>Track end-users or store cookies.</li>\n<li>Send page-view analytics, telemetry, or installation pings.</li>\n<li>Embed third-party scripts on the public-facing site.</li>\n</ul>\n<p>The plugin caches API responses in WP transients (60-second TTL for events, 15-minute TTL for templates) to minimize outbound traffic. All cached data is removed when the plugin is uninstalled.</p>\n<p>For Cohost&#8217;s privacy policy covering data on the Cohost side, see https://cohost.vip/legal/privacy.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/cohost.0.1.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "calendar": "calendar",
+        "cohost": "cohost",
+        "event-management": "event management",
+        "events": "events",
+        "ticketing": "ticketing"
+    },
+    "stable_tag": "0.1.1",
+    "versions": {
+        "0.1.1": "https://downloads.wordpress.org/plugin/cohost.0.1.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/cohost.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/cohost.svg"
+    },
+    "blocks": {
+        "cohost/event-name": {
+            "name": "cohost/event-name",
+            "title": "Event name"
+        },
+        "cohost/event-date": {
+            "name": "cohost/event-date",
+            "title": "Event date"
+        },
+        "cohost/event-flyer": {
+            "name": "cohost/event-flyer",
+            "title": "Event flyer"
+        },
+        "cohost/event-venue": {
+            "name": "cohost/event-venue",
+            "title": "Event venue"
+        },
+        "cohost/event-summary": {
+            "name": "cohost/event-summary",
+            "title": "Event summary"
+        },
+        "cohost/event-content": {
+            "name": "cohost/event-content",
+            "title": "Event content"
+        },
+        "cohost/event-tickets": {
+            "name": "cohost/event-tickets",
+            "title": "Event tickets"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
