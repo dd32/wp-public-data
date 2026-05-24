@@ -29,7 +29,7 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2026-05-24 16:22:00",
+    "last_updated": "2026-05-24 21:59:00",
     "added": "2026-05-24",
     "homepage": "",
     "sections": {
@@ -40,7 +40,7 @@
     },
     "short_description": "Move your WordPress site to Marathon Hosting in minutes — no FTP, no manual exports, no downtime.",
     "description": "<p>Marathon Migration is the official migration plugin for <a href=\"https://marathonhosting.com\" rel=\"nofollow ugc\">Marathon Hosting</a>. Once installed, it exposes a small authenticated transfer endpoint on your current WordPress site that the receiving Marathon server uses to pull your files and database directly — no shell access, no packaging, no on-disk archives.</p>\n<p><strong>How it works:</strong></p>\n<ol>\n<li>Generate a migration token from your Marathon Hosting client portal</li>\n<li>Install and activate this plugin on your current WordPress site</li>\n<li>Go to <strong>Marathon Migration</strong> in your WordPress admin and paste the token</li>\n<li>Click <strong>Start Migration</strong> — the plugin handles the rest</li>\n</ol>\n<p>When you start a migration the plugin (1) validates your token with the Marathon Hosting Gateway, (2) generates a one-time signing secret unique to this migration, and (3) tells the Gateway the URL of your site and that signing secret. The receiving Marathon server then connects to your site and pulls many files and database rows per request over a single high-throughput streaming endpoint — exactly the same architectural pattern used by other well-known migration plugins. URLs are automatically rewritten on the destination, file permissions are set, and the Marathon Hosting plugin is deployed — all without you lifting a finger.</p>\n<p><strong>What gets transferred:</strong></p>\n<ul>\n<li>Your complete database</li>\n<li>All WordPress core files (exact version — no forced upgrades)</li>\n<li>All themes, plugins, uploads, and media</li>\n<li>Must-use plugins (mu-plugins)</li>\n</ul>\n<p><strong>What gets left behind:</strong></p>\n<ul>\n<li>Server-specific configuration (<code>wp-config.php</code>, <code>.htaccess</code> — the receiving server provides its own)</li>\n<li>Dropin replacements (<code>wp-content/object-cache.php</code>, <code>wp-content/advanced-cache.php</code>, <code>wp-content/db.php</code> — Marathon Hosting provides its own)</li>\n<li>Cache plugin output directories (<code>wp-content/cache/</code>, <code>wp-content/uploads/cache/</code>, W3 Total Cache config, WP Rocket config)</li>\n<li>Host-specific platform code (WP Engine&#8217;s <code>wpe-common</code> mu-plugins, Kinsta&#8217;s <code>kinsta-mu-plugins</code>, Cloudways and SiteGround migrator helpers — these are part of the source host, not your site)</li>\n<li>Log files (<code>debug.log</code>, WooCommerce <code>wc-logs</code>, <code>error_log</code>, <code>php_errorlog</code>, anything ending in <code>.log</code> under uploads)</li>\n<li>Backup archives from other backup plugins</li>\n<li>OS and developer junk (<code>.DS_Store</code>, <code>Thumbs.db</code>, <code>__MACOSX/</code>, <code>.git/</code>, <code>.svn/</code>, <code>.hg/</code>, <code>node_modules/</code>)</li>\n<li>The migration plugin itself (automatically removed after transfer)</li>\n</ul>\n<p><strong>Security:</strong></p>\n<ul>\n<li>All transfers use a one-time token tied to your specific Marathon Hosting account</li>\n<li>Every request from the Marathon server is signed with a per-migration HMAC-SHA256 secret that lives only in memory on the receiving server and the <code>marathon_migration_auth_secret</code> WordPress option on yours</li>\n<li>The plugin&#8217;s transfer endpoint rejects any request without a current, correctly-signed signature — the signing secret is wiped from your database the moment the migration completes or fails</li>\n<li>Multisite installs are detected and refused before any data is transferred (multisite migrations are not yet supported)</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the Marathon Hosting Gateway (the &#8220;Service&#8221;), operated by Marathon Hosting, to coordinate site migrations into Marathon Hosting. The Service is required for the plugin to function — without it the plugin cannot validate a token, register itself for pull-based transfer, or report progress back to your dashboard.</p>\n<p>The plugin contacts the Gateway only after you paste a migration token and start a migration. The base URL of the Gateway is supplied by Marathon Hosting at validation time and stored in the WordPress option <code>marathon_migration_gateway_url</code>.</p>\n<p>The following requests are sent to the Gateway:</p>\n<ol>\n<li>Token validation — when you paste a token and start a migration, the plugin sends the token and the public URL of your current WordPress site (<code>get_site_url()</code>) to the Gateway so it can verify the token belongs to your account and learn where to pull from.</li>\n<li>Ready notification — once the plugin has generated its per-migration signing secret, it sends the token, the URL of your WordPress site, the signing secret, and your current WordPress and PHP versions to the Gateway so the receiving Marathon server can begin pulling.</li>\n<li>Status polling — while the migration is in progress, the plugin periodically requests the migration status from the Gateway using the token (in the URL).</li>\n</ol>\n<p>Once the Gateway has the signing secret, it hands it to the receiving Marathon server. That Marathon server then connects directly to your site (<code>&lt;your-site&gt;/?marathon_migration=1</code>) and pulls your files and database live over a signed streaming endpoint. <strong>No database contents, file contents, or database credentials are sent to the Gateway itself.</strong></p>\n<p>This service is provided by Marathon Hosting:</p>\n<ul>\n<li>Terms of Service: https://marathonhosting.com/tos.html</li>\n<li>Privacy Policy: https://marathonhosting.com/pp.html</li>\n</ul>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/marathon-migration.zip",
+    "download_link": "https://downloads.wordpress.org/plugin/marathon-migration.3.0.0.zip",
     "upgrade_notice": [],
     "screenshots": [],
     "tags": {
@@ -50,15 +50,22 @@
         "migration": "migration",
         "transfer": "transfer"
     },
-    "stable_tag": "trunk",
-    "versions": [],
+    "stable_tag": "3.0.0",
+    "versions": {
+        "3.0.0": "https://downloads.wordpress.org/plugin/marathon-migration.3.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/marathon-migration.zip"
+    },
     "business_model": false,
     "repository_url": "",
     "commercial_support_url": "",
     "donate_link": "",
-    "banners": [],
+    "banners": {
+        "low": "https://ps.w.org/marathon-migration/assets/banner-772x250.png?rev=3546642",
+        "high": "https://ps.w.org/marathon-migration/assets/banner-1544x500.png?rev=3546642"
+    },
     "icons": {
-        "default": "https://s.w.org/plugins/geopattern-icon/marathon-migration.svg"
+        "1x": "https://ps.w.org/marathon-migration/assets/icon-128x128.png?rev=3546642",
+        "2x": "https://ps.w.org/marathon-migration/assets/icon-256x256.png?rev=3546642"
     },
     "blocks": [],
     "block_assets": [],
