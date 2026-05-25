@@ -1,0 +1,82 @@
+{
+    "name": "Compatibility Fix for Safe SVG",
+    "slug": "compatibility-fix-for-safe-svg",
+    "version": "1.1.1",
+    "author": "<a href=\"https://profiles.wordpress.org/jgorres/\">jgorres</a>",
+    "author_profile": "https://profiles.wordpress.org/jgorres/",
+    "contributors": {
+        "jgorres": {
+            "profile": "https://profiles.wordpress.org/jgorres/",
+            "avatar": "https://secure.gravatar.com/avatar/212a8056a9adee0e2f2e0dd02eab2258c83ac044aeb6e3fe759f7b26994b9321?s=96&d=monsterid&r=g",
+            "display_name": "jgorres"
+        }
+    },
+    "requires": "6.5",
+    "tested": "6.9.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/compatibility-fix-for-safe-svg/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-05-25 14:25:00",
+    "added": "2026-05-25",
+    "homepage": "",
+    "sections": {
+        "description": "<p><strong>Problem:</strong></p>\n<p>With &#8220;Safe SVG&#8221; alone, uploading SVG files into the WordPress Media Library works fine. As soon as you try to replace an existing file with an SVG via the <strong>&#8220;Enable Media Replace&#8221;</strong> plugin, the operation aborts with the message <em>&#8220;Sorry, this file type is not permitted for security reasons.&#8221;</em>.</p>\n<p>Root cause: EMR calls <code>wp_check_filetype_and_ext()</code> directly from its own submenu (<code>upload.php?page=enable-media-replace/...</code>) without going through the standard upload path (<code>wp_handle_upload</code>). Safe SVG, however, registers its MIME-type fix only on certain admin page hooks — and those do not reliably fire on the EMR replace page in practice.</p>\n<p><strong>Solution:</strong></p>\n<p>This plugin registers the two required filters (<code>upload_mimes</code>, <code>wp_check_filetype_and_ext</code>) globally so that SVG uploads work through EMR as well.</p>\n<p><strong>Safety guard:</strong></p>\n<p>So that this plugin does not open an unsanitized SVG upload path, the filters are active only when the &#8220;Safe SVG&#8221; plugin itself is active. Safe SVG then handles the SVG sanitization on <code>wp_handle_upload_prefilter</code> / <code>wp_handle_sideload_prefilter</code>. Without an active Safe SVG, SVG remains non-uploadable.</p>\n",
+        "installation": "<ol>\n<li>In the WordPress admin go to Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin and upload the ZIP file.</li>\n<li>Activate the plugin.</li>\n<li>Make sure that &#8220;Safe SVG&#8221; and &#8220;Enable Media Replace&#8221; are also active.</li>\n<li>Replace an existing media item with an SVG file via &#8220;Replace media&#8221; — it now works.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20i%20really%20need%20safe%20svg%3F\">\nDo I really need Safe SVG?\n</h4>\n<p>\n<p>Yes. Without Safe SVG the filters of this plugin stay inactive. This is intentional: SVG uploads without a sanitizer would be an XSS risk (embedded JavaScript / SVG smuggling).</p>\n</p>\n<dt id=\"does%20the%20plugin%20also%20work%20with%20other%20replace%20plugins%3F\">\nDoes the plugin also work with other replace plugins?\n</h4>\n<p>\n<p>Yes. The two filters are generic and apply to any plugin that calls <code>wp_check_filetype_and_ext()</code> directly.</p>\n</p>\n<dt id=\"does%20the%20plugin%20also%20work%20in%20wp-cli%20%2F%20cron%20%2F%20rest%20sideloads%3F\">\nDoes the plugin also work in WP-CLI / Cron / REST sideloads?\n</h4>\n<p>\n<p>Yes. As of version 1.1.0 the filters no longer perform a capability check, so SVG uploads also work in contexts without a logged-in user (for example programmatic sideloads via REST or WP-CLI). Security is still enforced through the Safe-SVG-active guard and Safe SVG&#8217;s sanitization on <code>wp_handle_upload_prefilter</code>.</p>\n</p>\n<dt id=\"is%20the%20plugin%20still%20needed%20once%20emr%20is%20updated%20and%20fixes%20the%20conflict%20itself%3F\">\nIs the plugin still needed once EMR is updated and fixes the conflict itself?\n</h4>\n<p>\n<p>No. The plugin can be deactivated and removed without leftovers (no postmeta, no options, no cron).</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.1</h4>\n<ul>\n<li>Metadata: <code>Contributors</code> slug in <code>readme.txt</code> changed from <code>joerngorres</code> to <code>jgorres</code> to match the WordPress.org user name. No code changes.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Plugin renamed from &#8220;Safe SVG Upload Fix&#8221; to &#8220;Compatibility Fix for Safe SVG&#8221; (slug: <code>compatibility-fix-for-safe-svg</code>). Reason: the WP.org Plugin Directory does not accept plugin names that start with the name of another plugin; the &#8220;for Safe SVG&#8221; pattern is explicitly allowed.</li>\n<li>Function prefix <code>ssuf_</code> <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> <code>compatibility_fix_for_safe_svg_</code>.</li>\n<li>Removed the capability check (<code>current_user_can( 'upload_files' )</code>) from the filter callbacks. As a result SVG uploads now also work in non-user contexts (WP-CLI, Cron, REST sideloads). Security is still guaranteed by the Safe-SVG-active guard and Safe SVG&#8217;s sanitizer hook.</li>\n<li>Plugin header description translated to English.</li>\n<li>Added a <code>languages/index.php</code> stub against direct access.</li>\n<li>Translated all <code>readme.txt</code> sections (Installation, FAQ, Changelog, Upgrade Notice) to English.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Plugin Check compliance, no functional changes: Short Description and <code>== Description ==</code> translated to English.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>Registers the <code>upload_mimes</code> and <code>wp_check_filetype_and_ext</code> filters globally, gated by an active-Safe-SVG check.</li>\n</ul>\n"
+    },
+    "short_description": "Fixes a conflict between &quot;Safe SVG&quot; and &quot;Enable Media Replace&quot; when replacing existing media files with SVG uploads.",
+    "description": "<p><strong>Problem:</strong></p>\n<p>With &#8220;Safe SVG&#8221; alone, uploading SVG files into the WordPress Media Library works fine. As soon as you try to replace an existing file with an SVG via the <strong>&#8220;Enable Media Replace&#8221;</strong> plugin, the operation aborts with the message <em>&#8220;Sorry, this file type is not permitted for security reasons.&#8221;</em>.</p>\n<p>Root cause: EMR calls <code>wp_check_filetype_and_ext()</code> directly from its own submenu (<code>upload.php?page=enable-media-replace/...</code>) without going through the standard upload path (<code>wp_handle_upload</code>). Safe SVG, however, registers its MIME-type fix only on certain admin page hooks — and those do not reliably fire on the EMR replace page in practice.</p>\n<p><strong>Solution:</strong></p>\n<p>This plugin registers the two required filters (<code>upload_mimes</code>, <code>wp_check_filetype_and_ext</code>) globally so that SVG uploads work through EMR as well.</p>\n<p><strong>Safety guard:</strong></p>\n<p>So that this plugin does not open an unsanitized SVG upload path, the filters are active only when the &#8220;Safe SVG&#8221; plugin itself is active. Safe SVG then handles the SVG sanitization on <code>wp_handle_upload_prefilter</code> / <code>wp_handle_sideload_prefilter</code>. Without an active Safe SVG, SVG remains non-uploadable.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/compatibility-fix-for-safe-svg.1.1.1.zip",
+    "upgrade_notice": {
+        "1.1.1": "<p>Metadata-only update: <code>Contributors</code> slug in <code>readme.txt</code> adjusted to match the WordPress.org user name. No functional changes.</p>",
+        "1.1.0": "<p>Plugin renamed for the WP.org submission; capability check removed so that SVG uploads also work in WP-CLI / Cron / REST contexts. Manual reactivation in the plugins list required (the slug changed).</p>",
+        "1.0.1": "<p>Pure documentation update: readme description translated to English for Plugin Check compliance. No functional changes.</p>",
+        "1.0.0": "<p>Initial release — fixes the SVG-replace conflict between Safe SVG and Enable Media Replace.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "compatibility": "compatibility",
+        "enable-media-replace": "enable-media-replace",
+        "mime": "mime",
+        "safe-svg": "safe svg",
+        "svg": "SVG"
+    },
+    "stable_tag": "1.1.1",
+    "versions": {
+        "1.1.1": "https://downloads.wordpress.org/plugin/compatibility-fix-for-safe-svg.1.1.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/compatibility-fix-for-safe-svg.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/compatibility-fix-for-safe-svg/assets/banner-772x250.png?rev=3547754",
+        "high": "https://ps.w.org/compatibility-fix-for-safe-svg/assets/banner-1544x500.png?rev=3547754"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/compatibility-fix-for-safe-svg/assets/icon.svg?rev=3547754",
+        "svg": "https://ps.w.org/compatibility-fix-for-safe-svg/assets/icon.svg?rev=3547754"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

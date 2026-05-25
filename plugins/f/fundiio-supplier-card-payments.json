@@ -1,0 +1,73 @@
+{
+    "name": "Fundiio – Card Payments &amp; Supplier Payments",
+    "slug": "fundiio-supplier-card-payments",
+    "version": "0.3.1",
+    "author": "<a href=\"https://profiles.wordpress.org/mikwebservices/\">mikwebservices</a>",
+    "author_profile": "https://profiles.wordpress.org/mikwebservices/",
+    "contributors": {
+        "mikwebservices": {
+            "profile": "https://profiles.wordpress.org/mikwebservices/",
+            "avatar": "https://secure.gravatar.com/avatar/1aba5ce4898b4832f5a9b1d3316a398ff446bde74aed45d66f99230041465b6c?s=96&d=monsterid&r=g",
+            "display_name": "mikwebservices"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/fundiio-supplier-card-payments/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-05-25 13:48:00",
+    "added": "2026-05-25",
+    "homepage": "https://fundiio.co.uk/woocommerce-plugin",
+    "sections": {
+        "description": "<p>Learn more: https://fundiio.co.uk/woocommerce-plugin</p>\n<p>Fundiio adds a WooCommerce payment method that redirects customers to Fundiio to complete card payment. Merchants connect their store to Fundiio using a scoped integration token.</p>\n<p>After connecting, you can:</p>\n<ul>\n<li>Enable the Fundiio payment method at checkout</li>\n<li>View Fundiio checkout transactions (gross, estimated fee, estimated net, settlement context)</li>\n<li>Export transactions to CSV</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to <strong>Fundiio</strong> to create hosted checkout sessions, verify the merchant connection, and fetch transaction history. Without contacting Fundiio the plugin cannot process card payments at WooCommerce checkout.</p>\n<ul>\n<li>Service name: <strong>Fundiio</strong></li>\n<li>Service / website URL: https://fundiio.co.uk</li>\n<li>API endpoint base URL: https://api.fundiio.co.uk</li>\n</ul>\n<p><strong>What data is sent, when, and why:</strong></p>\n<ol>\n<li>\n<p>When a merchant clicks &#8220;Connect Fundiio&#8221; in WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Fundiio:</p>\n<ul>\n<li>The plugin redirects the merchant browser to <code>https://fundiio.co.uk/integrations/woocommerce/connect</code> with the store URL, store name, redirect URI, OAuth state and PKCE code challenge.</li>\n<li>Why: so Fundiio can authenticate the merchant and issue a scoped integration token bound to this store.</li>\n</ul>\n</li>\n<li>\n<p>When the connect flow returns to WordPress:</p>\n<ul>\n<li>The plugin exchanges the authorization code at <code>https://api.fundiio.co.uk/integrations/woocommerce/token</code> (POST) and stores the returned access token in WordPress options.</li>\n<li>Why: required to authorize subsequent API calls.</li>\n</ul>\n</li>\n<li>\n<p>When the admin opens WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Fundiio:</p>\n<ul>\n<li>The plugin calls <code>https://api.fundiio.co.uk/integrations/woocommerce/connection-status</code> (GET, Bearer token) to verify connection state.</li>\n<li>Why: to show the merchant whether the store is still connected.</li>\n</ul>\n</li>\n<li>\n<p>When a customer pays via Fundiio at WooCommerce checkout:</p>\n<ul>\n<li>The plugin sends order identifiers (Woo order ID and order key), amount, currency, and success/cancel URLs to <code>https://api.fundiio.co.uk/integrations/woocommerce/checkout-sessions</code> (POST, Bearer token).</li>\n<li>Why: so Fundiio can create a hosted checkout session and return a redirect URL for the customer to complete payment.</li>\n</ul>\n</li>\n<li>\n<p>After redirect back from Fundiio, and on a scheduled retry:</p>\n<ul>\n<li>The plugin calls <code>https://api.fundiio.co.uk/integrations/woocommerce/orders/{wooOrderId}/checkout-status</code> (GET, Bearer token) to reconcile order status.</li>\n<li>Why: to mark paid orders as paid in WooCommerce when Fundiio confirms payment.</li>\n</ul>\n</li>\n<li>\n<p>When the admin opens WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Fundiio transactions (or exports CSV):</p>\n<ul>\n<li>The plugin calls <code>https://api.fundiio.co.uk/integrations/woocommerce/transactions</code> (GET, Bearer token) with optional search/status/date filters.</li>\n<li>Why: to display and export the merchant&#8217;s Fundiio checkout transactions.</li>\n</ul>\n</li>\n</ol>\n<p>No customer card details ever touch this plugin or your WordPress site. Card data is collected by Fundiio&#8217;s hosted checkout (and its underlying payment processor) on Fundiio&#8217;s domain.</p>\n<p><strong>Legal:</strong></p>\n<ul>\n<li>Important information / fees &amp; terms: https://fundiio.co.uk/important-information</li>\n<li>Privacy policy: https://fundiio.co.uk/privacy-policy</li>\n</ul>\n<p>By installing and connecting this plugin, the merchant agrees that order/customer context required to complete checkout will be transmitted to Fundiio as described above.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin.</li>\n<li>Go to WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Fundiio.</li>\n<li>Click &#8220;Connect Fundiio&#8221; and complete the connection flow.</li>\n<li>In WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Payments, enable &#8220;Fundiio&#8221;.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"what%20data%20is%20sent%20to%20fundiio%3F\">\nWhat data is sent to Fundiio?\n</h4>\n<p>\n<p>Order identifiers, amount, currency, and customer/order context required to create and reconcile checkout transactions. See the &#8220;External services&#8221; section for the full list of endpoints and payloads.</p>\n</p>\n<dt id=\"what%20happens%20if%20the%20fundiio%20api%20is%20unavailable%3F\">\nWhat happens if the Fundiio API is unavailable?\n</h4>\n<p>\n<p>The plugin shows a clear admin notice for connection/transactions pages and the checkout flow will fail gracefully with an error notice.</p>\n</p>\n\n",
+        "changelog": "<h4>0.3.1</h4>\n<ul>\n<li>Rename main plugin file and text domain to match the WordPress.org slug <code>fundiio-supplier-card-payments</code>.</li>\n<li>Prefix WooCommerce gateway class (<code>Fundiio_Supplier_Card_Payments_Gateway</code>); gateway ID <code>fundiio</code> and saved settings are unchanged.</li>\n<li>Expand External services disclosure with full endpoint list, data fields, Terms and Privacy URLs.</li>\n<li>Packaging: explicitly exclude WordPress.org directory assets (banners/icons), macOS metadata, and previous zip files.</li>\n</ul>\n<h4>0.3.0</h4>\n<ul>\n<li>Initial WordPress.org packaging for the Fundiio WooCommerce integration.</li>\n</ul>\n"
+    },
+    "short_description": "Accept card payments at WooCommerce checkout and use proceeds to pay suppliers—no extra gateway setup.",
+    "description": "<p>Learn more: https://fundiio.co.uk/woocommerce-plugin</p>\n<p>Fundiio adds a WooCommerce payment method that redirects customers to Fundiio to complete card payment. Merchants connect their store to Fundiio using a scoped integration token.</p>\n<p>After connecting, you can:</p>\n<ul>\n<li>Enable the Fundiio payment method at checkout</li>\n<li>View Fundiio checkout transactions (gross, estimated fee, estimated net, settlement context)</li>\n<li>Export transactions to CSV</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to <strong>Fundiio</strong> to create hosted checkout sessions, verify the merchant connection, and fetch transaction history. Without contacting Fundiio the plugin cannot process card payments at WooCommerce checkout.</p>\n<ul>\n<li>Service name: <strong>Fundiio</strong></li>\n<li>Service / website URL: https://fundiio.co.uk</li>\n<li>API endpoint base URL: https://api.fundiio.co.uk</li>\n</ul>\n<p><strong>What data is sent, when, and why:</strong></p>\n<ol>\n<li>\n<p>When a merchant clicks &#8220;Connect Fundiio&#8221; in WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Fundiio:</p>\n<ul>\n<li>The plugin redirects the merchant browser to <code>https://fundiio.co.uk/integrations/woocommerce/connect</code> with the store URL, store name, redirect URI, OAuth state and PKCE code challenge.</li>\n<li>Why: so Fundiio can authenticate the merchant and issue a scoped integration token bound to this store.</li>\n</ul>\n</li>\n<li>\n<p>When the connect flow returns to WordPress:</p>\n<ul>\n<li>The plugin exchanges the authorization code at <code>https://api.fundiio.co.uk/integrations/woocommerce/token</code> (POST) and stores the returned access token in WordPress options.</li>\n<li>Why: required to authorize subsequent API calls.</li>\n</ul>\n</li>\n<li>\n<p>When the admin opens WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Fundiio:</p>\n<ul>\n<li>The plugin calls <code>https://api.fundiio.co.uk/integrations/woocommerce/connection-status</code> (GET, Bearer token) to verify connection state.</li>\n<li>Why: to show the merchant whether the store is still connected.</li>\n</ul>\n</li>\n<li>\n<p>When a customer pays via Fundiio at WooCommerce checkout:</p>\n<ul>\n<li>The plugin sends order identifiers (Woo order ID and order key), amount, currency, and success/cancel URLs to <code>https://api.fundiio.co.uk/integrations/woocommerce/checkout-sessions</code> (POST, Bearer token).</li>\n<li>Why: so Fundiio can create a hosted checkout session and return a redirect URL for the customer to complete payment.</li>\n</ul>\n</li>\n<li>\n<p>After redirect back from Fundiio, and on a scheduled retry:</p>\n<ul>\n<li>The plugin calls <code>https://api.fundiio.co.uk/integrations/woocommerce/orders/{wooOrderId}/checkout-status</code> (GET, Bearer token) to reconcile order status.</li>\n<li>Why: to mark paid orders as paid in WooCommerce when Fundiio confirms payment.</li>\n</ul>\n</li>\n<li>\n<p>When the admin opens WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Fundiio transactions (or exports CSV):</p>\n<ul>\n<li>The plugin calls <code>https://api.fundiio.co.uk/integrations/woocommerce/transactions</code> (GET, Bearer token) with optional search/status/date filters.</li>\n<li>Why: to display and export the merchant&#8217;s Fundiio checkout transactions.</li>\n</ul>\n</li>\n</ol>\n<p>No customer card details ever touch this plugin or your WordPress site. Card data is collected by Fundiio&#8217;s hosted checkout (and its underlying payment processor) on Fundiio&#8217;s domain.</p>\n<p><strong>Legal:</strong></p>\n<ul>\n<li>Important information / fees &amp; terms: https://fundiio.co.uk/important-information</li>\n<li>Privacy policy: https://fundiio.co.uk/privacy-policy</li>\n</ul>\n<p>By installing and connecting this plugin, the merchant agrees that order/customer context required to complete checkout will be transmitted to Fundiio as described above.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/fundiio-supplier-card-payments.zip",
+    "upgrade_notice": {
+        "0.3.1": "<p>Renamed main file and text domain to match the plugin slug; no merchant action required. The gateway ID remains <code>fundiio</code>, so existing settings keep working.</p>",
+        "0.3.0": "<p>First WordPress.org release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "card-payments": "card payments",
+        "checkout": "checkout",
+        "payments": "payments",
+        "supplier-payments": "supplier payments",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/fundiio-supplier-card-payments.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
