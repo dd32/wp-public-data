@@ -1,0 +1,81 @@
+{
+    "name": "DFX Feed for Telegram Channels",
+    "slug": "dfx-feed-for-telegram-channels",
+    "version": "2.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/davefx/\">David Marín Carreño</a>",
+    "author_profile": "https://profiles.wordpress.org/davefx/",
+    "contributors": {
+        "davefx": {
+            "profile": "https://profiles.wordpress.org/davefx/",
+            "avatar": "https://secure.gravatar.com/avatar/d521b97a8e258da8fd25a336d5782fda8fbba00e7df792f789c06d708e5edbde?s=96&d=monsterid&r=g",
+            "display_name": "David Marín Carreño"
+        }
+    },
+    "requires": "5.0",
+    "tested": "7.0",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/dfx-feed-for-telegram-channels/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-05-27 08:45:00",
+    "added": "2026-05-27",
+    "homepage": "https://github.com/davefx/dfx-feed-for-telegram-channels",
+    "sections": {
+        "description": "<p>DFX Feed for Telegram Channels mirrors messages from one or more Telegram channels onto your WordPress site. Messages are fetched via a Telegram bot you control, stored locally as a custom post type, and rendered through a shortcode, Gutenberg block, or Elementor widget. Both public and private channels are supported.</p>\n<h4>Features</h4>\n<ul>\n<li><strong>Three rendering surfaces</strong> — shortcode, Gutenberg block, or Elementor widget. The block exposes per-instance styling controls (border, background, padding, typography per element).</li>\n<li><strong>Full media support</strong> — photos at the highest resolution available, video and animation thumbnails, static stickers, animated TGS stickers via Lottie, and WEBM video stickers.</li>\n<li><strong>Bot token never reaches the client</strong> — Telegram file URLs (which embed your bot token) are resolved server-side; the frontend only receives a token-less proxy URL. Media is cached on disk for performance.</li>\n<li><strong>Edits sync automatically</strong> with a small &#8220;(edited)&#8221; marker carrying the edit timestamp.</li>\n<li><strong>Background refresh every 2 minutes</strong> via WP-cron, plus on-demand refresh on frontend visits as a fallback for low-traffic sites.</li>\n<li><strong>Per-message admin controls</strong> — Hide (reversible, suppresses on frontend) and Move to Trash (sticky against refresh) row actions.</li>\n<li><strong>Theme template overrides</strong> — drop <code>dfxfftc/feed.php</code> or <code>dfxfftc/browser.php</code> into your theme to fully customize the output.</li>\n<li><strong>Works with private channels</strong> if your bot is admin in them.</li>\n</ul>\n<h3>Usage</h3>\n<ul>\n<li>Use <code>[dfxfftc_channel_feed channel=\"yourchannel\" count=\"5\"]</code> to show the N latest messages.</li>\n<li>Use <code>[dfxfftc_channel_browser channel=\"yourchannel\"]</code> to show the full channel history.</li>\n</ul>\n<h3>Behaviour and known limitations</h3>\n<ul>\n<li><strong>Bot-only access.</strong> Messages are fetched via the Telegram Bot API, which only sees posts that arrived in the channel after the bot was added. There is no access to historical messages from before that point.</li>\n<li><strong>Background refresh every 2 minutes.</strong> The plugin schedules a WP-cron task that pulls fresh updates from Telegram for every channel you have stored data for. This keeps the local feed within ~2 minutes of the live channel without any manual action. Note that WP-cron only fires when traffic hits your site — on low-traffic installations you may want to disable WP-cron and trigger <code>wp-cron.php</code> from a real system cron job for reliable execution. The on-demand refresh on frontend visits is also kept as a fallback.</li>\n<li><strong>Edits sync automatically.</strong> When a message is edited in Telegram, the local copy is updated on the next refresh and a small &#8220;(edited)&#8221; marker is shown next to the date.</li>\n<li><strong>Deletions are not syncable automatically.</strong> The Telegram Bot API does not notify bots about channel message deletions — there is no <code>deleted_channel_post</code> update type. To remove a message that has been deleted in Telegram from the local feed, use the per-message <strong>&#8220;Move to Trash&#8221;</strong> admin row action. Trashed messages are sticky: refresh will not bring them back.</li>\n<li><strong>Hide vs. Trash.</strong> Use <strong>Hide</strong> to keep a message in the database but suppress it on the frontend (reversible via &#8220;Unhide&#8221;). Use <strong>Move to Trash</strong> for a permanent local removal.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the <strong>Telegram Bot API</strong> to fetch channel messages, resolve media file URLs, and verify bot credentials.</p>\n<h4>What data is sent</h4>\n<ul>\n<li><strong>Bot token</strong> (configured in Settings) — sent with every API call to authenticate your bot.</li>\n<li><strong>Channel username or ID</strong> — sent when fetching messages via <code>getUpdates</code> and when testing the bot configuration via <code>getChatMember</code>.</li>\n<li><strong>File IDs</strong> — sent when resolving media URLs via <code>getFile</code> so the plugin can proxy photos, stickers, and video thumbnails to the frontend without exposing the bot token.</li>\n</ul>\n<h4>When data is sent</h4>\n<ul>\n<li>On every WP-cron background refresh cycle (every ~2 minutes when site traffic is present).</li>\n<li>On frontend page loads when the on-demand refresh fallback fires (at most once per 10 minutes per channel).</li>\n<li>When an admin clicks &#8220;Refresh Messages&#8221; in the admin list page.</li>\n<li>When an admin clicks &#8220;Test Connection&#8221; on the Settings page.</li>\n<li>When a visitor views a page containing a message with media (the media proxy fetches the file from Telegram on first access and caches it locally).</li>\n</ul>\n<h4>Service provider</h4>\n<p>Telegram Bot API, provided by Telegram FZ-LLC.</p>\n<ul>\n<li>Terms of Service: https://telegram.org/tos</li>\n<li>Privacy Policy: https://telegram.org/privacy</li>\n<li>Bot API documentation: https://core.telegram.org/bots/api</li>\n</ul>\n<h3>License</h3>\n<p>GPL v3 or later</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin to the <code>/wp-content/plugins/</code> directory, or install via the WordPress plugins screen.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu.</li>\n<li>In WordPress admin, go to <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Telegram Feed</strong>.</li>\n<li>Create a Telegram bot via <a href=\"https://t.me/botfather\" rel=\"nofollow ugc\">@BotFather</a>, paste the bot token into the settings page, and save.</li>\n<li>Add the bot as an <strong>administrator</strong> of every channel you want to mirror.</li>\n<li>Add a shortcode such as <code>[dfxfftc_channel_feed channel=\"@yourchannel\" count=\"10\"]</code> to a page, or use the &#8220;Telegram Channel Feed&#8221; Gutenberg block / Elementor widget.</li>\n</ol>\n<p>Note: messages posted in the channel <strong>before</strong> the bot was added are not retrievable via the Bot API.</p>\n",
+        "changelog": "<h4>2.0.1</h4>\n<ul>\n<li>Sanitize nonce inputs with sanitize_text_field(wp_unslash()) before wp_verify_nonce().</li>\n<li>Escape _n() translation output in bulk action admin notices.</li>\n<li>Rename dfxTgAdmin JS global to dfxfftcAdmin for prefix consistency.</li>\n</ul>\n<h4>2.0.0</h4>\n<ul>\n<li>Renamed plugin from &#8220;DFX Telegram Channel Feed&#8221; to &#8220;DFX Feed for Telegram Channels&#8221; to comply with WordPress.org trademark naming guidelines.</li>\n<li>Changed plugin slug to <code>dfx-feed-for-telegram-channels</code> and internal prefix from <code>dfxtgfeed</code> to <code>dfxfftc</code>.</li>\n<li>Text domain updated to <code>dfx-feed-for-telegram-channels</code>.</li>\n<li>Replaced all <code>_e()</code> with <code>esc_html_e()</code> and wrapped unescaped <code>__()</code> outputs in <code>esc_html()</code> for proper output escaping.</li>\n<li>Moved inline <code>&lt;script&gt;</code> and <code>&lt;style&gt;</code> blocks to use <code>wp_add_inline_script</code> and <code>wp_add_inline_style</code> per WordPress enqueue best practices.</li>\n<li>Bundled Lottie library locally instead of loading from cdnjs.cloudflare.com.</li>\n<li>Documented Telegram Bot API usage in the &#8220;External services&#8221; readme section.</li>\n<li>Lowered admin menu position to avoid colliding with core WordPress menu items.</li>\n<li>Made GitHub repository public so the Plugin URI resolves correctly.</li>\n<li>Added DB migration path from <code>dfxtgfeed_*</code> identifiers to <code>dfxfftc_*</code> for existing installs.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Fixed Plugin Check warnings: text domain now matches the plugin slug, and the unused <code>Domain Path</code> header was removed.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Removed the experimental &#8220;Sync Deletions&#8221; feature (which scraped the public <code>t.me/s/&lt;channel&gt;</code> preview) ahead of WordPress.org submission.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Internal release (not published to WordPress.org).</li>\n</ul>\n"
+    },
+    "short_description": "Display messages from Telegram channels on your WordPress site, with full media support, via shortcode, Gutenberg block, or Elementor widget.",
+    "description": "<p>DFX Feed for Telegram Channels mirrors messages from one or more Telegram channels onto your WordPress site. Messages are fetched via a Telegram bot you control, stored locally as a custom post type, and rendered through a shortcode, Gutenberg block, or Elementor widget. Both public and private channels are supported.</p>\n<h4>Features</h4>\n<ul>\n<li><strong>Three rendering surfaces</strong> — shortcode, Gutenberg block, or Elementor widget. The block exposes per-instance styling controls (border, background, padding, typography per element).</li>\n<li><strong>Full media support</strong> — photos at the highest resolution available, video and animation thumbnails, static stickers, animated TGS stickers via Lottie, and WEBM video stickers.</li>\n<li><strong>Bot token never reaches the client</strong> — Telegram file URLs (which embed your bot token) are resolved server-side; the frontend only receives a token-less proxy URL. Media is cached on disk for performance.</li>\n<li><strong>Edits sync automatically</strong> with a small &#8220;(edited)&#8221; marker carrying the edit timestamp.</li>\n<li><strong>Background refresh every 2 minutes</strong> via WP-cron, plus on-demand refresh on frontend visits as a fallback for low-traffic sites.</li>\n<li><strong>Per-message admin controls</strong> — Hide (reversible, suppresses on frontend) and Move to Trash (sticky against refresh) row actions.</li>\n<li><strong>Theme template overrides</strong> — drop <code>dfxfftc/feed.php</code> or <code>dfxfftc/browser.php</code> into your theme to fully customize the output.</li>\n<li><strong>Works with private channels</strong> if your bot is admin in them.</li>\n</ul>\n<h3>Usage</h3>\n<ul>\n<li>Use <code>[dfxfftc_channel_feed channel=\"yourchannel\" count=\"5\"]</code> to show the N latest messages.</li>\n<li>Use <code>[dfxfftc_channel_browser channel=\"yourchannel\"]</code> to show the full channel history.</li>\n</ul>\n<h3>Behaviour and known limitations</h3>\n<ul>\n<li><strong>Bot-only access.</strong> Messages are fetched via the Telegram Bot API, which only sees posts that arrived in the channel after the bot was added. There is no access to historical messages from before that point.</li>\n<li><strong>Background refresh every 2 minutes.</strong> The plugin schedules a WP-cron task that pulls fresh updates from Telegram for every channel you have stored data for. This keeps the local feed within ~2 minutes of the live channel without any manual action. Note that WP-cron only fires when traffic hits your site — on low-traffic installations you may want to disable WP-cron and trigger <code>wp-cron.php</code> from a real system cron job for reliable execution. The on-demand refresh on frontend visits is also kept as a fallback.</li>\n<li><strong>Edits sync automatically.</strong> When a message is edited in Telegram, the local copy is updated on the next refresh and a small &#8220;(edited)&#8221; marker is shown next to the date.</li>\n<li><strong>Deletions are not syncable automatically.</strong> The Telegram Bot API does not notify bots about channel message deletions — there is no <code>deleted_channel_post</code> update type. To remove a message that has been deleted in Telegram from the local feed, use the per-message <strong>&#8220;Move to Trash&#8221;</strong> admin row action. Trashed messages are sticky: refresh will not bring them back.</li>\n<li><strong>Hide vs. Trash.</strong> Use <strong>Hide</strong> to keep a message in the database but suppress it on the frontend (reversible via &#8220;Unhide&#8221;). Use <strong>Move to Trash</strong> for a permanent local removal.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the <strong>Telegram Bot API</strong> to fetch channel messages, resolve media file URLs, and verify bot credentials.</p>\n<h4>What data is sent</h4>\n<ul>\n<li><strong>Bot token</strong> (configured in Settings) — sent with every API call to authenticate your bot.</li>\n<li><strong>Channel username or ID</strong> — sent when fetching messages via <code>getUpdates</code> and when testing the bot configuration via <code>getChatMember</code>.</li>\n<li><strong>File IDs</strong> — sent when resolving media URLs via <code>getFile</code> so the plugin can proxy photos, stickers, and video thumbnails to the frontend without exposing the bot token.</li>\n</ul>\n<h4>When data is sent</h4>\n<ul>\n<li>On every WP-cron background refresh cycle (every ~2 minutes when site traffic is present).</li>\n<li>On frontend page loads when the on-demand refresh fallback fires (at most once per 10 minutes per channel).</li>\n<li>When an admin clicks &#8220;Refresh Messages&#8221; in the admin list page.</li>\n<li>When an admin clicks &#8220;Test Connection&#8221; on the Settings page.</li>\n<li>When a visitor views a page containing a message with media (the media proxy fetches the file from Telegram on first access and caches it locally).</li>\n</ul>\n<h4>Service provider</h4>\n<p>Telegram Bot API, provided by Telegram FZ-LLC.</p>\n<ul>\n<li>Terms of Service: https://telegram.org/tos</li>\n<li>Privacy Policy: https://telegram.org/privacy</li>\n<li>Bot API documentation: https://core.telegram.org/bots/api</li>\n</ul>\n<h3>License</h3>\n<p>GPL v3 or later</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/dfx-feed-for-telegram-channels.2.0.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "block": "block",
+        "channel": "channel",
+        "feed": "feed",
+        "shortcode": "shortcode",
+        "telegram": "telegram"
+    },
+    "stable_tag": "2.0.1",
+    "versions": {
+        "2.0.1": "https://downloads.wordpress.org/plugin/dfx-feed-for-telegram-channels.2.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/dfx-feed-for-telegram-channels.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/dfx-feed-for-telegram-channels.svg"
+    },
+    "blocks": {
+        "dfxfftc/channel-feed": {
+            "name": "dfxfftc/channel-feed",
+            "title": "Dfxfftc Channel Feed"
+        },
+        "dfxfftc/channel-browser": {
+            "name": "dfxfftc/channel-browser",
+            "title": "Dfxfftc Channel Browser"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
