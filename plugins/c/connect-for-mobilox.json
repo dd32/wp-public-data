@@ -1,7 +1,7 @@
 {
     "name": "Connect for Mobilox",
     "slug": "connect-for-mobilox",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "author": "<a href=\"https://profiles.wordpress.org/naiches/\">Naiche</a>",
     "author_profile": "https://profiles.wordpress.org/naiches/",
     "contributors": {
@@ -11,9 +11,9 @@
             "display_name": "Naiche"
         }
     },
-    "requires": "6.0",
+    "requires": "7.0",
     "tested": "7.0",
-    "requires_php": "8.0",
+    "requires_php": "8.4",
     "requires_plugins": [],
     "compatibility": [],
     "rating": 0,
@@ -29,27 +29,40 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2026-05-31 17:07:00",
+    "last_updated": "2026-06-01 08:34:00",
     "added": "2026-05-31",
     "homepage": "https://wordpress.org/plugins/connect-for-mobilox/",
     "sections": {
-        "description": "<p>Easy to use plugin to connect mobilox.nl to your WordPress site and automatically post new items from mobilox.nl to your WordPress site.</p>\n<ol>\n<li>Contact Mobilox for access to doorlinkenvoorraad.nl.</li>\n<li>Set up the API endpoint within doorlinkenvoorraad.nl and set <code>Request Type</code> to <code>HTTP POST (form values)</code>.</li>\n<li>Within the plugin setting page, set the desired post type and save the settings.</li>\n<li>You should now be able to post items from Mobilox to your WordPress website.</li>\n</ol>\n<p>API Endpoints:</p>\n<ul>\n<li>/wp-json/connect-for-mobilox/v2/item/</li>\n</ul>\n<p>Postmeta Fields</p>\n<ul>\n<li>Can be retrieved by using <code>print_r(get_post_meta(get_the_ID(), '_connect_for_mobilox_data', true));</code>.</li>\n<li><code>_connect_for_mobilox_data</code></li>\n<li><code>_connect_for_mobilox_data_external_id</code></li>\n<li><code>_connect_for_mobilox_data_images</code></li>\n</ul>\n<p>Known Issues:</p>\n<ul>\n<li>Timeout when importing item, this is often caused by a huge amount of images. This can be solved by setting <code>max_execution_time</code> and <code>max_input_time</code> to a higher value.</li>\n</ul>\n",
-        "installation": "<ol>\n<li>Upload the plugin package to the plugins directory.</li>\n<li>Activate the plugin.</li>\n<li>Done!</li>\n</ol>\n",
-        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial version</li>\n</ul>\n"
+        "description": "<p>Connect for Mobilox syncs your vehicle inventory from the Mobilox/Hexon dealer management system to your WordPress site. Vehicles are stored as a configurable post type with full data available to your theme.</p>\n<p><strong>Features:</strong></p>\n<ul>\n<li>Real-time sync — vehicles are added, updated, and removed automatically via the DV incremental XML feed.</li>\n<li>Configurable post type — sync to the built-in &#8220;Vehicle&#8221; post type or any existing custom post type in your theme.</li>\n<li>Full data storage — every field Mobilox sends is stored in a custom table as JSON, accessible via template helpers.</li>\n<li>Image management — diff-based: only new images are downloaded, unchanged images keep their attachment IDs, removed images are cleaned up.</li>\n<li>Endpoint security — protect your sync endpoint with a secret token or HTTP Basic Auth.</li>\n<li>Status dashboard — see synced vehicle count, errors, last sync time, and a full activity log.</li>\n<li>Read-only meta box — view all vehicle data grouped by category on the post editor.</li>\n</ul>\n<p><strong>For theme developers:</strong></p>\n<p>Access vehicle data in your templates:</p>\n<pre><code>$vehicle = mobilox_get_vehicle();\necho $vehicle-&gt;{'general.make.name'};\necho $vehicle-&gt;{'powertrain.engine.power.pk'} . ' pk';\n</code></pre>\n<p>Or field by field:</p>\n<pre><code>echo mobilox_get_field( 'body.colour.name_nl' );\n</code></pre>\n",
+        "installation": "<ol>\n<li>Upload the plugin to <code>/wp-content/plugins/</code> or install via Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New.</li>\n<li>Activate the plugin.</li>\n<li>Go to <strong>Mobilox <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings</strong> and select a post type.</li>\n<li>Copy the endpoint URL from the <strong>Mobilox <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Dashboard</strong> page into your DV management tool.</li>\n<li>Vehicles will sync automatically as Mobilox pushes updates.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"which%20post%20type%20should%20i%20choose%3F\">\nWhich post type should I choose?\n</h4>\n<p>\n<p>If your theme already has a vehicle/occasion post type, select that. Otherwise, use the built-in &#8220;Mobilox Vehicle&#8221; type. You can change this at any time — existing vehicles will continue to work.</p>\n</p>\n<dt id=\"how%20do%20i%20access%20vehicle%20data%20in%20my%20theme%3F\">\nHow do I access vehicle data in my theme?\n</h4>\n<p>\n<p>Use <code>mobilox_get_vehicle( $post_id )</code> to get the full data object, or <code>mobilox_get_field( 'field.name' )</code> for a single field. Field names match the Mobilox XML element names (e.g. <code>general.make.name</code>, <code>powertrain.engine.power.pk</code>).</p>\n</p>\n<dt id=\"is%20the%20sync%20endpoint%20secure%3F\">\nIs the sync endpoint secure?\n</h4>\n<p>\n<p>By default, the endpoint is open (for easy setup). Go to Settings to add a secret token or HTTP Basic Auth credentials.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.0</h4>\n<ul>\n<li>Complete rewrite — OOP architecture with namespaced classes.</li>\n<li>Custom database table for vehicle data (no postmeta bloat).</li>\n<li>Configurable post type — sync to any existing CPT or the built-in one.</li>\n<li>XML-only sync (v2.23+ compatible) — dropped legacy POST field support.</li>\n<li>Diff-based image handling — only downloads new/changed images.</li>\n<li>Secured REST endpoint with token and HTTP Basic Auth.</li>\n<li>Admin dashboard with stats, activity log, and endpoint URL.</li>\n<li>Read-only meta box showing all vehicle data grouped by category.</li>\n<li>Template helper functions for theme developers.</li>\n<li>Full uninstall cleanup (tables, posts, attachments, options).</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial version.</li>\n</ul>\n"
     },
-    "short_description": "Import Mobilox.nl items into your WordPress website. This is an unofficial plugin.",
-    "description": "<p>Easy to use plugin to connect mobilox.nl to your WordPress site and automatically post new items from mobilox.nl to your WordPress site.</p>\n<ol>\n<li>Contact Mobilox for access to doorlinkenvoorraad.nl.</li>\n<li>Set up the API endpoint within doorlinkenvoorraad.nl and set <code>Request Type</code> to <code>HTTP POST (form values)</code>.</li>\n<li>Within the plugin setting page, set the desired post type and save the settings.</li>\n<li>You should now be able to post items from Mobilox to your WordPress website.</li>\n</ol>\n<p>API Endpoints:</p>\n<ul>\n<li>/wp-json/connect-for-mobilox/v2/item/</li>\n</ul>\n<p>Postmeta Fields</p>\n<ul>\n<li>Can be retrieved by using <code>print_r(get_post_meta(get_the_ID(), '_connect_for_mobilox_data', true));</code>.</li>\n<li><code>_connect_for_mobilox_data</code></li>\n<li><code>_connect_for_mobilox_data_external_id</code></li>\n<li><code>_connect_for_mobilox_data_images</code></li>\n</ul>\n<p>Known Issues:</p>\n<ul>\n<li>Timeout when importing item, this is often caused by a huge amount of images. This can be solved by setting <code>max_execution_time</code> and <code>max_input_time</code> to a higher value.</li>\n</ul>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/connect-for-mobilox.1.0.0.zip",
+    "short_description": "Sync your Mobilox/Hexon vehicle inventory to WordPress — real-time incremental sync and bulk XML import.",
+    "description": "<p>Connect for Mobilox syncs your vehicle inventory from the Mobilox/Hexon dealer management system to your WordPress site. Vehicles are stored as a configurable post type with full data available to your theme.</p>\n<p><strong>Features:</strong></p>\n<ul>\n<li>Real-time sync — vehicles are added, updated, and removed automatically via the DV incremental XML feed.</li>\n<li>Configurable post type — sync to the built-in &#8220;Vehicle&#8221; post type or any existing custom post type in your theme.</li>\n<li>Full data storage — every field Mobilox sends is stored in a custom table as JSON, accessible via template helpers.</li>\n<li>Image management — diff-based: only new images are downloaded, unchanged images keep their attachment IDs, removed images are cleaned up.</li>\n<li>Endpoint security — protect your sync endpoint with a secret token or HTTP Basic Auth.</li>\n<li>Status dashboard — see synced vehicle count, errors, last sync time, and a full activity log.</li>\n<li>Read-only meta box — view all vehicle data grouped by category on the post editor.</li>\n</ul>\n<p><strong>For theme developers:</strong></p>\n<p>Access vehicle data in your templates:</p>\n<pre><code>$vehicle = mobilox_get_vehicle();\necho $vehicle-&gt;{'general.make.name'};\necho $vehicle-&gt;{'powertrain.engine.power.pk'} . ' pk';\n</code></pre>\n<p>Or field by field:</p>\n<pre><code>echo mobilox_get_field( 'body.colour.name_nl' );\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/connect-for-mobilox.1.1.0.zip",
     "upgrade_notice": [],
-    "screenshots": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/connect-for-mobilox/assets/screenshot-1.png?rev=3556409",
+            "caption": "The Mobilox dashboard — vehicle count, sync status, endpoint URL, and activity log."
+        },
+        {
+            "src": "https://ps.w.org/connect-for-mobilox/assets/screenshot-2.png?rev=3556409",
+            "caption": "Settings — post type selector, endpoint security, and log retention."
+        }
+    ],
     "tags": {
-        "import": "import",
+        "hexon": "hexon",
         "inventory": "inventory",
-        "mobilox": "mobilox"
+        "mobilox": "mobilox",
+        "sync": "sync",
+        "vehicles": "Vehicles"
     },
-    "stable_tag": "1.0.0",
+    "stable_tag": "1.1.0",
     "versions": {
         "1.0.0": "https://downloads.wordpress.org/plugin/connect-for-mobilox.1.0.0.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/connect-for-mobilox.1.1.0.zip",
         "trunk": "https://downloads.wordpress.org/plugin/connect-for-mobilox.zip"
     },
     "business_model": false,
