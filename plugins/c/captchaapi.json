@@ -1,0 +1,73 @@
+{
+    "name": "captchaapi.eu Proof-of-Work CAPTCHA",
+    "slug": "captchaapi",
+    "version": "1.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/rajtik/\">rajtik</a>",
+    "author_profile": "https://profiles.wordpress.org/rajtik/",
+    "contributors": {
+        "rajtik": {
+            "profile": "https://profiles.wordpress.org/rajtik/",
+            "avatar": "https://secure.gravatar.com/avatar/c2baa34cd36bf5f0ef506de6f85c7d6e6ef82508c1e3ec4ca0c86ab02dbf1ba4?s=96&d=monsterid&r=g",
+            "display_name": "rajtik"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/captchaapi/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-06-04 10:39:00",
+    "added": "2026-06-04",
+    "homepage": "https://captchaapi.eu/docs",
+    "sections": {
+        "description": "<p>captchaapi.eu stops form spam without making your visitors click traffic lights. The work happens in the background: the visitor&#8217;s browser solves a small proof-of-work puzzle while they fill in the form, and a signed token rides along with the submission. There is nothing to solve and nothing to see.</p>\n<p>Your server checks that token locally with your secret key. No request is sent back to captchaapi.eu when a form is submitted, so the check adds no network latency and keeps working even if our service is briefly unreachable.</p>\n<p>The service runs on hardware in the EU (Nuremberg, Germany). It sets no cookies and writes no per-visitor record to a database; the visitor&#8217;s IP address is used only transiently for rate limiting and abuse detection.</p>\n<h4>What it protects</h4>\n<ul>\n<li>Login (wp-login.php)</li>\n<li>Registration</li>\n<li>Lost password</li>\n<li>Comments</li>\n<li>Contact Form 7</li>\n</ul>\n<p>Each surface can be turned on or off from the settings screen. Contact Form 7 support appears only when that plugin is active.</p>\n<h4>How it works</h4>\n<ol>\n<li>The widget loads on the pages with a protected form and solves a proof-of-work puzzle in a Web Worker.</li>\n<li>On submit, it attaches a short-lived, signed attestation to the form.</li>\n<li>The plugin verifies the attestation with your secret key (an HMAC check) and rejects the submission if it is missing, forged, expired, or reused.</li>\n</ol>\n<p>Reuse is blocked with a single-use record per token. If your site has a persistent object cache (Redis or Memcached), that record lives there. Otherwise the plugin keeps a small table and clears expired rows on a schedule.</p>\n<h4>You need an account</h4>\n<p>This plugin connects to the captchaapi.eu service. Create a project at https://captchaapi.eu to get a site key and a secret key. A free tier is available.</p>\n<h3>External services</h3>\n<p>This plugin connects to captchaapi.eu, a third-party CAPTCHA service, to protect your forms from spam. It is required for the plugin to function.</p>\n<p>On any public page that contains a protected form, the plugin loads the service&#8217;s widget script (captcha.js) from your configured captchaapi.eu endpoint. The visitor&#8217;s browser then communicates with the captchaapi.eu API to perform a proof-of-work challenge and obtain a signed attestation that is attached to the form on submit. This happens for every visitor who loads a protected form.</p>\n<p>To issue and validate an attestation the service receives your public site key, the proof-of-work result, and &#8211; as with any HTTP request &#8211; the visitor&#8217;s IP address. The IP address is used for rate limiting and abuse/bot detection (including a coarse, IP-derived country) and is processed transiently: a hashed form and aggregate counters are held briefly in a cache. No raw IP address and no per-visitor record are written to a database. The service sets no cookies. Data is processed on servers in the EU (Nuremberg, Germany).</p>\n<p>Verification of the attestation on submit is performed locally on your server with your secret key; no request is sent back to captchaapi.eu at that point.</p>\n<ul>\n<li>Service provider: captchaapi.eu</li>\n<li>Terms of Service: https://captchaapi.eu/legal/terms</li>\n<li>Privacy Policy: https://captchaapi.eu/legal/privacy</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the plugin to <code>wp-content/plugins/captchaapi</code>, or install it from the Plugins screen.</li>\n<li>Activate it.</li>\n<li>Open Settings -&gt; captchaapi.eu.</li>\n<li>Enter your site key and secret key from your project dashboard.</li>\n<li>Choose which forms to protect and save.</li>\n</ol>\n<p>For a stricter setup, keep the secret key out of the database by defining it in <code>wp-config.php</code>:</p>\n<pre><code>define( 'CAPTCHAAPI_SECRET_KEYS', 'your_secret_key' );\n</code></pre>\n<p>During a key rotation, list the current and the new key together, separated by a comma:</p>\n<pre><code>define( 'CAPTCHAAPI_SECRET_KEYS', 'current_key,new_key' );\n</code></pre>\n",
+        "faq": "\n<dt id=\"do%20my%20visitors%20have%20to%20solve%20anything%3F\">\nDo my visitors have to solve anything?\n</h4>\n<p>\n<p>No. There is no image challenge and no checkbox. The proof-of-work runs in the browser while the form is being filled in.</p>\n</p>\n<dt id=\"does%20form%20submission%20slow%20down%3F\">\nDoes form submission slow down?\n</h4>\n<p>\n<p>The verification is a local HMAC check, so it adds no network round trip on submit. The browser does its proof-of-work in the background before the submit, usually in well under a second.</p>\n</p>\n<dt id=\"what%20happens%20if%20captchaapi.eu%20is%20unreachable%3F\">\nWhat happens if captchaapi.eu is unreachable?\n</h4>\n<p>\n<p>The widget will not produce an attestation, so a protected form will not submit. The plugin fails closed by design: a submission without a valid attestation is rejected rather than waved through.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20contact%20form%207%3F\">\nDoes it work with Contact Form 7?\n</h4>\n<p>\n<p>Yes. Enable Contact Form 7 in the settings. The plugin acquires an attestation before Contact Form 7 sends the form and verifies it on the server.</p>\n</p>\n<dt id=\"do%20you%20set%20cookies%20or%20track%20visitors%3F\">\nDo you set cookies or track visitors?\n</h4>\n<p>\n<p>No cookies, no profiling, and no third-party requests beyond the widget talking to the API. The visitor&#8217;s IP address is used only transiently for rate limiting and abuse/bot detection; it is not stored in a database and is not used to build a visitor profile.</p>\n</p>\n<dt id=\"where%20is%20the%20data%20processed%3F\">\nWhere is the data processed?\n</h4>\n<p>\n<p>On servers in the EU.</p>\n</p>\n<dt id=\"which%20login%20forms%20are%20covered%3F\">\nWhich login forms are covered?\n</h4>\n<p>\n<p>The standard WordPress login form at wp-login.php. WooCommerce and other custom login forms are not covered in this version.</p>\n</p>\n<dt id=\"does%20it%20protect%20xml-rpc%3F\">\nDoes it protect XML-RPC?\n</h4>\n<p>\n<p>No. The check is a browser-side proof of work, so it only runs on real form submissions in a browser. XML-RPC and the REST API are not browsers, so they are left untouched and a captcha cannot gate them. If you do not use XML-RPC, disabling it separately closes that brute-force surface.</p>\n</p>\n<dt id=\"does%20it%20work%20on%20multisite%3F\">\nDoes it work on multisite?\n</h4>\n<p>\n<p>This version targets single-site installs. Network signup through wp-signup.php is not covered yet.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.1</h4>\n<ul>\n<li>Compatibility and Plugin Check fixes for the WordPress.org directory: updated &#8220;Tested up to&#8221;, aligned the plugin name with the readme, versioned the enqueued widget script, prefixed an uninstall global, and dropped the redundant load_plugin_textdomain() call.</li>\n<li>Documented the captchaapi.eu external service in the readme, including the data sent and links to the Terms of Service and Privacy Policy.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First release. Protects login, registration, lost password, comments, and Contact Form 7.</li>\n</ul>\n"
+    },
+    "short_description": "Proof-of-work CAPTCHA with no puzzles and no cookies. Protects login, registration, comments, and Contact Form 7; IP used only for abuse checks.",
+    "description": "<p>captchaapi.eu stops form spam without making your visitors click traffic lights. The work happens in the background: the visitor&#8217;s browser solves a small proof-of-work puzzle while they fill in the form, and a signed token rides along with the submission. There is nothing to solve and nothing to see.</p>\n<p>Your server checks that token locally with your secret key. No request is sent back to captchaapi.eu when a form is submitted, so the check adds no network latency and keeps working even if our service is briefly unreachable.</p>\n<p>The service runs on hardware in the EU (Nuremberg, Germany). It sets no cookies and writes no per-visitor record to a database; the visitor&#8217;s IP address is used only transiently for rate limiting and abuse detection.</p>\n<h4>What it protects</h4>\n<ul>\n<li>Login (wp-login.php)</li>\n<li>Registration</li>\n<li>Lost password</li>\n<li>Comments</li>\n<li>Contact Form 7</li>\n</ul>\n<p>Each surface can be turned on or off from the settings screen. Contact Form 7 support appears only when that plugin is active.</p>\n<h4>How it works</h4>\n<ol>\n<li>The widget loads on the pages with a protected form and solves a proof-of-work puzzle in a Web Worker.</li>\n<li>On submit, it attaches a short-lived, signed attestation to the form.</li>\n<li>The plugin verifies the attestation with your secret key (an HMAC check) and rejects the submission if it is missing, forged, expired, or reused.</li>\n</ol>\n<p>Reuse is blocked with a single-use record per token. If your site has a persistent object cache (Redis or Memcached), that record lives there. Otherwise the plugin keeps a small table and clears expired rows on a schedule.</p>\n<h4>You need an account</h4>\n<p>This plugin connects to the captchaapi.eu service. Create a project at https://captchaapi.eu to get a site key and a secret key. A free tier is available.</p>\n<h3>External services</h3>\n<p>This plugin connects to captchaapi.eu, a third-party CAPTCHA service, to protect your forms from spam. It is required for the plugin to function.</p>\n<p>On any public page that contains a protected form, the plugin loads the service&#8217;s widget script (captcha.js) from your configured captchaapi.eu endpoint. The visitor&#8217;s browser then communicates with the captchaapi.eu API to perform a proof-of-work challenge and obtain a signed attestation that is attached to the form on submit. This happens for every visitor who loads a protected form.</p>\n<p>To issue and validate an attestation the service receives your public site key, the proof-of-work result, and &#8211; as with any HTTP request &#8211; the visitor&#8217;s IP address. The IP address is used for rate limiting and abuse/bot detection (including a coarse, IP-derived country) and is processed transiently: a hashed form and aggregate counters are held briefly in a cache. No raw IP address and no per-visitor record are written to a database. The service sets no cookies. Data is processed on servers in the EU (Nuremberg, Germany).</p>\n<p>Verification of the attestation on submit is performed locally on your server with your secret key; no request is sent back to captchaapi.eu at that point.</p>\n<ul>\n<li>Service provider: captchaapi.eu</li>\n<li>Terms of Service: https://captchaapi.eu/legal/terms</li>\n<li>Privacy Policy: https://captchaapi.eu/legal/privacy</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/captchaapi.1.0.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "antispam": "antispam",
+        "captcha": "captcha",
+        "comments": "comments",
+        "login": "login",
+        "spam": "spam"
+    },
+    "stable_tag": "1.0.1",
+    "versions": {
+        "1.0.1": "https://downloads.wordpress.org/plugin/captchaapi.1.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/captchaapi.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/captchaapi.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
