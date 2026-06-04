@@ -1,0 +1,91 @@
+{
+    "name": "Global AI Gallery",
+    "slug": "global-ai-gallery",
+    "version": "1.3.2",
+    "author": "<a href=\"https://profiles.wordpress.org/thiagoqvaz/\">Global AI</a>",
+    "author_profile": "https://profiles.wordpress.org/thiagoqvaz/",
+    "contributors": {
+        "thiagoqvaz": {
+            "profile": "https://profiles.wordpress.org/thiagoqvaz/",
+            "avatar": "https://secure.gravatar.com/avatar/f28ef6264fffece905bfed222ea2399e4df49714e4b95acc46ccc3cb0e12ad3b?s=96&d=monsterid&r=g",
+            "display_name": "Global AI"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/global-ai-gallery/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-06-04 20:06:00",
+    "added": "2026-06-04",
+    "homepage": "https://globalai.software/plugin-global-ai-gallery",
+    "sections": {
+        "description": "<p>Global AI Gallery creates clean, functional galleries on any WordPress site:</p>\n<ul>\n<li><strong>Dedicated Custom Post Types</strong> for Galleries and Albums</li>\n<li><strong>Responsive Grid layout</strong> (1–6 configurable columns)</li>\n<li><strong>PhotoSwipe 5 lightbox</strong> with keyboard, arrow and touch swipe navigation</li>\n<li><strong>YouTube support</strong> — paste a URL and the plugin handles the thumbnail and playback</li>\n<li><strong>Native Elementor widget</strong></li>\n<li><strong>Schema.org ImageGallery</strong> markup for SEO</li>\n<li><strong>Accessible</strong> — ARIA, focus trap, screen-reader friendly</li>\n<li><strong>Multi-language ready</strong> — Polylang/WPML compatible, .pot file included</li>\n<li><strong>No external dependencies</strong> — everything is vendored, no CDN calls</li>\n</ul>\n<h4>Pro Version</h4>\n<p>The Pro add-on (sold separately) adds Masonry, Justified and Carousel layouts, Vimeo and self-hosted videos, premium lightbox with zoom/share/download, animated filters, interactive albums, and premium templates. Learn more at https://globalai.software/plugin-global-ai-gallery</p>\n<h3>External services</h3>\n<p>This plugin connects to YouTube to display video content that the site administrator has chosen to add to a gallery or album. No data is sent unless an admin explicitly adds a YouTube URL to a gallery item.</p>\n<p><strong>YouTube thumbnail lookup (i.ytimg.com)</strong><br />\nWhen a gallery item is a YouTube video, the plugin requests the thumbnail URL from <code>https://i.ytimg.com/vi/&lt;video-id&gt;/maxresdefault.jpg</code> (with a fallback to <code>hqdefault.jpg</code>) using <code>wp_remote_head()</code>. Only the video ID is sent in the URL. The result (a URL string) is cached locally for 24 hours via WordPress transients to avoid repeat requests.<br />\n&#8211; Data sent: the YouTube video ID that the administrator added.<br />\n&#8211; When: the first time a gallery containing that video is rendered, and every 24 hours after the cache expires.<br />\n&#8211; Service provider: Google LLC.<br />\n&#8211; Terms of service: https://www.youtube.com/t/terms<br />\n&#8211; Privacy policy: https://policies.google.com/privacy</p>\n<p><strong>YouTube embed iframe (youtube.com or youtube-nocookie.com)</strong><br />\nWhen a visitor opens a YouTube video in the lightbox, the browser loads the embed from <code>https://www.youtube.com/embed/&lt;video-id&gt;</code> — or, if the &#8220;Use youtube-nocookie.com&#8221; setting is enabled (Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Global AI Gallery), from <code>https://www.youtube-nocookie.com/embed/&lt;video-id&gt;</code>. This is a standard browser iframe; the plugin does not perform any server-side request.<br />\n&#8211; Data sent: the YouTube video ID, plus whatever YouTube itself collects from the visitor&#8217;s browser (User-Agent, Referer, cookies — unless the cookieless host is used).<br />\n&#8211; When: only when a visitor actually plays a YouTube video on the page.<br />\n&#8211; Service provider: Google LLC.<br />\n&#8211; Terms and privacy: same links as above.</p>\n<p>The plugin does not contact any other external service. No telemetry, analytics, license servers, or auto-update endpoints are called by this Free version.</p>\n<h3>Security</h3>\n<p>This plugin exposes one public REST endpoint to support deferred rendering of galleries from the frontend without requiring a logged-in user:</p>\n<pre><code>GET /wp-json/global-ai-gallery/v1/render/&lt;id&gt; — returns the HTML for a single published gallery. The endpoint declares `permission_callback =&gt; __return_true` (public) because a published gallery is public content by definition, exactly like the post that embeds it. The handler then enforces a real read-permission check before rendering anything:\n</code></pre>\n<p>1. <code>&lt;id&gt;</code> is sanitised with <code>absint()</code> and validated to be a positive integer before reaching the handler.<br />\n2. The post must exist and be of the <code>gawpg_gallery</code> custom post type; otherwise a 404 <code>WP_Error</code> is returned.<br />\n3. Read access is checked the same way WordPress core checks it (<code>WP_REST_Posts_Controller::check_read_permission()</code>): a <code>publish</code> gallery is readable by anyone, but any non-public status (draft, pending, private, future, trash) only renders when the current user actually has read access to that specific post (<code>current_user_can( 'read_post', $id )</code>) — otherwise 404.<br />\n4. Password-protected galleries are never rendered without the password. <code>post_password_required()</code> is honoured (respecting the <code>wp-postpass</code> cookie), returning a 401/403 <code>WP_Error</code> when the password has not been entered.<br />\n5. The endpoint only returns rendered HTML; it never reads or writes user data, options, transients, or any other server state.</p>\n<p>This is the same content the visitor can already see by visiting the gallery&#8217;s public page or any post that embeds it via the shortcode, so making the endpoint authenticated would add no privacy or security benefit.</p>\n",
+        "installation": "<ol>\n<li>Upload the ZIP via Plugins &gt; Add New &gt; Upload Plugin</li>\n<li>Activate the plugin</li>\n<li>Go to <strong>Global AI Gallery</strong> in the sidebar menu and create your first gallery</li>\n<li>Insert the <strong>Global AI Gallery</strong> widget into an Elementor page</li>\n</ol>\n",
+        "faq": "\n<dt id=\"can%20i%20use%20it%20without%20elementor%3F\">\nCan I use it without Elementor?\n</h4>\n<p>\n<p>Yes — use the shortcodes <code>[global_ai_gallery id=\"123\"]</code> and <code>[global_ai_album id=\"456\"]</code> on any page, post, or theme template.</p>\n</p>\n<dt id=\"how%20do%20i%20add%20an%20album%20to%20a%20page%3F\">\nHow do I add an album to a page?\n</h4>\n<p>\n<p>Two ways: (1) with Elementor, drag the <strong>Global AI Album</strong> widget and pick the album in the panel; (2) without Elementor, use the shortcode <code>[global_ai_album id=\"X\"]</code> (replace X with the album ID). Both work in Free and display the album cards which open a lightbox on click.</p>\n</p>\n<dt id=\"is%20it%20compatible%20with%20wpml%3F\">\nIs it compatible with WPML?\n</h4>\n<p>\n<p>Yes, it is compatible with both WPML and Polylang.</p>\n</p>\n<dt id=\"does%20the%20plugin%20send%20data%20outside%20my%20site%3F\">\nDoes the plugin send data outside my site?\n</h4>\n<p>\n<p>No. The only external calls are to YouTube to fetch thumbnails (content the user added). A cookieless mode is available in the settings.</p>\n</p>\n\n",
+        "changelog": "<h4>1.3.2</h4>\n<ul>\n<li>Admin: polished the gallery-item delete button — it is now a clean circular button (white × on a dark circle, red on hover) that reveals on card hover, instead of a default link that WordPress core styled blue.</li>\n</ul>\n<h4>1.3.1</h4>\n<ul>\n<li>Security: the public gallery-render REST endpoint now performs a real read-permission check (mirroring WordPress core) and never renders a password-protected gallery without its password.</li>\n</ul>\n<h4>1.3.0</h4>\n<ul>\n<li>Initial WordPress.org release.</li>\n<li>Galleries and Albums as dedicated custom post types.</li>\n<li>Responsive grid layout with configurable columns and aspect ratio.</li>\n<li>PhotoSwipe 5 lightbox (keyboard, arrow, touch swipe).</li>\n<li>YouTube support — paste a URL, plugin handles thumbnail and playback (cookieless mode optional).</li>\n<li>Native Elementor widget for both galleries and albums.</li>\n<li>Schema.org ImageGallery markup for SEO.</li>\n<li>Accessible — ARIA, focus trap, screen-reader friendly.</li>\n<li>Polylang / WPML compatible; .pot file shipped.</li>\n<li>No external dependencies bundled — every asset is vendored, zero CDN calls.</li>\n<li>Extension hooks for the Pro add-on; Pro returns are sanitised through <code>wp_kses()</code> with a scoped allowlist at every boundary.</li>\n</ul>\n"
+    },
+    "short_description": "Image and video gallery with premium PhotoSwipe lightbox and a native Elementor widget. Accessible, SEO-ready, YouTube support.",
+    "description": "<p>Global AI Gallery creates clean, functional galleries on any WordPress site:</p>\n<ul>\n<li><strong>Dedicated Custom Post Types</strong> for Galleries and Albums</li>\n<li><strong>Responsive Grid layout</strong> (1–6 configurable columns)</li>\n<li><strong>PhotoSwipe 5 lightbox</strong> with keyboard, arrow and touch swipe navigation</li>\n<li><strong>YouTube support</strong> — paste a URL and the plugin handles the thumbnail and playback</li>\n<li><strong>Native Elementor widget</strong></li>\n<li><strong>Schema.org ImageGallery</strong> markup for SEO</li>\n<li><strong>Accessible</strong> — ARIA, focus trap, screen-reader friendly</li>\n<li><strong>Multi-language ready</strong> — Polylang/WPML compatible, .pot file included</li>\n<li><strong>No external dependencies</strong> — everything is vendored, no CDN calls</li>\n</ul>\n<h4>Pro Version</h4>\n<p>The Pro add-on (sold separately) adds Masonry, Justified and Carousel layouts, Vimeo and self-hosted videos, premium lightbox with zoom/share/download, animated filters, interactive albums, and premium templates. Learn more at https://globalai.software/plugin-global-ai-gallery</p>\n<h3>External services</h3>\n<p>This plugin connects to YouTube to display video content that the site administrator has chosen to add to a gallery or album. No data is sent unless an admin explicitly adds a YouTube URL to a gallery item.</p>\n<p><strong>YouTube thumbnail lookup (i.ytimg.com)</strong><br />\nWhen a gallery item is a YouTube video, the plugin requests the thumbnail URL from <code>https://i.ytimg.com/vi/&lt;video-id&gt;/maxresdefault.jpg</code> (with a fallback to <code>hqdefault.jpg</code>) using <code>wp_remote_head()</code>. Only the video ID is sent in the URL. The result (a URL string) is cached locally for 24 hours via WordPress transients to avoid repeat requests.<br />\n&#8211; Data sent: the YouTube video ID that the administrator added.<br />\n&#8211; When: the first time a gallery containing that video is rendered, and every 24 hours after the cache expires.<br />\n&#8211; Service provider: Google LLC.<br />\n&#8211; Terms of service: https://www.youtube.com/t/terms<br />\n&#8211; Privacy policy: https://policies.google.com/privacy</p>\n<p><strong>YouTube embed iframe (youtube.com or youtube-nocookie.com)</strong><br />\nWhen a visitor opens a YouTube video in the lightbox, the browser loads the embed from <code>https://www.youtube.com/embed/&lt;video-id&gt;</code> — or, if the &#8220;Use youtube-nocookie.com&#8221; setting is enabled (Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Global AI Gallery), from <code>https://www.youtube-nocookie.com/embed/&lt;video-id&gt;</code>. This is a standard browser iframe; the plugin does not perform any server-side request.<br />\n&#8211; Data sent: the YouTube video ID, plus whatever YouTube itself collects from the visitor&#8217;s browser (User-Agent, Referer, cookies — unless the cookieless host is used).<br />\n&#8211; When: only when a visitor actually plays a YouTube video on the page.<br />\n&#8211; Service provider: Google LLC.<br />\n&#8211; Terms and privacy: same links as above.</p>\n<p>The plugin does not contact any other external service. No telemetry, analytics, license servers, or auto-update endpoints are called by this Free version.</p>\n<h3>Security</h3>\n<p>This plugin exposes one public REST endpoint to support deferred rendering of galleries from the frontend without requiring a logged-in user:</p>\n<pre><code>GET /wp-json/global-ai-gallery/v1/render/&lt;id&gt; — returns the HTML for a single published gallery. The endpoint declares `permission_callback =&gt; __return_true` (public) because a published gallery is public content by definition, exactly like the post that embeds it. The handler then enforces a real read-permission check before rendering anything:\n</code></pre>\n<p>1. <code>&lt;id&gt;</code> is sanitised with <code>absint()</code> and validated to be a positive integer before reaching the handler.<br />\n2. The post must exist and be of the <code>gawpg_gallery</code> custom post type; otherwise a 404 <code>WP_Error</code> is returned.<br />\n3. Read access is checked the same way WordPress core checks it (<code>WP_REST_Posts_Controller::check_read_permission()</code>): a <code>publish</code> gallery is readable by anyone, but any non-public status (draft, pending, private, future, trash) only renders when the current user actually has read access to that specific post (<code>current_user_can( 'read_post', $id )</code>) — otherwise 404.<br />\n4. Password-protected galleries are never rendered without the password. <code>post_password_required()</code> is honoured (respecting the <code>wp-postpass</code> cookie), returning a 401/403 <code>WP_Error</code> when the password has not been entered.<br />\n5. The endpoint only returns rendered HTML; it never reads or writes user data, options, transients, or any other server state.</p>\n<p>This is the same content the visitor can already see by visiting the gallery&#8217;s public page or any post that embeds it via the shortcode, so making the endpoint authenticated would add no privacy or security benefit.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/global-ai-gallery.1.3.2.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/global-ai-gallery/assets/screenshot-1.png?rev=3561445",
+            "caption": "Responsive grid gallery layout"
+        },
+        {
+            "src": "https://ps.w.org/global-ai-gallery/assets/screenshot-2.png?rev=3561445",
+            "caption": "PhotoSwipe lightbox in action"
+        },
+        {
+            "src": "https://ps.w.org/global-ai-gallery/assets/screenshot-3.png?rev=3561445",
+            "caption": "The widget inside the Elementor editor"
+        }
+    ],
+    "tags": {
+        "album": "album",
+        "elementor": "elementor",
+        "gallery": "gallery",
+        "lightbox": "lightbox",
+        "photoswipe": "photoswipe"
+    },
+    "stable_tag": "1.3.2",
+    "versions": {
+        "1.3.1": "https://downloads.wordpress.org/plugin/global-ai-gallery.1.3.1.zip",
+        "1.3.2": "https://downloads.wordpress.org/plugin/global-ai-gallery.1.3.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/global-ai-gallery.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/global-ai-gallery/assets/banner-772x250.png?rev=3561445",
+        "high": "https://ps.w.org/global-ai-gallery/assets/banner-1544x500.png?rev=3561445"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/global-ai-gallery/assets/icon-128x128.png?rev=3561445",
+        "2x": "https://ps.w.org/global-ai-gallery/assets/icon-256x256.png?rev=3561445"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
