@@ -1,0 +1,73 @@
+{
+    "name": "Pinora Address Autofill for Indian PIN Codes",
+    "slug": "pinora-address-autofill",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/wuyizz/\">wuyizz</a>",
+    "author_profile": "https://profiles.wordpress.org/wuyizz/",
+    "contributors": {
+        "wuyizz": {
+            "profile": "https://profiles.wordpress.org/wuyizz/",
+            "avatar": "https://secure.gravatar.com/avatar/dce1dcaf12899e26920dd11d3bb7872c5cc97151d56fba43e88d145e3c365618?s=96&d=monsterid&r=g",
+            "display_name": "wuyizz"
+        }
+    },
+    "requires": "5.0",
+    "tested": "7.0",
+    "requires_php": "7.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/pinora-address-autofill/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-06-04 06:05:00",
+    "added": "2026-06-04",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Pinora Address Autofill enhances address forms by automatically filling the <strong>State</strong> and <strong>City</strong> fields as soon as a valid 6-digit Indian PIN code is entered. No more manual typing, no more typos — just instant, accurate address data.</p>\n<p><strong>Why choose this plugin?</strong></p>\n<ul>\n<li><strong>Blazing fast — local data built in.</strong> All 19,500+ Indian PIN codes are pre-loaded inside the plugin. Lookups complete in under 1 millisecond with zero external API calls.</li>\n<li><strong>No API dependency.</strong> No monthly quotas, no rate limits, no service outages. Your checkout page works even when third-party APIs are down.</li>\n<li><strong>WooCommerce ready.</strong> Plug-and-play with WooCommerce billing and shipping address forms on both Checkout and My Account pages.</li>\n<li><strong>Smart city detection.</strong> Uses district-level data with intelligent fallback logic, delivering accurate city names — not raw postal division codes.</li>\n<li><strong>Read-only State &amp; City fields.</strong> Once auto-filled, State and City are locked to prevent accidental edits, keeping your address data consistent.</li>\n<li><strong>Lightweight &amp; developer friendly.</strong> Well-structured code with filters for customizing PIN code selectors, city/state field mappings, and more.</li>\n</ul>\n<p><strong>How it works:</strong></p>\n<ol>\n<li>Customer types a 6-digit Indian PIN code in the postcode field.</li>\n<li>After the configured number of digits (default: 3), the plugin triggers a lookup.</li>\n<li>State and City fields are instantly populated from the built-in local index.</li>\n<li>If the PIN code is not in the local index, the plugin falls back to the postalpincode.in API with WP Transient caching as a safety net.</li>\n</ol>\n<h3>External Services</h3>\n<p>This plugin may connect to the <strong>postalpincode.in</strong> API as a fallback when a PIN code is not found in the built-in local index (which covers 19,500+ PIN codes).</p>\n<p><strong>What the service is:</strong> postalpincode.in is a free, community-maintained public directory of Indian postal PIN code data. It mirrors publicly available India Post pincode information. The service is stateless — it has no user accounts, no cookies, and collects no personal data.</p>\n<p><strong>What data is sent:</strong> Only the 6-digit PIN code entered by the user, passed as a URL path parameter. No personal data (name, email, address, IP, browser fingerprint, etc.) is ever transmitted.</p>\n<p><strong>When it is sent:</strong> Only when the local lookup returns no result and the user has typed a valid 6-digit PIN code.</p>\n<p><strong>Service provider:</strong> postalpincode.in</p>\n<ul>\n<li>Service URL: https://api.postalpincode.in/</li>\n<li>Terms of Service: This service does not publish a formal Terms of Service page (it is a public data API, not a commercial platform).</li>\n<li>Privacy Policy: This service does not publish a formal Privacy Policy page, as it is stateless and does not collect or store any user information. The only data it receives is the PIN code number embedded in the request URL.</li>\n</ul>\n<p>If you require guaranteed zero external calls, disable the API fallback by commenting out the <code>fetch_from_external_api()</code> call in <code>includes/class-pin-code-api.php</code>.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>pin-code-autocomplete</code> folder to <code>/wp-content/plugins/</code>, or install via the WordPress Plugins screen.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>That&#8217;s it. No API keys, no configuration — it works out of the box.</li>\n</ol>\n<p><strong>Requirements:</strong> WooCommerce is recommended for the best experience. The plugin can work with other forms via custom selectors (see FAQ).</p>\n",
+        "faq": "\n<dt id=\"does%20it%20work%20without%20woocommerce%3F\">\nDoes it work without WooCommerce?\n</h4>\n<p>\n<p>Yes. By default the plugin targets WooCommerce selectors (<code>#billing_postcode</code>, <code>#billing_city</code>, etc.), but you can customize the selectors using filters — see the developer hooks in <code>pin-code-autocomplete.php</code>.</p>\n</p>\n<dt id=\"does%20it%20support%20countries%20other%20than%20india%3F\">\nDoes it support countries other than India?\n</h4>\n<p>\n<p>No. This plugin is specifically built for the Indian 6-digit PIN code system with pre-loaded India Post data.</p>\n</p>\n<dt id=\"what%20happens%20if%20the%20pin%20code%20is%20not%20found%3F\">\nWhat happens if the PIN code is not found?\n</h4>\n<p>\n<p>An inline error message appears below the postcode field, and the State/City fields remain editable for manual entry.</p>\n</p>\n<dt id=\"do%20i%20need%20an%20internet%20connection%3F\">\nDo I need an internet connection?\n</h4>\n<p>\n<p>No. Nearly all lookups are served from the built-in local pincode index. The postalpincode.in API is only used as a last-resort fallback for PIN codes not in the local database.</p>\n</p>\n<dt id=\"can%20i%20update%20the%20pincode%20data%3F\">\nCan I update the pincode data?\n</h4>\n<p>\n<p>Yes. Replace <code>data/pincodes.csv</code> with an updated India Post dataset and run the build script (<code>scripts/build_pincode_index.py</code>) to regenerate the index.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Auto-fills State and City from Indian PIN codes. Built-in local data, instant lookup. WooCommerce ready.",
+    "description": "<p>Pinora Address Autofill enhances address forms by automatically filling the <strong>State</strong> and <strong>City</strong> fields as soon as a valid 6-digit Indian PIN code is entered. No more manual typing, no more typos — just instant, accurate address data.</p>\n<p><strong>Why choose this plugin?</strong></p>\n<ul>\n<li><strong>Blazing fast — local data built in.</strong> All 19,500+ Indian PIN codes are pre-loaded inside the plugin. Lookups complete in under 1 millisecond with zero external API calls.</li>\n<li><strong>No API dependency.</strong> No monthly quotas, no rate limits, no service outages. Your checkout page works even when third-party APIs are down.</li>\n<li><strong>WooCommerce ready.</strong> Plug-and-play with WooCommerce billing and shipping address forms on both Checkout and My Account pages.</li>\n<li><strong>Smart city detection.</strong> Uses district-level data with intelligent fallback logic, delivering accurate city names — not raw postal division codes.</li>\n<li><strong>Read-only State &amp; City fields.</strong> Once auto-filled, State and City are locked to prevent accidental edits, keeping your address data consistent.</li>\n<li><strong>Lightweight &amp; developer friendly.</strong> Well-structured code with filters for customizing PIN code selectors, city/state field mappings, and more.</li>\n</ul>\n<p><strong>How it works:</strong></p>\n<ol>\n<li>Customer types a 6-digit Indian PIN code in the postcode field.</li>\n<li>After the configured number of digits (default: 3), the plugin triggers a lookup.</li>\n<li>State and City fields are instantly populated from the built-in local index.</li>\n<li>If the PIN code is not in the local index, the plugin falls back to the postalpincode.in API with WP Transient caching as a safety net.</li>\n</ol>\n<h3>External Services</h3>\n<p>This plugin may connect to the <strong>postalpincode.in</strong> API as a fallback when a PIN code is not found in the built-in local index (which covers 19,500+ PIN codes).</p>\n<p><strong>What the service is:</strong> postalpincode.in is a free, community-maintained public directory of Indian postal PIN code data. It mirrors publicly available India Post pincode information. The service is stateless — it has no user accounts, no cookies, and collects no personal data.</p>\n<p><strong>What data is sent:</strong> Only the 6-digit PIN code entered by the user, passed as a URL path parameter. No personal data (name, email, address, IP, browser fingerprint, etc.) is ever transmitted.</p>\n<p><strong>When it is sent:</strong> Only when the local lookup returns no result and the user has typed a valid 6-digit PIN code.</p>\n<p><strong>Service provider:</strong> postalpincode.in</p>\n<ul>\n<li>Service URL: https://api.postalpincode.in/</li>\n<li>Terms of Service: This service does not publish a formal Terms of Service page (it is a public data API, not a commercial platform).</li>\n<li>Privacy Policy: This service does not publish a formal Privacy Policy page, as it is stateless and does not collect or store any user information. The only data it receives is the PIN code number embedded in the request URL.</li>\n</ul>\n<p>If you require guaranteed zero external calls, disable the API fallback by commenting out the <code>fetch_from_external_api()</code> call in <code>includes/class-pin-code-api.php</code>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/pinora-address-autofill.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "address-autocomplete": "Address AutoComplete",
+        "india-pin-code": "india pin code",
+        "indian-pincode": "indian pincode",
+        "pincode-autofill": "pincode autofill",
+        "woocommerce-checkout": "WooCommerce checkout"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/pinora-address-autofill.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/pinora-address-autofill.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/pinora-address-autofill.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
