@@ -1,0 +1,87 @@
+{
+    "name": "Minuttes",
+    "slug": "minuttes",
+    "version": "1.0.3",
+    "author": "<a href=\"https://profiles.wordpress.org/conschneider/\">con</a>",
+    "author_profile": "https://profiles.wordpress.org/conschneider/",
+    "contributors": {
+        "conschneider": {
+            "profile": "https://profiles.wordpress.org/conschneider/",
+            "avatar": "https://secure.gravatar.com/avatar/02a76d95b36cbc866cf2652b1a0739943346028e0564ba8735ed59744c41cfe7?s=96&d=monsterid&r=g",
+            "display_name": "con"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.0",
+    "requires_php": "8.0",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/minuttes/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-06-07 15:39:00",
+    "added": "2026-06-07",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Minuttes is a monitoring layer for Action Scheduler, built for store owners and agencies that need visibility into the background processing their stores depend on.</p>\n<p>It pairs with the hosted dashboard at minuttes.com, but the plugin works standalone — use it as a GraphQL API for Action Scheduler, a drop-in way to reduce Action Scheduler&#8217;s log volume, or a settings screen that detects bundled Action Scheduler conflicts between plugins. It also offers a stop button to suspend the Action Scheduler queue.</p>\n<p>minuttes.com is an optional, paid subscription and is not required. Every feature listed here works on its own, for free. minuttes.com only adds a hosted dashboard for monitoring one or more sites from one place, and connecting to it always requires explicit authorization on your site.</p>\n<p><strong>Features</strong></p>\n<ul>\n<li>Track queue status, job statistics, and failing actions</li>\n<li>View Action Scheduler database usage</li>\n<li>Monitor WP-Cron events and WooCommerce subscription status changes</li>\n<li>Suspend and resume the Action Scheduler queue, or rate limit specific hooks and groups</li>\n<li>Switch to a critical-only logger that keeps only errors and failures</li>\n<li>Detect multiple bundled copies of Action Scheduler across installed plugins</li>\n</ul>\n<p><strong>Requirements</strong></p>\n<ul>\n<li>WordPress 6.2 or higher</li>\n<li>PHP 8.0 or higher</li>\n<li>WooCommerce 7.0 or higher (required for Action Scheduler and subscription features)</li>\n</ul>\n<h3>External Services</h3>\n<p>This plugin exposes a GraphQL API that external services can authenticate to via OAuth 2.0.</p>\n<h4>app.minuttes.com</h4>\n<p>When the site administrator authorizes a connection, the Minuttes monitoring service at app.minuttes.com connects inbound to this plugin&#8217;s API endpoints to retrieve monitoring data (Action Scheduler queue status, subscription statistics). The plugin itself does not initiate outbound connections or transmit data. All API access requires explicit OAuth authorization by a site administrator with manage_options capability.</p>\n<ul>\n<li>Service URL: https://app.minuttes.com</li>\n<li>Terms of Service: https://minuttes.com/terms</li>\n<li>Privacy Policy: https://minuttes.com/privacy</li>\n</ul>\n<h3>Credits</h3>\n<p>This plugin bundles the following third-party library:</p>\n<ul>\n<li><a href=\"https://github.com/webonyx/graphql-php\" rel=\"nofollow ugc\">webonyx/graphql-php</a> &#8211; MIT License</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>minuttes</code> folder to <code>/wp-content/plugins/</code> (or install from the WordPress plugin directory).</li>\n<li>Activate Minuttes from the Plugins screen.</li>\n<li>Visit Settings &rarr; Minuttes Settings to configure the logger and review Action Scheduler conflicts.</li>\n<li>To connect the Minuttes dashboard, start the OAuth flow from app.minuttes.com and approve the connection when redirected.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20plugin%20require%20woocommerce%3F\">\nDoes this plugin require WooCommerce?\n</h4>\n<p>\n<p>Yes. WooCommerce 7.0 or higher is required for subscription monitoring features.</p>\n</p>\n<dt id=\"is%20the%20plugin%20free%3F%20do%20i%20need%20a%20paid%20minuttes.com%20account%3F\">\nIs the plugin free? Do I need a paid minuttes.com account?\n</h4>\n<p>\n<p>The plugin is free and fully functional on its own. minuttes.com is a separate, optional paid subscription that adds a hosted dashboard for monitoring one or more sites from one place. No account is required: the GraphQL API, log-volume reduction, conflict detection, and queue controls all run locally.</p>\n</p>\n<dt id=\"what%20data%20is%20shared%20with%20app.minuttes.com%3F\">\nWhat data is shared with app.minuttes.com?\n</h4>\n<p>\n<p>No data is sent outbound. When you authorize a connection, app.minuttes.com connects inbound to your site&#8217;s API to read monitoring data (queue status, subscription statistics). All access requires explicit OAuth authorization by a site administrator.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.3</h4>\n<ul>\n<li>Rate-limit the OAuth token endpoint by client IP instead of the request-supplied client_id, so arbitrary client IDs can no longer bypass the limit or create unbounded rate-limit transients.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Enqueue the OAuth authorization page stylesheet via wp_register_style() / wp_print_styles() instead of inline CSS.</li>\n<li>Replace WP_PLUGIN_DIR / WP_CONTENT_DIR / ABSPATH usage with the relevant WordPress APIs (wp_upload_dir(), get_plugins(), plugin_basename(), get_theme_root()) for path detection.</li>\n<li>Broaden .distignore to keep development artifacts (CI configs, lint configs, package tests, examples) out of the distributed zip.</li>\n<li>Fix plugin activation by shipping the renamed GraphQL bootstrap (includes/initializers/graphql.php) and removing the obsolete wpgraphql-loader stub.</li>\n<li>Move remaining inline style attributes (cache TTL input width, OAuth authorize card sizing, admin settings status/notice colors) into assets/css/admin.css classes and enqueue the stylesheet on the OAuth authorize admin page.</li>\n<li>Wrap GraphQL subscription type and field descriptions in <strong>() / esc_html</strong>() so they participate in translation; regenerate languages/minuttes.pot.</li>\n<li>Drop unused GraphQL helper functions (minuttes_register_graphql_input_type, minuttes_register_graphql_connection) and the dead load_common_types() loader branch.</li>\n<li>Tidy initializer files: register hooks at the top of the file, consolidate guard clauses, and remove stale internal comments.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Resolve log directory via wp_upload_dir() instead of a hardcoded uploads path so the plugin works with custom WP_CONTENT_DIR, custom uploads filters, and multisite.</li>\n<li>Remove load_plugin_textdomain() — translations are auto-loaded since WordPress 4.6.</li>\n<li>Update webonyx/graphql-php to 15.32.3.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
+    },
+    "short_description": "Monitor and manage Action Scheduler. Stay on top of background task queues, WP-Cron jobs, and WooCommerce subscription changes.",
+    "description": "<p>Minuttes is a monitoring layer for Action Scheduler, built for store owners and agencies that need visibility into the background processing their stores depend on.</p>\n<p>It pairs with the hosted dashboard at minuttes.com, but the plugin works standalone — use it as a GraphQL API for Action Scheduler, a drop-in way to reduce Action Scheduler&#8217;s log volume, or a settings screen that detects bundled Action Scheduler conflicts between plugins. It also offers a stop button to suspend the Action Scheduler queue.</p>\n<p>minuttes.com is an optional, paid subscription and is not required. Every feature listed here works on its own, for free. minuttes.com only adds a hosted dashboard for monitoring one or more sites from one place, and connecting to it always requires explicit authorization on your site.</p>\n<p><strong>Features</strong></p>\n<ul>\n<li>Track queue status, job statistics, and failing actions</li>\n<li>View Action Scheduler database usage</li>\n<li>Monitor WP-Cron events and WooCommerce subscription status changes</li>\n<li>Suspend and resume the Action Scheduler queue, or rate limit specific hooks and groups</li>\n<li>Switch to a critical-only logger that keeps only errors and failures</li>\n<li>Detect multiple bundled copies of Action Scheduler across installed plugins</li>\n</ul>\n<p><strong>Requirements</strong></p>\n<ul>\n<li>WordPress 6.2 or higher</li>\n<li>PHP 8.0 or higher</li>\n<li>WooCommerce 7.0 or higher (required for Action Scheduler and subscription features)</li>\n</ul>\n<h3>External Services</h3>\n<p>This plugin exposes a GraphQL API that external services can authenticate to via OAuth 2.0.</p>\n<h4>app.minuttes.com</h4>\n<p>When the site administrator authorizes a connection, the Minuttes monitoring service at app.minuttes.com connects inbound to this plugin&#8217;s API endpoints to retrieve monitoring data (Action Scheduler queue status, subscription statistics). The plugin itself does not initiate outbound connections or transmit data. All API access requires explicit OAuth authorization by a site administrator with manage_options capability.</p>\n<ul>\n<li>Service URL: https://app.minuttes.com</li>\n<li>Terms of Service: https://minuttes.com/terms</li>\n<li>Privacy Policy: https://minuttes.com/privacy</li>\n</ul>\n<h3>Credits</h3>\n<p>This plugin bundles the following third-party library:</p>\n<ul>\n<li><a href=\"https://github.com/webonyx/graphql-php\" rel=\"nofollow ugc\">webonyx/graphql-php</a> &#8211; MIT License</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/minuttes.1.0.3.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/minuttes/assets/screenshot-1.png?rev=3563764",
+            "caption": "Minuttes dashboard: Action Scheduler queue health, failed actions, and stuck claims at a glance."
+        },
+        {
+            "src": "https://ps.w.org/minuttes/assets/screenshot-2.png?rev=3563764",
+            "caption": "The dashboard in dark mode."
+        }
+    ],
+    "tags": {
+        "action-scheduler": "action scheduler",
+        "graphql": "GraphQL",
+        "monitoring": "monitoring",
+        "subscriptions": "subscriptions"
+    },
+    "stable_tag": "1.0.3",
+    "versions": {
+        "1.0.3": "https://downloads.wordpress.org/plugin/minuttes.1.0.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/minuttes.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/minuttes/assets/banner-772x250.png?rev=3563764",
+        "high": "https://ps.w.org/minuttes/assets/banner-1544x500.png?rev=3563764"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/minuttes/assets/icon-128x128.png?rev=3563764",
+        "2x": "https://ps.w.org/minuttes/assets/icon-256x256.png?rev=3563764"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
