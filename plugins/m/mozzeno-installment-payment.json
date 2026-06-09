@@ -1,0 +1,103 @@
+{
+    "name": "mozzeno &#8211; installment payment",
+    "slug": "mozzeno-installment-payment",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/mozzenoplugin/\">mozzenoplugin</a>",
+    "author_profile": "https://profiles.wordpress.org/mozzenoplugin/",
+    "contributors": {
+        "laxmidigital": {
+            "profile": "https://profiles.wordpress.org/laxmidigital/",
+            "avatar": "https://secure.gravatar.com/avatar/869d2074c038fcbb0635be4c0c932cfe0326e3ac611ff0615b1bab3877ab25b6?s=96&d=monsterid&r=g",
+            "display_name": "laxmidigital"
+        },
+        "mozzenoplugin": {
+            "profile": "https://profiles.wordpress.org/mozzenoplugin/",
+            "avatar": "https://secure.gravatar.com/avatar/5cbd555a9e45528759bc8ad56790d4ee7fbcae50e8dcd122c430b8a9ef2f7c8f?s=96&d=monsterid&r=g",
+            "display_name": "mozzenoplugin"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.0",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/mozzeno-installment-payment/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-06-09 14:45:00",
+    "added": "2026-06-09",
+    "homepage": "https://www.mozzeno.com",
+    "sections": {
+        "description": "<p>mozzeno &#8211; installment payment connects your store to the mozzeno financing platform. Customers can apply for split payment while you ship according to your usual workflow once financing is confirmed.</p>\n<h4>Features</h4>\n<ul>\n<li>mozzeno payment method at checkout with optional on-checkout simulation widget</li>\n<li>Product and cart widgets loading mozzeno&#8217;s hosted loan widget script</li>\n<li>Inbound webhooks (<code>/wc-api/mozzeno_webhook</code>) to move orders through mozzeno-specific statuses</li>\n<li>Outbound webhooks to mozzeno when the merchant updates key order states (for example delivery or cancellation)</li>\n<li>Configurable stock reservation and automatic release tied to loan events and cron</li>\n<li>Custom order statuses for the full loan lifecycle</li>\n<li>Sandbox and live API endpoints</li>\n<li>Logging under mozzeno &gt; Logs</li>\n<li>HPOS (custom order tables) compatibility declared for WooCommerce</li>\n</ul>\n<h4>External services</h4>\n<p><strong>mozzeno widget and redirect scripts (<code>assets.mozzeno.com</code>)</strong><br />\nThis plugin loads JavaScript from <code>assets.mozzeno.com</code> to display the financing simulation widget on product, cart, and checkout pages, and to handle the payment redirect flow. The scripts receive the loan amount, branch identifier, language, and customer first name, last name, and email address — but only when the customer initiates the mozzeno checkout flow. No data is sent on page load for widget display alone.<br />\n<a href=\"https://www.mozzeno.com/fr/mentions-legales/\" rel=\"nofollow ugc\">Terms of service</a> — <a href=\"https://www.mozzeno.com/fr/vie-privee/\" rel=\"nofollow ugc\">Privacy policy</a></p>\n<p><strong>mozzeno API (<code>api.mozzeno.com</code> / <code>api-dev.mozzeno.com</code>)</strong><br />\nOutbound webhooks are sent to the mozzeno API when the merchant updates key order states (delivery initiated, cancellation). The payload includes the order reference and event type. In sandbox mode, requests go to <code>api-dev.mozzeno.com</code>; in live mode, to <code>api.mozzeno.com</code>.<br />\n<a href=\"https://www.mozzeno.com/fr/mentions-legales/\" rel=\"nofollow ugc\">Terms of service</a> — <a href=\"https://www.mozzeno.com/fr/vie-privee/\" rel=\"nofollow ugc\">Privacy policy</a></p>\n<p>Select2 for admin multi-select fields is bundled in the plugin and makes no external requests.</p>\n",
+        "installation": "<ol>\n<li>Install and activate <strong>WooCommerce</strong>.</li>\n<li>Upload the plugin ZIP via <strong>Plugins &gt; Add New &gt; Upload Plugin</strong>, or copy the plugin folder into <code>wp-content/plugins/</code>.</li>\n<li>Activate <strong>mozzeno &#8211; installment payment</strong>.</li>\n<li>Open <strong>mozzeno &gt; Settings</strong>, set your Branch ID, environment (sandbox or live), and review widget options.</li>\n<li>In the mozzeno merchant dashboard, set the webhook URL and shared secret to match the values shown on the settings screen (see FAQ).</li>\n</ol>\n",
+        "faq": "\n<dt id=\"how%20do%20i%20set%20up%20webhooks%3F\">\nHow do I set up webhooks?\n</h4>\n<p>\n<ol>\n<li>In WordPress, go to <strong>mozzeno &gt; Settings</strong> and copy the <strong>Webhook URL</strong> (your store’s WooCommerce API URL, ending with <code>/wc-api/mozzeno_webhook</code>).</li>\n<li>Copy the <strong>Webhook secret</strong> generated by the plugin (or regenerate it if you rotate credentials).</li>\n<li>In the mozzeno dashboard, register the same URL and secret so mozzeno can sign requests with HMAC-SHA256 and your site can verify them.</li>\n<li>After saving, trigger a test event from mozzeno (if available) or place a sandbox order and confirm that <strong>mozzeno &gt; Logs</strong> shows incoming events without signature errors.</li>\n</ol>\n<p>Outbound calls from your site to mozzeno use the same secret to sign JSON payloads sent to the mozzeno webhook endpoint (<code>api.mozzeno.com</code> or <code>api-dev.mozzeno.com</code>).</p>\n</p>\n<dt id=\"where%20do%20i%20configure%20order%20statuses%20and%20shipment%20notifications%3F\">\nWhere do I configure order statuses and shipment notifications?\n</h4>\n<p>\n<p>mozzeno adds custom order statuses for the loan lifecycle. WooCommerce core statuses (for example <strong>Processing</strong>, <strong>Completed</strong>, <strong>Cancelled</strong>) still behave as usual.</p>\n<p>In the gateway and advanced settings you can choose which WooCommerce status should notify mozzeno that delivery has started (<code>order.delivery_initiated</code>). Stock release strings for declined or cancelled loans are configurable in advanced options. Always test status changes in sandbox before going live.</p>\n</p>\n<dt id=\"is%20the%20plugin%20compatible%20with%20other%20plugins%20that%20add%20custom%20order%20statuses%3F\">\nIs the plugin compatible with other plugins that add custom order statuses?\n</h4>\n<p>\n<p>Yes, as long as those plugins follow WooCommerce APIs. mozzeno registers its own statuses and maps mozzeno webhook events to them; it does not remove third-party statuses. If another plugin also forces status transitions on the same orders, coordinate rules so two automations do not conflict (for example, avoid duplicate stock changes by testing with your full stack).</p>\n</p>\n<dt id=\"does%20the%20plugin%20work%20with%20high-performance%20order%20storage%20%28hpos%29%3F\">\nDoes the plugin work with High-Performance Order Storage (HPOS)?\n</h4>\n<p>\n<p>Yes. The plugin declares compatibility with custom order tables.</p>\n</p>\n<dt id=\"what%20are%20the%20default%20financing%20amount%20limits%3F\">\nWhat are the default financing amount limits?\n</h4>\n<p>\n<p>Defaults are configurable in settings; the plugin ships with a broad range suitable for typical mozzeno flows. Adjust min and max to match your contract with mozzeno.</p>\n</p>\n<dt id=\"where%20are%20transaction%20and%20log%20records%20stored%3F\">\nWhere are transaction and log records stored?\n</h4>\n<p>\n<p>Custom database tables are created on activation (<code>mozzeno_transaction</code>, <code>mozzeno_log</code>, <code>mozzeno_stock_reservation</code> with your WordPress table prefix). Logs can be pruned by the plugin’s scheduled tasks according to your configuration.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0 &#8211; 2026-04-22</h4>\n<ul>\n<li>Initial public release.</li>\n<li>WooCommerce payment gateway with redirect flow and HMAC-SHA256 webhook verification.</li>\n<li>Product, cart, and checkout widgets via hosted mozzeno script.</li>\n<li>13 custom order statuses covering the full mozzeno loan lifecycle.</li>\n<li>Inbound webhooks for all loan events, outbound webhooks for delivery and cancellation.</li>\n<li>Configurable stock reservation and automatic release via WP-Cron.</li>\n<li>Admin logging interface with search, filtering, and automatic 30-day cleanup.</li>\n<li>HPOS (High-Performance Order Storage) compatibility declared.</li>\n<li>Sandbox and production environment modes.</li>\n</ul>\n"
+    },
+    "short_description": "Mozzeno split payment for WooCommerce: redirect checkout, widgets, webhooks, stock hold, custom order statuses.",
+    "description": "<p>mozzeno &#8211; installment payment connects your store to the mozzeno financing platform. Customers can apply for split payment while you ship according to your usual workflow once financing is confirmed.</p>\n<h4>Features</h4>\n<ul>\n<li>mozzeno payment method at checkout with optional on-checkout simulation widget</li>\n<li>Product and cart widgets loading mozzeno&#8217;s hosted loan widget script</li>\n<li>Inbound webhooks (<code>/wc-api/mozzeno_webhook</code>) to move orders through mozzeno-specific statuses</li>\n<li>Outbound webhooks to mozzeno when the merchant updates key order states (for example delivery or cancellation)</li>\n<li>Configurable stock reservation and automatic release tied to loan events and cron</li>\n<li>Custom order statuses for the full loan lifecycle</li>\n<li>Sandbox and live API endpoints</li>\n<li>Logging under mozzeno &gt; Logs</li>\n<li>HPOS (custom order tables) compatibility declared for WooCommerce</li>\n</ul>\n<h4>External services</h4>\n<p><strong>mozzeno widget and redirect scripts (<code>assets.mozzeno.com</code>)</strong><br />\nThis plugin loads JavaScript from <code>assets.mozzeno.com</code> to display the financing simulation widget on product, cart, and checkout pages, and to handle the payment redirect flow. The scripts receive the loan amount, branch identifier, language, and customer first name, last name, and email address — but only when the customer initiates the mozzeno checkout flow. No data is sent on page load for widget display alone.<br />\n<a href=\"https://www.mozzeno.com/fr/mentions-legales/\" rel=\"nofollow ugc\">Terms of service</a> — <a href=\"https://www.mozzeno.com/fr/vie-privee/\" rel=\"nofollow ugc\">Privacy policy</a></p>\n<p><strong>mozzeno API (<code>api.mozzeno.com</code> / <code>api-dev.mozzeno.com</code>)</strong><br />\nOutbound webhooks are sent to the mozzeno API when the merchant updates key order states (delivery initiated, cancellation). The payload includes the order reference and event type. In sandbox mode, requests go to <code>api-dev.mozzeno.com</code>; in live mode, to <code>api.mozzeno.com</code>.<br />\n<a href=\"https://www.mozzeno.com/fr/mentions-legales/\" rel=\"nofollow ugc\">Terms of service</a> — <a href=\"https://www.mozzeno.com/fr/vie-privee/\" rel=\"nofollow ugc\">Privacy policy</a></p>\n<p>Select2 for admin multi-select fields is bundled in the plugin and makes no external requests.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/mozzeno-installment-payment.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>First stable release submitted to the plugin directory.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/mozzeno-installment-payment/assets/screenshot-1.png?rev=3566171",
+            "caption": "<strong>mozzeno &gt; Settings — General</strong> — Branch ID, sandbox/live toggle, webhook URL and secret, widget toggles."
+        },
+        {
+            "src": "https://ps.w.org/mozzeno-installment-payment/assets/screenshot-2.png?rev=3566171",
+            "caption": "<strong>Advanced / business rules</strong> — Amount limits, excluded categories, allowed countries, stock reservation duration, stock release status list, shipment-notify statuses."
+        },
+        {
+            "src": "https://ps.w.org/mozzeno-installment-payment/assets/screenshot-3.png?rev=3566171",
+            "caption": "<strong>Single product</strong> — Product-page mozzeno widget with eligible price."
+        },
+        {
+            "src": "https://ps.w.org/mozzeno-installment-payment/assets/screenshot-4.png?rev=3566171",
+            "caption": "<strong>Checkout</strong> — mozzeno payment method with simulation / copy explaining redirect to mozzeno."
+        },
+        {
+            "src": "https://ps.w.org/mozzeno-installment-payment/assets/screenshot-5.png?rev=3566171",
+            "caption": "<strong>Simulation widget</strong> — mozzeno financing simulation widget displayed to the customer during the payment flow."
+        }
+    ],
+    "tags": {
+        "bnpl": "bnpl",
+        "financing": "financing",
+        "mozzeno": "mozzeno",
+        "payment": "payment",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/mozzeno-installment-payment.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/mozzeno-installment-payment.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/mozzeno-installment-payment.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
