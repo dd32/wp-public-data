@@ -1,0 +1,104 @@
+{
+    "name": "Blurt Publisher",
+    "slug": "blurt-publisher",
+    "version": "1.7.7",
+    "author": "<a href=\"https://profiles.wordpress.org/khrom/\">khrom</a>",
+    "author_profile": "https://profiles.wordpress.org/khrom/",
+    "contributors": {
+        "khrom": {
+            "profile": "https://profiles.wordpress.org/khrom/",
+            "avatar": "https://secure.gravatar.com/avatar/2dcd2bf5fb56ca1101ce02c9c7857badc7384399c4474a79bc3e62fdae9e4d69?s=96&d=monsterid&r=g",
+            "display_name": "khrom"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/blurt-publisher/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-06-15 16:10:00",
+    "added": "2026-06-15",
+    "homepage": "https://blurt.pl/blurt-publisher.php",
+    "sections": {
+        "description": "<p>Blurt Publisher connects WordPress with the Blurt blockchain.</p>\n<p>The recommended publishing mode is Direct RPC. In this mode WordPress prepares the Blurt transaction, signs it locally with the private posting key saved in the plugin settings, and broadcasts the signed transaction directly to public Blurt RPC nodes. No external plugin endpoint is needed.</p>\n<p>The plugin can publish:</p>\n<ul>\n<li>WordPress posts.</li>\n<li>WooCommerce products.</li>\n<li>Full post content or excerpt/teaser-only content.</li>\n<li>Products using a Blurt Market-style template.</li>\n<li>Separate post and product schedules.</li>\n<li>Separate post and product Blurt accounts and posting keys.</li>\n<li>Optional fallback through a secured legacy endpoint for hosting environments where Direct RPC is unavailable.</li>\n</ul>\n<h3>Important security notes</h3>\n<p>Use only your Blurt private posting key in this plugin. Do not enter your owner key or active key.</p>\n<p>Direct RPC mode is recommended because the private posting key stays inside WordPress and is not sent to a plugin endpoint.</p>\n<p>Private posting keys and endpoint fallback credentials are stored encrypted at rest when OpenSSL AES-256-GCM is available. The encryption key is derived from <code>BLURT_PUBLISHER_ENCRYPTION_KEY</code> when this constant is defined, otherwise from WordPress auth salts. If you change your WordPress salts or custom encryption key, you may need to re-enter saved private keys.</p>\n<p>Legacy endpoint fallback still sends the private posting key to the configured endpoint for a single publication request. It should be used only when Direct RPC is not available on a particular hosting provider.</p>\n<p>Protect your WordPress admin account, database, backups and hosting panel. Anyone with access to the database and encryption material may be able to recover stored secrets.</p>\n<h3>External Services</h3>\n<p>This plugin connects to external services to publish content to Blurt.</p>\n<h4>1. Public Blurt RPC nodes</h4>\n<p>The plugin connects to configured Blurt RPC nodes, by default:</p>\n<ul>\n<li>https://rpc.beblurt.com</li>\n<li>https://rpc.blurt.world</li>\n<li>https://blurt-rpc.saboin.com</li>\n</ul>\n<p>The plugin sends signed Blurt blockchain transactions to these nodes. In Direct RPC mode the private posting key is not sent to these nodes; only signed transactions are broadcast.</p>\n<h4>2. Optional legacy endpoint fallback</h4>\n<p>If legacy endpoint mode is enabled, the plugin sends post/product data and the private posting key to the configured endpoint URL. The request is protected with HTTPS, endpoint token, timestamp, nonce and HMAC signature.</p>\n<h4>3. Optional endpoint key registration</h4>\n<p>When the user clicks the endpoint key generation button, the plugin generates a unique endpoint token and HMAC secret, broadcasts a signed Blurt <code>custom_json</code> proof containing only hashes of those secrets, and sends the actual token/HMAC secret to the configured endpoint registration route over HTTPS.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to <code>/wp-content/plugins/</code> or install the ZIP file in WordPress admin.</li>\n<li>Activate Blurt Publisher.</li>\n<li>Open Blurt Publisher <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Welcome.</li>\n<li>Open Blurt Publisher <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings.</li>\n<li>Enter your Blurt author account without <code>@</code>.</li>\n<li>Save your private posting key. Use the private posting key only.</li>\n<li>Keep Publishing Mode set to Direct RPC unless you explicitly need fallback endpoint mode.</li>\n<li>Configure tags, community, reward and schedule.</li>\n<li>Use Publish Next Post for a controlled test.</li>\n<li>If WooCommerce products should be published, configure Blurt Publisher <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Product Settings.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20an%20endpoint%3F\">\nDo I need an endpoint?\n</h4>\n<p>\n<p>No. Direct RPC mode does not need an endpoint. The endpoint is only an optional fallback for hosting environments where Direct RPC cannot be used.</p>\n</p>\n<dt id=\"does%20direct%20rpc%20send%20my%20private%20posting%20key%20outside%20wordpress%3F\">\nDoes Direct RPC send my private posting key outside WordPress?\n</h4>\n<p>\n<p>No. Direct RPC mode signs transactions locally inside WordPress and broadcasts only signed transactions.</p>\n</p>\n<dt id=\"are%20private%20keys%20encrypted%20in%20wordpress%3F\">\nAre private keys encrypted in WordPress?\n</h4>\n<p>\n<p>Yes, private posting keys and endpoint fallback credentials are encrypted at rest when OpenSSL AES-256-GCM is available. If OpenSSL AES-256-GCM is unavailable, the plugin will show an admin warning and will not save new private keys securely.</p>\n</p>\n<dt id=\"can%20i%20use%20a%20custom%20encryption%20key%3F\">\nCan I use a custom encryption key?\n</h4>\n<p>\n<p>Yes. Define <code>BLURT_PUBLISHER_ENCRYPTION_KEY</code> in <code>wp-config.php</code> before saving keys if you want a custom encryption secret independent of WordPress salts.</p>\n</p>\n<dt id=\"does%20legacy%20endpoint%20fallback%20send%20my%20private%20posting%20key%3F\">\nDoes legacy endpoint fallback send my private posting key?\n</h4>\n<p>\n<p>Yes. Legacy fallback exists for compatibility. The request is protected with HMAC, nonce and timestamp, but the endpoint still receives the private posting key for that one publication request.</p>\n</p>\n<dt id=\"can%20products%20use%20a%20different%20blurt%20account%3F\">\nCan products use a different Blurt account?\n</h4>\n<p>\n<p>Yes. Products have their own author and private posting key settings.</p>\n</p>\n<dt id=\"can%20i%20publish%20only%20excerpts%3F\">\nCan I publish only excerpts?\n</h4>\n<p>\n<p>Yes. Posts and products can publish full content or excerpt/teaser-only content.</p>\n</p>\n<dt id=\"what%20key%20should%20i%20use%3F\">\nWhat key should I use?\n</h4>\n<p>\n<p>Use the private posting key only. Never use the owner key or active key in this plugin.</p>\n</p>\n\n",
+        "changelog": "<h4>1.7.7</h4>\n<ul>\n<li>Added a WordPress.org View details link on the installed plugins screen.</li>\n</ul>\n<h4>1.7.6</h4>\n<ul>\n<li>Moved Settings tab CSS to an enqueued stylesheet and lowered the admin menu position for WordPress.org review.</li>\n</ul>\n<h4>1.7.3</h4>\n<ul>\n<li>Scheduled publishing now publishes only one eligible item per cron run.</li>\n</ul>\n<h4>1.7.2</h4>\n<ul>\n<li>Shortened readme upgrade notices to stay within WordPress.org limits.</li>\n</ul>\n<h4>1.7.1</h4>\n<ul>\n<li>Restored the admin menu position near WordPress content management screens so publishing tools remain close to Posts, Pages and content workflows.</li>\n</ul>\n<h4>1.7.0</h4>\n<ul>\n<li>Renamed the plugin to Blurt Publisher and updated the WordPress.org slug/textdomain target.</li>\n<li>Replaced the remaining inline admin flag script with an enqueued JavaScript file.</li>\n<li>Kept Direct RPC as the initial/default publishing mode for new installations and empty configurations.</li>\n</ul>\n<h4>1.6.7</h4>\n<ul>\n<li>Fixed queue lookup after Plugin Check query changes. Manual Publish Next now scans the visible queue correctly and automatic publishing no longer stops after the first flagged batch.</li>\n</ul>\n<h4>1.6.6</h4>\n<ul>\n<li>Fixed Plugin Check findings from the 2026-06-06 report.</li>\n<li>Removed manual textdomain loading for WordPress.org compatibility.</li>\n<li>Reworked log writing to use WP_Filesystem helpers.</li>\n<li>Reworked flag-management screens to avoid metadata-filter list queries and escape generated output.</li>\n<li>Removed unexpected Markdown documentation from the plugin root and reduced readme tags to five.</li>\n</ul>\n<h4>1.6.4</h4>\n<ul>\n<li>Added multilingual Welcome page content based on WordPress locale: EN, PL, ES, IT and FR.</li>\n<li>Improved Welcome page layout and default top-level plugin page.</li>\n</ul>\n<h4>1.6.3</h4>\n<ul>\n<li>Made the Welcome screen the default top-level plugin page.</li>\n<li>Added a professional tabbed Welcome page with Blurt logo, account registration links, publishing guidance, frontends and security notes.</li>\n</ul>\n<h4>1.6.2</h4>\n<ul>\n<li>Removed shared default endpoint token and HMAC secret.</li>\n<li>Added individual endpoint key generation.</li>\n<li>Added Blurt custom_json proof for generated fallback credentials.</li>\n<li>Added endpoint registration support.</li>\n<li>Added WordPress.org-style readme.txt.</li>\n<li>Added setting sanitization callbacks.</li>\n<li>Moved logs to wp-content/uploads/blurt-publisher-logs.</li>\n<li>Added nonce/capability checks to the error console.</li>\n</ul>\n"
+    },
+    "short_description": "Publish WordPress posts and WooCommerce products to Blurt with local Direct RPC signing.",
+    "description": "<p>Blurt Publisher connects WordPress with the Blurt blockchain.</p>\n<p>The recommended publishing mode is Direct RPC. In this mode WordPress prepares the Blurt transaction, signs it locally with the private posting key saved in the plugin settings, and broadcasts the signed transaction directly to public Blurt RPC nodes. No external plugin endpoint is needed.</p>\n<p>The plugin can publish:</p>\n<ul>\n<li>WordPress posts.</li>\n<li>WooCommerce products.</li>\n<li>Full post content or excerpt/teaser-only content.</li>\n<li>Products using a Blurt Market-style template.</li>\n<li>Separate post and product schedules.</li>\n<li>Separate post and product Blurt accounts and posting keys.</li>\n<li>Optional fallback through a secured legacy endpoint for hosting environments where Direct RPC is unavailable.</li>\n</ul>\n<h3>Important security notes</h3>\n<p>Use only your Blurt private posting key in this plugin. Do not enter your owner key or active key.</p>\n<p>Direct RPC mode is recommended because the private posting key stays inside WordPress and is not sent to a plugin endpoint.</p>\n<p>Private posting keys and endpoint fallback credentials are stored encrypted at rest when OpenSSL AES-256-GCM is available. The encryption key is derived from <code>BLURT_PUBLISHER_ENCRYPTION_KEY</code> when this constant is defined, otherwise from WordPress auth salts. If you change your WordPress salts or custom encryption key, you may need to re-enter saved private keys.</p>\n<p>Legacy endpoint fallback still sends the private posting key to the configured endpoint for a single publication request. It should be used only when Direct RPC is not available on a particular hosting provider.</p>\n<p>Protect your WordPress admin account, database, backups and hosting panel. Anyone with access to the database and encryption material may be able to recover stored secrets.</p>\n<h3>External Services</h3>\n<p>This plugin connects to external services to publish content to Blurt.</p>\n<h4>1. Public Blurt RPC nodes</h4>\n<p>The plugin connects to configured Blurt RPC nodes, by default:</p>\n<ul>\n<li>https://rpc.beblurt.com</li>\n<li>https://rpc.blurt.world</li>\n<li>https://blurt-rpc.saboin.com</li>\n</ul>\n<p>The plugin sends signed Blurt blockchain transactions to these nodes. In Direct RPC mode the private posting key is not sent to these nodes; only signed transactions are broadcast.</p>\n<h4>2. Optional legacy endpoint fallback</h4>\n<p>If legacy endpoint mode is enabled, the plugin sends post/product data and the private posting key to the configured endpoint URL. The request is protected with HTTPS, endpoint token, timestamp, nonce and HMAC signature.</p>\n<h4>3. Optional endpoint key registration</h4>\n<p>When the user clicks the endpoint key generation button, the plugin generates a unique endpoint token and HMAC secret, broadcasts a signed Blurt <code>custom_json</code> proof containing only hashes of those secrets, and sends the actual token/HMAC secret to the configured endpoint registration route over HTTPS.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/blurt-publisher.1.7.7.zip",
+    "upgrade_notice": {
+        "1.7.7": "<p>Adds the WordPress.org View details link on the plugins screen.</p>",
+        "1.7.6": "<p>Moves Settings CSS to enqueue and lowers admin menu position for review.</p>",
+        "1.7.3": "<p>Scheduled runs now publish one item per run, matching the selected frequency.</p>",
+        "1.7.2": "<p>Shortened upgrade notices for WordPress.org readme validation.</p>",
+        "1.7.1": "<p>Restores the admin menu position near WordPress content management screens.</p>",
+        "1.7.0": "<p>Renamed plugin package for WordPress.org review.</p>",
+        "1.6.7": "<ul>\n<li>Fixed queue lookup after Plugin Check query changes. Manual Publish Next now scans the visible queue correctly and automatic publishing no longer stops after the first flagged batch.</li>\n</ul>",
+        "1.6.6": "<p>Adds encrypted secret storage. Re-save private keys if encryption settings or WordPress salts changed.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/blurt-publisher/assets/screenshot-1.png?rev=3573400",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/blurt-publisher/assets/screenshot-2.png?rev=3573400",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/blurt-publisher/assets/screenshot-3.png?rev=3573400",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/blurt-publisher/assets/screenshot-4.png?rev=3573400",
+            "caption": ""
+        }
+    ],
+    "tags": {
+        "blockchain": "blockchain",
+        "blurt": "blurt",
+        "publishing": "publishing",
+        "social-media": "social media",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.7.7",
+    "versions": {
+        "1.7.6": "https://downloads.wordpress.org/plugin/blurt-publisher.1.7.6.zip",
+        "1.7.7": "https://downloads.wordpress.org/plugin/blurt-publisher.1.7.7.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/blurt-publisher.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/blurt-publisher/assets/banner-772x250.png?rev=3573400",
+        "high": "https://ps.w.org/blurt-publisher/assets/banner-1544x500.png?rev=3573400"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/blurt-publisher/assets/icon-128x128.png?rev=3573400",
+        "2x": "https://ps.w.org/blurt-publisher/assets/icon-256x256.png?rev=3573400"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
