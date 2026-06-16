@@ -1,0 +1,118 @@
+{
+    "name": "ListBridge Sync for Constant Contact and MemberPress",
+    "slug": "listbridge-sync-for-constant-contact-memberpress",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/gandhihitesh9/\">WpExpertPlugins</a>",
+    "author_profile": "https://profiles.wordpress.org/gandhihitesh9/",
+    "contributors": {
+        "gandhihitesh9": {
+            "profile": "https://profiles.wordpress.org/gandhihitesh9/",
+            "avatar": "https://secure.gravatar.com/avatar/d9c34b26cf5f4788ed016d114e19821ba268643b097687fa9150236f4f61f12b?s=96&d=monsterid&r=g",
+            "display_name": "WpExpertPlugins"
+        }
+    },
+    "requires": "5.8",
+    "tested": "7.0",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/listbridge-sync-for-constant-contact-memberpress/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-06-16 16:41:00",
+    "added": "2026-06-16",
+    "homepage": "https://www.wpexpertplugins.com/documents/constant-contact-integration-memberpress",
+    "sections": {
+        "description": "<p>ListBridge Sync for Constant Contact and MemberPress connects MemberPress membership events to your Constant Contact account so subscribers move between contact lists based on their membership state — without exporting CSVs or running manual syncs.</p>\n<p>This is an independent integration. &#8220;Constant Contact&#8221; is a trademark of Constant Contact, Inc. and &#8220;MemberPress&#8221; is a trademark of Caseproof, LLC. This plugin is not affiliated with, endorsed by, or sponsored by either company.</p>\n<h4>Key features</h4>\n<ul>\n<li><strong>OAuth2 Authorization Code flow</strong></li>\n<li><strong>Three event slots</strong>, each mapped to a Constant Contact list of your choice:\n<ul>\n<li><em>New Member Signup</em> — added when a member registers and pays for the first time.</li>\n<li><em>Membership Expired</em> — added when a membership expires or a subscription is cancelled.</li>\n<li><em>Reactivated / Renewed</em> — added when an expired membership is renewed or a cancelled subscription is reactivated.</li>\n</ul>\n</li>\n<li><strong>Cron</strong> at Midnight (site timezone) catches any expired members the real-time hooks may have missed — for example, if your site was offline when MemberPress fired the event.</li>\n<li><strong>Admin-triggered status changes</strong> (Transactions list, Edit Transaction screen, bulk status updates) are detected and synced.</li>\n<li><strong>Automatic access-token refresh</strong> before every API call — you never hit a 401.</li>\n<li><strong>Translation-ready</strong> with a <code>.pot</code> file in <code>/languages</code>.</li>\n</ul>\n<h4>Requirements</h4>\n<ul>\n<li>WordPress 5.8 or later</li>\n<li>PHP 7.4 or later</li>\n<li>PHP OpenSSL extension (the plugin will refuse to activate without it)</li>\n<li>MemberPress 1.12.14 or later</li>\n<li>A Constant Contact developer account — create one for free at https://developer.constantcontact.com</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin relies on the Constant Contact service to synchronise your MemberPress members with your Constant Contact account. No data is transmitted until a site administrator saves valid OAuth2 credentials on the plugin&#8217;s settings page <strong>and</strong> completes the OAuth2 connection flow.</p>\n<p><strong>Service used</strong></p>\n<ul>\n<li>Constant Contact (operated by Constant Contact, Inc.)</li>\n<li>OAuth2 authorisation endpoint: <code>https://authz.constantcontact.com/oauth2/default/v1</code></li>\n<li>API endpoint: <code>https://api.cc.email/v3</code></li>\n</ul>\n<p><strong>What data is sent, and when</strong></p>\n<ul>\n<li><strong>During OAuth2 connect / token refresh</strong> — your Constant Contact Client ID and Client Secret are sent to the Constant Contact authorisation endpoint to obtain or refresh an access token. This happens when an administrator clicks &#8220;Connect to Constant Contact&#8221; and automatically before any API call whose access token has expired.</li>\n<li><strong>When a MemberPress member signs up</strong> (<code>mepr-signup</code>) — the member&#8217;s email address, first name, and last name are sent to Constant Contact so the contact can be added to the list mapped to the &#8220;New Member Signup&#8221; slot.</li>\n<li><strong>When a membership expires or a subscription is cancelled</strong> (<code>mepr-event</code>, <code>mepr-expire-membership</code>, <code>mepr-subscription-pre-cancel</code>, <code>mepr_txn_store</code>, <code>mepr-transaction-saved</code>, <code>mepr_txn_transition_status</code>) — the member&#8217;s email, first name, and last name are sent so the contact can be moved to the list mapped to the &#8220;Membership Expired&#8221; slot.</li>\n<li><strong>When an expired membership is renewed or reactivated</strong> (<code>mepr-transaction-completed</code>, <code>mepr-event</code>) — the member&#8217;s email, first name, and last name are sent so the contact can be moved to the list mapped to the &#8220;Reactivated / Renewed&#8221; slot.</li>\n<li><strong>Nightly cron at 12:05 AM in the site&#8217;s timezone</strong> — the plugin queries MemberPress for transactions that expired in the last 48 hours and, for any that have not yet been migrated, sends the same fields (email, first name, last name) so Constant Contact stays in sync if a real-time hook was missed (for example, the site was offline).</li>\n<li><strong>When loading the settings page (administrators only)</strong> — the plugin requests the list of contact lists in your Constant Contact account so they can be shown in the mapping dropdowns. No member data is sent in this call. The response is cached for 30 minutes.</li>\n</ul>\n<p>The plugin does <strong>not</strong> transmit any data to any other third-party service.</p>\n<p><strong>Terms and privacy</strong></p>\n<p>By connecting your site to Constant Contact you agree to Constant Contact&#8217;s policies:</p>\n<ul>\n<li>Constant Contact Terms of Service: <a href=\"https://www.constantcontact.com/legal/terms\" rel=\"nofollow ugc\">https://www.constantcontact.com/legal/terms</a></li>\n<li>Constant Contact Privacy Notice: <a href=\"https://www.constantcontact.com/legal/privacy-notice\" rel=\"nofollow ugc\">https://www.constantcontact.com/legal/privacy-notice</a></li>\n<li>Constant Contact Developer Portal terms: <a href=\"https://developer.constantcontact.com\" rel=\"nofollow ugc\">https://developer.constantcontact.com</a></li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to <code>/wp-content/plugins/</code>, or install via <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin</strong>.</li>\n<li>Activate the plugin from <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Installed Plugins</strong>.</li>\n<li>Navigate to <strong>MemberPress <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Constant Contact</strong> in the WordPress admin.</li>\n</ol>\n<h4>Setup</h4>\n<p><strong>Step 1 — Create a Constant Contact application</strong></p>\n<ol>\n<li>Go to https://developer.constantcontact.com and sign in (or create a free developer account).</li>\n<li>Under <strong>My Applications</strong>, click <strong>New Application</strong>.</li>\n<li>Give it a name (for example &#8220;My WordPress Site&#8221;) and click <strong>Save</strong>.</li>\n<li>Copy the <strong>API Key (Client ID)</strong>.</li>\n<li>Click <strong>Generate Client Secret</strong> and copy the secret — it is only shown once.</li>\n<li>Add a <strong>Redirect URI</strong>: copy the exact value shown on the plugin&#8217;s settings page (for example <code>https://yoursite.com/wp-admin/admin-post.php?action=mp_cc_oauth_callback</code>).</li>\n</ol>\n<p><strong>Step 2 — Save credentials</strong></p>\n<ol>\n<li>Paste the Client ID and Client Secret into the plugin&#8217;s settings page.</li>\n<li>Click <strong>Save Credentials</strong>.</li>\n</ol>\n<p><strong>Step 3 — Authorise access</strong></p>\n<ol>\n<li>Click <strong>Connect to Constant Contact</strong>.</li>\n<li>Log in to Constant Contact and grant access.</li>\n<li>You will be redirected back to the settings page with a &#8220;Connected&#8221; confirmation.</li>\n</ol>\n<p><strong>Step 4 — Map contact lists</strong></p>\n<ol>\n<li>Three dropdowns appear once you are connected.</li>\n<li>Pick a Constant Contact list for each event slot.</li>\n<li>Click <strong>Save List Mappings</strong>.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20a%20paid%20constant%20contact%20developer%20account%3F\">\nDo I need a paid Constant Contact developer account?\n</h4>\n<p>\n<p>No. The free developer tier is enough to create the application that holds your Client ID and Client Secret. A paid Constant Contact subscription is only required to actually send marketing emails to the lists you sync to.</p>\n</p>\n<dt id=\"where%20are%20my%20credentials%20stored%3F\">\nWhere are my credentials stored?\n</h4>\n<p>\n<p>Inside the standard WordPress <code>options</code> table, encrypted with AES-256-CBC. The encryption key is derived from your site&#8217;s <code>AUTH_KEY</code>, so a database leak alone is not enough to recover the credentials.</p>\n</p>\n<dt id=\"what%20happens%20when%20an%20access%20token%20expires%3F\">\nWhat happens when an access token expires?\n</h4>\n<p>\n<p>The plugin stores the <code>expires_at</code> timestamp and refreshes the access token automatically (using the saved refresh token) before every API call.</p>\n</p>\n<dt id=\"what%20if%20my%20site%20is%20offline%20when%20a%20membership%20expires%3F\">\nWhat if my site is offline when a membership expires?\n</h4>\n<p>\n<p>A nightly cron job runs at 12:05 AM in your site&#8217;s timezone and looks back 48 hours for any expired transactions whose contact has not yet been migrated to the expired list. Members caught by the safety net are processed exactly once.</p>\n</p>\n<dt id=\"can%20i%20sync%20constant%20contact%20custom%20fields%3F\">\nCan I sync Constant Contact custom fields?\n</h4>\n<p>\n<p>No. Currently this functionality not available. We will add in our road map if many users will ask for that.</p>\n</p>\n<dt id=\"does%20deleting%20the%20plugin%20clean%20up%20my%20database%3F\">\nDoes deleting the plugin clean up my database?\n</h4>\n<p>\n<p>Yes. <code>uninstall.php</code> removes every option and transient the plugin created when you delete it via <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Delete</strong> (not just deactivate).</p>\n</p>\n<dt id=\"which%20memberpress%20events%20trigger%20a%20sync%3F\">\nWhich MemberPress events trigger a sync?\n</h4>\n<p>\n<ul>\n<li><code>mepr-signup</code> — new member completes signup</li>\n<li><code>mepr-event</code> — generic event bus (expired, renewed, cancelled)</li>\n<li><code>mepr-transaction-completed</code> — renewal transaction</li>\n<li><code>mepr-subscription-pre-cancel</code> — subscription cancelled</li>\n<li><code>mepr-expire-membership</code> — natural membership expiry</li>\n<li><code>mepr_txn_store</code>, <code>mepr-transaction-saved</code>, <code>mepr_txn_transition_status</code> — admin-triggered status changes</li>\n</ul>\n</p>\n<dt id=\"why%20does%20the%20plugin%20require%20the%20openssl%20extension%3F\">\nWhy does the plugin require the OpenSSL extension?\n</h4>\n<p>\n<p>So that we can store your Constant Contact credentials encrypted at rest with AES-256-CBC. OpenSSL ships with PHP by default; if your host has disabled it, please ask them to enable it before activating the plugin.</p>\n</p>\n<dt id=\"how%20do%20i%20enable%20the%20debug%20log%3F\">\nHow do I enable the debug log?\n</h4>\n<p>\n<p>On the settings page, open the <strong>Debug Settings</strong> card and tick <strong>Enable debug log</strong>. Logs are written to <code>wp-content/uploads/mp-cc-logs/mp-cc-YYYY-MM-DD.log</code> and protected from direct web access by an <code>index.php</code> and an <code>.htaccess</code> file.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0 — 2026-06-05</h4>\n<ul>\n<li>Initial release.</li>\n<li>OAuth2 Authorization Code flow with automatic token refresh.</li>\n<li>Three event slots: New Member Signup, Membership Expired, Reactivated / Renewed.</li>\n<li>cron at Midnight (site timezone).</li>\n<li>OpenSSL is a hard requirement.</li>\n<li>Translation-ready.</li>\n</ul>\n"
+    },
+    "short_description": "Sync MemberPress members to Constant Contact lists on signup, renewal, or expiry via the OAuth2-secured Constant Contact v3 API.",
+    "description": "<p>ListBridge Sync for Constant Contact and MemberPress connects MemberPress membership events to your Constant Contact account so subscribers move between contact lists based on their membership state — without exporting CSVs or running manual syncs.</p>\n<p>This is an independent integration. &#8220;Constant Contact&#8221; is a trademark of Constant Contact, Inc. and &#8220;MemberPress&#8221; is a trademark of Caseproof, LLC. This plugin is not affiliated with, endorsed by, or sponsored by either company.</p>\n<h4>Key features</h4>\n<ul>\n<li><strong>OAuth2 Authorization Code flow</strong></li>\n<li><strong>Three event slots</strong>, each mapped to a Constant Contact list of your choice:\n<ul>\n<li><em>New Member Signup</em> — added when a member registers and pays for the first time.</li>\n<li><em>Membership Expired</em> — added when a membership expires or a subscription is cancelled.</li>\n<li><em>Reactivated / Renewed</em> — added when an expired membership is renewed or a cancelled subscription is reactivated.</li>\n</ul>\n</li>\n<li><strong>Cron</strong> at Midnight (site timezone) catches any expired members the real-time hooks may have missed — for example, if your site was offline when MemberPress fired the event.</li>\n<li><strong>Admin-triggered status changes</strong> (Transactions list, Edit Transaction screen, bulk status updates) are detected and synced.</li>\n<li><strong>Automatic access-token refresh</strong> before every API call — you never hit a 401.</li>\n<li><strong>Translation-ready</strong> with a <code>.pot</code> file in <code>/languages</code>.</li>\n</ul>\n<h4>Requirements</h4>\n<ul>\n<li>WordPress 5.8 or later</li>\n<li>PHP 7.4 or later</li>\n<li>PHP OpenSSL extension (the plugin will refuse to activate without it)</li>\n<li>MemberPress 1.12.14 or later</li>\n<li>A Constant Contact developer account — create one for free at https://developer.constantcontact.com</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin relies on the Constant Contact service to synchronise your MemberPress members with your Constant Contact account. No data is transmitted until a site administrator saves valid OAuth2 credentials on the plugin&#8217;s settings page <strong>and</strong> completes the OAuth2 connection flow.</p>\n<p><strong>Service used</strong></p>\n<ul>\n<li>Constant Contact (operated by Constant Contact, Inc.)</li>\n<li>OAuth2 authorisation endpoint: <code>https://authz.constantcontact.com/oauth2/default/v1</code></li>\n<li>API endpoint: <code>https://api.cc.email/v3</code></li>\n</ul>\n<p><strong>What data is sent, and when</strong></p>\n<ul>\n<li><strong>During OAuth2 connect / token refresh</strong> — your Constant Contact Client ID and Client Secret are sent to the Constant Contact authorisation endpoint to obtain or refresh an access token. This happens when an administrator clicks &#8220;Connect to Constant Contact&#8221; and automatically before any API call whose access token has expired.</li>\n<li><strong>When a MemberPress member signs up</strong> (<code>mepr-signup</code>) — the member&#8217;s email address, first name, and last name are sent to Constant Contact so the contact can be added to the list mapped to the &#8220;New Member Signup&#8221; slot.</li>\n<li><strong>When a membership expires or a subscription is cancelled</strong> (<code>mepr-event</code>, <code>mepr-expire-membership</code>, <code>mepr-subscription-pre-cancel</code>, <code>mepr_txn_store</code>, <code>mepr-transaction-saved</code>, <code>mepr_txn_transition_status</code>) — the member&#8217;s email, first name, and last name are sent so the contact can be moved to the list mapped to the &#8220;Membership Expired&#8221; slot.</li>\n<li><strong>When an expired membership is renewed or reactivated</strong> (<code>mepr-transaction-completed</code>, <code>mepr-event</code>) — the member&#8217;s email, first name, and last name are sent so the contact can be moved to the list mapped to the &#8220;Reactivated / Renewed&#8221; slot.</li>\n<li><strong>Nightly cron at 12:05 AM in the site&#8217;s timezone</strong> — the plugin queries MemberPress for transactions that expired in the last 48 hours and, for any that have not yet been migrated, sends the same fields (email, first name, last name) so Constant Contact stays in sync if a real-time hook was missed (for example, the site was offline).</li>\n<li><strong>When loading the settings page (administrators only)</strong> — the plugin requests the list of contact lists in your Constant Contact account so they can be shown in the mapping dropdowns. No member data is sent in this call. The response is cached for 30 minutes.</li>\n</ul>\n<p>The plugin does <strong>not</strong> transmit any data to any other third-party service.</p>\n<p><strong>Terms and privacy</strong></p>\n<p>By connecting your site to Constant Contact you agree to Constant Contact&#8217;s policies:</p>\n<ul>\n<li>Constant Contact Terms of Service: <a href=\"https://www.constantcontact.com/legal/terms\" rel=\"nofollow ugc\">https://www.constantcontact.com/legal/terms</a></li>\n<li>Constant Contact Privacy Notice: <a href=\"https://www.constantcontact.com/legal/privacy-notice\" rel=\"nofollow ugc\">https://www.constantcontact.com/legal/privacy-notice</a></li>\n<li>Constant Contact Developer Portal terms: <a href=\"https://developer.constantcontact.com\" rel=\"nofollow ugc\">https://developer.constantcontact.com</a></li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/listbridge-sync-for-constant-contact-memberpress.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/listbridge-sync-for-constant-contact-memberpress/assets/screenshot-1.png?rev=3569202",
+            "caption": "Initial Screen."
+        },
+        {
+            "src": "https://ps.w.org/listbridge-sync-for-constant-contact-memberpress/assets/screenshot-2.png?rev=3569202",
+            "caption": "Application setup from constant contact developer portal."
+        },
+        {
+            "src": "https://ps.w.org/listbridge-sync-for-constant-contact-memberpress/assets/screenshot-3.png?rev=3569202",
+            "caption": "Application created successfully."
+        },
+        {
+            "src": "https://ps.w.org/listbridge-sync-for-constant-contact-memberpress/assets/screenshot-4.png?rev=3569202",
+            "caption": "Application edited &amp; client id shown there."
+        },
+        {
+            "src": "https://ps.w.org/listbridge-sync-for-constant-contact-memberpress/assets/screenshot-5.png?rev=3569202",
+            "caption": "Generate Application secret."
+        },
+        {
+            "src": "https://ps.w.org/listbridge-sync-for-constant-contact-memberpress/assets/screenshot-6.png?rev=3569202",
+            "caption": "Update redirect URI."
+        },
+        {
+            "src": "https://ps.w.org/listbridge-sync-for-constant-contact-memberpress/assets/screenshot-7.png?rev=3569202",
+            "caption": "Asking for permission."
+        },
+        {
+            "src": "https://ps.w.org/listbridge-sync-for-constant-contact-memberpress/assets/screenshot-8.png?rev=3569202",
+            "caption": "Connection successfully."
+        },
+        {
+            "src": "https://ps.w.org/listbridge-sync-for-constant-contact-memberpress/assets/screenshot-9.png?rev=3569202",
+            "caption": "Contact List mapping with MemberPress Membership."
+        },
+        {
+            "src": "https://ps.w.org/listbridge-sync-for-constant-contact-memberpress/assets/screenshot-10.png?rev=3569202",
+            "caption": "Member successfully added after purchasing membership plan."
+        }
+    ],
+    "tags": {
+        "constant-contact": "constant contact",
+        "email-marketing": "Email Marketing",
+        "integration": "integration",
+        "memberpress": "memberpress",
+        "membership": "membership"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/listbridge-sync-for-constant-contact-memberpress.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/listbridge-sync-for-constant-contact-memberpress.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://paypal.me/h1994tesh",
+    "banners": {
+        "low": "https://ps.w.org/listbridge-sync-for-constant-contact-memberpress/assets/banner-772x250.png?rev=3569202",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/listbridge-sync-for-constant-contact-memberpress/assets/icon-256x256.png?rev=3569202",
+        "2x": "https://ps.w.org/listbridge-sync-for-constant-contact-memberpress/assets/icon-256x256.png?rev=3569202"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
