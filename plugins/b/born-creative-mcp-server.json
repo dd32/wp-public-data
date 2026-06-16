@@ -1,0 +1,79 @@
+{
+    "name": "Born Creative MCP Server",
+    "slug": "born-creative-mcp-server",
+    "version": "0.0.6",
+    "author": "<a href=\"https://profiles.wordpress.org/jonathansblog/\">jonathansblog</a>",
+    "author_profile": "https://profiles.wordpress.org/jonathansblog/",
+    "contributors": {
+        "jonathansblog": {
+            "profile": "https://profiles.wordpress.org/jonathansblog/",
+            "avatar": "https://secure.gravatar.com/avatar/d887f81818c0ea7a0ffd2314681b218120cefb20fa29bb48891272fae3b0889a?s=96&d=monsterid&r=g",
+            "display_name": "jonathansblog"
+        },
+        "borncreative": {
+            "profile": "https://profiles.wordpress.org/borncreative/",
+            "avatar": "https://secure.gravatar.com/avatar/ed3d57ab6ae7183fef86cfbb0ccf580d64bae0356d3560159ea96c09cadab8f9?s=96&d=monsterid&r=g",
+            "display_name": "borncreative"
+        }
+    },
+    "requires": "6.0",
+    "tested": "6.9.4",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/born-creative-mcp-server/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-06-16 19:50:00",
+    "added": "2026-06-16",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Born Creative MCP Server transforms your WordPress site into a fully authenticated remote MCP (Model Context Protocol) endpoint. It allows AI assistants — such as Claude.ai — to securely connect to your site and create, update, schedule, and manage posts, pages, media, and taxonomy, all via a standards-compliant OAuth 2.1 and JSON-RPC 2.0 interface.</p>\n<p>Unlike local stdio-based MCP servers, this plugin exposes a remote HTTP transport, meaning your AI tools can connect to your live WordPress site without needing direct server access.</p>\n<p><strong>How it works</strong></p>\n<p>The plugin registers a set of REST API endpoints that implement the MCP streamable HTTP transport. Clients authenticate using OAuth 2.1 with PKCE (Proof Key for Code Exchange), receive a bearer access token, and then use that token to call any of the 18 built-in MCP tools.</p>\n<p><strong>MCP Tools included</strong></p>\n<ul>\n<li><strong>Posts</strong> — list, get, create, update, delete, search</li>\n<li><strong>Pages</strong> — list, get, create, update, delete</li>\n<li><strong>Media</strong> — list, get, upload from URL, upload base64-encoded, delete</li>\n<li><strong>Categories</strong> — list, create, update</li>\n<li><strong>Tags</strong> — list, create</li>\n<li><strong>Yoast SEO</strong> <em>(optional)</em> — get and update Yoast SEO metadata (requires Yoast SEO plugin)</li>\n</ul>\n<p><strong>OAuth 2.1 Authentication</strong></p>\n<ul>\n<li>Dynamic client registration (RFC 7591)</li>\n<li>Authorization code flow with PKCE</li>\n<li>Access token and refresh token lifecycle management</li>\n<li>Token rotation and revocation</li>\n<li>Tokens are SHA-256 hashed — plaintext tokens are never stored</li>\n</ul>\n<p><strong>Advanced content features</strong></p>\n<ul>\n<li>Schedule posts by setting a future publish date</li>\n<li>Set featured images</li>\n<li>Add custom post meta</li>\n<li>Sideload media from external URLs</li>\n<li>Full category and tag assignment</li>\n</ul>\n<p><strong>Yoast SEO integration</strong></p>\n<p>If the Yoast SEO plugin is active, two additional MCP tools are automatically registered: <code>yoast_get_seo</code> and <code>yoast_update_seo</code>, allowing AI assistants to read and write SEO titles, descriptions, and focus keywords.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>born-creative-mcp-server</code> folder to <code>/wp-content/plugins/</code>.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> menu in WordPress.</li>\n<li>Navigate to <strong>Settings &gt; MCP Server</strong> to review configuration options.</li>\n<li>Ensure your site uses HTTPS — required for OAuth 2.1 in production.</li>\n<li>If using nginx, ensure your server config permits access to <code>/.well-known/</code> paths.</li>\n<li>Connect your MCP client (e.g. Claude.ai) using the OAuth authorization server URL displayed in the plugin settings.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"what%20is%20mcp%3F\">\nWhat is MCP?\n</h4>\n<p>\n<p>Model Context Protocol (MCP) is an open standard that allows AI assistants to interact with external tools and data sources in a structured way. This plugin implements the MCP server side of that protocol over HTTP.</p>\n</p>\n<dt id=\"which%20ai%20assistants%20are%20supported%3F\">\nWhich AI assistants are supported?\n</h4>\n<p>\n<p>Any MCP-compatible client that supports the streamable HTTP transport and OAuth 2.1 with PKCE. Claude.ai (claude.ai/settings/integrations) is the primary tested client.</p>\n</p>\n<dt id=\"is%20https%20required%3F\">\nIs HTTPS required?\n</h4>\n<p>\n<p>Yes, for production use. OAuth 2.1 requires HTTPS to protect bearer tokens and authorization codes in transit. The plugin will function over HTTP for local development only.</p>\n</p>\n<dt id=\"can%20any%20wordpress%20user%20authorise%20an%20mcp%20client%3F\">\nCan any WordPress user authorise an MCP client?\n</h4>\n<p>\n<p>No. Only authenticated WordPress users can complete the OAuth consent flow. The MCP session inherits that user&#8217;s capabilities, so content tools are limited to what that user is permitted to do within WordPress.</p>\n</p>\n<dt id=\"does%20this%20plugin%20store%20access%20tokens%20in%20the%20database%3F\">\nDoes this plugin store access tokens in the database?\n</h4>\n<p>\n<p>Tokens are stored as SHA-256 hashes — the plaintext token is only ever visible to the client at the moment it is issued. This means tokens cannot be recovered from the database if compromised.</p>\n</p>\n<dt id=\"what%20database%20tables%20does%20the%20plugin%20create%3F\">\nWhat database tables does the plugin create?\n</h4>\n<p>\n<p>Four tables are created on activation (using your configured table prefix):<br />\n    born_mcp_oauth_clients, <code>born_mcp_oauth_codes</code>, <code>born_mcp_oauth_tokens</code>, <code>born_mcp_sessions</code>.<br />\nAll tables are removed on uninstall.</p>\n</p>\n<dt id=\"does%20the%20plugin%20support%20yoast%20seo%3F\">\nDoes the plugin support Yoast SEO?\n</h4>\n<p>\n<p>Yes. If Yoast SEO is active, two additional tools — <code>yoast_get_seo</code> and <code>yoast_update_seo</code> — are automatically registered. No additional configuration is needed.</p>\n</p>\n\n",
+        "changelog": "<h4>0.0.1</h4>\n<ul>\n<li>Initial release.</li>\n<li>OAuth 2.1 with PKCE authorization code flow.</li>\n<li>Dynamic client registration (RFC 7591).</li>\n<li>18 MCP tools: posts, pages, media, categories, tags, and optional Yoast SEO.</li>\n<li>Streamable HTTP MCP transport (JSON-RPC 2.0).</li>\n<li>SHA-256 token hashing, token rotation, and revocation.</li>\n<li>Admin settings page and active connections view.</li>\n<li>Automatic <code>.well-known/oauth-authorization-server</code> metadata endpoint.</li>\n</ul>\n"
+    },
+    "short_description": "A remote MCP server over HTTP with OAuth 2.1, letting AI assistants like Claude securely create, update, and schedule WordPress content.",
+    "description": "<p>Born Creative MCP Server transforms your WordPress site into a fully authenticated remote MCP (Model Context Protocol) endpoint. It allows AI assistants — such as Claude.ai — to securely connect to your site and create, update, schedule, and manage posts, pages, media, and taxonomy, all via a standards-compliant OAuth 2.1 and JSON-RPC 2.0 interface.</p>\n<p>Unlike local stdio-based MCP servers, this plugin exposes a remote HTTP transport, meaning your AI tools can connect to your live WordPress site without needing direct server access.</p>\n<p><strong>How it works</strong></p>\n<p>The plugin registers a set of REST API endpoints that implement the MCP streamable HTTP transport. Clients authenticate using OAuth 2.1 with PKCE (Proof Key for Code Exchange), receive a bearer access token, and then use that token to call any of the 18 built-in MCP tools.</p>\n<p><strong>MCP Tools included</strong></p>\n<ul>\n<li><strong>Posts</strong> — list, get, create, update, delete, search</li>\n<li><strong>Pages</strong> — list, get, create, update, delete</li>\n<li><strong>Media</strong> — list, get, upload from URL, upload base64-encoded, delete</li>\n<li><strong>Categories</strong> — list, create, update</li>\n<li><strong>Tags</strong> — list, create</li>\n<li><strong>Yoast SEO</strong> <em>(optional)</em> — get and update Yoast SEO metadata (requires Yoast SEO plugin)</li>\n</ul>\n<p><strong>OAuth 2.1 Authentication</strong></p>\n<ul>\n<li>Dynamic client registration (RFC 7591)</li>\n<li>Authorization code flow with PKCE</li>\n<li>Access token and refresh token lifecycle management</li>\n<li>Token rotation and revocation</li>\n<li>Tokens are SHA-256 hashed — plaintext tokens are never stored</li>\n</ul>\n<p><strong>Advanced content features</strong></p>\n<ul>\n<li>Schedule posts by setting a future publish date</li>\n<li>Set featured images</li>\n<li>Add custom post meta</li>\n<li>Sideload media from external URLs</li>\n<li>Full category and tag assignment</li>\n</ul>\n<p><strong>Yoast SEO integration</strong></p>\n<p>If the Yoast SEO plugin is active, two additional MCP tools are automatically registered: <code>yoast_get_seo</code> and <code>yoast_update_seo</code>, allowing AI assistants to read and write SEO titles, descriptions, and focus keywords.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/born-creative-mcp-server.zip",
+    "upgrade_notice": {
+        "0.0.1": "<p>Initial release — no upgrade steps required.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "ai": "AI",
+        "claude": "Claude",
+        "mcp": "mcp",
+        "oauth": "oauth",
+        "rest-api": "rest-api"
+    },
+    "stable_tag": "trunk",
+    "versions": {
+        "0.6.0": "https://downloads.wordpress.org/plugin/born-creative-mcp-server.0.6.0.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/born-creative-mcp-server.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
