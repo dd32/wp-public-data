@@ -1,0 +1,78 @@
+{
+    "name": "Tellbill for WooCommerce",
+    "slug": "tellbill-for-woocommerce",
+    "version": "1.4.2",
+    "author": "<a href=\"https://profiles.wordpress.org/tellbill/\">tellbill</a>",
+    "author_profile": "https://profiles.wordpress.org/tellbill/",
+    "contributors": {
+        "tellbill": {
+            "profile": "https://profiles.wordpress.org/tellbill/",
+            "avatar": "https://secure.gravatar.com/avatar/173ed4c026d2efbd067cdaf1e19ccd7ea9610aa99f3ef003e9d6f8cc48a80f3f?s=96&d=monsterid&r=g",
+            "display_name": "tellbill"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/tellbill-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-06-17 17:14:00",
+    "added": "2026-06-17",
+    "homepage": "",
+    "sections": {
+        "description": "<p><a href=\"https://tellbill.ch\" rel=\"nofollow ugc\">Tellbill</a> is a Swiss invoicing service: QR-bill invoices (ISO 20022), automatic payment reminders, bank reconciliation and credit notes. This plugin connects your WooCommerce shop to your Tellbill account.</p>\n<p><strong>What it does</strong></p>\n<ul>\n<li>When an order reaches the trigger status you choose (default: &#8220;Processing&#8221;), the plugin calls the Tellbill API and creates the matching invoice — with a Swiss QR code — then (optionally) emails it to your customer.</li>\n<li>The Tellbill invoice number is displayed in the orders list and in the order notes.</li>\n<li><strong>Payment sync (optional):</strong> when the customer pays the QR-bill, Tellbill notifies WooCommerce through a signed webhook and the order is automatically marked as paid (stock, downloads, etc.).</li>\n<li><strong>Refunds:</strong> a WooCommerce refund automatically creates the matching credit note in Tellbill (VAT included; full refund = full credit note).</li>\n<li><strong>Duplicate-safe:</strong> each order is sent with a unique identifier (<code>external_id = \"wc_&lt;order id&gt;\"</code>). If the same order is sent twice (double status change, network retry), Tellbill returns the existing invoice instead of creating a duplicate.</li>\n</ul>\n<p><strong>Requirements:</strong> a Tellbill account (https://tellbill.ch) and an API key.</p>\n<p><strong>Which trigger status should you choose?</strong></p>\n<ul>\n<li><strong>Invoice-based selling</strong> (very common in Switzerland: the customer receives the goods, then pays within X days): trigger &#8220;Processing&#8221; or &#8220;Completed&#8221;. The invoice carries your payment term; if the customer is late, Tellbill sends reminders automatically.</li>\n<li><strong>Prepayment by QR-bill</strong> (the customer pays <em>before</em> you ship): enable the &#8220;Direct bank transfer&#8221; gateway so the order lands in &#8220;On hold&#8221;, and set the trigger to &#8220;On hold&#8221;. The customer receives the QR-bill, pays, then you ship.</li>\n<li><strong>Paid online</strong> (card at checkout): trigger &#8220;Processing&#8221; — the Tellbill invoice then serves as a receipt and accounting record.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin communicates with the Tellbill API (https://tellbill.ch) — the invoicing service it connects to; that is its sole purpose. No data is sent until you configure your API key.</p>\n<p>Data transmitted to the Tellbill API (https://tellbill.ch/api/v1, or the URL you configure):</p>\n<ul>\n<li>When an invoice is created (order reaching the trigger status): the customer&#8217;s billing details (name, email, address), the order lines (item names, quantities, prices) and the order number.</li>\n<li>When a refund is issued: the refunded amount and the refund reason.</li>\n<li>When you click &#8220;Test connection&#8221;: only your API key is transmitted (as a header).</li>\n</ul>\n<p>This data is required to issue the invoices. It is processed by Tellbill according to its terms of service and privacy policy:</p>\n<ul>\n<li>Terms of service: https://tellbill.ch/cgu</li>\n<li>Privacy policy: https://tellbill.ch/confidentialite</li>\n</ul>\n<h3>Translations</h3>\n<p>The plugin ships with German (de_DE, de_CH), Italian (it_IT) and English (en_US, en_GB) translations — the four Swiss business languages are covered out of the box. Source strings are in French (built for the Swiss market). A <code>.pot</code> template is bundled in <code>/languages</code> for any additional language.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin through Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin (or copy the folder to <code>wp-content/plugins/</code>), then activate it.</li>\n<li>Go to WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> &#8220;Tellbill&#8221; tab.</li>\n<li>Paste your Tellbill API key (Tellbill panel <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> API &amp; integrations).</li>\n<li>Pick the trigger status, the payment term and the default VAT rate, then use the &#8220;Test connection&#8221; button.</li>\n</ol>\n<p><strong>Payment sync (optional):</strong> in your Tellbill panel <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Webhooks, create an endpoint pointing to the URL shown in the plugin settings (<code>https://your-site/wp-json/tellbill/v1/webhook</code>), subscribed to the <code>invoice.paid</code> event. Then paste the signing secret shown by Tellbill into the plugin settings. Requests are verified with an HMAC-SHA256 signature and a 5-minute anti-replay window; while no secret is configured, the endpoint rejects all requests.</p>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20a%20tellbill%20account%3F\">\nDo I need a Tellbill account?\n</h4>\n<p>\n<p>Yes. The plugin is a connector: invoices are created, sent and reconciled by Tellbill. You can create an account on https://tellbill.ch.</p>\n</p>\n<dt id=\"in%20which%20languages%20are%20the%20invoices%20sent%3F\">\nIn which languages are the invoices sent?\n</h4>\n<p>\n<p>Tellbill issues the invoice PDF and the email in the customer&#8217;s language (French, German, Italian or English), configurable per customer in your Tellbill panel.</p>\n</p>\n<dt id=\"what%20happens%20if%20the%20api%20is%20unreachable%20when%20an%20order%20comes%20in%3F\">\nWhat happens if the API is unreachable when an order comes in?\n</h4>\n<p>\n<p>The plugin adds a note to the order with the error message. You can re-trigger the invoice by setting the order status again — thanks to the <code>external_id</code>, no duplicate will ever be created.</p>\n</p>\n\n",
+        "changelog": "<h4>1.4.2</h4>\n<ul>\n<li>Review fix: the admin JavaScript and CSS are now loaded via the standard <code>wp_enqueue_script</code> / <code>wp_enqueue_style</code> functions (with <code>wp_localize_script</code> for the nonce and labels) instead of being printed inline.</li>\n<li>Translations are now delivered through WordPress.org language packs (translate.wordpress.org) and loaded automatically; the plugin no longer ships or manually loads bundled translation files.</li>\n</ul>\n<h4>1.4.1</h4>\n<ul>\n<li>Security: the payment-sync endpoint now rejects ALL requests until a signing secret is configured (previously, an empty secret meant requests were accepted unverified).</li>\n<li>WordPress.org compliance: plugin renamed &#8220;Tellbill for WooCommerce&#8221; (trademark rules), English readme, Requires Plugins / License URI headers, admin notice when WooCommerce is inactive, &#8220;External services&#8221; disclosure, translators comments, bundled .pot file.</li>\n<li>Bundled translations: German (de_DE, de_CH), Italian (it_IT) and English (en_US, en_GB).</li>\n</ul>\n<h4>1.4.0</h4>\n<ul>\n<li>WooCommerce refund <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Tellbill credit note, created automatically, VAT included (full refund = full credit note; partial refunds grossed up by the VAT rate when WooCommerce does not handle tax). One credit note per refund (duplicate-safe).</li>\n</ul>\n<h4>1.3.0</h4>\n<ul>\n<li>&#8220;Test connection&#8221; button in the settings (validates the API key).</li>\n<li>Plugin internationalized (i18n): all strings are translatable.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Payment sync: Tellbill webhook (invoice.paid) <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> the WooCommerce order is automatically marked as paid. Signed REST endpoint (HMAC), mapped via external_id.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Configurable payment term (payment_term_days).</li>\n<li>Default trigger status = &#8220;Processing&#8221;; guidance for the 3 selling models in the settings.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release: invoice created on order, duplicate-safe (external_id), orders-list column + order notes, HPOS compatible.</li>\n</ul>\n"
+    },
+    "short_description": "Automatically creates a Swiss QR-bill invoice in Tellbill for every WooCommerce order, and marks the order paid once the invoice is settled.",
+    "description": "<p><a href=\"https://tellbill.ch\" rel=\"nofollow ugc\">Tellbill</a> is a Swiss invoicing service: QR-bill invoices (ISO 20022), automatic payment reminders, bank reconciliation and credit notes. This plugin connects your WooCommerce shop to your Tellbill account.</p>\n<p><strong>What it does</strong></p>\n<ul>\n<li>When an order reaches the trigger status you choose (default: &#8220;Processing&#8221;), the plugin calls the Tellbill API and creates the matching invoice — with a Swiss QR code — then (optionally) emails it to your customer.</li>\n<li>The Tellbill invoice number is displayed in the orders list and in the order notes.</li>\n<li><strong>Payment sync (optional):</strong> when the customer pays the QR-bill, Tellbill notifies WooCommerce through a signed webhook and the order is automatically marked as paid (stock, downloads, etc.).</li>\n<li><strong>Refunds:</strong> a WooCommerce refund automatically creates the matching credit note in Tellbill (VAT included; full refund = full credit note).</li>\n<li><strong>Duplicate-safe:</strong> each order is sent with a unique identifier (<code>external_id = \"wc_&lt;order id&gt;\"</code>). If the same order is sent twice (double status change, network retry), Tellbill returns the existing invoice instead of creating a duplicate.</li>\n</ul>\n<p><strong>Requirements:</strong> a Tellbill account (https://tellbill.ch) and an API key.</p>\n<p><strong>Which trigger status should you choose?</strong></p>\n<ul>\n<li><strong>Invoice-based selling</strong> (very common in Switzerland: the customer receives the goods, then pays within X days): trigger &#8220;Processing&#8221; or &#8220;Completed&#8221;. The invoice carries your payment term; if the customer is late, Tellbill sends reminders automatically.</li>\n<li><strong>Prepayment by QR-bill</strong> (the customer pays <em>before</em> you ship): enable the &#8220;Direct bank transfer&#8221; gateway so the order lands in &#8220;On hold&#8221;, and set the trigger to &#8220;On hold&#8221;. The customer receives the QR-bill, pays, then you ship.</li>\n<li><strong>Paid online</strong> (card at checkout): trigger &#8220;Processing&#8221; — the Tellbill invoice then serves as a receipt and accounting record.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin communicates with the Tellbill API (https://tellbill.ch) — the invoicing service it connects to; that is its sole purpose. No data is sent until you configure your API key.</p>\n<p>Data transmitted to the Tellbill API (https://tellbill.ch/api/v1, or the URL you configure):</p>\n<ul>\n<li>When an invoice is created (order reaching the trigger status): the customer&#8217;s billing details (name, email, address), the order lines (item names, quantities, prices) and the order number.</li>\n<li>When a refund is issued: the refunded amount and the refund reason.</li>\n<li>When you click &#8220;Test connection&#8221;: only your API key is transmitted (as a header).</li>\n</ul>\n<p>This data is required to issue the invoices. It is processed by Tellbill according to its terms of service and privacy policy:</p>\n<ul>\n<li>Terms of service: https://tellbill.ch/cgu</li>\n<li>Privacy policy: https://tellbill.ch/confidentialite</li>\n</ul>\n<h3>Translations</h3>\n<p>The plugin ships with German (de_DE, de_CH), Italian (it_IT) and English (en_US, en_GB) translations — the four Swiss business languages are covered out of the box. Source strings are in French (built for the Swiss market). A <code>.pot</code> template is bundled in <code>/languages</code> for any additional language.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/tellbill-for-woocommerce.1.4.2.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "billing": "Billing",
+        "invoice": "invoice",
+        "qr-bill": "qr bill",
+        "switzerland": "Switzerland"
+    },
+    "stable_tag": "1.4.2",
+    "versions": {
+        "1.4.2": "https://downloads.wordpress.org/plugin/tellbill-for-woocommerce.1.4.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/tellbill-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/tellbill-for-woocommerce/assets/banner-772x250.png?rev=3576180",
+        "high": "https://ps.w.org/tellbill-for-woocommerce/assets/banner-1544x500.png?rev=3576180"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/tellbill-for-woocommerce/assets/icon.svg?rev=3576180",
+        "svg": "https://ps.w.org/tellbill-for-woocommerce/assets/icon.svg?rev=3576180"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
