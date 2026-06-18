@@ -1,0 +1,72 @@
+{
+    "name": "TrapFlux Request Firewall",
+    "slug": "trapflux-request-firewall",
+    "version": "1.0.5",
+    "author": "<a href=\"https://profiles.wordpress.org/susheelhbti/\">susheelhbti</a>",
+    "author_profile": "https://profiles.wordpress.org/susheelhbti/",
+    "contributors": {
+        "susheelhbti": {
+            "profile": "https://profiles.wordpress.org/susheelhbti/",
+            "avatar": "https://secure.gravatar.com/avatar/7a569086590857df1d23264edf355f42b51358c3d50b51b033031dc5ad7c8ed2?s=96&d=monsterid&r=g",
+            "display_name": "susheelhbti"
+        }
+    },
+    "requires": "5.8",
+    "tested": "7.0",
+    "requires_php": "7.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/trapflux-request-firewall/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-06-18 08:57:00",
+    "added": "2026-06-18",
+    "homepage": "",
+    "sections": {
+        "description": "<p>TrapFlux Request Firewall is a lightweight request firewall that blocks vulnerability scanners and bot floods by <strong>how they behave</strong>, not just where they come from.</p>\n<ul>\n<li><strong>Behavior-based blocking</strong> — exploit-path probes (<code>.env</code>, <code>wp-config</code> backups, <code>.sql</code> dumps), malicious user agents, and request floods.</li>\n<li><strong>Rate limiting</strong> — every visitor is rate limited; hits on exploit paths count double, so scanners get banned far faster than real visitors ever could.</li>\n<li><strong>Honeypot traps</strong> — invisible links only bots follow; one visit means a permanent ban.</li>\n<li><strong>Subnet bans</strong> — block a whole CIDR range (e.g. <code>20.100.172.0/24</code>) when attackers rotate IPs on cloud providers.</li>\n<li><strong>Text attack reports</strong> — one-click downloadable <code>.txt</code> reports (summary + raw log) listing every URL attackers tried to access, ready to hand to your hosting company.</li>\n<li><strong>fail2ban-friendly log</strong> — one pipe-delimited line per blocked request, so your host can ban attackers at the network level using the plugin&#8217;s detections.</li>\n<li><strong>Fails open</strong> — any internal error and your site keeps working normally. An emergency <code>disable.flag</code> file shuts blocking off instantly via FTP.</li>\n</ul>\n<h4>Strongest mode (optional)</h4>\n<p>By default the firewall runs when plugins load — before WP routing, themes and queries. For maximum resource savings you can point PHP&#8217;s <code>auto_prepend_file</code> at <code>firewall.php</code> so blocking happens before WordPress loads at all. See the FAQ.</p>\n<h4>Honest limitations</h4>\n<ul>\n<li>This is a request firewall, not a malware scanner — it will not detect an already-infected site.</li>\n<li>It ships with rules for today&#8217;s common probes and has no cloud threat feed; review the rules occasionally.</li>\n<li>The &#8220;Block xmlrpc.php&#8221; option breaks Jetpack and the WordPress mobile app — disable that single toggle if you use them.</li>\n<li>All assets (CSS/JS) are bundled — the plugin makes no external network requests.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>trapflux-request-firewall</code> folder to <code>/wp-content/plugins/</code>, or install the zip via Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload.</li>\n<li>Activate <strong>TrapFlux Request Firewall</strong>. Your current IP is auto-whitelisted on activation.</li>\n<li>Open the <strong>TrapFlux Request Firewall</strong> menu in wp-admin for stats, logs, reports and settings.</li>\n</ol>\n<p>Data (config, bans, logs) is stored in <code>wp-content/uploads/trapflux-request-firewall/</code>. An <code>.htaccess</code> deny rule is written automatically (Apache). On NGINX add:</p>\n<pre><code>location ^~ /wp-content/uploads/trapflux-request-firewall/ { deny all; }\n</code></pre>\n",
+        "faq": "\n<dt id=\"how%20do%20i%20enable%20blocking%20before%20wordpress%20loads%3F\">\nHow do I enable blocking before WordPress loads?\n</h4>\n<p>\n<p>Set PHP&#8217;s <code>auto_prepend_file</code> to the engine, in <code>.user.ini</code> (most shared hosting) or <code>php.ini</code>:</p>\n<pre><code>auto_prepend_file = /full/path/to/wp-content/plugins/trapflux-request-firewall/firewall.php\n</code></pre>\n<p>Or in Apache <code>.htaccess</code> (mod_php):</p>\n<pre><code>php_value auto_prepend_file \"/full/path/to/wp-content/plugins/trapflux-request-firewall/firewall.php\"\n</code></pre>\n<p>The engine guards against double-loading, so having both is safe.</p>\n</p>\n<dt id=\"i%20locked%20myself%20out.%20what%20do%20i%20do%3F\">\nI locked myself out. What do I do?\n</h4>\n<p>\n<p>Create an empty file named <code>disable.flag</code> inside <code>wp-content/uploads/trapflux-request-firewall/</code> via FTP or your host&#8217;s file manager. All blocking stops instantly. Delete the file to re-enable.</p>\n</p>\n<dt id=\"can%20my%20hosting%20company%20use%20the%20log%20with%20fail2ban%3F\">\nCan my hosting company use the log with fail2ban?\n</h4>\n<p>\n<p>Yes. Each blocked request is one line in <code>wp-content/uploads/trapflux-request-firewall/blocked.log</code>:</p>\n<pre><code>2026-06-11 14:32:07 | 20.100.172.37 | GET /xmlrpc.php | UA: ... | BLOCKED: rate-limit\n</code></pre>\n<p>Suggested failregex: <code>^.* \\| &lt;HOST&gt; \\| .* \\| BLOCKED: .*$</code></p>\n</p>\n\n",
+        "changelog": "<h4>1.0.5</h4>\n<ul>\n<li>Removed the last hardcoded WP_CONTENT_DIR fallback (in plugin activation). Data directory now resolves exclusively via wp_upload_dir(); activation aborts with a clear message if that is unavailable, instead of guessing a path.</li>\n</ul>\n<h4>1.0.4</h4>\n<ul>\n<li>Used wp_upload_dir() exclusively for data directory resolution; removed WP_CONTENT_DIR hardcode and dirname walk-up fallbacks.</li>\n<li>Replaced custom SCRIPT_FILENAME direct-access guard with the standard ABSPATH check (plus TRAPFLUX_PREPEND_MODE constant for auto_prepend_file users).</li>\n<li>Plugin activation now stores the resolved upload path in config.json so prepend-mode engine can locate its data without guessing.</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>Renamed to TrapFlux Request Firewall with a distinctive trapflux_ prefix on all options, hooks, AJAX actions and constants.</li>\n<li>Moved all data (config, bans, logs) to the uploads directory: wp-content/uploads/trapflux-request-firewall/.</li>\n<li>Sanitized all $_SERVER inputs at intake (user agent, IPs, request method, request URI).</li>\n<li>Added a direct-access guard to the firewall engine file.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Replaced Tailwind with a small handwritten stylesheet (~8 KB, prefixed classes, no build step, no framework).</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Replaced the Tailwind CSS CDN with a locally compiled stylesheet. The admin dashboard now makes zero external requests.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release: behavior-based blocking, rate limiting, honeypots, subnet bans, text reports, fail2ban-friendly logging, emergency off-switch.</li>\n</ul>\n"
+    },
+    "short_description": "Lightweight, behavior-based bot firewall. Blocks scanners before WordPress loads, with text attack reports for your hosting company.",
+    "description": "<p>TrapFlux Request Firewall is a lightweight request firewall that blocks vulnerability scanners and bot floods by <strong>how they behave</strong>, not just where they come from.</p>\n<ul>\n<li><strong>Behavior-based blocking</strong> — exploit-path probes (<code>.env</code>, <code>wp-config</code> backups, <code>.sql</code> dumps), malicious user agents, and request floods.</li>\n<li><strong>Rate limiting</strong> — every visitor is rate limited; hits on exploit paths count double, so scanners get banned far faster than real visitors ever could.</li>\n<li><strong>Honeypot traps</strong> — invisible links only bots follow; one visit means a permanent ban.</li>\n<li><strong>Subnet bans</strong> — block a whole CIDR range (e.g. <code>20.100.172.0/24</code>) when attackers rotate IPs on cloud providers.</li>\n<li><strong>Text attack reports</strong> — one-click downloadable <code>.txt</code> reports (summary + raw log) listing every URL attackers tried to access, ready to hand to your hosting company.</li>\n<li><strong>fail2ban-friendly log</strong> — one pipe-delimited line per blocked request, so your host can ban attackers at the network level using the plugin&#8217;s detections.</li>\n<li><strong>Fails open</strong> — any internal error and your site keeps working normally. An emergency <code>disable.flag</code> file shuts blocking off instantly via FTP.</li>\n</ul>\n<h4>Strongest mode (optional)</h4>\n<p>By default the firewall runs when plugins load — before WP routing, themes and queries. For maximum resource savings you can point PHP&#8217;s <code>auto_prepend_file</code> at <code>firewall.php</code> so blocking happens before WordPress loads at all. See the FAQ.</p>\n<h4>Honest limitations</h4>\n<ul>\n<li>This is a request firewall, not a malware scanner — it will not detect an already-infected site.</li>\n<li>It ships with rules for today&#8217;s common probes and has no cloud threat feed; review the rules occasionally.</li>\n<li>The &#8220;Block xmlrpc.php&#8221; option breaks Jetpack and the WordPress mobile app — disable that single toggle if you use them.</li>\n<li>All assets (CSS/JS) are bundled — the plugin makes no external network requests.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/trapflux-request-firewall.zip",
+    "upgrade_notice": {
+        "1.0.2": "<p>Admin styles rewritten as plain CSS; no framework or build step.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "bot-blocking": "bot blocking",
+        "firewall": "firewall",
+        "honeypot": "honeypot",
+        "rate-limiting": "rate limiting",
+        "security": "security"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/trapflux-request-firewall.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
