@@ -1,0 +1,97 @@
+{
+    "name": "NaveenCodes Safe Mode",
+    "slug": "naveencodes-safe-mode",
+    "version": "1.0.3",
+    "author": "<a href=\"https://profiles.wordpress.org/shinu1503/\">Naveen Goyal</a>",
+    "author_profile": "https://profiles.wordpress.org/shinu1503/",
+    "contributors": {
+        "shinu1503": {
+            "profile": "https://profiles.wordpress.org/shinu1503/",
+            "avatar": "https://secure.gravatar.com/avatar/64da82522401a99b6f499524b571836ba04cf6873103ad29af73086e7c7f4d7b?s=96&d=monsterid&r=g",
+            "display_name": "Naveen Goyal"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.0",
+    "requires_php": "8.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/naveencodes-safe-mode/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-06-20 15:46:00",
+    "added": "2026-06-19",
+    "homepage": "https://wordpress.org/plugins/naveencodes-safe-mode/",
+    "sections": {
+        "description": "<p>NaveenCodes Safe Mode helps restore access after fatal plugin or theme crashes. It detects fatal PHP shutdown errors, identifies whether the source is a plugin or theme, performs the configured recovery action, records detailed logs, stores recovery history, shows persistent admin notices, and emails administrators.</p>\n<p>The plugin does not modify, rewrite, or repair user code. Version 1 is focused only on detection, disabling, recovery, logging, and notification.</p>\n<h3>Version 1 Architecture</h3>\n<ul>\n<li>Namespace: <code>NaveenCodes\\SafeMode</code></li>\n<li>Prefix: <code>ncsm_</code></li>\n<li>Text domain: <code>naveencodes-safe-mode</code></li>\n<li>Bootstrap: <code>naveencodes-safe-mode.php</code></li>\n<li>Autoloading: lightweight PSR-4 style autoloader for <code>includes/</code></li>\n<li>Composition root: <code>includes/Core/Plugin.php</code></li>\n<li>Service boundaries:\n<ul>\n<li><code>Core</code>: activation, deactivation, settings, plugin bootstrapping</li>\n<li><code>Database</code>: custom table schema</li>\n<li><code>Recovery</code>: shutdown detection, source detection, queueing, plugin/theme recovery, notifications</li>\n<li><code>Logging</code>: error logs and recovery history persistence</li>\n<li><code>Admin</code>: dashboard, logs, history, settings, notices, coming soon UI</li>\n<li><code>Helpers</code>: focused WordPress helper utilities</li>\n<li><code>Interfaces</code>: shared service contracts</li>\n</ul>\n</li>\n</ul>\n<h3>Database Schema</h3>\n<pre><code>wp_ncsm_logs\n</code></pre>\n<ul>\n<li><code>id</code></li>\n<li><code>timestamp</code></li>\n<li><code>error_type</code></li>\n<li><code>error_message</code></li>\n<li><code>file_path</code></li>\n<li><code>line_number</code></li>\n<li><code>source_type</code></li>\n<li><code>source_name</code></li>\n<li><code>action_taken</code></li>\n<li>\n<p><code>recovery_status</code></p>\n<p>wp_ncsm_recovery_history</p>\n</li>\n<li>\n<p><code>id</code></p>\n</li>\n<li><code>timestamp</code></li>\n<li><code>source_type</code></li>\n<li><code>source_name</code></li>\n<li><code>recovery_action</code></li>\n<li><code>recovery_result</code></li>\n</ul>\n<h3>Recovery Workflow</h3>\n<ol>\n<li>Register a shutdown function early on <code>plugins_loaded</code>.</li>\n<li>Inspect <code>error_get_last()</code> on shutdown.</li>\n<li>Continue only for fatal, parse, compile, core, user, or recoverable fatal errors.</li>\n<li>Detect source from the error file path:\n<ul>\n<li><code>wp-content/plugins/...</code> becomes a plugin source.</li>\n<li><code>wp-content/themes/...</code> becomes a theme source.</li>\n<li>Anything else is stored as Unknown Source.</li>\n</ul>\n</li>\n<li>Check recovery queue attempts for the source.</li>\n<li>If the source is a plugin and plugin auto-disable is enabled, deactivate the faulty plugin.</li>\n<li>If the source is the active theme and theme recovery is enabled, switch to the configured fallback theme.</li>\n<li>Log the error and recovery action.</li>\n<li>Store recovery history.</li>\n<li>Add a persistent admin notice.</li>\n<li>Send an administrator email when enabled.</li>\n</ol>\n<h3>WordPress Hooks</h3>\n<ul>\n<li><code>plugins_loaded</code> boots the plugin.</li>\n<li><code>register_shutdown_function()</code> detects fatal shutdown errors.</li>\n<li><code>admin_menu</code> registers the admin pages.</li>\n<li><code>admin_enqueue_scripts</code> loads admin assets.</li>\n<li><code>admin_notices</code> renders persistent recovery notices.</li>\n<li><code>admin_post_ncsm_save_settings</code> saves settings.</li>\n<li><code>admin_post_ncsm_export_logs</code> exports logs.</li>\n<li><code>admin_post_ncsm_dismiss_notice</code> dismisses recovery notices.</li>\n</ul>\n<h3>Admin Pages</h3>\n<ul>\n<li>Dashboard: protection status, statistics, and recovery workflow.</li>\n<li>Error Logs: fatal error log table, filters, and CSV export.</li>\n<li>Recovery History: source, action, result, and timestamp.</li>\n<li>Settings: recovery toggles, notifications, fallback theme, retention, maximum attempts.</li>\n<li>Coming Soon: Version 2 feature previews only.</li>\n</ul>\n<h3>Settings</h3>\n<ul>\n<li>Enable Recovery</li>\n<li>Enable Plugin Auto Disable</li>\n<li>Enable Theme Recovery</li>\n<li>Enable Email Notifications</li>\n<li>Fallback Theme Selector</li>\n<li>Log Retention Period</li>\n<li>Maximum Recovery Attempts</li>\n</ul>\n<h3>Coming Soon</h3>\n<p>The following features are displayed as UI-only cards and are not implemented in Version 1:</p>\n<ul>\n<li>Automatic Rollback</li>\n<li>Update Sandbox Testing</li>\n<li>Code Snippet Protection</li>\n<li>AI Error Analysis</li>\n<li>Slack Notifications</li>\n<li>Cloud Backups</li>\n<li>Uptime Monitoring</li>\n<li>One Click Restore</li>\n</ul>\n<h3>Security</h3>\n<p>Version 1 uses capability checks, nonces, sanitization, escaping, WordPress database APIs, and prepared SQL for dynamic values. It performs no tracking, no hidden data collection, no remote code execution, and no unsafe file rewriting.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>naveencodes-safe-mode</code> folder to <code>/wp-content/plugins/</code>.</li>\n<li>Activate the plugin from the WordPress Plugins screen.</li>\n<li>Go to Safe Mode &gt; Settings and choose a fallback theme.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20plugin%20fix%20broken%20php%20code%3F\">\nDoes this plugin fix broken PHP code?\n</h4>\n<p>\n<p>No. It only detects fatal errors, disables faulty plugins or switches broken themes, logs what happened, and notifies administrators.</p>\n</p>\n<dt id=\"can%20it%20recover%20from%20every%20crash%3F\">\nCan it recover from every crash?\n</h4>\n<p>\n<p>No recovery plugin can guarantee recovery from all fatal errors. WordPress must load NaveenCodes Safe Mode before the crash occurs so its shutdown handler can run.</p>\n</p>\n<dt id=\"does%20version%201%20include%20rollback%20or%20ai%20analysis%3F\">\nDoes Version 1 include rollback or AI analysis?\n</h4>\n<p>\n<p>No. Those appear only in the Coming Soon section.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.3</h4>\n<ul>\n<li>Added: Review request notice — shown after 7 days of active use, with options to review on WordPress.org, mark as already reviewed, or snooze for 14 days. Only one NaveenCodes notice appears per day across all plugins.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Fixed: Plugin URI corrected to the WordPress.org plugin page — &#8220;View plugin&#8221; now links correctly in the plugins list.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Added: Maa tribute in the WP admin footer — shown on every Safe Mode screen, matching all other NaveenCodes plugins.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial Version 1 release.</li>\n<li>Fatal error detection.</li>\n<li>Plugin auto-disable recovery.</li>\n<li>Theme fallback recovery.</li>\n<li>Recovery queue and attempt limits.</li>\n<li>Custom error logs and recovery history tables.</li>\n<li>Admin dashboard, logs, history, settings, notices, email notifications, and Coming Soon UI.</li>\n</ul>\n"
+    },
+    "short_description": "Emergency recovery layer for WordPress fatal plugin and theme errors.",
+    "description": "<p>NaveenCodes Safe Mode helps restore access after fatal plugin or theme crashes. It detects fatal PHP shutdown errors, identifies whether the source is a plugin or theme, performs the configured recovery action, records detailed logs, stores recovery history, shows persistent admin notices, and emails administrators.</p>\n<p>The plugin does not modify, rewrite, or repair user code. Version 1 is focused only on detection, disabling, recovery, logging, and notification.</p>\n<h3>Version 1 Architecture</h3>\n<ul>\n<li>Namespace: <code>NaveenCodes\\SafeMode</code></li>\n<li>Prefix: <code>ncsm_</code></li>\n<li>Text domain: <code>naveencodes-safe-mode</code></li>\n<li>Bootstrap: <code>naveencodes-safe-mode.php</code></li>\n<li>Autoloading: lightweight PSR-4 style autoloader for <code>includes/</code></li>\n<li>Composition root: <code>includes/Core/Plugin.php</code></li>\n<li>Service boundaries:\n<ul>\n<li><code>Core</code>: activation, deactivation, settings, plugin bootstrapping</li>\n<li><code>Database</code>: custom table schema</li>\n<li><code>Recovery</code>: shutdown detection, source detection, queueing, plugin/theme recovery, notifications</li>\n<li><code>Logging</code>: error logs and recovery history persistence</li>\n<li><code>Admin</code>: dashboard, logs, history, settings, notices, coming soon UI</li>\n<li><code>Helpers</code>: focused WordPress helper utilities</li>\n<li><code>Interfaces</code>: shared service contracts</li>\n</ul>\n</li>\n</ul>\n<h3>Database Schema</h3>\n<pre><code>wp_ncsm_logs\n</code></pre>\n<ul>\n<li><code>id</code></li>\n<li><code>timestamp</code></li>\n<li><code>error_type</code></li>\n<li><code>error_message</code></li>\n<li><code>file_path</code></li>\n<li><code>line_number</code></li>\n<li><code>source_type</code></li>\n<li><code>source_name</code></li>\n<li><code>action_taken</code></li>\n<li>\n<p><code>recovery_status</code></p>\n<p>wp_ncsm_recovery_history</p>\n</li>\n<li>\n<p><code>id</code></p>\n</li>\n<li><code>timestamp</code></li>\n<li><code>source_type</code></li>\n<li><code>source_name</code></li>\n<li><code>recovery_action</code></li>\n<li><code>recovery_result</code></li>\n</ul>\n<h3>Recovery Workflow</h3>\n<ol>\n<li>Register a shutdown function early on <code>plugins_loaded</code>.</li>\n<li>Inspect <code>error_get_last()</code> on shutdown.</li>\n<li>Continue only for fatal, parse, compile, core, user, or recoverable fatal errors.</li>\n<li>Detect source from the error file path:\n<ul>\n<li><code>wp-content/plugins/...</code> becomes a plugin source.</li>\n<li><code>wp-content/themes/...</code> becomes a theme source.</li>\n<li>Anything else is stored as Unknown Source.</li>\n</ul>\n</li>\n<li>Check recovery queue attempts for the source.</li>\n<li>If the source is a plugin and plugin auto-disable is enabled, deactivate the faulty plugin.</li>\n<li>If the source is the active theme and theme recovery is enabled, switch to the configured fallback theme.</li>\n<li>Log the error and recovery action.</li>\n<li>Store recovery history.</li>\n<li>Add a persistent admin notice.</li>\n<li>Send an administrator email when enabled.</li>\n</ol>\n<h3>WordPress Hooks</h3>\n<ul>\n<li><code>plugins_loaded</code> boots the plugin.</li>\n<li><code>register_shutdown_function()</code> detects fatal shutdown errors.</li>\n<li><code>admin_menu</code> registers the admin pages.</li>\n<li><code>admin_enqueue_scripts</code> loads admin assets.</li>\n<li><code>admin_notices</code> renders persistent recovery notices.</li>\n<li><code>admin_post_ncsm_save_settings</code> saves settings.</li>\n<li><code>admin_post_ncsm_export_logs</code> exports logs.</li>\n<li><code>admin_post_ncsm_dismiss_notice</code> dismisses recovery notices.</li>\n</ul>\n<h3>Admin Pages</h3>\n<ul>\n<li>Dashboard: protection status, statistics, and recovery workflow.</li>\n<li>Error Logs: fatal error log table, filters, and CSV export.</li>\n<li>Recovery History: source, action, result, and timestamp.</li>\n<li>Settings: recovery toggles, notifications, fallback theme, retention, maximum attempts.</li>\n<li>Coming Soon: Version 2 feature previews only.</li>\n</ul>\n<h3>Settings</h3>\n<ul>\n<li>Enable Recovery</li>\n<li>Enable Plugin Auto Disable</li>\n<li>Enable Theme Recovery</li>\n<li>Enable Email Notifications</li>\n<li>Fallback Theme Selector</li>\n<li>Log Retention Period</li>\n<li>Maximum Recovery Attempts</li>\n</ul>\n<h3>Coming Soon</h3>\n<p>The following features are displayed as UI-only cards and are not implemented in Version 1:</p>\n<ul>\n<li>Automatic Rollback</li>\n<li>Update Sandbox Testing</li>\n<li>Code Snippet Protection</li>\n<li>AI Error Analysis</li>\n<li>Slack Notifications</li>\n<li>Cloud Backups</li>\n<li>Uptime Monitoring</li>\n<li>One Click Restore</li>\n</ul>\n<h3>Security</h3>\n<p>Version 1 uses capability checks, nonces, sanitization, escaping, WordPress database APIs, and prepared SQL for dynamic values. It performs no tracking, no hidden data collection, no remote code execution, and no unsafe file rewriting.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/naveencodes-safe-mode.1.0.3.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/naveencodes-safe-mode/assets/screenshot-1.png?rev=3578067",
+            "caption": "Admin notice shown after automatic recovery — confirms what failed and what action was taken."
+        },
+        {
+            "src": "https://ps.w.org/naveencodes-safe-mode/assets/screenshot-2.png?rev=3578067",
+            "caption": "Error Logs — filterable table of every fatal error with source, file, line, and recovery status."
+        },
+        {
+            "src": "https://ps.w.org/naveencodes-safe-mode/assets/screenshot-3.png?rev=3578067",
+            "caption": "Recovery History — chronological record of every recovery action and its outcome."
+        },
+        {
+            "src": "https://ps.w.org/naveencodes-safe-mode/assets/screenshot-4.png?rev=3578067",
+            "caption": "Settings — toggle recovery, auto-disable, theme fallback, email notifications, and retention controls."
+        }
+    ],
+    "tags": {
+        "fatal-error": "fatal error",
+        "plugin-recovery": "plugin recovery",
+        "recovery": "recovery",
+        "safe-mode": "safe mode",
+        "theme-recovery": "theme recovery"
+    },
+    "stable_tag": "1.0.3",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/naveencodes-safe-mode.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/naveencodes-safe-mode.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/naveencodes-safe-mode.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/naveencodes-safe-mode.1.0.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/naveencodes-safe-mode.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/naveencodes-safe-mode/assets/banner-772x250.png?rev=3578067",
+        "high": "https://ps.w.org/naveencodes-safe-mode/assets/banner-1544x500.png?rev=3578067"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/naveencodes-safe-mode/assets/icon-128x128.png?rev=3578067",
+        "2x": "https://ps.w.org/naveencodes-safe-mode/assets/icon-256x256.png?rev=3578067"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
