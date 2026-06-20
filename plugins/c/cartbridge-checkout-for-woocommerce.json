@@ -1,0 +1,91 @@
+{
+    "name": "CartBridge Checkout Links for WooCommerce",
+    "slug": "cartbridge-checkout-for-woocommerce",
+    "version": "1.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/gik000/\">Gik000</a>",
+    "author_profile": "https://profiles.wordpress.org/gik000/",
+    "contributors": {
+        "gik000": {
+            "profile": "https://profiles.wordpress.org/gik000/",
+            "avatar": "https://secure.gravatar.com/avatar/2e02c1868b77ecdf635b4ac55950e4f2ef0bfcde059c3bd38ea969040b4d2873?s=96&d=monsterid&r=g",
+            "display_name": "Gik000"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/cartbridge-checkout-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-06-20 10:29:00",
+    "added": "2026-06-17",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Since mid-2025 Meta no longer supports native on-platform checkout for Facebook and Instagram shops. Merchants must instead configure a <strong>Checkout URL</strong> on their own website — Meta documents this approach in the <a href=\"https://developers.facebook.com/docs/commerce-platform/setup-checkout-url\" rel=\"nofollow ugc\">Commerce Platform Checkout URL setup guide</a>. That URL should pre-fill the store cart and send customers straight to checkout.</p>\n<p><strong>CartBridge Checkout Links for WooCommerce</strong> handles this seamlessly. You configure your store URL as the checkout URL in Meta Commerce Manager and the plugin takes care of the rest: it reads the product list from the URL, fills the WooCommerce cart, and redirects the customer to the checkout page.</p>\n<h4>How it works</h4>\n<p>Meta appends a <code>products</code> query parameter to your checkout URL every time a customer taps &#8220;Buy&#8221; on your Facebook or Instagram shop listing:</p>\n<pre><code>https://yourstore.com/checkout?products=wc_post_id_123:2,wc_post_id_456:1\n</code></pre>\n<p>The plugin intercepts this request, adds the right products (and quantities) to the cart, and bounces the customer to <code>/checkout</code> in one smooth redirect.</p>\n<h4>Supported product ID formats</h4>\n<ul>\n<li><code>wc_post_id_123:2</code> — simple product with WooCommerce post ID 123, quantity 2</li>\n<li><code>wc_post_id_123_variation_456:2</code> — variable product 123, variation 456, quantity 2</li>\n<li><code>123:2</code> — plain WooCommerce post ID (fallback format)</li>\n</ul>\n<h4>Optional parameters</h4>\n<ul>\n<li><code>coupon=CODE</code> — applies a coupon code automatically</li>\n<li><code>utm_source</code>, <code>utm_medium</code>, <code>utm_campaign</code>, <code>utm_content</code>, <code>utm_term</code> — forwarded to the checkout URL for analytics</li>\n<li><code>fbclid</code>, <code>cart_origin</code> — forwarded for Meta attribution</li>\n</ul>\n<h4>Setup</h4>\n<ol>\n<li>Install and activate the plugin.</li>\n<li>Follow <a href=\"https://developers.facebook.com/docs/commerce-platform/setup-checkout-url\" rel=\"nofollow ugc\">Meta&#8217;s official Checkout URL setup guide</a>.</li>\n<li>In <strong>Meta Commerce Manager <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Checkout</strong>, choose <em>Checkout on another website</em>.</li>\n<li>Set the Checkout URL to your store&#8217;s checkout page, e.g. <code>https://yourstore.com/checkout</code>.</li>\n<li>Meta will automatically append the <code>?products=…</code> parameter when a customer buys.</li>\n</ol>\n<h4>Security</h4>\n<ul>\n<li>All query-string values are sanitised before use.</li>\n<li>Product IDs are validated against the WooCommerce catalogue; non-existent or non-purchasable products are silently skipped.</li>\n<li>Quantities are capped at 99 per item; item count is capped at 50 per request.</li>\n<li>The final redirect uses <code>wp_safe_redirect()</code>.</li>\n</ul>\n<h4>Requirements</h4>\n<ul>\n<li>WordPress 6.0 or later</li>\n<li>WooCommerce 7.0 or later</li>\n<li>PHP 7.4 or later</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>cartbridge-checkout-for-woocommerce</code> folder to <code>/wp-content/plugins/</code>.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> screen in WordPress.</li>\n<li>Configure your Checkout URL in Meta Commerce Manager (see the Description tab).</li>\n</ol>\n<p>No other configuration is needed.</p>\n",
+        "faq": "\n<dt id=\"does%20this%20work%20with%20variable%20products%3F\">\nDoes this work with variable products?\n</h4>\n<p>\n<p>Yes. Meta passes variation IDs in the format <code>wc_post_id_123_variation_456:qty</code>. The plugin maps those to the correct WooCommerce variation automatically.</p>\n</p>\n<dt id=\"what%20happens%20if%20a%20product%20is%20out%20of%20stock%3F\">\nWhat happens if a product is out of stock?\n</h4>\n<p>\n<p>Out-of-stock and non-purchasable products are silently skipped. If <em>no</em> valid product can be added to the cart, the redirect is suppressed and the customer stays on the landing page.</p>\n</p>\n<dt id=\"can%20i%20use%20any%20page%20as%20the%20checkout%20url%3F\">\nCan I use any page as the checkout URL?\n</h4>\n<p>\n<p>Yes. The plugin listens on <em>every</em> front-end request and activates only when the <code>products</code> parameter is present, so you can point Meta to any page of your site.</p>\n</p>\n<dt id=\"does%20the%20plugin%20conflict%20with%20page%20caching%3F\">\nDoes the plugin conflict with page caching?\n</h4>\n<p>\n<p>URLs containing the <code>products</code> parameter should be excluded from your caching layer. Most caching plugins (LiteSpeed Cache, W3 Total Cache, WP Rocket, etc.) allow you to add query-string exclusion rules for this parameter.</p>\n</p>\n<dt id=\"is%20the%20plugin%20gdpr-compliant%3F\">\nIs the plugin GDPR-compliant?\n</h4>\n<p>\n<p>The plugin does not collect, store, or transmit any personal data. It only reads URL parameters provided by Meta and uses them to populate a server-side WooCommerce cart session.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.1</h4>\n<ul>\n<li>Renamed plugin to CartBridge Checkout Links for WooCommerce for WordPress.org directory compliance.</li>\n<li>Replaced generic wc prefix with cartbridge prefix throughout the codebase.</li>\n<li>Removed redundant load_plugin_textdomain() call.</li>\n<li>Added plugin directory banners and icons.</li>\n<li>Added link to Meta&#8217;s official Checkout URL documentation in the plugin description.</li>\n<li>Added complete translations for 14 languages.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Fills the WooCommerce cart automatically when customers arrive from a Meta (Facebook or Instagram) shop checkout URL.",
+    "description": "<p>Since mid-2025 Meta no longer supports native on-platform checkout for Facebook and Instagram shops. Merchants must instead configure a <strong>Checkout URL</strong> on their own website — Meta documents this approach in the <a href=\"https://developers.facebook.com/docs/commerce-platform/setup-checkout-url\" rel=\"nofollow ugc\">Commerce Platform Checkout URL setup guide</a>. That URL should pre-fill the store cart and send customers straight to checkout.</p>\n<p><strong>CartBridge Checkout Links for WooCommerce</strong> handles this seamlessly. You configure your store URL as the checkout URL in Meta Commerce Manager and the plugin takes care of the rest: it reads the product list from the URL, fills the WooCommerce cart, and redirects the customer to the checkout page.</p>\n<h4>How it works</h4>\n<p>Meta appends a <code>products</code> query parameter to your checkout URL every time a customer taps &#8220;Buy&#8221; on your Facebook or Instagram shop listing:</p>\n<pre><code>https://yourstore.com/checkout?products=wc_post_id_123:2,wc_post_id_456:1\n</code></pre>\n<p>The plugin intercepts this request, adds the right products (and quantities) to the cart, and bounces the customer to <code>/checkout</code> in one smooth redirect.</p>\n<h4>Supported product ID formats</h4>\n<ul>\n<li><code>wc_post_id_123:2</code> — simple product with WooCommerce post ID 123, quantity 2</li>\n<li><code>wc_post_id_123_variation_456:2</code> — variable product 123, variation 456, quantity 2</li>\n<li><code>123:2</code> — plain WooCommerce post ID (fallback format)</li>\n</ul>\n<h4>Optional parameters</h4>\n<ul>\n<li><code>coupon=CODE</code> — applies a coupon code automatically</li>\n<li><code>utm_source</code>, <code>utm_medium</code>, <code>utm_campaign</code>, <code>utm_content</code>, <code>utm_term</code> — forwarded to the checkout URL for analytics</li>\n<li><code>fbclid</code>, <code>cart_origin</code> — forwarded for Meta attribution</li>\n</ul>\n<h4>Setup</h4>\n<ol>\n<li>Install and activate the plugin.</li>\n<li>Follow <a href=\"https://developers.facebook.com/docs/commerce-platform/setup-checkout-url\" rel=\"nofollow ugc\">Meta&#8217;s official Checkout URL setup guide</a>.</li>\n<li>In <strong>Meta Commerce Manager <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Checkout</strong>, choose <em>Checkout on another website</em>.</li>\n<li>Set the Checkout URL to your store&#8217;s checkout page, e.g. <code>https://yourstore.com/checkout</code>.</li>\n<li>Meta will automatically append the <code>?products=…</code> parameter when a customer buys.</li>\n</ol>\n<h4>Security</h4>\n<ul>\n<li>All query-string values are sanitised before use.</li>\n<li>Product IDs are validated against the WooCommerce catalogue; non-existent or non-purchasable products are silently skipped.</li>\n<li>Quantities are capped at 99 per item; item count is capped at 50 per request.</li>\n<li>The final redirect uses <code>wp_safe_redirect()</code>.</li>\n</ul>\n<h4>Requirements</h4>\n<ul>\n<li>WordPress 6.0 or later</li>\n<li>WooCommerce 7.0 or later</li>\n<li>PHP 7.4 or later</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/cartbridge-checkout-for-woocommerce.1.0.1.zip",
+    "upgrade_notice": {
+        "1.0.1": "<p>Renamed for WordPress.org compliance. No configuration changes required.</p>",
+        "1.0.0": "<p>Initial release. No upgrade steps required.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "cart": "cart",
+        "checkout": "checkout",
+        "facebook": "facebook",
+        "instagram": "Instagram",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.1",
+    "versions": {
+        "1.0.1": "https://downloads.wordpress.org/plugin/cartbridge-checkout-for-woocommerce.1.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/cartbridge-checkout-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://unmoscerinonelweb.com",
+    "banners": {
+        "low": "https://ps.w.org/cartbridge-checkout-for-woocommerce/assets/banner-772x250.png?rev=3575495",
+        "high": "https://ps.w.org/cartbridge-checkout-for-woocommerce/assets/banner-1544x500.png?rev=3575495"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/cartbridge-checkout-for-woocommerce/assets/icon-128x128.png?rev=3575495",
+        "2x": "https://ps.w.org/cartbridge-checkout-for-woocommerce/assets/icon-256x256.png?rev=3575495"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "cartbridge-checkout-for-woocommerce",
+            "language": "ru_RU",
+            "version": "1.0.1",
+            "updated": "2026-06-17 09:58:06",
+            "package": "https://downloads.wordpress.org/translation/plugin/cartbridge-checkout-for-woocommerce/1.0.1/ru_RU.zip"
+        }
+    ]
+}
