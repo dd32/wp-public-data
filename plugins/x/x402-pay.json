@@ -1,0 +1,91 @@
+{
+    "name": "x402 Pay",
+    "slug": "x402-pay",
+    "version": "0.1.3",
+    "author": "<a href=\"https://profiles.wordpress.org/dufresnesteven/\">Steve Dufresne</a>",
+    "author_profile": "https://profiles.wordpress.org/dufresnesteven/",
+    "contributors": {
+        "dufresnesteven": {
+            "profile": "https://profiles.wordpress.org/dufresnesteven/",
+            "avatar": "https://secure.gravatar.com/avatar/dfa0377275427b9bf088c2be61562d7fd9302f5aaef75c24478de226dc15384a?s=96&d=monsterid&r=g",
+            "display_name": "Steve Dufresne"
+        },
+        "tellyworth": {
+            "profile": "https://profiles.wordpress.org/tellyworth/",
+            "avatar": "https://secure.gravatar.com/avatar/6a0cc9d22e89e8a6629d91ab29ad93a27583bedd0ea813ef56a83dd019188748?s=96&d=monsterid&r=g",
+            "display_name": "Tellyworth"
+        }
+    },
+    "requires": "7.0",
+    "tested": "7.0",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/x402-pay/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-06-24 01:38:00",
+    "added": "2026-06-24",
+    "homepage": "",
+    "sections": {
+        "description": "<p>x402 Pay gates selected WordPress posts behind an x402 payment. When a paywalled URL is requested without a valid <code>Payment-Signature</code> header, the plugin responds with HTTP 402 and a <code>PAYMENT-REQUIRED</code> payload describing how to pay. Bots, API clients, and browser-wallet users can sign a USDC transfer, retry the request, and get the response.</p>\n<p>Use it to:</p>\n<ul>\n<li>Charge automated agents per article view.</li>\n<li>Offer pay-per-request access to a small set of premium posts.</li>\n<li>Test the x402 payment flow on Base Sepolia without setting up your own facilitator.</li>\n</ul>\n<p>The plugin is inert until you pick a paywall mode in <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> x402 Pay</strong>. The default mode is &#8220;No posts,&#8221; so installing the plugin alone does not gate anything or contact any external service.</p>\n<h4>Audience and modes</h4>\n<ul>\n<li><strong>Audience</strong> decides who gets paywalled. &#8220;Only bots&#8221; (default) uses crawler detection so human readers still see your content. &#8220;Everyone&#8221; gates both humans and bots.</li>\n<li><strong>Mode</strong> decides which posts qualify. Choose &#8220;No posts&#8221; (off), &#8220;All posts,&#8221; or restrict the paywall to a chosen category.</li>\n</ul>\n<h4>Built-in facilitators</h4>\n<ul>\n<li><strong>x402.org (Test network)</strong> — routes verify and settle calls through the public x402.org facilitator on Base Sepolia. Default for new installs. No real funds move.</li>\n<li><strong>Coinbase CDP</strong> — routes through Coinbase Developer Platform on Base mainnet (real USDC). Requires a CDP API key.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to external x402 facilitators to verify and settle payments. A facilitator is <strong>only contacted when a request hits a paywalled URL</strong> carrying a <code>Payment-Signature</code> header, or when an admin clicks <strong>Test connection</strong> on the settings page. Installing the plugin without selecting a paywall mode triggers no outbound calls.</p>\n<h4>x402.org (Test network)</h4>\n<p>Used by the default <code>x402.org (Test network)</code> connector.</p>\n<ul>\n<li>Endpoint: <code>https://x402.org/facilitator/</code></li>\n<li>What is sent: x402 PaymentRequirements (your receiving wallet address, amount, asset, network, resource URL) and the paying client&#8217;s PaymentPayload (a signed USDC <code>transferWithAuthorization</code> authorization).</li>\n<li>Why: to verify and settle the USDC payment on Base Sepolia.</li>\n<li>Site: https://www.x402.org/</li>\n<li>Terms of use: https://lfprojects.org/policies/terms-of-use/</li>\n<li>Privacy policy: https://lfprojects.org/policies/privacy-policy/</li>\n<li>This is a public testnet facilitator; do not use it for production paywalls.</li>\n</ul>\n<h4>Coinbase Developer Platform</h4>\n<p>Used only when an admin selects the <strong>Coinbase CDP</strong> connector and saves an API key.</p>\n<ul>\n<li>Endpoint: <code>https://api.cdp.coinbase.com/platform/v2/x402/</code></li>\n<li>What is sent: the same x402 PaymentRequirements and PaymentPayload, plus a CDP-signed JWT proving the API key.</li>\n<li>Why: to verify and settle the USDC payment on Base mainnet.</li>\n<li>Terms of service: https://coinbase.com/legal/developer-platform/terms-of-service/</li>\n<li>Privacy policy: https://coinbase.com/legal/privacy</li>\n</ul>\n<h3>Development</h3>\n<p>Source, build instructions, and issue tracker: https://github.com/Automattic/x402-pay</p>\n<p>The admin UI is built from <code>assets/src/index.jsx</code> via <code>npm run build</code>; the bundled <code>assets/build/index.js</code> is the compiled output.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin.</li>\n<li>Visit <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> x402 Pay</strong>.</li>\n<li>Enter the wallet address that should receive payments.</li>\n<li>Pick a paywall mode and audience.</li>\n<li>Pick a facilitator. For Coinbase, paste your CDP API Key ID and secret.</li>\n<li>Save.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"what%20does%20a%20paywalled%20request%20look%20like%3F\">\nWhat does a paywalled request look like?\n</h4>\n<p>\n<p>If the request does not carry a valid <code>Payment-Signature</code> header, the plugin returns HTTP 402 with a <code>PAYMENT-REQUIRED</code> response header containing the encoded x402 PaymentRequirements. Clients sign the requirements and retry the request.</p>\n</p>\n<dt id=\"does%20this%20charge%20human%20readers%3F\">\nDoes this charge human readers?\n</h4>\n<p>\n<p>Only if you set Audience to &#8220;Everyone.&#8221; The default is &#8220;Only bots/crawlers&#8221; so humans see posts as normal and only detected bot/agent traffic gets a 402.</p>\n</p>\n<dt id=\"do%20i%20need%20eth%20to%20receive%20payments%3F\">\nDo I need ETH to receive payments?\n</h4>\n<p>\n<p>No. x402 uses EIP-3009 <code>transferWithAuthorization</code>; the facilitator pays gas. You only need USDC inbound.</p>\n</p>\n<dt id=\"where%20are%20api%20keys%20stored%3F\">\nWhere are API keys stored?\n</h4>\n<p>\n<p>Coinbase CDP secrets are stored in their own <code>wp_options</code> row, or can be supplied via a <code>wp-config.php</code> constant or environment variable so they stay out of the database entirely.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.3</h4>\n<ul>\n<li>Use canonical coinbase.com legal URLs so the terms and privacy links pass Plugin Directory link validation.</li>\n</ul>\n<h4>0.1.2</h4>\n<ul>\n<li>Public 402 page assets now use WordPress enqueue APIs for Plugin Directory review compliance.</li>\n</ul>\n<h4>0.1.1</h4>\n<ul>\n<li>Paywall page now swaps the wallet buttons for a single live status message while a payment is in progress, and surfaces wallet rejections or settlement failures in a dismissible modal so visitors can retry.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release: paywall posts by category or all posts; gate humans, bots, or both; verify and settle USDC payments via x402.org on Base Sepolia or Coinbase CDP on Base mainnet.</li>\n</ul>\n"
+    },
+    "short_description": "A USDC paywall for AI crawlers and bots: return HTTP 402, accept a signed micropayment, then serve the content.",
+    "description": "<p>x402 Pay gates selected WordPress posts behind an x402 payment. When a paywalled URL is requested without a valid <code>Payment-Signature</code> header, the plugin responds with HTTP 402 and a <code>PAYMENT-REQUIRED</code> payload describing how to pay. Bots, API clients, and browser-wallet users can sign a USDC transfer, retry the request, and get the response.</p>\n<p>Use it to:</p>\n<ul>\n<li>Charge automated agents per article view.</li>\n<li>Offer pay-per-request access to a small set of premium posts.</li>\n<li>Test the x402 payment flow on Base Sepolia without setting up your own facilitator.</li>\n</ul>\n<p>The plugin is inert until you pick a paywall mode in <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> x402 Pay</strong>. The default mode is &#8220;No posts,&#8221; so installing the plugin alone does not gate anything or contact any external service.</p>\n<h4>Audience and modes</h4>\n<ul>\n<li><strong>Audience</strong> decides who gets paywalled. &#8220;Only bots&#8221; (default) uses crawler detection so human readers still see your content. &#8220;Everyone&#8221; gates both humans and bots.</li>\n<li><strong>Mode</strong> decides which posts qualify. Choose &#8220;No posts&#8221; (off), &#8220;All posts,&#8221; or restrict the paywall to a chosen category.</li>\n</ul>\n<h4>Built-in facilitators</h4>\n<ul>\n<li><strong>x402.org (Test network)</strong> — routes verify and settle calls through the public x402.org facilitator on Base Sepolia. Default for new installs. No real funds move.</li>\n<li><strong>Coinbase CDP</strong> — routes through Coinbase Developer Platform on Base mainnet (real USDC). Requires a CDP API key.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to external x402 facilitators to verify and settle payments. A facilitator is <strong>only contacted when a request hits a paywalled URL</strong> carrying a <code>Payment-Signature</code> header, or when an admin clicks <strong>Test connection</strong> on the settings page. Installing the plugin without selecting a paywall mode triggers no outbound calls.</p>\n<h4>x402.org (Test network)</h4>\n<p>Used by the default <code>x402.org (Test network)</code> connector.</p>\n<ul>\n<li>Endpoint: <code>https://x402.org/facilitator/</code></li>\n<li>What is sent: x402 PaymentRequirements (your receiving wallet address, amount, asset, network, resource URL) and the paying client&#8217;s PaymentPayload (a signed USDC <code>transferWithAuthorization</code> authorization).</li>\n<li>Why: to verify and settle the USDC payment on Base Sepolia.</li>\n<li>Site: https://www.x402.org/</li>\n<li>Terms of use: https://lfprojects.org/policies/terms-of-use/</li>\n<li>Privacy policy: https://lfprojects.org/policies/privacy-policy/</li>\n<li>This is a public testnet facilitator; do not use it for production paywalls.</li>\n</ul>\n<h4>Coinbase Developer Platform</h4>\n<p>Used only when an admin selects the <strong>Coinbase CDP</strong> connector and saves an API key.</p>\n<ul>\n<li>Endpoint: <code>https://api.cdp.coinbase.com/platform/v2/x402/</code></li>\n<li>What is sent: the same x402 PaymentRequirements and PaymentPayload, plus a CDP-signed JWT proving the API key.</li>\n<li>Why: to verify and settle the USDC payment on Base mainnet.</li>\n<li>Terms of service: https://coinbase.com/legal/developer-platform/terms-of-service/</li>\n<li>Privacy policy: https://coinbase.com/legal/privacy</li>\n</ul>\n<h3>Development</h3>\n<p>Source, build instructions, and issue tracker: https://github.com/Automattic/x402-pay</p>\n<p>The admin UI is built from <code>assets/src/index.jsx</code> via <code>npm run build</code>; the bundled <code>assets/build/index.js</code> is the compiled output.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/x402-pay.0.1.3.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/x402-pay/assets/screenshot-1.png?rev=3583942",
+            "caption": "Choose paywall scope, audience, and price from a single Settings page."
+        },
+        {
+            "src": "https://ps.w.org/x402-pay/assets/screenshot-2.png?rev=3583942",
+            "caption": "Switch to Coinbase CDP to accept USDC on Base mainnet using your CDP API key."
+        },
+        {
+            "src": "https://ps.w.org/x402-pay/assets/screenshot-3.png?rev=3583942",
+            "caption": "The paywall page a human reader sees, with pay buttons for popular wallets."
+        }
+    ],
+    "tags": {
+        "http-402": "http-402",
+        "micropayments": "micropayments",
+        "paywall": "paywall",
+        "usdc": "usdc",
+        "x402": "x402"
+    },
+    "stable_tag": "0.1.3",
+    "versions": {
+        "0.1.3": "https://downloads.wordpress.org/plugin/x402-pay.0.1.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/x402-pay.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/x402-pay/assets/icon-128x128.png?rev=3583942"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
