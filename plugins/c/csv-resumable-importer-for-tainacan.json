@@ -1,0 +1,86 @@
+{
+    "name": "CSV Resumable Importer for Tainacan",
+    "slug": "csv-resumable-importer-for-tainacan",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/bauhaustech/\">bauhaustech</a>",
+    "author_profile": "https://profiles.wordpress.org/bauhaustech/",
+    "contributors": {
+        "bauhaustech": {
+            "profile": "https://profiles.wordpress.org/bauhaustech/",
+            "avatar": "https://secure.gravatar.com/avatar/ff1e144257271782eac217cb83e82613ae97185047fed61d910433960ded929a?s=96&d=monsterid&r=g",
+            "display_name": "bauhaustech"
+        },
+        "marvila": {
+            "profile": "https://profiles.wordpress.org/marvila/",
+            "avatar": "https://secure.gravatar.com/avatar/cb44db84080a923bccb346709fa62275445206f68234e6e76eeb7df588eea9ea?s=96&d=monsterid&r=g",
+            "display_name": "Fred Marvila"
+        }
+    },
+    "requires": "5.9",
+    "tested": "7.0",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "tainacan"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/csv-resumable-importer-for-tainacan/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-06-23 23:52:00",
+    "added": "2026-06-23",
+    "homepage": "",
+    "sections": {
+        "description": "<p>This add-on registers an extra CSV importer in <a href=\"https://tainacan.org/\" rel=\"nofollow ugc\">Tainacan</a> whose attachment processing is <strong>resumable</strong>: the files listed in the <code>special_attachments</code> column are imported <strong>one per background iteration</strong>, instead of all at once.</p>\n<p>It does <strong>not</strong> modify Tainacan core — it registers an additional importer through the <code>tainacan-register-importers</code> hook, so it keeps working across Tainacan updates.</p>\n<p>This is an independent add-on developed by Bauhaus Tech. It is <strong>not affiliated with, endorsed by, or part of</strong> the Tainacan project.</p>\n<h4>The problem it solves</h4>\n<p>A CSV import in which a single item has many attachments (e.g. 150 images in <code>special_attachments</code>) fails with:</p>\n<pre><code>PHP Fatal error: Maximum execution time of 360 seconds exceeded in .../class-wp-image-editor-imagick.php\n</code></pre>\n<p>…and then <strong>restarts from the beginning, duplicating items</strong>.</p>\n<p>The stock Tainacan CSV importer imports <strong>all</strong> of an item&#8217;s attachments inside a single <code>after_inserted_item()</code> call. Each file triggers <code>wp_generate_attachment_metadata()</code>, which generates thumbnails through Imagick — an expensive operation. The background process only checks its soft time limit (~20s) <strong>between</strong> <code>task()</code> iterations; since the 150 attachments run inside a single iteration, that limit is never checked mid-loop. The item alone exceeds PHP&#8217;s hard <code>max_execution_time</code>, the process dies mid-task <strong>without persisting progress</strong>, and the cron healthcheck <strong>re-dispatches the batch from the last checkpoint</strong> — recreating already-imported items.</p>\n<h4>How it works</h4>\n<p>Instead of importing attachments inline, this importer:</p>\n<ol>\n<li><strong>Queues</strong> the item&#8217;s attachment paths/URLs (stored in a transient serialized together with the process state).</li>\n<li>Processes <strong>one attachment per iteration</strong>, staying on the current item until the queue is empty.</li>\n</ol>\n<p>Because each attachment becomes its own iteration, the soft 20s limit applies <strong>between files</strong>: the batch checkpoints regularly and the import becomes resumable. Idempotency is reinforced by persisting the already-created item id, so a resume continues the attachments instead of recreating the item.</p>\n<h4>Known limitations</h4>\n<p>Because this plugin <strong>cannot modify Tainacan core</strong>:</p>\n<ul>\n<li>A single file whose processing alone exceeds <code>max_execution_time</code> still fails (pathological case).</li>\n<li>Progress is still persisted at the core&#8217;s ~20s <code>handle()</code> checkpoint, not per iteration (forcing a per-iteration checkpoint would require changing <code>Background_Importer::task()</code> in core). A fatal <strong>within the same 20s window</strong> may reprocess what was done since the last checkpoint. The definitive fix is the equivalent change upstream in Tainacan.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>csv-resumable-importer-for-tainacan</code> folder to <code>/wp-content/plugins/</code>, or install the ZIP via <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin</strong>.</li>\n<li>Activate <strong>CSV Resumable Importer for Tainacan</strong> in <strong>Plugins</strong>.</li>\n<li>Requires the <strong>Tainacan</strong> plugin to be installed and active.</li>\n<li>In <strong>Tainacan <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Importers</strong>, choose <strong>&#8220;CSV (resumable attachments)&#8221;</strong> instead of the default CSV importer.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20it%20modify%20tainacan%20core%3F\">\nDoes it modify Tainacan core?\n</h4>\n<p>\n<p>No. It registers an additional importer through Tainacan&#8217;s <code>tainacan-register-importers</code> hook and subclasses the core CSV importer. Tainacan updates do not overwrite it.</p>\n</p>\n<dt id=\"are%20the%20import%20options%20different%20from%20the%20native%20csv%20importer%3F\">\nAre the import options different from the native CSV importer?\n</h4>\n<p>\n<p>No. Delimiter, mapping, <code>server_path</code> and the special columns (<code>special_document</code>, <code>special_thumbnail</code>, <code>special_attachments[|APPEND|REPLACE]</code>) work exactly as in the native importer. Only the way attachments are processed changes.</p>\n</p>\n<dt id=\"is%20this%20an%20official%20tainacan%20plugin%3F\">\nIs this an official Tainacan plugin?\n</h4>\n<p>\n<p>No. It is an independent add-on by Bauhaus Tech, not affiliated with the Tainacan project.</p>\n</p>\n<dt id=\"does%20it%20fix%20every%20possible%20timeout%3F\">\nDoes it fix every possible timeout?\n</h4>\n<p>\n<p>It removes the real-world cause (a single item importing many attachments in one uninterruptible call). See &#8220;Known limitations&#8221; for the residual edge cases that would require a core change.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release. Resumable CSV importer that processes <code>special_attachments</code> one per background iteration.</li>\n</ul>\n"
+    },
+    "short_description": "Resumable CSV importer for Tainacan: imports attachments one at a time to avoid execution timeouts and duplicate items on large imports.",
+    "description": "<p>This add-on registers an extra CSV importer in <a href=\"https://tainacan.org/\" rel=\"nofollow ugc\">Tainacan</a> whose attachment processing is <strong>resumable</strong>: the files listed in the <code>special_attachments</code> column are imported <strong>one per background iteration</strong>, instead of all at once.</p>\n<p>It does <strong>not</strong> modify Tainacan core — it registers an additional importer through the <code>tainacan-register-importers</code> hook, so it keeps working across Tainacan updates.</p>\n<p>This is an independent add-on developed by Bauhaus Tech. It is <strong>not affiliated with, endorsed by, or part of</strong> the Tainacan project.</p>\n<h4>The problem it solves</h4>\n<p>A CSV import in which a single item has many attachments (e.g. 150 images in <code>special_attachments</code>) fails with:</p>\n<pre><code>PHP Fatal error: Maximum execution time of 360 seconds exceeded in .../class-wp-image-editor-imagick.php\n</code></pre>\n<p>…and then <strong>restarts from the beginning, duplicating items</strong>.</p>\n<p>The stock Tainacan CSV importer imports <strong>all</strong> of an item&#8217;s attachments inside a single <code>after_inserted_item()</code> call. Each file triggers <code>wp_generate_attachment_metadata()</code>, which generates thumbnails through Imagick — an expensive operation. The background process only checks its soft time limit (~20s) <strong>between</strong> <code>task()</code> iterations; since the 150 attachments run inside a single iteration, that limit is never checked mid-loop. The item alone exceeds PHP&#8217;s hard <code>max_execution_time</code>, the process dies mid-task <strong>without persisting progress</strong>, and the cron healthcheck <strong>re-dispatches the batch from the last checkpoint</strong> — recreating already-imported items.</p>\n<h4>How it works</h4>\n<p>Instead of importing attachments inline, this importer:</p>\n<ol>\n<li><strong>Queues</strong> the item&#8217;s attachment paths/URLs (stored in a transient serialized together with the process state).</li>\n<li>Processes <strong>one attachment per iteration</strong>, staying on the current item until the queue is empty.</li>\n</ol>\n<p>Because each attachment becomes its own iteration, the soft 20s limit applies <strong>between files</strong>: the batch checkpoints regularly and the import becomes resumable. Idempotency is reinforced by persisting the already-created item id, so a resume continues the attachments instead of recreating the item.</p>\n<h4>Known limitations</h4>\n<p>Because this plugin <strong>cannot modify Tainacan core</strong>:</p>\n<ul>\n<li>A single file whose processing alone exceeds <code>max_execution_time</code> still fails (pathological case).</li>\n<li>Progress is still persisted at the core&#8217;s ~20s <code>handle()</code> checkpoint, not per iteration (forcing a per-iteration checkpoint would require changing <code>Background_Importer::task()</code> in core). A fatal <strong>within the same 20s window</strong> may reprocess what was done since the last checkpoint. The definitive fix is the equivalent change upstream in Tainacan.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/csv-resumable-importer-for-tainacan.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "attachments": "attachments",
+        "background-process": "background-process",
+        "csv": "csv",
+        "importer": "importer",
+        "tainacan": "tainacan"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/csv-resumable-importer-for-tainacan.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/csv-resumable-importer-for-tainacan.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/csv-resumable-importer-for-tainacan/assets/banner-772x250.png?rev=3583877",
+        "high": "https://ps.w.org/csv-resumable-importer-for-tainacan/assets/banner-1544x500.png?rev=3583877"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/csv-resumable-importer-for-tainacan/assets/icon.svg?rev=3583877",
+        "svg": "https://ps.w.org/csv-resumable-importer-for-tainacan/assets/icon.svg?rev=3583877"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

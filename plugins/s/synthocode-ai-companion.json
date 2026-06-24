@@ -1,0 +1,123 @@
+{
+    "name": "Synthocode AI Companion",
+    "slug": "synthocode-ai-companion",
+    "version": "1.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/slim1167/\">slim1167</a>",
+    "author_profile": "https://profiles.wordpress.org/slim1167/",
+    "contributors": {
+        "slim1167": {
+            "profile": "https://profiles.wordpress.org/slim1167/",
+            "avatar": "https://secure.gravatar.com/avatar/59c0a65fd7a9909b6eeeeee434dd5aefb5841626678262adb4552a4e73ea2ba8?s=96&d=monsterid&r=g",
+            "display_name": "slim1167"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.0",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/synthocode-ai-companion/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-06-23 22:36:00",
+    "added": "2026-06-23",
+    "homepage": "https://synthocode-ai-companion.synthocode.studio/index.html",
+    "sections": {
+        "description": "<p>Synthocode AI Companion adds AI-powered buttons to your WooCommerce product editor:</p>\n<ul>\n<li><strong>Generate description with AI</strong> — uses Groq Llama 3 or OpenAI GPT to write an SEO-optimized product description from the product title.</li>\n<li><strong>Generate product image with AI (fal.ai)</strong> — uses fal.ai FLUX to generate a photorealistic product image, automatically uploads it to the Media Library, and sets it as the featured image.</li>\n<li><strong>Generate reviews summary with AI</strong> — uses Groq or OpenAI to summarize the product&#8217;s approved customer reviews (strengths, weaknesses, final recommendation). The result is stored and displayed via the &#8220;Resume IA des avis&#8221; block.</li>\n</ul>\n<h4>Non-blocking architecture</h4>\n<p>The fal.ai queue polling is done in the browser (JavaScript), not in PHP. The server is never blocked by a long-running <code>sleep</code> call. No risk of PHP timeouts or 504 errors, even with multiple concurrent users.</p>\n<h4>Security</h4>\n<ul>\n<li>Nonces on every AJAX endpoint.</li>\n<li><code>edit_products</code> capability check for product actions, <code>manage_options</code> for settings.</li>\n<li>Anti-SSRF: only HTTPS URLs hosted on <code>queue.fal.run</code> are accepted by the status/finalize endpoints.</li>\n<li>API keys stored in WordPress options, never exposed to the frontend.</li>\n</ul>\n<h4>BYOK (Bring Your Own Key)</h4>\n<p>This plugin contacts external AI providers using <strong>your own API keys</strong>. No data is ever sent to Synthocode. You stay in full control of your usage and costs.</p>\n<h3>External services</h3>\n<p>This plugin is a BYOK (&#8220;Bring Your Own Key&#8221;) tool. It does NOT send any data to Synthocode. Instead, it connects directly from your server to the third-party AI provider(s) that you choose and configure with your own API keys.</p>\n<p>Each service below is OPTIONAL and is contacted ONLY when a logged-in administrator explicitly clicks the corresponding &#8220;Generate &#8230; with AI&#8221; button in the WooCommerce product editor, and ONLY if the matching API key has been entered in Settings &gt; Synthocode AI. If no key is set for a provider, that provider is never contacted.</p>\n<h4>1. Groq API (optional — text generation)</h4>\n<p>Groq is an AI inference service used to generate product descriptions and review summaries.</p>\n<ul>\n<li>Domain contacted: <code>api.groq.com</code> (endpoint <code>https://api.groq.com/openai/v1/chat/completions</code>).</li>\n<li>When: each time you click &#8220;Generate description with AI&#8221; or &#8220;Generate reviews summary with AI&#8221; while Groq is the selected text provider.</li>\n<li>Data sent: the product title and/or the text of the product&#8217;s approved customer reviews (as part of a prompt), plus the chosen model name. Your Groq API key is sent in the request header.</li>\n<li>Terms of use: https://groq.com/terms-of-use</li>\n<li>Privacy policy: https://groq.com/privacy-policy</li>\n</ul>\n<h4>2. OpenAI API (optional — text generation)</h4>\n<p>OpenAI is an AI service used to generate product descriptions and review summaries.</p>\n<ul>\n<li>Domain contacted: <code>api.openai.com</code> (endpoint <code>https://api.openai.com/v1/chat/completions</code>).</li>\n<li>When: each time you click &#8220;Generate description with AI&#8221; or &#8220;Generate reviews summary with AI&#8221; while OpenAI is the selected text provider.</li>\n<li>Data sent: the product title and/or the text of the product&#8217;s approved customer reviews (as part of a prompt), plus the chosen model name. Your OpenAI API key is sent in the request header.</li>\n<li>Terms of use: https://openai.com/policies/terms-of-use/</li>\n<li>Privacy policy: https://openai.com/policies/privacy-policy/</li>\n</ul>\n<h4>3. fal.ai API (optional — image generation)</h4>\n<p>fal.ai is an AI image-generation service (FLUX models). The plugin contacts fal.ai through its queue API, which is served from the <code>queue.fal.run</code> domain (operated by fal.ai).</p>\n<ul>\n<li>Domains contacted: <code>queue.fal.run</code> to submit a generation job (endpoint <code>https://queue.fal.run/&lt;model&gt;</code>) and to poll the job status / fetch the result URLs returned by fal.ai.</li>\n<li>When: each time you click &#8220;Generate product image with AI (fal.ai FLUX)&#8221;.</li>\n<li>Data sent: a text prompt derived from the product title and image-generation parameters. Your fal.ai API key is sent in the request header.</li>\n<li>Data received: a generated image URL, which is then downloaded and stored in your Media Library.</li>\n<li>Terms of service: https://www.fal.ai/legal/terms-of-service</li>\n<li>Privacy policy: https://www.fal.ai/legal/privacy-policy</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin.</li>\n<li>Go to Settings &gt; Synthocode AI.</li>\n<li>Paste your Groq, OpenAI, and/or fal.ai API keys.</li>\n<li>Edit a WooCommerce product. The two AI buttons appear above the editor.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20all%20three%20api%20keys%3F\">\nDo I need all three API keys?\n</h4>\n<p>\n<p>No. Each provider is optional. You can use only Groq for text and skip image generation, or vice versa.</p>\n</p>\n<dt id=\"is%20any%20of%20my%20data%20sent%20to%20synthocode%3F\">\nIs any of my data sent to Synthocode?\n</h4>\n<p>\n<p>No. All API calls go directly from your server to the provider you configured.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.1</h4>\n<ul>\n<li>Documentation: expanded the &#8220;External services&#8221; section to explicitly list every domain contacted (api.groq.com, api.openai.com, queue.fal.run), the exact data sent and when, and verified terms/privacy links for each provider.</li>\n<li>No functional change.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>One-click &#8220;Generate description with AI&#8221; on the WooCommerce product editor (Groq Llama / OpenAI GPT), with a per-product text-provider selector.</li>\n<li>One-click &#8220;Generate product image with AI (fal.ai FLUX)&#8221; with non-blocking client-side queue polling; the image is sideloaded to the Media Library and set as the featured image.</li>\n<li>One-click &#8220;Generate reviews summary with AI&#8221; (Groq / OpenAI), built only from the product&#8217;s approved reviews and cached in post meta.</li>\n<li>Dynamic block &#8220;Resume IA des avis&#8221; (synthocode/ai-reviews-summary) that displays the stored summary on the product page.</li>\n<li>BYOK settings screen for Groq, OpenAI, and fal.ai API keys, with a &#8220;Settings&#8221; link on the Plugins page.</li>\n</ul>\n"
+    },
+    "short_description": "Generate WooCommerce product descriptions (Groq, OpenAI) and photorealistic product images (fal.ai FLUX) in one click. BYOK, no middleman.",
+    "description": "<p>Synthocode AI Companion adds AI-powered buttons to your WooCommerce product editor:</p>\n<ul>\n<li><strong>Generate description with AI</strong> — uses Groq Llama 3 or OpenAI GPT to write an SEO-optimized product description from the product title.</li>\n<li><strong>Generate product image with AI (fal.ai)</strong> — uses fal.ai FLUX to generate a photorealistic product image, automatically uploads it to the Media Library, and sets it as the featured image.</li>\n<li><strong>Generate reviews summary with AI</strong> — uses Groq or OpenAI to summarize the product&#8217;s approved customer reviews (strengths, weaknesses, final recommendation). The result is stored and displayed via the &#8220;Resume IA des avis&#8221; block.</li>\n</ul>\n<h4>Non-blocking architecture</h4>\n<p>The fal.ai queue polling is done in the browser (JavaScript), not in PHP. The server is never blocked by a long-running <code>sleep</code> call. No risk of PHP timeouts or 504 errors, even with multiple concurrent users.</p>\n<h4>Security</h4>\n<ul>\n<li>Nonces on every AJAX endpoint.</li>\n<li><code>edit_products</code> capability check for product actions, <code>manage_options</code> for settings.</li>\n<li>Anti-SSRF: only HTTPS URLs hosted on <code>queue.fal.run</code> are accepted by the status/finalize endpoints.</li>\n<li>API keys stored in WordPress options, never exposed to the frontend.</li>\n</ul>\n<h4>BYOK (Bring Your Own Key)</h4>\n<p>This plugin contacts external AI providers using <strong>your own API keys</strong>. No data is ever sent to Synthocode. You stay in full control of your usage and costs.</p>\n<h3>External services</h3>\n<p>This plugin is a BYOK (&#8220;Bring Your Own Key&#8221;) tool. It does NOT send any data to Synthocode. Instead, it connects directly from your server to the third-party AI provider(s) that you choose and configure with your own API keys.</p>\n<p>Each service below is OPTIONAL and is contacted ONLY when a logged-in administrator explicitly clicks the corresponding &#8220;Generate &#8230; with AI&#8221; button in the WooCommerce product editor, and ONLY if the matching API key has been entered in Settings &gt; Synthocode AI. If no key is set for a provider, that provider is never contacted.</p>\n<h4>1. Groq API (optional — text generation)</h4>\n<p>Groq is an AI inference service used to generate product descriptions and review summaries.</p>\n<ul>\n<li>Domain contacted: <code>api.groq.com</code> (endpoint <code>https://api.groq.com/openai/v1/chat/completions</code>).</li>\n<li>When: each time you click &#8220;Generate description with AI&#8221; or &#8220;Generate reviews summary with AI&#8221; while Groq is the selected text provider.</li>\n<li>Data sent: the product title and/or the text of the product&#8217;s approved customer reviews (as part of a prompt), plus the chosen model name. Your Groq API key is sent in the request header.</li>\n<li>Terms of use: https://groq.com/terms-of-use</li>\n<li>Privacy policy: https://groq.com/privacy-policy</li>\n</ul>\n<h4>2. OpenAI API (optional — text generation)</h4>\n<p>OpenAI is an AI service used to generate product descriptions and review summaries.</p>\n<ul>\n<li>Domain contacted: <code>api.openai.com</code> (endpoint <code>https://api.openai.com/v1/chat/completions</code>).</li>\n<li>When: each time you click &#8220;Generate description with AI&#8221; or &#8220;Generate reviews summary with AI&#8221; while OpenAI is the selected text provider.</li>\n<li>Data sent: the product title and/or the text of the product&#8217;s approved customer reviews (as part of a prompt), plus the chosen model name. Your OpenAI API key is sent in the request header.</li>\n<li>Terms of use: https://openai.com/policies/terms-of-use/</li>\n<li>Privacy policy: https://openai.com/policies/privacy-policy/</li>\n</ul>\n<h4>3. fal.ai API (optional — image generation)</h4>\n<p>fal.ai is an AI image-generation service (FLUX models). The plugin contacts fal.ai through its queue API, which is served from the <code>queue.fal.run</code> domain (operated by fal.ai).</p>\n<ul>\n<li>Domains contacted: <code>queue.fal.run</code> to submit a generation job (endpoint <code>https://queue.fal.run/&lt;model&gt;</code>) and to poll the job status / fetch the result URLs returned by fal.ai.</li>\n<li>When: each time you click &#8220;Generate product image with AI (fal.ai FLUX)&#8221;.</li>\n<li>Data sent: a text prompt derived from the product title and image-generation parameters. Your fal.ai API key is sent in the request header.</li>\n<li>Data received: a generated image URL, which is then downloaded and stored in your Media Library.</li>\n<li>Terms of service: https://www.fal.ai/legal/terms-of-service</li>\n<li>Privacy policy: https://www.fal.ai/legal/privacy-policy</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/synthocode-ai-companion.1.0.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/synthocode-ai-companion/assets/screenshot-1.png?rev=3583844",
+            "caption": "BYOK settings page (Groq / OpenAI / fal.ai). API keys are encrypted at rest and never displayed in clear text."
+        },
+        {
+            "src": "https://ps.w.org/synthocode-ai-companion/assets/screenshot-2.png?rev=3583844",
+            "caption": "WooCommerce product editor with the AI generation buttons and a Groq-generated description."
+        },
+        {
+            "src": "https://ps.w.org/synthocode-ai-companion/assets/screenshot-3.png?rev=3583844",
+            "caption": "Final product page on the front-end with the AI-generated copy and visual."
+        }
+    ],
+    "tags": {
+        "ai": "AI",
+        "content-generation": "content generation",
+        "image-generation": "image-generation",
+        "openai": "openai",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.1",
+    "versions": {
+        "1.0.1": "https://downloads.wordpress.org/plugin/synthocode-ai-companion.1.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/synthocode-ai-companion.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/synthocode-ai-companion/assets/banner-772x250.png?rev=3583844",
+        "high": "https://ps.w.org/synthocode-ai-companion/assets/banner-1544x500.png?rev=3583844"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/synthocode-ai-companion/assets/icon-128x128.png?rev=3583844",
+        "2x": "https://ps.w.org/synthocode-ai-companion/assets/icon-256x256.png?rev=3583844"
+    },
+    "blocks": {
+        "synthocode/ai-reviews-summary": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "synthocode/ai-reviews-summary",
+            "version": "1.0.0",
+            "title": "AI reviews summary",
+            "category": "woocommerce",
+            "icon": "star-filled",
+            "description": "Displays the AI summary of the product's customer reviews (generated from the product editor).",
+            "keywords": [
+                "reviews",
+                "ai",
+                "summary",
+                "woocommerce"
+            ],
+            "textdomain": "synthocode-ai-companion",
+            "usesContext": [
+                "postId"
+            ],
+            "supports": {
+                "html": false,
+                "align": [
+                    "wide"
+                ],
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                }
+            },
+            "editorScript": "file:./editor.js",
+            "style": "file:./style.css"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
