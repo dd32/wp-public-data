@@ -1,0 +1,81 @@
+{
+    "name": "ELOQIO AI Content Reservation",
+    "slug": "eloqio-ai-content-reservation",
+    "version": "1.0.2",
+    "author": "<a href=\"https://profiles.wordpress.org/eloqio/\">ELOQIO</a>",
+    "author_profile": "https://profiles.wordpress.org/eloqio/",
+    "contributors": {
+        "eloqio": {
+            "profile": "https://profiles.wordpress.org/eloqio/",
+            "avatar": "https://secure.gravatar.com/avatar/ffa5d7aa0025fab484df54be8c3dfa0a8e0abd30e85c519fa73ca09a68451b9c?s=96&d=monsterid&r=g",
+            "display_name": "ELOQIO"
+        }
+    },
+    "requires": "6.5",
+    "tested": "6.9.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/eloqio-ai-content-reservation/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-06-26 09:43:00",
+    "added": "2026-06-26",
+    "homepage": "https://github.com/eloqio/eloqio-ai-content-reservation",
+    "sections": {
+        "description": "<p><strong>ELOQIO AI Content Reservation</strong> implements the <a href=\"https://www.w3.org/community/reports/tdmrep/CG-FINAL-tdmrep-20240510/\" rel=\"nofollow ugc\">W3C TDM Reservation Protocol (TDMRep)</a> on your WordPress site. TDMRep is the technical counterpart of the European DSM Directive (Article 4) and the AI Act: it lets publishers legally reserve their rights regarding the use of their content for Text and Data Mining, including generative AI training.</p>\n<p>Unlike <code>robots.txt</code>, which is a voluntary convention, TDMRep has <strong>legal weight</strong>. AI providers that ignore a properly deployed TDMRep signal expose themselves to substantial fines under the EU AI Act starting August 2026.</p>\n<h4>What this plugin does</h4>\n<ul>\n<li>Serves <code>/.well-known/tdmrep.json</code> dynamically — no file to create, no FTP required</li>\n<li>Adds the <code>tdm-reservation</code> HTTP header on every front-end response</li>\n<li>Injects the matching <code>&lt;meta name=\"tdm-reservation\"&gt;</code> tag in the HTML head</li>\n<li>Supports the optional <code>tdm-policy</code> URL to link to your human-readable policy document</li>\n<li>Ships with a Site Health check that verifies the endpoint responds correctly</li>\n<li>Zero dependencies, zero tracking, zero external API calls</li>\n</ul>\n<h4>Why three delivery methods?</h4>\n<p>The TDMRep specification allows crawlers to look for the signal in any of the three locations. Deploying all three maximises the chance that AI bots actually pick up your reservation.</p>\n<h4>Evidence preservation</h4>\n<p>After activating the plugin, submit your endpoint URL to the <a href=\"https://web.archive.org/\" rel=\"nofollow ugc\">Wayback Machine</a> to create a timestamped proof of publication. This is essential if you ever need to demonstrate the date from which your reservation was in force.</p>\n<h4>Who is this for?</h4>\n<p>News publishers, bloggers, authors, creative agencies, and any content creator who wants to keep a clear legal record of their opt-out from AI training. Combine this plugin with blocking rules for known AI crawlers in your <code>robots.txt</code> for defence in depth.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/eloqio-ai-content-reservation</code> directory, or install the plugin through the WordPress plugins screen directly.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; screen in WordPress.</li>\n<li>Go to <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> ELOQIO AI Content Reservation</strong> to verify or adjust the reservation value.</li>\n<li>Visit <code>https://your-site.com/.well-known/tdmrep.json</code> to confirm the endpoint is live.</li>\n<li>(Optional) Archive the endpoint URL on the Wayback Machine for evidence.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20plugin%20block%20ai%20crawlers%3F\">\nDoes this plugin block AI crawlers?\n</h4>\n<p>\n<p>No. TDMRep is a declarative legal signal, not a technical block. It tells compliant AI providers that your content is off-limits for training. For active blocking, combine it with <code>robots.txt</code> rules or WAF filters.</p>\n</p>\n<dt id=\"does%20it%20work%20retroactively%3F\">\nDoes it work retroactively?\n</h4>\n<p>\n<p>No. TDMRep only applies to crawls performed after you deployed the signal. Content already collected before activation is not covered.</p>\n</p>\n<dt id=\"does%20it%20affect%20seo%3F\">\nDoes it affect SEO?\n</h4>\n<p>\n<p>No. Google Search and Bing are not affected. TDMRep targets TDM/AI training crawlers specifically. Google&#8217;s AI training (Google-Extended) reads a separate <code>robots.txt</code> directive.</p>\n</p>\n<dt id=\"is%20there%20a%20performance%20impact%3F\">\nIs there a performance impact?\n</h4>\n<p>\n<p>Negligible. The endpoint is served in a single PHP request, the HTTP header is one <code>header()</code> call, and the meta tag is three lines of HTML.</p>\n</p>\n<dt id=\"can%20i%20reserve%20only%20part%20of%20my%20site%3F\">\nCan I reserve only part of my site?\n</h4>\n<p>\n<p>The current version applies to the entire site (<code>location: /</code>). Per-post granularity is on the roadmap for future versions if demand justifies the added complexity.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.2</h4>\n<ul>\n<li>Add the <code>eloqio_acr_settings</code> filter so a theme or companion plugin can drive the reservation value from a single source of truth, while the plugin stays fully autonomous without any hook.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Security: drop the <code>JSON_UNESCAPED_SLASHES</code> flag on the TDMRep endpoint output, per the WordPress.org review feedback on late escaping of echoed data.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>Dynamic <code>/.well-known/tdmrep.json</code> endpoint.</li>\n<li><code>tdm-reservation</code> HTTP header on all front-end responses.</li>\n<li><code>&lt;meta name=\"tdm-reservation\"&gt;</code> tag injection.</li>\n<li>Optional <code>tdm-policy</code> URL support.</li>\n<li>Site Health async check.</li>\n<li>French and English translations included.</li>\n</ul>\n"
+    },
+    "short_description": "Signal your AI training opt-out through the W3C TDM Reservation Protocol. One click, three delivery methods, zero configuration file to upload.",
+    "description": "<p><strong>ELOQIO AI Content Reservation</strong> implements the <a href=\"https://www.w3.org/community/reports/tdmrep/CG-FINAL-tdmrep-20240510/\" rel=\"nofollow ugc\">W3C TDM Reservation Protocol (TDMRep)</a> on your WordPress site. TDMRep is the technical counterpart of the European DSM Directive (Article 4) and the AI Act: it lets publishers legally reserve their rights regarding the use of their content for Text and Data Mining, including generative AI training.</p>\n<p>Unlike <code>robots.txt</code>, which is a voluntary convention, TDMRep has <strong>legal weight</strong>. AI providers that ignore a properly deployed TDMRep signal expose themselves to substantial fines under the EU AI Act starting August 2026.</p>\n<h4>What this plugin does</h4>\n<ul>\n<li>Serves <code>/.well-known/tdmrep.json</code> dynamically — no file to create, no FTP required</li>\n<li>Adds the <code>tdm-reservation</code> HTTP header on every front-end response</li>\n<li>Injects the matching <code>&lt;meta name=\"tdm-reservation\"&gt;</code> tag in the HTML head</li>\n<li>Supports the optional <code>tdm-policy</code> URL to link to your human-readable policy document</li>\n<li>Ships with a Site Health check that verifies the endpoint responds correctly</li>\n<li>Zero dependencies, zero tracking, zero external API calls</li>\n</ul>\n<h4>Why three delivery methods?</h4>\n<p>The TDMRep specification allows crawlers to look for the signal in any of the three locations. Deploying all three maximises the chance that AI bots actually pick up your reservation.</p>\n<h4>Evidence preservation</h4>\n<p>After activating the plugin, submit your endpoint URL to the <a href=\"https://web.archive.org/\" rel=\"nofollow ugc\">Wayback Machine</a> to create a timestamped proof of publication. This is essential if you ever need to demonstrate the date from which your reservation was in force.</p>\n<h4>Who is this for?</h4>\n<p>News publishers, bloggers, authors, creative agencies, and any content creator who wants to keep a clear legal record of their opt-out from AI training. Combine this plugin with blocking rules for known AI crawlers in your <code>robots.txt</code> for defence in depth.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/eloqio-ai-content-reservation.1.0.2.zip",
+    "upgrade_notice": {
+        "1.0.2": "<p>Adds the <code>eloqio_acr_settings</code> developer filter. No change to default behaviour.</p>",
+        "1.0.1": "<p>Security hardening on the TDMRep JSON endpoint following WordPress.org review feedback.</p>",
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "ai": "AI",
+        "copyright": "copyright",
+        "privacy": "privacy",
+        "seo": "seo",
+        "tdm": "tdm"
+    },
+    "stable_tag": "1.0.2",
+    "versions": {
+        "1.0.2": "https://downloads.wordpress.org/plugin/eloqio-ai-content-reservation.1.0.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/eloqio-ai-content-reservation.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/eloqio-ai-content-reservation/assets/banner-772x250.png?rev=3587028",
+        "high": "https://ps.w.org/eloqio-ai-content-reservation/assets/banner-1544x500.png?rev=3587028"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/eloqio-ai-content-reservation/assets/icon-128x128.png?rev=3587028",
+        "2x": "https://ps.w.org/eloqio-ai-content-reservation/assets/icon-256x256.png?rev=3587028"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
