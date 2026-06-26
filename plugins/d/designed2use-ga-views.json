@@ -1,0 +1,93 @@
+{
+    "name": "Designed2Use GA Views",
+    "slug": "designed2use-ga-views",
+    "version": "2.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/designed2use/\">Designed 2 Use</a>",
+    "author_profile": "https://profiles.wordpress.org/designed2use/",
+    "contributors": {
+        "designed2use": {
+            "profile": "https://profiles.wordpress.org/designed2use/",
+            "avatar": "https://secure.gravatar.com/avatar/b67ab5fea80d57580c4c41cbe9f2b90f271ef87f0123c4107b7dd47855c11984?s=96&d=monsterid&r=g",
+            "display_name": "Designed 2 Use"
+        },
+        "guy1ncognito": {
+            "profile": "https://profiles.wordpress.org/guy1ncognito/",
+            "avatar": "https://secure.gravatar.com/avatar/ff72ec16e3548bc0d76fb2d66988f0525993581836b9c297ca3f75f29f55b82d?s=96&d=monsterid&r=g",
+            "display_name": "Ian Hulme"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/designed2use-ga-views/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-06-26 16:51:00",
+    "added": "2026-06-26",
+    "homepage": "https://www.designed2use.co.uk/wordpress-plugins-built-properly/ga-views/",
+    "sections": {
+        "description": "<p>Designed2Use GA Views shows the Google Analytics 4 pageview total for a post or page using a simple shortcode. It is built so a visitor&#8217;s page load is never held up by the slow Google API.</p>\n<p><strong>How it fetches counts (hybrid model)</strong></p>\n<ul>\n<li>A cached value is shown whenever one is fresh.</li>\n<li>On a cache miss for a <strong>recent</strong> post (published within your live-fetch window), the count is fetched live with a short, fail-fast timeout over a narrow date range (the post&#8217;s publish date to today) — fast because the query window is small.</li>\n<li>On a cache miss for an <strong>older</strong> post, a background job is queued and the last stored value is shown immediately. The slow, history-heavy query runs off the request path.</li>\n<li>Administrators can force a live refresh of the page they are viewing with <code>?d2ugav_refresh=1</code>.</li>\n</ul>\n<p><strong>Features</strong></p>\n<ul>\n<li><code>[d2ugav_pageview]</code> shortcode, or automatic display appended to post content / Echo Knowledge Base header.</li>\n<li>Settings page for credentials, property ID, live-fetch window, cache duration, label, metric, event name, and post types.</li>\n<li>Optional per-post &#8220;legacy baseline&#8221; to add historical (e.g. Universal Analytics) views to the live GA4 count.</li>\n<li>Lightweight: talks to the GA4 Data API directly over REST with a self-signed service-account token — no bundled multi-megabyte SDK.</li>\n</ul>\n<p>Google Analytics is a third-party service governed by Google&#8217;s own terms; see https://policies.google.com/privacy and https://marketingplatform.google.com/about/analytics/terms/us/ .</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>designed2use-ga-views</code> folder to <code>/wp-content/plugins/</code>, or install through the Plugins screen.</li>\n<li>Activate the plugin.</li>\n<li>In Google Cloud, create or select a project and enable the <strong>Google Analytics Data API</strong> for it (APIs &amp; Services <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Library <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> search &#8220;Google Analytics Data API&#8221; <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Enable).</li>\n<li>Create a service account, add a JSON key, and download it.</li>\n<li>In Google Analytics, open Admin <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Property access management and grant the service account&#8217;s email the <strong>Viewer</strong> role on your GA4 property.</li>\n<li>Go to <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> GA Views</strong>, paste the service-account JSON, enter your numeric GA4 Property ID, choose your options, and save.</li>\n<li>Add <code>[d2ugav_pageview]</code> to a post/template, or set <strong>Automatic display</strong> to append it to post content.</li>\n<li>Optionally click <strong>Refresh counts now</strong> to queue a batch of posts for an immediate background refresh.</li>\n</ol>\n<p><strong>Advanced: keeping the key out of the database</strong></p>\n<p>Instead of pasting the JSON into the settings field, define one of these in <code>wp-config.php</code>:</p>\n<pre><code>define( 'D2UGAV_CREDENTIALS_JSON', '{ ...service account json... }' );\ndefine( 'D2UGAV_CREDENTIALS_PATH', '/absolute/path/outside/webroot/key.json' );\n</code></pre>\n<p><strong>Diagnosing unexpected counts</strong></p>\n<p>If a count is not what you expect, open <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> GA Views Diagnostics</strong>, pick a post, and click <strong>Run live test</strong>. It runs a live GA4 report and shows the exact URL it matched, the request, the HTTP status, the rows returned, the computed count, and the raw GA4 response — so you can see immediately whether the issue is a URL mismatch, an event-name mismatch, a date range, or credentials.</p>\n<p>For a logged trace of every request (including front-end renders and background refreshes), enable <strong>Debug logging</strong> on the settings page. The trace is written to your PHP error log and never includes credentials or access tokens; turn it off again when finished. The same logging can be forced on site-wide with <code>define( 'D2UGAV_DEBUG', true );</code> in <code>wp-config.php</code>.</p>\n",
+        "faq": "\n<dt id=\"where%20is%20my%20service-account%20key%20stored%3F\">\nWhere is my service-account key stored?\n</h4>\n<p>\n<p>If you paste it into the settings page, it is stored in the <code>wp_options</code> table of your database. The key is never displayed again after saving. For higher security, define <code>D2UGAV_CREDENTIALS_JSON</code> or <code>D2UGAV_CREDENTIALS_PATH</code> in <code>wp-config.php</code> instead — then nothing is stored in the database.</p>\n</p>\n<dt id=\"does%20this%20slow%20down%20my%20site%3F\">\nDoes this slow down my site?\n</h4>\n<p>\n<p>Recent posts make one fast, narrow GA call on the first view after the cache expires (then it is cached). Older posts never call Google on render — they refresh in the background. You can also set the live-fetch window to 0 to push <em>every</em> post to the background.</p>\n</p>\n<dt id=\"why%20don%27t%20counts%20appear%20immediately%3F\">\nWhy don&#8217;t counts appear immediately?\n</h4>\n<p>\n<p>New posts and old posts are refreshed by a background job a few seconds after they are queued. Recent posts populate on their first front-end view. Use <strong>Refresh counts now</strong> to queue a batch right away.</p>\n</p>\n<dt id=\"my%20counts%20look%20low%20%2F%20high.\">\nMy counts look low / high.\n</h4>\n<p>\n<p>Check that the GA4 Property ID is correct, the selected metric/event matches how your site tracks views, and (for very old content) that the fallback lookback window is long enough. Pages are matched by URL using the GA4 <code>fullPageUrl</code> dimension.</p>\n</p>\n\n",
+        "changelog": "<h4>2.0.0</h4>\n<ul>\n<li>Complete rewrite for WordPress.org distribution.</li>\n<li>Removed the bundled Google SDK; the GA4 Data API is now called directly over REST.</li>\n<li>Hybrid fetch model: recent posts fetched live with a narrow publish-date window and fail-fast timeout; older posts refreshed in the background via WP-Cron. Page loads never block on the slow API.</li>\n<li>Added a full settings page (credentials, property ID, live-fetch window, cache duration, label, metric, event, post types, display mode).</li>\n<li>Added nonce protection to the editor meta box and escaped all output.</li>\n<li>Added a Diagnostics screen (Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> GA Views Diagnostics) and an optional debug-logging setting to troubleshoot unexpected counts.</li>\n<li>Clamp the GA4 query start date to the API&#8217;s minimum so posts published before GA4 existed no longer fail.</li>\n<li>Prefixed all functions/classes/meta and added internationalization.</li>\n</ul>\n"
+    },
+    "short_description": "Display Google Analytics 4 pageview counts on posts and pages. Recent posts fetch fast; older posts refresh in the background.",
+    "description": "<p>Designed2Use GA Views shows the Google Analytics 4 pageview total for a post or page using a simple shortcode. It is built so a visitor&#8217;s page load is never held up by the slow Google API.</p>\n<p><strong>How it fetches counts (hybrid model)</strong></p>\n<ul>\n<li>A cached value is shown whenever one is fresh.</li>\n<li>On a cache miss for a <strong>recent</strong> post (published within your live-fetch window), the count is fetched live with a short, fail-fast timeout over a narrow date range (the post&#8217;s publish date to today) — fast because the query window is small.</li>\n<li>On a cache miss for an <strong>older</strong> post, a background job is queued and the last stored value is shown immediately. The slow, history-heavy query runs off the request path.</li>\n<li>Administrators can force a live refresh of the page they are viewing with <code>?d2ugav_refresh=1</code>.</li>\n</ul>\n<p><strong>Features</strong></p>\n<ul>\n<li><code>[d2ugav_pageview]</code> shortcode, or automatic display appended to post content / Echo Knowledge Base header.</li>\n<li>Settings page for credentials, property ID, live-fetch window, cache duration, label, metric, event name, and post types.</li>\n<li>Optional per-post &#8220;legacy baseline&#8221; to add historical (e.g. Universal Analytics) views to the live GA4 count.</li>\n<li>Lightweight: talks to the GA4 Data API directly over REST with a self-signed service-account token — no bundled multi-megabyte SDK.</li>\n</ul>\n<p>Google Analytics is a third-party service governed by Google&#8217;s own terms; see https://policies.google.com/privacy and https://marketingplatform.google.com/about/analytics/terms/us/ .</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/designed2use-ga-views.2.0.0.zip",
+    "upgrade_notice": {
+        "2.0.0": "<p>First public release. Configure your service account and property ID under Settings → GA Views after activating.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/designed2use-ga-views/assets/screenshot-1.png?rev=3587469",
+            "caption": "The settings page under Settings → GA Views."
+        },
+        {
+            "src": "https://ps.w.org/designed2use-ga-views/assets/screenshot-2.png?rev=3587469",
+            "caption": "A pageview count rendered on a post."
+        }
+    ],
+    "tags": {
+        "analytics": "analytics",
+        "ga4": "ga4",
+        "google-analytics": "google analytics",
+        "pageviews": "pageviews",
+        "views": "views"
+    },
+    "stable_tag": "2.0.0",
+    "versions": {
+        "2.0.0": "https://downloads.wordpress.org/plugin/designed2use-ga-views.2.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/designed2use-ga-views.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/designed2use-ga-views/assets/banner-772x250.png?rev=3587469",
+        "high": "https://ps.w.org/designed2use-ga-views/assets/banner-1544x500.png?rev=3587469"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/designed2use-ga-views/assets/icon-128x128.png?rev=3587469",
+        "2x": "https://ps.w.org/designed2use-ga-views/assets/icon-256x256.png?rev=3587469"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
