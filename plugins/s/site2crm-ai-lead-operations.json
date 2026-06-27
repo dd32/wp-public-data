@@ -1,0 +1,283 @@
+{
+    "name": "Site2CRM — AI Lead Operations",
+    "slug": "site2crm-ai-lead-operations",
+    "version": "0.3.2",
+    "author": "<a href=\"https://profiles.wordpress.org/axiondeepdev/\">axiondeepdev</a>",
+    "author_profile": "https://profiles.wordpress.org/axiondeepdev/",
+    "contributors": {
+        "axiondeepdev": {
+            "profile": "https://profiles.wordpress.org/axiondeepdev/",
+            "avatar": "https://secure.gravatar.com/avatar/d957f54c29603b731143eced99e11a3f580832901ebb7652ae8d05aef2f57cdd?s=96&d=monsterid&r=g",
+            "display_name": "axiondeepdev"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/site2crm-ai-lead-operations/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-06-27 18:36:00",
+    "added": "2026-06-27",
+    "homepage": "https://site2crm.io/wordpress",
+    "sections": {
+        "description": "<p>Keep WPForms, Gravity Forms, Elementor Forms, or Contact Form 7. Site2CRM layers lead operations on top — no migration, no retraining, no rebuild. Every submission is captured, qualified, routed, and synced to your CRM in real time, including after hours and weekends. Stop wiring webhooks. Stop losing leads at 9pm.</p>\n<h4>How it works</h4>\n<ol>\n<li>Install the plugin. The setup wizard opens.</li>\n<li>Click <strong>Start free</strong> — a popup walks you through creating a Site2CRM account (or signing in). Email/password or Google.</li>\n<li>Once you verify your email, your WordPress site auto-connects. No copy-pasting an API key.</li>\n<li>Pick which form plugins to sync (WPForms / Contact Form 7) and run a one-click test lead.</li>\n<li>Embed Site2CRM-hosted forms / AI chat / booking pages anywhere on your site with a single shortcode or copy-paste snippet — generated and revealed inside the WordPress admin.</li>\n</ol>\n<h4>Requires a Site2CRM account</h4>\n<p>This plugin is the WordPress companion for the Site2CRM service (https://site2crm.io). A Site2CRM account is required for the plugin to function. Free and paid tiers are available; sign up at https://site2crm.io.</p>\n<h3>Data Flow &amp; Privacy</h3>\n<p>The plugin processes form submissions by securely transmitting lead data from your WordPress forms to the Site2CRM service over HTTPS. <strong>No data is transmitted until a visitor submits a form.</strong> The plugin does not collect, store, or transmit visitor data outside of explicit form submissions, and does not include any analytics or tracking that runs without user-initiated input.</p>\n<p>Data transmitted on each submission may include:</p>\n<ul>\n<li>Lead contact fields (name, email, phone, company) as collected by your form</li>\n<li>Custom form fields the visitor filled in</li>\n<li>Submission metadata: source form name and ID, originating page URL, referrer URL, UTM parameters</li>\n<li>WordPress admin email (used by the service to send delivery-failure notifications to the site owner)</li>\n<li>Timestamp of submission</li>\n</ul>\n<p>Data is stored and processed by Site2CRM as described in our privacy policy: https://site2crm.io/privacy. The service in turn synchronizes the lead to the CRM you have connected (e.g. HubSpot, Salesforce, Pipedrive, Nutshell, Zoho).</p>\n<p>Visitors should be informed of this data flow via your site&#8217;s privacy policy. The plugin includes optional GDPR-style consent helpers for adapters that do not ship their own.</p>\n<h3>External Services</h3>\n<p>This plugin connects to the Site2CRM service (hosted by Axion Deep Labs Inc.) at <strong>https://api.site2crm.io</strong> and <strong>https://site2crm.io</strong>. Below is a complete inventory of every network call the plugin makes.</p>\n<p><strong>Site2CRM API (api.site2crm.io)</strong></p>\n<ul>\n<li><code>GET /api/public/wordpress/ping</code> — verifies the configured organization key when you click <strong>Test connection</strong>.</li>\n<li><code>POST /api/public/wordpress/leads</code> — submits each form lead captured on your WordPress site (one POST per submission, with an idempotency key so retries can&#8217;t duplicate).</li>\n<li><code>GET /api/public/wordpress/dashboard</code> — populates the <strong>Forms / AI Chat / Calendar / Analytics</strong> admin submenus with your hosted items + 30-day usage counts. Cached locally for 5 minutes.</li>\n<li><code>POST /api/public/wordpress/forms</code>, <code>/widgets</code>, <code>/booking-pages</code> — the inline &#8220;quick create&#8221; buttons in empty submenus.</li>\n</ul>\n<p><strong>Form-widget endpoints</strong> (loaded by visitors who view a page where you&#8217;ve embedded a Site2CRM form via the <code>[site2crm-form]</code> shortcode):</p>\n<ul>\n<li><code>GET /api/public/forms/widget.js</code> — the form-widget JavaScript bundle.</li>\n<li><code>GET /api/public/forms/config-by-form-key/{form_key}</code> — fetches the form configuration for rendering. Authenticates with the per-form <code>form_key</code>, NOT your org key (so view-source is safe).</li>\n<li><code>POST /api/public/leads</code> — visitor&#8217;s form submission.</li>\n</ul>\n<p><strong>Site2CRM web app (site2crm.io)</strong></p>\n<ul>\n<li><code>https://site2crm.io/wp-connect?wp_state=...&amp;wp_callback=...</code> — opened in a popup when you click <strong>Get started</strong> in the setup wizard. Used to create a Site2CRM account and link this WordPress install in one step.</li>\n<li><code>POST {wp_callback_url}</code> (received by THIS plugin&#8217;s REST endpoint, called BY Site2CRM after email verification) — the inbound side of the deep-link handshake.</li>\n</ul>\n<p><strong>What the plugin does NOT do</strong></p>\n<ul>\n<li>No analytics, tracking pixels, or telemetry.</li>\n<li>No external requests until you have entered an organization key (or completed the wizard).</li>\n<li>No third-party CDNs for plugin code — JavaScript and assets are served from your WordPress install or, for the embedded widget, from <code>api.site2crm.io</code>.</li>\n</ul>\n<p><strong>Retry timing note:</strong> WordPress&#8217;s built-in scheduler (WP-Cron) only fires when your site receives traffic. On low-traffic sites, retries may be delayed until the next visitor arrives. For mission-critical lead capture, configure a real system cron hitting <code>wp-cron.php?doing_wp_cron</code>. First-attempt submissions (the 99% path) are not affected.</p>\n<ul>\n<li>Site2CRM Terms of Service: https://site2crm.io/terms</li>\n<li>Site2CRM Privacy Policy: https://site2crm.io/privacy</li>\n</ul>\n<h3>Trademarks</h3>\n<p>WPForms is a trademark of Awesome Motive, Inc. Gravity Forms is a trademark of Rocketgenius, Inc. Elementor is a trademark of Elementor Ltd. Ninja Forms is a trademark of Saturday Drive, Inc. Fluent Forms is a trademark of WPManageNinja LLC. Formidable Forms is a trademark of Strategy11. HubSpot is a trademark of HubSpot, Inc. Salesforce is a trademark of Salesforce, Inc. Pipedrive is a trademark of Pipedrive OÜ. Nutshell is a trademark of Nutshell, Inc. Zoho is a trademark of Zoho Corporation. WordPress is a trademark of the WordPress Foundation. Mention of these names does not imply affiliation or endorsement.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to <code>/wp-content/plugins/</code>, or install through the <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New</strong> screen.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> screen in WordPress.</li>\n<li>Go to <strong>Site2CRM</strong> in the admin sidebar.</li>\n<li>Paste your Site2CRM organization key (find it in your Site2CRM dashboard under <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> API</strong>).</li>\n<li>Click <strong>Test connection</strong>. Once verified, configure which WordPress forms route to which Site2CRM destinations.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20a%20site2crm%20account%3F\">\nDo I need a Site2CRM account?\n</h4>\n<p>\n<p>Yes. The plugin is the WordPress companion to the Site2CRM service and requires a Site2CRM account to function. Free and paid tiers are available at https://site2crm.io.</p>\n</p>\n<dt id=\"does%20the%20plugin%20replace%20my%20existing%20form%20plugin%3F\">\nDoes the plugin replace my existing form plugin?\n</h4>\n<p>\n<p>No. The plugin works alongside WPForms, Contact Form 7, Gravity Forms, Elementor Forms, Ninja Forms, Fluent Forms, and Formidable Forms. Your form plugin keeps doing what it does. The Site2CRM plugin captures the submission and routes it to your CRM.</p>\n</p>\n<dt id=\"what%20crms%20are%20supported%3F\">\nWhat CRMs are supported?\n</h4>\n<p>\n<p>The Site2CRM service supports HubSpot, Salesforce, Pipedrive, Nutshell, and Zoho. New integrations are added regularly.</p>\n</p>\n<dt id=\"does%20the%20plugin%20work%20with%20multisite%3F\">\nDoes the plugin work with multisite?\n</h4>\n<p>\n<p>Network-wide activation is not supported in this version. The plugin must be activated and configured on each subsite individually.</p>\n</p>\n<dt id=\"what%20data%20is%20sent%20to%20site2crm%3F\">\nWhat data is sent to Site2CRM?\n</h4>\n<p>\n<p>See the <strong>Data Flow &amp; Privacy</strong> and <strong>External Services</strong> sections above. The plugin sends lead data only when a visitor submits a form, and only fields captured by that form (plus standard submission metadata).</p>\n</p>\n<dt id=\"how%20do%20i%20uninstall%3F\">\nHow do I uninstall?\n</h4>\n<p>\n<p>Deactivating the plugin unschedules its cron events but leaves your data intact. Deleting the plugin (Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Delete) removes plugin settings and the cron event. <strong>By default, your local submission log table is preserved</strong> so reinstalling the plugin restores the lead history. To wipe the log table on uninstall, check the &#8220;Delete on uninstall&#8221; box in <strong>Site2CRM <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Data retention</strong> before deleting the plugin.</p>\n<p>Lead data already synced to your CRM and to the Site2CRM service is not affected by plugin removal in either case.</p>\n</p>\n\n",
+        "changelog": "<h4>0.3.2</h4>\n<ul>\n<li>Security: the Form block&#8217;s render callback now verifies the stored shortcode is exactly the first-party <code>[site2crm-form]</code> shortcode before executing it, so a hand-edited block attribute can never coerce the block into running an arbitrary shortcode. Any other tag falls back to the deterministic, individually-escaped script-embed path.</li>\n</ul>\n<h4>0.3.1</h4>\n<ul>\n<li>Security: tightened REST permission checks on the admin-bar lead endpoints (/pulse and /dismiss) to require manage_options, matching the admin-only admin-bar UI that calls them.</li>\n<li>Compliance: moved all admin-bar, onboarding-wizard, and submenu-page inline scripts and styles into properly enqueued asset files (wp_enqueue_style / wp_enqueue_script with localized config) — no more inline <code>&lt;script&gt;</code>/<code>&lt;style&gt;</code> in admin screens.</li>\n<li>Docs: clarified in code that the Form block&#8217;s shortcode output is escaped inside the first-party [site2crm-form] shortcode.</li>\n</ul>\n<h4>0.3.0</h4>\n<ul>\n<li>New: native Gutenberg blocks — <strong>Site2CRM Booking Calendar</strong>, <strong>Site2CRM Form</strong>, <strong>Site2CRM AI Agent</strong> — searchable in the block inserter with a picker dropdown that lists your forms / agents / booking pages from your account. No more shortcode hunting for block-editor users.</li>\n<li>New: <strong>Integrations admin page</strong> — connect HubSpot, Salesforce, Pipedrive, Nutshell, Zoho, or Zapier via a popup-OAuth flow without leaving WP.</li>\n<li>New: <strong>Leads admin page</strong> — searchable, source-filterable inbox of recent leads pulled from your account.</li>\n<li>New: <strong>admin-bar bubble</strong> — real-time unread-lead count next to the Site2CRM menu, refreshed every 60s via REST.</li>\n<li>New: <strong>Home onboarding checklist</strong> — progress bar tracks form created / agent placed / lead captured / CRM connected.</li>\n<li>New: <strong>Health &amp; Logs</strong> page — connection status, retry-queue counts and recent failures with a one-click re-queue, debug-log tail, per-page chat-bubble exclusion, and GDPR consent settings.</li>\n<li>New: <strong><code>[site2crm-chat]</code> and <code>[site2crm-booking]</code> shortcodes</strong> — full parity with the existing <code>[site2crm-form]</code>. Drop a chat agent or inline booking page anywhere a shortcode is supported.</li>\n<li>New: <strong>GDPR consent checkbox</strong> on captured forms (opt-in). The widget blocks submission until consent is given and records the consent state with each lead.</li>\n<li>New: <strong>brand-aware booking card</strong> — pulls org name, brand color, and logo from the dashboard payload so embeds match your site, not Site2CRM&#8217;s chrome. Per-block accent-color override available.</li>\n<li>New: <strong>WP-CLI commands</strong> — <code>wp site2crm status / test / leads / sync-forms / flush-queue</code>.</li>\n<li>New: form-plugin adapters for <strong>Gravity Forms</strong>, <strong>Elementor Pro Forms</strong>, <strong>Fluent Forms</strong>, and <strong>Ninja Forms</strong> — submissions sync through the same idempotency-keyed pipeline as WPForms + CF7.</li>\n<li>New: <strong>WooCommerce</strong> adapter — new-order billing details become leads tagged <code>woocommerce:checkout</code>.</li>\n<li>New: <strong>WP user-registration</strong> adapter — new WP signups become leads tagged <code>wordpress:registration</code> (filterable to disable).</li>\n<li>New: REST endpoint <code>/wp-json/site2crm/v1/embeddables</code> powers the block picker; <code>/pulse</code> powers the admin-bar heartbeat.</li>\n<li>New: i18n setup — <code>npm run make-pot</code> generates <code>languages/site2crm.pot</code> via wp-cli.</li>\n<li>Changed: form block defaults to <strong>inline-script render</strong> (no iframe); form widget mounts directly into the host theme.</li>\n<li>Changed: booking block renders a <strong>branded &#8220;Book a meeting&#8221; CTA card</strong> opening the booking page in a new tab. Iframe embedding is the SaaS-side follow-up once the booking pages relax <code>frame-ancestors</code>.</li>\n<li>Changed: dev-mode asset URLs auto-bust on file change (filemtime cache-buster gated by <code>WP_DEBUG</code>).</li>\n<li>Changed: <code>bin/build-dist.sh</code> runs <code>npm run build</code> before zipping; <code>/build/</code> is now committed so dist zips ship working blocks.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>New: 5-step onboarding wizard replaces the bare &#8220;paste your org key&#8221; page on first install.</li>\n<li>New: deep-link signup handshake — popup opens site2crm.io, returns the org key automatically (or via copy-paste fallback for local installs).</li>\n<li>New: admin submenus — Forms, AI Chat, Calendar, Analytics — show embed snippets and 30-day usage counts.</li>\n<li>New: <code>[site2crm-form]</code> shortcode embeds the Site2CRM-hosted form anywhere.</li>\n<li>New: inline quick-create — name your form/widget/booking page in the WP admin and the plugin spins up a starter item with a copy-paste snippet ready.</li>\n<li>New: revoked-key admin banner with a one-click reconnect.</li>\n<li>New: wizard step 5 fires a real test lead through the full pipeline (auth + transport + ingest + idempotency).</li>\n<li>New: debug logger with admin toggle (off by default, org keys redacted).</li>\n<li>New: PHPUnit test suite (Brain Monkey, no WordPress bootstrap required).</li>\n</ul>\n<h4>0.1.1</h4>\n<ul>\n<li>New: Contact Form 7 adapter. Captures CF7 submissions via <code>wpcf7_mail_sent</code> and routes them through the same idempotency-keyed pipeline as WPForms.</li>\n<li>New: honors the HTTP <code>Retry-After</code> header on 429 / 5xx responses, so the plugin defers retries for exactly as long as the server asks (capped at 24 hours).</li>\n<li>New: dead-letter admin notice surfaces a count of submissions that failed all retries, so dropped leads don&#8217;t go unnoticed before the full Logs UI lands.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release. WPForms adapter ships the end-to-end vertical slice.</li>\n<li>New: settings page (org key + Test connection button) at Site2CRM admin menu.</li>\n<li>New: submission log table (<code>wp_site2crm_submissions</code>) records every form submission, with idempotency-key dedupe so retries cannot create duplicate leads on the server side.</li>\n<li>New: WP-Cron retry queue with exponential backoff (5m / 30m / 2h / 12h, four retries before permanent failure).</li>\n<li>New: opt-in &#8220;Delete on uninstall&#8221; setting (default: off — your lead history is preserved through plugin removal).</li>\n<li>New: graceful degradation when WPForms is not installed (admin notice instead of fatal errors).</li>\n<li>Extension hooks: <code>site2crm_form_adapters</code> filter (Pro plugin uses this to register Gravity / Elementor / etc.) and <code>site2crm_outgoing_payload</code> filter (custom payload transforms).</li>\n</ul>\n"
+    },
+    "short_description": "Make sure no lead ever dies. AI-powered lead operations for WordPress — works with the form plugins you already use.",
+    "description": "<p>Keep WPForms, Gravity Forms, Elementor Forms, or Contact Form 7. Site2CRM layers lead operations on top — no migration, no retraining, no rebuild. Every submission is captured, qualified, routed, and synced to your CRM in real time, including after hours and weekends. Stop wiring webhooks. Stop losing leads at 9pm.</p>\n<h4>How it works</h4>\n<ol>\n<li>Install the plugin. The setup wizard opens.</li>\n<li>Click <strong>Start free</strong> — a popup walks you through creating a Site2CRM account (or signing in). Email/password or Google.</li>\n<li>Once you verify your email, your WordPress site auto-connects. No copy-pasting an API key.</li>\n<li>Pick which form plugins to sync (WPForms / Contact Form 7) and run a one-click test lead.</li>\n<li>Embed Site2CRM-hosted forms / AI chat / booking pages anywhere on your site with a single shortcode or copy-paste snippet — generated and revealed inside the WordPress admin.</li>\n</ol>\n<h4>Requires a Site2CRM account</h4>\n<p>This plugin is the WordPress companion for the Site2CRM service (https://site2crm.io). A Site2CRM account is required for the plugin to function. Free and paid tiers are available; sign up at https://site2crm.io.</p>\n<h3>Data Flow &amp; Privacy</h3>\n<p>The plugin processes form submissions by securely transmitting lead data from your WordPress forms to the Site2CRM service over HTTPS. <strong>No data is transmitted until a visitor submits a form.</strong> The plugin does not collect, store, or transmit visitor data outside of explicit form submissions, and does not include any analytics or tracking that runs without user-initiated input.</p>\n<p>Data transmitted on each submission may include:</p>\n<ul>\n<li>Lead contact fields (name, email, phone, company) as collected by your form</li>\n<li>Custom form fields the visitor filled in</li>\n<li>Submission metadata: source form name and ID, originating page URL, referrer URL, UTM parameters</li>\n<li>WordPress admin email (used by the service to send delivery-failure notifications to the site owner)</li>\n<li>Timestamp of submission</li>\n</ul>\n<p>Data is stored and processed by Site2CRM as described in our privacy policy: https://site2crm.io/privacy. The service in turn synchronizes the lead to the CRM you have connected (e.g. HubSpot, Salesforce, Pipedrive, Nutshell, Zoho).</p>\n<p>Visitors should be informed of this data flow via your site&#8217;s privacy policy. The plugin includes optional GDPR-style consent helpers for adapters that do not ship their own.</p>\n<h3>External Services</h3>\n<p>This plugin connects to the Site2CRM service (hosted by Axion Deep Labs Inc.) at <strong>https://api.site2crm.io</strong> and <strong>https://site2crm.io</strong>. Below is a complete inventory of every network call the plugin makes.</p>\n<p><strong>Site2CRM API (api.site2crm.io)</strong></p>\n<ul>\n<li><code>GET /api/public/wordpress/ping</code> — verifies the configured organization key when you click <strong>Test connection</strong>.</li>\n<li><code>POST /api/public/wordpress/leads</code> — submits each form lead captured on your WordPress site (one POST per submission, with an idempotency key so retries can&#8217;t duplicate).</li>\n<li><code>GET /api/public/wordpress/dashboard</code> — populates the <strong>Forms / AI Chat / Calendar / Analytics</strong> admin submenus with your hosted items + 30-day usage counts. Cached locally for 5 minutes.</li>\n<li><code>POST /api/public/wordpress/forms</code>, <code>/widgets</code>, <code>/booking-pages</code> — the inline &#8220;quick create&#8221; buttons in empty submenus.</li>\n</ul>\n<p><strong>Form-widget endpoints</strong> (loaded by visitors who view a page where you&#8217;ve embedded a Site2CRM form via the <code>[site2crm-form]</code> shortcode):</p>\n<ul>\n<li><code>GET /api/public/forms/widget.js</code> — the form-widget JavaScript bundle.</li>\n<li><code>GET /api/public/forms/config-by-form-key/{form_key}</code> — fetches the form configuration for rendering. Authenticates with the per-form <code>form_key</code>, NOT your org key (so view-source is safe).</li>\n<li><code>POST /api/public/leads</code> — visitor&#8217;s form submission.</li>\n</ul>\n<p><strong>Site2CRM web app (site2crm.io)</strong></p>\n<ul>\n<li><code>https://site2crm.io/wp-connect?wp_state=...&amp;wp_callback=...</code> — opened in a popup when you click <strong>Get started</strong> in the setup wizard. Used to create a Site2CRM account and link this WordPress install in one step.</li>\n<li><code>POST {wp_callback_url}</code> (received by THIS plugin&#8217;s REST endpoint, called BY Site2CRM after email verification) — the inbound side of the deep-link handshake.</li>\n</ul>\n<p><strong>What the plugin does NOT do</strong></p>\n<ul>\n<li>No analytics, tracking pixels, or telemetry.</li>\n<li>No external requests until you have entered an organization key (or completed the wizard).</li>\n<li>No third-party CDNs for plugin code — JavaScript and assets are served from your WordPress install or, for the embedded widget, from <code>api.site2crm.io</code>.</li>\n</ul>\n<p><strong>Retry timing note:</strong> WordPress&#8217;s built-in scheduler (WP-Cron) only fires when your site receives traffic. On low-traffic sites, retries may be delayed until the next visitor arrives. For mission-critical lead capture, configure a real system cron hitting <code>wp-cron.php?doing_wp_cron</code>. First-attempt submissions (the 99% path) are not affected.</p>\n<ul>\n<li>Site2CRM Terms of Service: https://site2crm.io/terms</li>\n<li>Site2CRM Privacy Policy: https://site2crm.io/privacy</li>\n</ul>\n<h3>Trademarks</h3>\n<p>WPForms is a trademark of Awesome Motive, Inc. Gravity Forms is a trademark of Rocketgenius, Inc. Elementor is a trademark of Elementor Ltd. Ninja Forms is a trademark of Saturday Drive, Inc. Fluent Forms is a trademark of WPManageNinja LLC. Formidable Forms is a trademark of Strategy11. HubSpot is a trademark of HubSpot, Inc. Salesforce is a trademark of Salesforce, Inc. Pipedrive is a trademark of Pipedrive OÜ. Nutshell is a trademark of Nutshell, Inc. Zoho is a trademark of Zoho Corporation. WordPress is a trademark of the WordPress Foundation. Mention of these names does not imply affiliation or endorsement.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/site2crm-ai-lead-operations.0.3.2.zip",
+    "upgrade_notice": {
+        "0.3.0": "<p>Native Gutenberg blocks, Integrations and Leads admin pages, a real-time admin-bar bubble, onboarding checklist, Health &amp; Logs surface, GDPR consent, four new form adapters, WooCommerce and user-registration capture, and WP-CLI commands.</p>",
+        "0.2.0": "<p>Major UX upgrade: onboarding wizard, in-WP form / chat / calendar embed snippets, inline quick-create, analytics tab, and a revoked-key warning banner.</p>",
+        "0.1.1": "<p>Adds Contact Form 7 support, honors HTTP Retry-After headers, and surfaces a dead-letter notice when submissions fail every retry.</p>",
+        "0.1.0": "<p>Initial release. Captures WPForms submissions to your Site2CRM organization.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/site2crm-ai-lead-operations/assets/screenshot-1.png?rev=3588278",
+            "caption": "Site2CRM Overview — branded home page with last-30-day stats (forms filled, chats started, bookings), quick actions, capacity bar, and recent-activity feed."
+        },
+        {
+            "src": "https://ps.w.org/site2crm-ai-lead-operations/assets/screenshot-2.png?rev=3588278",
+            "caption": "Setup wizard — first-run welcome step. Free-forever framing, no copy-pasted API keys."
+        },
+        {
+            "src": "https://ps.w.org/site2crm-ai-lead-operations/assets/screenshot-3.png?rev=3588278",
+            "caption": "Setup wizard — connect step. Opens a popup to site2crm.io, returns the org key automatically."
+        },
+        {
+            "src": "https://ps.w.org/site2crm-ai-lead-operations/assets/screenshot-4.png?rev=3588278",
+            "caption": "Forms submenu — your hosted Site2CRM forms with copyable shortcode + script + iframe snippets."
+        },
+        {
+            "src": "https://ps.w.org/site2crm-ai-lead-operations/assets/screenshot-5.png?rev=3588278",
+            "caption": "AI Chat submenu — chat widgets with embed snippets, ready to drop on any page."
+        },
+        {
+            "src": "https://ps.w.org/site2crm-ai-lead-operations/assets/screenshot-6.png?rev=3588278",
+            "caption": "Calendar submenu — booking pages with public URL + iframe embed."
+        },
+        {
+            "src": "https://ps.w.org/site2crm-ai-lead-operations/assets/screenshot-7.png?rev=3588278",
+            "caption": "Analytics — 30-day breakdown across Forms, Chats, and Bookings."
+        },
+        {
+            "src": "https://ps.w.org/site2crm-ai-lead-operations/assets/screenshot-8.png?rev=3588278",
+            "caption": "Settings — org key, retention, debug toggle."
+        }
+    ],
+    "tags": {
+        "contact-form": "contact form",
+        "crm": "crm",
+        "gravity-forms": "gravity forms",
+        "lead-generation": "lead generation",
+        "wpforms": "WPForms"
+    },
+    "stable_tag": "0.3.2",
+    "versions": {
+        "0.3.2": "https://downloads.wordpress.org/plugin/site2crm-ai-lead-operations.0.3.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/site2crm-ai-lead-operations.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/site2crm-ai-lead-operations/assets/banner-772x250.png?rev=3588278",
+        "high": "https://ps.w.org/site2crm-ai-lead-operations/assets/banner-1544x500.png?rev=3588278"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/site2crm-ai-lead-operations/assets/icon.svg?rev=3588278",
+        "svg": "https://ps.w.org/site2crm-ai-lead-operations/assets/icon.svg?rev=3588278"
+    },
+    "blocks": {
+        "site2crm/chat": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "site2crm/chat",
+            "version": "0.2.1",
+            "title": "Site2CRM AI Agent",
+            "category": "embed",
+            "icon": "format-chat",
+            "description": "Drop the Site2CRM AI chat widget on this page. Visitors see a floating chat bubble.",
+            "keywords": [
+                "site2crm",
+                "ai",
+                "agent",
+                "chat",
+                "chatbot",
+                "widget"
+            ],
+            "textdomain": "site2crm-ai-lead-operations",
+            "supports": {
+                "html": false,
+                "align": false,
+                "anchor": false,
+                "spacing": {
+                    "margin": false,
+                    "padding": false
+                },
+                "multiple": false
+            },
+            "attributes": {
+                "widgetId": {
+                    "type": "string",
+                    "default": ""
+                },
+                "widgetName": {
+                    "type": "string",
+                    "default": ""
+                },
+                "embedScript": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "editorScript": "file:./index.js",
+            "editorStyle": "file:./index.css"
+        },
+        "site2crm/form": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "site2crm/form",
+            "version": "0.2.1",
+            "title": "Site2CRM Form",
+            "category": "embed",
+            "icon": "feedback",
+            "description": "Embed a Site2CRM lead-capture form anywhere on the page.",
+            "keywords": [
+                "site2crm",
+                "form",
+                "lead",
+                "contact"
+            ],
+            "textdomain": "site2crm-ai-lead-operations",
+            "supports": {
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "anchor": true,
+                "spacing": {
+                    "margin": true,
+                    "padding": false
+                }
+            },
+            "attributes": {
+                "formId": {
+                    "type": "string",
+                    "default": ""
+                },
+                "formName": {
+                    "type": "string",
+                    "default": ""
+                },
+                "embedIframe": {
+                    "type": "string",
+                    "default": ""
+                },
+                "embedScript": {
+                    "type": "string",
+                    "default": ""
+                },
+                "shortcode": {
+                    "type": "string",
+                    "default": ""
+                },
+                "height": {
+                    "type": "number",
+                    "default": 600
+                },
+                "mode": {
+                    "type": "string",
+                    "default": "script",
+                    "enum": [
+                        "script"
+                    ]
+                }
+            },
+            "editorScript": "file:./index.js",
+            "editorStyle": "file:./index.css"
+        },
+        "site2crm/booking": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "site2crm/booking",
+            "version": "0.2.1",
+            "title": "Site2CRM Booking Calendar",
+            "category": "embed",
+            "icon": "calendar-alt",
+            "description": "Embed a Site2CRM booking page so visitors can schedule meetings.",
+            "keywords": [
+                "site2crm",
+                "booking",
+                "calendar",
+                "schedule",
+                "meeting"
+            ],
+            "textdomain": "site2crm-ai-lead-operations",
+            "supports": {
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "anchor": true,
+                "spacing": {
+                    "margin": true,
+                    "padding": false
+                }
+            },
+            "attributes": {
+                "pageId": {
+                    "type": "string",
+                    "default": ""
+                },
+                "pageName": {
+                    "type": "string",
+                    "default": ""
+                },
+                "publicUrl": {
+                    "type": "string",
+                    "default": ""
+                },
+                "embedIframe": {
+                    "type": "string",
+                    "default": ""
+                },
+                "height": {
+                    "type": "number",
+                    "default": 720
+                },
+                "accent": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "editorScript": "file:./index.js",
+            "editorStyle": "file:./index.css"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
