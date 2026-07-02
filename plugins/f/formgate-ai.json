@@ -1,0 +1,99 @@
+{
+    "name": "FormGate AI &#8211; Antispam",
+    "slug": "formgate-ai",
+    "version": "1.3.12",
+    "author": "<a href=\"https://profiles.wordpress.org/simonesaggese/\">WonderWeb</a>",
+    "author_profile": "https://profiles.wordpress.org/simonesaggese/",
+    "contributors": {
+        "simonesaggese": {
+            "profile": "https://profiles.wordpress.org/simonesaggese/",
+            "avatar": "https://secure.gravatar.com/avatar/c661ba840cb8c38345621b7dbb3a83dd1f37bc07fe7f3d64b50217c5a16b5cbb?s=96&d=monsterid&r=g",
+            "display_name": "WonderWeb"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/formgate-ai/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-02 12:43:00",
+    "added": "2026-07-02",
+    "homepage": "https://formgate.it",
+    "sections": {
+        "description": "<p>FormGate AI connects supported WordPress contact forms to the FormGate service. You can define a custom prompt to receive in your inbox only the type of messages you actually want. FormGate classifies each submitted message as valid, spam, not relevant, or suspicious, then applies the delivery rules configured in the FormGate dashboard.</p>\n<p>The plugin supports:</p>\n<ul>\n<li>Contact Form 7</li>\n<li>WPForms Lite and Pro</li>\n<li>Gravity Forms</li>\n<li>Elementor Pro Forms</li>\n<li>Custom forms through the PHP function <code>wwfgai_send( $fields )</code></li>\n</ul>\n<p>FormGate handles delivery and quarantine for configured forms. If FormGate is unreachable, the native WordPress form email remains active.</p>\n<p>An active FormGate account is required. You can create or manage an account at https://app.formgate.it/.</p>\n<h3>External service disclosure</h3>\n<p>This plugin connects to the external FormGate AI service operated by Wonder Web.</p>\n<p>Service endpoints used by the plugin:</p>\n<ul>\n<li><code>https://api-formgate.wonder-web.it</code></li>\n<li><code>https://app.formgate.it</code></li>\n</ul>\n<p>The plugin does not contact FormGate immediately on activation. Network requests to FormGate happen only after a site administrator explicitly starts the automatic connection flow, manually tests/saves API credentials, disconnects an existing connection, or after the plugin has been configured and a supported form is submitted.</p>\n<p>Data sent to FormGate may include:</p>\n<ul>\n<li>During automatic connection: the WordPress site domain and site name.</li>\n<li>During manual connection or connection test: the Site ID and API key entered by the administrator.</li>\n<li>During form processing: the mapped form fields <code>name</code>, <code>email</code>, <code>phone</code>, and <code>message</code>, when present in the submitted form. The <code>message</code> field is required for classification.</li>\n</ul>\n<p>FormGate uses the submitted data to classify the lead, manage delivery/quarantine, show the submission in the FormGate dashboard, and provide service diagnostics. The FormGate backend sends only the message text to its AI classifier.</p>\n<p>Terms of service: https://app.formgate.it/terms</p>\n<p>Privacy policy: https://app.formgate.it/privacy-policy</p>\n<h3>Privacy</h3>\n<p>FormGate AI is a SaaS integration. Site owners should disclose this processing in their own privacy policy before enabling the plugin on live forms.</p>\n<p>The local WordPress plugin stores the FormGate API credential encrypted in the WordPress options table using Sodium when available, with AES-256-GCM as fallback. The raw API key is never printed back into the admin page after it is saved.</p>\n<p>If the plugin is not configured, form submissions are not sent to FormGate.</p>\n<h3>License</h3>\n<p>FormGate AI is licensed under GPLv2 or later.</p>\n<p>All PHP, JavaScript, CSS, inline SVG icons, and image assets included in this plugin package are licensed under GPLv2 or later, or are GPL-compatible assets owned by Wonder Web and distributed with this plugin under GPLv2 or later.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>formgate-ai</code> folder to <code>/wp-content/plugins/</code>, or install the ZIP from Plugins -&gt; Add New -&gt; Upload Plugin.</li>\n<li>Activate the plugin.</li>\n<li>Open Settings -&gt; FormGate AI.</li>\n<li>Connect the site automatically from the FormGate dashboard, or connect manually with your Site ID and API key.</li>\n<li>Keep FormGate AI active and optionally enable the honeypot anti-bot check.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20a%20formgate%20account%3F\">\nDo I need a FormGate account?\n</h4>\n<p>\n<p>Yes. FormGate AI is an external service. Register or sign in at https://app.formgate.it/.</p>\n</p>\n<dt id=\"does%20the%20plugin%20send%20data%20to%20formgate%20before%20setup%3F\">\nDoes the plugin send data to FormGate before setup?\n</h4>\n<p>\n<p>No. The plugin does not send form submissions to FormGate until an administrator connects the site with FormGate credentials and keeps the plugin enabled.</p>\n</p>\n<dt id=\"what%20happens%20if%20formgate%20is%20unreachable%3F\">\nWhat happens if FormGate is unreachable?\n</h4>\n<p>\n<p>The plugin is fail-open. Supported forms keep their native email delivery when the FormGate API cannot be reached.</p>\n</p>\n<dt id=\"can%20i%20exclude%20a%20single%20form%3F\">\nCan I exclude a single form?\n</h4>\n<p>\n<p>Yes, with the <code>wwfgai_should_process</code> filter:</p>\n<pre><code>add_filter( 'wwfgai_should_process', function ( $process, $integration, $form ) {\n    if ( 'cf7' === $integration &amp;&amp; 123 === $form-&gt;id() ) {\n        return false;\n    }\n    return $process;\n}, 10, 3 );\n</code></pre>\n</p>\n<dt id=\"can%20i%20correct%20automatic%20field%20mapping%3F\">\nCan I correct automatic field mapping?\n</h4>\n<p>\n<p>Yes, with the <code>wwfgai_payload</code> filter:</p>\n<pre><code>add_filter( 'wwfgai_payload', function ( $payload, $fields ) {\n    $payload['message'] = $fields['project-description'] ?? $payload['message'];\n    return $payload;\n}, 10, 2 );\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>1.3.12</h4>\n<ul>\n<li>Renamed the plugin to &#8220;FormGate AI &#8211; Antispam&#8221;.</li>\n<li>Added a review call-to-action below the diagnostics section.</li>\n<li>Clarified the description with custom prompt filtering.</li>\n</ul>\n<h4>1.3.11</h4>\n<ul>\n<li>Added English (en_US) translation and bundled language files.</li>\n<li>Restored plugin text domain loading so the bundled translations are applied.</li>\n</ul>\n<h4>1.3.10</h4>\n<ul>\n<li>Moved AJAX nonce checks into each handler before request data is read.</li>\n</ul>\n<h4>1.3.9</h4>\n<ul>\n<li>Added translator comments for placeholder strings.</li>\n<li>Hardened admin output escaping and settings nonce handling.</li>\n</ul>\n<h4>1.3.8</h4>\n<ul>\n<li>Fixed disconnect so legacy connection options cannot be migrated back after the site is unlinked.</li>\n</ul>\n<h4>1.3.7</h4>\n<ul>\n<li>Renamed internal prefixes for constants, classes, options, transients, AJAX actions, nonces, script handles, and public hooks to <code>wwfgai</code>.</li>\n<li>Added migration from legacy option keys.</li>\n<li>Removed explicit translation loading for WordPress.org language pack compatibility.</li>\n</ul>\n<h4>1.3.6</h4>\n<ul>\n<li>Updated the WordPress.org submission metadata.</li>\n</ul>\n<h4>1.3.5</h4>\n<ul>\n<li>Removed the Analysis only mode from the admin UI. Configured forms now always use full filtering with fail-open delivery.</li>\n</ul>\n<h4>1.3.4</h4>\n<ul>\n<li>Removed the private update endpoint and private updater code. Updates are intended to be handled through the WordPress.org plugin repository.</li>\n<li>Added explicit SaaS, external service, data transfer, Terms, Privacy Policy, and asset license disclosures.</li>\n<li>Added a standard text domain path and made the admin UI strings translatable.</li>\n<li>Raised public requirements to WordPress 6.0 and PHP 8.1.</li>\n</ul>\n<h4>1.3.3</h4>\n<ul>\n<li>Elementor recognizes text fields named &#8220;Nome Cognome&#8221;, &#8220;Nome e Cognome&#8221;, &#8220;Nome completo&#8221;, and equivalent English variants.</li>\n<li>Improved shared field label normalization.</li>\n</ul>\n<h4>1.3.2</h4>\n<ul>\n<li>Updated the dashboard link to <code>https://app.formgate.it/</code>.</li>\n</ul>\n<h4>1.3.1</h4>\n<ul>\n<li>Improved update detection in private distributions.</li>\n</ul>\n<h4>1.3.0</h4>\n<ul>\n<li>Redesigned the WordPress admin interface.</li>\n<li>Added inline SVG icons and responsive layout improvements.</li>\n</ul>\n<h4>1.2.6</h4>\n<ul>\n<li>Improved Elementor, WPForms, Gravity Forms, and Contact Form 7 handling for full filtering and fail-open delivery.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Added secure automatic connection from the FormGate dashboard.</li>\n<li>Added manual connection with credential verification.</li>\n<li>Encrypted the local API key in WordPress options.</li>\n<li>Moved admin JavaScript and honeypot JavaScript into local asset files.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Added honeypot and time-trap bot checks.</li>\n<li>Added connection test support.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Classifies WordPress contact form submissions with FormGate AI before delivery.",
+    "description": "<p>FormGate AI connects supported WordPress contact forms to the FormGate service. You can define a custom prompt to receive in your inbox only the type of messages you actually want. FormGate classifies each submitted message as valid, spam, not relevant, or suspicious, then applies the delivery rules configured in the FormGate dashboard.</p>\n<p>The plugin supports:</p>\n<ul>\n<li>Contact Form 7</li>\n<li>WPForms Lite and Pro</li>\n<li>Gravity Forms</li>\n<li>Elementor Pro Forms</li>\n<li>Custom forms through the PHP function <code>wwfgai_send( $fields )</code></li>\n</ul>\n<p>FormGate handles delivery and quarantine for configured forms. If FormGate is unreachable, the native WordPress form email remains active.</p>\n<p>An active FormGate account is required. You can create or manage an account at https://app.formgate.it/.</p>\n<h3>External service disclosure</h3>\n<p>This plugin connects to the external FormGate AI service operated by Wonder Web.</p>\n<p>Service endpoints used by the plugin:</p>\n<ul>\n<li><code>https://api-formgate.wonder-web.it</code></li>\n<li><code>https://app.formgate.it</code></li>\n</ul>\n<p>The plugin does not contact FormGate immediately on activation. Network requests to FormGate happen only after a site administrator explicitly starts the automatic connection flow, manually tests/saves API credentials, disconnects an existing connection, or after the plugin has been configured and a supported form is submitted.</p>\n<p>Data sent to FormGate may include:</p>\n<ul>\n<li>During automatic connection: the WordPress site domain and site name.</li>\n<li>During manual connection or connection test: the Site ID and API key entered by the administrator.</li>\n<li>During form processing: the mapped form fields <code>name</code>, <code>email</code>, <code>phone</code>, and <code>message</code>, when present in the submitted form. The <code>message</code> field is required for classification.</li>\n</ul>\n<p>FormGate uses the submitted data to classify the lead, manage delivery/quarantine, show the submission in the FormGate dashboard, and provide service diagnostics. The FormGate backend sends only the message text to its AI classifier.</p>\n<p>Terms of service: https://app.formgate.it/terms</p>\n<p>Privacy policy: https://app.formgate.it/privacy-policy</p>\n<h3>Privacy</h3>\n<p>FormGate AI is a SaaS integration. Site owners should disclose this processing in their own privacy policy before enabling the plugin on live forms.</p>\n<p>The local WordPress plugin stores the FormGate API credential encrypted in the WordPress options table using Sodium when available, with AES-256-GCM as fallback. The raw API key is never printed back into the admin page after it is saved.</p>\n<p>If the plugin is not configured, form submissions are not sent to FormGate.</p>\n<h3>License</h3>\n<p>FormGate AI is licensed under GPLv2 or later.</p>\n<p>All PHP, JavaScript, CSS, inline SVG icons, and image assets included in this plugin package are licensed under GPLv2 or later, or are GPL-compatible assets owned by Wonder Web and distributed with this plugin under GPLv2 or later.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/formgate-ai.1.3.12.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/formgate-ai/assets/screenshot-1.png?rev=3594014",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/formgate-ai/assets/screenshot-2.png?rev=3594014",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/formgate-ai/assets/screenshot-3.png?rev=3594014",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/formgate-ai/assets/screenshot-4.png?rev=3594014",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/formgate-ai/assets/screenshot-5.png?rev=3594014",
+            "caption": ""
+        }
+    ],
+    "tags": {
+        "ai": "AI",
+        "contact-form": "contact form",
+        "form": "form",
+        "lead": "lead",
+        "spam": "spam"
+    },
+    "stable_tag": "1.3.12",
+    "versions": {
+        "1.3.11": "https://downloads.wordpress.org/plugin/formgate-ai.1.3.11.zip",
+        "1.3.12": "https://downloads.wordpress.org/plugin/formgate-ai.1.3.12.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/formgate-ai.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/formgate-ai/assets/banner-772x250.png?rev=3594014",
+        "high": "https://ps.w.org/formgate-ai/assets/banner-1544x500.png?rev=3594014"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/formgate-ai/assets/icon-128x128.png?rev=3594014",
+        "2x": "https://ps.w.org/formgate-ai/assets/icon-256x256.png?rev=3594014"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
