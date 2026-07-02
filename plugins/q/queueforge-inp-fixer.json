@@ -1,0 +1,79 @@
+{
+    "name": "QueueForge – Interaction to Next Paint Fixer",
+    "slug": "queueforge-inp-fixer",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/gunjanjaswal/\">Gunjan Jaswal</a>",
+    "author_profile": "https://profiles.wordpress.org/gunjanjaswal/",
+    "contributors": {
+        "gunjanjaswal": {
+            "profile": "https://profiles.wordpress.org/gunjanjaswal/",
+            "avatar": "https://secure.gravatar.com/avatar/abcb83242d310cebcd5baccc64c5876a8d43af3d20cf96f74c0dc9945c46fd6a?s=96&d=monsterid&r=g",
+            "display_name": "Gunjan Jaswal"
+        }
+    },
+    "requires": "5.0",
+    "tested": "7.0",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/queueforge-inp-fixer/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-02 20:05:00",
+    "added": "2026-07-02",
+    "homepage": "https://github.com/gunjanjaswal/Queueforge-INP-Fixer",
+    "sections": {
+        "description": "<p>Google&#8217;s Core Web Vitals now use <strong>Interaction to Next Paint (INP)</strong> instead of First Input Delay. Caching plugins make pages <em>load</em> fast, but they do nothing about the bloated JavaScript from other plugins, themes, ads, and analytics that blocks the browser&#8217;s main thread and makes mobile interactions feel choppy.</p>\n<p>QueueForge INP Fixer attacks INP directly:</p>\n<ul>\n<li><strong>Delays eligible JavaScript</strong> until the visitor&#8217;s first scroll, tap, key press, or mouse move. The main thread stays free during the critical early window, so the page responds immediately.</li>\n<li><strong>Yields the main thread between scripts</strong> when the deferred code finally runs, using the native <code>scheduler.yield()</code> (with a <code>setTimeout</code> fallback) so the queued scripts do not re-block the thread in one long task.</li>\n<li><strong>Fallback timeout</strong> loads delayed scripts automatically after N seconds even with no interaction, protecting analytics and ad impressions.</li>\n<li><strong>Live INP overlay</strong> for admins shows measured INP and long-task blocking time right on the front end, using <code>PerformanceObserver</code> (<code>event</code> + <code>longtask</code>).</li>\n</ul>\n<h4>Key Features</h4>\n<ul>\n<li>Delay all eligible third-party / theme JavaScript until first interaction</li>\n<li>Main-thread yielding between deferred scripts (<code>scheduler.yield()</code> + fallback)</li>\n<li>Configurable fallback timeout (0 = interaction only)</li>\n<li>Optional jQuery delay (off by default for safety)</li>\n<li>Keyword exclusion list, plus per-tag <code>data-no-optimize</code> opt-out</li>\n<li>Skips logged-in editors so page builders keep working</li>\n<li>Live INP + blocking-time debug overlay (admins only)</li>\n<li><code>?queueforge_off</code> URL switch to bypass the delay for one page load</li>\n<li>No database writes on the front end; nothing is cached or stored per visitor</li>\n</ul>\n<h4>Why INP?</h4>\n<p>INP measures how quickly the page visually responds to <em>every</em> interaction across the whole visit, not just the first one. The single biggest cause of poor INP is JavaScript executing long tasks on the main thread while the user is trying to interact. Delaying that JavaScript until it is actually needed — and breaking its execution into yield-separated chunks — is the most direct fix.</p>\n<h4>Developer-Friendly</h4>\n<ul>\n<li><code>qfinp_exclusions</code> filter to programmatically add never-delay keywords.</li>\n<li>Uses an output buffer on <code>template_redirect</code>; no edits to your theme or other plugins.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>queueforge-inp-fixer</code> folder to <code>/wp-content/plugins/</code>.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>Visit <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> QueueForge INP</strong> to tune the delay, exclusions, and debug overlay. Defaults work out of the box.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"will%20this%20break%20my%20site%3F\">\nWill this break my site?\n</h4>\n<p>\n<p>Delaying JavaScript can affect scripts that expect to run before interaction (consent banners, some sliders, reCAPTCHA). Add a keyword for those scripts to the exclusion list, or add <code>data-no-optimize</code> to the tag. Logged-in editors are skipped by default so you can preview safely.</p>\n</p>\n<dt id=\"does%20it%20delay%20jquery%3F\">\nDoes it delay jQuery?\n</h4>\n<p>\n<p>No, unless you enable &#8220;Delay jQuery&#8221;. Many themes assume jQuery is present at load, so it is opt-in.</p>\n</p>\n<dt id=\"how%20do%20i%20test%20the%20effect%3F\">\nHow do I test the effect?\n</h4>\n<p>\n<p>Enable the <strong>Live INP overlay</strong> in settings and browse the front end while logged in as an admin. Compare against a page loaded with <code>?queueforge_off</code> appended to the URL.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20caching%20plugins%3F\">\nDoes it work with caching plugins?\n</h4>\n<p>\n<p>Yes. It rewrites the HTML as it is generated; the result can be cached normally. It complements page caching rather than replacing it.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release: interaction-delayed JavaScript, main-thread yielding, fallback timeout, exclusions, logged-in skip, and live INP/long-task overlay.</li>\n<li>All output is escaped late, including the admin-notice nonce passed to inline JavaScript via wp_json_encode().</li>\n<li>Every function, option, and the localized config object uses the qfinp prefix to avoid conflicts with other plugins.</li>\n</ul>\n"
+    },
+    "short_description": "Lowers Interaction to Next Paint (INP) by delaying heavy JavaScript until the first user interaction and yielding the main thread between scripts.",
+    "description": "<p>Google&#8217;s Core Web Vitals now use <strong>Interaction to Next Paint (INP)</strong> instead of First Input Delay. Caching plugins make pages <em>load</em> fast, but they do nothing about the bloated JavaScript from other plugins, themes, ads, and analytics that blocks the browser&#8217;s main thread and makes mobile interactions feel choppy.</p>\n<p>QueueForge INP Fixer attacks INP directly:</p>\n<ul>\n<li><strong>Delays eligible JavaScript</strong> until the visitor&#8217;s first scroll, tap, key press, or mouse move. The main thread stays free during the critical early window, so the page responds immediately.</li>\n<li><strong>Yields the main thread between scripts</strong> when the deferred code finally runs, using the native <code>scheduler.yield()</code> (with a <code>setTimeout</code> fallback) so the queued scripts do not re-block the thread in one long task.</li>\n<li><strong>Fallback timeout</strong> loads delayed scripts automatically after N seconds even with no interaction, protecting analytics and ad impressions.</li>\n<li><strong>Live INP overlay</strong> for admins shows measured INP and long-task blocking time right on the front end, using <code>PerformanceObserver</code> (<code>event</code> + <code>longtask</code>).</li>\n</ul>\n<h4>Key Features</h4>\n<ul>\n<li>Delay all eligible third-party / theme JavaScript until first interaction</li>\n<li>Main-thread yielding between deferred scripts (<code>scheduler.yield()</code> + fallback)</li>\n<li>Configurable fallback timeout (0 = interaction only)</li>\n<li>Optional jQuery delay (off by default for safety)</li>\n<li>Keyword exclusion list, plus per-tag <code>data-no-optimize</code> opt-out</li>\n<li>Skips logged-in editors so page builders keep working</li>\n<li>Live INP + blocking-time debug overlay (admins only)</li>\n<li><code>?queueforge_off</code> URL switch to bypass the delay for one page load</li>\n<li>No database writes on the front end; nothing is cached or stored per visitor</li>\n</ul>\n<h4>Why INP?</h4>\n<p>INP measures how quickly the page visually responds to <em>every</em> interaction across the whole visit, not just the first one. The single biggest cause of poor INP is JavaScript executing long tasks on the main thread while the user is trying to interact. Delaying that JavaScript until it is actually needed — and breaking its execution into yield-separated chunks — is the most direct fix.</p>\n<h4>Developer-Friendly</h4>\n<ul>\n<li><code>qfinp_exclusions</code> filter to programmatically add never-delay keywords.</li>\n<li>Uses an output buffer on <code>template_redirect</code>; no edits to your theme or other plugins.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/queueforge-inp-fixer.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "core-web-vitals": "core web vitals",
+        "inp": "inp",
+        "javascript": "javascript",
+        "performance": "performance",
+        "web-vitals": "web vitals"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/queueforge-inp-fixer.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/queueforge-inp-fixer.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://ko-fi.com/gunjanjaswal",
+    "banners": {
+        "low": "https://ps.w.org/queueforge-inp-fixer/assets/banner-772x250.png?rev=3594458",
+        "high": "https://ps.w.org/queueforge-inp-fixer/assets/banner-1544x500.png?rev=3594462"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/queueforge-inp-fixer/assets/icon-128x128.png?rev=3594468",
+        "2x": "https://ps.w.org/queueforge-inp-fixer/assets/icon-256x256.png?rev=3594470"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
