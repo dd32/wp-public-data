@@ -1,0 +1,115 @@
+{
+    "name": "HameThread",
+    "slug": "hamethread",
+    "version": "2.1.3",
+    "author": "<a href=\"https://profiles.wordpress.org/hametuha/\">Hametuha INC.</a>",
+    "author_profile": "https://profiles.wordpress.org/hametuha/",
+    "contributors": {
+        "hametuha": {
+            "profile": "https://profiles.wordpress.org/hametuha/",
+            "avatar": "https://secure.gravatar.com/avatar/f3aa9556b384a7bcce89ee495c3a16c6c780542ac363dc38a23c0033bce49a09?s=96&d=monsterid&r=g",
+            "display_name": "Hametuha INC."
+        },
+        "takahashi_fumiki": {
+            "profile": "https://profiles.wordpress.org/takahashi_fumiki/",
+            "avatar": "https://secure.gravatar.com/avatar/bce40e97210b52eae7cd03c41e160d2e971fedea0dc4264f1d2da077ac3e9a96?s=96&d=monsterid&r=g",
+            "display_name": "Fumiki Takahashi"
+        }
+    },
+    "requires": "6.6",
+    "tested": "7.0",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/hamethread/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-03 13:22:00",
+    "added": "2026-07-03",
+    "homepage": "https://wordpress.org/extend/plugins/hamethread",
+    "sections": {
+        "description": "<p>HameThread turns WordPress into a thread-based <strong>Q&amp;A forum / support desk</strong> without a heavyweight setup. Each topic is a <code>thread</code> post and replies are ordinary WordPress comments, so everything you already know about moderation, roles and the REST API keeps working.</p>\n<p>It shines where a generic forum does not:</p>\n<ul>\n<li><strong>WooCommerce product support</strong> — show a &#8220;Get support&#8221; button on a product and collect purchaser questions as threads, right inside <em>My Account</em>.</li>\n<li><strong>Private threads</strong> — let users open threads only the author, invited people and editors can read. Perfect for paid or sensitive support.</li>\n<li><strong>Best answer</strong> — mark the reply that resolved the question and flag the whole thread as <em>Resolved</em>.</li>\n<li><strong>Block-first</strong> — drop the <strong>Thread Button</strong> block on any page to let visitors start a thread. No template editing, no code.</li>\n</ul>\n<h4>Features</h4>\n<ul>\n<li><code>thread</code> post type with a <code>topic</code> taxonomy</li>\n<li>Comment-based replies with AJAX/REST posting (no full page reload)</li>\n<li>Best answer &amp; resolved / unresolved status</li>\n<li>Private threads with capability checks</li>\n<li>Auto-close threads after a period of inactivity</li>\n<li>Upvotes on comments</li>\n<li>E-mail notifications to thread subscribers</li>\n<li>JSON-LD (<code>QAPage</code>) structured data for SEO</li>\n<li>WooCommerce <em>My Account</em> support page and per-product support button</li>\n<li>Optionally enable comment threads on any public post type</li>\n<li>Admin settings under <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Discussion</strong> (no code required for common tweaks)</li>\n</ul>\n<h4>Customization</h4>\n<p>Common settings are available under <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Discussion</strong>:</p>\n<ul>\n<li>Thread description</li>\n<li>Allow users to start private threads</li>\n<li>Post types that get HameThread-style comment threads</li>\n</ul>\n<p>Everything else is filterable. See <strong>For developers</strong> below.</p>\n<h3>For developers</h3>\n<p>Replies are standard WordPress comments and threads are a standard post type, so core hooks apply. On top of that, HameThread exposes many filters/actions. The most useful ones:</p>\n<p>  Hook<br />\n  Type<br />\n  Purpose</p>\n<p>  <code>hamethread_before_thread_form</code> / <code>hamethread_after_thread_form</code><br />\n  action<br />\n  Add markup/fields to the thread form</p>\n<p>  <code>hamethread_new_thread_post_params</code><br />\n  filter<br />\n  Register extra REST parameters for new threads</p>\n<p>  <code>hamethread_new_thread_post_arg</code><br />\n  filter<br />\n  Modify the post array before a thread is inserted</p>\n<p>  <code>hamethread_new_thread_validation</code><br />\n  filter<br />\n  Add validation errors (<code>WP_Error</code>)</p>\n<p>  <code>hamethread_new_thread_inserted</code><br />\n  action<br />\n  React after a thread is created</p>\n<p>  <code>hamethread_before_comment_form</code> / <code>hamethread_after_comment_form</code><br />\n  action<br />\n  Add markup/fields to the comment form</p>\n<p>  <code>hamethread_new_comment_params</code><br />\n  filter<br />\n  Modify comment data before insert</p>\n<p>  <code>hamethread_default_subscribers</code> / <code>hamethread_subscribers</code><br />\n  filter<br />\n  Control who is notified</p>\n<p>  <code>hamethread_user_can_start_private_thread</code><br />\n  filter<br />\n  Allow private threads</p>\n<p>  <code>hamethread_user_can_comment</code> / <code>hamethread_user_can_post</code><br />\n  filter<br />\n  Capability checks</p>\n<p>  <code>hamethread_dynamic_comment_post_types</code><br />\n  filter<br />\n  Post types that get comment threads</p>\n<p>  <code>hamethread_post_setting</code> / <code>hamethread_post_type</code> / <code>hamethread_taxonomy</code><br />\n  filter<br />\n  Customize the post type &amp; taxonomy</p>\n<p>  <code>hamethread_template</code><br />\n  filter<br />\n  Override template parts</p>\n<p><strong>Example — add a field to the thread form and store it:</strong></p>\n<pre>// 1. Render the field.\nadd_action( 'hamethread_after_thread_form', function ( $args, $default ) {\n    if ( $args['post'] ) {\n        return; // Only on new threads.\n    }\n    echo ' Notify staff';\n}, 10, 2 );\n\n// 2. Register the REST parameter.\nadd_filter( 'hamethread_new_thread_post_params', function ( $params ) {\n    $params['notify_staff'] = [ 'type' =&gt; 'integer', 'default' =&gt; 0 ];\n    return $params;\n} );\n\n// 3. React after the thread is created.\nadd_action( 'hamethread_new_thread_inserted', function ( $post_id, $request ) {\n    if ( $request-&gt;get_param( 'notify_staff' ) ) {\n        // notify…\n    }\n}, 10, 2 );</pre>\n<p><strong>Example — enable comment threads on the <code>post</code> post type:</strong></p>\n<pre>add_filter( 'hamethread_dynamic_comment_post_types', function ( $post_types ) {\n    $post_types[] = 'post';\n    return $post_types;\n} );</pre>\n<p>A full list of hooks lives in the source. See the <code>app/</code> directory and <a href=\"https://github.com/hametuha/hamethread\" rel=\"nofollow ugc\">the GitHub repository</a>.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin to <code>wp-content/plugins/hamethread</code> (or install from the Plugins screen) and activate it.</li>\n<li>Visit <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Discussion</strong> to choose the post types and options you need.</li>\n<li>Add the <strong>Thread Button</strong> block to any page or post to let visitors start a thread, or call <code>hamethread_button()</code> from a template.</li>\n<li>Threads are listed at the <code>thread</code> archive (e.g. <code>/thread/</code>).</li>\n</ol>\n<p>WooCommerce is optional. When it is active, a <strong>Support</strong> tab is added to <em>My Account</em> and a support button can be shown on product pages.</p>\n",
+        "faq": "\n<dt id=\"how%20do%20i%20let%20visitors%20start%20a%20thread%3F\">\nHow do I let visitors start a thread?\n</h4>\n<p>\n<p>Add the <strong>Thread Button</strong> block to a page, or call <code>hamethread_button( $parent_id, $label )</code> in a template. The button opens a thread form powered by the REST API.</p>\n</p>\n<dt id=\"can%20i%20use%20it%20on%20posts%20or%20custom%20post%20types%2C%20not%20just%20threads%3F\">\nCan I use it on posts or custom post types, not just threads?\n</h4>\n<p>\n<p>Yes. Go to <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Discussion <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Thread Comments</strong> and tick the post types you want, or use the <code>hamethread_dynamic_comment_post_types</code> filter.</p>\n</p>\n<dt id=\"does%20it%20require%20woocommerce%3F\">\nDoes it require WooCommerce?\n</h4>\n<p>\n<p>No. WooCommerce integration is enabled automatically only when WooCommerce is active; otherwise the plugin works as a standalone forum.</p>\n</p>\n<dt id=\"how%20do%20i%20customize%20the%20form%2C%20validation%20or%20notifications%3F\">\nHow do I customize the form, validation or notifications?\n</h4>\n<p>\n<p>HameThread exposes a large set of filters and actions. See <strong>For developers</strong>.</p>\n</p>\n\n",
+        "changelog": "<p><a href=\"https://github.com/hametuha/hamethread/actions/workflows/test.yml\" rel=\"nofollow ugc\"></a></p>\n<h4>2.1.0</h4>\n<ul>\n<li>Add the <strong>Thread Button</strong> block for the block editor.</li>\n<li>Add a settings screen (<strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Discussion</strong>) for thread description, private threads and comment-enabled post types.</li>\n<li>Improve escaping, i18n and coding standards for WordPress.org Plugin Check compliance.</li>\n</ul>\n<h4>2.0.0</h4>\n<ul>\n<li>Removed dependencies on Twitter Bootstrap and FontAwesome.</li>\n<li>Modernize JavaScripts.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Bump minimum PHP version to 7.4.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Add structured data.</li>\n<li>Add best answer feature.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n<p>See our all changelog on <a href=\"https://github.com/hametuha/hamethread/releases\" rel=\"nofollow ugc\">GitHub Releases</a>.</p>\n"
+    },
+    "short_description": "Lightweight Q&amp;A forum and support desk for WordPress: threads, best answers, private threads, and per-product support for WooCommerce.",
+    "description": "<p>HameThread turns WordPress into a thread-based <strong>Q&amp;A forum / support desk</strong> without a heavyweight setup. Each topic is a <code>thread</code> post and replies are ordinary WordPress comments, so everything you already know about moderation, roles and the REST API keeps working.</p>\n<p>It shines where a generic forum does not:</p>\n<ul>\n<li><strong>WooCommerce product support</strong> — show a &#8220;Get support&#8221; button on a product and collect purchaser questions as threads, right inside <em>My Account</em>.</li>\n<li><strong>Private threads</strong> — let users open threads only the author, invited people and editors can read. Perfect for paid or sensitive support.</li>\n<li><strong>Best answer</strong> — mark the reply that resolved the question and flag the whole thread as <em>Resolved</em>.</li>\n<li><strong>Block-first</strong> — drop the <strong>Thread Button</strong> block on any page to let visitors start a thread. No template editing, no code.</li>\n</ul>\n<h4>Features</h4>\n<ul>\n<li><code>thread</code> post type with a <code>topic</code> taxonomy</li>\n<li>Comment-based replies with AJAX/REST posting (no full page reload)</li>\n<li>Best answer &amp; resolved / unresolved status</li>\n<li>Private threads with capability checks</li>\n<li>Auto-close threads after a period of inactivity</li>\n<li>Upvotes on comments</li>\n<li>E-mail notifications to thread subscribers</li>\n<li>JSON-LD (<code>QAPage</code>) structured data for SEO</li>\n<li>WooCommerce <em>My Account</em> support page and per-product support button</li>\n<li>Optionally enable comment threads on any public post type</li>\n<li>Admin settings under <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Discussion</strong> (no code required for common tweaks)</li>\n</ul>\n<h4>Customization</h4>\n<p>Common settings are available under <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Discussion</strong>:</p>\n<ul>\n<li>Thread description</li>\n<li>Allow users to start private threads</li>\n<li>Post types that get HameThread-style comment threads</li>\n</ul>\n<p>Everything else is filterable. See <strong>For developers</strong> below.</p>\n<h3>For developers</h3>\n<p>Replies are standard WordPress comments and threads are a standard post type, so core hooks apply. On top of that, HameThread exposes many filters/actions. The most useful ones:</p>\n<p>  Hook<br />\n  Type<br />\n  Purpose</p>\n<p>  <code>hamethread_before_thread_form</code> / <code>hamethread_after_thread_form</code><br />\n  action<br />\n  Add markup/fields to the thread form</p>\n<p>  <code>hamethread_new_thread_post_params</code><br />\n  filter<br />\n  Register extra REST parameters for new threads</p>\n<p>  <code>hamethread_new_thread_post_arg</code><br />\n  filter<br />\n  Modify the post array before a thread is inserted</p>\n<p>  <code>hamethread_new_thread_validation</code><br />\n  filter<br />\n  Add validation errors (<code>WP_Error</code>)</p>\n<p>  <code>hamethread_new_thread_inserted</code><br />\n  action<br />\n  React after a thread is created</p>\n<p>  <code>hamethread_before_comment_form</code> / <code>hamethread_after_comment_form</code><br />\n  action<br />\n  Add markup/fields to the comment form</p>\n<p>  <code>hamethread_new_comment_params</code><br />\n  filter<br />\n  Modify comment data before insert</p>\n<p>  <code>hamethread_default_subscribers</code> / <code>hamethread_subscribers</code><br />\n  filter<br />\n  Control who is notified</p>\n<p>  <code>hamethread_user_can_start_private_thread</code><br />\n  filter<br />\n  Allow private threads</p>\n<p>  <code>hamethread_user_can_comment</code> / <code>hamethread_user_can_post</code><br />\n  filter<br />\n  Capability checks</p>\n<p>  <code>hamethread_dynamic_comment_post_types</code><br />\n  filter<br />\n  Post types that get comment threads</p>\n<p>  <code>hamethread_post_setting</code> / <code>hamethread_post_type</code> / <code>hamethread_taxonomy</code><br />\n  filter<br />\n  Customize the post type &amp; taxonomy</p>\n<p>  <code>hamethread_template</code><br />\n  filter<br />\n  Override template parts</p>\n<p><strong>Example — add a field to the thread form and store it:</strong></p>\n<pre>// 1. Render the field.\nadd_action( 'hamethread_after_thread_form', function ( $args, $default ) {\n    if ( $args['post'] ) {\n        return; // Only on new threads.\n    }\n    echo ' Notify staff';\n}, 10, 2 );\n\n// 2. Register the REST parameter.\nadd_filter( 'hamethread_new_thread_post_params', function ( $params ) {\n    $params['notify_staff'] = [ 'type' =&gt; 'integer', 'default' =&gt; 0 ];\n    return $params;\n} );\n\n// 3. React after the thread is created.\nadd_action( 'hamethread_new_thread_inserted', function ( $post_id, $request ) {\n    if ( $request-&gt;get_param( 'notify_staff' ) ) {\n        // notify…\n    }\n}, 10, 2 );</pre>\n<p><strong>Example — enable comment threads on the <code>post</code> post type:</strong></p>\n<pre>add_filter( 'hamethread_dynamic_comment_post_types', function ( $post_types ) {\n    $post_types[] = 'post';\n    return $post_types;\n} );</pre>\n<p>A full list of hooks lives in the source. See the <code>app/</code> directory and <a href=\"https://github.com/hametuha/hamethread\" rel=\"nofollow ugc\">the GitHub repository</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/hamethread.2.1.3.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "faq": "faq",
+        "forum": "forum",
+        "support": "support",
+        "thread": "thread",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "2.1.3",
+    "versions": {
+        "2.1.3": "https://downloads.wordpress.org/plugin/hamethread.2.1.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/hamethread.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/hamethread/assets/banner-772x250.jpg?rev=3595290",
+        "high": "https://ps.w.org/hamethread/assets/banner-1544x500.jpg?rev=3595290"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/hamethread/assets/icon.svg?rev=3595290",
+        "svg": "https://ps.w.org/hamethread/assets/icon.svg?rev=3595290"
+    },
+    "blocks": {
+        "hamethread/thread-button": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "hamethread/thread-button",
+            "version": "1.0.0",
+            "title": "Thread Button",
+            "category": "widgets",
+            "icon": "format-chat",
+            "description": "Display a button that lets users start a new thread or support topic.",
+            "keywords": [
+                "thread",
+                "forum",
+                "support",
+                "hamethread"
+            ],
+            "textdomain": "hamethread",
+            "attributes": {
+                "label": {
+                    "type": "string",
+                    "default": ""
+                },
+                "parent": {
+                    "type": "number",
+                    "default": 0
+                }
+            },
+            "supports": {
+                "html": false
+            },
+            "editorScript": "file:./index.js",
+            "render": "file:./render.php"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
