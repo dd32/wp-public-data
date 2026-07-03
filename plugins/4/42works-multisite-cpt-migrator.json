@@ -1,0 +1,89 @@
+{
+    "name": "42Works Multisite CPT Migrator",
+    "slug": "42works-multisite-cpt-migrator",
+    "version": "0.2.0",
+    "author": "<a href=\"https://profiles.wordpress.org/42works/\">42works</a>",
+    "author_profile": "https://profiles.wordpress.org/42works/",
+    "contributors": {
+        "42works": {
+            "profile": "https://profiles.wordpress.org/42works/",
+            "avatar": "https://secure.gravatar.com/avatar/49c6b447183325e54c7b746614440909688db48fc2c17302b6019fc068285f9c?s=96&d=monsterid&r=g",
+            "display_name": "42works"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "advanced-custom-fields"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/42works-multisite-cpt-migrator/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-03 11:26:00",
+    "added": "2026-07-03",
+    "homepage": "https://42works.net",
+    "sections": {
+        "description": "<p>For WordPress Multisite networks: copy a post from one subsite to another while keeping everything intact.</p>\n<p>This plugin is built for sites with rich content models — custom post types backed by Advanced Custom Fields, where each post can contain deeply nested repeater rows, image galleries, and links to other posts. The cloner walks all of it, re-uploads attachments into the target subsite&#8217;s media library, and re-resolves post references on the target by slug.</p>\n<p>Every copy is created as a fresh draft. Existing posts on the target are never overwritten or modified. If something can&#8217;t be transferred cleanly (an image fails to copy, a referenced post doesn&#8217;t exist on the target, an ACF field group has drifted), the plugin flags it on the cloned draft with a yellow warning panel so the editor sees exactly what to fix before publishing.</p>\n<h4>What gets copied</h4>\n<ul>\n<li>Standard post fields (title, content, excerpt, date, menu order)</li>\n<li>Featured image — re-uploaded into the target site&#8217;s media library</li>\n<li>All ACF field values, including deeply nested repeaters, groups, and flexible content</li>\n<li>Image, file, and gallery attachments — re-uploaded; never linked across sites</li>\n<li><code>post_object</code>, <code>relationship</code>, and <code>page_link</code> references — re-resolved by slug and post type on the target</li>\n<li>Page parent — re-resolved by slug</li>\n<li>Taxonomy terms — matched by slug; missing terms are auto-created</li>\n</ul>\n<h4>What gets flagged</h4>\n<p>A yellow notice on the cloned draft lists anything that needs human review:</p>\n<ul>\n<li>Images that failed to copy <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> re-upload manually</li>\n<li>References to posts that don&#8217;t exist on the target <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> pick the right one</li>\n<li>Page parent that doesn&#8217;t exist on the target <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> set manually if needed</li>\n<li>Taxonomy terms that had to be auto-created <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> verify or merge</li>\n<li>ACF field-group drift (fields on the source that don&#8217;t exist on the target)</li>\n</ul>\n<p>The panel disappears automatically the first time the post is published, or can be dismissed manually.</p>\n<p>Requires WordPress Multisite and Advanced Custom Fields Pro (repeater, gallery, and flexible content are Pro-only field types).</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>42works-multisite-cpt-migrator</code> folder to <code>/wp-content/plugins/</code>, or install via the Network Admin <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New uploader.</li>\n<li>Network Admin <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Network Activate.</li>\n<li>Go to Network Admin <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> MultiSite Post Cloner and tick the post types that should be clonable across subsites.</li>\n<li>On any subsite, open the list for an enabled post type. Each row gets a new &#8220;Copy to location…&#8221; action — click it and choose a target subsite.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20work%20on%20single-site%20wordpress%3F\">\nDoes this work on single-site WordPress?\n</h4>\n<p>\n<p>No. The plugin requires Multisite — its whole job is moving content between subsites in the same network.</p>\n</p>\n<dt id=\"what%20gets%20copied%3F\">\nWhat gets copied?\n</h4>\n<p>\n<p>Standard post fields, the featured image, every ACF field value (including nested repeaters, groups, and flexible content), all attachments referenced from those fields (re-uploaded into the target site&#8217;s media library), post references (re-resolved by slug and post type on the target), the page parent (also re-resolved by slug), and all taxonomy terms (matched by slug; missing terms are auto-created).</p>\n</p>\n<dt id=\"why%20are%20some%20fields%20empty%20after%20copying%3F\">\nWhy are some fields empty after copying?\n</h4>\n<p>\n<p>The plugin is intentionally conservative. If a referenced post doesn&#8217;t exist on the target subsite (or matches multiple candidates), the reference is left empty and flagged on the warning panel rather than silently guessing. Same for unmatched page parents and failed image transfers. The warning panel on the cloned draft lists every item that needs your attention so nothing slips through unnoticed.</p>\n</p>\n<dt id=\"does%20this%20work%20with%20gutenberg%20and%20the%20classic%20editor%3F\">\nDoes this work with Gutenberg and the Classic Editor?\n</h4>\n<p>\n<p>Yes, both. The warning panel renders in either editor.</p>\n</p>\n<dt id=\"does%20this%20require%20acf%20pro%3F\">\nDoes this require ACF Pro?\n</h4>\n<p>\n<p>Yes. The plugin&#8217;s value comes from walking deeply nested field structures, and <code>repeater</code>, <code>flexible_content</code>, and <code>gallery</code> are ACF Pro-only field types. ACF free does not provide the structures the cloner is built around.</p>\n</p>\n<dt id=\"can%20i%20undo%20a%20copy%3F\">\nCan I undo a copy?\n</h4>\n<p>\n<p>Each copy is an independent draft on the target subsite. To undo, just delete the draft. The plugin never modifies or deletes anything else — the source post is untouched and there is no two-way sync.</p>\n</p>\n\n",
+        "changelog": "<h4>0.2.0</h4>\n<ul>\n<li>Configurable per-network list of post types eligible for cloning, at Network Admin <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> MultiSite Post Cloner.</li>\n<li>Dynamic ACF field-group discovery — no hard-coded group keys.</li>\n<li>Support for <code>post_object</code>, <code>relationship</code>, and <code>page_link</code> reference fields, with conservative slug + post-type matching.</li>\n<li>Page parent and <code>_wp_page_template</code> carried to the target.</li>\n<li>Field-group drift detection.</li>\n<li>Taxonomy auto-create reporting.</li>\n<li>Persistent warning panel on the cloned draft listing anything that needs review before publishing.</li>\n<li>WP-CLI: <code>wp mspc copy &lt;source_id&gt; --to=&lt;blog_id&gt;</code>.</li>\n</ul>\n"
+    },
+    "short_description": "Copy posts, pages, and custom post types between WordPress Multisite subsites. Supports ACF fields, galleries, and references.",
+    "description": "<p>For WordPress Multisite networks: copy a post from one subsite to another while keeping everything intact.</p>\n<p>This plugin is built for sites with rich content models — custom post types backed by Advanced Custom Fields, where each post can contain deeply nested repeater rows, image galleries, and links to other posts. The cloner walks all of it, re-uploads attachments into the target subsite&#8217;s media library, and re-resolves post references on the target by slug.</p>\n<p>Every copy is created as a fresh draft. Existing posts on the target are never overwritten or modified. If something can&#8217;t be transferred cleanly (an image fails to copy, a referenced post doesn&#8217;t exist on the target, an ACF field group has drifted), the plugin flags it on the cloned draft with a yellow warning panel so the editor sees exactly what to fix before publishing.</p>\n<h4>What gets copied</h4>\n<ul>\n<li>Standard post fields (title, content, excerpt, date, menu order)</li>\n<li>Featured image — re-uploaded into the target site&#8217;s media library</li>\n<li>All ACF field values, including deeply nested repeaters, groups, and flexible content</li>\n<li>Image, file, and gallery attachments — re-uploaded; never linked across sites</li>\n<li><code>post_object</code>, <code>relationship</code>, and <code>page_link</code> references — re-resolved by slug and post type on the target</li>\n<li>Page parent — re-resolved by slug</li>\n<li>Taxonomy terms — matched by slug; missing terms are auto-created</li>\n</ul>\n<h4>What gets flagged</h4>\n<p>A yellow notice on the cloned draft lists anything that needs human review:</p>\n<ul>\n<li>Images that failed to copy <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> re-upload manually</li>\n<li>References to posts that don&#8217;t exist on the target <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> pick the right one</li>\n<li>Page parent that doesn&#8217;t exist on the target <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> set manually if needed</li>\n<li>Taxonomy terms that had to be auto-created <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> verify or merge</li>\n<li>ACF field-group drift (fields on the source that don&#8217;t exist on the target)</li>\n</ul>\n<p>The panel disappears automatically the first time the post is published, or can be dismissed manually.</p>\n<p>Requires WordPress Multisite and Advanced Custom Fields Pro (repeater, gallery, and flexible content are Pro-only field types).</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/42works-multisite-cpt-migrator.0.2.0.zip",
+    "upgrade_notice": {
+        "0.2.0": "<p>Initial public release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/42works-multisite-cpt-migrator/assets/screenshot-2.png?rev=3595059",
+            "caption": "The \"Copy to location…\" row action on a post list."
+        },
+        {
+            "src": "https://ps.w.org/42works-multisite-cpt-migrator/assets/screenshot-3.png?rev=3595059",
+            "caption": "The target-subsite picker."
+        }
+    ],
+    "tags": {
+        "acf": "acf",
+        "clone": "clone",
+        "custom-post-type": "custom post type",
+        "duplicate": "duplicate",
+        "multisite": "multisite"
+    },
+    "stable_tag": "0.2.0",
+    "versions": {
+        "0.2.0": "https://downloads.wordpress.org/plugin/42works-multisite-cpt-migrator.0.2.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/42works-multisite-cpt-migrator.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://42works.net",
+    "banners": {
+        "low": "https://ps.w.org/42works-multisite-cpt-migrator/assets/banner-772x250.png?rev=3595059",
+        "high": "https://ps.w.org/42works-multisite-cpt-migrator/assets/banner-1544x500.png?rev=3595059"
+    },
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/42works-multisite-cpt-migrator_403d3c.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
