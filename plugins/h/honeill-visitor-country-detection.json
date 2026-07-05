@@ -1,0 +1,73 @@
+{
+    "name": "Honeill Visitor Country Detection",
+    "slug": "honeill-visitor-country-detection",
+    "version": "1.2.4",
+    "author": "<a href=\"https://profiles.wordpress.org/honeill/\">honeill</a>",
+    "author_profile": "https://profiles.wordpress.org/honeill/",
+    "contributors": {
+        "honeill": {
+            "profile": "https://profiles.wordpress.org/honeill/",
+            "avatar": "https://secure.gravatar.com/avatar/cc907c17f8890385aef9113540a26bc99557d1ea5e7a66394cc2a3781dbad231?s=96&d=monsterid&r=g",
+            "display_name": "honeill"
+        }
+    },
+    "requires": "5.6",
+    "tested": "7.0",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/honeill-visitor-country-detection/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-05 06:50:00",
+    "added": "2026-07-05",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Honeill Visitor Country Detection detects a visitor&#8217;s country (ISO 3166-1 alpha-2, e.g. <code>GB</code>) from their IP address using MaxMind&#8217;s GeoLite2 database, and exposes it through a single WordPress filter so your theme or plugin can use it with no hard dependency.</p>\n<p>The GeoLite2 database is <strong>not</strong> bundled — MaxMind&#8217;s license does not allow redistribution. Instead you enter your own free MaxMind license key once on the settings screen. The plugin then:</p>\n<ul>\n<li>downloads the GeoLite2 country database immediately,</li>\n<li>stores it in <code>wp-content/uploads</code> (so it survives plugin updates),</li>\n<li>and refreshes it automatically every week via WP-Cron.</li>\n</ul>\n<p>You never download or upload a database by hand.</p>\n<h4>Use it in your code</h4>\n<pre><code>$country = apply_filters( 'honeill_visitor_country_detection_country_code', '' );\n</code></pre>\n<p>Returns a two-letter country code, or an empty string when it can&#8217;t be determined (local IP, missing database, etc.) — your code decides the fallback. Results are cached per IP, so it&#8217;s cheap to call on every request.</p>\n<p>Prefer REST? <code>GET /wp-json/honeill-visitor-country-detection/v1/country</code> returns <code>{ \"country\": \"GB\" }</code> for the caller.</p>\n<p>This product includes GeoLite2 Data created by MaxMind, available from https://www.maxmind.com. This plugin is an independent project and is not affiliated with, endorsed, or sponsored by MaxMind, Inc. GeoIP and GeoLite2 are trademarks of MaxMind, Inc.</p>\n<h3>External services</h3>\n<p>This plugin connects to MaxMind to download the GeoLite2 country database, which it needs to resolve countries. The database is not shipped with the plugin because MaxMind&#8217;s license prohibits redistribution.</p>\n<ul>\n<li><strong>Service:</strong> MaxMind GeoLite2 database download (<code>https://download.maxmind.com/app/geoip_download</code>).</li>\n<li><strong>When it connects:</strong> when you save your license key, when you click &#8220;Update database now&#8221;, and automatically once per week.</li>\n<li><strong>What is sent:</strong> your MaxMind license key (as a request parameter) and, by nature of any outbound HTTPS request, your server&#8217;s IP address. No website visitor data is ever sent to MaxMind.</li>\n</ul>\n<p>By using this plugin you agree to MaxMind&#8217;s GeoLite2 End User License Agreement and Privacy Policy:</p>\n<ul>\n<li>Terms: https://www.maxmind.com/en/geolite2/eula</li>\n<li>Privacy: https://www.maxmind.com/en/privacy_policy</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>honeill-visitor-country-detection</code> folder to <code>/wp-content/plugins/</code>, or install the ZIP via Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin.</li>\n<li>Activate the plugin.</li>\n<li>Create a free MaxMind account and generate a license key (Account <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Manage License Keys): https://www.maxmind.com/en/geolite2/signup</li>\n<li>Go to <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Honeill Visitor Country Detection</strong>, paste your license key, and click <strong>Save &amp; download database</strong>.</li>\n<li>That&#8217;s it — the database downloads now and auto-updates weekly.</li>\n</ol>\n<p>Advanced: instead of the settings field you can define the key in <code>wp-config.php</code> with <code>define( 'HONEILL_VISITOR_COUNTRY_DETECTION_LICENSE_KEY', 'your-key' );</code> to keep it out of the database.</p>\n",
+        "faq": "\n<dt id=\"is%20it%20allowed%20to%20use%20geolite2%20this%20way%3F\">\nIs it allowed to use GeoLite2 this way?\n</h4>\n<p>\n<p>Yes. You use your own license key to download your own copy of the database — nothing is redistributed, which is what MaxMind&#8217;s license restricts. Attribution to MaxMind is included as required.</p>\n</p>\n<dt id=\"where%20is%20the%20database%20stored%3F\">\nWhere is the database stored?\n</h4>\n<p>\n<p>In <code>wp-content/uploads/honeill-visitor-country-detection/</code>. It is kept out of the plugin folder so plugin updates don&#8217;t wipe it. The plugin also drops an <code>.htaccess</code> to block direct web access on Apache.</p>\n</p>\n<dt id=\"can%20it%20detect%20city%20or%20region%2C%20not%20just%20country%3F\">\nCan it detect city or region, not just country?\n</h4>\n<p>\n<p>It ships with the lighter GeoLite2-Country database. City is a small change (the edition id and filename) but needs more disk space and exposes additional fields.</p>\n</p>\n<dt id=\"my%20site%20is%20behind%20cloudflare%20%2F%20a%20load%20balancer.%20will%20it%20still%20work%3F\">\nMy site is behind Cloudflare / a load balancer. Will it still work?\n</h4>\n<p>\n<p>Yes — it reads the left-most public IP from <code>X-Forwarded-For</code>, falling back to <code>REMOTE_ADDR</code>.</p>\n</p>\n<dt id=\"downloads%20fail.%20why%3F\">\nDownloads fail. Why?\n</h4>\n<p>\n<p>Most often an incorrect license key (MaxMind returns 401/403), or the PHP <code>Phar</code> extension is disabled (needed to unpack the download). The settings screen shows both.</p>\n</p>\n\n",
+        "changelog": "<h4>1.2.4</h4>\n<ul>\n<li>Per-IP lookup results are now cached with the object cache API instead of transients. Spoofed X-Forwarded-For values could previously create unbounded per-IP transient rows in the options table.</li>\n</ul>\n<h4>1.2.3</h4>\n<ul>\n<li>Renamed the plugin to &#8220;Honeill Visitor Country Detection&#8221; (slug <code>honeill-visitor-country-detection</code>). No functional changes; filter, REST namespace, options, and constant names now use the new prefix.</li>\n</ul>\n<h4>1.2.2</h4>\n<ul>\n<li>Tidied the plugin description (now mentions the REST endpoint).</li>\n</ul>\n<h4>1.2.1</h4>\n<ul>\n<li>&#8220;Remove key&#8221; is now a button instead of a checkbox. The settings screen also documents the REST endpoint.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>License key field is now write-only and masked — the saved key is never rendered back to the browser. Added a &#8220;Remove the saved key&#8221; option.</li>\n<li>REST endpoint now sends no-cache headers so a per-visitor result is never cached by a CDN or page cache.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Added a REST endpoint: GET /wp-json/honeill-visitor-country-detection/v1/country returns the caller&#8217;s country code.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release: country detection via the <code>honeill_visitor_country_detection_country_code</code> filter, license-key-based download, weekly auto-update, and a settings screen.</li>\n</ul>\n"
+    },
+    "short_description": "Visitor country from their IP via MaxMind GeoLite2 — downloaded with your own license key, exposed through a filter and a REST endpoint.",
+    "description": "<p>Honeill Visitor Country Detection detects a visitor&#8217;s country (ISO 3166-1 alpha-2, e.g. <code>GB</code>) from their IP address using MaxMind&#8217;s GeoLite2 database, and exposes it through a single WordPress filter so your theme or plugin can use it with no hard dependency.</p>\n<p>The GeoLite2 database is <strong>not</strong> bundled — MaxMind&#8217;s license does not allow redistribution. Instead you enter your own free MaxMind license key once on the settings screen. The plugin then:</p>\n<ul>\n<li>downloads the GeoLite2 country database immediately,</li>\n<li>stores it in <code>wp-content/uploads</code> (so it survives plugin updates),</li>\n<li>and refreshes it automatically every week via WP-Cron.</li>\n</ul>\n<p>You never download or upload a database by hand.</p>\n<h4>Use it in your code</h4>\n<pre><code>$country = apply_filters( 'honeill_visitor_country_detection_country_code', '' );\n</code></pre>\n<p>Returns a two-letter country code, or an empty string when it can&#8217;t be determined (local IP, missing database, etc.) — your code decides the fallback. Results are cached per IP, so it&#8217;s cheap to call on every request.</p>\n<p>Prefer REST? <code>GET /wp-json/honeill-visitor-country-detection/v1/country</code> returns <code>{ \"country\": \"GB\" }</code> for the caller.</p>\n<p>This product includes GeoLite2 Data created by MaxMind, available from https://www.maxmind.com. This plugin is an independent project and is not affiliated with, endorsed, or sponsored by MaxMind, Inc. GeoIP and GeoLite2 are trademarks of MaxMind, Inc.</p>\n<h3>External services</h3>\n<p>This plugin connects to MaxMind to download the GeoLite2 country database, which it needs to resolve countries. The database is not shipped with the plugin because MaxMind&#8217;s license prohibits redistribution.</p>\n<ul>\n<li><strong>Service:</strong> MaxMind GeoLite2 database download (<code>https://download.maxmind.com/app/geoip_download</code>).</li>\n<li><strong>When it connects:</strong> when you save your license key, when you click &#8220;Update database now&#8221;, and automatically once per week.</li>\n<li><strong>What is sent:</strong> your MaxMind license key (as a request parameter) and, by nature of any outbound HTTPS request, your server&#8217;s IP address. No website visitor data is ever sent to MaxMind.</li>\n</ul>\n<p>By using this plugin you agree to MaxMind&#8217;s GeoLite2 End User License Agreement and Privacy Policy:</p>\n<ul>\n<li>Terms: https://www.maxmind.com/en/geolite2/eula</li>\n<li>Privacy: https://www.maxmind.com/en/privacy_policy</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/honeill-visitor-country-detection.1.2.4.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "country": "country",
+        "geolocation": "geolocation",
+        "geotargeting": "geotargeting",
+        "ip-address": "ip address",
+        "visitor-country": "visitor country"
+    },
+    "stable_tag": "1.2.4",
+    "versions": {
+        "1.2.4": "https://downloads.wordpress.org/plugin/honeill-visitor-country-detection.1.2.4.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/honeill-visitor-country-detection.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/honeill-visitor-country-detection.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
