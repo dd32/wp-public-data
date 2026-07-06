@@ -1,0 +1,98 @@
+{
+    "name": "Pipe9 WSOD Debugger",
+    "slug": "pipe9-wsod-debugger",
+    "version": "1.3.3",
+    "author": "<a href=\"https://profiles.wordpress.org/altunyurt/\">Özgür Altunyurt</a>",
+    "author_profile": "https://profiles.wordpress.org/altunyurt/",
+    "contributors": {
+        "altunyurt": {
+            "profile": "https://profiles.wordpress.org/altunyurt/",
+            "avatar": "https://secure.gravatar.com/avatar/be2e718ad45e014a6ee453276b1ef1f56e676a373c44c8f04339a1777263177b?s=96&d=monsterid&r=g",
+            "display_name": "Özgür Altunyurt"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.0",
+    "requires_php": "7.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/pipe9-wsod-debugger/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-06 15:51:00",
+    "added": "2026-07-06",
+    "homepage": "https://pipe9.uk/",
+    "sections": {
+        "description": "<p>Pipe9 WSOD Debugger is an emergency recovery tool for WordPress. When a fatal error causes a White Screen of Death, this plugin:</p>\n<ul>\n<li>Captures the error snapshot automatically (shutdown handler)</li>\n<li>Identifies the plugin or theme that caused the crash</li>\n<li>Provides a secret rescue URL that works even during a WSOD</li>\n<li>Renders a full debug/rescue panel before any other plugin loads</li>\n<li>Allows you to disable the culprit plugin, switch themes, or manage plugins/themes from the rescue panel</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>pipe9-wsod-debugger</code> folder to <code>/wp-content/plugins/</code></li>\n<li>Activate the plugin through the WordPress admin</li>\n<li>Find the Rescue URL in Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Pipe9 WSOD Debugger</li>\n<li>Bookmark the Rescue URL — use it when your site crashes with a white screen</li>\n</ol>\n",
+        "faq": "\n<dt id=\"how%20does%20it%20work%20without%20breaking%20during%20a%20wsod%3F\">\nHow does it work without breaking during a WSOD?\n</h4>\n<p>\n<p>The plugin registers a PHP shutdown handler at the earliest possible moment during WordPress boot (priority <code>PHP_INT_MIN</code> on <code>plugins_loaded</code>). When a fatal error occurs, the shutdown handler captures the error, identifies the culprit, saves a crash snapshot, and writes a recovery flag file. On the next request, the recovery flag triggers a filter that strips all other plugins, and the rescue panel loads safely without interference from the broken plugin or theme.</p>\n</p>\n<dt id=\"how%20do%20i%20access%20the%20rescue%20panel%3F\">\nHow do I access the rescue panel?\n</h4>\n<p>\n<p>Go to Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Pipe9 WSOD Debugger in the admin panel. Copy the Rescue URL (contains a secret key). Bookmark it — use it when your site crashes. Paste it directly into your browser&#8217;s address bar when you see a white screen.</p>\n</p>\n<dt id=\"how%20does%20the%20recovery%20flag%20system%20work%3F\">\nHow does the recovery flag system work?\n</h4>\n<p>\n<p>When a fatal error is detected, the plugin writes a small JSON flag file to <code>wp-content/uploads/pipe9-wsod-debugger/</code>. On the next request, this flag causes an <code>option_active_plugins</code> filter to activate only this plugin — all other plugins are temporarily stripped. This prevents the broken plugin from crashing again, giving you access to the rescue panel to disable the culprit plugin or switch themes. Once the issue is resolved, exiting recovery mode deletes the flag and the site returns to normal.</p>\n</p>\n\n",
+        "changelog": "<h4>1.3.3</h4>\n<ul>\n<li>Fix: replace wp_redirect() with wp_safe_redirect()</li>\n<li>Fix: remove load_plugin_textdomain() (automatic since WP 4.6)</li>\n<li>Fix: widen rescue URL input for full URL visibility</li>\n<li>Fix: enqueue rescue CSS on admin tools page</li>\n<li>Refactor: scope rescue-page CSS under body class to prevent admin layout leaks</li>\n</ul>\n<h4>1.3.2</h4>\n<ul>\n<li>Fix: sanitize crash snapshot fields with sanitize_text_field() instead of raw string casts</li>\n<li>Fix: add capability checks (manage_options) and proper input sanitization to rescue actions</li>\n<li>Fix: add FILTER_UNSAFE_RAW + wp_unslash() to all filter_input() calls</li>\n<li>Fix: sanitize nonce with wp_unslash() + sanitize_text_field() before wp_verify_nonce()</li>\n<li>Fix: missing load_plugin_textdomain() call for proper i18n</li>\n<li>Fix: replace scandir() with WP_Filesystem::dirlist() for hosting compatibility</li>\n<li>Fix: replace raw header() calls with WordPress functions (wp_redirect, status_header)</li>\n<li>Fix: replace file_exists() with $wp_filesystem-&gt;exists() in WP_Filesystem contexts</li>\n<li>Fix: remove inline style attributes, move to CSS classes</li>\n<li>Fix: culprit mis-attribution when previous crash blamed our own plugin</li>\n<li>Fix: plugin disable/enable/toggle actions now use WP activation API directly</li>\n<li>Fix: lift option_active_plugins filter during plugin operations so deactivate/activate work correctly</li>\n<li>Refactor: centralise path resolution into shared Path_Resolver class</li>\n<li>Refactor: centralise wp-admin includes into ensure_* helper methods</li>\n<li>Refactor: remove redundant ABSPATH guard checks from method bodies</li>\n<li>i18n: add 4 missing translatable strings with full locale coverage</li>\n<li>i18n: rebuild .mo binaries for all 9 locales</li>\n</ul>\n<h4>1.3.0</h4>\n<ul>\n<li>Flag-based WSOD recovery system with option_active_plugins filtering</li>\n<li>Restored full rescue panel: Dashboard, Plugins, Themes, Logs, System Info tabs</li>\n<li>Removed mu-plugin dependency — everything runs from the regular plugin</li>\n<li>Replaced PHP stdlib file ops with WP_Filesystem equivalents</li>\n<li>Replaced manual path building with WordPress constants (WPINC, WP_CONTENT_DIR)</li>\n<li>Used wp_normalize_path() for cross-platform path normalization</li>\n<li>Used wp_get_themes() instead of manual theme directory scanning</li>\n</ul>\n<h4>1.2.2</h4>\n<ul>\n<li>Bump requires-at-least to 6.4, tested-up-to to 7.0</li>\n<li>Fix variable prefixing and add direct access protection in place-mu-plugin.php</li>\n<li>Fix author attribution</li>\n</ul>\n<h4>1.2.1</h4>\n<ul>\n<li>Initial release</li>\n<li>WSOD detection via shutdown handler</li>\n<li>Crash snapshot with culprit identification</li>\n<li>Secret rescue URL</li>\n<li>Early-load rescue panel (MU-plugin — replaced by flag-based recovery in v1.3.0)</li>\n<li>Plugin/theme management in rescue mode</li>\n</ul>\n"
+    },
+    "short_description": "Automatically detects White Screen of Death crashes, identifies the culprit plugin/theme, and provides an emergency rescue panel to recover your site.",
+    "description": "<p>Pipe9 WSOD Debugger is an emergency recovery tool for WordPress. When a fatal error causes a White Screen of Death, this plugin:</p>\n<ul>\n<li>Captures the error snapshot automatically (shutdown handler)</li>\n<li>Identifies the plugin or theme that caused the crash</li>\n<li>Provides a secret rescue URL that works even during a WSOD</li>\n<li>Renders a full debug/rescue panel before any other plugin loads</li>\n<li>Allows you to disable the culprit plugin, switch themes, or manage plugins/themes from the rescue panel</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/pipe9-wsod-debugger.1.3.3.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/pipe9-wsod-debugger/assets/screenshot-1.png?rev=3598037",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/pipe9-wsod-debugger/assets/screenshot-2.png?rev=3598037",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/pipe9-wsod-debugger/assets/screenshot-3.png?rev=3598037",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/pipe9-wsod-debugger/assets/screenshot-4.png?rev=3598037",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/pipe9-wsod-debugger/assets/screenshot-5.png?rev=3598037",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/pipe9-wsod-debugger/assets/screenshot-6.png?rev=3598037",
+            "caption": ""
+        }
+    ],
+    "tags": {
+        "debug": "debug",
+        "error-recovery": "error recovery",
+        "fatal-error": "fatal error",
+        "white-screen-of-death": "white-screen-of-death",
+        "wsod": "WSOD"
+    },
+    "stable_tag": "1.3.3",
+    "versions": {
+        "1.3.3": "https://downloads.wordpress.org/plugin/pipe9-wsod-debugger.1.3.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/pipe9-wsod-debugger.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/pipe9-wsod-debugger.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
