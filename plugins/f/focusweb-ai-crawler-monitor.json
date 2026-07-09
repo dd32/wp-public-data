@@ -1,0 +1,102 @@
+{
+    "name": "FocusWeb AI Crawler Monitor",
+    "slug": "focusweb-ai-crawler-monitor",
+    "version": "1.2.3",
+    "author": "<a href=\"https://profiles.wordpress.org/upi/\">upi</a>",
+    "author_profile": "https://profiles.wordpress.org/upi/",
+    "contributors": {
+        "upi": {
+            "profile": "https://profiles.wordpress.org/upi/",
+            "avatar": "https://secure.gravatar.com/avatar/2168494d3c71ae5f7918edcafc3f39f266793da44c140e11973d6ae24ca35d00?s=96&d=monsterid&r=g",
+            "display_name": "upi"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/focusweb-ai-crawler-monitor/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-09 10:05:00",
+    "added": "2026-07-09",
+    "homepage": "",
+    "sections": {
+        "description": "<p>FocusWeb AI Crawler Monitor is an observation-only plugin that helps you understand how AI crawlers interact with your WordPress site. It never blocks or alters requests &#8212; it simply logs matching visits and gives you a dashboard to review them.</p>\n<p><strong>Detected bots (built in, configurable):</strong></p>\n<ul>\n<li>GPTBot (OpenAI)</li>\n<li>ChatGPT-User (OpenAI, on-demand)</li>\n<li>ClaudeBot (Anthropic)</li>\n<li>Claude-Web (Anthropic)</li>\n<li>PerplexityBot</li>\n<li>Google-Extended</li>\n<li>CCBot (Common Crawl)</li>\n<li>Bytespider (ByteDance)</li>\n<li>Amazonbot</li>\n<li>Applebot-Extended</li>\n</ul>\n<p><strong>Features:</strong></p>\n<ul>\n<li>Lightweight <code>init</code>-hook based detection, no server log file access required.</li>\n<li>Custom database table with indexes for fast dashboard queries.</li>\n<li>Dashboard with summary cards, a Chart.js time-series chart, a most-crawled URL table, and a paginated raw log with CSV export.</li>\n<li>Configurable log retention with a daily cleanup cron job.</li>\n<li>Optional IP anonymization (masks the last octet/segment) for GDPR-friendly logging, enabled by default.</li>\n<li>Excludable URL path patterns (e.g. <code>/wp-admin/*</code>, <code>/checkout/*</code>).</li>\n<li>AI Referral Traffic tracking: detects human click-throughs from AI answer engines (ChatGPT, Perplexity, Microsoft Copilot, Google Gemini, Claude, Meta AI, You.com) via the Referer header or matching utm_source parameters, and captures the source query when the referring platform exposes one.</li>\n<li>Built-in llms.txt generator: produces suggested content from your site title, tagline, pages, and posts for manual placement at your site root.</li>\n<li>Fully functional on shared/managed hosting &#8212; no filesystem writes outside the database, no special server permissions needed.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>focusweb-ai-crawler-monitor</code> folder to <code>/wp-content/plugins/</code>.</li>\n<li>Activate the plugin through the &#8220;Plugins&#8221; menu in WordPress.</li>\n<li>On activation, the plugin creates its log table and schedules a daily cleanup cron event.</li>\n<li>Go to <strong>AI Crawlers &gt; Dashboard</strong> to view logged crawler visits, <strong>AI Crawlers &gt; AI Referrals</strong> to view human click-throughs from AI answer engines, <strong>AI Crawlers &gt; Settings</strong> to configure tracked bots/sources, retention, and IP anonymization, and <strong>AI Crawlers &gt; llms.txt Generator</strong> to produce a suggested llms.txt file.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20plugin%20block%20ai%20crawlers%3F\">\nDoes this plugin block AI crawlers?\n</h4>\n<p>\n<p>No. This plugin is observation-only. It never returns a different response, denies a request, or modifies robots.txt. It only records matching visits for your review.</p>\n</p>\n<dt id=\"does%20it%20need%20access%20to%20my%20server%27s%20raw%20access%20logs%3F\">\nDoes it need access to my server&#8217;s raw access logs?\n</h4>\n<p>\n<p>No. Detection happens via a WordPress <code>init</code> hook reading the User-Agent header on each request, so it works identically on shared and managed hosting.</p>\n</p>\n<dt id=\"will%20it%20log%20every%20request%20from%20these%20bots%3F\">\nWill it log every request from these bots?\n</h4>\n<p>\n<p>The plugin skips <code>wp-admin</code>, <code>wp-login.php</code>, <code>admin-ajax.php</code>, REST API requests, and static asset requests (images, CSS, JS, fonts, etc.) to keep the log focused on actual content visits. You can add further exclusions (e.g. <code>/checkout/*</code>) on the Settings page.</p>\n</p>\n<dt id=\"does%20it%20store%20personal%20data%3F\">\nDoes it store personal data?\n</h4>\n<p>\n<p>It stores the requesting IP address and User-Agent string for each logged visit. IP anonymization (masking the last octet/segment) is enabled by default. You can also configure automatic log deletion after a set number of days.</p>\n</p>\n<dt id=\"does%20the%20llms.txt%20generator%20write%20files%20to%20my%20server%3F\">\nDoes the llms.txt generator write files to my server?\n</h4>\n<p>\n<p>No. It only generates suggested content in a textarea, with a button to download it as <code>llms.txt</code>. You place the file at your site root manually, avoiding filesystem permission issues on managed hosting.</p>\n</p>\n<dt id=\"can%20i%20add%20more%20bots%20to%20track%3F\">\nCan I add more bots to track?\n</h4>\n<p>\n<p>The bot registry lives in <code>includes/class-detector.php</code> (<code>AICM_Detector::get_known_bots()</code>) as a simple key/value array, so developers can extend it by adding a new entry with a label and a User-Agent substring to match.</p>\n</p>\n<dt id=\"can%20the%20plugin%20show%20me%20what%20someone%20asked%20chatgpt%2Fperplexity%20that%20led%20them%20to%20my%20site%3F\">\nCan the plugin show me what someone asked ChatGPT/Perplexity that led them to my site?\n</h4>\n<p>\n<p>Only when the referring platform happens to expose it, and only for actual human click-throughs &#8212; not for crawler visits. AI crawlers (GPTBot, ClaudeBot, etc.) never transmit the triggering question over HTTP, so this is not available for bot traffic. For AI Referral Traffic (a person clicking a citation link in an AI answer), the plugin checks the Referer header for a query parameter; Perplexity is the main platform known to include it. Many platforms, including ChatGPT&#8217;s web app, strip the referrer down to bare origin for privacy, so the captured query will often be empty.</p>\n</p>\n\n",
+        "changelog": "<h4>1.2.3</h4>\n<ul>\n<li>Added plugin directory assets: icon, banner, and screenshots for the WordPress.org listing. No functional changes.</li>\n</ul>\n<h4>1.2.2</h4>\n<ul>\n<li>Plugin Check follow-up: annotated remaining <code>PluginCheck.Security.DirectDB.UnescapedDBParameter</code> warnings in class-logger.php with justified ignore comments (all queries use fixed internal table-name identifiers passed through <code>$wpdb-&gt;prepare()</code> for any real parameters &#8212; no functional change).</li>\n</ul>\n<h4>1.2.1</h4>\n<ul>\n<li>Fixes from WordPress.org plugin review: updated bundled Chart.js from 4.4.4 to the latest stable 4.5.1, and replaced the raw inline script block on the llms.txt Generator page with a properly enqueued <code>wp_enqueue_script()</code> file (assets/llms-generator.js).</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Added AI Referral Traffic tracking: detects human click-throughs from AI answer engines (ChatGPT, Perplexity, Microsoft Copilot, Google Gemini, Claude, Meta AI, You.com) via the Referer header or matching utm_source parameters, with a best-effort captured query where the referring platform exposes one (most reliably on Perplexity). Adds a new &#8220;AI Referrals&#8221; dashboard (summary cards, captured-queries table, paginated raw log, CSV export) and per-source tracking toggles on the Settings page. Existing sites will get the new database table automatically on next page load after updating.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Renamed to &#8220;FocusWeb AI Crawler Monitor&#8221; and re-slugged to <code>focusweb-ai-crawler-monitor</code> to comply with WordPress.org&#8217;s plugin naming policy (unique/brand-prefixed name required for directory submission). No functional changes.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Compliance fixes for the WordPress.org Plugin Check tool: removed placeholder Plugin URI/Domain Path headers, dropped the discouraged manual <code>load_plugin_textdomain()</code> call, justified/annotated direct-DB and nonce-verification warnings, prefixed template-local variables, and updated readme metadata (tags, tested-up-to, short description).</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release: bot detection and logging, admin dashboard with summary cards and Chart.js visualization, most-crawled URL and raw log tables with CSV export, settings page (tracked bots, retention, IP anonymization, excluded paths), and llms.txt generator.</li>\n</ul>\n"
+    },
+    "short_description": "Detects and logs AI crawler visits (GPTBot, ClaudeBot, PerplexityBot, and more) with a simple admin dashboard.",
+    "description": "<p>FocusWeb AI Crawler Monitor is an observation-only plugin that helps you understand how AI crawlers interact with your WordPress site. It never blocks or alters requests &#8212; it simply logs matching visits and gives you a dashboard to review them.</p>\n<p><strong>Detected bots (built in, configurable):</strong></p>\n<ul>\n<li>GPTBot (OpenAI)</li>\n<li>ChatGPT-User (OpenAI, on-demand)</li>\n<li>ClaudeBot (Anthropic)</li>\n<li>Claude-Web (Anthropic)</li>\n<li>PerplexityBot</li>\n<li>Google-Extended</li>\n<li>CCBot (Common Crawl)</li>\n<li>Bytespider (ByteDance)</li>\n<li>Amazonbot</li>\n<li>Applebot-Extended</li>\n</ul>\n<p><strong>Features:</strong></p>\n<ul>\n<li>Lightweight <code>init</code>-hook based detection, no server log file access required.</li>\n<li>Custom database table with indexes for fast dashboard queries.</li>\n<li>Dashboard with summary cards, a Chart.js time-series chart, a most-crawled URL table, and a paginated raw log with CSV export.</li>\n<li>Configurable log retention with a daily cleanup cron job.</li>\n<li>Optional IP anonymization (masks the last octet/segment) for GDPR-friendly logging, enabled by default.</li>\n<li>Excludable URL path patterns (e.g. <code>/wp-admin/*</code>, <code>/checkout/*</code>).</li>\n<li>AI Referral Traffic tracking: detects human click-throughs from AI answer engines (ChatGPT, Perplexity, Microsoft Copilot, Google Gemini, Claude, Meta AI, You.com) via the Referer header or matching utm_source parameters, and captures the source query when the referring platform exposes one.</li>\n<li>Built-in llms.txt generator: produces suggested content from your site title, tagline, pages, and posts for manual placement at your site root.</li>\n<li>Fully functional on shared/managed hosting &#8212; no filesystem writes outside the database, no special server permissions needed.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/focusweb-ai-crawler-monitor.1.2.3.zip",
+    "upgrade_notice": {
+        "1.2.3": "<p>Adds plugin directory listing assets (icon, banner, screenshots) -- no functional changes.</p>",
+        "1.2.2": "<p>Plugin Check annotation follow-up -- no functional changes.</p>",
+        "1.2.1": "<p>Updates bundled Chart.js to 4.5.1 and fixes inline-script enqueueing per WordPress.org review feedback -- no functional changes.</p>",
+        "1.2.0": "<p>Adds AI Referral Traffic tracking (new &quot;AI Referrals&quot; page) alongside existing crawler logging -- no breaking changes.</p>",
+        "1.1.0": "<p>Plugin renamed/re-slugged for WordPress.org directory compliance -- no functional changes.</p>",
+        "1.0.1": "<p>Plugin Check compliance fixes -- no functional changes to bot detection or logging.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/focusweb-ai-crawler-monitor/assets/screenshot-1.png?rev=3601299",
+            "caption": "Dashboard -- summary cards, a 30-day per-bot visit chart, most-crawled URLs, and a paginated raw log with CSV export."
+        },
+        {
+            "src": "https://ps.w.org/focusweb-ai-crawler-monitor/assets/screenshot-2.png?rev=3601299",
+            "caption": "AI Referrals -- human click-throughs from AI answer engines like ChatGPT and Perplexity, with captured queries where the platform exposes one."
+        },
+        {
+            "src": "https://ps.w.org/focusweb-ai-crawler-monitor/assets/screenshot-3.png?rev=3601299",
+            "caption": "Settings -- tracked bots, tracked AI referral sources, log retention, IP anonymization, and excluded URL paths."
+        },
+        {
+            "src": "https://ps.w.org/focusweb-ai-crawler-monitor/assets/screenshot-4.png?rev=3601299",
+            "caption": "llms.txt Generator -- produces suggested llms.txt content from your site's pages and posts for manual placement at your site root."
+        }
+    ],
+    "tags": {
+        "ai": "AI",
+        "bot": "bot",
+        "crawler": "crawler",
+        "llms-txt": "llms.txt",
+        "seo": "seo"
+    },
+    "stable_tag": "1.2.3",
+    "versions": {
+        "1.2.2": "https://downloads.wordpress.org/plugin/focusweb-ai-crawler-monitor.1.2.2.zip",
+        "1.2.3": "https://downloads.wordpress.org/plugin/focusweb-ai-crawler-monitor.1.2.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/focusweb-ai-crawler-monitor.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/focusweb-ai-crawler-monitor/assets/banner-772x250.png?rev=3601237",
+        "high": "https://ps.w.org/focusweb-ai-crawler-monitor/assets/banner-1544x500.png?rev=3601237"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/focusweb-ai-crawler-monitor/assets/icon-128x128.png?rev=3601237",
+        "2x": "https://ps.w.org/focusweb-ai-crawler-monitor/assets/icon-256x256.png?rev=3601237"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
