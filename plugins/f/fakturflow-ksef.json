@@ -1,0 +1,96 @@
+{
+    "name": "FakturFlow – E-Invoicing for KSeF",
+    "slug": "fakturflow-ksef",
+    "version": "0.2.2",
+    "author": "<a href=\"https://profiles.wordpress.org/simmotorlp/\">SYMONOV</a>",
+    "author_profile": "https://profiles.wordpress.org/simmotorlp/",
+    "contributors": {
+        "simmotorlp": {
+            "profile": "https://profiles.wordpress.org/simmotorlp/",
+            "avatar": "https://secure.gravatar.com/avatar/62e9afac7cb13a92706c81b0795d73fed60bd0b8b1dc314d3a64664083fc7e74?s=96&d=monsterid&r=g",
+            "display_name": "SYMONOV"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.0.1",
+    "requires_php": "8.1",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/fakturflow-ksef/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-11 08:41:00",
+    "added": "2026-07-11",
+    "homepage": "https://fakturflow.com/",
+    "sections": {
+        "description": "<p><strong>KSeF (Krajowy System e-Faktur), Poland&#8217;s national structured e-invoicing system, became mandatory for large taxpayers on 1 February 2026 and for micro, small and medium businesses on 1 April 2026. Penalties for not issuing structured invoices apply from 1 January 2027 — the same date the last wave (smallest taxpayers, under 10,000 zł/month invoiced turnover) joins the mandate.</strong> If you sell B2B through WooCommerce and issue invoices to businesses, you need KSeF now.</p>\n<p>FakturFlow is a standalone plugin: it talks directly to the official Ministry of Finance API 2.0. No external accounting system, no intermediary, no per-invoice fees. Generate, validate and submit a FA(3) structured invoice straight from the order screen — one click per step.</p>\n<p>Wtyczka łączy Twój sklep WooCommerce bezpośrednio z KSeF przez oficjalne API 2.0 Ministerstwa Finansów — pełny polski opis i tłumaczenie interfejsu (pl_PL) są dołączone do wtyczki.</p>\n<h4>Features</h4>\n<ul>\n<li>Generate FA(3) structured invoice XML from any WooCommerce order.</li>\n<li>Validate against the official Ministry of Finance schema before sending.</li>\n<li>Submit to KSeF (test, demo and production environments) using the official API 2.0.</li>\n<li>Track submission status and download the UPO (Urzędowe Poświadczenie Odbioru — official proof of receipt).</li>\n<li>KOD I verification QR code, generated per the official Ministry of Finance specification.</li>\n<li>NIP field at checkout (classic <em>and</em> block checkout) with checksum validation — orders with a NIP are detected as B2B automatically.</li>\n<li>Correction invoices (faktury korygujące) from refunds — every refund gets its own KOR document referencing the original invoice by KSeF number; generate, send and download its UPO from the order screen.</li>\n<li>KSeF token stored encrypted at rest, never logged.</li>\n<li>HPOS (custom order tables) and checkout-blocks compatible.</li>\n<li>Full Polish (pl_PL) translation included.</li>\n</ul>\n<h4>Who it&#8217;s for</h4>\n<p>Any WooCommerce store that invoices Polish businesses and must comply with the KSeF mandate — without a SaaS subscription, without per-invoice fees, and without needing a separate accounting package. Consumer (B2C) orders are not required to go through KSeF and flow through the normal checkout untouched.</p>\n<h4>Roadmap (Pro, separate plugin)</h4>\n<p>Automatic submission on payment, automatic corrections when an order is refunded, offline24 mode with KOD II QR codes, and a submission dashboard are in development as a separate Pro add-on. This plugin (Free) will always cover manual generate/validate/send, corrections, UPO, the NIP field and the QR code — no functionality is removed to push a paid tier.</p>\n<h4>Third-party libraries</h4>\n<p>This plugin ships the following open-source runtime libraries, all MIT-licensed (GPL-compatible):</p>\n<ul>\n<li><a href=\"https://phpseclib.com/\" rel=\"nofollow ugc\">phpseclib/phpseclib</a> 3.x — RSA-OAEP-SHA256, required for the KSeF session-key handshake (PHP&#8217;s own openssl extension cannot do OAEP with SHA-256).</li>\n<li><a href=\"https://github.com/chillerlan/php-qrcode\" rel=\"nofollow ugc\">chillerlan/php-qrcode</a> — pure-PHP QR code rendering for the KOD I verification code (no GD/Imagick requirement).</li>\n<li><a href=\"https://github.com/paragonie/constant_time_encoding\" rel=\"nofollow ugc\">paragonie/constant_time_encoding</a> and <a href=\"https://github.com/paragonie/random_compat\" rel=\"nofollow ugc\">paragonie/random_compat</a> — dependencies of the above.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to KSeF (Krajowy System e-Faktur), the official structured e-invoicing API of the Polish Ministry of Finance. It is required for the plugin&#8217;s core purpose: submitting structured invoices, checking their status and downloading UPO confirmations.</p>\n<ul>\n<li>What is sent: invoice data derived from the WooCommerce order (seller NIP/name, buyer NIP/name and address, line items, amounts, VAT), and your KSeF authentication token during session handshake. Data is sent only when you explicitly generate/send an invoice or refresh its status from the order screen (or when a Pro add-on triggers the same documented actions).</li>\n<li>Where it is sent, depending on the environment chosen in settings: <code>https://api.ksef.mf.gov.pl</code> (production), <code>https://api-demo.ksef.mf.gov.pl</code> (demo), <code>https://api-test.ksef.mf.gov.pl</code> (test).</li>\n<li>The KOD I verification QR code embeds a public verification link pointing to <code>https://qr.ksef.mf.gov.pl</code> (or the matching <code>qr-demo</code>/<code>qr-test</code> host), per the official verification-code specification. The link is only opened when someone scans the QR code.</li>\n<li>Service provider: Ministry of Finance of the Republic of Poland. Service information: https://www.podatki.gov.pl/ksef/ — privacy/data-processing information: https://ksef.mf.gov.pl/</li>\n</ul>\n<p>No other external service is contacted. The plugin sends no telemetry.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin (WooCommerce must be installed and active).</li>\n<li>Go to <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> KSeF Invoices</strong>.</li>\n<li>Choose the environment — start with <strong>Test</strong>.</li>\n<li>Enter your seller NIP and seller name.</li>\n<li>Log into the KSeF web application (https://ksef.mf.gov.pl/) with your Trusted Profile or qualified certificate and generate a token with <strong>InvoiceWrite</strong> and <strong>InvoiceRead</strong> permissions. Paste it into the settings — it is stored encrypted.</li>\n<li>Use <strong>Test connection</strong> to confirm your hosting allows outgoing HTTPS to KSeF.</li>\n<li>Open a B2B order (one with a buyer NIP), generate and validate the FA(3) invoice, send it to KSeF and download the UPO. Once a full test cycle works, switch the environment to <strong>Production</strong>.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20the%20plugin%20work%20without%20an%20accounting%20system%3F\">\nDoes the plugin work without an accounting system?\n</h4>\n<p>\n<p>Yes. It talks directly to the official KSeF API 2.0 of the Ministry of Finance — no intermediary and no per-invoice fees. You generate, validate and submit FA(3) invoices from the WooCommerce order screen.</p>\n</p>\n<dt id=\"what%20about%20consumer%20%28b2c%29%20orders%3F\">\nWhat about consumer (B2C) orders?\n</h4>\n<p>\n<p>Only orders with a buyer NIP (tax ID) are routed to KSeF. Consumer orders keep the regular WooCommerce checkout flow — KSeF stays optional for them.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20hpos%20and%20the%20block%20checkout%3F\">\nDoes it work with HPOS and the block checkout?\n</h4>\n<p>\n<p>Yes. The plugin is fully compatible with High-Performance Order Storage (custom order tables) and with the Checkout block — the NIP field is registered through the Additional Checkout Fields API and behaves identically in both checkout variants.</p>\n</p>\n<dt id=\"where%20do%20i%20get%20a%20ksef%20token%3F\">\nWhere do I get a KSeF token?\n</h4>\n<p>\n<p>Log into the KSeF web application (https://ksef.mf.gov.pl/) with your Trusted Profile (Profil Zaufany) or qualified certificate, go to permissions management, and generate a token with <strong>InvoiceWrite</strong> and <strong>InvoiceRead</strong> permissions. Paste it into the plugin settings (WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> KSeF Invoices) — it is stored encrypted.</p>\n</p>\n<dt id=\"does%20the%20plugin%20send%20data%20to%20third%20parties%3F\">\nDoes the plugin send data to third parties?\n</h4>\n<p>\n<p>No. Invoice data is sent only to the official Ministry of Finance API (test, demo or production environment, as chosen in your settings). The one exception is the verification link encoded in the KOD I QR code itself — when scanned it points to the Ministry of Finance&#8217;s public invoice-verification lookup, per the official verification-code specification. See the &#8220;External services&#8221; section below for the exact endpoints.</p>\n</p>\n<dt id=\"does%20uninstalling%20the%20plugin%20delete%20my%20issued%20invoices%3F\">\nDoes uninstalling the plugin delete my issued invoices?\n</h4>\n<p>\n<p>No. Generated invoice and UPO XML files (under <code>wp-content/uploads/ksef-invoices/</code>) are legal/tax records and are <strong>not</strong> deleted on uninstall — only the plugin&#8217;s own settings (environment, seller data, token) are removed. If you also want the stored files gone, remove them manually after archiving/exporting them.</p>\n</p>\n\n",
+        "changelog": "<h4>0.2.2</h4>\n<ul>\n<li>Renamed again to resolve a follow-up wp.org review finding: &#8220;WooCommerce&#8221; is not permitted in the plugin name or slug at all, so it&#8217;s dropped from both. New slug: <code>fakturflow-ksef</code>.</li>\n</ul>\n<h4>0.2.1</h4>\n<ul>\n<li>Renamed to resolve a wp.org review trademark/slug finding (new slug: <code>fakturflow-ksef-and-woocommerce</code>). Upgraded chillerlan/php-qrcode to 6.0.1 and hardened the KOD I QR output with <code>wp_kses()</code>.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>Initial release: FA(3) generation with offline schema validation, direct KSeF API 2.0 submission with UPO download, order metabox and status column, checkout NIP field (classic + blocks), KOD I verification QR, correction invoices (faktury korygujące) from refunds, encrypted token storage.</li>\n</ul>\n"
+    },
+    "short_description": "Issue KSeF structured e-invoices (FA(3)) straight from WooCommerce orders — no intermediaries, no per-invoice fees.",
+    "description": "<p><strong>KSeF (Krajowy System e-Faktur), Poland&#8217;s national structured e-invoicing system, became mandatory for large taxpayers on 1 February 2026 and for micro, small and medium businesses on 1 April 2026. Penalties for not issuing structured invoices apply from 1 January 2027 — the same date the last wave (smallest taxpayers, under 10,000 zł/month invoiced turnover) joins the mandate.</strong> If you sell B2B through WooCommerce and issue invoices to businesses, you need KSeF now.</p>\n<p>FakturFlow is a standalone plugin: it talks directly to the official Ministry of Finance API 2.0. No external accounting system, no intermediary, no per-invoice fees. Generate, validate and submit a FA(3) structured invoice straight from the order screen — one click per step.</p>\n<p>Wtyczka łączy Twój sklep WooCommerce bezpośrednio z KSeF przez oficjalne API 2.0 Ministerstwa Finansów — pełny polski opis i tłumaczenie interfejsu (pl_PL) są dołączone do wtyczki.</p>\n<h4>Features</h4>\n<ul>\n<li>Generate FA(3) structured invoice XML from any WooCommerce order.</li>\n<li>Validate against the official Ministry of Finance schema before sending.</li>\n<li>Submit to KSeF (test, demo and production environments) using the official API 2.0.</li>\n<li>Track submission status and download the UPO (Urzędowe Poświadczenie Odbioru — official proof of receipt).</li>\n<li>KOD I verification QR code, generated per the official Ministry of Finance specification.</li>\n<li>NIP field at checkout (classic <em>and</em> block checkout) with checksum validation — orders with a NIP are detected as B2B automatically.</li>\n<li>Correction invoices (faktury korygujące) from refunds — every refund gets its own KOR document referencing the original invoice by KSeF number; generate, send and download its UPO from the order screen.</li>\n<li>KSeF token stored encrypted at rest, never logged.</li>\n<li>HPOS (custom order tables) and checkout-blocks compatible.</li>\n<li>Full Polish (pl_PL) translation included.</li>\n</ul>\n<h4>Who it&#8217;s for</h4>\n<p>Any WooCommerce store that invoices Polish businesses and must comply with the KSeF mandate — without a SaaS subscription, without per-invoice fees, and without needing a separate accounting package. Consumer (B2C) orders are not required to go through KSeF and flow through the normal checkout untouched.</p>\n<h4>Roadmap (Pro, separate plugin)</h4>\n<p>Automatic submission on payment, automatic corrections when an order is refunded, offline24 mode with KOD II QR codes, and a submission dashboard are in development as a separate Pro add-on. This plugin (Free) will always cover manual generate/validate/send, corrections, UPO, the NIP field and the QR code — no functionality is removed to push a paid tier.</p>\n<h4>Third-party libraries</h4>\n<p>This plugin ships the following open-source runtime libraries, all MIT-licensed (GPL-compatible):</p>\n<ul>\n<li><a href=\"https://phpseclib.com/\" rel=\"nofollow ugc\">phpseclib/phpseclib</a> 3.x — RSA-OAEP-SHA256, required for the KSeF session-key handshake (PHP&#8217;s own openssl extension cannot do OAEP with SHA-256).</li>\n<li><a href=\"https://github.com/chillerlan/php-qrcode\" rel=\"nofollow ugc\">chillerlan/php-qrcode</a> — pure-PHP QR code rendering for the KOD I verification code (no GD/Imagick requirement).</li>\n<li><a href=\"https://github.com/paragonie/constant_time_encoding\" rel=\"nofollow ugc\">paragonie/constant_time_encoding</a> and <a href=\"https://github.com/paragonie/random_compat\" rel=\"nofollow ugc\">paragonie/random_compat</a> — dependencies of the above.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to KSeF (Krajowy System e-Faktur), the official structured e-invoicing API of the Polish Ministry of Finance. It is required for the plugin&#8217;s core purpose: submitting structured invoices, checking their status and downloading UPO confirmations.</p>\n<ul>\n<li>What is sent: invoice data derived from the WooCommerce order (seller NIP/name, buyer NIP/name and address, line items, amounts, VAT), and your KSeF authentication token during session handshake. Data is sent only when you explicitly generate/send an invoice or refresh its status from the order screen (or when a Pro add-on triggers the same documented actions).</li>\n<li>Where it is sent, depending on the environment chosen in settings: <code>https://api.ksef.mf.gov.pl</code> (production), <code>https://api-demo.ksef.mf.gov.pl</code> (demo), <code>https://api-test.ksef.mf.gov.pl</code> (test).</li>\n<li>The KOD I verification QR code embeds a public verification link pointing to <code>https://qr.ksef.mf.gov.pl</code> (or the matching <code>qr-demo</code>/<code>qr-test</code> host), per the official verification-code specification. The link is only opened when someone scans the QR code.</li>\n<li>Service provider: Ministry of Finance of the Republic of Poland. Service information: https://www.podatki.gov.pl/ksef/ — privacy/data-processing information: https://ksef.mf.gov.pl/</li>\n</ul>\n<p>No other external service is contacted. The plugin sends no telemetry.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/fakturflow-ksef.0.2.2.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/fakturflow-ksef/assets/screenshot-1.png?rev=3603719",
+            "caption": "Settings screen — environment, seller NIP/name and KSeF token (WooCommerce &gt; KSeF Invoices)."
+        },
+        {
+            "src": "https://ps.w.org/fakturflow-ksef/assets/screenshot-2.png?rev=3603719",
+            "caption": "Order edit screen metabox — generate/send/refresh actions, status and the KOD I verification QR code."
+        },
+        {
+            "src": "https://ps.w.org/fakturflow-ksef/assets/screenshot-3.png?rev=3603719",
+            "caption": "Checkout NIP field — block checkout."
+        },
+        {
+            "src": "https://ps.w.org/fakturflow-ksef/assets/screenshot-4.png?rev=3603719",
+            "caption": "Orders list — the \"KSeF\" status column."
+        }
+    ],
+    "tags": {
+        "e-faktura": "e-faktura",
+        "faktura": "faktura",
+        "invoice": "invoice",
+        "ksef": "ksef",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "0.2.2",
+    "versions": {
+        "0.2.2": "https://downloads.wordpress.org/plugin/fakturflow-ksef.0.2.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/fakturflow-ksef.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/fakturflow-ksef/assets/banner-772x250.png?rev=3603719",
+        "high": "https://ps.w.org/fakturflow-ksef/assets/banner-1544x500.png?rev=3603719"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/fakturflow-ksef/assets/icon-128x128.png?rev=3603719",
+        "2x": "https://ps.w.org/fakturflow-ksef/assets/icon-256x256.png?rev=3603719"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
