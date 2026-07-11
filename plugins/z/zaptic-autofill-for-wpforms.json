@@ -1,0 +1,75 @@
+{
+    "name": "Zaptic Autofill for WPForms",
+    "slug": "zaptic-autofill-for-wpforms",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/letsgodev/\">Lets Go Dev</a>",
+    "author_profile": "https://profiles.wordpress.org/letsgodev/",
+    "contributors": {
+        "letsgodev": {
+            "profile": "https://profiles.wordpress.org/letsgodev/",
+            "avatar": "https://secure.gravatar.com/avatar/de6a2a44fb334dee77a7411baabbea59dd70109b1b8d323f15f5be46ae32ea04?s=96&d=monsterid&r=g",
+            "display_name": "Lets Go Dev"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0.1",
+    "requires_php": "8.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/zaptic-autofill-for-wpforms/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-11 01:01:00",
+    "added": "2026-07-11",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Zaptic Document Autofill adds a custom field to WPForms that lets visitors upload a PDF, DOC, or DOCX file. The plugin sends the document content to the Zaptic API and fills mapped form fields automatically, including repeater rows and optional scoring criteria.</p>\n<h4>Features</h4>\n<ul>\n<li>Custom Zaptic field with API key, layout, and scoring options</li>\n<li>Autofill for text, number, name, select, textarea, and repeater fields</li>\n<li>Optional scoring criteria with total score and executive summary stored on entries</li>\n<li>Supports standard file input and drag-and-drop upload layouts</li>\n<li>Document types supported: PDF, DOC, and DOCX</li>\n</ul>\n<h4>Requirements</h4>\n<ul>\n<li>WPForms (Lite or Pro)</li>\n<li>A valid Zaptic API license configured on the Zaptic field</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the Zaptic API to analyze uploaded documents and return structured field values for autofill. It does not contact Zaptic unless a visitor uploads a supported document on a form that has the Zaptic field configured with a valid license and at least one field marked for autofill.</p>\n<h4>Zaptic Process API</h4>\n<p>When a visitor uploads a PDF, DOC, or DOCX file in the Zaptic field, the plugin extracts the document text on your WordPress server and sends a JSON request to:</p>\n<pre><code>https://api.zaptic.io/json-api/zaptic/v1/process\n</code></pre>\n<p><strong>Data sent to Zaptic</strong></p>\n<ul>\n<li><code>license</code> — the Zaptic API license configured in the Zaptic field settings (read server-side only; never taken from the browser).</li>\n<li><code>domain</code> — your site domain, derived from the WordPress home URL.</li>\n<li><code>origin</code> — fixed value <code>wpforms_plugin</code>, used to identify this integration.</li>\n<li><code>lang</code> — the WordPress site locale.</li>\n<li><code>version</code> — the plugin version.</li>\n<li><code>requested_fields</code> — the schema of form fields enabled for autofill (field labels and types), not the visitor&#8217;s submitted answers.</li>\n<li><code>extracted_content</code> — plain text extracted locally from the uploaded document. The original file is not uploaded to Zaptic.</li>\n<li><code>scoring_criteria</code> (optional) — when scoring is enabled on the Zaptic field, each criterion name, requirement description, and weight.</li>\n</ul>\n<p><strong>Data received from Zaptic</strong></p>\n<p>On success, the API returns JSON with:</p>\n<ul>\n<li><code>extracted_fields</code> — suggested values keyed by field label, used to populate the form in the browser.</li>\n<li><code>response_id</code> — an identifier for that processing run.</li>\n<li><code>internal_analysis</code> (optional) — when scoring is enabled, may include <code>total_score</code> and <code>executive_summary</code>. This is stored temporarily in WordPress (transient, 30 minutes) and saved to the WPForms entry when the form is submitted.</li>\n</ul>\n<p>If the request fails, the plugin shows an error message to the visitor and does not autofill the form.</p>\n<p><strong>When the request is made</strong></p>\n<ul>\n<li>Trigger: visitor selects a file in the Zaptic upload field on the front end.</li>\n<li>Transport: browser <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> WordPress (<code>admin-ajax.php</code>) <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Zaptic API (<code>wp_remote_post</code>).</li>\n<li>Frequency: once per uploaded document per autofill attempt.</li>\n</ul>\n<p><strong>Privacy and terms</strong></p>\n<p>Use of the Zaptic service is subject to Zaptic&#8217;s policies. Document text and related metadata sent through this plugin are processed according to those policies.</p>\n<p>This service is provided by Zaptic:</p>\n<ul>\n<li><a href=\"https://www.zaptic.io/privacy-policy/\" rel=\"nofollow ugc\">Privacy policy</a></li>\n<li><a href=\"https://www.zaptic.io/refund_returns/\" rel=\"nofollow ugc\">Terms of service and refund policy</a></li>\n<li><a href=\"https://zaptic.io/developers\" rel=\"nofollow ugc\">API documentation</a></li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to <code>/wp-content/plugins/</code> or install it through the WordPress plugins screen.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> screen in WordPress.</li>\n<li>Make sure WPForms is installed and active.</li>\n<li>Edit a form, add the <strong>Zaptic</strong> field, and enter your API license.</li>\n<li>Enable <strong>Autofill from Zaptic</strong> on the fields you want to populate.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"which%20file%20types%20are%20supported%3F\">\nWhich file types are supported?\n</h4>\n<p>\n<p>PDF, DOC, and DOCX. Image files are not supported.</p>\n</p>\n<dt id=\"does%20this%20plugin%20work%20without%20wpforms%3F\">\nDoes this plugin work without WPForms?\n</h4>\n<p>\n<p>No. WPForms must be installed and active.</p>\n</p>\n<dt id=\"where%20is%20the%20total%20score%20shown%3F\">\nWhere is the total score shown?\n</h4>\n<p>\n<p>When scoring is enabled, the total score and executive summary appear on the entry detail screen and in the entries list column.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Autofill form fields from PDF and Word documents using the Zaptic service. Requires WPForms.",
+    "description": "<p>Zaptic Document Autofill adds a custom field to WPForms that lets visitors upload a PDF, DOC, or DOCX file. The plugin sends the document content to the Zaptic API and fills mapped form fields automatically, including repeater rows and optional scoring criteria.</p>\n<h4>Features</h4>\n<ul>\n<li>Custom Zaptic field with API key, layout, and scoring options</li>\n<li>Autofill for text, number, name, select, textarea, and repeater fields</li>\n<li>Optional scoring criteria with total score and executive summary stored on entries</li>\n<li>Supports standard file input and drag-and-drop upload layouts</li>\n<li>Document types supported: PDF, DOC, and DOCX</li>\n</ul>\n<h4>Requirements</h4>\n<ul>\n<li>WPForms (Lite or Pro)</li>\n<li>A valid Zaptic API license configured on the Zaptic field</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the Zaptic API to analyze uploaded documents and return structured field values for autofill. It does not contact Zaptic unless a visitor uploads a supported document on a form that has the Zaptic field configured with a valid license and at least one field marked for autofill.</p>\n<h4>Zaptic Process API</h4>\n<p>When a visitor uploads a PDF, DOC, or DOCX file in the Zaptic field, the plugin extracts the document text on your WordPress server and sends a JSON request to:</p>\n<pre><code>https://api.zaptic.io/json-api/zaptic/v1/process\n</code></pre>\n<p><strong>Data sent to Zaptic</strong></p>\n<ul>\n<li><code>license</code> — the Zaptic API license configured in the Zaptic field settings (read server-side only; never taken from the browser).</li>\n<li><code>domain</code> — your site domain, derived from the WordPress home URL.</li>\n<li><code>origin</code> — fixed value <code>wpforms_plugin</code>, used to identify this integration.</li>\n<li><code>lang</code> — the WordPress site locale.</li>\n<li><code>version</code> — the plugin version.</li>\n<li><code>requested_fields</code> — the schema of form fields enabled for autofill (field labels and types), not the visitor&#8217;s submitted answers.</li>\n<li><code>extracted_content</code> — plain text extracted locally from the uploaded document. The original file is not uploaded to Zaptic.</li>\n<li><code>scoring_criteria</code> (optional) — when scoring is enabled on the Zaptic field, each criterion name, requirement description, and weight.</li>\n</ul>\n<p><strong>Data received from Zaptic</strong></p>\n<p>On success, the API returns JSON with:</p>\n<ul>\n<li><code>extracted_fields</code> — suggested values keyed by field label, used to populate the form in the browser.</li>\n<li><code>response_id</code> — an identifier for that processing run.</li>\n<li><code>internal_analysis</code> (optional) — when scoring is enabled, may include <code>total_score</code> and <code>executive_summary</code>. This is stored temporarily in WordPress (transient, 30 minutes) and saved to the WPForms entry when the form is submitted.</li>\n</ul>\n<p>If the request fails, the plugin shows an error message to the visitor and does not autofill the form.</p>\n<p><strong>When the request is made</strong></p>\n<ul>\n<li>Trigger: visitor selects a file in the Zaptic upload field on the front end.</li>\n<li>Transport: browser <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> WordPress (<code>admin-ajax.php</code>) <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Zaptic API (<code>wp_remote_post</code>).</li>\n<li>Frequency: once per uploaded document per autofill attempt.</li>\n</ul>\n<p><strong>Privacy and terms</strong></p>\n<p>Use of the Zaptic service is subject to Zaptic&#8217;s policies. Document text and related metadata sent through this plugin are processed according to those policies.</p>\n<p>This service is provided by Zaptic:</p>\n<ul>\n<li><a href=\"https://www.zaptic.io/privacy-policy/\" rel=\"nofollow ugc\">Privacy policy</a></li>\n<li><a href=\"https://www.zaptic.io/refund_returns/\" rel=\"nofollow ugc\">Terms of service and refund policy</a></li>\n<li><a href=\"https://zaptic.io/developers\" rel=\"nofollow ugc\">API documentation</a></li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/zaptic-autofill-for-wpforms.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "autofill": "autofill",
+        "document": "document",
+        "forms": "forms",
+        "pdf": "pdf",
+        "zaptic": "zaptic"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/zaptic-autofill-for-wpforms.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/zaptic-autofill-for-wpforms.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/zaptic-autofill-for-wpforms.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
