@@ -1,0 +1,76 @@
+{
+    "name": "RealNode Anti-Scalper",
+    "slug": "realnode-anti-scalper",
+    "version": "1.1.1",
+    "author": "<a href=\"https://profiles.wordpress.org/emkaylabs/\">emkaylabs</a>",
+    "author_profile": "https://profiles.wordpress.org/emkaylabs/",
+    "contributors": {
+        "emkaylabs": {
+            "profile": "https://profiles.wordpress.org/emkaylabs/",
+            "avatar": "https://secure.gravatar.com/avatar/ce83bc769bcf005fa12d7c8dbc3a75bac22229360bf731e47231954ac8c2a7d3?s=96&d=monsterid&r=g",
+            "display_name": "emkaylabs"
+        }
+    },
+    "requires": "5.8",
+    "tested": "7.0.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/realnode-anti-scalper/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-12 17:10:00",
+    "added": "2026-07-12",
+    "homepage": "https://realnode.emkaylabs.tech",
+    "sections": {
+        "description": "<p>RealNode Anti-Scalper protects WooCommerce stores against automated purchasing bots and inventory hoarding. It integrates hardware-level identity verification directly into the checkout flow.</p>\n<p>When a customer clicks &#8220;Place Order&#8221;, RealNode requests a cryptographic proof from their device (TouchID, FaceID, or Windows Hello). This proof is generated inside the device&#8217;s secure enclave and validated server-side before the order is processed.</p>\n<h4>Three service tiers</h4>\n<ul>\n<li><strong>RN Insight</strong> — Passive monitoring. Collects device signals without interrupting checkout.</li>\n<li><strong>RN Sentinel</strong> — Active protection. Biometric verification is required at checkout for every order.</li>\n<li><strong>RN Vault</strong> — Event-level control. Enforces per-user purchase quotas for high-demand ticket releases.</li>\n</ul>\n<h4>Key properties</h4>\n<ul>\n<li><strong>No personal data collected</strong> — only anonymous hardware identifiers (IDH) are transmitted</li>\n<li><strong>No friction for real users</strong> — verification completes in under 1 second using native device biometrics</li>\n<li><strong>No performance impact</strong> — the SDK loads asynchronously and does not affect page speed</li>\n<li><strong>No server maintenance</strong> — fully managed SaaS infrastructure</li>\n<li><strong>Fail-open by design</strong> — if the RealNode service is unreachable, checkout proceeds normally</li>\n</ul>\n<h4>Requirements</h4>\n<ul>\n<li>An active RealNode account at <a href=\"https://realnode.emkaylabs.tech\" rel=\"nofollow ugc\">realnode.emkaylabs.tech</a></li>\n<li>WooCommerce 6.0 or later</li>\n<li>Modern browsers with WebAuthn support (Chrome 67+, Firefox 60+, Safari 14+)</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin communicates with the RealNode API to provide hardware-backed bot protection. Two endpoints are used:</p>\n<ol>\n<li><strong>RealNode SDK (api.emkaylabs.tech):</strong> The plugin loads the RealNode JavaScript SDK on checkout pages to trigger the WebAuthn/FIDO2 verification prompt. Only anonymous hardware hashes (IDH) are transmitted — no personal data.</li>\n<li><strong>RealNode Backend API (rn-v3-elite.onrender.com):</strong> The plugin makes a server-to-server call to validate the cryptographic token generated during checkout and enforce purchase quotas. Data sent includes the ticket quantity and the anonymous hardware hash (IDH).</li>\n</ol>\n<p>This service is operated by EMKAY LABS.</p>\n<ul>\n<li>Service page and legal information: https://realnode.emkaylabs.tech</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>realnode-antiscalper</code> folder to <code>/wp-content/plugins/</code></li>\n<li>Activate the plugin through the <strong>Plugins</strong> menu in WordPress</li>\n<li>Go to <strong>Settings &gt; RealNode Anti-Scalper</strong></li>\n<li>Paste your <code>pk_live_...</code> Public API key and your <code>sk_live_...</code> Secret key</li>\n<li>Click <strong>Save Settings</strong> — protection is now active on your checkout</li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20to%20touch%20any%20code%3F\">\nDo I need to touch any code?\n</h4>\n<p>\n<p>No. The plugin automatically injects the SDK on checkout and cart pages and protects the WooCommerce &#8220;Place Order&#8221; button without any coding required.</p>\n</p>\n<dt id=\"what%20happens%20to%20customers%20who%20don%27t%20have%20a%20compatible%20device%3F\">\nWhat happens to customers who don&#8217;t have a compatible device?\n</h4>\n<p>\n<p>The plugin is fail-open by design. If a device does not support WebAuthn, verification is skipped and checkout proceeds normally. No legitimate customer is ever blocked.</p>\n</p>\n<dt id=\"does%20this%20slow%20down%20my%20site%3F\">\nDoes this slow down my site?\n</h4>\n<p>\n<p>No. The SDK loads only on cart and checkout pages, asynchronously, with no runtime dependencies. It has no effect on page speed for the rest of the site.</p>\n</p>\n<dt id=\"is%20my%20customers%27%20biometric%20data%20sent%20to%20realnode%3F\">\nIs my customers&#8217; biometric data sent to RealNode?\n</h4>\n<p>\n<p>No. Biometric data never leaves the device. WebAuthn generates a cryptographic signature inside the device hardware. RealNode receives only an anonymous hash — never the fingerprint or face scan itself.</p>\n</p>\n<dt id=\"is%20the%20secret%20key%20%28sk_live_%29%20safe%20in%20wordpress%3F\">\nIs the Secret Key (sk_live_) safe in WordPress?\n</h4>\n<p>\n<p>Yes. The Secret Key is stored as a WordPress option and is only used in server-side PHP calls via <code>wp_remote_post()</code>. It is never exposed to the browser or included in any JavaScript output.</p>\n</p>\n<dt id=\"which%20woocommerce%20checkout%20types%20are%20supported%3F\">\nWhich WooCommerce checkout types are supported?\n</h4>\n<p>\n<p>Both the classic shortcode checkout (<code>[woocommerce_checkout]</code>) and the modern block-based checkout are supported. The plugin uses multiple CSS selectors to locate the &#8220;Place Order&#8221; button across different themes.</p>\n</p>\n<dt id=\"what%20is%20the%20difference%20between%20sentinel%20and%20vault%3F\">\nWhat is the difference between Sentinel and Vault?\n</h4>\n<p>\n<p>Sentinel requires biometric verification at every checkout. Vault adds a purchase quota per user per event — each user can only buy a set number of tickets, enforced by hardware attestation.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.1</h4>\n<ul>\n<li>Updated external service URLs in readme.txt.</li>\n<li>Updated event_id field description.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Added multi-tier support: RN Insight, RN Sentinel, RN Vault.</li>\n<li>Added Secret Key (sk_live_) field for secure backend validation.</li>\n<li>Added device_token field to backend /consume validation payload.</li>\n<li>SDK injection restricted to cart and checkout pages only.</li>\n<li>Added fail-open logic with 5-second timeout on backend API calls.</li>\n<li>Added 30-second modal timeout with automatic fail-open fallback.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>SDK injection with async loading.</li>\n<li>WooCommerce &#8220;Place Order&#8221; button protection.</li>\n<li>Settings page with API key and endpoint configuration.</li>\n<li>Graceful fail-open on unsupported devices.</li>\n</ul>\n"
+    },
+    "short_description": "Hardware-backed bot protection and fraud prevention for WooCommerce. Stops automated scalper bots at checkout using FIDO2/WebAuthn cryptographic attes &hellip;",
+    "description": "<p>RealNode Anti-Scalper protects WooCommerce stores against automated purchasing bots and inventory hoarding. It integrates hardware-level identity verification directly into the checkout flow.</p>\n<p>When a customer clicks &#8220;Place Order&#8221;, RealNode requests a cryptographic proof from their device (TouchID, FaceID, or Windows Hello). This proof is generated inside the device&#8217;s secure enclave and validated server-side before the order is processed.</p>\n<h4>Three service tiers</h4>\n<ul>\n<li><strong>RN Insight</strong> — Passive monitoring. Collects device signals without interrupting checkout.</li>\n<li><strong>RN Sentinel</strong> — Active protection. Biometric verification is required at checkout for every order.</li>\n<li><strong>RN Vault</strong> — Event-level control. Enforces per-user purchase quotas for high-demand ticket releases.</li>\n</ul>\n<h4>Key properties</h4>\n<ul>\n<li><strong>No personal data collected</strong> — only anonymous hardware identifiers (IDH) are transmitted</li>\n<li><strong>No friction for real users</strong> — verification completes in under 1 second using native device biometrics</li>\n<li><strong>No performance impact</strong> — the SDK loads asynchronously and does not affect page speed</li>\n<li><strong>No server maintenance</strong> — fully managed SaaS infrastructure</li>\n<li><strong>Fail-open by design</strong> — if the RealNode service is unreachable, checkout proceeds normally</li>\n</ul>\n<h4>Requirements</h4>\n<ul>\n<li>An active RealNode account at <a href=\"https://realnode.emkaylabs.tech\" rel=\"nofollow ugc\">realnode.emkaylabs.tech</a></li>\n<li>WooCommerce 6.0 or later</li>\n<li>Modern browsers with WebAuthn support (Chrome 67+, Firefox 60+, Safari 14+)</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin communicates with the RealNode API to provide hardware-backed bot protection. Two endpoints are used:</p>\n<ol>\n<li><strong>RealNode SDK (api.emkaylabs.tech):</strong> The plugin loads the RealNode JavaScript SDK on checkout pages to trigger the WebAuthn/FIDO2 verification prompt. Only anonymous hardware hashes (IDH) are transmitted — no personal data.</li>\n<li><strong>RealNode Backend API (rn-v3-elite.onrender.com):</strong> The plugin makes a server-to-server call to validate the cryptographic token generated during checkout and enforce purchase quotas. Data sent includes the ticket quantity and the anonymous hardware hash (IDH).</li>\n</ol>\n<p>This service is operated by EMKAY LABS.</p>\n<ul>\n<li>Service page and legal information: https://realnode.emkaylabs.tech</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/realnode-anti-scalper.1.1.1.zip",
+    "upgrade_notice": {
+        "1.1.1": "<p>Minor update. No settings changes required.</p>",
+        "1.1.0": "<p>Adds multi-tier plan support (Insight, Sentinel, Vault) and requires a Secret Key for backend validation. Update your settings page after upgrading.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "anti-bot": "anti-bot",
+        "bot-protection": "bot protection",
+        "captcha": "captcha",
+        "checkout-security": "checkout security",
+        "fraud-prevention": "fraud prevention"
+    },
+    "stable_tag": "1.1.1",
+    "versions": {
+        "1.1.1": "https://downloads.wordpress.org/plugin/realnode-anti-scalper.1.1.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/realnode-anti-scalper.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/realnode-anti-scalper.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
