@@ -1,0 +1,89 @@
+{
+    "name": "DMS3 QR Manager",
+    "slug": "dms3-qr-manager",
+    "version": "20260712.2112",
+    "author": "<a href=\"https://profiles.wordpress.org/marcqueralt/\">Marc Queralt i Bassa</a>",
+    "author_profile": "https://profiles.wordpress.org/marcqueralt/",
+    "contributors": {
+        "marcqueralt": {
+            "profile": "https://profiles.wordpress.org/marcqueralt/",
+            "avatar": "https://secure.gravatar.com/avatar/9e98a453f31765d9f1ad67a2bda436266445b450617243c3b6fbfaf9899e8679?s=96&d=monsterid&r=g",
+            "display_name": "Marc Queralt i Bassa"
+        },
+        "demomentsomtres": {
+            "profile": "https://profiles.wordpress.org/demomentsomtres/",
+            "avatar": "https://secure.gravatar.com/avatar/b82868f90448f6acb0b29e3065c90003da84c27806ed009f6d2e302e12274912?s=96&d=monsterid&r=g",
+            "display_name": "demomentsomtres"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.0.1",
+    "requires_php": "8.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/dms3-qr-manager/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-12 19:14:00",
+    "added": "2026-07-12",
+    "homepage": "https://www.demomentsomtres.com/en/plugins-wordpress-woocommerce/",
+    "sections": {
+        "description": "<p>DMS3 QR Manager lets you create and manage QR codes in WordPress. Each QR points to a URL on your own site (<code>/qr/{slug}</code>) that records visits and redirects visitors to a final destination. Printed QR codes stay valid when you change the destination in the admin.</p>\n<p><strong>Features</strong></p>\n<ul>\n<li>Custom post type <code>qr-code</code> with slug, destination URL, and optional UTM campaign per QR</li>\n<li>Public redirect URLs: <code>{home_url}/qr/{slug}?utm_...</code></li>\n<li>Bridge page before redirect (default 1 second) so Google Analytics can load via <code>wp_head()</code></li>\n<li>Manual fallback link: “Skip to …” if automatic redirect fails</li>\n<li>Internal visit tracking with date-range statistics (anonymous scan timestamps only)</li>\n<li>Global UTM defaults (<code>utm_source</code>, <code>utm_medium</code>, default campaign)</li>\n<li><code>utm_content</code> is always set automatically to the QR slug</li>\n<li>SVG QR preview and download from the list screen and single QR edit screen</li>\n<li>Bulk SVG download as a ZIP file (<code>{slug}.svg</code> per code)</li>\n<li>WPML: <code>qr-code</code> is excluded from translation</li>\n</ul>\n<p><strong>How redirects work</strong></p>\n<p>Scanned URL example:</p>\n<pre><code>https://example.com/qr/wikipedia?utm_source=qr&amp;utm_medium=offline&amp;utm_campaign=port_vendrell&amp;utm_content=wikipedia\n</code></pre>\n<ol>\n<li>Visitor hits <code>/qr/wikipedia</code></li>\n<li>A lightweight bridge page loads (HTTP 200) with analytics scripts</li>\n<li>After the configured delay, the browser redirects to the destination URL</li>\n<li>The visit is logged in the plugin database</li>\n</ol>\n<p>Temporary client-side redirects are used instead of HTTP 301 so every scan hits your server and destination URLs can be updated without reprinting QR codes.</p>\n<p><strong>Privacy</strong></p>\n<p>When someone scans a published QR code, the plugin stores only the internal QR identifier and the scan timestamp. It does not store IP addresses, HTTP referrers, or plugin-specific cookies. Visit data is used for admin statistics only.</p>\n<p><strong>Third-party libraries</strong></p>\n<p>QR images are generated with bundled PHP libraries (MIT licensed):</p>\n<ul>\n<li><a href=\"https://github.com/chillerlan/php-qrcode\" rel=\"nofollow ugc\">chillerlan/php-qrcode</a> (MIT)</li>\n<li><a href=\"https://github.com/chillerlan/php-settings-container\" rel=\"nofollow ugc\">chillerlan/php-settings-container</a> (MIT)</li>\n</ul>\n<p>The <code>vendor/</code> directory is included in the plugin package.</p>\n<p><strong>Uninstall</strong></p>\n<p>When the plugin is deleted (not merely deactivated), the visit statistics table and plugin options are removed. QR code posts (<code>qr-code</code>) are kept as regular WordPress content.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>dms3-qr-manager</code> folder to <code>/wp-content/plugins/</code></li>\n<li>Activate the plugin through the <strong>Plugins</strong> menu in WordPress</li>\n<li>Go to <strong>QR Manager <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings</strong> and configure global UTM parameters and redirect delay</li>\n<li>Create QR codes under <strong>QR Manager <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> All QR</strong></li>\n<li><strong>Publish</strong> each QR — draft codes return 404 on the public URL</li>\n<li>If <code>/qr/{slug}</code> URLs do not work, visit <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Permalinks</strong> and click <strong>Save Changes</strong> to flush rewrite rules</li>\n</ol>\n<p><strong>Composer dependency</strong></p>\n<p>If you build from source, run <code>composer install --no-dev</code> inside the plugin folder to populate <code>vendor/</code>.</p>\n",
+        "faq": "\n<dt id=\"why%20is%20my%20qr%20url%20returning%20404%3F\">\nWhy is my QR URL returning 404?\n</h4>\n<p>\n<p>The QR must be <strong>Published</strong> (not draft). The slug in the admin must match the URL path. Flush permalinks under <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Permalinks</strong>.</p>\n</p>\n<dt id=\"can%20i%20change%20the%20destination%20without%20reprinting%20the%20qr%3F\">\nCan I change the destination without reprinting the QR?\n</h4>\n<p>\n<p>Yes. Update the destination URL in the admin. The public <code>/qr/{slug}</code> URL stays the same.</p>\n</p>\n<dt id=\"does%20google%20analytics%20track%20qr%20scans%3F\">\nDoes Google Analytics track QR scans?\n</h4>\n<p>\n<p>The bridge page loads your theme/plugin analytics scripts before redirecting. For same-site destinations with “Forward UTM” enabled, UTM parameters are also appended to the final URL. Internal statistics are always recorded by the plugin regardless of GA.</p>\n</p>\n<dt id=\"what%20data%20does%20the%20plugin%20collect%3F\">\nWhat data does the plugin collect?\n</h4>\n<p>\n<p>Each scan logs the QR post ID and timestamp. No IP address or HTTP referrer is stored. See <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Privacy</strong> in WordPress for the full policy text added by this plugin.</p>\n</p>\n<dt id=\"is%20the%20qr%20post%20type%20translatable%20with%20wpml%3F\">\nIs the QR post type translatable with WPML?\n</h4>\n<p>\n<p>No. QR codes are language-independent by design.</p>\n</p>\n<dt id=\"what%20happens%20when%20i%20uninstall%20the%20plugin%3F\">\nWhat happens when I uninstall the plugin?\n</h4>\n<p>\n<p>The statistics table and plugin settings are deleted. Your <code>qr-code</code> posts remain in WordPress unless you delete them manually.</p>\n</p>\n<dt id=\"what%20php%20extensions%20are%20required%3F\">\nWhat PHP extensions are required?\n</h4>\n<p>\n<p>PHP 8.2+ and ZipArchive for bulk SVG download.</p>\n</p>\n\n",
+        "changelog": "<h4>20260712.2112</h4>\n<ul>\n<li>Internationalization: English source strings with bundled Catalan (ca_ES) and Spanish (es_ES) translations</li>\n<li>Added load_plugin_textdomain() for admin and frontend strings</li>\n</ul>\n<h4>20260710.1000</h4>\n<ul>\n<li>WordPress.org review: unified class prefixes under Dms3_Qr_Manager_*</li>\n<li>Updated chillerlan/php-qrcode to 6.0.1; minimum PHP is now 8.2</li>\n<li>Removed non-essential vendor files from distribution package</li>\n</ul>\n<h4>20260707.1200</h4>\n<ul>\n<li>Plugin Check compliance: literal i18n text domain, SVG escaping, WP_Filesystem for ZIP downloads</li>\n<li>Tested up to WordPress 7.0</li>\n</ul>\n<h4>20260707.1100</h4>\n<ul>\n<li>WordPress.org compliance: GPL license file, ABSPATH guards, privacy policy integration</li>\n<li>Removed HTTP referrer from visit logging</li>\n<li>Clean uninstall (database table and options)</li>\n<li>Bridge page assets enqueued via WordPress APIs</li>\n</ul>\n<h4>20260607.1730</h4>\n<ul>\n<li>Bridge redirect page with configurable delay (default 1 second)</li>\n<li>“Skip to …” manual fallback button</li>\n<li>Google Analytics support via <code>wp_head()</code> on bridge page</li>\n<li>Per-QR UTM campaign with global fallback; <code>utm_content</code> auto-set to slug</li>\n<li>SVG preview and download on list and edit screens</li>\n<li>Bulk SVG download as ZIP</li>\n<li>Visit statistics with date range filter</li>\n<li>WPML exclusion for <code>qr-code</code> post type</li>\n</ul>\n"
+    },
+    "short_description": "Manage QR codes as a custom post type with trackable redirects, visit statistics, and SVG download.",
+    "description": "<p>DMS3 QR Manager lets you create and manage QR codes in WordPress. Each QR points to a URL on your own site (<code>/qr/{slug}</code>) that records visits and redirects visitors to a final destination. Printed QR codes stay valid when you change the destination in the admin.</p>\n<p><strong>Features</strong></p>\n<ul>\n<li>Custom post type <code>qr-code</code> with slug, destination URL, and optional UTM campaign per QR</li>\n<li>Public redirect URLs: <code>{home_url}/qr/{slug}?utm_...</code></li>\n<li>Bridge page before redirect (default 1 second) so Google Analytics can load via <code>wp_head()</code></li>\n<li>Manual fallback link: “Skip to …” if automatic redirect fails</li>\n<li>Internal visit tracking with date-range statistics (anonymous scan timestamps only)</li>\n<li>Global UTM defaults (<code>utm_source</code>, <code>utm_medium</code>, default campaign)</li>\n<li><code>utm_content</code> is always set automatically to the QR slug</li>\n<li>SVG QR preview and download from the list screen and single QR edit screen</li>\n<li>Bulk SVG download as a ZIP file (<code>{slug}.svg</code> per code)</li>\n<li>WPML: <code>qr-code</code> is excluded from translation</li>\n</ul>\n<p><strong>How redirects work</strong></p>\n<p>Scanned URL example:</p>\n<pre><code>https://example.com/qr/wikipedia?utm_source=qr&amp;utm_medium=offline&amp;utm_campaign=port_vendrell&amp;utm_content=wikipedia\n</code></pre>\n<ol>\n<li>Visitor hits <code>/qr/wikipedia</code></li>\n<li>A lightweight bridge page loads (HTTP 200) with analytics scripts</li>\n<li>After the configured delay, the browser redirects to the destination URL</li>\n<li>The visit is logged in the plugin database</li>\n</ol>\n<p>Temporary client-side redirects are used instead of HTTP 301 so every scan hits your server and destination URLs can be updated without reprinting QR codes.</p>\n<p><strong>Privacy</strong></p>\n<p>When someone scans a published QR code, the plugin stores only the internal QR identifier and the scan timestamp. It does not store IP addresses, HTTP referrers, or plugin-specific cookies. Visit data is used for admin statistics only.</p>\n<p><strong>Third-party libraries</strong></p>\n<p>QR images are generated with bundled PHP libraries (MIT licensed):</p>\n<ul>\n<li><a href=\"https://github.com/chillerlan/php-qrcode\" rel=\"nofollow ugc\">chillerlan/php-qrcode</a> (MIT)</li>\n<li><a href=\"https://github.com/chillerlan/php-settings-container\" rel=\"nofollow ugc\">chillerlan/php-settings-container</a> (MIT)</li>\n</ul>\n<p>The <code>vendor/</code> directory is included in the plugin package.</p>\n<p><strong>Uninstall</strong></p>\n<p>When the plugin is deleted (not merely deactivated), the visit statistics table and plugin options are removed. QR code posts (<code>qr-code</code>) are kept as regular WordPress content.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/dms3-qr-manager.20260712.2112.zip",
+    "upgrade_notice": {
+        "20260712.2112": "<p>Adds Catalan and Spanish translations. Admin UI now uses English as the default source language.</p>",
+        "20260710.1000": "<p>WordPress.org review fixes: class prefix updates, chillerlan 6.0.1, PHP 8.2 required.</p>",
+        "20260707.1200": "<p>Plugin Check and WordPress 7.0 compatibility updates.</p>",
+        "20260707.1100": "<p>Privacy and uninstall improvements. Referrer data is no longer stored for new scans.</p>",
+        "20260607.1730": "<p>Initial public release. Publish QR codes before sharing public URLs.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "analytics": "analytics",
+        "qr-code": "qr code",
+        "redirect": "redirect",
+        "svg": "SVG",
+        "utm": "UTM"
+    },
+    "stable_tag": "20260712.2112",
+    "versions": {
+        "20260710.1000": "https://downloads.wordpress.org/plugin/dms3-qr-manager.20260710.1000.zip",
+        "20260712.2112": "https://downloads.wordpress.org/plugin/dms3-qr-manager.20260712.2112.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/dms3-qr-manager.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/dms3-qr-manager/assets/banner-772x250.png?rev=3605106",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/dms3-qr-manager/assets/icon.svg?rev=3605106",
+        "svg": "https://ps.w.org/dms3-qr-manager/assets/icon.svg?rev=3605106"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
