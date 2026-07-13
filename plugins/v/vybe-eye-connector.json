@@ -1,0 +1,71 @@
+{
+    "name": "Vybe Eye Connector",
+    "slug": "vybe-eye-connector",
+    "version": "1.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/vybefind/\">vybefind</a>",
+    "author_profile": "https://profiles.wordpress.org/vybefind/",
+    "contributors": {
+        "vybefind": {
+            "profile": "https://profiles.wordpress.org/vybefind/",
+            "avatar": "https://secure.gravatar.com/avatar/9b66e7f015c548d8295dd88dc915853f986624367c04ef5f45f3542b7afb1634?s=96&d=monsterid&r=g",
+            "display_name": "vybefind"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/vybe-eye-connector/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-13 21:35:00",
+    "added": "2026-07-13",
+    "homepage": "https://vybefind.com/wordpress",
+    "sections": {
+        "description": "<p>Vybe Eye Connector is the WordPress side of the VybeFind Execution Layer. It<br />\nrequires an active VybeFind account (https://vybefind.com) — the plugin is the<br />\nsite-side agent for that service and does nothing on its own until paired. Once<br />\npaired with your VybeFind workspace, it pulls the changes your team has approved<br />\nin the Execution console and applies them in place:</p>\n<ul>\n<li>Title tags and meta descriptions — via Yoast, Rank Math, or All in One SEO<br />\nwhen present, or a native fallback when no SEO plugin is installed.</li>\n<li>JSON-LD structured data — injected into the page head, idempotently.</li>\n<li>Image alt text.</li>\n<li>Internal links — inserted into the target post content, de-duplicated.</li>\n<li>301 redirects.</li>\n</ul>\n<p>Every applied change is recorded locally with a hash of the value it wrote, so<br />\nthe plugin can detect <strong>drift</strong> (something later changed the value out from<br />\nunder it) and offer <strong>one-click rollback</strong> to the previous value.</p>\n<h3>How pairing works</h3>\n<ol>\n<li>In VybeFind, open <strong>Execution</strong> and click <strong>Generate pairing code</strong> for your<br />\nsite.</li>\n<li>In WordPress, go to <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Vybe Eye Connector</strong>, paste the one-time code,<br />\nand click <strong>Pair site</strong>. That is the only field to fill in — the plugin<br />\nconnects to VybeFind at https://vybefind.com by default. (Agency or<br />\nself-hosted workspaces can point at a different host under <strong>Advanced</strong>.) The<br />\nplugin generates a local keypair, exchanges the code for a per-site bearer<br />\ntoken, and stores it privately (never shown again).</li>\n<li>The plugin polls VybeFind every 15 minutes (WP-Cron). Each poll pulls pending<br />\nchanges as an HMAC-signed envelope, verifies the signature, applies each<br />\nchange, and reports the outcome back.</li>\n</ol>\n<h3>External services</h3>\n<p>This plugin connects to the VybeFind platform (https://vybefind.com), the SaaS<br />\nservice it is the WordPress client for. An active VybeFind account is required;<br />\nthe plugin performs no external communication until you pair it with a workspace.</p>\n<p>When and why it connects:</p>\n<ul>\n<li><strong>At pairing (once, when you click &#8220;Pair site&#8221;).</strong> The plugin sends your<br />\none-time pairing code, a locally generated public key, and your WordPress<br />\nversion to <code>https://&lt;your-platform-host&gt;/api/wp/pair</code> in exchange for a<br />\nper-site bearer token. The platform host is the URL you paste at pairing<br />\n(VybeFind-hosted by default); all later requests are pinned to that host.</li>\n<li><strong>Every 15 minutes (WP-Cron poll).</strong> The plugin requests pending approved<br />\nchanges from <code>/api/wp/changes</code> using the bearer token. No site content is<br />\nuploaded on this request — it only pulls the change instructions your team<br />\napproved in VybeFind.</li>\n<li><strong>After applying each change.</strong> The plugin reports the outcome<br />\n(applied / drifted / rolled_back / failed) and a hash of the value it wrote<br />\nto <code>/api/wp/changes/&lt;id&gt;/status</code>. It does not transmit page content, visitor<br />\ndata, or personal data.</li>\n</ul>\n<p>Data sent: pairing code, generated public key, WordPress version, change IDs,<br />\nand per-change outcome hashes. Data received: the SEO change instructions<br />\n(titles, meta descriptions, JSON-LD, alt text, internal links, redirects) you<br />\napproved in your VybeFind workspace.</p>\n<p>Your use of the VybeFind service is governed by its terms and privacy policy:</p>\n<ul>\n<li>Terms of Service: https://vybefind.com/legal/terms</li>\n<li>Privacy Policy: https://vybefind.com/legal/privacy</li>\n</ul>\n<h3>Security</h3>\n<ul>\n<li>The per-site bearer token and the signing keypair are stored as non-autoloaded<br />\noptions and never printed back into the admin UI.</li>\n<li>Every changes envelope from the platform is HMAC-verified before anything is<br />\napplied — unsigned or tampered payloads are refused (fail-closed).</li>\n<li>All admin actions are capability- (manage_options) and nonce-guarded.</li>\n<li>Outbound requests only ever go to the platform URL saved at pairing.</li>\n</ul>\n",
+        "changelog": "<h4>1.0.1</h4>\n<ul>\n<li>Security/hardening: JSON-LD schema is now escaped late on output via<br />\nwp_json_encode() with JSON_HEX_TAG/HEX_AMP/HEX_APOS/HEX_QUOT so it can never<br />\nbreak out of the  tag, and only well-formed JSON objects are stored<br />\n(malformed input is rejected on write). Addresses the plugin-review escaping note.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release: pairing handshake, 15-minute pull-apply loop, Yoast/RankMath/<br />\nAIOSEO adapters + native fallback, JSON-LD injection, alt text, internal links,<br />\nredirects, local change log, drift detection, and one-click rollback.</li>\n</ul>\n"
+    },
+    "short_description": "Securely applies VybeFind-approved SEO changes to this WordPress site — with a full change log, drift detection, and one-click rollback.",
+    "description": "<p>Vybe Eye Connector is the WordPress side of the VybeFind Execution Layer. It<br />\nrequires an active VybeFind account (https://vybefind.com) — the plugin is the<br />\nsite-side agent for that service and does nothing on its own until paired. Once<br />\npaired with your VybeFind workspace, it pulls the changes your team has approved<br />\nin the Execution console and applies them in place:</p>\n<ul>\n<li>Title tags and meta descriptions — via Yoast, Rank Math, or All in One SEO<br />\nwhen present, or a native fallback when no SEO plugin is installed.</li>\n<li>JSON-LD structured data — injected into the page head, idempotently.</li>\n<li>Image alt text.</li>\n<li>Internal links — inserted into the target post content, de-duplicated.</li>\n<li>301 redirects.</li>\n</ul>\n<p>Every applied change is recorded locally with a hash of the value it wrote, so<br />\nthe plugin can detect <strong>drift</strong> (something later changed the value out from<br />\nunder it) and offer <strong>one-click rollback</strong> to the previous value.</p>\n<h3>How pairing works</h3>\n<ol>\n<li>In VybeFind, open <strong>Execution</strong> and click <strong>Generate pairing code</strong> for your<br />\nsite.</li>\n<li>In WordPress, go to <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Vybe Eye Connector</strong>, paste the one-time code,<br />\nand click <strong>Pair site</strong>. That is the only field to fill in — the plugin<br />\nconnects to VybeFind at https://vybefind.com by default. (Agency or<br />\nself-hosted workspaces can point at a different host under <strong>Advanced</strong>.) The<br />\nplugin generates a local keypair, exchanges the code for a per-site bearer<br />\ntoken, and stores it privately (never shown again).</li>\n<li>The plugin polls VybeFind every 15 minutes (WP-Cron). Each poll pulls pending<br />\nchanges as an HMAC-signed envelope, verifies the signature, applies each<br />\nchange, and reports the outcome back.</li>\n</ol>\n<h3>External services</h3>\n<p>This plugin connects to the VybeFind platform (https://vybefind.com), the SaaS<br />\nservice it is the WordPress client for. An active VybeFind account is required;<br />\nthe plugin performs no external communication until you pair it with a workspace.</p>\n<p>When and why it connects:</p>\n<ul>\n<li><strong>At pairing (once, when you click &#8220;Pair site&#8221;).</strong> The plugin sends your<br />\none-time pairing code, a locally generated public key, and your WordPress<br />\nversion to <code>https://&lt;your-platform-host&gt;/api/wp/pair</code> in exchange for a<br />\nper-site bearer token. The platform host is the URL you paste at pairing<br />\n(VybeFind-hosted by default); all later requests are pinned to that host.</li>\n<li><strong>Every 15 minutes (WP-Cron poll).</strong> The plugin requests pending approved<br />\nchanges from <code>/api/wp/changes</code> using the bearer token. No site content is<br />\nuploaded on this request — it only pulls the change instructions your team<br />\napproved in VybeFind.</li>\n<li><strong>After applying each change.</strong> The plugin reports the outcome<br />\n(applied / drifted / rolled_back / failed) and a hash of the value it wrote<br />\nto <code>/api/wp/changes/&lt;id&gt;/status</code>. It does not transmit page content, visitor<br />\ndata, or personal data.</li>\n</ul>\n<p>Data sent: pairing code, generated public key, WordPress version, change IDs,<br />\nand per-change outcome hashes. Data received: the SEO change instructions<br />\n(titles, meta descriptions, JSON-LD, alt text, internal links, redirects) you<br />\napproved in your VybeFind workspace.</p>\n<p>Your use of the VybeFind service is governed by its terms and privacy policy:</p>\n<ul>\n<li>Terms of Service: https://vybefind.com/legal/terms</li>\n<li>Privacy Policy: https://vybefind.com/legal/privacy</li>\n</ul>\n<h3>Security</h3>\n<ul>\n<li>The per-site bearer token and the signing keypair are stored as non-autoloaded<br />\noptions and never printed back into the admin UI.</li>\n<li>Every changes envelope from the platform is HMAC-verified before anything is<br />\napplied — unsigned or tampered payloads are refused (fail-closed).</li>\n<li>All admin actions are capability- (manage_options) and nonce-guarded.</li>\n<li>Outbound requests only ever go to the platform URL saved at pairing.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/vybe-eye-connector.1.0.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "automation": "automation",
+        "redirects": "redirects",
+        "schema": "schema",
+        "seo": "seo",
+        "vybefind": "vybefind"
+    },
+    "stable_tag": "1.0.1",
+    "versions": {
+        "1.0.1": "https://downloads.wordpress.org/plugin/vybe-eye-connector.1.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/vybe-eye-connector.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/vybe-eye-connector.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
