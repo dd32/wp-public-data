@@ -1,0 +1,556 @@
+{
+    "name": "Guardrail Blocks",
+    "slug": "guardrail-blocks",
+    "version": "0.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/breonwilliams/\">BreonWilliams</a>",
+    "author_profile": "https://profiles.wordpress.org/breonwilliams/",
+    "contributors": {
+        "breonwilliams": {
+            "profile": "https://profiles.wordpress.org/breonwilliams/",
+            "avatar": "https://secure.gravatar.com/avatar/6ba4614bdd184b2808b3d35725e27d3496c3981d367fef964f20c722afeffa1a?s=96&d=monsterid&r=g",
+            "display_name": "BreonWilliams"
+        }
+    },
+    "requires": "6.9",
+    "tested": "7.0.1",
+    "requires_php": "8.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/guardrail-blocks/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-13 16:13:00",
+    "added": "2026-07-13",
+    "homepage": "https://github.com/breonwilliams/guardrail-blocks",
+    "sections": {
+        "description": "<p>Most accessibility failures on WordPress sites are authoring failures: a brand color that doesn&#8217;t meet WCAG contrast, a heading hierarchy scrambled by reordering, an accordion built from divs with no keyboard support. They look fine in the editor and fail the audit later.</p>\n<p>Guardrail Blocks takes a different approach: instead of <em>offering</em> accessible options, its blocks make the failure impossible to author — and re-verify everything on every page view.</p>\n<h4>The guarantees</h4>\n<ul>\n<li><strong>WCAG-safe color contrast</strong> — Button backgrounds come only from your theme&#8217;s palette, and the most readable text color is chosen automatically (the live ratio is shown in the sidebar, e.g. &#8220;Contrast 8.36:1 — AA ✓&#8221;). The pairing is re-validated server-side on every page view against your theme&#8217;s <em>current</em> palette, so switching themes or changing brand colors can never leave a failing button behind.</li>\n<li><strong>Unbreakable heading hierarchy</strong> — There is no heading level control anywhere. An Accessible Heading derives its level (H2–H6) from how Accessible Sections are nested, and re-derives it when you reorder, nest, or un-nest — the document outline stays valid by construction. Card titles and accordion headers participate too, always one level below their section&#8217;s heading.</li>\n<li><strong>Correct interactive semantics</strong> — The Accordion ships the full WAI-ARIA disclosure pattern: real buttons inside correctly-leveled headings, <code>aria-expanded</code>/<code>aria-controls</code> wiring, Enter/Space toggling, arrow-key navigation between headers, and content that stays reachable without JavaScript.</li>\n<li><strong>Performance-correct media</strong> — The Media Figure renders through core&#8217;s responsive-image pipeline with explicit dimensions (no layout shift), <code>srcset</code>/<code>sizes</code>, a hero toggle for <code>fetchpriority=\"high\"</code> (better LCP) vs. lazy loading, and alt text enforcement with editor warnings.</li>\n</ul>\n<h4>The blocks</h4>\n<p>Accessible Section, Accessible Heading, Accessible Button, Card + Card Grid, Accessible Accordion, Notice (info/success/warning/error with correct ARIA roles), Media Figure, and a Table of Contents that is generated from the page&#8217;s real outline on every view — it can never go stale.</p>\n<h4>Safety nets</h4>\n<ul>\n<li>The <strong>Outline Checker</strong> panel (in the page sidebar) watches the whole document — including core Heading blocks — and flags skipped levels and extra H1s with one-click block selection.</li>\n<li>Everything inherits your theme&#8217;s colors, spacing, and typography via <code>theme.json</code>. Nothing fights your design.</li>\n<li>The plugin makes <strong>zero external requests</strong> and collects no data.</li>\n</ul>\n<h4>Source code &amp; development</h4>\n<p>The compiled block scripts in <code>build/</code> are generated with @wordpress/scripts (webpack). The complete, human-readable source code is included with this plugin in the <code>src/</code> directory (TypeScript and SCSS, one folder per block). To rebuild <code>build/</code> from it: <code>npm install &amp;&amp; npm run build</code> (Node 22; <code>package.json</code> and <code>tsconfig.json</code> are included).</p>\n<p>Development happens publicly at https://github.com/breonwilliams/guardrail-blocks, which also carries the full test suite (Jest, PHPUnit, Playwright) and CI.</p>\n",
+        "faq": "\n<dt id=\"does%20this%20replace%20core%20blocks%3F\">\nDoes this replace core blocks?\n</h4>\n<p>\n<p>No. It&#8217;s a focused set that mixes freely with core blocks — use core paragraphs, images, and columns as usual. The Outline Checker even watches headings you author with the core Heading block.</p>\n</p>\n<dt id=\"what%20happens%20to%20an%20uncolored%20button%3F\">\nWhat happens to an uncolored button?\n</h4>\n<p>\n<p>It inherits your theme&#8217;s own button styling (the same <code>wp-element-button</code> mechanism core&#8217;s Button uses), so it always looks like a button. The contrast guarantee applies the moment you pick a palette background; the theme-default state&#8217;s contrast is the theme&#8217;s responsibility, exactly as with core buttons.</p>\n</p>\n<dt id=\"my%20theme%20defines%20palette%20colors%20as%20css%20variables%20%E2%80%94%20does%20the%20contrast%20check%20work%3F\">\nMy theme defines palette colors as CSS variables — does the contrast check work?\n</h4>\n<p>\n<p>Yes. Palettes in the <code>var(--name, #hex)</code> format used by many popular themes are fully supported. A color whose value genuinely can&#8217;t be resolved (for example <code>color-mix(...)</code>) is not offered for buttons rather than being silently unchecked, and the sidebar explains why.</p>\n</p>\n<dt id=\"why%20can%27t%20i%20pick%20a%20heading%20level%3F\">\nWhy can&#8217;t I pick a heading level?\n</h4>\n<p>\n<p>That&#8217;s the point: hand-picked levels are how outlines break. The level always derives from section nesting, so reordering can never skip a level or create a second H1. If you need a specific level, nest (or un-nest) the section — the outline follows the structure.</p>\n</p>\n<dt id=\"what%20happens%20if%20i%20deactivate%20the%20plugin%3F\">\nWhat happens if I deactivate the plugin?\n</h4>\n<p>\n<p>Static content (sections, cards, notices&#8217; inner content) remains as clean HTML. Dynamic blocks (headings, buttons, accordions, table of contents) stop rendering their markup but your content is preserved and reappears on reactivation — nothing is lost.</p>\n</p>\n<dt id=\"does%20it%20phone%20home%3F\">\nDoes it phone home?\n</h4>\n<p>\n<p>No. Zero external HTTP requests, no tracking, no accounts.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>Blocks: Accessible Section, Accessible Heading, Accessible Button, Card + Card Grid, Accessible Accordion, Notice, Media Figure, Table of Contents.</li>\n<li>Contrast engine (editor + server) with support for hex, rgb(), and var()-fallback theme palettes.</li>\n<li>Heading levels derived from section nesting with self-correction on reorder; Outline Checker panel.</li>\n<li>Accordion built on the WordPress Interactivity API with the WAI-ARIA disclosure pattern.</li>\n<li>Five patterns including the Starter Brochure Page.</li>\n</ul>\n"
+    },
+    "short_description": "Blocks where accessibility is enforced by design: WCAG-safe color contrast and an unbreakable heading hierarchy — no QA cleanup pass.",
+    "description": "<p>Most accessibility failures on WordPress sites are authoring failures: a brand color that doesn&#8217;t meet WCAG contrast, a heading hierarchy scrambled by reordering, an accordion built from divs with no keyboard support. They look fine in the editor and fail the audit later.</p>\n<p>Guardrail Blocks takes a different approach: instead of <em>offering</em> accessible options, its blocks make the failure impossible to author — and re-verify everything on every page view.</p>\n<h4>The guarantees</h4>\n<ul>\n<li><strong>WCAG-safe color contrast</strong> — Button backgrounds come only from your theme&#8217;s palette, and the most readable text color is chosen automatically (the live ratio is shown in the sidebar, e.g. &#8220;Contrast 8.36:1 — AA ✓&#8221;). The pairing is re-validated server-side on every page view against your theme&#8217;s <em>current</em> palette, so switching themes or changing brand colors can never leave a failing button behind.</li>\n<li><strong>Unbreakable heading hierarchy</strong> — There is no heading level control anywhere. An Accessible Heading derives its level (H2–H6) from how Accessible Sections are nested, and re-derives it when you reorder, nest, or un-nest — the document outline stays valid by construction. Card titles and accordion headers participate too, always one level below their section&#8217;s heading.</li>\n<li><strong>Correct interactive semantics</strong> — The Accordion ships the full WAI-ARIA disclosure pattern: real buttons inside correctly-leveled headings, <code>aria-expanded</code>/<code>aria-controls</code> wiring, Enter/Space toggling, arrow-key navigation between headers, and content that stays reachable without JavaScript.</li>\n<li><strong>Performance-correct media</strong> — The Media Figure renders through core&#8217;s responsive-image pipeline with explicit dimensions (no layout shift), <code>srcset</code>/<code>sizes</code>, a hero toggle for <code>fetchpriority=\"high\"</code> (better LCP) vs. lazy loading, and alt text enforcement with editor warnings.</li>\n</ul>\n<h4>The blocks</h4>\n<p>Accessible Section, Accessible Heading, Accessible Button, Card + Card Grid, Accessible Accordion, Notice (info/success/warning/error with correct ARIA roles), Media Figure, and a Table of Contents that is generated from the page&#8217;s real outline on every view — it can never go stale.</p>\n<h4>Safety nets</h4>\n<ul>\n<li>The <strong>Outline Checker</strong> panel (in the page sidebar) watches the whole document — including core Heading blocks — and flags skipped levels and extra H1s with one-click block selection.</li>\n<li>Everything inherits your theme&#8217;s colors, spacing, and typography via <code>theme.json</code>. Nothing fights your design.</li>\n<li>The plugin makes <strong>zero external requests</strong> and collects no data.</li>\n</ul>\n<h4>Source code &amp; development</h4>\n<p>The compiled block scripts in <code>build/</code> are generated with @wordpress/scripts (webpack). The complete, human-readable source code is included with this plugin in the <code>src/</code> directory (TypeScript and SCSS, one folder per block). To rebuild <code>build/</code> from it: <code>npm install &amp;&amp; npm run build</code> (Node 22; <code>package.json</code> and <code>tsconfig.json</code> are included).</p>\n<p>Development happens publicly at https://github.com/breonwilliams/guardrail-blocks, which also carries the full test suite (Jest, PHPUnit, Playwright) and CI.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/guardrail-blocks.0.1.0.zip",
+    "upgrade_notice": {
+        "0.1.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "accessibility": "accessibility",
+        "blocks": "blocks",
+        "contrast": "contrast",
+        "headings": "headings",
+        "wcag": "wcag"
+    },
+    "stable_tag": "0.1.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/guardrail-blocks.0.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/guardrail-blocks.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/guardrail-blocks/assets/icon.svg?rev=3606405",
+        "svg": "https://ps.w.org/guardrail-blocks/assets/icon.svg?rev=3606405"
+    },
+    "blocks": {
+        "guardrail-blocks/table-of-contents": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "guardrail-blocks/table-of-contents",
+            "version": "0.1.0",
+            "title": "Table of Contents",
+            "category": "design",
+            "icon": "list-view",
+            "description": "A table of contents generated from the page's real heading outline on every view — reorder your sections and it stays correct, automatically.",
+            "keywords": [
+                "toc",
+                "table of contents",
+                "outline",
+                "navigation",
+                "accessible"
+            ],
+            "textdomain": "guardrail-blocks",
+            "attributes": [],
+            "usesContext": [
+                "postId"
+            ],
+            "supports": {
+                "html": false,
+                "anchor": true,
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                }
+            },
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css",
+            "render": "file:./render.php"
+        },
+        "guardrail-blocks/section": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "guardrail-blocks/section",
+            "version": "0.1.0",
+            "title": "Accessible Section",
+            "category": "design",
+            "icon": "layout",
+            "description": "A content section that manages heading structure for you: any Accessible Heading inside renders at the correct level based on how sections are nested — reordering can never break your document outline.",
+            "keywords": [
+                "section",
+                "container",
+                "group",
+                "accessible",
+                "outline"
+            ],
+            "textdomain": "guardrail-blocks",
+            "attributes": {
+                "headingLevel": {
+                    "type": "number",
+                    "default": 2
+                }
+            },
+            "providesContext": {
+                "guardrail-blocks/headingLevel": "headingLevel"
+            },
+            "usesContext": [
+                "guardrail-blocks/headingLevel"
+            ],
+            "supports": {
+                "html": false,
+                "anchor": true,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "spacing": {
+                    "padding": true,
+                    "margin": true
+                }
+            },
+            "editorScript": "file:./index.js"
+        },
+        "guardrail-blocks/notice": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "guardrail-blocks/notice",
+            "version": "0.1.0",
+            "title": "Notice",
+            "category": "text",
+            "icon": "info-outline",
+            "description": "A callout with the correct semantic role built in — info, success, warning, or error — announced properly by screen readers and never relying on color alone.",
+            "keywords": [
+                "notice",
+                "callout",
+                "alert",
+                "warning",
+                "info",
+                "accessible"
+            ],
+            "textdomain": "guardrail-blocks",
+            "attributes": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "info",
+                        "success",
+                        "warning",
+                        "error"
+                    ],
+                    "default": "info"
+                }
+            },
+            "supports": {
+                "html": false,
+                "anchor": true,
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                }
+            },
+            "variations": [
+                {
+                    "name": "info",
+                    "title": "Info notice",
+                    "description": "Neutral supplementary information.",
+                    "icon": "info-outline",
+                    "attributes": {
+                        "type": "info"
+                    },
+                    "scope": [
+                        "block",
+                        "inserter",
+                        "transform"
+                    ],
+                    "isDefault": true
+                },
+                {
+                    "name": "success",
+                    "title": "Success notice",
+                    "description": "A positive status message.",
+                    "icon": "yes-alt",
+                    "attributes": {
+                        "type": "success"
+                    },
+                    "scope": [
+                        "block",
+                        "inserter",
+                        "transform"
+                    ]
+                },
+                {
+                    "name": "warning",
+                    "title": "Warning notice",
+                    "description": "Something needing attention.",
+                    "icon": "warning",
+                    "attributes": {
+                        "type": "warning"
+                    },
+                    "scope": [
+                        "block",
+                        "inserter",
+                        "transform"
+                    ]
+                },
+                {
+                    "name": "error",
+                    "title": "Error notice",
+                    "description": "A problem the reader must know about.",
+                    "icon": "dismiss",
+                    "attributes": {
+                        "type": "error"
+                    },
+                    "scope": [
+                        "block",
+                        "inserter",
+                        "transform"
+                    ]
+                }
+            ],
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css",
+            "render": "file:./render.php"
+        },
+        "guardrail-blocks/button": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "guardrail-blocks/button",
+            "version": "0.1.0",
+            "title": "Accessible Button",
+            "category": "design",
+            "icon": "button",
+            "description": "A call-to-action button whose colors are always WCAG-safe: pick a background from your theme palette and the most readable text color is chosen for you — re-checked on every page view.",
+            "keywords": [
+                "button",
+                "cta",
+                "link",
+                "accessible",
+                "contrast"
+            ],
+            "textdomain": "guardrail-blocks",
+            "attributes": {
+                "text": {
+                    "type": "string",
+                    "default": ""
+                },
+                "url": {
+                    "type": "string",
+                    "default": ""
+                },
+                "backgroundSlug": {
+                    "type": "string",
+                    "default": ""
+                },
+                "width": {
+                    "type": "string",
+                    "enum": [
+                        "auto",
+                        "full"
+                    ],
+                    "default": "auto"
+                }
+            },
+            "supports": {
+                "html": false,
+                "color": false,
+                "typography": {
+                    "fontSize": true
+                },
+                "spacing": {
+                    "margin": true
+                },
+                "anchor": true
+            },
+            "example": {
+                "attributes": {
+                    "text": "Get started"
+                }
+            },
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css",
+            "render": "file:./render.php"
+        },
+        "guardrail-blocks/accordion": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "guardrail-blocks/accordion",
+            "version": "0.1.0",
+            "title": "Accessible Accordion",
+            "category": "design",
+            "icon": "menu-alt3",
+            "description": "Expandable content panels with correct disclosure semantics and full keyboard support built in — Enter/Space to toggle, arrow keys to move between headers, screen-reader announcements for free.",
+            "keywords": [
+                "accordion",
+                "faq",
+                "toggle",
+                "collapse",
+                "accessible"
+            ],
+            "textdomain": "guardrail-blocks",
+            "attributes": {
+                "headingLevel": {
+                    "type": "number",
+                    "default": 3
+                }
+            },
+            "providesContext": {
+                "guardrail-blocks/headingLevel": "headingLevel"
+            },
+            "usesContext": [
+                "guardrail-blocks/headingLevel"
+            ],
+            "supports": {
+                "html": false,
+                "anchor": true,
+                "align": [
+                    "wide"
+                ],
+                "spacing": {
+                    "margin": true
+                },
+                "interactivity": true
+            },
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css",
+            "viewScriptModule": "file:./view.js"
+        },
+        "guardrail-blocks/media-figure": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "guardrail-blocks/media-figure",
+            "version": "0.1.0",
+            "title": "Media Figure",
+            "category": "media",
+            "icon": "format-image",
+            "description": "An image with performance-correct markup guaranteed: responsive sizes, explicit dimensions (no layout shift), smart loading priority, and enforced alt text.",
+            "keywords": [
+                "image",
+                "figure",
+                "photo",
+                "media",
+                "accessible"
+            ],
+            "textdomain": "guardrail-blocks",
+            "attributes": {
+                "mediaId": {
+                    "type": "number",
+                    "default": 0
+                },
+                "alt": {
+                    "type": "string",
+                    "default": ""
+                },
+                "caption": {
+                    "type": "string",
+                    "default": ""
+                },
+                "isHero": {
+                    "type": "boolean",
+                    "default": false
+                }
+            },
+            "supports": {
+                "html": false,
+                "anchor": true,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "spacing": {
+                    "margin": true
+                }
+            },
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css",
+            "render": "file:./render.php"
+        },
+        "guardrail-blocks/heading": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "guardrail-blocks/heading",
+            "version": "0.1.0",
+            "title": "Accessible Heading",
+            "category": "text",
+            "icon": "heading",
+            "description": "A heading whose level (H2–H6) is set automatically from where it sits in your section structure. You write the words; the correct level is guaranteed — even after reordering.",
+            "keywords": [
+                "heading",
+                "title",
+                "subtitle",
+                "accessible",
+                "outline"
+            ],
+            "textdomain": "guardrail-blocks",
+            "attributes": {
+                "content": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "usesContext": [
+                "guardrail-blocks/headingLevel"
+            ],
+            "supports": {
+                "html": false,
+                "typography": {
+                    "fontSize": true
+                }
+            },
+            "example": {
+                "attributes": {
+                    "content": "A heading that can't break your outline"
+                }
+            },
+            "editorScript": "file:./index.js",
+            "render": "file:./render.php"
+        },
+        "guardrail-blocks/card-grid": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "guardrail-blocks/card-grid",
+            "version": "0.1.0",
+            "title": "Card Grid",
+            "category": "design",
+            "icon": "grid-view",
+            "description": "A responsive grid of cards. Columns adapt to the available space automatically — no breakpoints to configure, nothing to break.",
+            "keywords": [
+                "cards",
+                "grid",
+                "features",
+                "columns",
+                "accessible"
+            ],
+            "textdomain": "guardrail-blocks",
+            "attributes": [],
+            "usesContext": [
+                "guardrail-blocks/headingLevel"
+            ],
+            "supports": {
+                "html": false,
+                "anchor": true,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "spacing": {
+                    "margin": true,
+                    "blockGap": true
+                }
+            },
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css"
+        },
+        "guardrail-blocks/card": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "guardrail-blocks/card",
+            "version": "0.1.0",
+            "title": "Card",
+            "category": "design",
+            "icon": "index-card",
+            "description": "One card in a Card Grid. Its title is an Accessible Heading, so card titles automatically join the page outline at the correct level.",
+            "keywords": [
+                "card",
+                "feature",
+                "tile"
+            ],
+            "textdomain": "guardrail-blocks",
+            "parent": [
+                "guardrail-blocks/card-grid"
+            ],
+            "attributes": {
+                "headingLevel": {
+                    "type": "number",
+                    "default": 3
+                }
+            },
+            "providesContext": {
+                "guardrail-blocks/headingLevel": "headingLevel"
+            },
+            "usesContext": [
+                "guardrail-blocks/headingLevel"
+            ],
+            "supports": {
+                "html": false,
+                "reusable": false,
+                "spacing": {
+                    "padding": true
+                }
+            },
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css"
+        },
+        "guardrail-blocks/accordion-item": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "guardrail-blocks/accordion-item",
+            "version": "0.1.0",
+            "title": "Accordion Item",
+            "category": "design",
+            "icon": "arrow-down-alt2",
+            "description": "One expandable panel inside an Accessible Accordion. The header is a real button inside a correctly-leveled heading; the panel is a labeled region.",
+            "keywords": [
+                "accordion",
+                "panel",
+                "toggle"
+            ],
+            "textdomain": "guardrail-blocks",
+            "parent": [
+                "guardrail-blocks/accordion"
+            ],
+            "attributes": {
+                "title": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "usesContext": [
+                "guardrail-blocks/headingLevel"
+            ],
+            "supports": {
+                "html": false,
+                "reusable": false
+            },
+            "editorScript": "file:./index.js",
+            "render": "file:./render.php"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
