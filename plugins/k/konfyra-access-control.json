@@ -1,0 +1,74 @@
+{
+    "name": "Konfyra Access Control",
+    "slug": "konfyra-access-control",
+    "version": "1.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/gsrcoimbatore/\">gsrcoimbatore</a>",
+    "author_profile": "https://profiles.wordpress.org/gsrcoimbatore/",
+    "contributors": {
+        "gsrcoimbatore": {
+            "profile": "https://profiles.wordpress.org/gsrcoimbatore/",
+            "avatar": "https://secure.gravatar.com/avatar/c8d3fed371d0599982e1b49837cb9b8480516ac4dfd22734d2a8b0d51909c996?s=96&d=monsterid&r=g",
+            "display_name": "gsrcoimbatore"
+        }
+    },
+    "requires": "5.8",
+    "tested": "7.0.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/konfyra-access-control/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-14 17:39:00",
+    "added": "2026-07-14",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Multi-vendor plugins (WCFM, Dokan, MultiVendorX, WC Vendors) generally<br />\nredirect vendors to a frontend dashboard <em>after login</em>, and most offer a<br />\ncapability toggle for &#8220;backend access.&#8221; In practice, both of those are<br />\nlogin-flow conveniences, not hard access controls — a vendor who directly<br />\nvisits <code>/wp-admin/</code> after logging in can often still land on some part of<br />\nthe WordPress backend. The same gap exists for membership and course<br />\nplugins (MemberPress, LearnDash, etc.) whose members are typically just<br />\nSubscribers under the hood.</p>\n<p>This plugin adds the missing hard block:</p>\n<ul>\n<li>Every <code>/wp-admin/</code> request is checked on <code>admin_init</code>.</li>\n<li>Administrators (and any role you explicitly exempt — e.g. Shop Manager)<br />\npass through untouched.</li>\n<li>Everyone else is redirected: configured &#8220;vendor&#8221; roles go to your vendor<br />\ndashboard URL; everyone else goes to a default path you configure — a<br />\nMemberPress account page, a LearnDash dashboard, anything — or, if left<br />\nblank, WooCommerce My Account (if active) or the homepage.</li>\n<li>AJAX (<code>admin-ajax.php</code>), cron, and REST requests are always left alone,<br />\nsince marketplace and membership plugins alike route frontend actions<br />\nthrough them internally. Blocking these would break the site, not just<br />\nthe backend.</li>\n<li>The admin toolbar is optionally hidden on the frontend for restricted<br />\nroles too, closing a smaller but related information leak (plugin<br />\nnames/versions, site health notices).</li>\n</ul>\n<p>This isn&#8217;t tied to any one plugin&#8217;s ecosystem — the lockdown itself is<br />\nplain WordPress role and capability logic. It was built with WCFM / Dokan<br />\n/ MultiVendorX / WC Vendors marketplaces in mind, but works identically<br />\nfor MemberPress members, LearnDash students, or any custom role your own<br />\ncode registers.</p>\n<p>All of this is configured from <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Konfyra Access Control</strong> — the<br />\nrole checkboxes are populated from the roles actually registered on your<br />\nsite, so there&#8217;s no need to guess whether your plugin calls its vendor<br />\nrole <code>vendor</code>, <code>seller</code>, <code>wcfm_vendor</code>, or <code>dc_vendor</code>.</p>\n<h4>A note on trademarks</h4>\n<p>This plugin is not affiliated with, endorsed by, or sponsored by<br />\nAutomattic, WooThemes/WooCommerce, weDevs (Dokan), WCFM, MultiVendorX, WC<br />\nVendors, or MemberPress. Their names are mentioned solely to describe<br />\ncompatibility.</p>\n<h4>Before enabling on a live site</h4>\n<p>Test on staging first, same as any access-control change. If you use a<br />\nShop Manager (or similar staff) role that needs order/product screens in<br />\nwp-admin, make sure to check that role under &#8220;Roles allowed in wp-admin&#8221;<br />\nbefore saving — it&#8217;s exempt by default on first activation, but confirm<br />\nit after your first save.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>konfyra-access-control</code> folder to <code>/wp-content/plugins/</code>,<br />\nor install the zip directly via Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin.</li>\n<li>Activate the plugin.</li>\n<li>Go to Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> konfyra Access Control and configure which roles are<br />\nexempt, which are &#8220;vendor&#8221; roles, your vendor dashboard URL, and the<br />\ndefault redirect path for everyone else.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"my%20frontend%20ajax%20calls%20stopped%20working%20after%20activating%20this.\">\nMy frontend AJAX calls stopped working after activating this.\n</h4>\n<p>\n<p>They shouldn&#8217;t — <code>admin-ajax.php</code> requests are explicitly exempted<br />\nregardless of role. If something broke, check whether another plugin is<br />\nmaking a direct (non-AJAX) request into <code>/wp-admin/</code> to fetch data, which<br />\nis unusual but not impossible; exempt that role temporarily to confirm,<br />\nthen report the specific plugin/action.</p>\n</p>\n<dt id=\"does%20this%20replace%20my%20marketplace%20or%20membership%20plugin%27s%20own%20capability\">\nDoes this replace my marketplace or membership plugin&#8217;s own capability\n</h4>\n<p>\n<p>settings? =</p>\n<p>No — use both. This plugin is the hard enforcement layer; your other<br />\nplugin&#8217;s own capability toggles still control what a vendor or member can<br />\nsee and do <em>within</em> their own frontend dashboard.</p>\n</p>\n<dt id=\"i%20locked%20myself%20out.%20what%20do%20i%20do%3F\">\nI locked myself out. What do I do?\n</h4>\n<p>\n<p>Connect via FTP/SFTP or your host&#8217;s file manager, rename or delete the<br />\n    konfyra-access-control folder in <code>wp-content/plugins/</code> — WordPress<br />\ndeactivates a plugin automatically if its files disappear, restoring your<br />\nown wp-admin access immediately.</p>\n</p>\n<dt id=\"does%20this%20work%20with%20a%20custom%20login%20page%20or%20sso%20plugin%3F\">\nDoes this work with a custom login page or SSO plugin?\n</h4>\n<p>\n<p>Yes — the check runs on <code>admin_init</code> regardless of how the user<br />\nauthenticated, so it applies uniformly.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.0</h4>\n<ul>\n<li>Added a configurable default redirect path for any role that isn&#8217;t a<br />\nvendor role and isn&#8217;t exempt (e.g. MemberPress members, LearnDash<br />\nstudents) — previously this always went to WooCommerce My Account or<br />\nthe homepage with no way to customize it.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Locks non-admin roles out of wp-admin entirely, redirecting them to a frontend page you choose instead.",
+    "description": "<p>Multi-vendor plugins (WCFM, Dokan, MultiVendorX, WC Vendors) generally<br />\nredirect vendors to a frontend dashboard <em>after login</em>, and most offer a<br />\ncapability toggle for &#8220;backend access.&#8221; In practice, both of those are<br />\nlogin-flow conveniences, not hard access controls — a vendor who directly<br />\nvisits <code>/wp-admin/</code> after logging in can often still land on some part of<br />\nthe WordPress backend. The same gap exists for membership and course<br />\nplugins (MemberPress, LearnDash, etc.) whose members are typically just<br />\nSubscribers under the hood.</p>\n<p>This plugin adds the missing hard block:</p>\n<ul>\n<li>Every <code>/wp-admin/</code> request is checked on <code>admin_init</code>.</li>\n<li>Administrators (and any role you explicitly exempt — e.g. Shop Manager)<br />\npass through untouched.</li>\n<li>Everyone else is redirected: configured &#8220;vendor&#8221; roles go to your vendor<br />\ndashboard URL; everyone else goes to a default path you configure — a<br />\nMemberPress account page, a LearnDash dashboard, anything — or, if left<br />\nblank, WooCommerce My Account (if active) or the homepage.</li>\n<li>AJAX (<code>admin-ajax.php</code>), cron, and REST requests are always left alone,<br />\nsince marketplace and membership plugins alike route frontend actions<br />\nthrough them internally. Blocking these would break the site, not just<br />\nthe backend.</li>\n<li>The admin toolbar is optionally hidden on the frontend for restricted<br />\nroles too, closing a smaller but related information leak (plugin<br />\nnames/versions, site health notices).</li>\n</ul>\n<p>This isn&#8217;t tied to any one plugin&#8217;s ecosystem — the lockdown itself is<br />\nplain WordPress role and capability logic. It was built with WCFM / Dokan<br />\n/ MultiVendorX / WC Vendors marketplaces in mind, but works identically<br />\nfor MemberPress members, LearnDash students, or any custom role your own<br />\ncode registers.</p>\n<p>All of this is configured from <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Konfyra Access Control</strong> — the<br />\nrole checkboxes are populated from the roles actually registered on your<br />\nsite, so there&#8217;s no need to guess whether your plugin calls its vendor<br />\nrole <code>vendor</code>, <code>seller</code>, <code>wcfm_vendor</code>, or <code>dc_vendor</code>.</p>\n<h4>A note on trademarks</h4>\n<p>This plugin is not affiliated with, endorsed by, or sponsored by<br />\nAutomattic, WooThemes/WooCommerce, weDevs (Dokan), WCFM, MultiVendorX, WC<br />\nVendors, or MemberPress. Their names are mentioned solely to describe<br />\ncompatibility.</p>\n<h4>Before enabling on a live site</h4>\n<p>Test on staging first, same as any access-control change. If you use a<br />\nShop Manager (or similar staff) role that needs order/product screens in<br />\nwp-admin, make sure to check that role under &#8220;Roles allowed in wp-admin&#8221;<br />\nbefore saving — it&#8217;s exempt by default on first activation, but confirm<br />\nit after your first save.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/konfyra-access-control.zip",
+    "upgrade_notice": {
+        "1.1.0": "<p>Adds a configurable default redirect path. Existing installs keep their\ncurrent WooCommerce/homepage fallback behavior automatically — no action\nrequired unless you want to customize it.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "access-control": "access-control",
+        "membership": "membership",
+        "multivendor": "multivendor",
+        "security": "security",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "trunk",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/konfyra-access-control.1.0.0.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/konfyra-access-control.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
