@@ -1,0 +1,96 @@
+{
+    "name": "Referti IGEA",
+    "slug": "referti-igea",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/apiganti/\">S0ft.it</a>",
+    "author_profile": "https://profiles.wordpress.org/apiganti/",
+    "contributors": {
+        "apiganti": {
+            "profile": "https://profiles.wordpress.org/apiganti/",
+            "avatar": "https://secure.gravatar.com/avatar/6e29fb914cb83d713a1c7d94e71127bcad39e598581017990bcdce70e9a3770f?s=96&d=monsterid&r=g",
+            "display_name": "S0ft.it"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/referti-igea/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-14 16:33:00",
+    "added": "2026-07-14",
+    "homepage": "",
+    "sections": {
+        "description": "<p><strong>Referti IGEA</strong> adds a private area to your WordPress site where registered patients of a facility using the IGEA CRM by S0ft.it can download their medical reports (referti).</p>\n<p>Patients identify themselves with their Italian fiscal code (validated with check digit and &#8220;omocodia&#8221; support) and verify their identity with a <strong>one-time password sent via SMS</strong> or with a <strong>personal password</strong> issued in the &#8220;report ready&#8221; email — optionally combined (two-step verification).</p>\n<p>Reports are exported by the CRM to <code>docs/{PATIENT_ID}/referti/</code> and registered with the <code>PUSHReferto()</code> helper, which updates the <code>referti</code> table and notifies the patient by email and/or SMS according to the plugin settings.</p>\n<h4>Main features</h4>\n<ul>\n<li>Secure identification: fiscal code + SMS OTP, personal password, or both — with optional two-step verification (password + OTP)</li>\n<li>Personal password automatically generated and delivered with the &#8220;report ready&#8221; email</li>\n<li>Report list with date, type, specialty, description and &#8220;new&#8221; badge for reports never downloaded</li>\n<li>One-click download; download tracking (first download date, counter)</li>\n<li>Configurable notifications on new report: email (with password when first issued) and/or SMS (short text, no clinical details)</li>\n<li>Configurable visibility: immediately, after approval from the CRM (<code>PubblicaReferto()</code>), or after N days</li>\n<li>Access audit log on the CRM (logins and downloads, with IP) — reports are health data</li>\n<li>Rate limiting, OTP expiry and attempt limits, password lockout after repeated failures</li>\n<li>Temporary suspension of the service with a custom message</li>\n<li>Customizable colors to match your theme; same look &amp; feel as Prenotazioni IGEA</li>\n<li>No external dependencies: all CSS and JavaScript is bundled with the plugin</li>\n</ul>\n<h4>Security</h4>\n<p>The API key never leaves the server: the patient&#8217;s browser only talks to WordPress, which forwards requests to the CRM. Nonce on every call, field whitelisting, session tokens issued only after identity verification, ownership check on every download, path hardening on the CRM side, rate limiting per IP and per patient.</p>\n<h4>Requirements</h4>\n<p>This plugin is a connector: <strong>it requires an installation of the IGEA CRM</strong> by S0ft.it, reachable over HTTPS, with the <code>referti_api.php</code> endpoint, the <code>referti_push.php</code> helper, the SQL script (<code>referti.sql</code>) executed, and — for OTP and SMS notifications — an SMS provider configured. Without the CRM the plugin has no standalone functionality. More about the CRM: <a href=\"https://www.s0ft.it\" rel=\"nofollow ugc\">www.s0ft.it</a>.</p>\n<h4>External services</h4>\n<p>This plugin sends data to the IGEA CRM server configured by the site administrator (URL and API key in the plugin settings). The data transmitted is what the patient enters in the form (fiscal code, verification codes or password) plus the visitor&#8217;s IP address, used exclusively for anti-abuse rate limiting and access logging. Downloaded reports travel from your CRM server to the patient&#8217;s browser through your WordPress site. No data is ever sent to S0ft.it or to any third party by this plugin: the destination server is chosen and operated by the site owner.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin from Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New, or upload the <code>referti-igea</code> folder to <code>/wp-content/plugins/</code>.</li>\n<li>On the IGEA CRM server: copy <code>referti_api.php</code> and <code>referti_push.php</code> into the <code>ajax/</code> folder (next to <code>orari.php</code>), edit the API key, token secret and WordPress origin at the top of <code>referti_api.php</code>, and run the <code>referti.sql</code> script on the CRM database.</li>\n<li>Go to <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Referti IGEA</strong> and enter the API URL and key (the same key configured on the CRM).</li>\n<li>Choose the access method, notifications, visibility mode and the page that will contain the shortcode (its link is used in emails and SMS).</li>\n<li>Add the <code>[referti_crm]</code> shortcode to that page.</li>\n<li>In the CRM, call <code>PUSHReferto($patientId, $fileName, $meta)</code> after exporting each report file to <code>docs/{patientId}/referti/</code>. In &#8220;approval&#8221; visibility mode, call <code>PubblicaReferto($reportId)</code> to publish and notify.</li>\n<li>Optional: create the <code>SEND_REF</code> email template in the CRM <code>templates_email</code> table to customize the notification (placeholders: [nome] [cognome] [nominativo] [cf] [email] [cellulare] [tiporeferto] [descrizione] [specialita] [datareferto] [datadisponibile] [password] [linkreferti]).</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20the%20plugin%20work%20without%20the%20igea%20crm%3F\">\nDoes the plugin work without the IGEA CRM?\n</h4>\n<p>\n<p>No. It is a connector for the IGEA CRM by S0ft.it: report files, patient records, email and SMS sending all live on the CRM. The plugin provides the private area on the website and the secure connection.</p>\n</p>\n<dt id=\"where%20are%20the%20report%20files%20stored%3F\">\nWhere are the report files stored?\n</h4>\n<p>\n<p>On the CRM server, in <code>docs/{PATIENT_ID}/referti/</code>. They are streamed to the patient through WordPress only after identity verification and an ownership check; they are never copied to the WordPress server.</p>\n</p>\n<dt id=\"how%20does%20the%20patient%20get%20their%20personal%20password%3F\">\nHow does the patient get their personal password?\n</h4>\n<p>\n<p>It is generated by <code>PUSHReferto()</code> the first time a report is published for that patient (when the access method includes the password) and delivered in the notification email. Only a hash is stored. If lost, the patient can use the SMS code (when enabled) or the secretary can regenerate it with the <code>rigenera_password</code> option of <code>PUSHReferto()</code>.</p>\n</p>\n<dt id=\"can%20new%20patients%20register%20from%20the%20website%3F\">\nCan new patients register from the website?\n</h4>\n<p>\n<p>No. The reports area is reserved for patients already in the CRM archive: registration happens at the facility (or through the Prenotazioni IGEA plugin).</p>\n</p>\n<dt id=\"is%20the%20plugin%20gdpr%20compliant%3F\">\nIs the plugin GDPR compliant?\n</h4>\n<p>\n<p>Reports are health data: the plugin verifies the patient&#8217;s identity before any access, never exposes clinical details in SMS, and logs every login and download with date and IP on the CRM. Overall compliance depends on the site owner&#8217;s privacy policy and processes.</p>\n</p>\n<dt id=\"how%20do%20i%20customize%20the%20notification%20email%3F\">\nHow do I customize the notification email?\n</h4>\n<p>\n<p>Create the <code>SEND_REF</code> template in the CRM <code>templates_email</code> table (same mechanism as Prenotazioni IGEA). If the template does not exist, a built-in fallback body is used which, for confidentiality, does not include the clinical description of the report.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>First release: fiscal code + SMS OTP or personal password (optional two-step), report list and download, configurable notifications and visibility, access audit log, suspension mode, custom colors</li>\n</ul>\n"
+    },
+    "short_description": "Private area to download medical reports from the IGEA CRM: fiscal code + SMS OTP or personal password, notifications, audit log.",
+    "description": "<p><strong>Referti IGEA</strong> adds a private area to your WordPress site where registered patients of a facility using the IGEA CRM by S0ft.it can download their medical reports (referti).</p>\n<p>Patients identify themselves with their Italian fiscal code (validated with check digit and &#8220;omocodia&#8221; support) and verify their identity with a <strong>one-time password sent via SMS</strong> or with a <strong>personal password</strong> issued in the &#8220;report ready&#8221; email — optionally combined (two-step verification).</p>\n<p>Reports are exported by the CRM to <code>docs/{PATIENT_ID}/referti/</code> and registered with the <code>PUSHReferto()</code> helper, which updates the <code>referti</code> table and notifies the patient by email and/or SMS according to the plugin settings.</p>\n<h4>Main features</h4>\n<ul>\n<li>Secure identification: fiscal code + SMS OTP, personal password, or both — with optional two-step verification (password + OTP)</li>\n<li>Personal password automatically generated and delivered with the &#8220;report ready&#8221; email</li>\n<li>Report list with date, type, specialty, description and &#8220;new&#8221; badge for reports never downloaded</li>\n<li>One-click download; download tracking (first download date, counter)</li>\n<li>Configurable notifications on new report: email (with password when first issued) and/or SMS (short text, no clinical details)</li>\n<li>Configurable visibility: immediately, after approval from the CRM (<code>PubblicaReferto()</code>), or after N days</li>\n<li>Access audit log on the CRM (logins and downloads, with IP) — reports are health data</li>\n<li>Rate limiting, OTP expiry and attempt limits, password lockout after repeated failures</li>\n<li>Temporary suspension of the service with a custom message</li>\n<li>Customizable colors to match your theme; same look &amp; feel as Prenotazioni IGEA</li>\n<li>No external dependencies: all CSS and JavaScript is bundled with the plugin</li>\n</ul>\n<h4>Security</h4>\n<p>The API key never leaves the server: the patient&#8217;s browser only talks to WordPress, which forwards requests to the CRM. Nonce on every call, field whitelisting, session tokens issued only after identity verification, ownership check on every download, path hardening on the CRM side, rate limiting per IP and per patient.</p>\n<h4>Requirements</h4>\n<p>This plugin is a connector: <strong>it requires an installation of the IGEA CRM</strong> by S0ft.it, reachable over HTTPS, with the <code>referti_api.php</code> endpoint, the <code>referti_push.php</code> helper, the SQL script (<code>referti.sql</code>) executed, and — for OTP and SMS notifications — an SMS provider configured. Without the CRM the plugin has no standalone functionality. More about the CRM: <a href=\"https://www.s0ft.it\" rel=\"nofollow ugc\">www.s0ft.it</a>.</p>\n<h4>External services</h4>\n<p>This plugin sends data to the IGEA CRM server configured by the site administrator (URL and API key in the plugin settings). The data transmitted is what the patient enters in the form (fiscal code, verification codes or password) plus the visitor&#8217;s IP address, used exclusively for anti-abuse rate limiting and access logging. Downloaded reports travel from your CRM server to the patient&#8217;s browser through your WordPress site. No data is ever sent to S0ft.it or to any third party by this plugin: the destination server is chosen and operated by the site owner.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/referti-igea.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>First release. Requires referti_api.php, referti_push.php and the referti.sql script on the IGEA CRM server.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/referti-igea/assets/screenshot-1.png?rev=3607792",
+            "caption": "Step 1: fiscal code entry"
+        },
+        {
+            "src": "https://ps.w.org/referti-igea/assets/screenshot-2.png?rev=3607792",
+            "caption": "Identity verification: SMS code or personal password"
+        },
+        {
+            "src": "https://ps.w.org/referti-igea/assets/screenshot-3.png?rev=3607792",
+            "caption": "Report list with \"new\" badge and download"
+        },
+        {
+            "src": "https://ps.w.org/referti-igea/assets/screenshot-4.png?rev=3607792",
+            "caption": "Plugin settings page"
+        }
+    ],
+    "tags": {
+        "area-riservata": "area riservata",
+        "download": "download",
+        "healthcare": "healthcare",
+        "medical-records": "medical records",
+        "referti": "referti"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/referti-igea.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/referti-igea.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.s0ft.it",
+    "banners": {
+        "low": "https://ps.w.org/referti-igea/assets/banner-772x250.png?rev=3607792",
+        "high": "https://ps.w.org/referti-igea/assets/banner-1544x500.png?rev=3607792"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/referti-igea/assets/icon-128x128.png?rev=3607792",
+        "2x": "https://ps.w.org/referti-igea/assets/icon-256x256.png?rev=3607792"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
