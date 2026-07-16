@@ -1,0 +1,98 @@
+{
+    "name": "Abovault – SEPA Subscriptions &amp; Dunning for WooCommerce",
+    "slug": "abovault",
+    "version": "0.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/famosmedia/\">famosmedia</a>",
+    "author_profile": "https://profiles.wordpress.org/famosmedia/",
+    "contributors": {
+        "famosmedia": {
+            "profile": "https://profiles.wordpress.org/famosmedia/",
+            "avatar": "https://secure.gravatar.com/avatar/183ab646e9c6d539f444ba2e3900cd14740714b2135a61eb0c0c3a660ee38576?s=96&d=monsterid&r=g",
+            "display_name": "famosmedia"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.0.1",
+    "requires_php": "8.1",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/abovault/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-16 07:05:00",
+    "added": "2026-07-16",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Abovault adds SEPA Direct Debit subscriptions to WooCommerce. SEPA Direct Debit is offered as a payment method at checkout, renewals are charged automatically off-session, failed payments are handled with a configurable dunning process (payment retries plus reminder emails), and customers who cancel can be sent a retention flow. Subscription data is stored in your own WordPress database.</p>\n<h4>Features</h4>\n<ul>\n<li>SEPA Direct Debit (Lastschrift) via Stripe. Mandates are created at checkout and stored on your site.</li>\n<li>SEPA-aware dunning. A SEPA charge settles over several days and can be returned later, so a renewal is treated as pending until Stripe confirms it; the retry cascade and reminder emails only start when a charge actually fails. Retries, backoff and a grace period are configurable.</li>\n<li>Cancellation retention. Before a cancellation, subscribers can be offered a pause or discount; after cancellation, a win-back sequence with an auto-generated coupon can be sent.</li>\n<li>Lifecycle emails. Failed payment, renewal reminder, expiry, win-back and loyalty emails are sequence-driven and translatable (English and German included).</li>\n<li>Data stored locally. Every subscription, mandate reference and lifecycle record lives in your WordPress database.</li>\n<li>Classic and Block checkout. Works in the WooCommerce Cart/Checkout blocks and the classic shortcode checkout.</li>\n</ul>\n<h4>How it works</h4>\n<ol>\n<li>Mark any product as a subscription (interval, period, optional free trial) in the product editor.</li>\n<li>At checkout the customer authorises a SEPA mandate (Stripe Elements IBAN field).</li>\n<li>An hourly job renews due subscriptions off-session; a Stripe webhook confirms each SEPA charge.</li>\n<li>On a failed charge, the dunning cascade + emails run automatically. On cancellation, the retention flow runs.</li>\n</ol>\n<h4>Requirements</h4>\n<ul>\n<li>WooCommerce 8.0+</li>\n<li>A Stripe account with SEPA Direct Debit enabled (test or live)</li>\n<li>PHP 8.1+</li>\n</ul>\n<p>Payment data is processed by Stripe (<a href=\"https://stripe.com/privacy\" rel=\"nofollow ugc\">privacy policy</a> and <a href=\"https://stripe.com/legal\" rel=\"nofollow ugc\">terms</a>). Abovault does not send your subscription data to any third party — it stays on your site.</p>\n",
+        "installation": "<ol>\n<li>Install and activate <strong>WooCommerce</strong> first.</li>\n<li>Upload the Abovault plugin and activate it. Tables and the recurring jobs are created automatically (via Action Scheduler, bundled with WooCommerce).</li>\n<li>Go to <strong>WooCommerce &rarr; Settings &rarr; Payments &rarr; SEPA Direct Debit</strong> and enter your Stripe Publishable Key, Secret Key and Webhook Signing Secret, then enable it.</li>\n<li>In Stripe, add a webhook endpoint pointing to <code>https://your-site/wp-json/abovault/v1/stripe-webhook</code> for the events <code>payment_intent.succeeded</code>, <code>payment_intent.payment_failed</code> and <code>setup_intent.succeeded</code>.</li>\n<li><strong>If your site is behind Cloudflare, a WAF, a firewall or a security plugin, allow the webhook path.</strong> CDNs such as Cloudflare (Bot Fight Mode / WAF) reject server-to-server POST requests with HTTP 403 (<code>error 1010</code>) and will silently drop Stripe&#8217;s webhooks &mdash; SEPA charges then never confirm and dunning misfires. Add an allow/skip rule for the exact path <code>/wp-json/abovault/v1/stripe-webhook</code> (or allowlist Stripe&#8217;s published IP ranges). Confirm delivery in <strong>Stripe &rarr; Developers &rarr; Webhooks</strong> (expect HTTP 200 for a signed request).</li>\n<li>Edit a product &rarr; <strong>Product data &rarr; General</strong> &rarr; tick <strong>Subscription product</strong> and set the interval / trial.</li>\n<li>Configure the grace period, retries and retention under <strong>WooCommerce &rarr; Abovault</strong>.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"which%20payment%20methods%20are%20supported%3F\">\nWhich payment methods are supported?\n</h4>\n<p>\n<p>SEPA Direct Debit via Stripe in this version. The gateway layer is provider-agnostic internally, so additional processors can be added.</p>\n</p>\n<dt id=\"where%20is%20my%20subscription%20data%20stored%3F\">\nWhere is my subscription data stored?\n</h4>\n<p>\n<p>In your own WordPress database (<code>wp_abovault_subscriptions</code> and <code>wp_abovault_enrollments</code>). Only the payment itself is handled by Stripe.</p>\n</p>\n<dt id=\"how%20does%20dunning%20handle%20sepa%27s%20delay%3F\">\nHow does dunning handle SEPA&#8217;s delay?\n</h4>\n<p>\n<p>A renewal charge stays <em>pending</em> until Stripe&#8217;s webhook confirms it. Reminder emails and retries only fire when a payment truly fails, so customers are never chased during normal SEPA settlement.</p>\n</p>\n<dt id=\"my%20stripe%20webhooks%20aren%27t%20arriving.%20what%20should%20i%20check%3F\">\nMy Stripe webhooks aren&#8217;t arriving. What should I check?\n</h4>\n<p>\n<p>Webhooks are how SEPA charges are confirmed, so delivery matters. Make sure the endpoint <code>https://your-site/wp-json/abovault/v1/stripe-webhook</code> is reachable from the public internet and returns HTTP 200 for a signed request. The most common blockers are a firewall, a security plugin, or a CDN/proxy such as Cloudflare (Bot Fight Mode / WAF) rejecting non-browser POST requests. If so, add an allow/skip rule for that path (or Stripe&#8217;s IP ranges). You can confirm delivery in the Stripe Dashboard under Developers <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Webhooks.</p>\n</p>\n<dt id=\"is%20it%20gdpr-friendly%3F\">\nIs it GDPR-friendly?\n</h4>\n<p>\n<p>Data sovereignty is a design goal: subscription records never leave your server. You remain the controller; Stripe is your payment processor.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>Initial release: standalone SEPA subscriptions engine for WooCommerce.</li>\n<li>SEPA Direct Debit checkout (classic + Block), mandate creation and storage.</li>\n<li>SEPA-aware dunning cascade with grace period and reliable async webhook handling.</li>\n<li>Cancellation retention + win-back sequences with auto-generated coupons.</li>\n<li>Localized lifecycle emails (English + German).</li>\n</ul>\n"
+    },
+    "short_description": "SEPA Direct Debit subscriptions for WooCommerce, with automatic dunning and cancellation retention. Subscription data is stored in your own database.",
+    "description": "<p>Abovault adds SEPA Direct Debit subscriptions to WooCommerce. SEPA Direct Debit is offered as a payment method at checkout, renewals are charged automatically off-session, failed payments are handled with a configurable dunning process (payment retries plus reminder emails), and customers who cancel can be sent a retention flow. Subscription data is stored in your own WordPress database.</p>\n<h4>Features</h4>\n<ul>\n<li>SEPA Direct Debit (Lastschrift) via Stripe. Mandates are created at checkout and stored on your site.</li>\n<li>SEPA-aware dunning. A SEPA charge settles over several days and can be returned later, so a renewal is treated as pending until Stripe confirms it; the retry cascade and reminder emails only start when a charge actually fails. Retries, backoff and a grace period are configurable.</li>\n<li>Cancellation retention. Before a cancellation, subscribers can be offered a pause or discount; after cancellation, a win-back sequence with an auto-generated coupon can be sent.</li>\n<li>Lifecycle emails. Failed payment, renewal reminder, expiry, win-back and loyalty emails are sequence-driven and translatable (English and German included).</li>\n<li>Data stored locally. Every subscription, mandate reference and lifecycle record lives in your WordPress database.</li>\n<li>Classic and Block checkout. Works in the WooCommerce Cart/Checkout blocks and the classic shortcode checkout.</li>\n</ul>\n<h4>How it works</h4>\n<ol>\n<li>Mark any product as a subscription (interval, period, optional free trial) in the product editor.</li>\n<li>At checkout the customer authorises a SEPA mandate (Stripe Elements IBAN field).</li>\n<li>An hourly job renews due subscriptions off-session; a Stripe webhook confirms each SEPA charge.</li>\n<li>On a failed charge, the dunning cascade + emails run automatically. On cancellation, the retention flow runs.</li>\n</ol>\n<h4>Requirements</h4>\n<ul>\n<li>WooCommerce 8.0+</li>\n<li>A Stripe account with SEPA Direct Debit enabled (test or live)</li>\n<li>PHP 8.1+</li>\n</ul>\n<p>Payment data is processed by Stripe (<a href=\"https://stripe.com/privacy\" rel=\"nofollow ugc\">privacy policy</a> and <a href=\"https://stripe.com/legal\" rel=\"nofollow ugc\">terms</a>). Abovault does not send your subscription data to any third party — it stays on your site.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/abovault.0.1.0.zip",
+    "upgrade_notice": {
+        "0.1.0": "<p>First public release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/abovault/assets/screenshot-1.png?rev=3609844",
+            "caption": "SEPA Direct Debit at checkout — IBAN mandate via Stripe Elements."
+        },
+        {
+            "src": "https://ps.w.org/abovault/assets/screenshot-2.png?rev=3609814",
+            "caption": "Mark any product as a subscription with interval and trial."
+        },
+        {
+            "src": "https://ps.w.org/abovault/assets/screenshot-3.png?rev=3609814",
+            "caption": "Dunning, grace period and retention settings."
+        },
+        {
+            "src": "https://ps.w.org/abovault/assets/screenshot-4.png?rev=3609842",
+            "caption": "A localized dunning email (German shown)."
+        }
+    ],
+    "tags": {
+        "dunning": "dunning",
+        "recurring-payments": "Recurring payments",
+        "sepa": "sepa",
+        "subscriptions": "subscriptions",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "0.1.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/abovault.0.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/abovault.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/abovault/assets/banner-772x250.png?rev=3609809",
+        "high": "https://ps.w.org/abovault/assets/banner-1544x500.png?rev=3609809"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/abovault/assets/icon-128x128.png?rev=3609809",
+        "2x": "https://ps.w.org/abovault/assets/icon-256x256.png?rev=3609809"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
