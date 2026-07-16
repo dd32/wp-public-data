@@ -1,0 +1,76 @@
+{
+    "name": "IA.Top Connect",
+    "slug": "ia-top-connect",
+    "version": "1.6.6",
+    "author": "<a href=\"https://profiles.wordpress.org/ucemarc/\">iatop</a>",
+    "author_profile": "https://profiles.wordpress.org/ucemarc/",
+    "contributors": {
+        "ucemarc": {
+            "profile": "https://profiles.wordpress.org/ucemarc/",
+            "avatar": "https://secure.gravatar.com/avatar/c9d4c32ddcab03add18cda214cfd5163daa9c007db3fd448126c8e4f29b95cbf?s=96&d=monsterid&r=g",
+            "display_name": "iatop"
+        }
+    },
+    "requires": "5.6",
+    "tested": "7.0.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/ia-top-connect/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-16 16:01:00",
+    "added": "2026-07-16",
+    "homepage": "",
+    "sections": {
+        "description": "<p>This plugin securely links your WordPress site to a content automation platform in a single click, so that new articles can be published on your behalf without ever sharing your admin password.</p>\n<p>Once connected, the platform automatically publishes search-engine-optimized articles to your blog, written and structured to match your industry and brand voice. The plugin detects whichever SEO plugin you already use — Yoast SEO, Rank Math, SEOPress, or All in One SEO — and fills in the title, meta description, and focus keyword for every article it publishes, so your existing SEO setup keeps working exactly as before.</p>\n<p><strong>What the plugin does:</strong></p>\n<ul>\n<li>Securely generates a WordPress Application Password so the automation platform can publish on your behalf, without ever handling your admin password</li>\n<li>Sends those credentials to the platform over an encrypted connection</li>\n<li>Lets you disconnect at any time — the generated password is removed automatically</li>\n<li>Cleans up the connection and the generated password automatically if you deactivate or remove the plugin</li>\n<li>Keeps track of page views and internal link clicks on published posts, so you can see how each article performs</li>\n</ul>\n<p><strong>Requirements:</strong></p>\n<ul>\n<li>WordPress 5.6 or later (needed for Application Passwords)</li>\n<li>A user account with administrator permissions</li>\n<li>A client code, provided when you sign up for the automation service</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to IA.Top (inteligenciaartificial.top), the AI content automation platform this plugin gives access to. This service is provided by IA.Top: <a href=\"https://www.inteligenciaartificial.top/terminos-de-servicio/\" rel=\"nofollow ugc\">terms of service</a>, <a href=\"https://www.inteligenciaartificial.top/politica-de-privacidad/\" rel=\"nofollow ugc\">privacy policy</a>. The following calls are made:</p>\n<ul>\n<li><strong>When you click &#8220;Connect with IA.Top&#8221;</strong>: the plugin sends your site&#8217;s domain, REST API URL, the WordPress username and email of the connecting administrator, a freshly generated WordPress Application Password, the site&#8217;s name/language/version, the detected SEO plugin, and a per-site secret used to authenticate later calls, to <code>https://n8n.inteligenciaartificial.top/webhook/wordpress-connect</code>. This only happens when an administrator enters their client code and clicks &#8220;Connect with IA.Top&#8221;.</li>\n<li><strong>When you disconnect, deactivate, or uninstall the plugin</strong>: the same endpoint above is notified (domain + action) so IA.Top stops publishing to your site.</li>\n<li><strong>When a post&#8217;s status changes</strong> (published, scheduled, trashed, or permanently deleted): the plugin notifies <code>https://n8n.inteligenciaartificial.top/webhook/post-status-changed</code> with the post ID, the old and new status, and the date — only if the site is connected.</li>\n<li><strong>When a visitor clicks a link inside a single post</strong>: the plugin notifies <code>https://n8n.inteligenciaartificial.top/webhook/link-click</code> with the URL, the link text, the page zone, and a non-reversible visitor hash built from the IP address, user agent, and a salt that rotates daily — the raw IP address is never stored or sent — only if the site is connected.</li>\n<li><strong>The IA.Top dashboard polls</strong> <code>GET /wp-json/ia/v1/posts-sync</code> on your own WordPress site (not the other way around) to read the status, content, and view count of your posts.</li>\n</ul>\n<p>None of these calls are made unless you have connected the plugin using your IA.Top client code.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>ia-top-connect</code> folder to the <code>/wp-content/plugins/</code> directory</li>\n<li>Activate the plugin from the WordPress &#8216;Plugins&#8217; menu</li>\n<li>Go to the new &#8216;IA.Top&#8217; section in the side menu</li>\n<li>Enter your client code and click &#8216;Connect with IA.Top&#8217;</li>\n</ol>\n",
+        "faq": "\n<dt id=\"is%20it%20safe%3F\">\nIs it safe?\n</h4>\n<p>\n<p>Yes. The plugin uses WordPress&#8217;s native Application Passwords system. The generated password only grants access to the REST API, not the admin dashboard. You can revoke it at any time.</p>\n</p>\n<dt id=\"what%20happens%20if%20i%20deactivate%20the%20plugin%3F\">\nWhat happens if I deactivate the plugin?\n</h4>\n<p>\n<p>The Application Password is automatically deleted and IA.Top is notified to stop publishing.</p>\n</p>\n<dt id=\"can%20i%20reconnect%20after%20disconnecting%3F\">\nCan I reconnect after disconnecting?\n</h4>\n<p>\n<p>Yes, just enter your client code again and connect. A new password will be generated.</p>\n</p>\n\n",
+        "changelog": "<h4>1.6.6</h4>\n<ul>\n<li>Added a per-IP rate limit to the public <code>/pv</code> and <code>/lc</code> beacon endpoints, capping how many post-meta writes, dedup transients, and outbound webhook calls a single client can trigger per minute</li>\n</ul>\n<h4>1.6.5</h4>\n<ul>\n<li>Added a Terms of Service link alongside the Privacy Policy link in the External services section</li>\n</ul>\n<h4>1.6.4</h4>\n<ul>\n<li>Moved the admin settings page CSS out of an inline <code>&lt;style&gt;</code> tag and into <code>wp_add_inline_style()</code>, loaded only on the plugin&#8217;s own admin page</li>\n<li>Tightened REST permissions: <code>/posts-sync</code> now requires <code>manage_options</code> (it returns full site content including private/trashed posts), <code>/seo-fields</code> now checks <code>edit_post</code> capability for the specific post being modified, and <code>/seo-plugin</code> now requires <code>edit_posts</code> instead of being public</li>\n<li>Translated the rest of the readme (Installation, FAQ, External services, Tags) to English, and documented each external service call with what is sent, when, and a link to IA.Top&#8217;s privacy policy</li>\n<li>Translated the plugin header description to English</li>\n</ul>\n<h4>1.6.3</h4>\n<ul>\n<li>Removed the <code>Plugin URI</code> header — it was identical to <code>Author URI</code>, which WordPress.org&#8217;s submission form rejects</li>\n</ul>\n<h4>1.6.2</h4>\n<ul>\n<li>Fixed two remaining Plugin Check warnings by moving the <code>phpcs:ignore</code> comments to the exact lines they needed to cover</li>\n<li>Expanded the English plugin description (the short version was likely triggering a language-detection false positive)</li>\n</ul>\n<h4>1.6.1</h4>\n<ul>\n<li>Fixed unescaped output flagged by the WordPress Plugin Check tool (version number, admin notice link)</li>\n<li>Removed <code>suppress_filters</code> from the posts-sync query (discouraged by WordPress performance guidelines)</li>\n<li>Sanitized and unslashed all <code>$_SERVER</code>/<code>$_POST</code> reads ($_SERVER[&#8216;REMOTE_ADDR&#8217;], HTTP_USER_AGENT, HTTP_REFERER, iatop_client_uuid)</li>\n<li>The connect form now verifies the nonce before re-displaying a previously submitted client code</li>\n<li>Documented the direct <code>$wpdb</code> calls against AIOSEO&#8217;s own table with justification comments (no core API exists for it)</li>\n<li>Renamed unprefixed globals in <code>uninstall.php</code></li>\n<li>Updated &#8220;Tested up to&#8221; and translated the plugin&#8217;s short and long description to English, as required for the WordPress.org directory listing</li>\n</ul>\n<h4>1.6.0</h4>\n<ul>\n<li>Added <code>uninstall.php</code>: cleans up the Application Password and connection when the plugin is deleted, not just deactivated</li>\n<li>Added the &#8220;External services&#8221; section to the readme, documenting each outbound call to IA.Top</li>\n<li>Fixed the readme&#8217;s <code>Stable tag</code>, which didn&#8217;t match the plugin&#8217;s real version</li>\n<li>Updated the <code>Contributors</code> list</li>\n</ul>\n<h4>1.5.5</h4>\n<ul>\n<li>Automatic detection of the active SEO plugin (Yoast, Rank Math, SEOPress, AIOSEO) and a unified <code>/wp-json/ia/v1/seo-fields</code> endpoint to write title, description, and focus keyword regardless of which plugin is installed</li>\n<li>Direct write access to <code>wp_aioseo_posts</code> for AIOSEO (no paid REST add-on required)</li>\n<li><code>/wp-json/ia/v1/posts-sync</code> endpoint so IA.Top can reconcile post status, content, and views</li>\n<li>View (<code>post_views_count</code>) and link-click tracking, with 15-minute deduplication and bot filtering</li>\n<li>Notifies IA.Top on post status changes (publish, schedule, trash) and on permanent deletion</li>\n<li>Fixed the real publish date on scheduled posts</li>\n<li>&#8220;Views&#8221; column in the admin post list</li>\n<li>Admin notice when the plugin is installed but not connected</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Initial release</li>\n<li>Connection to IA.Top via Application Passwords</li>\n<li>Status panel with connect/disconnect</li>\n<li>Automatic cleanup on deactivation</li>\n</ul>\n"
+    },
+    "short_description": "Connect your WordPress site to IA.Top to automatically receive AI-generated, SEO-optimized content.",
+    "description": "<p>This plugin securely links your WordPress site to a content automation platform in a single click, so that new articles can be published on your behalf without ever sharing your admin password.</p>\n<p>Once connected, the platform automatically publishes search-engine-optimized articles to your blog, written and structured to match your industry and brand voice. The plugin detects whichever SEO plugin you already use — Yoast SEO, Rank Math, SEOPress, or All in One SEO — and fills in the title, meta description, and focus keyword for every article it publishes, so your existing SEO setup keeps working exactly as before.</p>\n<p><strong>What the plugin does:</strong></p>\n<ul>\n<li>Securely generates a WordPress Application Password so the automation platform can publish on your behalf, without ever handling your admin password</li>\n<li>Sends those credentials to the platform over an encrypted connection</li>\n<li>Lets you disconnect at any time — the generated password is removed automatically</li>\n<li>Cleans up the connection and the generated password automatically if you deactivate or remove the plugin</li>\n<li>Keeps track of page views and internal link clicks on published posts, so you can see how each article performs</li>\n</ul>\n<p><strong>Requirements:</strong></p>\n<ul>\n<li>WordPress 5.6 or later (needed for Application Passwords)</li>\n<li>A user account with administrator permissions</li>\n<li>A client code, provided when you sign up for the automation service</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to IA.Top (inteligenciaartificial.top), the AI content automation platform this plugin gives access to. This service is provided by IA.Top: <a href=\"https://www.inteligenciaartificial.top/terminos-de-servicio/\" rel=\"nofollow ugc\">terms of service</a>, <a href=\"https://www.inteligenciaartificial.top/politica-de-privacidad/\" rel=\"nofollow ugc\">privacy policy</a>. The following calls are made:</p>\n<ul>\n<li><strong>When you click &#8220;Connect with IA.Top&#8221;</strong>: the plugin sends your site&#8217;s domain, REST API URL, the WordPress username and email of the connecting administrator, a freshly generated WordPress Application Password, the site&#8217;s name/language/version, the detected SEO plugin, and a per-site secret used to authenticate later calls, to <code>https://n8n.inteligenciaartificial.top/webhook/wordpress-connect</code>. This only happens when an administrator enters their client code and clicks &#8220;Connect with IA.Top&#8221;.</li>\n<li><strong>When you disconnect, deactivate, or uninstall the plugin</strong>: the same endpoint above is notified (domain + action) so IA.Top stops publishing to your site.</li>\n<li><strong>When a post&#8217;s status changes</strong> (published, scheduled, trashed, or permanently deleted): the plugin notifies <code>https://n8n.inteligenciaartificial.top/webhook/post-status-changed</code> with the post ID, the old and new status, and the date — only if the site is connected.</li>\n<li><strong>When a visitor clicks a link inside a single post</strong>: the plugin notifies <code>https://n8n.inteligenciaartificial.top/webhook/link-click</code> with the URL, the link text, the page zone, and a non-reversible visitor hash built from the IP address, user agent, and a salt that rotates daily — the raw IP address is never stored or sent — only if the site is connected.</li>\n<li><strong>The IA.Top dashboard polls</strong> <code>GET /wp-json/ia/v1/posts-sync</code> on your own WordPress site (not the other way around) to read the status, content, and view count of your posts.</li>\n</ul>\n<p>None of these calls are made unless you have connected the plugin using your IA.Top client code.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/ia-top-connect.1.6.6.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "ai": "AI",
+        "artificial-intelligence": "artificial intelligence",
+        "automation": "automation",
+        "content-generation": "content generation",
+        "seo": "seo"
+    },
+    "stable_tag": "1.6.6",
+    "versions": {
+        "1.6.6": "https://downloads.wordpress.org/plugin/ia-top-connect.1.6.6.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/ia-top-connect.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/ia-top-connect/assets/banner-772x250.png?rev=3610489",
+        "high": "https://ps.w.org/ia-top-connect/assets/banner-1544x500.png?rev=3610489"
+    },
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/ia-top-connect_666666.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

@@ -1,20 +1,22 @@
 {
     "name": "Show Orders Shortcode for WooCommerce",
     "slug": "wc-show-orders-shortcode",
-    "version": "1.1.0",
-    "author": "<a href=\"http://conschneider.de/\">Con</a>",
+    "version": "1.2.0",
+    "author": "<a href=\"https://profiles.wordpress.org/conschneider/\">con</a>",
     "author_profile": "https://profiles.wordpress.org/conschneider/",
     "contributors": {
         "conschneider": {
             "profile": "https://profiles.wordpress.org/conschneider/",
-            "avatar": "https://secure.gravatar.com/avatar/5547c81c574fd7e9aa5741623d8bdb1d?s=96&d=monsterid&r=g",
+            "avatar": "https://secure.gravatar.com/avatar/02a76d95b36cbc866cf2652b1a0739943346028e0564ba8735ed59744c41cfe7?s=96&d=monsterid&r=g",
             "display_name": "con"
         }
     },
-    "requires": "4.7",
-    "tested": "6.5.5",
-    "requires_php": "5.6",
-    "requires_plugins": [],
+    "requires": "6.5",
+    "tested": "7.0.1",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
     "compatibility": [],
     "rating": 0,
     "ratings": {
@@ -29,26 +31,46 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 100,
-    "downloaded": 896,
-    "last_updated": "2024-07-23 13:47:00",
+    "last_updated": "2026-07-16 14:46:00",
     "added": "2022-05-19",
-    "homepage": "https://wordpress.org/plugins/wc-show-orders-shortcode",
+    "homepage": "https://wordpress.org/plugins/wc-show-orders-shortcode/",
     "sections": {
-        "description": "<p>A shortcode to display WooCommerce orders.</p>\n<p>Usage:<br />\n    [show_wc_orders] to show all orders<br />\n    [show_wc_orders order_count=10] to show 10 orders &#8211; replace 10 with x to show x orders.</p>\n<p>There are no settings.</p>\n",
-        "changelog": "<h4>1.1.0</h4>\n<p>Added control statement to check for logged in status.</p>\n<h4>1.0.0</h4>\n<p>Initial release.</p>\n"
+        "description": "<p>Drop <code>[show_wc_orders]</code> into any page, post or widget area that renders shortcodes, and the logged-in customer sees their own orders: order number, date, status, total and a View button — the same table WooCommerce shows under My Account &gt; Orders.</p>\n<p>Usage:</p>\n<pre><code>[show_wc_orders] shows all of the customer's orders.\n[show_wc_orders order_count=10] shows the 10 most recent orders — replace 10 with any number.\n</code></pre>\n<p>That is all. There are no settings.</p>\n<p><strong>Details:</strong></p>\n<ul>\n<li>Each visitor only ever sees their own orders. Logged-out visitors see nothing.</li>\n<li>The table is rendered through WooCommerce&#8217;s own My Account orders template, so your theme&#8217;s styling — and any theme override or column filter you already use for My Account — applies to the shortcode too.</li>\n<li>Works with both classic order storage and High-Performance Order Storage (HPOS).</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/wc-show-orders-shortcode</code> directory, or install the plugin through the WordPress plugins screen directly.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>Add <code>[show_wc_orders]</code> to any page or post.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"which%20orders%20are%20shown%3F\">\nWhich orders are shown?\n</h4>\n<p>\n<p>The orders of the currently logged-in customer, newest first. Logged-out visitors see nothing — there is no way to view another customer&#8217;s orders through this shortcode.</p>\n</p>\n<dt id=\"the%20table%20was%20empty%20on%20my%20store%20%E2%80%94%20is%20that%20fixed%3F\">\nThe table was empty on my store — is that fixed?\n</h4>\n<p>\n<p>Yes. Version 1.1.0 read orders from the legacy post storage, so on stores using High-Performance Order Storage (the WooCommerce default since 8.2) it rendered nothing. 1.2.0 queries orders through the storage-agnostic WooCommerce API and works on both storage modes.</p>\n</p>\n<dt id=\"can%20i%20change%20the%20columns%20or%20styling%3F\">\nCan I change the columns or styling?\n</h4>\n<p>\n<p>The shortcode renders WooCommerce&#8217;s own <code>myaccount/orders.php</code> template. Anything that customises the My Account orders table — a theme override of that template, or the <code>woocommerce_account_orders_columns</code> filter — applies here as well.</p>\n</p>\n<dt id=\"is%20there%20pagination%3F\">\nIs there pagination?\n</h4>\n<p>\n<p>No. The shortcode shows the <code>order_count</code> most recent orders (all orders by default). For a paginated order history, point customers at My Account &gt; Orders.</p>\n</p>\n<dt id=\"can%20i%20show%20a%20login%20prompt%20to%20logged-out%20visitors%20instead%20of%20nothing%3F\">\nCan I show a login prompt to logged-out visitors instead of nothing?\n</h4>\n<p>\n<p>Not yet — the shortcode intentionally outputs nothing for guests. If you need this, ask in the support forum.</p>\n</p>\n\n",
+        "changelog": "<h4>1.2.0</h4>\n<ul>\n<li>Fix: orders display again on stores using High-Performance Order Storage (HPOS, the WooCommerce default since 8.2). 1.1.0 queried the legacy post storage and rendered an empty page there.</li>\n<li>Improvement: the shortcode now renders the same orders table as My Account &gt; Orders (<code>myaccount/orders.php</code>) instead of a template deprecated since WooCommerce 2.6 — theme overrides and column filters for My Account now apply to the shortcode too.</li>\n<li>Fix: no PHP fatal error when WooCommerce is deactivated while the shortcode is still in page content.</li>\n<li>Hardening: pages are excluded from page caching whenever the table renders (the same DONOTCACHEPAGE protection WooCommerce applies to My Account) — this customer-specific output must never enter a shared page cache.</li>\n<li>Hardening: refund records can never appear in the table; invalid <code>order_count</code> values fall back to showing all orders; <code>woocommerce_my_account_my_orders_query</code> filter callbacks can no longer break the shortcode&#8217;s count or crash the page.</li>\n<li>The &#8220;Recent orders&#8221; heading and its <code>woocommerce_my_account_my_orders_title</code> filter are preserved from 1.1.0.</li>\n<li>Note: the table markup now uses WooCommerce&#8217;s current classes (<code>woocommerce-orders-table__cell-...</code>). Custom CSS written against the old bare cell classes (<code>.order-number</code> etc.) may need updating.</li>\n<li>Compatibility with High-Performance Order Storage declared; WooCommerce dependency declared via Requires Plugins.</li>\n<li>Housekeeping: License and Text Domain headers, updated minimum versions (WordPress 6.5, PHP 7.4, WooCommerce 9.5).</li>\n</ul>\n<h4>1.1.0</h4>\n<p>Added control statement to check for logged in status.</p>\n<h4>1.0.0</h4>\n<p>Initial release.</p>\n"
     },
-    "short_description": "Adds a shortcode to display WooCommerce orders.",
-    "description": "<p>A shortcode to display WooCommerce orders.</p>\n<p>Usage:<br />\n    [show_wc_orders] to show all orders<br />\n    [show_wc_orders order_count=10] to show 10 orders &#8211; replace 10 with x to show x orders.</p>\n<p>There are no settings.</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/wc-show-orders-shortcode.1.1.0.zip",
-    "upgrade_notice": [],
-    "screenshots": [],
+    "short_description": "Show the logged-in customer their WooCommerce orders on any page or post — one shortcode, no settings.",
+    "description": "<p>Drop <code>[show_wc_orders]</code> into any page, post or widget area that renders shortcodes, and the logged-in customer sees their own orders: order number, date, status, total and a View button — the same table WooCommerce shows under My Account &gt; Orders.</p>\n<p>Usage:</p>\n<pre><code>[show_wc_orders] shows all of the customer's orders.\n[show_wc_orders order_count=10] shows the 10 most recent orders — replace 10 with any number.\n</code></pre>\n<p>That is all. There are no settings.</p>\n<p><strong>Details:</strong></p>\n<ul>\n<li>Each visitor only ever sees their own orders. Logged-out visitors see nothing.</li>\n<li>The table is rendered through WooCommerce&#8217;s own My Account orders template, so your theme&#8217;s styling — and any theme override or column filter you already use for My Account — applies to the shortcode too.</li>\n<li>Works with both classic order storage and High-Performance Order Storage (HPOS).</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/wc-show-orders-shortcode.1.2.0.zip",
+    "upgrade_notice": {
+        "1.2.0": "<p>Orders display again on modern (HPOS) stores and the table now matches My Account. Shortcode and attributes unchanged, still no settings.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/wc-show-orders-shortcode/assets/screenshot-1.png?rev=3610398",
+            "caption": "The customer's orders on a regular page — same table as My Account &gt; Orders."
+        },
+        {
+            "src": "https://ps.w.org/wc-show-orders-shortcode/assets/screenshot-2.png?rev=3610398",
+            "caption": "Limiting the output with order_count."
+        },
+        {
+            "src": "https://ps.w.org/wc-show-orders-shortcode/assets/screenshot-3.png?rev=3610398",
+            "caption": "The shortcode in the block editor."
+        }
+    ],
     "tags": {
+        "my-account": "My account",
+        "order-history": "order history",
         "orders": "orders",
-        "shortcode": "shortcode"
+        "shortcode": "shortcode",
+        "woocommerce": "woocommerce"
     },
-    "stable_tag": "1.1.0",
+    "stable_tag": "1.2.0",
     "versions": {
         "1.1.0": "https://downloads.wordpress.org/plugin/wc-show-orders-shortcode.1.1.0.zip",
+        "1.2.0": "https://downloads.wordpress.org/plugin/wc-show-orders-shortcode.1.2.0.zip",
         "trunk": "https://downloads.wordpress.org/plugin/wc-show-orders-shortcode.zip"
     },
     "business_model": false,
@@ -56,11 +78,12 @@
     "commercial_support_url": "",
     "donate_link": "",
     "banners": {
-        "low": "https://ps.w.org/wc-show-orders-shortcode/assets/banner-772x250.png?rev=2726787",
-        "high": false
+        "low": "https://ps.w.org/wc-show-orders-shortcode/assets/banner-772x250.png?rev=3610398",
+        "high": "https://ps.w.org/wc-show-orders-shortcode/assets/banner-1544x500.png?rev=3610398"
     },
     "icons": {
-        "1x": "https://ps.w.org/wc-show-orders-shortcode/assets/icon-128x128.png?rev=2726787"
+        "1x": "https://ps.w.org/wc-show-orders-shortcode/assets/icon-128x128.png?rev=3610398",
+        "2x": "https://ps.w.org/wc-show-orders-shortcode/assets/icon-256x256.png?rev=3610398"
     },
     "blocks": [],
     "block_assets": [],
