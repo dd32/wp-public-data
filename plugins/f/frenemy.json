@@ -1,0 +1,77 @@
+{
+    "name": "Frenemy",
+    "slug": "frenemy",
+    "version": "0.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/frenemydev/\">frenemydev</a>",
+    "author_profile": "https://profiles.wordpress.org/frenemydev/",
+    "contributors": {
+        "frenemydev": {
+            "profile": "https://profiles.wordpress.org/frenemydev/",
+            "avatar": "https://secure.gravatar.com/avatar/331727385be5e42c91f48e502113663fe8ccfe30bfe6a812375ed01984dc5b93?s=96&d=monsterid&r=g",
+            "display_name": "frenemydev"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/frenemy/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-18 00:29:00",
+    "added": "2026-07-18",
+    "homepage": "https://frenemy.dev",
+    "sections": {
+        "description": "<p>AI agents, search crawlers, SEO tools, scrapers, and impostors pretending to be all of the above now make up a large share of most sites&#8217; traffic — and standard analytics are built to ignore them. Frenemy watches that traffic instead.</p>\n<p>For every request that reaches WordPress, the plugin:</p>\n<ul>\n<li><strong>classifies</strong> the visitor against a maintained registry of known agents (GPTBot, ClaudeBot, Googlebot, PerplexityBot, and many more),</li>\n<li><strong>verifies</strong> identity claims where the operator publishes IP ranges — an out-of-range &#8220;Googlebot&#8221; is reported as an impostor, a real one as verified,</li>\n<li><strong>reports</strong> the result to your Frenemy dashboard at frenemy.dev, where you see who visits, how often, and what they claim to be.</li>\n</ul>\n<p><strong>Observe-only, by design.</strong> The plugin never blocks, slows, challenges, or alters a request — there is no blocking code in it at all. It is also fail-open at every joint: classification runs after your page has already been sent, and any Frenemy failure means &#8220;no data,&#8221; never a broken or slower site.</p>\n<p><strong>Honest about what it sees.</strong> Frenemy observes every request that reaches WordPress itself. Cached pages and static files are served before WordPress runs and are not observed — that trade-off is stated in the plugin, on your dashboard, and here, rather than papered over. The requests page caches never serve (cache misses, searches, POSTs, login, REST, and XML-RPC traffic) are exactly where bot and impostor signal concentrates.</p>\n<p><strong>Account required.</strong> The plugin needs a site key from a Frenemy account (free trial — no card required to start). All plugin code is fully functional and GPL; the key connects it to your dashboard, which is where the analytics live. There are no charts inside wp-admin and no duplicate analytics UI — one settings screen, one key, one link to your dashboard.</p>\n<h3>External services</h3>\n<p>This plugin talks to exactly two endpoints, both operated by Frenemy (frenemy.dev). It sends nothing anywhere until you save a site key.</p>\n<p><strong>1. Registry download (GET).</strong> The plugin periodically downloads Frenemy&#8217;s public bot registry (user-agent patterns and published IP ranges for known agents) so classification can run locally on your server with no per-request network calls. No visitor data, cookies, or credentials are sent with this request.</p>\n<p><strong>2. Event reporting (POST).</strong> After a response has been sent, the plugin reports one small event to Frenemy&#8217;s ingest service, authenticated by your site key. It contains: the classification result, the request method and path (query strings stripped except utm_*/ref/source), the response status code and duration, the visitor&#8217;s IP address (transmitted securely, processed transiently — hashed with a per-site rotating salt and never stored in raw form), and, only for unrecognized bot-like requests, the user-agent string. Human visitors&#8217; user-agents are never transmitted, and presumed-human traffic is sampled, not tracked.</p>\n<p>By installing the plugin and entering your site key you consent to this reporting. Details: <a href=\"https://frenemy.dev/terms\" rel=\"nofollow ugc\">Terms of Service</a> · <a href=\"https://frenemy.dev/privacy\" rel=\"nofollow ugc\">Privacy Policy</a>.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin from the WordPress.org directory.</li>\n<li>Create a site at app.frenemy.dev (free trial) — the setup wizard shows your site key once.</li>\n<li>In WordPress, go to Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Frenemy, paste the key, and save.</li>\n<li>Answer the one topology question on the same screen (&#8220;How does traffic reach this server?&#8221;) — it controls whether Frenemy can verify crawler IPs. Not sure? The default is safe.</li>\n<li>Open <code>https://your-site.com/?frenemy=check</code> in a private window; your Frenemy wizard flips to Connected within a minute.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20slow%20my%20site%20down%3F\">\nDoes this slow my site down?\n</h4>\n<p>\n<p>No. Classification and reporting run on PHP&#8217;s shutdown hook, after your page has been sent (and on most hosts, after the connection to the visitor is already closed). The classify step itself is local — no network calls in the request path, ever.</p>\n</p>\n<dt id=\"can%20it%20block%20bad%20bots%3F\">\nCan it block bad bots?\n</h4>\n<p>\n<p>Not in this version — Frenemy for WordPress is deliberately observe-only, and there is no enforcement code in the plugin. See first, then decide: your dashboard shows exactly who visits and what they claim to be.</p>\n</p>\n<dt id=\"why%20don%27t%20i%20see%20all%20my%20traffic%3F\">\nWhy don&#8217;t I see all my traffic?\n</h4>\n<p>\n<p>Page caches and static files are served before WordPress (and therefore Frenemy) runs. Frenemy sees every request that reaches WordPress itself: cache misses, searches, POSTs, logins, REST and XML-RPC traffic — which is where bot activity concentrates. We state this honestly rather than estimate numbers we can&#8217;t measure.</p>\n</p>\n<dt id=\"what%20data%20do%20you%20collect%20about%20my%20visitors%3F\">\nWhat data do you collect about my visitors?\n</h4>\n<p>\n<p>Per PHP-reaching request: the classification, method and path, status, duration, and the visitor IP (processed transiently on our side — hashed with a rotating salt, raw value never stored). The user-agent string is transmitted only for unrecognized bot-like requests, never for humans. Presumed-human traffic is sampled at a low rate; exact totals are kept via counters, not tracking. No cookies are set, no fingerprinting is done, and no visitor profile is built. See https://frenemy.dev/privacy.</p>\n</p>\n<dt id=\"how%20do%20i%20turn%20it%20off%3F\">\nHow do I turn it off?\n</h4>\n<p>\n<p>Three ways, strongest first: define <code>FRENEMY_DISABLED</code> as true in wp-config.php (host-level), deactivate the plugin, or use the &#8220;Pause observation&#8221; toggle in Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Frenemy. Uninstalling removes every option the plugin created.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20multisite%3F\">\nDoes it work with multisite?\n</h4>\n<p>\n<p>Not yet — single-site installs only in this version.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>First release: local classification against the Frenemy registry (verification, impostor detection, per-family trust gating), observe-only event reporting, topology-aware IP trust, fail-open artifact caching, uninstall cleanup.</li>\n</ul>\n"
+    },
+    "short_description": "See every bot that reaches WordPress — search crawlers, AI agents, scrapers, impostors — classified and identity-verified, in one dashboard.",
+    "description": "<p>AI agents, search crawlers, SEO tools, scrapers, and impostors pretending to be all of the above now make up a large share of most sites&#8217; traffic — and standard analytics are built to ignore them. Frenemy watches that traffic instead.</p>\n<p>For every request that reaches WordPress, the plugin:</p>\n<ul>\n<li><strong>classifies</strong> the visitor against a maintained registry of known agents (GPTBot, ClaudeBot, Googlebot, PerplexityBot, and many more),</li>\n<li><strong>verifies</strong> identity claims where the operator publishes IP ranges — an out-of-range &#8220;Googlebot&#8221; is reported as an impostor, a real one as verified,</li>\n<li><strong>reports</strong> the result to your Frenemy dashboard at frenemy.dev, where you see who visits, how often, and what they claim to be.</li>\n</ul>\n<p><strong>Observe-only, by design.</strong> The plugin never blocks, slows, challenges, or alters a request — there is no blocking code in it at all. It is also fail-open at every joint: classification runs after your page has already been sent, and any Frenemy failure means &#8220;no data,&#8221; never a broken or slower site.</p>\n<p><strong>Honest about what it sees.</strong> Frenemy observes every request that reaches WordPress itself. Cached pages and static files are served before WordPress runs and are not observed — that trade-off is stated in the plugin, on your dashboard, and here, rather than papered over. The requests page caches never serve (cache misses, searches, POSTs, login, REST, and XML-RPC traffic) are exactly where bot and impostor signal concentrates.</p>\n<p><strong>Account required.</strong> The plugin needs a site key from a Frenemy account (free trial — no card required to start). All plugin code is fully functional and GPL; the key connects it to your dashboard, which is where the analytics live. There are no charts inside wp-admin and no duplicate analytics UI — one settings screen, one key, one link to your dashboard.</p>\n<h3>External services</h3>\n<p>This plugin talks to exactly two endpoints, both operated by Frenemy (frenemy.dev). It sends nothing anywhere until you save a site key.</p>\n<p><strong>1. Registry download (GET).</strong> The plugin periodically downloads Frenemy&#8217;s public bot registry (user-agent patterns and published IP ranges for known agents) so classification can run locally on your server with no per-request network calls. No visitor data, cookies, or credentials are sent with this request.</p>\n<p><strong>2. Event reporting (POST).</strong> After a response has been sent, the plugin reports one small event to Frenemy&#8217;s ingest service, authenticated by your site key. It contains: the classification result, the request method and path (query strings stripped except utm_*/ref/source), the response status code and duration, the visitor&#8217;s IP address (transmitted securely, processed transiently — hashed with a per-site rotating salt and never stored in raw form), and, only for unrecognized bot-like requests, the user-agent string. Human visitors&#8217; user-agents are never transmitted, and presumed-human traffic is sampled, not tracked.</p>\n<p>By installing the plugin and entering your site key you consent to this reporting. Details: <a href=\"https://frenemy.dev/terms\" rel=\"nofollow ugc\">Terms of Service</a> · <a href=\"https://frenemy.dev/privacy\" rel=\"nofollow ugc\">Privacy Policy</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/frenemy.0.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "ai": "AI",
+        "analytics": "analytics",
+        "bot-detection": "bot detection",
+        "bots": "bots",
+        "crawlers": "crawlers"
+    },
+    "stable_tag": "0.1.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/frenemy.0.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/frenemy.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/frenemy/assets/banner-772x250.png?rev=3612092",
+        "high": "https://ps.w.org/frenemy/assets/banner-1544x500.png?rev=3612092"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/frenemy/assets/icon-128x128.png?rev=3612092",
+        "2x": "https://ps.w.org/frenemy/assets/icon-256x256.png?rev=3612092"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
