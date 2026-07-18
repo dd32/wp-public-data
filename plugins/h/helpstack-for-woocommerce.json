@@ -1,0 +1,84 @@
+{
+    "name": "HelpStack for WooCommerce",
+    "slug": "helpstack-for-woocommerce",
+    "version": "0.2.0",
+    "author": "<a href=\"https://profiles.wordpress.org/nejcar20/\">nejcar20</a>",
+    "author_profile": "https://profiles.wordpress.org/nejcar20/",
+    "contributors": {
+        "nejcar20": {
+            "profile": "https://profiles.wordpress.org/nejcar20/",
+            "avatar": "https://secure.gravatar.com/avatar/c7fc233e45443defd9a471039192a35f0c45eaf119521d7d13c0b36c2bc850ce?s=96&d=monsterid&r=g",
+            "display_name": "nejcar20"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.0.2",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/helpstack-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-18 17:28:00",
+    "added": "2026-07-18",
+    "homepage": "https://helpstack.eu/integrations/woocommerce",
+    "sections": {
+        "description": "<p>HelpStack for WooCommerce connects your store to your HelpStack account so the HelpStack AI assistant can answer customer questions about their orders (status, tracking, contents) directly inside your chat widget, and so your support team can see order context alongside every conversation.</p>\n<p>Setup takes two steps:</p>\n<ol>\n<li>Generate a pairing code from your HelpStack dashboard.</li>\n<li>Paste the code into <strong>WooCommerce &gt; HelpStack</strong> and click Connect.</li>\n</ol>\n<p>The plugin creates a <strong>read-only</strong> WooCommerce REST API key on your behalf (the same mechanism WooCommerce itself uses under WooCommerce &gt; Settings &gt; Advanced &gt; REST API) and sends it to HelpStack together with your pairing code. HelpStack never receives write access to your store.</p>\n<h3>External services</h3>\n<p>This plugin connects your site to the HelpStack service (helpstack.eu) to enable the order-lookup and support features described above.</p>\n<p>When you click &#8220;Connect&#8221; on the HelpStack settings page (WooCommerce &gt; HelpStack), this plugin sends an HTTPS request to <code>https://helpstack.eu/api/woocommerce/connect</code> containing:</p>\n<ul>\n<li>The pairing code you entered — used once to identify your HelpStack account, and never stored by this plugin.</li>\n<li>Your store&#8217;s URL (via WordPress&#8217;s <code>home_url()</code>).</li>\n<li>A newly generated, read-only WooCommerce REST API consumer key and consumer secret, so HelpStack can subsequently read order and customer data from your store via the standard WooCommerce REST API.</li>\n</ul>\n<p>This request is only made when you actively click the Connect button.</p>\n<p>Once connected, this plugin also makes the following requests to HelpStack:</p>\n<ul>\n<li><strong>Storefront chat widget</strong> — when you enable &#8220;HelpStack chat widget on my storefront&#8221; (WooCommerce &gt; HelpStack), every storefront page loads the script <code>https://helpstack.eu/api/woocommerce/widget.js</code>, with your store&#8217;s URL and site locale passed as query parameters, so HelpStack can render the correct chat widget for your customers.</li>\n<li><strong>Support Inbox</strong> — opening the &#8220;HelpStack Inbox&#8221; admin page sends a server-side request to <code>https://helpstack.eu/api/conversations</code> to retrieve a list of your recent support conversations (customer name, a short preview of the last message, channel, status and timestamp), which the plugin then renders as a normal WordPress admin table. Nothing from HelpStack is embedded in the page.</li>\n<li><strong>Unread count</strong> — while your store is connected, the plugin requests <code>https://helpstack.eu/api/conversations/unread-count</code> to show an unread badge on the &#8220;HelpStack Inbox&#8221; item in the admin menu. The result is cached for 30 seconds, so this runs at most twice a minute while you are working in wp-admin.</li>\n</ul>\n<p>The last two requests are authenticated with a short-lived (5 minute) signed token containing the current WordPress user&#8217;s name and email address, so HelpStack knows which connected store, and which team member, is asking. The token is generated on the server for each request, sent only in an HTTP <code>Authorization</code> header, and is never exposed to the browser or placed in a URL.</p>\n<p>Outside of an explicit Connect click, an enabled storefront widget, and the inbox/unread requests described above, the plugin makes no other outbound network calls, and includes no bundled analytics or tracking of any kind.</p>\n<p>By using this plugin and connecting your store, you agree to HelpStack&#8217;s:</p>\n<ul>\n<li>Terms of Service: https://helpstack.eu/terms</li>\n<li>Privacy Policy: https://helpstack.eu/privacy</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/helpstack-for-woocommerce</code> directory, or install the plugin through the WordPress &#8220;Add Plugins&#8221; screen directly.</li>\n<li>Activate the plugin through the &#8220;Plugins&#8221; screen in WordPress.</li>\n<li>Make sure WooCommerce is installed and active — this plugin requires it.</li>\n<li>Go to <strong>WooCommerce &gt; HelpStack</strong>.</li>\n<li>Paste the pairing code from your HelpStack dashboard and click <strong>Connect</strong>.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20plugin%20give%20helpstack%20write%20access%20to%20my%20store%3F\">\nDoes this plugin give HelpStack write access to my store?\n</h4>\n<p>\n<p>No. The WooCommerce REST API key this plugin creates is scoped to read-only permissions, the same as any other read-only key you could create yourself under WooCommerce &gt; Settings &gt; Advanced &gt; REST API.</p>\n</p>\n<dt id=\"what%20happens%20if%20i%20deactivate%20the%20plugin%3F\">\nWhat happens if I deactivate the plugin?\n</h4>\n<p>\n<p>Deactivating the plugin does not revoke the WooCommerce REST API key it created. To fully disconnect, also delete the corresponding key from WooCommerce &gt; Settings &gt; Advanced &gt; REST API and disconnect the store from your HelpStack dashboard.</p>\n</p>\n<dt id=\"where%20is%20my%20pairing%20code%3F\">\nWhere is my pairing code?\n</h4>\n<p>\n<p>Pairing codes are generated from your HelpStack dashboard, under your store&#8217;s WooCommerce integration settings.</p>\n</p>\n<dt id=\"where%20do%20i%20turn%20on%20the%20storefront%20chat%20widget%3F\">\nWhere do I turn on the storefront chat widget?\n</h4>\n<p>\n<p>Go to WooCommerce &gt; HelpStack once your store is connected, and check &#8220;Enable HelpStack chat widget on my storefront&#8221;.</p>\n</p>\n<dt id=\"where%20do%20i%20read%20and%20reply%20to%20support%20conversations%3F\">\nWhere do I read and reply to support conversations?\n</h4>\n<p>\n<p>Once connected, the &#8220;HelpStack Inbox&#8221; page in the WordPress admin menu lists your recent conversations, so you can see at a glance who is waiting on a reply. Selecting a conversation opens it in HelpStack, in a new tab, where you reply to it.</p>\n</p>\n\n",
+        "changelog": "<h4>0.2.0</h4>\n<ul>\n<li>The HelpStack Inbox page no longer embeds HelpStack in an iframe. It now retrieves your recent conversations over the HelpStack API and renders them as a native WordPress admin table; selecting one opens it in HelpStack in a new tab.</li>\n<li>Access tokens are now generated per request, live for 5 minutes instead of 12 hours, and are sent only in a server-side request header — never in a URL.</li>\n<li>Reconnecting a store no longer resets your storefront-widget setting.</li>\n</ul>\n<h4>0.1.2</h4>\n<ul>\n<li>Add an unread-conversation count badge to the HelpStack Inbox item in the admin sidebar, so you can see unread at a glance without opening the inbox.</li>\n</ul>\n<h4>0.1.1</h4>\n<ul>\n<li>Embedded Support Inbox: extend the SSO token lifetime to 12 hours so the inbox stays usable for a full work session.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release: plugin scaffold, pairing-code connect flow, storefront chat widget, embedded Support Inbox, and uninstall cleanup.</li>\n</ul>\n"
+    },
+    "short_description": "Connect your WooCommerce store to HelpStack for AI-powered customer support, order lookups, and a live chat widget.",
+    "description": "<p>HelpStack for WooCommerce connects your store to your HelpStack account so the HelpStack AI assistant can answer customer questions about their orders (status, tracking, contents) directly inside your chat widget, and so your support team can see order context alongside every conversation.</p>\n<p>Setup takes two steps:</p>\n<ol>\n<li>Generate a pairing code from your HelpStack dashboard.</li>\n<li>Paste the code into <strong>WooCommerce &gt; HelpStack</strong> and click Connect.</li>\n</ol>\n<p>The plugin creates a <strong>read-only</strong> WooCommerce REST API key on your behalf (the same mechanism WooCommerce itself uses under WooCommerce &gt; Settings &gt; Advanced &gt; REST API) and sends it to HelpStack together with your pairing code. HelpStack never receives write access to your store.</p>\n<h3>External services</h3>\n<p>This plugin connects your site to the HelpStack service (helpstack.eu) to enable the order-lookup and support features described above.</p>\n<p>When you click &#8220;Connect&#8221; on the HelpStack settings page (WooCommerce &gt; HelpStack), this plugin sends an HTTPS request to <code>https://helpstack.eu/api/woocommerce/connect</code> containing:</p>\n<ul>\n<li>The pairing code you entered — used once to identify your HelpStack account, and never stored by this plugin.</li>\n<li>Your store&#8217;s URL (via WordPress&#8217;s <code>home_url()</code>).</li>\n<li>A newly generated, read-only WooCommerce REST API consumer key and consumer secret, so HelpStack can subsequently read order and customer data from your store via the standard WooCommerce REST API.</li>\n</ul>\n<p>This request is only made when you actively click the Connect button.</p>\n<p>Once connected, this plugin also makes the following requests to HelpStack:</p>\n<ul>\n<li><strong>Storefront chat widget</strong> — when you enable &#8220;HelpStack chat widget on my storefront&#8221; (WooCommerce &gt; HelpStack), every storefront page loads the script <code>https://helpstack.eu/api/woocommerce/widget.js</code>, with your store&#8217;s URL and site locale passed as query parameters, so HelpStack can render the correct chat widget for your customers.</li>\n<li><strong>Support Inbox</strong> — opening the &#8220;HelpStack Inbox&#8221; admin page sends a server-side request to <code>https://helpstack.eu/api/conversations</code> to retrieve a list of your recent support conversations (customer name, a short preview of the last message, channel, status and timestamp), which the plugin then renders as a normal WordPress admin table. Nothing from HelpStack is embedded in the page.</li>\n<li><strong>Unread count</strong> — while your store is connected, the plugin requests <code>https://helpstack.eu/api/conversations/unread-count</code> to show an unread badge on the &#8220;HelpStack Inbox&#8221; item in the admin menu. The result is cached for 30 seconds, so this runs at most twice a minute while you are working in wp-admin.</li>\n</ul>\n<p>The last two requests are authenticated with a short-lived (5 minute) signed token containing the current WordPress user&#8217;s name and email address, so HelpStack knows which connected store, and which team member, is asking. The token is generated on the server for each request, sent only in an HTTP <code>Authorization</code> header, and is never exposed to the browser or placed in a URL.</p>\n<p>Outside of an explicit Connect click, an enabled storefront widget, and the inbox/unread requests described above, the plugin makes no other outbound network calls, and includes no bundled analytics or tracking of any kind.</p>\n<p>By using this plugin and connecting your store, you agree to HelpStack&#8217;s:</p>\n<ul>\n<li>Terms of Service: https://helpstack.eu/terms</li>\n<li>Privacy Policy: https://helpstack.eu/privacy</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/helpstack-for-woocommerce.0.2.0.zip",
+    "upgrade_notice": {
+        "0.2.0": "<p>The Support Inbox is now a native WordPress admin screen backed by the HelpStack API, instead of an embedded iframe.</p>",
+        "0.1.2": "<p>Adds an unread-conversation badge to the admin sidebar.</p>",
+        "0.1.1": "<p>Keeps the embedded Support Inbox authenticated for a full session.</p>",
+        "0.1.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "ai-chatbot": "AI Chatbot",
+        "help-desk": "help desk",
+        "live-chat": "live chat",
+        "support": "support",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "0.2.0",
+    "versions": {
+        "0.2.0": "https://downloads.wordpress.org/plugin/helpstack-for-woocommerce.0.2.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/helpstack-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/helpstack-for-woocommerce/assets/banner-772x250.png?rev=3612863",
+        "high": "https://ps.w.org/helpstack-for-woocommerce/assets/banner-1544x500.png?rev=3612863"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/helpstack-for-woocommerce/assets/icon-128x128.png?rev=3612863",
+        "2x": "https://ps.w.org/helpstack-for-woocommerce/assets/icon-256x256.png?rev=3612863"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
