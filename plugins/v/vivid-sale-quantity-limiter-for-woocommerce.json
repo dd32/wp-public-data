@@ -1,0 +1,77 @@
+{
+    "name": "Vivid &#8211; Sale Quantity Limiter for WooCommerce",
+    "slug": "vivid-sale-quantity-limiter-for-woocommerce",
+    "version": "1.2.4",
+    "author": "<a href=\"https://profiles.wordpress.org/drickles/\">drickles</a>",
+    "author_profile": "https://profiles.wordpress.org/drickles/",
+    "contributors": {
+        "drickles": {
+            "profile": "https://profiles.wordpress.org/drickles/",
+            "avatar": "https://secure.gravatar.com/avatar/e27ab72f819f79564a7e784c2d6618cbb3d6a9569446c767a3a9e0793a6ad24e?s=96&d=monsterid&r=g",
+            "display_name": "drickles"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0.2",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/vivid-sale-quantity-limiter-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-18 14:09:00",
+    "added": "2026-07-18",
+    "homepage": "https://github.com/Drickles1/wc-limited-sale-quantity",
+    "sections": {
+        "description": "<p>WooCommerce lets you set a sale price and, optionally, a schedule for when it starts and ends. But there&#8217;s no built-in way to say &#8220;I have 20 of this in stock, but I only want to discount the first 3 sold — after that, back to full price.&#8221;</p>\n<p>Without a quantity cap, a sale price with no end date just keeps selling at that price indefinitely, or until someone remembers to remove it by hand.</p>\n<p>This plugin adds that missing piece: a <strong>Sale Quantity Allocation</strong> field. Set it to 3, and the moment 3 units have sold — from a real WooCommerce order, a stock reduction from an external inventory sync, a POS system, or a manual edit — the sale price is cleared automatically. The product reverts to its regular price for real (the underlying sale price field is cleared), not just a display trick.</p>\n<h4>Features</h4>\n<ul>\n<li>Quantity-limited sales — set a max number of units to sell at the discounted price, independent of total stock.</li>\n<li>Source-agnostic tracking — works whether stock drops from a checkout, a manual wp-admin edit, or any external system updating stock via the REST API.</li>\n<li>&#8220;Only N left at this price!&#8221; badge shown automatically on the product page and shop loop while the allocation is still active.</li>\n<li>Manual re-arming only — once a batch sells out, the sale stays off until you explicitly restart it. Restocking alone does not silently reactivate a sale.</li>\n<li>Works on simple and variable products.</li>\n</ul>\n<h4>How to run a limited sale</h4>\n<ol>\n<li>Set a Sale price (and optionally a sale schedule) as you normally would in WooCommerce.</li>\n<li>Enter a number in Sale Quantity Allocation (e.g. 3).</li>\n<li>Tick &#8220;Start new limited-sale batch now&#8221;.</li>\n<li>Save/update the product.</li>\n</ol>\n<p>From this point, the plugin watches the product&#8217;s stock quantity. Every unit sold (by any means) counts against the allocation. When the allocation reaches 0, the sale price and any sale schedule dates are cleared automatically.</p>\n<p>To restart a batch later (e.g. after restocking), re-enter the allocation number, tick the checkbox again, and save. This is deliberate: the allocation field is pre-filled with its last value and would otherwise resubmit on any unrelated product save, so the checkbox is what makes &#8220;manual re-arm only&#8221; actually manual.</p>\n<h4>Source</h4>\n<p>Development happens on GitHub: https://github.com/Drickles1/wc-limited-sale-quantity</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin files to <code>/wp-content/plugins/vivid-sale-quantity-limiter-for-woocommerce/</code>, or install directly through the WordPress plugins screen.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; screen in WordPress.</li>\n<li>Make sure WooCommerce is installed and active.</li>\n<li>Edit any product and look for the new fields in the Pricing section of the General tab (or per-variation for variable products).</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20work%20with%20variable%20products%3F\">\nDoes this work with variable products?\n</h4>\n<p>\n<p>Yes. The allocation field and arm checkbox are available per-variation as well as on simple products. The &#8220;Only N left&#8221; frontend badge is proven for simple products; on variable products it reflects whichever variation WooCommerce&#8217;s own template has in scope, since WooCommerce swaps variation data via AJAX without re-running this plugin&#8217;s PHP per variation.</p>\n</p>\n<dt id=\"what%20counts%20as%20a%20%22sale%22%3F\">\nWhat counts as a &#8220;sale&#8221;?\n</h4>\n<p>\n<p>Any WooCommerce stock reduction — a paid order, a manual wp-admin stock edit, or an external system (inventory management tools, POS systems, etc.) updating stock via the REST API — counts against the allocation.</p>\n</p>\n<dt id=\"why%20do%20i%20have%20to%20check%20a%20box%20to%20restart%20a%20sale%20instead%20of%20just%20re-entering%20the%20number%3F\">\nWhy do I have to check a box to restart a sale instead of just re-entering the number?\n</h4>\n<p>\n<p>Because the allocation field is pre-filled with its current value, it resubmits on every product save regardless of whether you touched it. Requiring an explicit checkbox is the only way to guarantee a routine, unrelated edit (like fixing a typo in the description) can never silently reactivate a sale that already sold out.</p>\n</p>\n<dt id=\"can%20i%20set%20the%20allocation%20programmatically%3F\">\nCan I set the allocation programmatically?\n</h4>\n<p>\n<p>The fields are wp-admin/UI only for now. The underlying values are plain post meta (<code>_lsqw_sale_qty_allocation</code>, <code>_lsqw_sale_qty_remaining</code>, <code>_lsqw_sale_qty_last_seen_stock</code>) and can be read or written directly if needed.</p>\n</p>\n\n",
+        "changelog": "<h4>1.2.4</h4>\n<ul>\n<li>Added explicit nonce verification in the allocation-saving handlers (defense-in-depth; these hooks already only fire after WooCommerce&#8217;s own nonce checks pass, but the check is now also explicit and self-contained here).</li>\n</ul>\n<h4>1.2.3</h4>\n<ul>\n<li>Text Domain now matches the wordpress.org-assigned slug, vivid-sale-quantity-limiter-for-woocommerce.</li>\n</ul>\n<h4>1.2.2</h4>\n<ul>\n<li>Fixed the release zip not including readme.txt (required for wordpress.org submission).</li>\n</ul>\n<h4>1.2.1</h4>\n<ul>\n<li>Renamed to Vivid &#8211; Sale Quantity Limiter for WooCommerce ahead of public release.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Added a graceful admin notice (instead of a fatal error) if WooCommerce isn&#8217;t active.</li>\n<li>Added the <code>Requires Plugins: woocommerce</code> header.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Added an explicit &#8220;Start new limited-sale batch now&#8221; checkbox so a routine, unrelated product save can never silently re-arm a depleted allocation.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Cap how many units of a product sell at the WooCommerce sale price, then automatically revert to regular price once that many are gone.",
+    "description": "<p>WooCommerce lets you set a sale price and, optionally, a schedule for when it starts and ends. But there&#8217;s no built-in way to say &#8220;I have 20 of this in stock, but I only want to discount the first 3 sold — after that, back to full price.&#8221;</p>\n<p>Without a quantity cap, a sale price with no end date just keeps selling at that price indefinitely, or until someone remembers to remove it by hand.</p>\n<p>This plugin adds that missing piece: a <strong>Sale Quantity Allocation</strong> field. Set it to 3, and the moment 3 units have sold — from a real WooCommerce order, a stock reduction from an external inventory sync, a POS system, or a manual edit — the sale price is cleared automatically. The product reverts to its regular price for real (the underlying sale price field is cleared), not just a display trick.</p>\n<h4>Features</h4>\n<ul>\n<li>Quantity-limited sales — set a max number of units to sell at the discounted price, independent of total stock.</li>\n<li>Source-agnostic tracking — works whether stock drops from a checkout, a manual wp-admin edit, or any external system updating stock via the REST API.</li>\n<li>&#8220;Only N left at this price!&#8221; badge shown automatically on the product page and shop loop while the allocation is still active.</li>\n<li>Manual re-arming only — once a batch sells out, the sale stays off until you explicitly restart it. Restocking alone does not silently reactivate a sale.</li>\n<li>Works on simple and variable products.</li>\n</ul>\n<h4>How to run a limited sale</h4>\n<ol>\n<li>Set a Sale price (and optionally a sale schedule) as you normally would in WooCommerce.</li>\n<li>Enter a number in Sale Quantity Allocation (e.g. 3).</li>\n<li>Tick &#8220;Start new limited-sale batch now&#8221;.</li>\n<li>Save/update the product.</li>\n</ol>\n<p>From this point, the plugin watches the product&#8217;s stock quantity. Every unit sold (by any means) counts against the allocation. When the allocation reaches 0, the sale price and any sale schedule dates are cleared automatically.</p>\n<p>To restart a batch later (e.g. after restocking), re-enter the allocation number, tick the checkbox again, and save. This is deliberate: the allocation field is pre-filled with its last value and would otherwise resubmit on any unrelated product save, so the checkbox is what makes &#8220;manual re-arm only&#8221; actually manual.</p>\n<h4>Source</h4>\n<p>Development happens on GitHub: https://github.com/Drickles1/wc-limited-sale-quantity</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/vivid-sale-quantity-limiter-for-woocommerce.1.2.4.zip",
+    "upgrade_notice": {
+        "1.2.1": "<p>Renamed from &quot;Limited Sale Quantity for WooCommerce&quot; for wordpress.org&#039;s plugin naming guidelines. No functional changes.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "discount": "discount",
+        "inventory": "inventory",
+        "sale": "sale",
+        "stock": "stock",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.2.4",
+    "versions": {
+        "1.2.4": "https://downloads.wordpress.org/plugin/vivid-sale-quantity-limiter-for-woocommerce.1.2.4.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/vivid-sale-quantity-limiter-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/vivid-sale-quantity-limiter-for-woocommerce.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
