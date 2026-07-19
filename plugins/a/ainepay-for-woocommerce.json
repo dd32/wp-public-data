@@ -1,0 +1,91 @@
+{
+    "name": "AinePay for WooCommerce",
+    "slug": "ainepay-for-woocommerce",
+    "version": "0.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/ainepay/\">ainepay</a>",
+    "author_profile": "https://profiles.wordpress.org/ainepay/",
+    "contributors": {
+        "ainepay": {
+            "profile": "https://profiles.wordpress.org/ainepay/",
+            "avatar": "https://secure.gravatar.com/avatar/e5d697d73678b2d4b38bfe6974edd80b64ca0a4101fc345468bee6c5345cfaa5?s=96&d=monsterid&r=g",
+            "display_name": "ainepay"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.0.2",
+    "requires_php": "8.1",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/ainepay-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-19 11:41:00",
+    "added": "2026-07-19",
+    "homepage": "https://github.com/ainepay/ainepay-for-woocommerce",
+    "sections": {
+        "description": "<p>AinePay for WooCommerce lets your store accept <strong>non-custodial</strong> stablecoin payments (USDT / USDC) through <a href=\"https://ainepay.com\" rel=\"nofollow ugc\">AinePay</a>.</p>\n<p>When a customer chooses AinePay at checkout, the plugin creates an order with AinePay and shows the customer a payment address. Crucially, the plugin <strong>verifies locally</strong> — without trusting the server — that the address is deterministically derived (via CREATE2) from your own collection address. If verification fails, the address is never shown and the order is marked failed. This protects you from a tampered backend ever diverting funds.</p>\n<p>Order status is guaranteed by active AinePay order polling. Signed webhooks speed up updates but are not the only source of truth.</p>\n<h4>Features</h4>\n<ul>\n<li>Non-custodial USDT / USDC payments; funds settle to your own collection address.</li>\n<li>Local CREATE2 address verification before any address is displayed.</li>\n<li>HMAC-SHA256 request signing and webhook signature verification.</li>\n<li>Classic checkout and Cart/Checkout Blocks support.</li>\n<li>HPOS (High-Performance Order Storage) compatible.</li>\n<li>QR code, copy-to-clipboard, countdown, and live status on the order page.</li>\n<li>Active order polling for final consistency; signed webhooks accelerate updates.</li>\n</ul>\n<h4>How payments are reused</h4>\n<p>AinePay does not issue automatic refunds or custody the underlying funds. If a<br />\npayment is late or the window expires, AinePay may record the amount as a<br />\nreusable ledger credit. A logged-in customer who places another order applies<br />\nthat credit automatically. Guest orders are not linked across orders, so a<br />\nguest credit cannot be reused automatically.</p>\n<h3>External services</h3>\n<p>This plugin connects to the AinePay API to create orders, fetch supported coins,<br />\nand query order status. It is required for the plugin to function.</p>\n<ul>\n<li><strong>What is sent:</strong> your API key (in a request header), an HMAC signature, a<br />\ntimestamp, the order amount, the selected coin/chain, a site-namespaced order<br />\nidentifier, and a pseudonymous user identifier derived as<br />\n  sha256(site + &#8220;|&#8221; + customer id) for logged-in customers, or a<br />\nper-order key for guests. No email address or other personal data is sent.</li>\n<li><strong>When:</strong> when a customer places an AinePay order, when you save settings<br />\n(to load supported coins), and when order status is queried.</li>\n<li><strong>Endpoints:</strong> <code>https://api.ainepay.com</code>. Additional HTTPS test hosts require an explicit developer allowlist filter.</li>\n<li>AinePay also sends signed webhooks to <code>https://your-site/ainepay/notify</code>.</li>\n</ul>\n<p>Service provider: AinePay — https://ainepay.com<br />\nTerms: https://ainepay.com/en/terms — Privacy: https://ainepay.com/en/privacy</p>\n<h3>Usage</h3>\n<ol>\n<li>Open WooCommerce &gt; Settings &gt; Payments &gt; AinePay.</li>\n<li>Enter your AinePay API Key, API Secret, Notify Secret, Merchant ID, Collection Address, and forwarder contract parameters.</li>\n<li>Save the settings, then enable the supported coin/chain pairs you want to offer.</li>\n<li>Set the AinePay dashboard notification URL to your site base URL, for example <code>https://example.com</code>. AinePay will call <code>https://example.com/ainepay/notify</code>. Webhook only accelerates updates; active polling guarantees final status.</li>\n<li>Click &#8220;Test connection &amp; configuration&#8221; to verify API reachability and local address verification.</li>\n<li>Customers select AinePay at checkout, choose a coin/chain, and place the order. The plugin verifies the payment address locally before showing the address, QR code, countdown, and live status.</li>\n<li>The plugin actively queries AinePay order status. Confirmed payments move the WooCommerce order to processing or completed; expired payments move it to failed.</li>\n</ol>\n<p>Late payments are not refunded by AinePay. Signed-in customers can reuse their remaining balance on a later order because their identity is derived from their authenticated WordPress customer account. Guest orders use a per-order identity and cannot automatically reuse a balance; the customer should contact the store if they paid late.</p>\n<h4>Third-party fulfilment integrations</h4>\n<p>Third-party integrations must not fulfil AinePay orders based only on the<br />\nWooCommerce processing or completed status. Use the<br />\n    ainepay_order_paid_backed action, or confirm<br />\n    Ainepay_Order_Sync::is_paid_backed_order( $order ) returns true, before<br />\nshipping goods or granting access.</p>\n<h3>Support</h3>\n<p>This plugin is developed and maintained by AinePay (https://ainepay.com).<br />\nFor help, questions, or to report an issue, contact support@ainepay.com or open<br />\nan issue at https://github.com/ainepay/ainepay-for-woocommerce/issues.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin to <code>/wp-content/plugins/ainepay-for-woocommerce</code> or install it through the Plugins screen.</li>\n<li>Activate the plugin.</li>\n<li>Go to WooCommerce &gt; Settings &gt; Payments &gt; AinePay.</li>\n<li>Enter your API Key, API Secret, Notify Secret, Merchant ID and Collection Address (from your AinePay dashboard).</li>\n<li>Save to load the supported coins, then enable the coins you want to offer.</li>\n<li>In your AinePay dashboard, set the notification URL to your site base (AinePay appends <code>/ainepay/notify</code>).</li>\n</ol>\n",
+        "faq": "\n<dt id=\"which%20currencies%20are%20supported%3F\">\nWhich currencies are supported?\n</h4>\n<p>\n<p>The store currency must be USD (or an equivalent treated 1:1 with the stablecoin amount) in this release.</p>\n</p>\n<dt id=\"does%20ainepay%20hold%20my%20funds%3F\">\nDoes AinePay hold my funds?\n</h4>\n<p>\n<p>No. Payments go to an address deterministically derived from your own collection address; the smart contract enforces settlement to you.</p>\n</p>\n<dt id=\"what%20happens%20if%20a%20customer%20pays%20late%3F\">\nWhat happens if a customer pays late?\n</h4>\n<p>\n<p>AinePay does not custody the underlying funds. It may record the late amount as a reusable ledger credit. A logged-in customer can place the order again to apply that credit; guest orders are not linked across orders and cannot reuse it automatically, so the customer should contact the store. AinePay does not issue automatic refunds.</p>\n</p>\n<dt id=\"how%20do%20i%20refund%20an%20order%3F\">\nHow do I refund an order?\n</h4>\n<p>\n<p>Refunds are full-only and follow a two-step, WooCommerce-first procedure. First, open the order in WooCommerce and click Refund for the full amount; this creates the real refund object, updates your sales and stock reports, and marks the order refunded. Then issue the matching refund in the AinePay dashboard. Always do WooCommerce first: if you refund only in the AinePay dashboard, the plugin will reconcile the order status to refunded when it sees the authoritative REFUND, but that does not create a WooCommerce refund object, so your sales/net reports will not reflect it and stock is not returned. To self-heal such an order, click Refund for the full amount on the WooCommerce order page.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>Initial release: inline payments, local CREATE2 address verification, classic + Blocks checkout, active order polling with webhook acceleration, HPOS compatibility.</li>\n</ul>\n"
+    },
+    "short_description": "Accept non-custodial USDT/USDC stablecoin payments in WooCommerce through AinePay. Payment addresses are verified locally before display.",
+    "description": "<p>AinePay for WooCommerce lets your store accept <strong>non-custodial</strong> stablecoin payments (USDT / USDC) through <a href=\"https://ainepay.com\" rel=\"nofollow ugc\">AinePay</a>.</p>\n<p>When a customer chooses AinePay at checkout, the plugin creates an order with AinePay and shows the customer a payment address. Crucially, the plugin <strong>verifies locally</strong> — without trusting the server — that the address is deterministically derived (via CREATE2) from your own collection address. If verification fails, the address is never shown and the order is marked failed. This protects you from a tampered backend ever diverting funds.</p>\n<p>Order status is guaranteed by active AinePay order polling. Signed webhooks speed up updates but are not the only source of truth.</p>\n<h4>Features</h4>\n<ul>\n<li>Non-custodial USDT / USDC payments; funds settle to your own collection address.</li>\n<li>Local CREATE2 address verification before any address is displayed.</li>\n<li>HMAC-SHA256 request signing and webhook signature verification.</li>\n<li>Classic checkout and Cart/Checkout Blocks support.</li>\n<li>HPOS (High-Performance Order Storage) compatible.</li>\n<li>QR code, copy-to-clipboard, countdown, and live status on the order page.</li>\n<li>Active order polling for final consistency; signed webhooks accelerate updates.</li>\n</ul>\n<h4>How payments are reused</h4>\n<p>AinePay does not issue automatic refunds or custody the underlying funds. If a<br />\npayment is late or the window expires, AinePay may record the amount as a<br />\nreusable ledger credit. A logged-in customer who places another order applies<br />\nthat credit automatically. Guest orders are not linked across orders, so a<br />\nguest credit cannot be reused automatically.</p>\n<h3>External services</h3>\n<p>This plugin connects to the AinePay API to create orders, fetch supported coins,<br />\nand query order status. It is required for the plugin to function.</p>\n<ul>\n<li><strong>What is sent:</strong> your API key (in a request header), an HMAC signature, a<br />\ntimestamp, the order amount, the selected coin/chain, a site-namespaced order<br />\nidentifier, and a pseudonymous user identifier derived as<br />\n  sha256(site + &#8220;|&#8221; + customer id) for logged-in customers, or a<br />\nper-order key for guests. No email address or other personal data is sent.</li>\n<li><strong>When:</strong> when a customer places an AinePay order, when you save settings<br />\n(to load supported coins), and when order status is queried.</li>\n<li><strong>Endpoints:</strong> <code>https://api.ainepay.com</code>. Additional HTTPS test hosts require an explicit developer allowlist filter.</li>\n<li>AinePay also sends signed webhooks to <code>https://your-site/ainepay/notify</code>.</li>\n</ul>\n<p>Service provider: AinePay — https://ainepay.com<br />\nTerms: https://ainepay.com/en/terms — Privacy: https://ainepay.com/en/privacy</p>\n<h3>Usage</h3>\n<ol>\n<li>Open WooCommerce &gt; Settings &gt; Payments &gt; AinePay.</li>\n<li>Enter your AinePay API Key, API Secret, Notify Secret, Merchant ID, Collection Address, and forwarder contract parameters.</li>\n<li>Save the settings, then enable the supported coin/chain pairs you want to offer.</li>\n<li>Set the AinePay dashboard notification URL to your site base URL, for example <code>https://example.com</code>. AinePay will call <code>https://example.com/ainepay/notify</code>. Webhook only accelerates updates; active polling guarantees final status.</li>\n<li>Click &#8220;Test connection &amp; configuration&#8221; to verify API reachability and local address verification.</li>\n<li>Customers select AinePay at checkout, choose a coin/chain, and place the order. The plugin verifies the payment address locally before showing the address, QR code, countdown, and live status.</li>\n<li>The plugin actively queries AinePay order status. Confirmed payments move the WooCommerce order to processing or completed; expired payments move it to failed.</li>\n</ol>\n<p>Late payments are not refunded by AinePay. Signed-in customers can reuse their remaining balance on a later order because their identity is derived from their authenticated WordPress customer account. Guest orders use a per-order identity and cannot automatically reuse a balance; the customer should contact the store if they paid late.</p>\n<h4>Third-party fulfilment integrations</h4>\n<p>Third-party integrations must not fulfil AinePay orders based only on the<br />\nWooCommerce processing or completed status. Use the<br />\n    ainepay_order_paid_backed action, or confirm<br />\n    Ainepay_Order_Sync::is_paid_backed_order( $order ) returns true, before<br />\nshipping goods or granting access.</p>\n<h3>Support</h3>\n<p>This plugin is developed and maintained by AinePay (https://ainepay.com).<br />\nFor help, questions, or to report an issue, contact support@ainepay.com or open<br />\nan issue at https://github.com/ainepay/ainepay-for-woocommerce/issues.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/ainepay-for-woocommerce.0.1.0.zip",
+    "upgrade_notice": {
+        "0.1.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/ainepay-for-woocommerce/assets/screenshot-1.png?rev=3613503",
+            "caption": "Configure the merchant profile, contract parameters, callback URL, API keys, and collection addresses in the AinePay dashboard."
+        },
+        {
+            "src": "https://ps.w.org/ainepay-for-woocommerce/assets/screenshot-2.png?rev=3613503",
+            "caption": "Configure the AinePay payment gateway in WooCommerce, including API credentials, collection address, contract parameters, supported coins, and diagnostics."
+        },
+        {
+            "src": "https://ps.w.org/ainepay-for-woocommerce/assets/screenshot-3.png?rev=3613503",
+            "caption": "The customer payment screen showing the amount, network, QR code, payment address, countdown, and order cancellation option."
+        }
+    ],
+    "tags": {
+        "payment-gateway": "payment gateway",
+        "stablecoin": "stablecoin",
+        "usdc": "usdc",
+        "usdt": "USDT",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "0.1.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/ainepay-for-woocommerce.0.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/ainepay-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/ainepay-for-woocommerce/assets/icon-128x128.png?rev=3613503",
+        "2x": "https://ps.w.org/ainepay-for-woocommerce/assets/icon-256x256.png?rev=3613503"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
