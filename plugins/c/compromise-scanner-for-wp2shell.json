@@ -1,0 +1,86 @@
+{
+    "name": "Compromise Scanner for wp2shell",
+    "slug": "compromise-scanner-for-wp2shell",
+    "version": "1.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/eyesecurity/\">eyesecurity</a>",
+    "author_profile": "https://profiles.wordpress.org/eyesecurity/",
+    "contributors": {
+        "eyesecurity": {
+            "profile": "https://profiles.wordpress.org/eyesecurity/",
+            "avatar": "https://secure.gravatar.com/avatar/12435cb7b0b8291449d955a26c85bf98f96d42dc85026f8aaffc068a5ae96a23?s=96&d=monsterid&r=g",
+            "display_name": "eyesecurity"
+        }
+    },
+    "requires": "5.6",
+    "tested": "7.0.2",
+    "requires_php": "7.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/compromise-scanner-for-wp2shell/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-20 08:53:00",
+    "added": "2026-07-20",
+    "homepage": "https://github.com/eyesecurity/wp2shell-compromise-scanner-plugin",
+    "sections": {
+        "description": "<p>Compromise Scanner for wp2shell is a <strong>read-only</strong> forensic scanner for the WordPress core exploit chain publicly tracked as <strong>CVE-2026-63030</strong> (REST batch route confusion) and <strong>CVE-2026-60137</strong> (<code>author__not_in</code> SQL injection), widely referred to as <em>wp2shell</em>.</p>\n<p>It inspects the database and the plugin directory for artifacts the exploit leaves behind — even when the attacker cleaned up afterwards — and presents a scored verdict on its own admin screen. It does <strong>not</strong> change anything on your site, and it does <strong>not</strong> fix the vulnerability. To close the hole, update WordPress core.</p>\n<p><strong>What it checks (each weighted by severity):</strong></p>\n<ul>\n<li><code>oembed_cache</code> entries that loop back to your own site, that number exactly three, or that were created around the disclosure date (the exploit uses oembed rendering as a write primitive).</li>\n<li>Object-graph artifacts: posts with implausibly high parent IDs, known proof-of-concept titles/slugs, and <code>customize_changeset</code> entries created since disclosure.</li>\n<li>Account artifacts: the <code>wp2_</code> login prefix and <code>@wp2shell.invalid</code> email used by public exploit code, and non-founder administrator accounts created since disclosure.</li>\n<li>Deleted-admin traces: orphaned user metadata and gaps in the user-ID sequence (create-then-delete).</li>\n<li>Webshell plugin files or directories matching <code>wp2shell_*</code>.</li>\n</ul>\n<p><strong>How it reads:</strong> the weighted score maps to <em>No indicators</em> (under 25), <em>Some indicators</em> (25–49), or <em>Multiple indicators</em> (50+). Each check is shown with its severity and detail so you can verify it yourself. Matched checks are not proof of a breach.</p>\n<p><strong>Export:</strong> the <strong>Export report (.zip)</strong> button downloads a zip archive for record-keeping or to hand to an investigator. Because the exploit hides its SQL injection and pre-auth admin creation inside a REST batch request body — which web servers do not log — the database artifacts are the primary evidence, so the archive includes the raw rows a human needs to review: the report as JSON and plain text, the relevant <code>oembed_cache</code>, <code>customize_changeset</code>, suspect posts, suspect users (exploit-default logins/emails and new administrators; never password hashes), orphaned usermeta and changed plugin files, plus <code>LOG-COLLECTION-GUIDE.txt</code> listing the server-side logs to gather by hand (the plugin cannot read those itself). If the server lacks the PHP zip extension, a single JSON file with the same data is downloaded instead. The export is generated on the fly and stores nothing on the site.</p>\n<p>This is a focused, single-purpose tool. It is best-effort: matched checks are not proof of a breach on their own, and an all-clear result is not a guarantee. Do not act on this quick check alone — verify matched checks with your webmaster, consider a proper investigation (server and access logs, file integrity) if anything is unexplained, and treat reinstalling WordPress as a last resort. It complements, and does not replace, updating core and a professional investigation.</p>\n",
+        "installation": "<ol>\n<li>In wp-admin, go to Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin and upload the zip, then Activate.</li>\n<li>Open <strong>Compromise Scanner for wp2shell</strong> in the admin menu.</li>\n<li>Click <strong>Run scan</strong> and review the findings.</li>\n<li>When finished, use <strong>Remove this plugin</strong> on the scan screen to deactivate and delete it.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20change%20anything%20on%20my%20site%3F\">\nDoes this change anything on my site?\n</h4>\n<p>\n<p>No. It only reads the database and lists files in the plugin directory. It never creates, edits, or deletes posts, users, options, or files (other than removing itself when you click the self-destruct button).</p>\n</p>\n<dt id=\"does%20it%20fix%20the%20vulnerability%3F\">\nDoes it fix the vulnerability?\n</h4>\n<p>\n<p>No. It only detects artifacts. Update WordPress core to a fixed version (6.8.6 / 6.9.5 / 7.0.2 or later) to close the vulnerability.</p>\n</p>\n<dt id=\"a%20check%20is%20marked%20%22matched%22%20but%20i%20know%20it%20is%20legitimate.\">\nA check is marked &#8220;Matched&#8221; but I know it is legitimate.\n</h4>\n<p>\n<p>That can happen — for example, three recent legitimate embeds, or an administrator you onboarded recently, can match individual checks. The verdict is a weighted score across many indicators; review each detected item against your own records.</p>\n</p>\n<dt id=\"a%20scan%20matched%20nothing.%20am%20i%20safe%3F\">\nA scan matched nothing. Am I safe?\n</h4>\n<p>\n<p>It means no known wp2shell artifacts were found. A careful attacker can remove traces, and other attacks leave different evidence, so treat &#8220;Clean&#8221; as reassuring but not conclusive.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.0</h4>\n<ul>\n<li>New: an <strong>Export report (.zip)</strong> button on the scan screen. The archive contains the report (JSON + plain text), the raw database rows an investigator needs to review — <code>oembed_cache</code>, <code>customize_changeset</code>, suspect posts, suspect users (exploit-default logins/emails and new administrators; never password hashes or session tokens), orphaned usermeta, user-ID accounting, and changed plugin files — and a <code>LOG-COLLECTION-GUIDE.txt</code> explaining which server-side logs to collect by hand. Because the exploit hides its SQL injection and admin creation in a request body that web servers do not log, these database rows are the primary evidence. Rows and content excerpts are capped so the archive stays reviewable. Falls back to a single JSON download when the PHP zip extension is missing. The archive is built in a temporary file removed in the same request — the plugin still changes nothing on the site.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>The user-ID-gap check no longer matches on shared-user-table installs (multisite or platform hosting such as WordPress.com), where IDs are allocated platform-wide, and ignores gaps that dwarf the account count (imports, bulk cleanup). It explains in the detail column why it was not counted.</li>\n<li>The new-accounts check now counts only administrator accounts, as the exploit creates an administrator; ordinary sign-ups on sites with open registration no longer match.</li>\n<li>Documentation: the fixed-version list consistently includes the 6.8.6 backport.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release: read-only scan with a dedicated admin screen, a separate version-status panel, severity-graded checks, and objective, non-alarming reporting.</li>\n</ul>\n"
+    },
+    "short_description": "Read-only forensic scanner for the WordPress core exploit chain CVE-2026-63030 / CVE-2026-60137 (wp2shell). Reports a scored verdict; changes nothing.",
+    "description": "<p>Compromise Scanner for wp2shell is a <strong>read-only</strong> forensic scanner for the WordPress core exploit chain publicly tracked as <strong>CVE-2026-63030</strong> (REST batch route confusion) and <strong>CVE-2026-60137</strong> (<code>author__not_in</code> SQL injection), widely referred to as <em>wp2shell</em>.</p>\n<p>It inspects the database and the plugin directory for artifacts the exploit leaves behind — even when the attacker cleaned up afterwards — and presents a scored verdict on its own admin screen. It does <strong>not</strong> change anything on your site, and it does <strong>not</strong> fix the vulnerability. To close the hole, update WordPress core.</p>\n<p><strong>What it checks (each weighted by severity):</strong></p>\n<ul>\n<li><code>oembed_cache</code> entries that loop back to your own site, that number exactly three, or that were created around the disclosure date (the exploit uses oembed rendering as a write primitive).</li>\n<li>Object-graph artifacts: posts with implausibly high parent IDs, known proof-of-concept titles/slugs, and <code>customize_changeset</code> entries created since disclosure.</li>\n<li>Account artifacts: the <code>wp2_</code> login prefix and <code>@wp2shell.invalid</code> email used by public exploit code, and non-founder administrator accounts created since disclosure.</li>\n<li>Deleted-admin traces: orphaned user metadata and gaps in the user-ID sequence (create-then-delete).</li>\n<li>Webshell plugin files or directories matching <code>wp2shell_*</code>.</li>\n</ul>\n<p><strong>How it reads:</strong> the weighted score maps to <em>No indicators</em> (under 25), <em>Some indicators</em> (25–49), or <em>Multiple indicators</em> (50+). Each check is shown with its severity and detail so you can verify it yourself. Matched checks are not proof of a breach.</p>\n<p><strong>Export:</strong> the <strong>Export report (.zip)</strong> button downloads a zip archive for record-keeping or to hand to an investigator. Because the exploit hides its SQL injection and pre-auth admin creation inside a REST batch request body — which web servers do not log — the database artifacts are the primary evidence, so the archive includes the raw rows a human needs to review: the report as JSON and plain text, the relevant <code>oembed_cache</code>, <code>customize_changeset</code>, suspect posts, suspect users (exploit-default logins/emails and new administrators; never password hashes), orphaned usermeta and changed plugin files, plus <code>LOG-COLLECTION-GUIDE.txt</code> listing the server-side logs to gather by hand (the plugin cannot read those itself). If the server lacks the PHP zip extension, a single JSON file with the same data is downloaded instead. The export is generated on the fly and stores nothing on the site.</p>\n<p>This is a focused, single-purpose tool. It is best-effort: matched checks are not proof of a breach on their own, and an all-clear result is not a guarantee. Do not act on this quick check alone — verify matched checks with your webmaster, consider a proper investigation (server and access logs, file integrity) if anything is unexplained, and treat reinstalling WordPress as a last resort. It complements, and does not replace, updating core and a professional investigation.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/compromise-scanner-for-wp2shell.1.1.0.zip",
+    "upgrade_notice": {
+        "1.1.0": "<p>Adds an Export report (.zip) button: report plus the raw database evidence for review and a guide to the server logs to collect.</p>",
+        "1.0.1": "<p>Fewer false positives: the user-ID-gap check understands shared hosting (e.g. WordPress.com), and the new-accounts check counts administrators only.</p>",
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/compromise-scanner-for-wp2shell/assets/screenshot-1.png?rev=3614430",
+            "caption": "The scan screen: status, forensic score, and severity-graded findings."
+        }
+    ],
+    "tags": {
+        "forensics": "forensics",
+        "malware": "malware",
+        "security": "security",
+        "vulnerability": "vulnerability",
+        "wp2shell": "wp2shell"
+    },
+    "stable_tag": "1.1.0",
+    "versions": {
+        "1.1.0": "https://downloads.wordpress.org/plugin/compromise-scanner-for-wp2shell.1.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/compromise-scanner-for-wp2shell.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/compromise-scanner-for-wp2shell/assets/banner-772x250.png?rev=3614450",
+        "high": "https://ps.w.org/compromise-scanner-for-wp2shell/assets/banner-1544x500.png?rev=3614450"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/compromise-scanner-for-wp2shell/assets/icon-128x128.png?rev=3614441",
+        "2x": "https://ps.w.org/compromise-scanner-for-wp2shell/assets/icon-256x256.png?rev=3614441"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
