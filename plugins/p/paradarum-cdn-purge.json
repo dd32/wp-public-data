@@ -1,0 +1,78 @@
+{
+    "name": "Paradarum CDN Purge",
+    "slug": "paradarum-cdn-purge",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/paradarum/\">paradarum</a>",
+    "author_profile": "https://profiles.wordpress.org/paradarum/",
+    "contributors": {
+        "paradarum": {
+            "profile": "https://profiles.wordpress.org/paradarum/",
+            "avatar": "https://secure.gravatar.com/avatar/444c462fead15b16dcfe22623c65aeff5fba870ffb0dab905199ca5eb7ff53d4?s=96&d=monsterid&r=g",
+            "display_name": "paradarum"
+        }
+    },
+    "requires": "5.6",
+    "tested": "7.0.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/paradarum-cdn-purge/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-20 14:07:00",
+    "added": "2026-07-20",
+    "homepage": "https://paradarum.com/",
+    "sections": {
+        "description": "<p>When you publish, update, unpublish or trash a post or page — or edit a term, or a comment is approved — this plugin invalidates the affected CDN routes through the Paradarum API, using your account API key.</p>\n<p>It does not just purge the single post: it also purges the home page, the relevant category/tag/taxonomy archives, author and date archives, feeds and sitemaps, so visitors never see a stale listing.</p>\n<h4>How it decides what to purge</h4>\n<ul>\n<li><strong>Hybrid (recommended):</strong> the post and the home are purged by exact path; archives and listings are purged by path prefix (<code>starts_with</code>) so their pagination (<code>/page/2/</code>, …) is invalidated too.</li>\n<li><strong>Surgical:</strong> only exact URLs are purged (archive pagination may stay cached).</li>\n<li><strong>Broad:</strong> any change flushes the whole site cache.</li>\n</ul>\n<p>All routes affected during a request are collected, de-duplicated and sent to the API in a single batch call on <code>shutdown</code>, so saving in the editor is never slowed down by many HTTP requests. If a single save or import touches more paths than the configurable threshold, the plugin collapses everything into one full-site purge instead.</p>\n<h4>Requirements</h4>\n<p>This plugin requires a <a href=\"https://paradarum.com/\" rel=\"nofollow ugc\">Paradarum CDN</a> account: your site must be configured as a property on the Paradarum CDN, and you need an API key generated from the Paradarum console. Without an account the plugin has nothing to purge.</p>\n<h3>External services</h3>\n<p>This plugin connects to the <strong>Paradarum CDN API</strong> (<code>https://api.paradarum.com</code>), the service that hosts and caches your site&#8217;s content. This connection is the core purpose of the plugin and cannot be disabled.</p>\n<p>What is sent, and when:</p>\n<ul>\n<li>Your account <strong>API key</strong> (as the <code>X-API-Key</code> request header) — on every API call, to authenticate.</li>\n<li>When you click <strong>Check &amp; detect</strong> in the settings: a request to list the properties (sites) of your account, so the plugin can match this site&#8217;s domain.</li>\n<li>When content changes (publish/update/trash of posts or pages, term edits, comment approval) and when you use the manual purge tools or WP-CLI commands: the <strong>property id</strong> and the list of <strong>URL paths to invalidate</strong> (for example <code>/my-post/</code> or <code>/category/news/</code>).</li>\n</ul>\n<p>No visitor data, personal data, analytics or telemetry is ever transmitted. Requests are only sent after you have configured your own API key.</p>\n<p>This service is provided by Paradarum: <a href=\"https://console.paradarum.com/legal/terms\" rel=\"nofollow ugc\">terms of service</a> — <a href=\"https://console.paradarum.com/legal/privacy\" rel=\"nofollow ugc\">privacy policy</a>.</p>\n<h3>WP-CLI</h3>\n<pre><code>wp paradarum status\nwp paradarum purge --all\nwp paradarum purge --url=/blog/\nwp paradarum purge --post=42&lt;h3&gt;Developer hooks&lt;/h3&gt;\n</code></pre>\n<p>Trigger a purge from your own code:</p>\n<pre><code>do_action( 'paradarum_purge', array( home_url( '/landing/' ) ) );\ndo_action( 'paradarum_purge', 'all' );\n</code></pre>\n<p>Filter the final purge items before they are sent:</p>\n<pre><code>add_filter( 'paradarum_cdn_purge_items', function ( $items, $trigger ) {\n    return $items;\n}, 10, 2 );\n</code></pre>\n",
+        "installation": "<ol>\n<li>Install the plugin from <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New</strong> (search for &#8220;Paradarum CDN Purge&#8221;) or upload the zip, then activate it.</li>\n<li>In the Paradarum console, create an API key (<strong>Account <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> API keys</strong>) and copy it — it is shown only once.</li>\n<li>Go to <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Paradarum CDN</strong> and paste your <strong>API key</strong> (<code>pdm_…</code>).</li>\n<li>Click <strong>Check &amp; detect</strong>. The plugin lists your account properties and auto-selects the one whose hostname matches this site. If it can&#8217;t detect one, pick it from the list.</li>\n<li>Click <strong>Save property</strong>. Automatic purging is now active.</li>\n</ol>\n<p>The API key is stored encrypted (AES-256-CBC, keyed from your site&#8217;s <code>AUTH_KEY</code>/<code>AUTH_SALT</code>). Alternatively you may define it in <code>wp-config.php</code>, which takes precedence over the value stored in the database:</p>\n<pre><code>define( 'PARADARUM_API_KEY', 'pdm_…' );\n</code></pre>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20a%20paradarum%20account%3F\">\nDo I need a Paradarum account?\n</h4>\n<p>\n<p>Yes. The plugin purges the cache of the Paradarum CDN, so your site must be a property of a Paradarum account and you need an API key from the console. See the External services section for what data is exchanged.</p>\n</p>\n<dt id=\"does%20it%20slow%20down%20saving%20or%20publishing%3F\">\nDoes it slow down saving or publishing?\n</h4>\n<p>\n<p>No. Purge routes are collected during the request and sent in a single batch call after the response is finished (<code>shutdown</code> hook), so the editor never waits for the CDN.</p>\n</p>\n<dt id=\"what%20exactly%20gets%20purged%20when%20i%20update%20a%20post%3F\">\nWhat exactly gets purged when I update a post?\n</h4>\n<p>\n<p>The post permalink, the home page, the archives it belongs to (categories, tags, custom taxonomies, author, dates) including their pagination, the feeds and the sitemaps. You can toggle each group in the settings, or switch to the Surgical/Broad strategies.</p>\n</p>\n<dt id=\"can%20i%20purge%20manually%3F\">\nCan I purge manually?\n</h4>\n<p>\n<p>Yes: <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Paradarum CDN</strong> has &#8220;Purge all cache&#8221; and &#8220;Purge a URL&#8221; buttons, and there are WP-CLI commands (<code>wp paradarum purge --all</code>, <code>--url=…</code>, <code>--post=…</code>).</p>\n</p>\n<dt id=\"does%20it%20work%20with%20multisite%3F\">\nDoes it work with Multisite?\n</h4>\n<p>\n<p>Yes. Each site stores its own API key and property, and the uninstall cleans up every site.</p>\n</p>\n<dt id=\"where%20is%20my%20api%20key%20stored%3F\">\nWhere is my API key stored?\n</h4>\n<p>\n<p>Encrypted (AES-256-CBC) in the options table, keyed from your site&#8217;s <code>AUTH_KEY</code>/<code>AUTH_SALT</code> secrets — or, if you prefer, only in <code>wp-config.php</code> via the <code>PARADARUM_API_KEY</code> constant.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Automatically purges the Paradarum CDN cache for the routes affected whenever you publish or modify content.",
+    "description": "<p>When you publish, update, unpublish or trash a post or page — or edit a term, or a comment is approved — this plugin invalidates the affected CDN routes through the Paradarum API, using your account API key.</p>\n<p>It does not just purge the single post: it also purges the home page, the relevant category/tag/taxonomy archives, author and date archives, feeds and sitemaps, so visitors never see a stale listing.</p>\n<h4>How it decides what to purge</h4>\n<ul>\n<li><strong>Hybrid (recommended):</strong> the post and the home are purged by exact path; archives and listings are purged by path prefix (<code>starts_with</code>) so their pagination (<code>/page/2/</code>, …) is invalidated too.</li>\n<li><strong>Surgical:</strong> only exact URLs are purged (archive pagination may stay cached).</li>\n<li><strong>Broad:</strong> any change flushes the whole site cache.</li>\n</ul>\n<p>All routes affected during a request are collected, de-duplicated and sent to the API in a single batch call on <code>shutdown</code>, so saving in the editor is never slowed down by many HTTP requests. If a single save or import touches more paths than the configurable threshold, the plugin collapses everything into one full-site purge instead.</p>\n<h4>Requirements</h4>\n<p>This plugin requires a <a href=\"https://paradarum.com/\" rel=\"nofollow ugc\">Paradarum CDN</a> account: your site must be configured as a property on the Paradarum CDN, and you need an API key generated from the Paradarum console. Without an account the plugin has nothing to purge.</p>\n<h3>External services</h3>\n<p>This plugin connects to the <strong>Paradarum CDN API</strong> (<code>https://api.paradarum.com</code>), the service that hosts and caches your site&#8217;s content. This connection is the core purpose of the plugin and cannot be disabled.</p>\n<p>What is sent, and when:</p>\n<ul>\n<li>Your account <strong>API key</strong> (as the <code>X-API-Key</code> request header) — on every API call, to authenticate.</li>\n<li>When you click <strong>Check &amp; detect</strong> in the settings: a request to list the properties (sites) of your account, so the plugin can match this site&#8217;s domain.</li>\n<li>When content changes (publish/update/trash of posts or pages, term edits, comment approval) and when you use the manual purge tools or WP-CLI commands: the <strong>property id</strong> and the list of <strong>URL paths to invalidate</strong> (for example <code>/my-post/</code> or <code>/category/news/</code>).</li>\n</ul>\n<p>No visitor data, personal data, analytics or telemetry is ever transmitted. Requests are only sent after you have configured your own API key.</p>\n<p>This service is provided by Paradarum: <a href=\"https://console.paradarum.com/legal/terms\" rel=\"nofollow ugc\">terms of service</a> — <a href=\"https://console.paradarum.com/legal/privacy\" rel=\"nofollow ugc\">privacy policy</a>.</p>\n<h3>WP-CLI</h3>\n<pre><code>wp paradarum status\nwp paradarum purge --all\nwp paradarum purge --url=/blog/\nwp paradarum purge --post=42&lt;h3&gt;Developer hooks&lt;/h3&gt;\n</code></pre>\n<p>Trigger a purge from your own code:</p>\n<pre><code>do_action( 'paradarum_purge', array( home_url( '/landing/' ) ) );\ndo_action( 'paradarum_purge', 'all' );\n</code></pre>\n<p>Filter the final purge items before they are sent:</p>\n<pre><code>add_filter( 'paradarum_cdn_purge_items', function ( $items, $trigger ) {\n    return $items;\n}, 10, 2 );\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/paradarum-cdn-purge.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "cache": "cache",
+        "cdn": "cdn",
+        "performance": "performance",
+        "purge": "Purge"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/paradarum-cdn-purge.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/paradarum-cdn-purge.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://paradarum.com/",
+    "banners": {
+        "low": "https://ps.w.org/paradarum-cdn-purge/assets/banner-772x250.png?rev=3614985",
+        "high": "https://ps.w.org/paradarum-cdn-purge/assets/banner-1544x500.png?rev=3614985"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/paradarum-cdn-purge/assets/icon-128x128.png?rev=3614985",
+        "2x": "https://ps.w.org/paradarum-cdn-purge/assets/icon-256x256.png?rev=3614985"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
