@@ -1,0 +1,110 @@
+{
+    "name": "itdatex E-Invoice Intake",
+    "slug": "itdatex-e-invoice-intake",
+    "version": "0.6.5",
+    "author": "<a href=\"https://profiles.wordpress.org/itdatex/\">itdatex</a>",
+    "author_profile": "https://profiles.wordpress.org/itdatex/",
+    "contributors": {
+        "itdatex": {
+            "profile": "https://profiles.wordpress.org/itdatex/",
+            "avatar": "https://secure.gravatar.com/avatar/e07a49840111dd9942a2117d4b730116c1fdd61cfa06a7dd3d938c700d94f148?s=96&d=monsterid&r=g",
+            "display_name": "itdatex"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.0.2",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/itdatex-e-invoice-intake/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-20 18:30:00",
+    "added": "2026-07-20",
+    "homepage": "https://wp.itdatex.support/itdatex-e-invoice-intake/",
+    "sections": {
+        "description": "<p>Since 1 January 2025, all businesses in Germany must be able to receive electronic invoices (e-invoices) under § 14 UStG. By 2027/2028 they must also issue them. Most existing tools require uploading sensitive supplier data — amounts, VAT IDs, bank details — to a third-party cloud service. <strong>itdatex E-Invoice Intake</strong> does the work locally inside your own WordPress installation.</p>\n<h4>What it does</h4>\n<ul>\n<li>Accepts XRechnung (UBL and UN/CEFACT/CII), ZUGFeRD (hybrid PDF/A-3 with embedded XML) and Factur-X via drag-and-drop upload</li>\n<li>Detects the format automatically and parses the core fields: invoice number, dates, seller and buyer, VAT ID, totals (net/tax/gross), positions, buyer reference (Leitweg-ID)</li>\n<li>Validates against the embedded EN-16931 XML schema and checks for required fields (BT-1, BT-2, BT-27, BT-112)</li>\n<li>Stores each file with a random name in a protected upload directory and chains every file&#8217;s SHA-256 with the previous one (revision-evidence)</li>\n<li>Provides a human-readable single-invoice view with header data, parties, amounts, validation issues and an audit trail</li>\n<li>Logs every action (upload, status change, download) in a dedicated audit table</li>\n</ul>\n<h4>Privacy by design</h4>\n<p>The free version performs all processing locally on your own server. No data leaves your WordPress installation. There is no telemetry, no automatic update check against a third party, no analytics, no external font or asset loading.</p>\n<p>A separate Pro version (sold via wp.itdatex.support, not part of this free plugin) adds optional cloud-assisted features — KoSIT deep validation, AI-based error explanations in plain German, IMAP auto-import, DATEV export — and is opt-in only.</p>\n<h4>GoBD-supporting, not GoBD-certified</h4>\n<p>The plugin supports GoBD-conformant processes through immutable storage, SHA-256 hash chaining and a complete audit trail. Note that software cannot be &#8220;GoBD-certified&#8221; — conformity is a property of <em>your</em> process, not of any single tool. Consult your tax advisor for the specifics of your setup.</p>\n<h4>Open source</h4>\n<p>The full source code is released under GPL-2.0-or-later. You can verify, audit and adapt the plugin yourself. Dependencies (josemmo/einvoicing for UBL, horstoeko/zugferd for CII/ZUGFeRD) are vendored with prefixed namespaces so they cannot conflict with other plugins in the same WordPress installation.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to <code>/wp-content/plugins/itdatex-e-invoice-intake/</code>, or install via the Plugins screen.</li>\n<li>Activate the plugin.</li>\n<li>Open the &#8220;Rechnungen&#8221; menu in the admin sidebar. You can upload your first XRechnung or ZUGFeRD file straight away.</li>\n</ol>\n<p>The plugin creates three database tables (<code>*_reing_invoices</code>, <code>*_reing_files</code>, <code>*_reing_audit_log</code>) and a protected upload directory under <code>wp-content/uploads/itdatex-e-invoice-intake-{random}/</code>. On uninstall, <strong>invoice data and files are NOT deleted by default</strong> because of statutory retention requirements (8 to 10 years under German tax and commercial law).</p>\n<p>To force a full cleanup on uninstall, add this line to your <code>wp-config.php</code> <em>before</em> deleting the plugin:</p>\n<pre><code>define( 'REING_UNINSTALL_DELETE_ALL', true );\n</code></pre>\n",
+        "faq": "\n<dt id=\"does%20the%20plugin%20send%20anything%20to%20your%20server%3F\">\nDoes the plugin send anything to your server?\n</h4>\n<p>\n<p>The free version makes no external HTTP calls. All parsing, validation and storage happens locally in your WordPress installation. You can verify this by inspecting the source — the only network code path is the optional Pro upgrade, which is not part of this plugin.</p>\n</p>\n<dt id=\"which%20formats%20are%20supported%3F\">\nWhich formats are supported?\n</h4>\n<p>\n<p>XRechnung in both UBL and UN/CEFACT (CII) syntax, ZUGFeRD from version 2.0.1 onwards (PDF/A-3 with embedded XML), and Factur-X. Pure PDFs without an embedded XML payload are recognized as &#8220;legacy PDF&#8221; and stored as files, but their fields can only be extracted with the optional Pro AI extraction.</p>\n</p>\n<dt id=\"is%20this%20gobd-conformant%3F\">\nIs this GoBD-conformant?\n</h4>\n<p>\n<p>The plugin provides the technical foundation — immutable storage, hash chain, audit log — that a GoBD-conformant process requires. Whether your concrete bookkeeping process is GoBD-conformant is a question for your tax advisor and depends on more than just the software you use. We deliberately do NOT advertise &#8220;GoBD certification&#8221; because no such certification mechanism exists in Germany.</p>\n</p>\n<dt id=\"can%20i%20delete%20invoices%3F\">\nCan I delete invoices?\n</h4>\n<p>\n<p>You can mark invoices as paid or disputed. Physically deleting invoices in WordPress is intentionally not exposed in the UI to protect the integrity of the hash chain. If you have a legal reason to delete (e.g. erroneous double-upload), please use direct database access and document the deletion in your retention log.</p>\n</p>\n<dt id=\"what%20about%20the%20upload%20size%20limit%3F\">\nWhat about the upload size limit?\n</h4>\n<p>\n<p>The plugin uses the WordPress / PHP upload size limit (<code>upload_max_filesize</code>, <code>post_max_size</code>). XRechnung files are typically well below 1 MB; ZUGFeRD PDFs can reach a few MB. If you need higher limits, increase them in your <code>php.ini</code> or <code>.htaccess</code>.</p>\n</p>\n<dt id=\"does%20this%20work%20behind%20nginx%3F\">\nDoes this work behind nginx?\n</h4>\n<p>\n<p>Yes. The protected upload directory uses both <code>.htaccess</code> (Apache/LiteSpeed) and a randomized directory name so that path guessing fails. File downloads always go through a capability-and-nonce-checked endpoint, never via a direct URL — so the front-end web server&#8217;s authorization model is irrelevant for the file path security.</p>\n</p>\n<dt id=\"why%20no%20wp-cron%20%2F%20imap%20%2F%20datev%20export%3F\">\nWhy no WP-Cron / IMAP / DATEV export?\n</h4>\n<p>\n<p>These are paid features in the Pro version. The free version focuses on the core legal requirement — receiving and archiving incoming e-invoices — and keeps the dependency surface small to make security review easy.</p>\n</p>\n\n",
+        "changelog": "<h4>0.6.5</h4>\n<ul>\n<li>First public release on wp.org. XRechnung and ZUGFeRD parsing (UBL 2.1, UN/CEFACT CII, PDF/A-3 with embedded XML), KoSIT-based field validation, secure server-side storage with a tamper-evident hash chain, upload UI, invoice inbox, single-invoice detail view, secure download endpoint, and a full audit log. WP-CLI commands for headless ingest.</li>\n</ul>\n<h4>0.6.4</h4>\n<ul>\n<li>Replaced the single-line <code>phpcs:ignore</code> around the duplicate-check query in <code>IngestService::ingest()</code> with a <code>phpcs:disable</code>/<code>phpcs:enable</code> block so the sniff annotation also covers the interpolated SQL literal on the following line. No behaviour change.</li>\n</ul>\n<h4>0.6.3</h4>\n<ul>\n<li>Playground Plugin Check compliance pass: rename lexical include-scoped variables to the <code>reing_</code> prefix in <code>uninstall.php</code> and the bootstrap file so the sniff no longer flags them; wrap the three admin view files (<code>page-inbox.php</code>, <code>page-invoice.php</code>, <code>page-upload.php</code>) with a <code>phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound</code> block explaining that the vars are template-locals, not globals. Annotated the read-only <code>$_GET</code> accesses in <code>Admin\\Pages\\Invoice</code> and <code>Admin\\Pages\\Inbox</code> with <code>phpcs:ignore WordPress.Security.NonceVerification.Recommended</code> (display-only, all writes go through nonce-protected admin-post endpoints). Annotated the duplicate-check <code>$wpdb-&gt;get_var()</code> in <code>IngestService</code> (table-name accessor, no user input). Gated the <code>error_log()</code> call in the same file behind <code>WP_DEBUG</code>. Annotated <code>$_FILES['invoice_file']</code> in <code>UploadHandler</code> (cannot be sanitized like a string; validated by Parser + Validator downstream). Rewrote the uninstall <code>DROP TABLE</code> loop with a phpcs:ignore + rationale for uninstall-time schema removal.</li>\n</ul>\n<h4>0.6.2</h4>\n<ul>\n<li>wp.org Plugin Review round 2: distribution ZIP no longer ships the schema assets (<code>*.xslt</code>, <code>*.sch</code>, <code>*.xmp</code>) from the bundled <code>horstoeko/zugferd</code> library nor the Sphinx docs from <code>jms/serializer</code> — they are not used at runtime by the free plugin (validation runs against KoSIT in the optional Pro backend). Removed the unused, outdated transitive <code>setasign/fpdf 1.9</code> dependency entirely. Annotated the two remaining static SQL statements in <code>InvoiceRepository::lastChainHash()</code> and <code>countInvoices()</code> with rationale.</li>\n</ul>\n<h4>0.6.1</h4>\n<ul>\n<li>Plugin Check compliance pass: escape interpolated exception messages (<code>FormatDetector</code>, <code>Parser</code>, <code>Storage</code>, <code>InvoiceRepository</code>), replace <code>is_writable()</code> with <code>wp_is_writable()</code>, <code>unlink()</code> with <code>wp_delete_file()</code>, <code>rmdir()</code> with <code>WP_Filesystem::rmdir()</code>, drop best-effort <code>chmod()</code> on stored invoices, inline SQL in <code>listOpenInvoices()</code> to satisfy the prepared-SQL sniff, annotate the dynamic <code>listForExport</code> query and the streaming <code>readfile()</code> in the download endpoint. No behaviour change.</li>\n</ul>\n<h4>0.6.0</h4>\n<ul>\n<li>New API: <code>InvoiceRepository::listOpenInvoices()</code> and <code>summarizeOpenInvoices()</code> for due-date reporting and aggregation by bucket (overdue / this week / this month / later / no date). Used by the optional Pro dashboard.</li>\n</ul>\n<h4>0.5.0</h4>\n<ul>\n<li>New API: <code>InvoiceRepository::listForExport($from, $to, $status, $limit)</code> with safe date range and status filter for CSV/DATEV exporters. Used by the optional Pro export module.</li>\n</ul>\n<h4>0.4.0</h4>\n<ul>\n<li>New service class <code>IngestService::ingest($path, $name, $source, $actor)</code> encapsulating the parse <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> validate <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> store <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> audit pipeline. UploadHandler refactored to use it. Enables add-ons (e.g. Pro IMAP import) to reuse the exact same processing chain that the browser upload uses, including the existing hooks.</li>\n</ul>\n<h4>0.3.0</h4>\n<ul>\n<li>New filter <code>reing_applyable_fields</code> and action <code>reing_apply_invoice_fields($id, $fields, $source)</code> to allow add-ons to update invoice fields with type-safe sanitisation. Adds <code>InvoiceRepository::applyableFields()</code> and <code>updateFields()</code> with date / amount / currency normalisation. Sets <code>extracted_by = 'ai_draft'</code> and writes a structured audit entry.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>Add-on integration hooks: <code>reing_after_validate($tmpPath, $report, $invoiceData)</code>, <code>reing_after_invoice_insert($id, $invoiceData, $report)</code> and <code>reing_invoice_view_after_validation($invoice, $reportData)</code> allow optional Pro extensions to plug in deep validation, AI explanations and extra UI cards without modifying the free core. Includes a small backup autoloader for the prefixed Smalot/PdfParser library that the Strauss-generated PSR-0 mapping does not resolve correctly.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release: parsing, validation, storage with hash chain, upload, inbox and single-invoice views, secure download endpoint, audit log.</li>\n</ul>\n"
+    },
+    "short_description": "Receive, parse and archive German e-invoices (XRechnung, ZUGFeRD, Factur-X) directly in WordPress — without uploading them to any cloud.",
+    "description": "<p>Since 1 January 2025, all businesses in Germany must be able to receive electronic invoices (e-invoices) under § 14 UStG. By 2027/2028 they must also issue them. Most existing tools require uploading sensitive supplier data — amounts, VAT IDs, bank details — to a third-party cloud service. <strong>itdatex E-Invoice Intake</strong> does the work locally inside your own WordPress installation.</p>\n<h4>What it does</h4>\n<ul>\n<li>Accepts XRechnung (UBL and UN/CEFACT/CII), ZUGFeRD (hybrid PDF/A-3 with embedded XML) and Factur-X via drag-and-drop upload</li>\n<li>Detects the format automatically and parses the core fields: invoice number, dates, seller and buyer, VAT ID, totals (net/tax/gross), positions, buyer reference (Leitweg-ID)</li>\n<li>Validates against the embedded EN-16931 XML schema and checks for required fields (BT-1, BT-2, BT-27, BT-112)</li>\n<li>Stores each file with a random name in a protected upload directory and chains every file&#8217;s SHA-256 with the previous one (revision-evidence)</li>\n<li>Provides a human-readable single-invoice view with header data, parties, amounts, validation issues and an audit trail</li>\n<li>Logs every action (upload, status change, download) in a dedicated audit table</li>\n</ul>\n<h4>Privacy by design</h4>\n<p>The free version performs all processing locally on your own server. No data leaves your WordPress installation. There is no telemetry, no automatic update check against a third party, no analytics, no external font or asset loading.</p>\n<p>A separate Pro version (sold via wp.itdatex.support, not part of this free plugin) adds optional cloud-assisted features — KoSIT deep validation, AI-based error explanations in plain German, IMAP auto-import, DATEV export — and is opt-in only.</p>\n<h4>GoBD-supporting, not GoBD-certified</h4>\n<p>The plugin supports GoBD-conformant processes through immutable storage, SHA-256 hash chaining and a complete audit trail. Note that software cannot be &#8220;GoBD-certified&#8221; — conformity is a property of <em>your</em> process, not of any single tool. Consult your tax advisor for the specifics of your setup.</p>\n<h4>Open source</h4>\n<p>The full source code is released under GPL-2.0-or-later. You can verify, audit and adapt the plugin yourself. Dependencies (josemmo/einvoicing for UBL, horstoeko/zugferd for CII/ZUGFeRD) are vendored with prefixed namespaces so they cannot conflict with other plugins in the same WordPress installation.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/itdatex-e-invoice-intake.0.6.5.zip",
+    "upgrade_notice": {
+        "0.6.5": "<p>First public release on wp.org.</p>",
+        "0.6.4": "<p>Follow-up on 0.6.3: broaden phpcs annotation in IngestService so it covers the SQL literal line. No behaviour change.</p>",
+        "0.6.3": "<p>Playground Plugin Check pass — sniff-annotation-only changes, no behaviour change.</p>",
+        "0.6.2": "<p>Trimmed distribution ZIP to satisfy wp.org &quot;not permitted files&quot; review. No behaviour change.</p>",
+        "0.6.1": "<p>Plugin Check compliance pass — no behaviour change. Recommended for all users.</p>",
+        "0.6.0": "<p>Read-only API additions for due-date reporting. No data migration required. Existing setups upgrade in place.</p>",
+        "0.5.0": "<p>Read-only API addition for export. No data migration required.</p>",
+        "0.4.0": "<p>Internal refactor: UploadHandler delegates to a new IngestService. Behaviour is unchanged.</p>",
+        "0.3.0": "<p>New filter and action for add-ons that need to write back into invoice rows. No behavioural change for free-only setups.</p>",
+        "0.2.0": "<p>Introduces add-on hooks that enable an optional Pro add-on. No behaviour change for free-only installations.</p>",
+        "0.1.0": "<p>First public release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/itdatex-e-invoice-intake/assets/screenshot-1.png?rev=3615706",
+            "caption": "The inbox view lists all received invoices with format, dates, amounts and a validation status badge."
+        },
+        {
+            "src": "https://ps.w.org/itdatex-e-invoice-intake/assets/screenshot-2.png?rev=3615706",
+            "caption": "The single-invoice view shows header data, parties, amounts, validation issues and a complete audit trail in six cards."
+        },
+        {
+            "src": "https://ps.w.org/itdatex-e-invoice-intake/assets/screenshot-3.png?rev=3615706",
+            "caption": "The upload form accepts both XML and PDF (ZUGFeRD) files with a single click."
+        },
+        {
+            "src": "https://ps.w.org/itdatex-e-invoice-intake/assets/screenshot-4.png?rev=3615706",
+            "caption": "Validation issues are surfaced with severity (error / warning / info) and the BT/BR code that triggered them."
+        },
+        {
+            "src": "https://ps.w.org/itdatex-e-invoice-intake/assets/screenshot-5.png?rev=3615706",
+            "caption": "The audit trail records every upload, status change and file download."
+        }
+    ],
+    "tags": {
+        "accounting": "Accounting",
+        "e-invoice": "e-invoice",
+        "invoice": "invoice",
+        "xrechnung": "xrechnung",
+        "zugferd": "zugferd"
+    },
+    "stable_tag": "0.6.5",
+    "versions": {
+        "0.6.5": "https://downloads.wordpress.org/plugin/itdatex-e-invoice-intake.0.6.5.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/itdatex-e-invoice-intake.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/itdatex-e-invoice-intake/assets/banner-772x250.png?rev=3616024",
+        "high": "https://ps.w.org/itdatex-e-invoice-intake/assets/banner-1544x500.png?rev=3616024"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/itdatex-e-invoice-intake/assets/icon-128x128.png?rev=3615706",
+        "2x": "https://ps.w.org/itdatex-e-invoice-intake/assets/icon-256x256.png?rev=3615706"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
