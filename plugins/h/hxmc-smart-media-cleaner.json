@@ -1,0 +1,76 @@
+{
+    "name": "HXMC — Smart Media Cleaner",
+    "slug": "hxmc-smart-media-cleaner",
+    "version": "0.3.11",
+    "author": "<a href=\"https://profiles.wordpress.org/youheiokubo/\">youheiokubo</a>",
+    "author_profile": "https://profiles.wordpress.org/youheiokubo/",
+    "contributors": {
+        "youheiokubo": {
+            "profile": "https://profiles.wordpress.org/youheiokubo/",
+            "avatar": "https://secure.gravatar.com/avatar/80b8fe3b4ba9a834c3cadedfd61040324bbbf31bad3ec3f4c47c9ef3b9ef8e28?s=96&d=monsterid&r=g",
+            "display_name": "youheiokubo"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.0.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/hxmc-smart-media-cleaner/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-21 12:27:00",
+    "added": "2026-07-21",
+    "homepage": "https://github.com/okuboyouhei/hxmc-smart-media-cleaner",
+    "sections": {
+        "description": "<p>HXMC keeps your media library tidy with three focused tools — and an honest scope for each.</p>\n<p><strong>1. Usage scan (read-only)</strong><br />\nDetects references to each image in featured images, post content (all intermediate sizes covered), custom fields, and widgets/options. Images with no detected reference are flagged as &#8220;No reference found&#8221; — deliberately <em>not</em> &#8220;unused&#8221;, because the scanner cannot see theme/CSS hardcoded URLs, serialized page-builder data, or external sites. This version never deletes anything. The list is there to inform your own decision.</p>\n<p><strong>2. Safe rename for non-ASCII filenames</strong><br />\nJapanese (or any non-ASCII) filenames cause percent-encoded URL mess and occasional server-side trouble. HXMC renames the original file and every intermediate size on disk, rewrites URLs in post content and custom fields, and registers a 302 fallback redirect for the old URL — so nothing breaks even where a reference could not be rewritten. Redirects fire only on 404, costing nothing on normal requests. GUIDs are left untouched, per WordPress convention.</p>\n<p><strong>3. WebP conversion with built-in compression</strong><br />\nGenerates <code>.webp</code> twins for the original and all sizes using GD or Imagick — entirely on your server, no external API. Compression is simply the WebP quality setting (default 82): one knob, not two features. Originals are kept on disk as insurance, references are rewritten to <code>.webp</code>, and old URLs get the same 302 fallback. Already-WebP files, SVGs, and animated GIFs are honestly refused rather than silently mangled.</p>\n<p>For the ~2% of browsers without WebP support, HXMC writes Accept-header fallback rules to <code>uploads/.htaccess</code> (Apache/LiteSpeed): requests for <code>.webp</code> from non-supporting browsers are transparently served the kept original, with <code>Vary: Accept</code> so caches stay correct. On Nginx, where plugins cannot write server config, the admin page shows an equivalent copy-paste snippet instead.</p>\n<p><strong>4. In-place compression (overwrite mode)</strong><br />\nRe-encodes JPEG (quality knob, shared with WebP — one quality concept) and losslessly recompresses PNG, overwriting the same filename so URLs never change and no database rewrite is needed. Files are overwritten <em>only when the result is smaller</em>; otherwise the original bytes are kept. This is lossy for JPEG and irreversible — the confirm dialog says so plainly, and no backups are made (doubling disk usage would contradict the point of a cleanup plugin). JPEG metadata (EXIF) is stripped as part of the diet when Imagick is available.</p>\n<p><strong>5. Media replace (same filename, fresh cache)</strong><br />\nUpload a new file over an existing attachment: the filename — and therefore every URL — stays identical, thumbnails are regenerated (old size files are cleaned up, stale size references in content are healed), and references get a <code>?v={timestamp}</code> cache-busting parameter so browsers and CDNs fetch the new bytes immediately. WebP twins and compression state are reset, with content references rewritten back and 302 entries covering stragglers. Same MIME type only — keeping a <code>.jpg</code> name on PNG bytes would be a lie.</p>\n<p><strong>Design principles (HX Series)</strong><br />\n* Admin-only. Zero JavaScript, zero markup, zero cookies added to your visitors&#8217; pages. The only front-end footprint is a 404-time redirect lookup.<br />\n* No external services. Image processing is local GD/Imagick.<br />\n* 302 only — never 301 — so redirects are never cached into permanence.<br />\n* Fires <code>hxmc_after_rename</code> and <code>hxmc_after_convert</code> actions for integration (e.g. HXMD — Markdown Log Manager).</p>\n",
+        "faq": "\n<dt id=\"why%20doesn%27t%20it%20delete%20unused%20images%3F\">\nWhy doesn&#8217;t it delete unused images?\n</h4>\n<p>\n<p>Because &#8220;no reference found&#8221; is not proof of non-use. Deletion may come later behind explicit safeguards; v0.1 is read-only by design.</p>\n</p>\n<dt id=\"does%20it%20modify%20my%20original%20images%3F\">\nDoes it modify my original images?\n</h4>\n<p>\n<p>No. Rename moves files (content intact); WebP conversion creates new files alongside the originals.</p>\n</p>\n<dt id=\"is%20compression%20reversible%3F\">\nIs compression reversible?\n</h4>\n<p>\n<p>No. JPEG recompression is lossy and originals are overwritten (only when smaller). If you need the pristine originals, keep your own backups before compressing. WebP conversion, by contrast, always keeps originals.</p>\n</p>\n<dt id=\"what%20happens%20in%20browsers%20without%20webp%20support%3F\">\nWhat happens in browsers without WebP support?\n</h4>\n<p>\n<p>On Apache/LiteSpeed, nothing — the fallback rules serve the kept original automatically. On Nginx, add the snippet shown on the admin page to your server config. Without it, non-supporting browsers (IE11, Safari 13 and older) would fail to load converted images.</p>\n</p>\n<dt id=\"what%20about%20serialized%20data%20%28page%20builders%29%3F\">\nWhat about serialized data (page builders)?\n</h4>\n<p>\n<p>String replacement inside serialized values corrupts them, so HXMC skips serialized rows on purpose. The 302 fallback redirect covers those references instead.</p>\n</p>\n\n",
+        "changelog": "<h4>0.3.11</h4>\n<ul>\n<li>Security hardening: every file operation (compress, rename, convert, replace) now validates that paths derived from attachment metadata resolve inside the uploads directory (validate_file + realpath containment), refusing tampered _wp_attached_file or size entries.</li>\n</ul>\n<h4>0.3.10</h4>\n<ul>\n<li>Removed bundled translation files and load_plugin_textdomain() per WordPress.org review; translations will be provided via translate.wordpress.org.</li>\n</ul>\n<h4>0.3.9</h4>\n<ul>\n<li>Fix: WebP twins are now served for metadata-driven output too (featured images, theme templates, render-time srcset). Previously only URLs stored in content were rewritten, so themes calling wp_get_attachment_image() kept serving originals.</li>\n</ul>\n<h4>0.3.8</h4>\n<ul>\n<li>Packaging: distribution ZIP now excludes repository-only files (CLAUDE.md); ai-reference.md and llms.txt carry synced version headers.</li>\n</ul>\n<h4>0.3.7</h4>\n<ul>\n<li>Bundled ai-reference.md and llms.txt (AI-facing documentation, series convention).</li>\n</ul>\n<h4>0.3.6</h4>\n<ul>\n<li>Plugin Check: annotated the read-only use of core&#8217;s big_image_size_threshold filter.</li>\n</ul>\n<h4>0.3.5</h4>\n<ul>\n<li>Admin screen restyled with the HXMC deep-purple identity (#4608AD) via &#8211;hxmc-* design tokens.</li>\n</ul>\n<h4>0.3.4</h4>\n<ul>\n<li>Replace now refuses images over the big-image threshold (default 2560px) instead of letting WordPress silently rename them to -scaled files, which would break the kept URLs.</li>\n</ul>\n<h4>0.3.3</h4>\n<ul>\n<li>Plugin Check: tmp_name handling restructured (sanitize + unslash + is_uploaded_file as the authoritative validation).</li>\n</ul>\n<h4>0.3.2</h4>\n<ul>\n<li>After a replace, WordPress-generated URLs (media edit screen, library grid/modal, render-time srcset) also carry ?v=, so every admin view shows the new image without a hard refresh.</li>\n</ul>\n<h4>0.3.1</h4>\n<ul>\n<li>Fix: admin list thumbnails now carry the replace version (?v=), so a second replace with identical dimensions is visibly fresh instead of showing the browser-cached old thumbnail. Version counter can no longer collide within the same second.</li>\n</ul>\n<h4>0.3.0</h4>\n<ul>\n<li>Media replace: overwrite an attachment with a new file of the same type, keeping the filename. Regenerates sizes, resets WebP/compression state, heals stale size URLs, appends ?v= cache busting. New <code>hxmc_after_replace</code> hook.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>In-place compression: JPEG quality re-encode + PNG lossless recompress, overwrite only when smaller, EXIF stripped via Imagick. New <code>hxmc_after_compress</code> hook.</li>\n</ul>\n<h4>0.1.2</h4>\n<ul>\n<li>Each row now links to the attachment edit screen, so acting on &#8220;No reference found&#8221; images (including deletion, by you, with WordPress core) is one click away.</li>\n</ul>\n<h4>0.1.1</h4>\n<ul>\n<li>WebP fallback for non-supporting browsers: Accept-header rules in uploads/.htaccess (Apache/LiteSpeed) + Vary: Accept; Nginx snippet on the admin page.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release: usage scan, non-ASCII rename with URL rewrite + 302 fallback, WebP conversion (GD/Imagick), HXMD-ready hooks.</li>\n</ul>\n"
+    },
+    "short_description": "Code-first media library cleanup: find unreferenced images, rename non-ASCII filenames safely, convert to WebP. No external services.",
+    "description": "<p>HXMC keeps your media library tidy with three focused tools — and an honest scope for each.</p>\n<p><strong>1. Usage scan (read-only)</strong><br />\nDetects references to each image in featured images, post content (all intermediate sizes covered), custom fields, and widgets/options. Images with no detected reference are flagged as &#8220;No reference found&#8221; — deliberately <em>not</em> &#8220;unused&#8221;, because the scanner cannot see theme/CSS hardcoded URLs, serialized page-builder data, or external sites. This version never deletes anything. The list is there to inform your own decision.</p>\n<p><strong>2. Safe rename for non-ASCII filenames</strong><br />\nJapanese (or any non-ASCII) filenames cause percent-encoded URL mess and occasional server-side trouble. HXMC renames the original file and every intermediate size on disk, rewrites URLs in post content and custom fields, and registers a 302 fallback redirect for the old URL — so nothing breaks even where a reference could not be rewritten. Redirects fire only on 404, costing nothing on normal requests. GUIDs are left untouched, per WordPress convention.</p>\n<p><strong>3. WebP conversion with built-in compression</strong><br />\nGenerates <code>.webp</code> twins for the original and all sizes using GD or Imagick — entirely on your server, no external API. Compression is simply the WebP quality setting (default 82): one knob, not two features. Originals are kept on disk as insurance, references are rewritten to <code>.webp</code>, and old URLs get the same 302 fallback. Already-WebP files, SVGs, and animated GIFs are honestly refused rather than silently mangled.</p>\n<p>For the ~2% of browsers without WebP support, HXMC writes Accept-header fallback rules to <code>uploads/.htaccess</code> (Apache/LiteSpeed): requests for <code>.webp</code> from non-supporting browsers are transparently served the kept original, with <code>Vary: Accept</code> so caches stay correct. On Nginx, where plugins cannot write server config, the admin page shows an equivalent copy-paste snippet instead.</p>\n<p><strong>4. In-place compression (overwrite mode)</strong><br />\nRe-encodes JPEG (quality knob, shared with WebP — one quality concept) and losslessly recompresses PNG, overwriting the same filename so URLs never change and no database rewrite is needed. Files are overwritten <em>only when the result is smaller</em>; otherwise the original bytes are kept. This is lossy for JPEG and irreversible — the confirm dialog says so plainly, and no backups are made (doubling disk usage would contradict the point of a cleanup plugin). JPEG metadata (EXIF) is stripped as part of the diet when Imagick is available.</p>\n<p><strong>5. Media replace (same filename, fresh cache)</strong><br />\nUpload a new file over an existing attachment: the filename — and therefore every URL — stays identical, thumbnails are regenerated (old size files are cleaned up, stale size references in content are healed), and references get a <code>?v={timestamp}</code> cache-busting parameter so browsers and CDNs fetch the new bytes immediately. WebP twins and compression state are reset, with content references rewritten back and 302 entries covering stragglers. Same MIME type only — keeping a <code>.jpg</code> name on PNG bytes would be a lie.</p>\n<p><strong>Design principles (HX Series)</strong><br />\n* Admin-only. Zero JavaScript, zero markup, zero cookies added to your visitors&#8217; pages. The only front-end footprint is a 404-time redirect lookup.<br />\n* No external services. Image processing is local GD/Imagick.<br />\n* 302 only — never 301 — so redirects are never cached into permanence.<br />\n* Fires <code>hxmc_after_rename</code> and <code>hxmc_after_convert</code> actions for integration (e.g. HXMD — Markdown Log Manager).</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/hxmc-smart-media-cleaner.0.3.11.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "cleanup": "cleanup",
+        "compression": "compression",
+        "media": "media",
+        "rename": "rename",
+        "webp": "webp"
+    },
+    "stable_tag": "0.3.11",
+    "versions": {
+        "0.3.11": "https://downloads.wordpress.org/plugin/hxmc-smart-media-cleaner.0.3.11.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/hxmc-smart-media-cleaner.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/hxmc-smart-media-cleaner/assets/banner-772x250.png?rev=3617124",
+        "high": "https://ps.w.org/hxmc-smart-media-cleaner/assets/banner-1544x500.png?rev=3617124"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/hxmc-smart-media-cleaner/assets/icon-128x128.png?rev=3617124",
+        "2x": "https://ps.w.org/hxmc-smart-media-cleaner/assets/icon-256x256.png?rev=3617124"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

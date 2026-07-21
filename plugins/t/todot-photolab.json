@@ -1,0 +1,90 @@
+{
+    "name": "Todot Photolab for WooCommerce",
+    "slug": "todot-photolab",
+    "version": "0.0.5",
+    "author": "<a href=\"https://profiles.wordpress.org/todotweb/\">Todot</a>",
+    "author_profile": "https://profiles.wordpress.org/todotweb/",
+    "contributors": {
+        "todotweb": {
+            "profile": "https://profiles.wordpress.org/todotweb/",
+            "avatar": "https://secure.gravatar.com/avatar/10a01d5814824bacc2ae8bfd8a32a4db15ff4899a620b38202ed2108dbeb5bfc?s=96&d=monsterid&r=g",
+            "display_name": "Todot"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.0.2",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/todot-photolab/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-21 12:40:00",
+    "added": "2026-07-21",
+    "homepage": "https://todot.it",
+    "sections": {
+        "description": "<p>Photolab streamlines selling digital photos at scale through WooCommerce. Upload thousands of photos in batches, apply watermarks inline during upload, and publish each as a downloadable product — all from a single admin panel. Built for event photographers, photo studios, and anyone selling large galleries online.</p>\n<p><strong>Key features:</strong></p>\n<ul>\n<li>Bulk chunked upload (5 files per chunk, supports 2000+ photos per album)</li>\n<li>Inline watermarking during upload — no background queue drift; Imagick preferred, GD fallback</li>\n<li>Configurable watermark position: full-width or bottom-right</li>\n<li>Each photo becomes a virtual downloadable WooCommerce product</li>\n<li>Original photos protected from public access; customers download only after purchase</li>\n<li>Download blocked until processing completes (HTTP 425 during watermarking, 410 if expired)</li>\n<li>Multi-upload: up to 3 concurrent album uploads per user with rate limiting</li>\n<li>Automatic recovery of interrupted uploads (client heartbeat + server-side cron, FSM with aborted state and manual reset)</li>\n<li>Idempotency-Key on chunk endpoints for safe retry after network timeouts</li>\n<li>Distributed lock (MySQL GET_LOCK / transient fallback) for multi-server deployments</li>\n<li>Daily cleanup failsafe: stuck photo detection, retry budget, orphan scan, log retention</li>\n<li>Structured logging with auto-context (user_id, album_id, photo_id) and sensitive data redaction</li>\n<li>Album expiration management with automatic cleanup</li>\n<li>SHA-256 deduplication to prevent duplicate photos in the same album</li>\n<li>SPA admin panel with zero page reloads, REST API communication</li>\n<li>Imagick support (recommended) with GD fallback for image processing</li>\n<li>WooCommerce HPOS compatible</li>\n</ul>\n<p><strong>Requirements:</strong></p>\n<ul>\n<li>WordPress 6.5+</li>\n<li>WooCommerce 8.0+</li>\n<li>PHP 8.1+</li>\n<li>PHP Imagick extension (recommended) or GD</li>\n<li>memory_limit &gt;= 256MB</li>\n<li>max_execution_time &gt;= 60s</li>\n<li>upload_max_filesize &gt;= 20MB</li>\n<li>post_max_size &gt;= 100MB</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>photolab</code> folder to <code>/wp-content/plugins/</code>.</li>\n<li>Activate the plugin from the WordPress Plugins screen.</li>\n<li>Ensure WooCommerce is installed and active before activating Photolab.</li>\n<li>Verify Pretty Permalinks are enabled in Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Permalinks (any structure except &#8220;Plain&#8221;).</li>\n</ol>\n<p><strong>Original photo protection:</strong></p>\n<p>The <code>wp-content/uploads/Photolab/photos/</code> directory is protected via an <code>.htaccess</code> file denying direct access. This works on <strong>Apache</strong> servers with <code>mod_rewrite</code> enabled.</p>\n<p>If using <strong>Nginx</strong>, <code>.htaccess</code> files are not read. Add a rule to your server block to protect the directory:</p>\n<pre><code>location ~* /wp-content/uploads/Photolab/photos/ {\n    deny all;\n    return 403;\n}\n</code></pre>\n<p>Consult your hosting provider documentation to apply this configuration.</p>\n",
+        "faq": "\n<dt id=\"how%20many%20photos%20can%20i%20upload%20per%20album%3F\">\nHow many photos can I upload per album?\n</h4>\n<p>\n<p>The plugin handles high volumes, up to 2000+ photos per album. Uploads use chunks of 5 files (filterable via <code>photolab_chunk_size</code>) for compatibility with shared hosting.</p>\n</p>\n<dt id=\"can%20i%20use%20the%20plugin%20without%20imagick%3F\">\nCan I use the plugin without Imagick?\n</h4>\n<p>\n<p>Yes. If Imagick is unavailable, Photolab automatically uses GD for watermarking. Performance on large volumes will be reduced compared to Imagick.</p>\n</p>\n<dt id=\"does%20the%20watermark%20affect%20original%20photos%3F\">\nDoes the watermark affect original photos?\n</h4>\n<p>\n<p>No. The watermark is applied to a copy (saved in <code>wp-content/uploads/Photolab/watermarked/</code>). Originals are stored separately and protected from public access.</p>\n</p>\n<dt id=\"when%20is%20the%20watermark%20applied%3F\">\nWhen is the watermark applied?\n</h4>\n<p>\n<p>Watermarking is inline: it runs during the same HTTP request as the upload chunk. Photos are watermarked immediately as they arrive, not via a background queue. The <code>/upload/chunk</code> endpoint returns after processing completes. Download is blocked until the photo reaches the <code>watermarked</code> state (HTTP 425).</p>\n</p>\n<dt id=\"what%20happens%20if%20i%20close%20the%20browser%20during%20upload%3F\">\nWhat happens if I close the browser during upload?\n</h4>\n<p>\n<p>The client sends a heartbeat every 30 seconds. If the server receives no heartbeat for 5 minutes (or 10 minutes if none was ever received), a recovery job transitions the album to <code>aborted</code>. From the admin panel you can reset the album (<code>POST /albums/{id}/reset</code>) to resume, or delete it. Already-uploaded photos remain as valid WooCommerce products.</p>\n</p>\n<dt id=\"can%20i%20upload%20multiple%20albums%20at%20once%3F\">\nCan I upload multiple albums at once?\n</h4>\n<p>\n<p>Yes, up to 3 concurrent album uploads per user. Attempts beyond this limit return HTTP 429. Albums with the same name already in flight for the same user return HTTP 409.</p>\n</p>\n<dt id=\"what%20happens%20if%20a%20chunk%20upload%20times%20out%3F\">\nWhat happens if a chunk upload times out?\n</h4>\n<p>\n<p>The client can retry the same <code>/upload/chunk</code> with an <code>Idempotency-Key</code> header. The original response is replayed from a transient (TTL 24h) without reprocessing files. Without the header, behavior is unchanged.</p>\n</p>\n<dt id=\"what%20happens%20when%20a%20photo%20expires%3F\">\nWhat happens when a photo expires?\n</h4>\n<p>\n<p>If an expiration date is set for the album, the plugin automatically deletes the WooCommerce product, watermarked image, and database record via a daily job managed by Action Scheduler (bundled with WooCommerce).</p>\n</p>\n<dt id=\"how%20does%20the%20daily%20cleanup%20work%3F\">\nHow does the daily cleanup work?\n</h4>\n<p>\n<p>An Action Scheduler job <code>photolab_daily_cleanup</code> runs every 24 hours (default 03:00 UTC) performing a failsafe sweep: detects stuck watermark jobs &gt;1h, re-enqueues stalled photos, retries failed photos within a 5-retry budget per photo, purges expired idempotency transients, scans for disk/DB orphans (log only), and deletes Photolab logs older than 30 days (filter <code>photolab_log_retention_days</code>). Action Scheduler logs are auto-deleted after 7 days.</p>\n</p>\n<dt id=\"does%20the%20plugin%20work%20in%20multi-server%20environments%3F\">\nDoes the plugin work in multi-server environments?\n</h4>\n<p>\n<p>Yes. An optional distributed lock is available: if WordPress uses an external object cache (e.g. Redis), the lock uses <code>wp_cache_add</code> (atomic SET NX). Without external object cache, the fallback is a transient. Concurrent chunk attempts for the same album from different nodes return HTTP 423. CAS on the database is the final safeguard. Disable via filter <code>photolab_use_distributed_lock</code>.</p>\n</p>\n<dt id=\"are%20pretty%20permalinks%20required%3F\">\nAre Pretty Permalinks required?\n</h4>\n<p>\n<p>Yes. The WordPress REST API requires a permalink structure other than &#8220;Plain&#8221;. The plugin shows an admin notice if Pretty Permalinks are not active.</p>\n</p>\n<dt id=\"does%20photolab%20work%20with%20woocommerce%20hpos%3F\">\nDoes Photolab work with WooCommerce HPOS?\n</h4>\n<p>\n<p>Yes. Photolab does not access <code>wp_posts</code> directly for WooCommerce products and is fully compatible with High-Performance Order Storage (HPOS).</p>\n</p>\n<dt id=\"where%20do%20i%20find%20the%20logs%3F\">\nWhere do I find the logs?\n</h4>\n<p>\n<p>In <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Status <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Logs</strong>, filter by source <code>photolab*</code>. Available sources: <code>photolab</code>, <code>photolab-fsm</code>, <code>photolab-upload</code>, <code>photolab-heartbeat</code>, <code>photolab-recovery</code>, <code>photolab-watermark-job</code>, <code>photolab-rate-limit</code>, <code>photolab-ownership</code>, <code>photolab-download-guard</code>, <code>photolab-idempotency</code>, <code>photolab-cleanup</code>, <code>photolab-lock</code>, <code>photolab-logger</code>. Each entry automatically includes <code>user_id</code>, <code>album_id</code>, and other contextual keys. Sensitive data (passwords, tokens, emails) is automatically redacted.</p>\n</p>\n\n",
+        "changelog": "<h4>0.0.5 — Initial public release</h4>\n<ul>\n<li>Bulk chunked upload with inline watermarking (Imagick + GD)</li>\n<li>WooCommerce product auto-creation per photo</li>\n<li>Configurable watermark position (full-width / bottom-right)</li>\n<li>Album expiration with automatic cleanup</li>\n<li>Finite State Machine with CAS transitions</li>\n<li>Upload recovery (heartbeat + server-side scan + manual reset)</li>\n<li>Multi-upload rate limiting (3 concurrent per user)</li>\n<li>Idempotency-Key for safe chunk retry</li>\n<li>Distributed lock for multi-server deployments</li>\n<li>Download guard (HTTP 425 during processing, 410 expired)</li>\n<li>Structured logging with 13 sources via wc_get_logger</li>\n<li>SHA-256 deduplication within albums</li>\n<li>HPOS compatible</li>\n<li>SPA admin panel (vanilla JS + Tailwind CSS local build)</li>\n<li>CI pipeline: PHPStan level 6, PHPCS WordPress, PHPUnit (30 test files)</li>\n</ul>\n"
+    },
+    "short_description": "Bulk photo album management and sales for WooCommerce. Upload thousands of photos, auto-watermark, and sell as downloadable products.",
+    "description": "<p>Photolab streamlines selling digital photos at scale through WooCommerce. Upload thousands of photos in batches, apply watermarks inline during upload, and publish each as a downloadable product — all from a single admin panel. Built for event photographers, photo studios, and anyone selling large galleries online.</p>\n<p><strong>Key features:</strong></p>\n<ul>\n<li>Bulk chunked upload (5 files per chunk, supports 2000+ photos per album)</li>\n<li>Inline watermarking during upload — no background queue drift; Imagick preferred, GD fallback</li>\n<li>Configurable watermark position: full-width or bottom-right</li>\n<li>Each photo becomes a virtual downloadable WooCommerce product</li>\n<li>Original photos protected from public access; customers download only after purchase</li>\n<li>Download blocked until processing completes (HTTP 425 during watermarking, 410 if expired)</li>\n<li>Multi-upload: up to 3 concurrent album uploads per user with rate limiting</li>\n<li>Automatic recovery of interrupted uploads (client heartbeat + server-side cron, FSM with aborted state and manual reset)</li>\n<li>Idempotency-Key on chunk endpoints for safe retry after network timeouts</li>\n<li>Distributed lock (MySQL GET_LOCK / transient fallback) for multi-server deployments</li>\n<li>Daily cleanup failsafe: stuck photo detection, retry budget, orphan scan, log retention</li>\n<li>Structured logging with auto-context (user_id, album_id, photo_id) and sensitive data redaction</li>\n<li>Album expiration management with automatic cleanup</li>\n<li>SHA-256 deduplication to prevent duplicate photos in the same album</li>\n<li>SPA admin panel with zero page reloads, REST API communication</li>\n<li>Imagick support (recommended) with GD fallback for image processing</li>\n<li>WooCommerce HPOS compatible</li>\n</ul>\n<p><strong>Requirements:</strong></p>\n<ul>\n<li>WordPress 6.5+</li>\n<li>WooCommerce 8.0+</li>\n<li>PHP 8.1+</li>\n<li>PHP Imagick extension (recommended) or GD</li>\n<li>memory_limit &gt;= 256MB</li>\n<li>max_execution_time &gt;= 60s</li>\n<li>upload_max_filesize &gt;= 20MB</li>\n<li>post_max_size &gt;= 100MB</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/todot-photolab.0.0.5.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/todot-photolab/assets/screenshot-1.png?rev=3617134",
+            "caption": "Admin panel — create an album, upload photos, set price and expiration."
+        },
+        {
+            "src": "https://ps.w.org/todot-photolab/assets/screenshot-2.png?rev=3617134",
+            "caption": "Galleries status — track all albums, expiration dates, and per-album photo counts."
+        },
+        {
+            "src": "https://ps.w.org/todot-photolab/assets/screenshot-3.png?rev=3617141",
+            "caption": "Upload complete — photos saved and ready, watermarking done."
+        }
+    ],
+    "tags": {
+        "bulk-upload": "bulk upload",
+        "digital-downloads": "digital downloads",
+        "photos": "photos",
+        "watermark": "watermark",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "0.0.5",
+    "versions": {
+        "0.0.5": "https://downloads.wordpress.org/plugin/todot-photolab.0.0.5.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/todot-photolab.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/todot-photolab/assets/banner-772x250.jpg?rev=3617134",
+        "high": "https://ps.w.org/todot-photolab/assets/banner-1544x500.jpg?rev=3617134"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/todot-photolab/assets/icon-128x128.jpg?rev=3617134",
+        "2x": "https://ps.w.org/todot-photolab/assets/icon-256x256.jpg?rev=3617134"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
