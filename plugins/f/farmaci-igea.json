@@ -1,0 +1,100 @@
+{
+    "name": "Farmaci IGEA",
+    "slug": "farmaci-igea",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/apiganti/\">S0ft.it</a>",
+    "author_profile": "https://profiles.wordpress.org/apiganti/",
+    "contributors": {
+        "apiganti": {
+            "profile": "https://profiles.wordpress.org/apiganti/",
+            "avatar": "https://secure.gravatar.com/avatar/6e29fb914cb83d713a1c7d94e71127bcad39e598581017990bcdce70e9a3770f?s=96&d=monsterid&r=g",
+            "display_name": "S0ft.it"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/farmaci-igea/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-21 17:26:00",
+    "added": "2026-07-21",
+    "homepage": "",
+    "sections": {
+        "description": "<p><strong>Farmaci IGEA</strong> adds a private area to your WordPress site where registered patients of a facility using the IGEA CRM by S0ft.it can request the repetition of drugs they were already prescribed.</p>\n<p>Patients identify themselves with their Italian fiscal code (validated with check digit and &#8220;omocodia&#8221; support) and confirm their identity with a <strong>one-time password sent via SMS</strong>. They then see their prescription history (deduplicated by AIC code, configurable depth), choose a quantity for each drug, add optional notes for the doctor and submit the request.</p>\n<p><strong>Every request goes into review</strong>: it is stored on the CRM with status &#8220;in_revisione&#8221; and must be approved or rejected by the doctor from the CRM backend. The plugin never generates prescriptions by itself. The patient&#8217;s phone number on file (the one verified via OTP) is stored with each request for audit purposes.</p>\n<h4>Main features</h4>\n<ul>\n<li>Secure identification: fiscal code + SMS OTP (expiring codes, limited attempts)</li>\n<li>Prescription history of the last N months, deduplicated by AIC code, with last-prescribed date and times prescribed</li>\n<li>Quantity selector per drug (0 to a maximum configured server-side on the CRM)</li>\n<li>Optional free-text requests (configurable on the CRM): patients can describe drugs not in their history — including patients with no prescriptions at all</li>\n<li>Optional pickup choice (configurable on the CRM): at the facility or at the pharmacy</li>\n<li>Optional notes to the doctor with each request</li>\n<li>Confirmation screen with animated check mark and a customizable message after each submission</li>\n<li>Optional confirmation to the patient on submission: email (CRM template <code>SEND_FARM</code> with fallback body) and/or SMS, configurable on the CRM</li>\n<li>Requests always subject to doctor review; the patient sees the status (in review, approved, rejected) and the doctor&#8217;s reply</li>\n<li>Patients can withdraw a request while it is still in review</li>\n<li>Server-side validation: only drugs actually present in the patient&#8217;s history can be requested; quantities and request counts are capped on the CRM</li>\n<li>One pending request at a time and a daily cap (both configurable on the CRM)</li>\n<li>Optional internal email alert to the staff on each new request</li>\n<li>Access audit log on the CRM (logins, listings, requests, with IP)</li>\n<li>Temporary suspension of the service with a custom message</li>\n<li>Customizable colors; same look &amp; feel as Prenotazioni IGEA and Referti IGEA</li>\n<li>No external dependencies: all CSS and JavaScript is bundled with the plugin</li>\n</ul>\n<h4>Security</h4>\n<p>The API key never leaves the server: the patient&#8217;s browser only talks to WordPress, which forwards requests to the CRM. Nonce on every call, field whitelisting, session tokens issued only after OTP verification, every requested drug re-validated server-side against the patient&#8217;s own prescription history, rate limiting per IP and per patient.</p>\n<h4>Requirements</h4>\n<p>This plugin is a connector: <strong>it requires an installation of the IGEA CRM</strong> by S0ft.it, reachable over HTTPS, with the <code>farmaci_api.php</code> endpoint, the SQL script (<code>farmaci.sql</code>) executed, and an SMS provider configured for the OTP codes. Without the CRM the plugin has no standalone functionality. More about the CRM: <a href=\"https://www.s0ft.it\" rel=\"nofollow ugc\">www.s0ft.it</a>.</p>\n<h4>External services</h4>\n<p>This plugin sends data to the IGEA CRM server configured by the site administrator (URL and API key in the plugin settings). The data transmitted is what the patient enters in the form (fiscal code, verification codes, selected drugs and quantities, notes) plus the visitor&#8217;s IP address, used exclusively for anti-abuse rate limiting and access logging. No data is ever sent to S0ft.it or to any third party by this plugin: the destination server is chosen and operated by the site owner.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin from Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New, or upload the <code>farmaci-igea</code> folder to <code>/wp-content/plugins/</code>.</li>\n<li>On the IGEA CRM server: copy <code>farmaci_api.php</code> into the <code>ajax/</code> folder (next to <code>orari.php</code>), edit the API key, token secret and WordPress origin at the top of the file, adjust the request rules (maximum quantity per drug, history depth in months, drugs per request, daily cap, pending-request lock, staff alert email) and run the <code>farmaci.sql</code> script on the CRM database.</li>\n<li>Go to <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Farmaci IGEA</strong> and enter the API URL and key (the same key configured on the CRM).</li>\n<li>Add the <code>[fcrm_farmaci]</code> shortcode to the page where you want the request form.</li>\n<li>Handle incoming requests from the CRM backend: rows in the <code>richieste_farmaci</code> table with status <code>in_revisione</code>, each with its drugs in <code>richieste_farmaci_righe</code>. On approval, set the status, fill <code>esito_note</code>, <code>medico</code>, <code>gestita_il</code> and link the generated prescription in <code>ricetta_id</code>. The <code>cellulare</code> column holds the patient&#8217;s phone number on file, verified via OTP at request time.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20the%20plugin%20work%20without%20the%20igea%20crm%3F\">\nDoes the plugin work without the IGEA CRM?\n</h4>\n<p>\n<p>No. It is a connector for the IGEA CRM by S0ft.it: prescriptions, patient records and SMS sending all live on the CRM. The plugin provides the request interface on the website and the secure connection.</p>\n</p>\n<dt id=\"does%20the%20plugin%20prescribe%20drugs%3F\">\nDoes the plugin prescribe drugs?\n</h4>\n<p>\n<p>No. It only collects repeat-prescription requests from patients. Every request is reviewed by the doctor from the CRM backend, who decides whether to approve it and issue the prescription.</p>\n</p>\n<dt id=\"can%20a%20patient%20request%20a%20drug%20they%20were%20never%20prescribed%3F\">\nCan a patient request a drug they were never prescribed?\n</h4>\n<p>\n<p>The structured list only contains drugs from the patient&#8217;s own prescription history, and every submitted row is re-validated server-side against that history. If the facility enables the free-text option on the CRM, patients can additionally describe other drugs in a text field — always subject to the doctor&#8217;s review.</p>\n</p>\n<dt id=\"can%20i%20customize%20the%20confirmation%20email%3F\">\nCan I customize the confirmation email?\n</h4>\n<p>\n<p>Yes: create the <code>SEND_FARM</code> template in the CRM <code>templates_email</code> table (same mechanism as the other IGEA plugins), with placeholders for patient data, requested drugs, free-text request, pickup choice and notes. Without the template, a built-in fallback body is used. The on-screen confirmation message is customizable in the plugin settings.</p>\n</p>\n<dt id=\"where%20are%20quantity%20limits%20configured%3F\">\nWhere are quantity limits configured?\n</h4>\n<p>\n<p>On the CRM, in the constants at the top of <code>farmaci_api.php</code>: maximum quantity per drug, drugs per request, history depth, daily request cap and the pending-request lock.</p>\n</p>\n<dt id=\"is%20the%20plugin%20gdpr%20compliant%3F\">\nIs the plugin GDPR compliant?\n</h4>\n<p>\n<p>Prescriptions are health data: the plugin verifies the patient&#8217;s identity before any access and logs every login, listing and request with date and IP on the CRM. Overall compliance depends on the site owner&#8217;s privacy policy and processes.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>First release: fiscal code + SMS OTP identification, prescription history with per-drug quantity selector, notes, doctor review workflow with status feedback, request withdrawal, request caps, audit log, suspension mode, custom colors</li>\n</ul>\n"
+    },
+    "short_description": "Repeat-prescription requests from the IGEA CRM: fiscal code + SMS OTP, quantity per drug, notes, doctor review workflow.",
+    "description": "<p><strong>Farmaci IGEA</strong> adds a private area to your WordPress site where registered patients of a facility using the IGEA CRM by S0ft.it can request the repetition of drugs they were already prescribed.</p>\n<p>Patients identify themselves with their Italian fiscal code (validated with check digit and &#8220;omocodia&#8221; support) and confirm their identity with a <strong>one-time password sent via SMS</strong>. They then see their prescription history (deduplicated by AIC code, configurable depth), choose a quantity for each drug, add optional notes for the doctor and submit the request.</p>\n<p><strong>Every request goes into review</strong>: it is stored on the CRM with status &#8220;in_revisione&#8221; and must be approved or rejected by the doctor from the CRM backend. The plugin never generates prescriptions by itself. The patient&#8217;s phone number on file (the one verified via OTP) is stored with each request for audit purposes.</p>\n<h4>Main features</h4>\n<ul>\n<li>Secure identification: fiscal code + SMS OTP (expiring codes, limited attempts)</li>\n<li>Prescription history of the last N months, deduplicated by AIC code, with last-prescribed date and times prescribed</li>\n<li>Quantity selector per drug (0 to a maximum configured server-side on the CRM)</li>\n<li>Optional free-text requests (configurable on the CRM): patients can describe drugs not in their history — including patients with no prescriptions at all</li>\n<li>Optional pickup choice (configurable on the CRM): at the facility or at the pharmacy</li>\n<li>Optional notes to the doctor with each request</li>\n<li>Confirmation screen with animated check mark and a customizable message after each submission</li>\n<li>Optional confirmation to the patient on submission: email (CRM template <code>SEND_FARM</code> with fallback body) and/or SMS, configurable on the CRM</li>\n<li>Requests always subject to doctor review; the patient sees the status (in review, approved, rejected) and the doctor&#8217;s reply</li>\n<li>Patients can withdraw a request while it is still in review</li>\n<li>Server-side validation: only drugs actually present in the patient&#8217;s history can be requested; quantities and request counts are capped on the CRM</li>\n<li>One pending request at a time and a daily cap (both configurable on the CRM)</li>\n<li>Optional internal email alert to the staff on each new request</li>\n<li>Access audit log on the CRM (logins, listings, requests, with IP)</li>\n<li>Temporary suspension of the service with a custom message</li>\n<li>Customizable colors; same look &amp; feel as Prenotazioni IGEA and Referti IGEA</li>\n<li>No external dependencies: all CSS and JavaScript is bundled with the plugin</li>\n</ul>\n<h4>Security</h4>\n<p>The API key never leaves the server: the patient&#8217;s browser only talks to WordPress, which forwards requests to the CRM. Nonce on every call, field whitelisting, session tokens issued only after OTP verification, every requested drug re-validated server-side against the patient&#8217;s own prescription history, rate limiting per IP and per patient.</p>\n<h4>Requirements</h4>\n<p>This plugin is a connector: <strong>it requires an installation of the IGEA CRM</strong> by S0ft.it, reachable over HTTPS, with the <code>farmaci_api.php</code> endpoint, the SQL script (<code>farmaci.sql</code>) executed, and an SMS provider configured for the OTP codes. Without the CRM the plugin has no standalone functionality. More about the CRM: <a href=\"https://www.s0ft.it\" rel=\"nofollow ugc\">www.s0ft.it</a>.</p>\n<h4>External services</h4>\n<p>This plugin sends data to the IGEA CRM server configured by the site administrator (URL and API key in the plugin settings). The data transmitted is what the patient enters in the form (fiscal code, verification codes, selected drugs and quantities, notes) plus the visitor&#8217;s IP address, used exclusively for anti-abuse rate limiting and access logging. No data is ever sent to S0ft.it or to any third party by this plugin: the destination server is chosen and operated by the site owner.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/farmaci-igea.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>First release. Requires farmaci_api.php and the farmaci.sql script on the IGEA CRM server.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/farmaci-igea/assets/screenshot-1.png?rev=3617527",
+            "caption": "Step 1: fiscal code entry"
+        },
+        {
+            "src": "https://ps.w.org/farmaci-igea/assets/screenshot-2.png?rev=3617527",
+            "caption": "Identity verification with SMS code"
+        },
+        {
+            "src": "https://ps.w.org/farmaci-igea/assets/screenshot-3.png?rev=3617527",
+            "caption": "Drug list with quantity selectors and notes field"
+        },
+        {
+            "src": "https://ps.w.org/farmaci-igea/assets/screenshot-4.png?rev=3617527",
+            "caption": "Patient's requests with review status"
+        },
+        {
+            "src": "https://ps.w.org/farmaci-igea/assets/screenshot-5.png?rev=3617527",
+            "caption": "Plugin settings page"
+        }
+    ],
+    "tags": {
+        "farmaci": "farmaci",
+        "healthcare": "healthcare",
+        "medical": "medical",
+        "prescriptions": "prescriptions",
+        "repeat-prescription": "repeat prescription"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/farmaci-igea.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/farmaci-igea.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://www.s0ft.it",
+    "banners": {
+        "low": "https://ps.w.org/farmaci-igea/assets/banner-772x250.png?rev=3617527",
+        "high": "https://ps.w.org/farmaci-igea/assets/banner-1544x500.png?rev=3617527"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/farmaci-igea/assets/icon-128x128.png?rev=3617527",
+        "2x": "https://ps.w.org/farmaci-igea/assets/icon-256x256.png?rev=3617527"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
