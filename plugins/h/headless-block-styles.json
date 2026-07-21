@@ -1,0 +1,73 @@
+{
+    "name": "Headless Block Styles",
+    "slug": "headless-block-styles",
+    "version": "0.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/fusan1/\">fusan</a>",
+    "author_profile": "https://profiles.wordpress.org/fusan1/",
+    "contributors": {
+        "fusan1": {
+            "profile": "https://profiles.wordpress.org/fusan1/",
+            "avatar": "https://secure.gravatar.com/avatar/d41af055d118ad958d3b19440420c874c4cc525ade74ca5fc1a45f19d8ab1a07?s=96&d=monsterid&r=g",
+            "display_name": "fusan"
+        }
+    },
+    "requires": "6.1",
+    "tested": "7.0.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/headless-block-styles/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-21 11:06:00",
+    "added": "2026-07-21",
+    "homepage": "https://github.com/FuSan21/headless-block-styles",
+    "sections": {
+        "description": "<p>Headless Block Styles brings full Gutenberg block styling to any headless frontend (e.g. Next.js) using the WordPress REST API — no WPGraphQL required.</p>\n<p>It does two things:</p>\n<ol>\n<li><strong>Serves the global stylesheet</strong> (<code>wp_get_global_stylesheet()</code>): all <code>--wp--preset--*</code> CSS variables, preset classes (<code>has-*-color</code>, <code>has-*-font-size</code>, …), and theme/user styles — the CSS WordPress would normally enqueue on its own frontend.</li>\n<li><strong>Computes per-block inline styles on the server</strong> with the WordPress Style Engine and adds a <code>block_data</code> field to post REST responses, so your frontend receives ready-to-spread React style objects instead of deriving them from raw block attributes in JavaScript.</li>\n</ol>\n<h4>REST API</h4>\n<p><strong><code>GET /wp-json/headless-block-styles/v1/stylesheet</code></strong></p>\n<ul>\n<li><code>types</code> — comma-separated subset of <code>variables,presets,styles,base-layout-styles</code>. Omit for all.</li>\n<li><code>format</code> — <code>json</code> (default) or <code>css</code> (raw CSS, usable directly in a <code>&lt;link&gt;</code> tag).</li>\n</ul>\n<p><strong><code>GET /wp-json/headless-block-styles/v1/theme</code></strong></p>\n<p>Returns merged <code>theme.json</code> settings (<code>wp_get_global_settings()</code>) — color palette, font sizes, layout sizes.</p>\n<p><strong><code>block_data</code> field on posts and pages</strong></p>\n<p>Every REST-enabled post type response gains a <code>block_data</code> field: the parsed block tree where each block carries <code>inlineStyles</code> (camelCase, ready for a React <code>style</code> prop), <code>classNames</code> (editor-parity <code>has-*</code> classes), <code>attributes</code>, <code>innerHTML</code>, and recursive <code>innerBlocks</code>.</p>\n<pre><code>inlineStyles covers the `style` attribute (spacing, borders, typography, colors — via the WP Style Engine), preset attributes (`backgroundColor`, `textColor`, `gradient`, `borderColor`, `fontSize`, `fontFamily`), and layout (`width`, `height`, `layout.contentSize/wideSize/justifyContent`).\n</code></pre>\n<p><strong><code>rendered_blocks</code> field on posts and pages</strong></p>\n<p>For rendering WordPress&#8217;s HTML faithfully: returns <code>html</code>, <code>css</code>, and <code>svg</code> — the rendered block markup together with the block-support CSS WordPress generates at render time (layout container rules, element link/button colors, duotone filters) and the duotone SVG definitions. On a normal WordPress frontend this CSS is printed in a <code>&lt;style&gt;</code> tag and never reaches REST consumers; here it is captured from the same render as the returned HTML so the generated class names always match.</p>\n<p>Not needed on a request? Exclude fields: <code>/wp/v2/posts?_fields=id,title,content</code>.</p>\n<h4>Filters</h4>\n<ul>\n<li><code>headless_block_styles_block_inline_styles</code> — modify a block&#8217;s computed style object. Args: <code>$styles</code>, <code>$attrs</code>.</li>\n<li><code>headless_block_styles_block_class_names</code> — modify a block&#8217;s computed class names. Args: <code>$classnames</code>, <code>$attrs</code>.</li>\n<li><code>headless_block_styles_post_types</code> — which post types get the <code>block_data</code> field.</li>\n</ul>\n<p>Full documentation and Next.js usage examples: <a href=\"https://github.com/FuSan21/headless-block-styles\" rel=\"nofollow ugc\">github.com/FuSan21/headless-block-styles</a></p>\n",
+        "installation": "<ol>\n<li>Upload the <code>headless-block-styles</code> folder to <code>/wp-content/plugins/</code>, or install via Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New.</li>\n<li>Activate the plugin through the Plugins menu.</li>\n<li>Fetch <code>/wp-json/headless-block-styles/v1/stylesheet</code> from your frontend and inject the CSS, and read <code>block_data</code> from your post/page REST responses.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20require%20wpgraphql%20or%20any%20other%20plugin%3F\">\nDoes this require WPGraphQL or any other plugin?\n</h4>\n<p>\n<p>No. It only uses the built-in WordPress REST API and Style Engine.</p>\n</p>\n<dt id=\"are%20the%20endpoints%20public%3F\">\nAre the endpoints public?\n</h4>\n<p>\n<p>The stylesheet and theme endpoints are public, matching what WordPress already outputs publicly on its own frontend. The <code>block_data</code> field follows the visibility of the post it belongs to — private and password-protected content is not exposed.</p>\n</p>\n<dt id=\"does%20the%20stylesheet%20include%20the%20core%20block%20library%20css%3F\">\nDoes the stylesheet include the core block library CSS?\n</h4>\n<p>\n<p>No, same as the WordPress global stylesheet itself. For full parity, import <code>@wordpress/block-library</code> styles in your frontend or copy <code>wp-includes/css/dist/block-library/style.css</code>.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>Initial release: global stylesheet and theme settings REST endpoints, <code>block_data</code> REST field with server-computed inline styles and class names, <code>rendered_blocks</code> REST field capturing render-time block-support CSS and duotone SVG.</li>\n</ul>\n"
+    },
+    "short_description": "Exposes Gutenberg block inline styles and the global stylesheet over the REST API for headless frontends like Next.js.",
+    "description": "<p>Headless Block Styles brings full Gutenberg block styling to any headless frontend (e.g. Next.js) using the WordPress REST API — no WPGraphQL required.</p>\n<p>It does two things:</p>\n<ol>\n<li><strong>Serves the global stylesheet</strong> (<code>wp_get_global_stylesheet()</code>): all <code>--wp--preset--*</code> CSS variables, preset classes (<code>has-*-color</code>, <code>has-*-font-size</code>, …), and theme/user styles — the CSS WordPress would normally enqueue on its own frontend.</li>\n<li><strong>Computes per-block inline styles on the server</strong> with the WordPress Style Engine and adds a <code>block_data</code> field to post REST responses, so your frontend receives ready-to-spread React style objects instead of deriving them from raw block attributes in JavaScript.</li>\n</ol>\n<h4>REST API</h4>\n<p><strong><code>GET /wp-json/headless-block-styles/v1/stylesheet</code></strong></p>\n<ul>\n<li><code>types</code> — comma-separated subset of <code>variables,presets,styles,base-layout-styles</code>. Omit for all.</li>\n<li><code>format</code> — <code>json</code> (default) or <code>css</code> (raw CSS, usable directly in a <code>&lt;link&gt;</code> tag).</li>\n</ul>\n<p><strong><code>GET /wp-json/headless-block-styles/v1/theme</code></strong></p>\n<p>Returns merged <code>theme.json</code> settings (<code>wp_get_global_settings()</code>) — color palette, font sizes, layout sizes.</p>\n<p><strong><code>block_data</code> field on posts and pages</strong></p>\n<p>Every REST-enabled post type response gains a <code>block_data</code> field: the parsed block tree where each block carries <code>inlineStyles</code> (camelCase, ready for a React <code>style</code> prop), <code>classNames</code> (editor-parity <code>has-*</code> classes), <code>attributes</code>, <code>innerHTML</code>, and recursive <code>innerBlocks</code>.</p>\n<pre><code>inlineStyles covers the `style` attribute (spacing, borders, typography, colors — via the WP Style Engine), preset attributes (`backgroundColor`, `textColor`, `gradient`, `borderColor`, `fontSize`, `fontFamily`), and layout (`width`, `height`, `layout.contentSize/wideSize/justifyContent`).\n</code></pre>\n<p><strong><code>rendered_blocks</code> field on posts and pages</strong></p>\n<p>For rendering WordPress&#8217;s HTML faithfully: returns <code>html</code>, <code>css</code>, and <code>svg</code> — the rendered block markup together with the block-support CSS WordPress generates at render time (layout container rules, element link/button colors, duotone filters) and the duotone SVG definitions. On a normal WordPress frontend this CSS is printed in a <code>&lt;style&gt;</code> tag and never reaches REST consumers; here it is captured from the same render as the returned HTML so the generated class names always match.</p>\n<p>Not needed on a request? Exclude fields: <code>/wp/v2/posts?_fields=id,title,content</code>.</p>\n<h4>Filters</h4>\n<ul>\n<li><code>headless_block_styles_block_inline_styles</code> — modify a block&#8217;s computed style object. Args: <code>$styles</code>, <code>$attrs</code>.</li>\n<li><code>headless_block_styles_block_class_names</code> — modify a block&#8217;s computed class names. Args: <code>$classnames</code>, <code>$attrs</code>.</li>\n<li><code>headless_block_styles_post_types</code> — which post types get the <code>block_data</code> field.</li>\n</ul>\n<p>Full documentation and Next.js usage examples: <a href=\"https://github.com/FuSan21/headless-block-styles\" rel=\"nofollow ugc\">github.com/FuSan21/headless-block-styles</a></p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/headless-block-styles.0.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "blocks": "blocks",
+        "decoupled": "decoupled",
+        "gutenberg": "gutenberg",
+        "headless": "headless",
+        "rest-api": "rest-api"
+    },
+    "stable_tag": "0.1.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/headless-block-styles.0.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/headless-block-styles.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/headless-block-styles.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
