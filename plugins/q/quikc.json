@@ -1,0 +1,88 @@
+{
+    "name": "Quikc",
+    "slug": "quikc",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/r4huldev24/\">r4huldev24</a>",
+    "author_profile": "https://profiles.wordpress.org/r4huldev24/",
+    "contributors": {
+        "r4huldev24": {
+            "profile": "https://profiles.wordpress.org/r4huldev24/",
+            "avatar": "https://secure.gravatar.com/avatar/e6fbd461570ccb643b3c3c5d79aceee8fd76d6ad64df6ba43b28678965242b4a?s=96&d=monsterid&r=g",
+            "display_name": "r4huldev24"
+        }
+    },
+    "requires": "5.8",
+    "tested": "7.0.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/quikc/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-22 05:17:00",
+    "added": "2026-07-22",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Quikc is a full-page caching and performance suite for WordPress. On the first anonymous visit to a page, it writes a static HTML snapshot to disk; every anonymous visitor after that is served the snapshot directly, skipping the PHP and database work entirely.</p>\n<p>What sets Quikc apart from a typical page-cache plugin is that it <strong>learns from real traffic</strong> instead of treating every URL the same. A lightweight runtime heatmap tracks which pages are actually being requested, and that data feeds two other modules: Adaptive TTL, which automatically keeps popular pages cached for longer, and Intelligent Preload, which warms the hottest known URLs first so real visitors are far less likely to ever see a MISS.</p>\n<h4>Key features</h4>\n<ul>\n<li><strong>Traffic-learned Adaptive TTL</strong> — cache lifetime automatically extends for URLs the heatmap identifies as high-demand, instead of one fixed expiry for the whole site.</li>\n<li><strong>Intelligent, heat-ranked preloading</strong> — the background warmer prioritizes the URLs your own visitors actually request most, on top of recently modified content.</li>\n<li><strong>Stale-while-revalidate</strong> — once a cached page ages past its TTL, Quikc still serves the stale copy instantly and refreshes it in the background, so no visitor ever waits on a cold cache.</li>\n<li><strong>Atomic, race-safe disk writes</strong> — every cache file is written to a temp file and moved into place, so a request can never read a half-written page.</li>\n<li><strong>Device-aware cache variants</strong> — optional separate mobile/desktop copies prevent responsive layouts from being cached against the wrong device.</li>\n<li><strong>Fault-isolated module architecture</strong> — each feature (caching, minifier, preloader, headers, diagnostics) boots independently inside its own error boundary, so one module failing can&#8217;t take the rest of the site down.</li>\n<li><strong>Safe by default</strong> — logged-in users, non-GET requests, admin/AJAX/REST requests, and query-string variants are never cached; <code>/cart</code>, <code>/checkout</code>, and <code>/my-account</code> are excluded out of the box.</li>\n<li><strong>One-click purge</strong> from the dashboard, the admin toolbar, or a per-URL button next to any learned hot URL.</li>\n<li><strong>REST API and WP-CLI</strong> (<code>wp quikc purge|warm|status</code>) for deploy hooks and CI/CD pipelines — no admin-ajax.php required.</li>\n<li><strong>Whitespace/comment HTML minifier</strong> that never touches the inside of <code>&lt;script&gt;</code>, <code>&lt;style&gt;</code>, <code>&lt;pre&gt;</code>, or <code>&lt;textarea&gt;</code> blocks.</li>\n<li><strong>Opt-in security headers</strong> — X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, and HSTS on HTTPS, plus a filter to add your own CSP.</li>\n<li><strong>Built-in self-diagnostics</strong> — OPcache, GZIP, persistent object cache, cache directory writability, Action Scheduler availability, and current cache size, all on one screen.</li>\n<li><strong>No phone-home, no forced upsells</strong> — every feature above is included; nothing is gated behind a paid tier.</li>\n</ul>\n<p>Quikc also ships a guided in-admin Setup screen so a non-technical site owner can confirm caching is actually working (checking the <code>X-Quikc-Cache</code> response header) within a couple of minutes of activation.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>quikc</code> folder to <code>/wp-content/plugins/</code>, or install the plugin directly through the WordPress Plugins screen.</li>\n<li>Activate the plugin through the &#8220;Plugins&#8221; screen in WordPress.</li>\n<li>Go to Quikc -&gt; Setup to run the guided onboarding checklist.</li>\n<li>Visit Quikc in the admin menu to review diagnostics and adjust cache lifetime, minification, and preload settings.</li>\n<li>Confirm caching is active by checking the <code>X-Quikc-Cache</code> response header on your site&#8217;s homepage (should read <code>HIT</code> after the first visit).</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20cache%20logged-in%20users%20or%20the%20admin%20area%3F\">\nDoes this cache logged-in users or the admin area?\n</h4>\n<p>\n<p>No. Caching is skipped entirely for logged-in users, wp-admin, AJAX requests, REST requests, and any request with a query string.</p>\n</p>\n<dt id=\"will%20this%20break%20my%20cart%20or%20checkout%20pages%3F\">\nWill this break my cart or checkout pages?\n</h4>\n<p>\n<p>/cart, <code>/checkout</code>, and <code>/my-account</code> are excluded from caching by default. You can add further path prefixes under Settings -&gt; Excluded Paths.</p>\n</p>\n<dt id=\"what%20happens%20when%20i%20edit%20a%20post%3F\">\nWhat happens when I edit a post?\n</h4>\n<p>\n<p>The full cache is purged automatically on <code>save_post</code>, new comments, and theme switches, so visitors never see stale content after a change.</p>\n</p>\n<dt id=\"how%20does%20adaptive%20ttl%20decide%20which%20pages%20to%20keep%20cached%20longer%3F\">\nHow does Adaptive TTL decide which pages to keep cached longer?\n</h4>\n<p>\n<p>Every cache hit and miss is tracked in a lightweight runtime heatmap. When Adaptive TTL is enabled, a URL that accumulates enough hits gets its cache lifetime multiplied automatically (up to a one-day ceiling), so your homepage or best-selling product doesn&#8217;t fall back to a MISS as often as a rarely-visited page.</p>\n</p>\n<dt id=\"does%20this%20require%20wp-cli%20or%20action%20scheduler%3F\">\nDoes this require WP-CLI or Action Scheduler?\n</h4>\n<p>\n<p>No. Both are optional. WP-CLI commands are only registered when running under WP-CLI, and the preloader automatically falls back to a single WP-Cron batch if Action Scheduler isn&#8217;t available.</p>\n</p>\n<dt id=\"how%20do%20i%20purge%20the%20cache%20manually%3F\">\nHow do I purge the cache manually?\n</h4>\n<p>\n<p>Use the &#8220;Purge Cache&#8221; button on the Quikc dashboard, the admin toolbar button, or <code>wp quikc purge</code> from WP-CLI. You can also purge a single learned URL directly from the &#8220;Learned Hot URLs&#8221; table.</p>\n</p>\n<dt id=\"can%20i%20reset%20what%20quikc%20has%20learned%20about%20my%20traffic%3F\">\nCan I reset what Quikc has learned about my traffic?\n</h4>\n<p>\n<p>Yes. &#8220;Reset Learning&#8221; on the dashboard (or the <code>/quikc/v1/reset-learning</code> REST endpoint) clears the heatmap used by Adaptive TTL and Intelligent Preload without affecting the current page cache.</p>\n</p>\n<dt id=\"what%20data%20does%20quikc%20send%20externally%3F\">\nWhat data does Quikc send externally?\n</h4>\n<p>\n<p>None. Quikc does not phone home, track usage analytics, or contact any third-party service. Preload/refresh requests only ever go to your own site&#8217;s URLs.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Rebuilt on a service-container Core\\Plugin bootstrap with fault-isolated module loading</li>\n<li>Added device-aware (mobile/desktop) cache variants</li>\n<li>Added excluded-paths rule engine (cart/checkout/account safe by default)</li>\n<li>Added adaptive TTL with runtime heatmap scoring for high-demand URL retention</li>\n<li>Added stale-while-revalidate background regeneration</li>\n<li>Added intelligent preloader that prioritizes learned hot URLs</li>\n<li>Added HTML minifier module</li>\n<li>Added Action Scheduler-based cache preloader with WP-Cron fallback</li>\n<li>Added REST API (quikc/v1/purge, quikc/v1/status, quikc/v1/warm, quikc/v1/learned, quikc/v1/reset-learning) and WP-CLI commands</li>\n<li>Added security headers module</li>\n<li>Added diagnostics dashboard and guided setup screen</li>\n<li>Added uninstall.php for full cleanup on delete</li>\n<li>Added full internationalization support (text domain: quikc)</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial scaffold: basic page cache, admin menu, security headers stub</li>\n</ul>\n"
+    },
+    "short_description": "A self-learning full-page cache: it watches real traffic, keeps hot URLs alive longer, preloads them first, and skips cart/checkout/account.",
+    "description": "<p>Quikc is a full-page caching and performance suite for WordPress. On the first anonymous visit to a page, it writes a static HTML snapshot to disk; every anonymous visitor after that is served the snapshot directly, skipping the PHP and database work entirely.</p>\n<p>What sets Quikc apart from a typical page-cache plugin is that it <strong>learns from real traffic</strong> instead of treating every URL the same. A lightweight runtime heatmap tracks which pages are actually being requested, and that data feeds two other modules: Adaptive TTL, which automatically keeps popular pages cached for longer, and Intelligent Preload, which warms the hottest known URLs first so real visitors are far less likely to ever see a MISS.</p>\n<h4>Key features</h4>\n<ul>\n<li><strong>Traffic-learned Adaptive TTL</strong> — cache lifetime automatically extends for URLs the heatmap identifies as high-demand, instead of one fixed expiry for the whole site.</li>\n<li><strong>Intelligent, heat-ranked preloading</strong> — the background warmer prioritizes the URLs your own visitors actually request most, on top of recently modified content.</li>\n<li><strong>Stale-while-revalidate</strong> — once a cached page ages past its TTL, Quikc still serves the stale copy instantly and refreshes it in the background, so no visitor ever waits on a cold cache.</li>\n<li><strong>Atomic, race-safe disk writes</strong> — every cache file is written to a temp file and moved into place, so a request can never read a half-written page.</li>\n<li><strong>Device-aware cache variants</strong> — optional separate mobile/desktop copies prevent responsive layouts from being cached against the wrong device.</li>\n<li><strong>Fault-isolated module architecture</strong> — each feature (caching, minifier, preloader, headers, diagnostics) boots independently inside its own error boundary, so one module failing can&#8217;t take the rest of the site down.</li>\n<li><strong>Safe by default</strong> — logged-in users, non-GET requests, admin/AJAX/REST requests, and query-string variants are never cached; <code>/cart</code>, <code>/checkout</code>, and <code>/my-account</code> are excluded out of the box.</li>\n<li><strong>One-click purge</strong> from the dashboard, the admin toolbar, or a per-URL button next to any learned hot URL.</li>\n<li><strong>REST API and WP-CLI</strong> (<code>wp quikc purge|warm|status</code>) for deploy hooks and CI/CD pipelines — no admin-ajax.php required.</li>\n<li><strong>Whitespace/comment HTML minifier</strong> that never touches the inside of <code>&lt;script&gt;</code>, <code>&lt;style&gt;</code>, <code>&lt;pre&gt;</code>, or <code>&lt;textarea&gt;</code> blocks.</li>\n<li><strong>Opt-in security headers</strong> — X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, and HSTS on HTTPS, plus a filter to add your own CSP.</li>\n<li><strong>Built-in self-diagnostics</strong> — OPcache, GZIP, persistent object cache, cache directory writability, Action Scheduler availability, and current cache size, all on one screen.</li>\n<li><strong>No phone-home, no forced upsells</strong> — every feature above is included; nothing is gated behind a paid tier.</li>\n</ul>\n<p>Quikc also ships a guided in-admin Setup screen so a non-technical site owner can confirm caching is actually working (checking the <code>X-Quikc-Cache</code> response header) within a couple of minutes of activation.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/quikc.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Major rewrite with a new caching engine and settings schema. Recommended for all users; review your settings after upgrading.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/quikc/assets/screenshot-1-de.png?rev=3617963",
+            "caption": "The Quikc dashboard — cached pages, cache size, hit ratio, learned hot URLs, and one-click purge/warm/reset actions."
+        },
+        {
+            "src": "https://ps.w.org/quikc/assets/screenshot-2-de.png?rev=3617963",
+            "caption": "Settings — cache lifetime, stale-while-revalidate, minifier, mobile cache, adaptive TTL, preload, security headers, and excluded paths."
+        }
+    ],
+    "tags": {
+        "cache": "cache",
+        "minify": "minify",
+        "page-cache": "page cache",
+        "performance": "performance",
+        "preload": "preload"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/quikc.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/quikc.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/quikc/assets/banner-772x250.png?rev=3617963",
+        "high": "https://ps.w.org/quikc/assets/banner-1544x500.png?rev=3617963"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/quikc/assets/icon.svg?rev=3618005",
+        "svg": "https://ps.w.org/quikc/assets/icon.svg?rev=3618005"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
