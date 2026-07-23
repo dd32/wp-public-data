@@ -1,0 +1,77 @@
+{
+    "name": "MyStorefront Postback for WooCommerce",
+    "slug": "mystorefront-postback",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/roxifrancke/\">roxifrancke</a>",
+    "author_profile": "https://profiles.wordpress.org/roxifrancke/",
+    "contributors": {
+        "roxifrancke": {
+            "profile": "https://profiles.wordpress.org/roxifrancke/",
+            "avatar": "https://secure.gravatar.com/avatar/c93be8deaeb2a95c45b35a0d2b06aa5b8e9f75e86b43e98bf6a4343d0659ffee?s=96&d=monsterid&r=g",
+            "display_name": "roxifrancke"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0.2",
+    "requires_php": "8.0",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/mystorefront-postback/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-23 10:33:00",
+    "added": "2026-07-23",
+    "homepage": "",
+    "sections": {
+        "description": "<p>MyStorefront Postback connects a WooCommerce store to the <a href=\"https://mystorefront.io\" rel=\"nofollow ugc\">MyStorefront</a> affiliate tracking platform. It attributes sales to the affiliate or creator who referred the shopper and keeps discount codes in sync between the two systems.</p>\n<p><strong>What it does</strong></p>\n<ul>\n<li><strong>Real-time conversion postback</strong> — when an order reaches a paid status, the plugin sends the order details to your MyStorefront webhook, signed with an <code>Authorization: Bearer</code> secret, so the referring affiliate is credited.</li>\n<li><strong>Refund clawbacks</strong> — when an order is refunded, a negative-total postback is sent so the commission is reversed.</li>\n<li><strong>click_id capture</strong> — reads <code>?click_id=</code> from the landing URL, stores it in a cookie + localStorage, and attaches it to the resulting order. Works with both classic and Block (Store API) checkout.</li>\n<li><strong>Automatic retries</strong> — failed postbacks are retried with exponential backoff via WP-Cron (up to 5 attempts).</li>\n<li><strong>Delivery log</strong> — the most recent postback attempts are viewable on the settings page.</li>\n<li><strong>Discount code sync</strong> — MyStorefront can create, update, and delete WooCommerce coupons through a secure REST endpoint, and the store notifies MyStorefront when a coupon changes, so both stay in sync.</li>\n</ul>\n<p>The plugin runs entirely inside your WordPress site. All configuration is stored in the WordPress options table — no <code>.env</code> file or third-party hosting of your settings is required.</p>\n<h3>External services</h3>\n<p>This plugin connects your store to <strong>MyStorefront</strong> (https://mystorefront.io), the affiliate tracking platform operated by HashTopic (Pty) Ltd. The connection is required for the plugin&#8217;s core purpose — attributing referred sales and syncing discount codes — and is configured by you on the plugin&#8217;s settings page (you enter your MyStorefront webhook URL and secret, and generate an API key). No data is sent until you configure the connection; nothing is transmitted on a site where the webhook URL is left empty.</p>\n<p>The plugin contacts MyStorefront in the following cases:</p>\n<ol>\n<li>\n<p><strong>When an order reaches a paid status, and when an order is refunded.</strong> It sends an HTTP POST to the webhook URL you configure containing: the affiliate <code>click_id</code>, the order ID, number, status and total, the currency, per-line-item details (product/variant ID, SKU, title, quantity, price), shipping/tax/discount totals, the customer&#8217;s billing email and phone number, and your store URL. This is the data used to credit (or, on refund, reverse) the referring affiliate&#8217;s commission.</p>\n</li>\n<li>\n<p><strong>Discount code sync.</strong> MyStorefront calls this site&#8217;s REST endpoints to create, update, or delete WooCommerce coupons, and the plugin notifies MyStorefront when a coupon is changed on the store. Coupon data exchanged includes the code, type, amount, minimum spend, expiry date, and usage limit. These requests are authenticated with the API key you generate on the settings page.</p>\n</li>\n</ol>\n<p>By using this plugin you are sending the data described above to MyStorefront. Please review their terms and privacy policy:</p>\n<ul>\n<li>Terms of Service: https://mystorefront.io/terms</li>\n<li>Privacy Policy: https://mystorefront.io/privacy</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the plugin ZIP via <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin</strong>, then activate it. WooCommerce must be installed and active.</li>\n<li>Go to <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> MyStorefront Postback</strong>.</li>\n<li>Enter your <strong>Webhook URL</strong> and <strong>Webhook Secret</strong> (from MyStorefront), choose which order statuses count as paid, and save.</li>\n<li>Click <strong>Send Test Postback</strong> to confirm the connection.</li>\n<li>For discount sync, click <strong>Generate New Key</strong>, then paste the API Key and Webhook URL shown into MyStorefront <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Discount Code Sync <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> WooCommerce tab and verify the connection.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20plugin%20require%20an%20account%20on%20another%20service%3F\">\nDoes this plugin require an account on another service?\n</h4>\n<p>\n<p>Yes. It is a companion to the MyStorefront affiliate platform (https://mystorefront.io). You need a MyStorefront account to obtain the webhook URL and secret it sends data to. See the &#8220;External services&#8221; section for exactly what data is transmitted.</p>\n</p>\n<dt id=\"is%20any%20data%20sent%20before%20i%20configure%20it%3F\">\nIs any data sent before I configure it?\n</h4>\n<p>\n<p>No. Until you enter a Webhook URL on the settings page, the plugin sends nothing externally.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20the%20block%20%28store%20api%29%20checkout%3F\">\nDoes it work with the Block (Store API) checkout?\n</h4>\n<p>\n<p>Yes. The click_id capture supports both the classic checkout and the newer Block/Store API checkout.</p>\n</p>\n<dt id=\"what%20happens%20on%20a%20refund%3F\">\nWhat happens on a refund?\n</h4>\n<p>\n<p>A postback with a negative total is sent so the affiliate&#8217;s commission can be clawed back automatically.</p>\n</p>\n<dt id=\"how%20do%20i%20deactivate%20a%20discount%20code%3F\">\nHow do I deactivate a discount code?\n</h4>\n<p>\n<p>Manage a code&#8217;s active/inactive state from MyStorefront. Deactivating it there immediately expires the matching WooCommerce coupon so it stops working at checkout, and reactivating it makes the coupon usable again. From the WooCommerce side, deleting (trashing) a coupon also removes it from MyStorefront.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release: conversion postback, refund clawback, click_id capture (classic + Block checkout), WP-Cron retries, delivery log, and two-way discount code sync.</li>\n</ul>\n"
+    },
+    "short_description": "Reports paid WooCommerce orders to the MyStorefront affiliate platform, captures click_id, handles refund clawbacks, and syncs discount codes.",
+    "description": "<p>MyStorefront Postback connects a WooCommerce store to the <a href=\"https://mystorefront.io\" rel=\"nofollow ugc\">MyStorefront</a> affiliate tracking platform. It attributes sales to the affiliate or creator who referred the shopper and keeps discount codes in sync between the two systems.</p>\n<p><strong>What it does</strong></p>\n<ul>\n<li><strong>Real-time conversion postback</strong> — when an order reaches a paid status, the plugin sends the order details to your MyStorefront webhook, signed with an <code>Authorization: Bearer</code> secret, so the referring affiliate is credited.</li>\n<li><strong>Refund clawbacks</strong> — when an order is refunded, a negative-total postback is sent so the commission is reversed.</li>\n<li><strong>click_id capture</strong> — reads <code>?click_id=</code> from the landing URL, stores it in a cookie + localStorage, and attaches it to the resulting order. Works with both classic and Block (Store API) checkout.</li>\n<li><strong>Automatic retries</strong> — failed postbacks are retried with exponential backoff via WP-Cron (up to 5 attempts).</li>\n<li><strong>Delivery log</strong> — the most recent postback attempts are viewable on the settings page.</li>\n<li><strong>Discount code sync</strong> — MyStorefront can create, update, and delete WooCommerce coupons through a secure REST endpoint, and the store notifies MyStorefront when a coupon changes, so both stay in sync.</li>\n</ul>\n<p>The plugin runs entirely inside your WordPress site. All configuration is stored in the WordPress options table — no <code>.env</code> file or third-party hosting of your settings is required.</p>\n<h3>External services</h3>\n<p>This plugin connects your store to <strong>MyStorefront</strong> (https://mystorefront.io), the affiliate tracking platform operated by HashTopic (Pty) Ltd. The connection is required for the plugin&#8217;s core purpose — attributing referred sales and syncing discount codes — and is configured by you on the plugin&#8217;s settings page (you enter your MyStorefront webhook URL and secret, and generate an API key). No data is sent until you configure the connection; nothing is transmitted on a site where the webhook URL is left empty.</p>\n<p>The plugin contacts MyStorefront in the following cases:</p>\n<ol>\n<li>\n<p><strong>When an order reaches a paid status, and when an order is refunded.</strong> It sends an HTTP POST to the webhook URL you configure containing: the affiliate <code>click_id</code>, the order ID, number, status and total, the currency, per-line-item details (product/variant ID, SKU, title, quantity, price), shipping/tax/discount totals, the customer&#8217;s billing email and phone number, and your store URL. This is the data used to credit (or, on refund, reverse) the referring affiliate&#8217;s commission.</p>\n</li>\n<li>\n<p><strong>Discount code sync.</strong> MyStorefront calls this site&#8217;s REST endpoints to create, update, or delete WooCommerce coupons, and the plugin notifies MyStorefront when a coupon is changed on the store. Coupon data exchanged includes the code, type, amount, minimum spend, expiry date, and usage limit. These requests are authenticated with the API key you generate on the settings page.</p>\n</li>\n</ol>\n<p>By using this plugin you are sending the data described above to MyStorefront. Please review their terms and privacy policy:</p>\n<ul>\n<li>Terms of Service: https://mystorefront.io/terms</li>\n<li>Privacy Policy: https://mystorefront.io/privacy</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/mystorefront-postback.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "affiliate": "affiliate",
+        "conversion-tracking": "conversion tracking",
+        "discount-codes": "discount codes",
+        "postback": "postback",
+        "referral-tracking": "referral tracking"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/mystorefront-postback.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/mystorefront-postback.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/mystorefront-postback.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
