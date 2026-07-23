@@ -1,0 +1,96 @@
+{
+    "name": "itdatex E-Invoice Output",
+    "slug": "itdatex-e-invoice-output",
+    "version": "0.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/itdatex/\">itdatex</a>",
+    "author_profile": "https://profiles.wordpress.org/itdatex/",
+    "contributors": {
+        "itdatex": {
+            "profile": "https://profiles.wordpress.org/itdatex/",
+            "avatar": "https://secure.gravatar.com/avatar/e07a49840111dd9942a2117d4b730116c1fdd61cfa06a7dd3d938c700d94f148?s=96&d=monsterid&r=g",
+            "display_name": "itdatex"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.0.2",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/itdatex-e-invoice-output/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-23 07:29:00",
+    "added": "2026-07-23",
+    "homepage": "https://wp.itdatex.support/rechnungsausgang/",
+    "sections": {
+        "description": "<p>Since 1 January 2025, German businesses must be able to receive electronic invoices under § 14 UStG. From 2027/2028 onwards, the <em>issuing</em> side becomes mandatory too: B2B invoices must be sent as e-invoices (XRechnung or ZUGFeRD), not as PDFs or Word documents. <strong>itdatex E-Invoice Output</strong> generates these formats directly inside your WordPress installation.</p>\n<h4>What it does</h4>\n<ul>\n<li>Issues invoices in three formats:\n<ul>\n<li><strong>XRechnung 3.0.2 UBL</strong> — the standard B2G format used via Leitweg-ID</li>\n<li><strong>XRechnung 3.0.2 CII</strong> (UN/CEFACT) — the EN 16931 syntax also used by ZUGFeRD and Factur-X</li>\n<li><strong>ZUGFeRD-PDF</strong> — a hybrid PDF/A-3 with both a human-readable invoice and the embedded CII XML</li>\n</ul>\n</li>\n<li>Pre-validates the generated XML against the EN 16931 XSD schema before saving</li>\n<li>Stores each issued invoice with a random filename in a protected upload directory and chains every file&#8217;s SHA-256 with the previous one</li>\n<li>Provides an admin form with built-in checks for KoSIT-mandatory fields (BR-DE-*, R010/R020 electronic address, BT-10 buyer reference, BR-DE-9 postal code, BR-DE-15 buyer reference)</li>\n<li>Catches SHA-256 duplicates: re-issuing the exact same draft returns the existing invoice id instead of creating a second row</li>\n<li>Logs every action (issue, download) in a dedicated audit table</li>\n<li>Ships a WP-CLI command <code>wp ausrg issue --from=draft.json [--format=cii]</code> for scripted issuing</li>\n</ul>\n<h4>KoSIT-validated output</h4>\n<p>The output of all three builders is accepted by the official KoSIT Validator using the XRechnung 3.0.2 / EN 16931 1.3.15 configuration. The plugin includes a test script (<code>tools/e2e-validate.php</code>) that you can run against a local KoSIT Validator instance to verify this on your own server.</p>\n<h4>Privacy by design</h4>\n<p>The free version performs all generation locally on your own server. No invoice data leaves your WordPress installation. There is no telemetry, no automatic update check against a third party, no analytics, no external font or asset loading.</p>\n<p>A separate Pro version (sold via wp.itdatex.support, not part of this free plugin) adds optional cloud-assisted features — KoSIT deep validation via API, AI-based KoSIT-error explanations in plain German, e-mail dispatch — and is opt-in only.</p>\n<h4>GoBD-supporting, not GoBD-certified</h4>\n<p>The plugin supports GoBD-conformant processes through immutable storage, SHA-256 hash chaining and a complete audit trail. As with any tooling: software cannot be &#8220;GoBD-certified&#8221; — conformity is a property of <em>your</em> process. Consult your tax advisor.</p>\n<h4>Sister plugin</h4>\n<p>If you also need to <em>receive</em> incoming e-invoices, install <strong>itdatex E-Invoice Intake</strong> alongside this plugin. The two plugins share the same database schema and upload directory, so incoming and outgoing invoices live in the same hash chain. Either plugin works standalone; if both are installed, the order of activation does not matter.</p>\n<h4>Open source</h4>\n<p>The full source code is released under GPL-2.0-or-later. You can verify, audit and adapt the plugin yourself. Dependencies (<code>josemmo/einvoicing</code> for UBL, <code>horstoeko/zugferd</code> for CII/ZUGFeRD-PDF, <code>setasign/fpdf</code> for the PDF layout) are vendored with prefixed namespaces so they cannot conflict with other plugins in the same WordPress installation.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to <code>/wp-content/plugins/itdatex-e-invoice-output/</code>, or install via the Plugins screen.</li>\n<li>Activate the plugin.</li>\n<li>Open <strong>Ausgangsrechnung <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Einstellungen</strong> in the admin sidebar and fill in your seller data (company name, VAT ID, address, contact phone/email, electronic address) and default payment terms (IBAN, BIC, payment text). All KoSIT-mandatory seller fields are validated on save.</li>\n<li>Use <strong>Ausgangsrechnung <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Neue Rechnung</strong> to issue your first invoice.</li>\n</ol>\n<p>The plugin creates three database tables (<code>*_reing_invoices</code>, <code>*_reing_files</code>, <code>*_reing_audit_log</code>) and a protected upload directory under <code>wp-content/uploads/itdatex-e-invoice-{random}/</code>. If the sister plugin &#8220;itdatex E-Invoice Intake&#8221; is already installed, the existing tables and upload directory are reused — no duplicate storage.</p>\n<p>On uninstall, <strong>invoice data and files are NOT deleted by default</strong> because of statutory retention requirements (8 to 10 years under German tax and commercial law).</p>\n",
+        "faq": "\n<dt id=\"which%20format%20should%20i%20choose%3F\">\nWhich format should I choose?\n</h4>\n<p>\n<p>For <em>B2G</em> invoices to German authorities (Bund, Länder, Kommunen): <strong>XRechnung UBL</strong> with a Leitweg-ID in the Buyer Reference. For <em>B2B</em> invoices: <strong>ZUGFeRD-PDF</strong> is the most polite choice — the recipient sees a normal PDF, machine-readable systems extract the XML. <strong>CII</strong> is useful when the recipient expects the EN 16931 CII payload without a PDF carrier (e.g. via PEPPOL).</p>\n</p>\n<dt id=\"what%20about%20kleinunternehmerregelung%20%28%C2%A7%2019%20ustg%29%20and%20reverse%20charge%3F\">\nWhat about Kleinunternehmerregelung (§ 19 UStG) and reverse charge?\n</h4>\n<p>\n<p>In the position editor, set the VAT category to <code>E</code> (exempt — Kleinunternehmer) or <code>AE</code> (reverse charge) and the VAT rate to 0. The plugin generates the correct EN-16931 tax breakdown.</p>\n</p>\n<dt id=\"why%20does%20the%20plugin%20demand%20a%20%22leitweg-id%22%20even%20for%20b2b%20invoices%3F\">\nWhy does the plugin demand a &#8220;Leitweg-ID&#8221; even for B2B invoices?\n</h4>\n<p>\n<p>It does not. The field is labelled &#8220;Leitweg-ID / Buyer Reference&#8221; because BT-10 (BR-DE-15) is XRechnung-mandatory but its content is up to you: in B2G that is the official Leitweg-ID; in B2B you can use a customer- or order-number. The plugin does <em>not</em> validate the format against the Leitweg pattern.</p>\n</p>\n<dt id=\"does%20the%20plugin%20send%20anything%20to%20your%20server%3F\">\nDoes the plugin send anything to your server?\n</h4>\n<p>\n<p>The free version makes no external HTTP calls. All generation, validation and storage happens locally. You can verify this by inspecting the source — the only network code path would be the optional Pro upgrade, which is not part of this free plugin.</p>\n</p>\n<dt id=\"can%20i%20use%20the%20plugin%20without%20the%20sister%20%22intake%22%20plugin%3F\">\nCan I use the plugin without the sister &#8220;Intake&#8221; plugin?\n</h4>\n<p>\n<p>Yes. The plugin creates its own tables and upload directory on activation. If you later install the Intake plugin, both plugins share the existing schema — no migration needed.</p>\n</p>\n<dt id=\"how%20does%20the%20duplicate%20detection%20work%3F\">\nHow does the duplicate detection work?\n</h4>\n<p>\n<p>Every issued file is hashed (SHA-256) and compared against the file table. Re-running the same draft (same numbers, same VAT, same line items) produces an identical XML/PDF byte sequence and triggers a duplicate response with the existing invoice id. This is intentional: invoice numbers should be re-used at the <em>invoice level</em>, not at the file level. To re-issue a corrected version, change at least one byte (e.g. the issue date or the buyer reference).</p>\n</p>\n<dt id=\"does%20this%20work%20behind%20nginx%3F\">\nDoes this work behind nginx?\n</h4>\n<p>\n<p>Yes. The protected upload directory uses both <code>.htaccess</code> (Apache/LiteSpeed) and a randomized directory name so that path guessing fails. File downloads always go through a capability-and-nonce-checked endpoint, never via a direct URL.</p>\n</p>\n<dt id=\"how%20do%20i%20issue%20invoices%20from%20a%20script%3F\">\nHow do I issue invoices from a script?\n</h4>\n<p>\n<p>wp ausrg issue &#8211;from=draft.json &#8211;format=ubl|cii|zugferd-pdf reads a JSON draft and runs the same pipeline as the admin form. Useful for migrations from a different billing system. The seller data falls back to the plugin Settings if not present in the JSON.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>Initial release: UBL, CII and ZUGFeRD-PDF builders; admin form with KoSIT-mandatory field validation; seller-data settings; WP-CLI command; secure download endpoint; SHA-256 hash chain; audit log; standalone activation (own schema + upload dir, or shared with the sister Intake plugin).</li>\n</ul>\n"
+    },
+    "short_description": "Issue German e-invoices (XRechnung, ZUGFeRD, Factur-X) directly in WordPress — KoSIT-validated, generated locally, never sent to any cloud.",
+    "description": "<p>Since 1 January 2025, German businesses must be able to receive electronic invoices under § 14 UStG. From 2027/2028 onwards, the <em>issuing</em> side becomes mandatory too: B2B invoices must be sent as e-invoices (XRechnung or ZUGFeRD), not as PDFs or Word documents. <strong>itdatex E-Invoice Output</strong> generates these formats directly inside your WordPress installation.</p>\n<h4>What it does</h4>\n<ul>\n<li>Issues invoices in three formats:\n<ul>\n<li><strong>XRechnung 3.0.2 UBL</strong> — the standard B2G format used via Leitweg-ID</li>\n<li><strong>XRechnung 3.0.2 CII</strong> (UN/CEFACT) — the EN 16931 syntax also used by ZUGFeRD and Factur-X</li>\n<li><strong>ZUGFeRD-PDF</strong> — a hybrid PDF/A-3 with both a human-readable invoice and the embedded CII XML</li>\n</ul>\n</li>\n<li>Pre-validates the generated XML against the EN 16931 XSD schema before saving</li>\n<li>Stores each issued invoice with a random filename in a protected upload directory and chains every file&#8217;s SHA-256 with the previous one</li>\n<li>Provides an admin form with built-in checks for KoSIT-mandatory fields (BR-DE-*, R010/R020 electronic address, BT-10 buyer reference, BR-DE-9 postal code, BR-DE-15 buyer reference)</li>\n<li>Catches SHA-256 duplicates: re-issuing the exact same draft returns the existing invoice id instead of creating a second row</li>\n<li>Logs every action (issue, download) in a dedicated audit table</li>\n<li>Ships a WP-CLI command <code>wp ausrg issue --from=draft.json [--format=cii]</code> for scripted issuing</li>\n</ul>\n<h4>KoSIT-validated output</h4>\n<p>The output of all three builders is accepted by the official KoSIT Validator using the XRechnung 3.0.2 / EN 16931 1.3.15 configuration. The plugin includes a test script (<code>tools/e2e-validate.php</code>) that you can run against a local KoSIT Validator instance to verify this on your own server.</p>\n<h4>Privacy by design</h4>\n<p>The free version performs all generation locally on your own server. No invoice data leaves your WordPress installation. There is no telemetry, no automatic update check against a third party, no analytics, no external font or asset loading.</p>\n<p>A separate Pro version (sold via wp.itdatex.support, not part of this free plugin) adds optional cloud-assisted features — KoSIT deep validation via API, AI-based KoSIT-error explanations in plain German, e-mail dispatch — and is opt-in only.</p>\n<h4>GoBD-supporting, not GoBD-certified</h4>\n<p>The plugin supports GoBD-conformant processes through immutable storage, SHA-256 hash chaining and a complete audit trail. As with any tooling: software cannot be &#8220;GoBD-certified&#8221; — conformity is a property of <em>your</em> process. Consult your tax advisor.</p>\n<h4>Sister plugin</h4>\n<p>If you also need to <em>receive</em> incoming e-invoices, install <strong>itdatex E-Invoice Intake</strong> alongside this plugin. The two plugins share the same database schema and upload directory, so incoming and outgoing invoices live in the same hash chain. Either plugin works standalone; if both are installed, the order of activation does not matter.</p>\n<h4>Open source</h4>\n<p>The full source code is released under GPL-2.0-or-later. You can verify, audit and adapt the plugin yourself. Dependencies (<code>josemmo/einvoicing</code> for UBL, <code>horstoeko/zugferd</code> for CII/ZUGFeRD-PDF, <code>setasign/fpdf</code> for the PDF layout) are vendored with prefixed namespaces so they cannot conflict with other plugins in the same WordPress installation.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/itdatex-e-invoice-output.0.1.0.zip",
+    "upgrade_notice": {
+        "0.1.0": "<p>First public release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/itdatex-e-invoice-output/assets/screenshot-1.png?rev=3619531",
+            "caption": "The list view shows all issued invoices with date, due date, buyer, gross amount and validation status."
+        },
+        {
+            "src": "https://ps.w.org/itdatex-e-invoice-output/assets/screenshot-2.png?rev=3619531",
+            "caption": "The \"Neue Rechnung\" form has inline hints for every KoSIT-mandatory field (BT/BR codes)."
+        },
+        {
+            "src": "https://ps.w.org/itdatex-e-invoice-output/assets/screenshot-3.png?rev=3619531",
+            "caption": "The single-invoice view shows the generated file, header data, validation report and audit trail."
+        },
+        {
+            "src": "https://ps.w.org/itdatex-e-invoice-output/assets/screenshot-4.png?rev=3619531",
+            "caption": "The Settings page validates seller data against BR-DE-5 to BR-DE-28 on save (contact details, electronic address, VAT ID)."
+        }
+    ],
+    "tags": {
+        "billing": "Billing",
+        "e-invoice": "e-invoice",
+        "invoice": "invoice",
+        "xrechnung": "xrechnung",
+        "zugferd": "zugferd"
+    },
+    "stable_tag": "0.1.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/itdatex-e-invoice-output.0.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/itdatex-e-invoice-output.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/itdatex-e-invoice-output/assets/banner-772x250.png?rev=3619531",
+        "high": "https://ps.w.org/itdatex-e-invoice-output/assets/banner-1544x500.png?rev=3619531"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/itdatex-e-invoice-output/assets/icon-128x128.png?rev=3619531",
+        "2x": "https://ps.w.org/itdatex-e-invoice-output/assets/icon-256x256.png?rev=3619531"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
