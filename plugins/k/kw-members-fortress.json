@@ -1,0 +1,73 @@
+{
+    "name": "KW Members Fortress",
+    "slug": "kw-members-fortress",
+    "version": "1.0.8",
+    "author": "<a href=\"https://profiles.wordpress.org/basic777/\">KREISWOLKE</a>",
+    "author_profile": "https://profiles.wordpress.org/basic777/",
+    "contributors": {
+        "basic777": {
+            "profile": "https://profiles.wordpress.org/basic777/",
+            "avatar": "https://secure.gravatar.com/avatar/170d64bb10ab23e862a0fb230d076b4b123a1a82be03514b23c0ae694d4d8302?s=96&d=monsterid&r=g",
+            "display_name": "KREISWOLKE"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/kw-members-fortress/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-25 07:54:00",
+    "added": "2026-07-25",
+    "homepage": "https://kreiswolke.com/members-fortress",
+    "sections": {
+        "description": "<p><strong>KW Members Fortress</strong> turns a standalone WordPress site into a private, members-only space. Visitors who aren&#8217;t logged in can&#8217;t reach <strong>anything</strong> except the login screen and the legal pages you choose to publish — not your pages, posts, archives, search, feeds, REST API, sitemaps, XML-RPC, and crucially <strong>not your uploaded files</strong> either.</p>\n<p>Most &#8220;force login&#8221; plugins only gate the <em>pages</em> WordPress renders. They leave every file in <code>/wp-content/uploads/</code> reachable by anyone who has (or guesses) the URL — PDFs, images, documents. KW Members Fortress routes those file requests through WordPress and serves them <strong>only to logged-in members</strong>, then continuously <strong>self-tests</strong> that the seal is holding.</p>\n<h4>What it does</h4>\n<ul>\n<li><strong>Whole-site gate</strong> — logged-out requests are redirected to login: pages, posts, archives, search, feeds, REST, sitemaps, XML-RPC.</li>\n<li><strong>Protected file URLs</strong> — direct hits to <code>/wp-content/uploads/…</code> are served only to members (Apache/LiteSpeed handled automatically; nginx shows you the one snippet to paste).</li>\n<li><strong>Leak self-test (canary)</strong> — about once an hour the plugin makes a cookie-less request to one of its own upload URLs and raises a dashboard alarm if a file ever comes back without login. Silent misconfiguration becomes a visible warning.</li>\n<li><strong>Branded login screen</strong> — set a background image, overlay colour/gradient, accent colour, and logo from the settings page. No file editing.</li>\n<li><strong>Footer &amp; legal pages</strong> — up to three footer items, each a built-in page (rendered theme-less and reachable while logged out) or an external link. Perfect for an Imprint / Privacy notice on an otherwise-private site.</li>\n<li><strong>Hardening (all optional, on by default)</strong> — block logged-out admin-ajax, block user-enumeration, no-cache headers on blocked responses, and a progressive login throttle that auto-recovers.</li>\n</ul>\n<h4>Good to know</h4>\n<ul>\n<li>No accounts, tiers, payments, or third-party services. One site, one membership wall.</li>\n<li>Runtime files are stored under <code>…/wp-content/uploads/kw-members-fortress/</code> — never in the plugin folder.</li>\n<li>The leak self-test only ever contacts <strong>your own site&#8217;s</strong> URL; it is not an external service.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the plugin to <code>/wp-content/plugins/</code> (or install it from your dashboard) and activate it.</li>\n<li>On <strong>Apache / LiteSpeed</strong> the upload-protection rule is written for you. On <strong>nginx</strong>, the plugin shows a short <code>location</code> snippet — paste it into your server block and reload nginx.</li>\n<li>Visit <strong>Members Fortress</strong> in the admin menu to brand the login screen, add footer/legal pages, and review the <strong>Lockdown</strong> status (server type, public-asset folder, and the latest leak self-test result).</li>\n<li>Log out in a separate browser to confirm the site is sealed.</li>\n</ol>\n<p><strong>Caching:</strong> because every visitor must be checked individually, full-page caching of the front end must be turned off (or the gate can be bypassed by a cached copy). The plugin sends no-cache headers on blocked responses, but a page cache in front of WordPress should not store logged-in/front-end pages.</p>\n",
+        "faq": "\n<dt id=\"does%20it%20really%20protect%20uploaded%20files%2C%20or%20just%20pages%3F\">\nDoes it really protect uploaded files, or just pages?\n</h4>\n<p>\n<p>Files too — that&#8217;s the point. Requests to <code>/wp-content/uploads/…</code> are routed through WordPress and served only to logged-in members. The only exception is a small public sub-folder, <code>uploads/kw-members-fortress/public/</code>, which holds just your chosen login background and logo so they can load on the logged-out login screen.</p>\n</p>\n<dt id=\"why%20does%20it%20edit%20my%20root%20%60.htaccess%60%3F\">\nWhy does it edit my root `.htaccess`?\n</h4>\n<p>\n<p>On Apache/LiteSpeed the upload-protection rule is added to <code>.htaccess</code> using WordPress&#8217; own marker API (the same mechanism core uses for permalinks), inside a clearly-marked block. Deactivating the plugin removes the block and restores normal file serving.</p>\n</p>\n<dt id=\"what%20is%20the%20%22leak%20self-test%22%3F\">\nWhat is the &#8220;leak self-test&#8221;?\n</h4>\n<p>\n<p>A tiny sentinel file lives in the plugin&#8217;s folder inside uploads (<code>uploads/kw-members-fortress/canary.txt</code> — a location that must stay locked). About once an hour, while you&#8217;re in the dashboard, the plugin requests that file&#8217;s URL <strong>without</strong> sending your login cookies. If the file comes back, the gate isn&#8217;t working and you get a red dashboard warning. It only ever contacts your own site — it is not a third-party service.</p>\n</p>\n<dt id=\"i%27m%20on%20nginx%20and%20files%20are%20still%20reachable.\">\nI&#8217;m on nginx and files are still reachable.\n</h4>\n<p>\n<p>nginx configuration can&#8217;t be edited from PHP, so the plugin shows the exact <code>location</code> snippet to add to your server block. Add it and reload nginx; the <strong>Lockdown</strong> tab and the self-test will confirm the seal.</p>\n</p>\n<dt id=\"can%20i%20show%20an%20imprint%20%2F%20privacy%20page%20to%20logged-out%20visitors%3F\">\nCan I show an Imprint / Privacy page to logged-out visitors?\n</h4>\n<p>\n<p>Yes. Under <strong>Footer &amp; Pages</strong>, set a slot to <strong>Built-in page</strong>, give it a title and content, and it renders on its own theme-less page that&#8217;s reachable without login (and <code>noindex</code>). Images embedded inside that content won&#8217;t display to logged-out visitors, since uploads stay locked — use text and HTML.</p>\n</p>\n<dt id=\"the%20login%20throttle%20locked%20me%20out.\">\nThe login throttle locked me out.\n</h4>\n<p>\n<p>After several failed logins from one IP, a short, growing cool-down is applied; it expires on its own (no permanent lockout). Note that visitors sharing one office/NAT IP share the counter. You can turn the throttle off on the <strong>Lockdown</strong> tab.</p>\n</p>\n<dt id=\"what%20happens%20when%20i%20deactivate%20or%20delete%20it%3F\">\nWhat happens when I deactivate or delete it?\n</h4>\n<p>\n<p>Deactivating removes the <code>.htaccess</code> rule and turns protection <strong>off</strong> — by design. Deleting honours the <strong>Advanced <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> &#8220;remove all data&#8221;</strong> option: leave it off to keep your settings, or turn it on to remove the settings and the public-asset folder on uninstall.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.8</h4>\n<ul>\n<li>The legal-page styles are now delivered through the enqueue API (registered handle + <code>wp_add_inline_style</code>).</li>\n<li>All runtime files now live under <code>uploads/kw-members-fortress/</code>: the leak-test sentinel moved there from the uploads root, and public login assets moved into the <code>public/</code> sub-folder. Existing installs migrate automatically.</li>\n<li>The sentinel file is now written via the <code>WP_Filesystem</code> API.</li>\n</ul>\n<h4>1.0.7</h4>\n<ul>\n<li>Initial public release.</li>\n</ul>\n"
+    },
+    "short_description": "Make your whole WordPress site private — every page, feed, REST endpoint and uploaded file requires login — and prove it isn&#039;t leaking.",
+    "description": "<p><strong>KW Members Fortress</strong> turns a standalone WordPress site into a private, members-only space. Visitors who aren&#8217;t logged in can&#8217;t reach <strong>anything</strong> except the login screen and the legal pages you choose to publish — not your pages, posts, archives, search, feeds, REST API, sitemaps, XML-RPC, and crucially <strong>not your uploaded files</strong> either.</p>\n<p>Most &#8220;force login&#8221; plugins only gate the <em>pages</em> WordPress renders. They leave every file in <code>/wp-content/uploads/</code> reachable by anyone who has (or guesses) the URL — PDFs, images, documents. KW Members Fortress routes those file requests through WordPress and serves them <strong>only to logged-in members</strong>, then continuously <strong>self-tests</strong> that the seal is holding.</p>\n<h4>What it does</h4>\n<ul>\n<li><strong>Whole-site gate</strong> — logged-out requests are redirected to login: pages, posts, archives, search, feeds, REST, sitemaps, XML-RPC.</li>\n<li><strong>Protected file URLs</strong> — direct hits to <code>/wp-content/uploads/…</code> are served only to members (Apache/LiteSpeed handled automatically; nginx shows you the one snippet to paste).</li>\n<li><strong>Leak self-test (canary)</strong> — about once an hour the plugin makes a cookie-less request to one of its own upload URLs and raises a dashboard alarm if a file ever comes back without login. Silent misconfiguration becomes a visible warning.</li>\n<li><strong>Branded login screen</strong> — set a background image, overlay colour/gradient, accent colour, and logo from the settings page. No file editing.</li>\n<li><strong>Footer &amp; legal pages</strong> — up to three footer items, each a built-in page (rendered theme-less and reachable while logged out) or an external link. Perfect for an Imprint / Privacy notice on an otherwise-private site.</li>\n<li><strong>Hardening (all optional, on by default)</strong> — block logged-out admin-ajax, block user-enumeration, no-cache headers on blocked responses, and a progressive login throttle that auto-recovers.</li>\n</ul>\n<h4>Good to know</h4>\n<ul>\n<li>No accounts, tiers, payments, or third-party services. One site, one membership wall.</li>\n<li>Runtime files are stored under <code>…/wp-content/uploads/kw-members-fortress/</code> — never in the plugin folder.</li>\n<li>The leak self-test only ever contacts <strong>your own site&#8217;s</strong> URL; it is not an external service.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/kw-members-fortress.1.0.8.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "file-protection": "file protection",
+        "force-login": "force login",
+        "login-required": "login required",
+        "members-only": "members-only",
+        "private-site": "private site"
+    },
+    "stable_tag": "1.0.8",
+    "versions": {
+        "1.0.8": "https://downloads.wordpress.org/plugin/kw-members-fortress.1.0.8.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/kw-members-fortress.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/kw-members-fortress.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
