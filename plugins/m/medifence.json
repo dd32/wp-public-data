@@ -1,0 +1,79 @@
+{
+    "name": "Medifence – Access Control for Media Uploads",
+    "slug": "medifence",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/redwoodcity/\">Redwoodcity</a>",
+    "author_profile": "https://profiles.wordpress.org/redwoodcity/",
+    "contributors": {
+        "redwoodcity": {
+            "profile": "https://profiles.wordpress.org/redwoodcity/",
+            "avatar": "https://secure.gravatar.com/avatar/0ac3f00cee492c0288cd40f7faf2ea2e71c5ec664d70906f4b76a2c3f7b4381a?s=96&d=monsterid&r=g",
+            "display_name": "Redwoodcity"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/medifence/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-25 16:02:00",
+    "added": "2026-07-25",
+    "homepage": "",
+    "sections": {
+        "description": "<p>By default, every file inside the WordPress uploads directory can be opened by anyone who knows its URL. For membership sites this means that protected content pages are useless if the images inside them can still be opened directly.</p>\n<p>Medifence puts a login check in front of every uploads request — without changing a single URL and without moving any files.</p>\n<h4>How it works</h4>\n<p>On activation, the plugin writes a small rule block into the <code>.htaccess</code> file inside your uploads directory (using WordPress&#8217;s own marker mechanism, so rules from other plugins are preserved). Requests for existing files are rewritten to WordPress itself, which bootstraps normally; the plugin then verifies the visitor is logged in and streams the file. No WordPress core file is ever loaded directly. Deactivating or uninstalling the plugin removes the rules, and your files are served normally again.</p>\n<h4>Features</h4>\n<ul>\n<li>File URLs stay exactly the same — nothing to update in posts or the database</li>\n<li>Physical files stay where they are — no migration needed</li>\n<li>Built-in live verification: the settings screen requests a test file without a session cookie and shows the actual HTTP status anonymous visitors receive</li>\n<li>A warning appears on all admin screens if another plugin overwrites the rules</li>\n<li>Optionally require a specific capability in addition to being logged in</li>\n<li>Choose the denied status code (403, 404, or 401) — 404 hides that the file exists</li>\n<li>Optionally serve a placeholder image instead of denied images</li>\n<li>Exclude specific file extensions (useful when your theme loads CSS or fonts from uploads)</li>\n<li>Range request support for video and audio seeking, ETag-based browser caching for logged-in users</li>\n<li>Cleans up completely on uninstall</li>\n</ul>\n<h4>Requirements</h4>\n<ul>\n<li>Apache or LiteSpeed with mod_rewrite enabled</li>\n<li>A writable <code>.htaccess</code> file in the uploads directory</li>\n</ul>\n<p>This plugin does not work on nginx, because nginx does not read <code>.htaccess</code> files. The built-in live test will tell you immediately whether your server is compatible.</p>\n<h4>For developers</h4>\n<p>The final access decision can be filtered:</p>\n<pre><code>add_filter( 'medifence_allow_access', function ( $allowed, $file_path ) {\n    // Example: always allow files inside uploads/public/.\n    if ( false !== strpos( $file_path, '/uploads/public/' ) ) {\n        return true;\n    }\n    return $allowed;\n}, 10, 2 );\n</code></pre>\n",
+        "installation": "<ol>\n<li>Upload the <code>medifence</code> folder to <code>/wp-content/plugins/</code>, or install it from the Plugins screen.</li>\n<li>Activate the plugin. The <code>.htaccess</code> rules are written automatically.</li>\n<li>Go to <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Medifence</strong> and confirm that the live test reports &#8220;Anonymous access is blocked&#8221;.</li>\n<li>Optionally, open a media file URL in a private browsing window to verify it yourself.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20my%20file%20urls%20change%3F\">\nDo my file URLs change?\n</h4>\n<p>\n<p>No. Existing URLs in posts, themes, and the database keep working exactly as before. Logged-in visitors see no difference at all.</p>\n</p>\n<dt id=\"how%20do%20i%20know%20the%20protection%20is%20actually%20working%3F\">\nHow do I know the protection is actually working?\n</h4>\n<p>\n<p>The settings screen runs a live test: it creates a temporary file, requests it over HTTP without any session cookie, deletes it, and reports the status code. If your server configuration prevents the rules from working, you will see it there — not months later.</p>\n</p>\n<dt id=\"does%20it%20work%20on%20nginx%3F\">\nDoes it work on nginx?\n</h4>\n<p>\n<p>No. The plugin relies on <code>.htaccess</code> rewrite rules, which nginx does not support. You would need an equivalent rule in your nginx configuration, which is outside what a plugin can safely manage.</p>\n</p>\n<dt id=\"what%20happens%20when%20i%20deactivate%20the%20plugin%3F\">\nWhat happens when I deactivate the plugin?\n</h4>\n<p>\n<p>The rules are removed from the <code>.htaccess</code> file and all files are served normally again. Uninstalling additionally deletes the plugin&#8217;s settings.</p>\n</p>\n<dt id=\"another%20plugin%20overwrote%20the%20.htaccess%20file.%20what%20now%3F\">\nAnother plugin overwrote the .htaccess file. What now?\n</h4>\n<p>\n<p>Medifence detects this and shows a warning on your admin screens. One click on &#8220;Regenerate .htaccess rules&#8221; restores them.</p>\n</p>\n<dt id=\"does%20this%20modify%20files%20outside%20the%20plugin%20directory%3F\">\nDoes this modify files outside the plugin directory?\n</h4>\n<p>\n<p>Yes, one file: the <code>.htaccess</code> inside your uploads directory. The plugin uses WordPress&#8217;s <code>insert_with_markers()</code> function, which only touches its own marked block and preserves everything else. The block is removed on deactivation and uninstall.</p>\n</p>\n<dt id=\"does%20the%20plugin%20contact%20any%20external%20service%3F\">\nDoes the plugin contact any external service?\n</h4>\n<p>\n<p>No. The live test sends one HTTP request to your own site. Nothing is sent anywhere else.</p>\n</p>\n<dt id=\"does%20this%20slow%20down%20my%20site%3F\">\nDoes this slow down my site?\n</h4>\n<p>\n<p>Protected files are served through PHP, which adds overhead compared to direct file delivery. To keep this small, the plugin sends ETag headers so browsers of logged-in users cache files locally, and repeat requests are answered with an empty 304 response. Files with excluded extensions bypass PHP entirely.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Blocks direct access to uploaded media files for visitors who are not logged in. File URLs stay unchanged.",
+    "description": "<p>By default, every file inside the WordPress uploads directory can be opened by anyone who knows its URL. For membership sites this means that protected content pages are useless if the images inside them can still be opened directly.</p>\n<p>Medifence puts a login check in front of every uploads request — without changing a single URL and without moving any files.</p>\n<h4>How it works</h4>\n<p>On activation, the plugin writes a small rule block into the <code>.htaccess</code> file inside your uploads directory (using WordPress&#8217;s own marker mechanism, so rules from other plugins are preserved). Requests for existing files are rewritten to WordPress itself, which bootstraps normally; the plugin then verifies the visitor is logged in and streams the file. No WordPress core file is ever loaded directly. Deactivating or uninstalling the plugin removes the rules, and your files are served normally again.</p>\n<h4>Features</h4>\n<ul>\n<li>File URLs stay exactly the same — nothing to update in posts or the database</li>\n<li>Physical files stay where they are — no migration needed</li>\n<li>Built-in live verification: the settings screen requests a test file without a session cookie and shows the actual HTTP status anonymous visitors receive</li>\n<li>A warning appears on all admin screens if another plugin overwrites the rules</li>\n<li>Optionally require a specific capability in addition to being logged in</li>\n<li>Choose the denied status code (403, 404, or 401) — 404 hides that the file exists</li>\n<li>Optionally serve a placeholder image instead of denied images</li>\n<li>Exclude specific file extensions (useful when your theme loads CSS or fonts from uploads)</li>\n<li>Range request support for video and audio seeking, ETag-based browser caching for logged-in users</li>\n<li>Cleans up completely on uninstall</li>\n</ul>\n<h4>Requirements</h4>\n<ul>\n<li>Apache or LiteSpeed with mod_rewrite enabled</li>\n<li>A writable <code>.htaccess</code> file in the uploads directory</li>\n</ul>\n<p>This plugin does not work on nginx, because nginx does not read <code>.htaccess</code> files. The built-in live test will tell you immediately whether your server is compatible.</p>\n<h4>For developers</h4>\n<p>The final access decision can be filtered:</p>\n<pre><code>add_filter( 'medifence_allow_access', function ( $allowed, $file_path ) {\n    // Example: always allow files inside uploads/public/.\n    if ( false !== strpos( $file_path, '/uploads/public/' ) ) {\n        return true;\n    }\n    return $allowed;\n}, 10, 2 );\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/medifence.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "access-control": "access-control",
+        "media": "media",
+        "membership": "membership",
+        "protection": "protection",
+        "uploads": "uploads"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/medifence.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/medifence.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/medifence/assets/banner-772x250.png?rev=3622612",
+        "high": "https://ps.w.org/medifence/assets/banner-1544x500.png?rev=3622612"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/medifence/assets/icon-128x128.png?rev=3622612",
+        "2x": "https://ps.w.org/medifence/assets/icon-256x256.png?rev=3622612"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
