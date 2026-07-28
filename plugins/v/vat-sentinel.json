@@ -1,0 +1,97 @@
+{
+    "name": "VAT Sentinel",
+    "slug": "vat-sentinel",
+    "version": "0.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/flexpoint/\">flexpoint</a>",
+    "author_profile": "https://profiles.wordpress.org/flexpoint/",
+    "contributors": {
+        "flexpoint": {
+            "profile": "https://profiles.wordpress.org/flexpoint/",
+            "avatar": "https://secure.gravatar.com/avatar/5a162356211b6e48511e99505ed5cfccb5ff42aaeffc1d8702da9b405b458f2a?s=96&d=monsterid&r=g",
+            "display_name": "flexpoint"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.0.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/vat-sentinel/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-28 05:35:00",
+    "added": "2026-07-28",
+    "homepage": "https://vatsentinel.eu/",
+    "sections": {
+        "description": "<p>VAT Sentinel adds a VAT number field to your WooCommerce checkout for EU/EEA business buyers, validates it against the European Commission&#8217;s official VIES service, and applies the cross-border B2B reverse charge when the number is valid. Every check is recorded with a UTC timestamp.</p>\n<p>The difference: when VIES is unavailable (which happens regularly and is outside any vendor&#8217;s control), VAT Sentinel does not break your checkout. It accepts the order, flags it as &#8220;VAT pending verification&#8221;, and lets you re-check it once VIES recovers.</p>\n<p>VAT Sentinel is a validation and record-keeping tool. It is NOT tax advice and does not guarantee tax compliance. Always consult your own tax advisor.</p>\n<p>Works on the block checkout, the modern WooCommerce default (it uses the WooCommerce Additional Checkout Fields and Store API, so it requires WooCommerce 8.9 or newer). The VAT number field does not currently appear on the legacy classic (shortcode) checkout — if your store still uses the classic checkout, switch to the block checkout to use VAT Sentinel.</p>\n<h4>Free</h4>\n<ul>\n<li>VAT number field at checkout (shown for EU/EEA, taxable carts)</li>\n<li>Live VIES validation with basic format checks</li>\n<li>Reverse-charge zero-rating for valid cross-border EU B2B carts, recorded with an internal order note (invoices/PDFs are not modified)</li>\n<li>Accept + flag orders when VIES is down, with a manual re-check button</li>\n<li>Live per-country VIES status panel</li>\n<li>On-screen log of recent checks, including the business name and address VIES returns (when the member state provides them)</li>\n</ul>\n<h4>Pro (planned)</h4>\n<p>A paid Pro version is planned for the future. It is not available yet, and this free version is complete and usable on its own.</p>\n<h3>External services</h3>\n<p>This plugin connects to the European Commission&#8217;s VAT Information Exchange System (VIES), a third-party service operated by the European Commission (a separate data controller). It is used to validate VAT numbers. When a buyer enters a VAT number, the plugin sends that VAT number and country code (and, if you configure it, your own merchant VAT number as the requester) to the VIES REST endpoint at https://ec.europa.eu/taxation_customs/vies/rest-api/ to confirm whether the number is valid and to obtain a consultation reference. The plugin also makes a periodic request to the VIES /check-status endpoint to display per-country availability; no personal data is sent on that call. No data is sent to VIES except what is required to perform the validation. VIES terms and privacy information are available at https://ec.europa.eu/taxation_customs/vies/ .</p>\n<p>The VIES &#8220;consultation number&#8221; is evidence that a validation was performed at a given date and time. It is proof that you checked. It is not proof of tax compliance or of the order&#8217;s correct VAT treatment.</p>\n<h3>Privacy</h3>\n<p>VAT numbers and validation results are stored locally in your own WordPress database as part of your order/tax records. You (the site owner) are the data controller for this data; the plugin and its author do not receive it.</p>\n<p>A VAT number can be personal data (for example for a sole trader), so: the lawful basis for keeping it is your legal obligation to retain VAT evidence, commonly for 7 to 10 years depending on your country. Because the validation log is kept as tax evidence, records are retained for that period and are not deleted automatically on uninstall. To act on a data-subject erasure request you can remove the relevant rows from the database; note that your legal obligation to retain VAT evidence may justify keeping a record despite an erasure request. Document your own retention policy in your store&#8217;s privacy notice.</p>\n<p>This free version sends no usage statistics or telemetry of any kind.</p>\n<p>The plugin&#8217;s full privacy policy is at https://vatsentinel.eu/privacy.html . The plugin is published by Flexpoint Solutions OÜ; questions and support are at https://vatsentinel.eu/support.html .</p>\n",
+        "faq": "\n<dt id=\"why%20doesn%27t%20the%20vat%20number%20field%20show%20at%20checkout%3F\">\nWhy doesn&#8217;t the VAT number field show at checkout?\n</h4>\n<p>\n<p>The most common reason: your store uses the legacy classic (shortcode) checkout. The field is registered through the WooCommerce Additional Checkout Fields API, which renders on the block checkout (the WooCommerce default) — it does not appear on the classic checkout. Beyond that, the field appears when the cart is taxable, and it requires WooCommerce 8.9 or newer. If another plugin replaces or heavily customizes your checkout, the field may not render there.</p>\n</p>\n<dt id=\"the%20vat%20number%20is%20valid%20%E2%80%94%20why%20was%20vat%20not%20removed%3F\">\nThe VAT number is valid — why was VAT not removed?\n</h4>\n<p>\n<p>Reverse charge only applies to cross-border EU B2B sales: the buyer&#8217;s billing country must be an EU country different from your store&#8217;s base country. A domestic order keeps VAT even with a valid VAT number. And if VIES was unreachable at the time, the default safe mode keeps VAT charged (see below).</p>\n</p>\n<dt id=\"what%20happens%20when%20vies%20is%20down%3F\">\nWhat happens when VIES is down?\n</h4>\n<p>\n<p>By default (safe mode) the order is still accepted, VAT is charged, and the order is flagged &#8220;VAT pending verification&#8221; with a manual re-check button for when VIES recovers. There is an opt-in setting to apply reverse charge provisionally instead, clearly marked &#8220;at your own risk&#8221;. Either way your checkout never breaks because VIES is down.</p>\n</p>\n<dt id=\"why%20is%20my%20order%20flagged%20%22vat%20pending%20verification%22%3F\">\nWhy is my order flagged &#8220;VAT pending verification&#8221;?\n</h4>\n<p>\n<p>The VIES service was unavailable when the order was placed, so we accepted the order rather than blocking your sale and flagged it for re-checking. Until VIES confirms the number, the VAT treatment on this order is provisional and may be adjusted. VAT Sentinel records the check; it does not certify the order&#8217;s tax treatment. Use the re-check button once VIES is back up.</p>\n</p>\n<dt id=\"is%20vies%20down%20right%20now%3F\">\nIs VIES down right now?\n</h4>\n<p>\n<p>Open the VAT Sentinel status panel; it shows live per-country availability straight from VIES.</p>\n</p>\n<dt id=\"vies%20returned%20no%20business%20name%20or%20address.%20is%20something%20wrong%3F\">\nVIES returned no business name or address. Is something wrong?\n</h4>\n<p>\n<p>No. Some EU member states do not return the trader&#8217;s name or address (Germany, for example). The validity result and the consultation reference still stand; the log shows &#8220;not provided by VIES&#8221; for those fields.</p>\n</p>\n<dt id=\"does%20vat%20sentinel%20change%20my%20invoices%20or%20pdf%20documents%3F\">\nDoes VAT Sentinel change my invoices or PDF documents?\n</h4>\n<p>\n<p>No. It validates the number, adjusts the order&#8217;s VAT via the standard WooCommerce exemption, and writes an internal order note plus an audit record. It does not generate or modify invoices, and it does not add reverse-charge wording to invoice documents — your invoicing plugin or accounting tool must do that.</p>\n</p>\n<dt id=\"where%20are%20the%20validation%20records%20stored%3F\">\nWhere are the validation records stored?\n</h4>\n<p>\n<p>In your own WordPress database: an append-only audit table (<code>wp_vatsentinel_vat_log</code>, with your table prefix) plus meta fields on each order. Nothing is sent to the plugin author.</p>\n</p>\n<dt id=\"what%20is%20the%20consultation%20reference%20and%20how%20do%20i%20get%20one%3F\">\nWhat is the consultation reference and how do I get one?\n</h4>\n<p>\n<p>Enter your own business VAT number in VAT Sentinel&#8217;s settings. Validations are then made with your number as the requester, and VIES returns an official consultation number that is stored with the check — dated evidence that the validation was performed. Without your merchant VAT number configured, checks still work but VIES does not issue a consultation number.</p>\n</p>\n<dt id=\"what%20happens%20to%20my%20records%20if%20i%20uninstall%20the%20plugin%3F\">\nWhat happens to my records if I uninstall the plugin?\n</h4>\n<p>\n<p>Uninstalling removes the plugin&#8217;s settings but deliberately keeps the audit table and order data, because validation records are tax evidence you are commonly required to retain for years. If you truly want them gone, remove the <code>wp_vatsentinel_vat_log</code> table and the order meta manually.</p>\n</p>\n<dt id=\"can%20i%20run%20vat%20sentinel%20together%20with%20another%20vat%2Ftax%20plugin%3F\">\nCan I run VAT Sentinel together with another VAT/tax plugin?\n</h4>\n<p>\n<p>Use one VAT validation plugin at a time. Two plugins that both set the customer&#8217;s VAT exemption will fight each other and can produce wrong totals. General tax-rate plugins are fine; a second VIES/VAT-number plugin is not.</p>\n</p>\n<dt id=\"does%20this%20make%20me%20vat%20compliant%3F\">\nDoes this make me VAT compliant?\n</h4>\n<p>\n<p>No. VAT Sentinel validates numbers and keeps proof that you checked. It is not tax advice and does not guarantee compliance. Consult your tax advisor.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>Initial release: VIES validation, reverse charge, accept+flag on downtime, audit record.</li>\n</ul>\n"
+    },
+    "short_description": "Validate EU B2B VAT numbers against VIES, apply reverse charge, and record every check. Keeps your checkout working when VIES is down.",
+    "description": "<p>VAT Sentinel adds a VAT number field to your WooCommerce checkout for EU/EEA business buyers, validates it against the European Commission&#8217;s official VIES service, and applies the cross-border B2B reverse charge when the number is valid. Every check is recorded with a UTC timestamp.</p>\n<p>The difference: when VIES is unavailable (which happens regularly and is outside any vendor&#8217;s control), VAT Sentinel does not break your checkout. It accepts the order, flags it as &#8220;VAT pending verification&#8221;, and lets you re-check it once VIES recovers.</p>\n<p>VAT Sentinel is a validation and record-keeping tool. It is NOT tax advice and does not guarantee tax compliance. Always consult your own tax advisor.</p>\n<p>Works on the block checkout, the modern WooCommerce default (it uses the WooCommerce Additional Checkout Fields and Store API, so it requires WooCommerce 8.9 or newer). The VAT number field does not currently appear on the legacy classic (shortcode) checkout — if your store still uses the classic checkout, switch to the block checkout to use VAT Sentinel.</p>\n<h4>Free</h4>\n<ul>\n<li>VAT number field at checkout (shown for EU/EEA, taxable carts)</li>\n<li>Live VIES validation with basic format checks</li>\n<li>Reverse-charge zero-rating for valid cross-border EU B2B carts, recorded with an internal order note (invoices/PDFs are not modified)</li>\n<li>Accept + flag orders when VIES is down, with a manual re-check button</li>\n<li>Live per-country VIES status panel</li>\n<li>On-screen log of recent checks, including the business name and address VIES returns (when the member state provides them)</li>\n</ul>\n<h4>Pro (planned)</h4>\n<p>A paid Pro version is planned for the future. It is not available yet, and this free version is complete and usable on its own.</p>\n<h3>External services</h3>\n<p>This plugin connects to the European Commission&#8217;s VAT Information Exchange System (VIES), a third-party service operated by the European Commission (a separate data controller). It is used to validate VAT numbers. When a buyer enters a VAT number, the plugin sends that VAT number and country code (and, if you configure it, your own merchant VAT number as the requester) to the VIES REST endpoint at https://ec.europa.eu/taxation_customs/vies/rest-api/ to confirm whether the number is valid and to obtain a consultation reference. The plugin also makes a periodic request to the VIES /check-status endpoint to display per-country availability; no personal data is sent on that call. No data is sent to VIES except what is required to perform the validation. VIES terms and privacy information are available at https://ec.europa.eu/taxation_customs/vies/ .</p>\n<p>The VIES &#8220;consultation number&#8221; is evidence that a validation was performed at a given date and time. It is proof that you checked. It is not proof of tax compliance or of the order&#8217;s correct VAT treatment.</p>\n<h3>Privacy</h3>\n<p>VAT numbers and validation results are stored locally in your own WordPress database as part of your order/tax records. You (the site owner) are the data controller for this data; the plugin and its author do not receive it.</p>\n<p>A VAT number can be personal data (for example for a sole trader), so: the lawful basis for keeping it is your legal obligation to retain VAT evidence, commonly for 7 to 10 years depending on your country. Because the validation log is kept as tax evidence, records are retained for that period and are not deleted automatically on uninstall. To act on a data-subject erasure request you can remove the relevant rows from the database; note that your legal obligation to retain VAT evidence may justify keeping a record despite an erasure request. Document your own retention policy in your store&#8217;s privacy notice.</p>\n<p>This free version sends no usage statistics or telemetry of any kind.</p>\n<p>The plugin&#8217;s full privacy policy is at https://vatsentinel.eu/privacy.html . The plugin is published by Flexpoint Solutions OÜ; questions and support are at https://vatsentinel.eu/support.html .</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/vat-sentinel.0.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/vat-sentinel/assets/screenshot-1.png?rev=3625409",
+            "caption": "A valid EU business VAT number is validated against VIES at checkout: the buyer sees a clear confirmation and VAT drops to zero (reverse charge) before the order is placed."
+        },
+        {
+            "src": "https://ps.w.org/vat-sentinel/assets/screenshot-2.png?rev=3625409",
+            "caption": "An invalid VAT number keeps VAT charged, and the buyer is told why. When VIES itself is down, the buyer sees an honest \"temporarily unavailable\" message instead of a broken checkout."
+        },
+        {
+            "src": "https://ps.w.org/vat-sentinel/assets/screenshot-3.png?rev=3625409",
+            "caption": "Every check is recorded with a UTC timestamp, including the business name and address VIES returned and the official consultation number when the member state provides them."
+        },
+        {
+            "src": "https://ps.w.org/vat-sentinel/assets/screenshot-4.png?rev=3625409",
+            "caption": "Each order shows a VAT Sentinel box: the number checked, the result, whether reverse charge was applied, and the VIES-returned business identity."
+        },
+        {
+            "src": "https://ps.w.org/vat-sentinel/assets/screenshot-5.png?rev=3625409",
+            "caption": "Settings and the live per-country VIES status panel, straight from the European Commission."
+        }
+    ],
+    "tags": {
+        "eu-vat": "eu vat",
+        "reverse-charge": "reverse charge",
+        "vat-validation": "vat validation",
+        "vies": "vies",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "0.1.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/vat-sentinel.0.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/vat-sentinel.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/vat-sentinel/assets/banner-772x250.png?rev=3625409",
+        "high": "https://ps.w.org/vat-sentinel/assets/banner-1544x500.png?rev=3625409"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/vat-sentinel/assets/icon-128x128.png?rev=3625409",
+        "2x": "https://ps.w.org/vat-sentinel/assets/icon-256x256.png?rev=3625409"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
