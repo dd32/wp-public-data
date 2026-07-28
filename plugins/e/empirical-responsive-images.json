@@ -1,0 +1,77 @@
+{
+    "name": "Empirical Responsive Images",
+    "slug": "empirical-responsive-images",
+    "version": "0.2.0",
+    "author": "<a href=\"https://profiles.wordpress.org/jesusinica/\">Jesus Iniesta</a>",
+    "author_profile": "https://profiles.wordpress.org/jesusinica/",
+    "contributors": {
+        "jesusinica": {
+            "profile": "https://profiles.wordpress.org/jesusinica/",
+            "avatar": "https://secure.gravatar.com/avatar/3e72e407afb8569bc250ebf3518a8fc7d4c89aa09e76f05058fe4b89cfdbe34b?s=96&d=monsterid&r=g",
+            "display_name": "Jesus Iniesta"
+        }
+    },
+    "requires": "6.9",
+    "tested": "7.0.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/empirical-responsive-images/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-28 20:31:00",
+    "added": "2026-07-28",
+    "homepage": "https://github.com/gsusI/empirical-responsive-images",
+    "sections": {
+        "description": "<p>Empirical Responsive Images helps WordPress sites discover the image widths they actually render on real devices. It records aggregate front-end observations, registers matching WordPress image sizes, regenerates missing thumbnails, generates responsive variants for local theme/plugin asset images, and can create WebP and AVIF sidecar files when the server image editor supports those formats.</p>\n<p>Features:</p>\n<ul>\n<li>Administrator-only front-end observer measures rendered image width, height, viewport width, DPR, attachment ID, and local asset source URL.</li>\n<li>Observations are stored as aggregate size data in WordPress options.</li>\n<li>Observed width candidates are registered through <code>add_image_size()</code>.</li>\n<li>Admin batch tool regenerates image thumbnails and observed local asset variants.</li>\n<li>Optional WP-CLI regeneration command.</li>\n<li>WebP and AVIF sidecars are generated when supported by the active image editor.</li>\n<li>WordPress attachment images and local asset images can be wrapped in <code>&lt;picture&gt;</code> with AVIF/WebP sources and original fallback markup.</li>\n<li>Pages are kept out of page cache until a no-cache observation run confirms that known image sizes are already represented in <code>srcset</code> output.</li>\n<li>No external service calls.</li>\n</ul>\n<h3>Privacy</h3>\n<p>The observer runs only for logged-in users who can manage site options. Requests require WordPress REST authentication and a valid REST nonce. It stores aggregate rendered image data and canonical page paths only; query strings and raw IP addresses are not persisted.</p>\n<p>By default, settings, observations, and generated asset variants are retained when the plugin is uninstalled. Site administrators can explicitly enable deletion under Tools &gt; Responsive Images before uninstalling.</p>\n<h3>Cache compatibility</h3>\n<p>Before a page is confirmed stable, the plugin sends WordPress and HTTP cache bypass signals:</p>\n<ul>\n<li><code>DONOTCACHEPAGE</code></li>\n<li><code>Cache-Control: no-store, no-cache, must-revalidate, max-age=0</code></li>\n<li><code>CDN-Cache-Control: no-store</code></li>\n<li><code>Cloudflare-CDN-Cache-Control: no-store</code></li>\n<li><code>Surrogate-Control: no-store</code></li>\n<li><code>X-LiteSpeed-Cache-Control: no-cache</code></li>\n</ul>\n<p>It also disables LiteSpeed page optimization and lazy-loading constants during those warming requests so the measured image slots match the real rendered layout.</p>\n<p>The observer script is marked with optimizer bypass attributes including <code>data-cfasync=\"false\"</code>, <code>data-no-optimize=\"1\"</code>, <code>data-no-defer=\"1\"</code>, <code>data-no-minify=\"1\"</code>, and <code>data-pagespeed-no-defer=\"1\"</code>. Its REST configuration is also duplicated into <code>data-empirical-responsive-images-*</code> attributes so it can still run when an optimizer delays inline scripts.</p>\n<h3>WP-CLI</h3>\n<p>List observed sizes:</p>\n<pre><code>wp empirical-responsive-images sizes\n</code></pre>\n<p>Regenerate thumbnails and modern sidecars:</p>\n<pre><code>wp empirical-responsive-images regenerate --batch-size=10\n</code></pre>\n<p>Force rebuild:</p>\n<pre><code>wp empirical-responsive-images regenerate --force\n</code></pre>\n",
+        "installation": "<ol>\n<li>Upload <code>empirical-responsive-images</code> to <code>/wp-content/plugins/</code>.</li>\n<li>Activate the plugin.</li>\n<li>While logged in as an administrator, visit the front end on representative desktop, tablet, and mobile widths.</li>\n<li>Go to Tools &gt; Responsive Images.</li>\n<li>Review observed sizes and run thumbnail regeneration.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20replace%20wordpress%20responsive%20images%3F\">\nDoes this replace WordPress responsive images?\n</h4>\n<p>\n<p>No. It adds empirical image sizes so WordPress has better candidates for its normal <code>srcset</code> output.</p>\n</p>\n<dt id=\"does%20this%20use%20a%20cdn%20or%20external%20optimization%20api%3F\">\nDoes this use a CDN or external optimization API?\n</h4>\n<p>\n<p>No. All work happens inside WordPress with the configured GD or Imagick image editor.</p>\n</p>\n<dt id=\"why%20are%20image%20sizes%20registered%20by%20width%20only%3F\">\nWhy are image sizes registered by width only?\n</h4>\n<p>\n<p>Responsive <code>srcset</code> selection is width-driven. The plugin records height ranges for visibility but registers uncropped width candidates to avoid accidental art-direction crops.</p>\n</p>\n<dt id=\"does%20this%20handle%20theme%20or%20plugin%20asset%20images%3F\">\nDoes this handle theme or plugin asset images?\n</h4>\n<p>\n<p>Yes. Manageable local <code>wp-content</code> image assets are observed, resized into <code>wp-content/uploads/empirical-responsive-images/assets/</code>, and rewritten with empirical <code>srcset</code> and <code>sizes</code> output.</p>\n</p>\n<dt id=\"does%20normal%20page%20rendering%20create%20image%20files%3F\">\nDoes normal page rendering create image files?\n</h4>\n<p>\n<p>No. Front-end rendering only reads variants that already exist. File generation happens during uploads or explicit regeneration from the admin screen or WP-CLI.</p>\n</p>\n<dt id=\"what%20happens%20to%20data%20when%20i%20uninstall%20the%20plugin%3F\">\nWhat happens to data when I uninstall the plugin?\n</h4>\n<p>\n<p>Data is retained by default to prevent accidental loss. Enable the uninstall cleanup setting first if you want uninstalling to remove settings, observations, and generated local asset variants.</p>\n</p>\n<dt id=\"who%20can%20submit%20front-end%20observations%3F\">\nWho can submit front-end observations?\n</h4>\n<p>\n<p>Only logged-in users with the <code>manage_options</code> capability. The observer uses WordPress cookie authentication and a REST nonce; anonymous visitors cannot submit or modify observation data.</p>\n</p>\n\n",
+        "changelog": "<h4>0.2.0</h4>\n<ul>\n<li>Align plugin ownership metadata with WeSolvers.</li>\n<li>Require administrator capability and REST nonce verification for every observation write.</li>\n<li>Use SiteGround Speed Optimizer&#8217;s documented public purge functions instead of an unregistered action name.</li>\n<li>Use the full plugin prefix for generated image-size names and observer data attributes.</li>\n<li>Keep front-end rendering read-only; missing local asset variants now require explicit regeneration.</li>\n<li>Prevent duplicate sidecar encoding during forced attachment regeneration.</li>\n<li>Serialize concurrent observation writes to prevent lost aggregate data.</li>\n<li>Purge a page cache when its first observation creates a blocked readiness record.</li>\n<li>Reject oversized or off-site observation payloads and omit query strings from stored page keys.</li>\n<li>Support custom WordPress content and upload directory mappings for local assets.</li>\n<li>Preserve plugin data on uninstall unless an administrator explicitly opts into deletion.</li>\n<li>Add PHPUnit, PHPCS, PHP compatibility, PHPStan, version-sync, CI, and package quality gates.</li>\n</ul>\n<h4>0.1.8</h4>\n<ul>\n<li>Use WordPress&#8217;s template enhancement output buffer for full-page asset processing.</li>\n<li>Bound public observation rate-limit storage and retained page observations.</li>\n</ul>\n<h4>0.1.7</h4>\n<ul>\n<li>Skip alternate format sidecars for attachment sub-sizes that do not preserve the original aspect ratio.</li>\n</ul>\n<h4>0.1.6</h4>\n<ul>\n<li>Skip alpha-flattening alternate formats for transparent source images.</li>\n</ul>\n<h4>0.1.5</h4>\n<ul>\n<li>Treat asset srcsets capped at the original source width as cache-ready.</li>\n</ul>\n<h4>0.1.4</h4>\n<ul>\n<li>Match generated asset variant URLs to the public site scheme to avoid mixed-content requests.</li>\n</ul>\n<h4>0.1.3</h4>\n<ul>\n<li>Add static GIF asset support while skipping animated GIFs to avoid animation loss.</li>\n</ul>\n<h4>0.1.2</h4>\n<ul>\n<li>Observe small images by default so theme asset covers, logos, and icons can be captured.</li>\n</ul>\n<h4>0.1.1</h4>\n<ul>\n<li>Add empirical responsive variants for local theme/plugin asset images.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Measures real image slots, registers matching sizes, regenerates thumbnails, and serves WebP/AVIF variants.",
+    "description": "<p>Empirical Responsive Images helps WordPress sites discover the image widths they actually render on real devices. It records aggregate front-end observations, registers matching WordPress image sizes, regenerates missing thumbnails, generates responsive variants for local theme/plugin asset images, and can create WebP and AVIF sidecar files when the server image editor supports those formats.</p>\n<p>Features:</p>\n<ul>\n<li>Administrator-only front-end observer measures rendered image width, height, viewport width, DPR, attachment ID, and local asset source URL.</li>\n<li>Observations are stored as aggregate size data in WordPress options.</li>\n<li>Observed width candidates are registered through <code>add_image_size()</code>.</li>\n<li>Admin batch tool regenerates image thumbnails and observed local asset variants.</li>\n<li>Optional WP-CLI regeneration command.</li>\n<li>WebP and AVIF sidecars are generated when supported by the active image editor.</li>\n<li>WordPress attachment images and local asset images can be wrapped in <code>&lt;picture&gt;</code> with AVIF/WebP sources and original fallback markup.</li>\n<li>Pages are kept out of page cache until a no-cache observation run confirms that known image sizes are already represented in <code>srcset</code> output.</li>\n<li>No external service calls.</li>\n</ul>\n<h3>Privacy</h3>\n<p>The observer runs only for logged-in users who can manage site options. Requests require WordPress REST authentication and a valid REST nonce. It stores aggregate rendered image data and canonical page paths only; query strings and raw IP addresses are not persisted.</p>\n<p>By default, settings, observations, and generated asset variants are retained when the plugin is uninstalled. Site administrators can explicitly enable deletion under Tools &gt; Responsive Images before uninstalling.</p>\n<h3>Cache compatibility</h3>\n<p>Before a page is confirmed stable, the plugin sends WordPress and HTTP cache bypass signals:</p>\n<ul>\n<li><code>DONOTCACHEPAGE</code></li>\n<li><code>Cache-Control: no-store, no-cache, must-revalidate, max-age=0</code></li>\n<li><code>CDN-Cache-Control: no-store</code></li>\n<li><code>Cloudflare-CDN-Cache-Control: no-store</code></li>\n<li><code>Surrogate-Control: no-store</code></li>\n<li><code>X-LiteSpeed-Cache-Control: no-cache</code></li>\n</ul>\n<p>It also disables LiteSpeed page optimization and lazy-loading constants during those warming requests so the measured image slots match the real rendered layout.</p>\n<p>The observer script is marked with optimizer bypass attributes including <code>data-cfasync=\"false\"</code>, <code>data-no-optimize=\"1\"</code>, <code>data-no-defer=\"1\"</code>, <code>data-no-minify=\"1\"</code>, and <code>data-pagespeed-no-defer=\"1\"</code>. Its REST configuration is also duplicated into <code>data-empirical-responsive-images-*</code> attributes so it can still run when an optimizer delays inline scripts.</p>\n<h3>WP-CLI</h3>\n<p>List observed sizes:</p>\n<pre><code>wp empirical-responsive-images sizes\n</code></pre>\n<p>Regenerate thumbnails and modern sidecars:</p>\n<pre><code>wp empirical-responsive-images regenerate --batch-size=10\n</code></pre>\n<p>Force rebuild:</p>\n<pre><code>wp empirical-responsive-images regenerate --force\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/empirical-responsive-images.0.2.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "avif": "AVIF",
+        "images": "images",
+        "responsive-images": "responsive images",
+        "thumbnails": "thumbnails",
+        "webp": "webp"
+    },
+    "stable_tag": "0.2.0",
+    "versions": {
+        "0.2.0": "https://downloads.wordpress.org/plugin/empirical-responsive-images.0.2.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/empirical-responsive-images.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/empirical-responsive-images/assets/banner-772x250.png?rev=3626416",
+        "high": "https://ps.w.org/empirical-responsive-images/assets/banner-1544x500.png?rev=3626416"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/empirical-responsive-images/assets/icon-128x128.png?rev=3626416",
+        "2x": "https://ps.w.org/empirical-responsive-images/assets/icon-256x256.png?rev=3626416"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
