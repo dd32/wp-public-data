@@ -1,0 +1,96 @@
+{
+    "name": "FOBO Data Maker Forms",
+    "slug": "fobo-data-maker-forms",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/chivantiebosch/\">chivantiebosch</a>",
+    "author_profile": "https://profiles.wordpress.org/chivantiebosch/",
+    "contributors": {
+        "chivantiebosch": {
+            "profile": "https://profiles.wordpress.org/chivantiebosch/",
+            "avatar": "https://secure.gravatar.com/avatar/ce2e0ccb2832eb64ef4f498703d79bc96622884fa3828189ee454a94fb0623b5?s=96&d=monsterid&r=g",
+            "display_name": "chivantiebosch"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.0.2",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/fobo-data-maker-forms/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-29 16:23:00",
+    "added": "2026-07-29",
+    "homepage": "https://fobo-tools.com/",
+    "sections": {
+        "description": "<p>The FOBO Data Maker Forms plugin lets you host Data Maker forms on a WordPress site. Upload a signed <code>.dmf</code> bundle, paste the shortcode onto any page, and submissions are sealed against the form&#8217;s recipient pubkey and forwarded to the Data Maker API.</p>\n<p>Features:</p>\n<ul>\n<li>Full parity with the desktop renderer for the v1 column set: text, number, date, choice, multi-choice, checkbox, attachment, image, divider, spacer, group, rich-text, heading, button.</li>\n<li>Pre-compiled VisibleWhen / CalculatedExpression / ValidationRule expressions ship with the .dmf, so cascade fires entirely in the browser — no server round-trip per keystroke.</li>\n<li>libsodium-backed sealed submissions; the WP server never sees plaintext values once they leave the browser.</li>\n<li>Optional browser-localStorage edit flow lets submitters return and amend their previous submission via a one-time edit token.</li>\n<li>Theme switch: use the form&#8217;s own Data Maker palette, or inherit the active WordPress theme.</li>\n</ul>\n<p>Out of scope for v1: multi-step (Steps), signature/initials fields, relation fields, charts, nested record entry.</p>\n<h3>Requirements</h3>\n<ul>\n<li>PHP 8.1+ with the <code>sodium</code> extension (default in PHP 7.2+).</li>\n<li>The <code>zip</code> extension.</li>\n<li>HTTPS on the WordPress site is strongly recommended.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin relies on the following third-party services. No data is sent to any of them until a visitor submits a form, or until an administrator turns on the optional Turnstile feature.</p>\n<p><strong>Data Maker API</strong> (<code>https://datamaker-api.fobo-tools.com</code>)<br />\nThe form&#8217;s destination. When a visitor submits a form, the plugin seals (end-to-end encrypts) the submitted values against the form publisher&#8217;s public key in the browser and POSTs the sealed blob plus minimal metadata (the form id, schema version, and a submission timestamp) to this endpoint, which routes it to the form&#8217;s publisher. The WordPress server never sees the plaintext field values. File attachments are encrypted in the browser and PUT directly to the publisher&#8217;s storage via a short-lived upload slot issued by this API. This service is operated by FOBO Tools.<br />\nTerms: https://fobo-tools.com/terms — Privacy: https://fobo-tools.com/privacy</p>\n<p><strong>Cloudflare Turnstile</strong> (<code>https://challenges.cloudflare.com</code>)<br />\nA privacy-friendly CAPTCHA, used only on forms where an administrator has enabled the per-form Turnstile toggle. When enabled, the visitor&#8217;s browser loads Cloudflare&#8217;s widget script and obtains a challenge token; that token is sent with the submission and verified server-side against Cloudflare&#8217;s <code>siteverify</code> endpoint before the submission is sealed. No form field values are sent to Cloudflare. This service is operated by Cloudflare, Inc.<br />\nTerms: https://www.cloudflare.com/website-terms/ — Privacy: https://www.cloudflare.com/privacypolicy/</p>\n<h3>Content Security Policy</h3>\n<p>The renderer evaluates pre-compiled VisibleWhen / Calculated / Validation expressions on the client at every keystroke. The compiled bodies are plain JavaScript and run via <code>Function(...)</code> constructor, which a strict <code>Content-Security-Policy: script-src 'self'</code> header rejects.</p>\n<p>If the host site ships a CSP header, allow:</p>\n<ul>\n<li><code>script-src 'self' 'unsafe-eval'</code> — to permit the compiled expression evaluator.</li>\n<li><code>script-src 'self' https://challenges.cloudflare.com</code> — if the per-form Turnstile toggle is on (Cloudflare&#8217;s widget loads from this origin).</li>\n<li><code>connect-src 'self' https://datamaker-api.fobo-tools.com https://challenges.cloudflare.com</code> — for the sealed submit endpoint and the Turnstile siteverify call.</li>\n<li><code>frame-src https://challenges.cloudflare.com</code> — for the Turnstile iframe.</li>\n</ul>\n<p>Sites that cannot grant <code>'unsafe-eval'</code> can still upload forms with no VisibleWhen / Calculated / per-field Validation expressions; static layouts work without the expression evaluator running.</p>\n<h3>Source code and build</h3>\n<p>This plugin ships its complete, human-readable source. The minified files under <code>assets/dist/</code> are build artifacts only — their unminified sources sit beside them and are what you edit:</p>\n<ul>\n<li><code>assets/renderer.js</code> builds <code>assets/dist/renderer.min.js</code></li>\n<li><code>assets/fn.js</code> builds <code>assets/dist/fn.min.js</code></li>\n<li><code>assets/wp-bridge.js</code> builds <code>assets/dist/wp-bridge.min.js</code></li>\n<li><code>assets/styles.css</code> builds <code>assets/dist/styles.min.css</code></li>\n<li><code>assets/layout.css</code> builds <code>assets/dist/layout.min.css</code></li>\n</ul>\n<p>Regenerate them with <code>make minify</code>, which runs Terser 5.36.0 and csso-cli 4.0.2 — both versions pinned in the bundled <code>Makefile</code>.</p>\n<h3>Third-party libraries</h3>\n<ul>\n<li><strong>Font Awesome 5 Free (Solid)</strong> — <code>assets/fa-solid-900.ttf</code>, drives the glyph controls. Font licensed under SIL OFL 1.1; icons and CSS under MIT. https://fontawesome.com — source: https://github.com/FortAwesome/Font-Awesome</li>\n<li><strong>libsodium</strong> — used through PHP&#8217;s bundled <code>sodium</code> extension (PHP 7.2+). No library code is shipped with the plugin.</li>\n</ul>\n<h3>Local development</h3>\n<p>A Docker harness ships in <code>docker-compose.yml</code> (WordPress 6.7 + PHP 8.2 + MariaDB 11) with the plugin folder bind-mounted into <code>wp-content/plugins/fobo-data-maker-forms/</code>.</p>\n<pre><code>make up           # start WP on http://localhost:8089\nmake wp-install   # one-shot scripted install + activate (admin/admin)\nmake logs         # tail WordPress error log\nmake down         # stop containers\nmake down ARGS=-v # stop + nuke volumes\n</code></pre>\n<p>PHP edits are picked up immediately. JS/CSS edits to assets/ are too — refresh the page in the browser.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>fobo-data-maker-forms</code> folder to <code>/wp-content/plugins/</code>.</li>\n<li>Activate the plugin under <strong>Plugins</strong>.</li>\n<li>Configure the <strong>Data Maker API URL</strong> under <strong>FOBO Data Maker Forms <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings</strong>.</li>\n<li>Upload a <code>.dmf</code> bundle under <strong>FOBO Data Maker Forms <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload .dmf</strong> with a slug.</li>\n<li>Embed in a page: <code>[fobo_data_maker_form id=\"your-slug\"]</code>.</li>\n</ol>\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial public release. Reads .dmf envelope v3 (compiled.json + elementCss.json + palette.css extras). Sealed POST/PUT submissions. localStorage edit flow.</li>\n</ul>\n"
+    },
+    "short_description": "Render Data Maker forms on a WordPress site from signed .dmf bundles.",
+    "description": "<p>The FOBO Data Maker Forms plugin lets you host Data Maker forms on a WordPress site. Upload a signed <code>.dmf</code> bundle, paste the shortcode onto any page, and submissions are sealed against the form&#8217;s recipient pubkey and forwarded to the Data Maker API.</p>\n<p>Features:</p>\n<ul>\n<li>Full parity with the desktop renderer for the v1 column set: text, number, date, choice, multi-choice, checkbox, attachment, image, divider, spacer, group, rich-text, heading, button.</li>\n<li>Pre-compiled VisibleWhen / CalculatedExpression / ValidationRule expressions ship with the .dmf, so cascade fires entirely in the browser — no server round-trip per keystroke.</li>\n<li>libsodium-backed sealed submissions; the WP server never sees plaintext values once they leave the browser.</li>\n<li>Optional browser-localStorage edit flow lets submitters return and amend their previous submission via a one-time edit token.</li>\n<li>Theme switch: use the form&#8217;s own Data Maker palette, or inherit the active WordPress theme.</li>\n</ul>\n<p>Out of scope for v1: multi-step (Steps), signature/initials fields, relation fields, charts, nested record entry.</p>\n<h3>Requirements</h3>\n<ul>\n<li>PHP 8.1+ with the <code>sodium</code> extension (default in PHP 7.2+).</li>\n<li>The <code>zip</code> extension.</li>\n<li>HTTPS on the WordPress site is strongly recommended.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin relies on the following third-party services. No data is sent to any of them until a visitor submits a form, or until an administrator turns on the optional Turnstile feature.</p>\n<p><strong>Data Maker API</strong> (<code>https://datamaker-api.fobo-tools.com</code>)<br />\nThe form&#8217;s destination. When a visitor submits a form, the plugin seals (end-to-end encrypts) the submitted values against the form publisher&#8217;s public key in the browser and POSTs the sealed blob plus minimal metadata (the form id, schema version, and a submission timestamp) to this endpoint, which routes it to the form&#8217;s publisher. The WordPress server never sees the plaintext field values. File attachments are encrypted in the browser and PUT directly to the publisher&#8217;s storage via a short-lived upload slot issued by this API. This service is operated by FOBO Tools.<br />\nTerms: https://fobo-tools.com/terms — Privacy: https://fobo-tools.com/privacy</p>\n<p><strong>Cloudflare Turnstile</strong> (<code>https://challenges.cloudflare.com</code>)<br />\nA privacy-friendly CAPTCHA, used only on forms where an administrator has enabled the per-form Turnstile toggle. When enabled, the visitor&#8217;s browser loads Cloudflare&#8217;s widget script and obtains a challenge token; that token is sent with the submission and verified server-side against Cloudflare&#8217;s <code>siteverify</code> endpoint before the submission is sealed. No form field values are sent to Cloudflare. This service is operated by Cloudflare, Inc.<br />\nTerms: https://www.cloudflare.com/website-terms/ — Privacy: https://www.cloudflare.com/privacypolicy/</p>\n<h3>Content Security Policy</h3>\n<p>The renderer evaluates pre-compiled VisibleWhen / Calculated / Validation expressions on the client at every keystroke. The compiled bodies are plain JavaScript and run via <code>Function(...)</code> constructor, which a strict <code>Content-Security-Policy: script-src 'self'</code> header rejects.</p>\n<p>If the host site ships a CSP header, allow:</p>\n<ul>\n<li><code>script-src 'self' 'unsafe-eval'</code> — to permit the compiled expression evaluator.</li>\n<li><code>script-src 'self' https://challenges.cloudflare.com</code> — if the per-form Turnstile toggle is on (Cloudflare&#8217;s widget loads from this origin).</li>\n<li><code>connect-src 'self' https://datamaker-api.fobo-tools.com https://challenges.cloudflare.com</code> — for the sealed submit endpoint and the Turnstile siteverify call.</li>\n<li><code>frame-src https://challenges.cloudflare.com</code> — for the Turnstile iframe.</li>\n</ul>\n<p>Sites that cannot grant <code>'unsafe-eval'</code> can still upload forms with no VisibleWhen / Calculated / per-field Validation expressions; static layouts work without the expression evaluator running.</p>\n<h3>Source code and build</h3>\n<p>This plugin ships its complete, human-readable source. The minified files under <code>assets/dist/</code> are build artifacts only — their unminified sources sit beside them and are what you edit:</p>\n<ul>\n<li><code>assets/renderer.js</code> builds <code>assets/dist/renderer.min.js</code></li>\n<li><code>assets/fn.js</code> builds <code>assets/dist/fn.min.js</code></li>\n<li><code>assets/wp-bridge.js</code> builds <code>assets/dist/wp-bridge.min.js</code></li>\n<li><code>assets/styles.css</code> builds <code>assets/dist/styles.min.css</code></li>\n<li><code>assets/layout.css</code> builds <code>assets/dist/layout.min.css</code></li>\n</ul>\n<p>Regenerate them with <code>make minify</code>, which runs Terser 5.36.0 and csso-cli 4.0.2 — both versions pinned in the bundled <code>Makefile</code>.</p>\n<h3>Third-party libraries</h3>\n<ul>\n<li><strong>Font Awesome 5 Free (Solid)</strong> — <code>assets/fa-solid-900.ttf</code>, drives the glyph controls. Font licensed under SIL OFL 1.1; icons and CSS under MIT. https://fontawesome.com — source: https://github.com/FortAwesome/Font-Awesome</li>\n<li><strong>libsodium</strong> — used through PHP&#8217;s bundled <code>sodium</code> extension (PHP 7.2+). No library code is shipped with the plugin.</li>\n</ul>\n<h3>Local development</h3>\n<p>A Docker harness ships in <code>docker-compose.yml</code> (WordPress 6.7 + PHP 8.2 + MariaDB 11) with the plugin folder bind-mounted into <code>wp-content/plugins/fobo-data-maker-forms/</code>.</p>\n<pre><code>make up           # start WP on http://localhost:8089\nmake wp-install   # one-shot scripted install + activate (admin/admin)\nmake logs         # tail WordPress error log\nmake down         # stop containers\nmake down ARGS=-v # stop + nuke volumes\n</code></pre>\n<p>PHP edits are picked up immediately. JS/CSS edits to assets/ are too — refresh the page in the browser.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/fobo-data-maker-forms.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/fobo-data-maker-forms/assets/screenshot-1.png?rev=3627468",
+            "caption": "A designer-themed RSVP form rendered on the front end, with a background image, custom fonts, and choice fields."
+        },
+        {
+            "src": "https://ps.w.org/fobo-data-maker-forms/assets/screenshot-2.png?rev=3627468",
+            "caption": "A petition form with a signature pad and a Markdown-enabled comments field."
+        },
+        {
+            "src": "https://ps.w.org/fobo-data-maker-forms/assets/screenshot-3.png?rev=3627468",
+            "caption": "The Forms admin screen: every uploaded .dmf listed with its shortcode, signing status, and upload date."
+        },
+        {
+            "src": "https://ps.w.org/fobo-data-maker-forms/assets/screenshot-4.png?rev=3627468",
+            "caption": "Uploading a signed .dmf bundle and giving it a shortcode slug."
+        }
+    ],
+    "tags": {
+        "datamaker": "datamaker",
+        "forms": "forms",
+        "renderer": "renderer"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/fobo-data-maker-forms.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/fobo-data-maker-forms.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/fobo-data-maker-forms/assets/banner-772x250.png?rev=3627468",
+        "high": "https://ps.w.org/fobo-data-maker-forms/assets/banner-1544x500.png?rev=3627468"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/fobo-data-maker-forms/assets/icon-128x128.png?rev=3627468",
+        "2x": "https://ps.w.org/fobo-data-maker-forms/assets/icon-256x256.png?rev=3627468"
+    },
+    "blocks": {
+        "fobo/data-maker-form": {
+            "name": "fobo/data-maker-form",
+            "title": "FOBO Data Maker Form"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
