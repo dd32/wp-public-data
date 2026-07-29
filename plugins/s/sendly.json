@@ -1,0 +1,90 @@
+{
+    "name": "Sendly SMS for WooCommerce",
+    "slug": "sendly",
+    "version": "1.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/tomlwbioda/\">Tomasz Lebioda</a>",
+    "author_profile": "https://profiles.wordpress.org/tomlwbioda/",
+    "contributors": {
+        "tomlwbioda": {
+            "profile": "https://profiles.wordpress.org/tomlwbioda/",
+            "avatar": "https://secure.gravatar.com/avatar/3f647c8a7a07ddc249be0a1d7cba6ba4226e8642293fdff204c599666d859faa?s=96&d=monsterid&r=g",
+            "display_name": "Tomasz Lebioda"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.0.2",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/sendly/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-29 19:34:00",
+    "added": "2026-07-29",
+    "homepage": "https://sendly.link/",
+    "sections": {
+        "description": "<p>Sendly sends a text message to the customer whenever a WooCommerce order changes status — for example when payment is received (Processing), the order is shipped (Completed), or it is cancelled. Messages are delivered through the <strong>Sendly</strong> SMS gateway and can be shown with an alphanumeric sender ID (&#8220;nadpis&#8221;, e.g. your shop name) instead of a phone number.</p>\n<p><strong>Key features</strong></p>\n<ul>\n<li>Per-status on/off switch and editable message template (works with custom order statuses too).</li>\n<li>Placeholders: <code>{shop_name}</code>, <code>{order_number}</code>, <code>{order_total}</code>, <code>{currency}</code>, <code>{customer_first_name}</code>, <code>{customer_last_name}</code>, <code>{order_status}</code>, optional <code>{tracking_number?}</code>.</li>\n<li>Asynchronous sending via Action Scheduler — checkout is never blocked by the SMS call.</li>\n<li>Automatic retries with exponential backoff and per-order idempotency (no duplicate texts).</li>\n<li>International-ready phone normalisation based on the order&#8217;s billing country.</li>\n<li>Live SMS segment/encoding counter (GSM-7 vs UCS-2) so you can see cost while editing templates.</li>\n<li>&#8220;Send test SMS&#8221; button in the settings.</li>\n<li>Optional delivery receipts (DLR webhook) that record DELIVERED/ERROR on the order.</li>\n<li>Optional RODO/GDPR consent (opt-out) checkbox at checkout.</li>\n<li>Create a Sendly account straight from the plugin (100 free SMS to start) — no separate signup needed.</li>\n<li>Quick links to the Sendly customer panel.</li>\n<li>Per-order audit as order notes, plus a &#8220;sendly&#8221; channel in WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Status <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Logs. Configurable retention; phone numbers are masked and message bodies are not stored by default.</li>\n<li>HPOS (High-Performance Order Storage) compatible.</li>\n</ul>\n<p><strong>Sender ID (nadpis)</strong></p>\n<p>The Sendly API field <code>from</code> accepts a numeric virtual number only. The alphanumeric sender ID is configured on the Sendly side and bound to that number. The plugin provides a sender-ID field and a forward-compatible hook (<code>sendly_request_body</code>) so it can be sent in the API payload once Sendly exposes that option.</p>\n<h3>External services</h3>\n<p>This plugin relies on two external services. You need a Sendly account and API token to use it.</p>\n<p><strong>1. Sendly SMS gateway</strong> — used to deliver every SMS.</p>\n<ul>\n<li>Endpoint: <code>https://api.sendly.link/api/sms</code></li>\n<li>Data sent: the destination mobile phone number, the rendered message text (which may include the order number, order total, the customer&#8217;s first/last name and — when you enable &#8220;order notes as SMS&#8221; — the note text you write), and your Sendly sender number and API token (for authentication).</li>\n<li>When: on enabled order status transitions, when you add a manual order note (if that option is enabled), and on manual &#8220;Send test SMS&#8221;. Delivery receipts are received (Sendly posts to your site); your site makes no outbound status-query call.</li>\n<li>Provider: Sendly (Syntell S.A.). Website: https://sendly.link/</li>\n<li>Terms of Service: https://sendly.link/pl/regulamin/ — Privacy Policy: https://sendly.link/pl/polityka-prywatnosci/</li>\n</ul>\n<p><strong>2. Sendly registration page (sendly.link)</strong> — used only if you choose to create an account from inside the plugin.</p>\n<ul>\n<li>Page: <code>https://sendly.link/pl/rejestracja/</code></li>\n<li>Data sent: when you click &#8220;Create account&#8221;, the details you typed (name, e-mail, company name, tax ID, address, phone, and the shop name shown as the SMS sender) are posted to your own site (admin-ajax) so it can store your e-mail and shop name and build the link; your browser is then redirected to the page above with those details pre-filled via the URL fragment. The plugin does not forward this data to any third-party server — your browser carries it to sendly.link, and the fragment does not reach server logs. You set the password and complete a bot-check on sendly.link, then return to your site. The password never touches your WordPress site.</li>\n<li>When: only when you submit the in-plugin signup form.</li>\n<li>Provider: Sendly (Syntell S.A.). Terms: https://sendly.link/pl/regulamin/ — Privacy Policy: https://sendly.link/pl/polityka-prywatnosci/</li>\n</ul>\n<p>Make sure you have a lawful basis and, where required, a data-processing agreement with the provider.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>sendly</code> folder to <code>/wp-content/plugins/</code>, or install the ZIP via Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload.</li>\n<li>Activate the plugin. WooCommerce must be active.</li>\n<li>Go to WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> SMS.</li>\n<li>Enter your Sendly API token; the sender number (from) is optional.</li>\n<li>Enable the order statuses you want and adjust the message templates.</li>\n<li>Use &#8220;Send test SMS&#8221; to verify your configuration.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20a%20sendly%20account%3F\">\nDo I need a Sendly account?\n</h4>\n<p>\n<p>Yes. You need a Sendly SMS account, a virtual number and an API token. The plugin makes this easy: go to WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> SMS <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Sign up for Sendly, fill in your details and click &#8220;Create account&#8221; — you finish on sendly.link (password + bot check) and get 100 free SMS to start. Alternatively register directly at https://sendly.link/pl/rejestracja/ .</p>\n</p>\n<dt id=\"why%20is%20my%20sender%20shown%20as%20a%20number%20instead%20of%20my%20shop%20name%3F\">\nWhy is my sender shown as a number instead of my shop name?\n</h4>\n<p>\n<p>The alphanumeric sender ID (&#8220;nadpis&#8221;) is registered and bound to your number on Sendly&#8217;s side. The plugin&#8217;s API call sends only the numeric <code>from</code>; the provider substitutes the approved sender ID.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20the%20block-based%20checkout%3F\">\nDoes it work with the block-based checkout?\n</h4>\n<p>\n<p>The opt-out consent checkbox uses the classic checkout hooks. Order-status SMS sending works regardless of the checkout type.</p>\n</p>\n<dt id=\"will%20it%20slow%20down%20checkout%3F\">\nWill it slow down checkout?\n</h4>\n<p>\n<p>No. Sending happens in the background through Action Scheduler.</p>\n</p>\n<dt id=\"how%20are%20delivery%20receipts%20%28dlr%29%20secured%3F\">\nHow are delivery receipts (DLR) secured?\n</h4>\n<p>\n<p>The DLR endpoint is guarded by a random shared secret. The settings page shows a ready-to-use URL with the secret in the query string for convenience; you can instead send the secret in an <code>X-Sendly-Secret</code> HTTP header to keep it out of access logs. The secret can be regenerated from the settings page at any time (the old URL then stops working).</p>\n</p>\n<dt id=\"can%20i%20send%20to%20international%20numbers%3F\">\nCan I send to international numbers?\n</h4>\n<p>\n<p>Phone numbers are normalised using the order&#8217;s billing country. Actual delivery depends on what the Sendly gateway supports; numbers outside the gateway&#8217;s accepted length are skipped and logged.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.1</h4>\n<ul>\n<li>Use boolean autoload values in add_option()/update_option() for WordPress 6.7+ compatibility.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release: per-status SMS via Sendly, async sending with retries, phone normalisation, encoding/segment counter, test-SMS button, delivery receipts, RODO opt-out, activity log and HPOS support.</li>\n</ul>\n"
+    },
+    "short_description": "SMS notifications for WooCommerce via the Sendly gateway on order status change. Per-status templates and an alphanumeric sender ID.",
+    "description": "<p>Sendly sends a text message to the customer whenever a WooCommerce order changes status — for example when payment is received (Processing), the order is shipped (Completed), or it is cancelled. Messages are delivered through the <strong>Sendly</strong> SMS gateway and can be shown with an alphanumeric sender ID (&#8220;nadpis&#8221;, e.g. your shop name) instead of a phone number.</p>\n<p><strong>Key features</strong></p>\n<ul>\n<li>Per-status on/off switch and editable message template (works with custom order statuses too).</li>\n<li>Placeholders: <code>{shop_name}</code>, <code>{order_number}</code>, <code>{order_total}</code>, <code>{currency}</code>, <code>{customer_first_name}</code>, <code>{customer_last_name}</code>, <code>{order_status}</code>, optional <code>{tracking_number?}</code>.</li>\n<li>Asynchronous sending via Action Scheduler — checkout is never blocked by the SMS call.</li>\n<li>Automatic retries with exponential backoff and per-order idempotency (no duplicate texts).</li>\n<li>International-ready phone normalisation based on the order&#8217;s billing country.</li>\n<li>Live SMS segment/encoding counter (GSM-7 vs UCS-2) so you can see cost while editing templates.</li>\n<li>&#8220;Send test SMS&#8221; button in the settings.</li>\n<li>Optional delivery receipts (DLR webhook) that record DELIVERED/ERROR on the order.</li>\n<li>Optional RODO/GDPR consent (opt-out) checkbox at checkout.</li>\n<li>Create a Sendly account straight from the plugin (100 free SMS to start) — no separate signup needed.</li>\n<li>Quick links to the Sendly customer panel.</li>\n<li>Per-order audit as order notes, plus a &#8220;sendly&#8221; channel in WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Status <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Logs. Configurable retention; phone numbers are masked and message bodies are not stored by default.</li>\n<li>HPOS (High-Performance Order Storage) compatible.</li>\n</ul>\n<p><strong>Sender ID (nadpis)</strong></p>\n<p>The Sendly API field <code>from</code> accepts a numeric virtual number only. The alphanumeric sender ID is configured on the Sendly side and bound to that number. The plugin provides a sender-ID field and a forward-compatible hook (<code>sendly_request_body</code>) so it can be sent in the API payload once Sendly exposes that option.</p>\n<h3>External services</h3>\n<p>This plugin relies on two external services. You need a Sendly account and API token to use it.</p>\n<p><strong>1. Sendly SMS gateway</strong> — used to deliver every SMS.</p>\n<ul>\n<li>Endpoint: <code>https://api.sendly.link/api/sms</code></li>\n<li>Data sent: the destination mobile phone number, the rendered message text (which may include the order number, order total, the customer&#8217;s first/last name and — when you enable &#8220;order notes as SMS&#8221; — the note text you write), and your Sendly sender number and API token (for authentication).</li>\n<li>When: on enabled order status transitions, when you add a manual order note (if that option is enabled), and on manual &#8220;Send test SMS&#8221;. Delivery receipts are received (Sendly posts to your site); your site makes no outbound status-query call.</li>\n<li>Provider: Sendly (Syntell S.A.). Website: https://sendly.link/</li>\n<li>Terms of Service: https://sendly.link/pl/regulamin/ — Privacy Policy: https://sendly.link/pl/polityka-prywatnosci/</li>\n</ul>\n<p><strong>2. Sendly registration page (sendly.link)</strong> — used only if you choose to create an account from inside the plugin.</p>\n<ul>\n<li>Page: <code>https://sendly.link/pl/rejestracja/</code></li>\n<li>Data sent: when you click &#8220;Create account&#8221;, the details you typed (name, e-mail, company name, tax ID, address, phone, and the shop name shown as the SMS sender) are posted to your own site (admin-ajax) so it can store your e-mail and shop name and build the link; your browser is then redirected to the page above with those details pre-filled via the URL fragment. The plugin does not forward this data to any third-party server — your browser carries it to sendly.link, and the fragment does not reach server logs. You set the password and complete a bot-check on sendly.link, then return to your site. The password never touches your WordPress site.</li>\n<li>When: only when you submit the in-plugin signup form.</li>\n<li>Provider: Sendly (Syntell S.A.). Terms: https://sendly.link/pl/regulamin/ — Privacy Policy: https://sendly.link/pl/polityka-prywatnosci/</li>\n</ul>\n<p>Make sure you have a lawful basis and, where required, a data-processing agreement with the provider.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/sendly.1.0.1.zip",
+    "upgrade_notice": {
+        "1.0.1": "<p>Compatibility update; no functional changes.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/sendly/assets/screenshot-1.png?rev=3627632",
+            "caption": "The Sendly SMS settings — visible API token, sender number and ID, options, and per-status message templates with the live UCS-2/GSM-7 segment counter."
+        },
+        {
+            "src": "https://ps.w.org/sendly/assets/screenshot-2.png?rev=3627632",
+            "caption": "An order note recording the delivered SMS and its Sendly message ID."
+        }
+    ],
+    "tags": {
+        "notifications": "Notifications",
+        "order-status": "order status",
+        "sendly": "sendly",
+        "sms": "sms",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.1",
+    "versions": {
+        "1.0.1": "https://downloads.wordpress.org/plugin/sendly.1.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/sendly.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://buycoffee.to/tomaleb",
+    "banners": {
+        "low": "https://ps.w.org/sendly/assets/banner-772x250.png?rev=3627632",
+        "high": "https://ps.w.org/sendly/assets/banner-1544x500.png?rev=3627632"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/sendly/assets/icon-128x128.png?rev=3627632",
+        "2x": "https://ps.w.org/sendly/assets/icon-256x256.png?rev=3627632"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
