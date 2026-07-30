@@ -1,0 +1,96 @@
+{
+    "name": "ManiPay Manual Payment Gateway for FluentCart",
+    "slug": "manipay-manual-payment-for-fluentcart",
+    "version": "1.0.8",
+    "author": "<a href=\"https://profiles.wordpress.org/themeux/\">Gutenhub</a>",
+    "author_profile": "https://profiles.wordpress.org/themeux/",
+    "contributors": {
+        "themeux": {
+            "profile": "https://profiles.wordpress.org/themeux/",
+            "avatar": "https://secure.gravatar.com/avatar/4d8b0ead79dfe845c0f9e25a7a7eb71f2826b3a8f80d89a871bd9a9454e7f694?s=96&d=monsterid&r=g",
+            "display_name": "Gutenhub"
+        }
+    },
+    "requires": "5.6",
+    "tested": "7.0.2",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "fluent-cart"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/manipay-manual-payment-for-fluentcart/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-30 20:52:00",
+    "added": "2026-07-30",
+    "homepage": "",
+    "sections": {
+        "description": "<p><strong>ManiPay</strong> integrates with FluentCart&#8217;s documented custom payment gateway framework (<code>AbstractPaymentGateway</code>) to offer a manual, Bangladesh-focused checkout: bKash, Nagad, Rocket, four major banks with slip upload, and Binance Pay / RedotPay.</p>\n<p>This is a <strong>manual</strong> gateway — there is no live API connection to bKash/Nagad/Rocket/the banks/Binance. After checkout, the customer is sent to a dedicated on-site payment page (no theme header/footer) where they pick a method, send the money themselves, and submit their Transaction ID. The order stays in its normal pending state until you verify the transaction and mark it paid from FluentCart&#8217;s own Order Details screen.</p>\n<h3>Features</h3>\n<ul>\n<li>Mobile Banking (bKash, Nagad, Rocket), 4 banks with slip upload, Crypto (Binance, RedotPay)</li>\n<li>Optional QR code per method (paste an image URL in settings)</li>\n<li>Single global on/off switch for iBanking and for Crypto — individual methods inside each show automatically once you fill in their account details</li>\n<li>Editable instruction text per tab, including Bangla</li>\n<li>Same visual design as the EDD and Tutor LMS versions of ManiPay</li>\n<li>Submitted Transaction ID is written to the transaction&#8217;s Gateway ID field, so it&#8217;s visible directly on FluentCart&#8217;s Order Details screen — no separate admin page to check</li>\n<li>Dedicated <strong>ManiPay Orders</strong> admin screen (under FluentCart&#8217;s own admin menu) listing every order placed through ManiPay in one place — Trx ID, sender info, slip link, and payment status — with tabs to filter by &#8220;Awaiting verification&#8221; vs &#8220;Paid&#8221;, so you don&#8217;t have to dig through FluentCart&#8217;s full order list to find the ones waiting on you</li>\n</ul>\n<h3>Built from FluentCart&#8217;s official developer docs</h3>\n<p>Unlike some of the sibling ManiPay plugins (for Tutor LMS in particular), this one is built directly against FluentCart&#8217;s public developer documentation (dev.fluentcart.com) and the real open-source PayStack-for-FluentCart reference gateway, not reverse-engineered from a single third-party plugin. Confidence is higher, but as with any integration, <strong>test a full purchase end to end on staging</strong> before relying on it in production — checkout <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> redirected to the on-site payment page <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> submit a Transaction ID <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> confirm it shows correctly on the Order Details screen <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> mark the order paid manually.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>manipay-manual-payment-for-fluentcart</code> folder to <code>/wp-content/plugins/</code>, or install via Plugins &gt; Add New &gt; Upload Plugin.</li>\n<li>Activate the plugin. FluentCart must already be installed and active.</li>\n<li>Go to <strong>FluentCart &gt; Settings &gt; Payment Methods</strong> and enable <strong>ManiPay</strong>.</li>\n<li>Fill in your bKash/Nagad/Rocket numbers, bank details, and crypto IDs.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20process%20payments%20automatically%3F\">\nDoes this process payments automatically?\n</h4>\n<p>\n<p>No. This is a manual payment gateway. You must verify the Transaction ID or slip yourself and mark the order as paid from FluentCart&#8217;s Order Details screen.</p>\n</p>\n<dt id=\"where%20do%20i%20see%20the%20transaction%20id%20the%20customer%20submitted%3F\">\nWhere do I see the Transaction ID the customer submitted?\n</h4>\n<p>\n<p>On the order&#8217;s Details screen, in the transaction table&#8217;s &#8220;Gateway ID&#8221; column — or all at once on FluentCart &gt; ManiPay Orders, the plugin&#8217;s own dashboard of every ManiPay order.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.8</h4>\n<ul>\n<li>Cleaned up the readme:  updated info and minor fixes.</li>\n</ul>\n<h4>1.0.7</h4>\n<ul>\n<li>Fixed the real root cause of the blank &#8220;Method&#8221; column and zero-result method filter: &#8216;payment_note&#8217; was never an actual fillable column on FluentCart&#8217;s OrderTransaction model (confirmed against FluentCart&#8217;s own source), so every save to it was silently dropped by Eloquent&#8217;s mass-assignment protection — nothing was ever persisted, on any past version. The Transaction ID, sender info, payment method, and slip URL are now stored in the transaction&#8217;s real <code>meta</code> JSON column instead (FluentCart&#8217;s own documented pattern for this kind of data), under a manipay_ prefix. Orders submitted before this update won&#8217;t have this data retroactively — only new submissions from here on.</li>\n</ul>\n<h4>1.0.6</h4>\n<ul>\n<li>Fixed: ManiPay Orders showed a blank Customer name and Email for some real orders. The order&#8217;s own billing_name/email fields can be empty depending on checkout configuration; the columns now fall back to the related Customer record&#8217;s name and email when that happens.</li>\n</ul>\n<h4>1.0.5</h4>\n<ul>\n<li>Initial release.</li>\n<li>Manual payment gateway for FluentCart: Mobile Banking (bKash, Nagad, Rocket), Bank Transfer (AIBL, Pubali, DBBL, IBBL — each independently enabled and grouped into its own settings tab), and Crypto (Binance Pay, RedotPay).</li>\n<li>Dedicated on-site &#8220;Complete Your Payment&#8221; page where customers submit their Transaction ID (and a slip photo for bank transfers) after checkout. Orders stay Pending until you verify and mark them Paid from FluentCart&#8217;s own Order Details screen.</li>\n<li>ManiPay Orders dashboard (FluentCart &gt; ManiPay Orders): every order placed through ManiPay in one place, with Trx ID, sender info, slip link, and payment status; &#8220;All / Awaiting verification / Paid&#8221; tabs; a payment-method filter; pagination; and a direct link into each order&#8217;s full FluentCart Details screen.</li>\n</ul>\n"
+    },
+    "short_description": "A manual payment gateway for FluentCart: Mobile Banking (bKash, Nagad, Rocket), Bank Transfer with slip upload, and Crypto (Binance Pay, RedotPay).",
+    "description": "<p><strong>ManiPay</strong> integrates with FluentCart&#8217;s documented custom payment gateway framework (<code>AbstractPaymentGateway</code>) to offer a manual, Bangladesh-focused checkout: bKash, Nagad, Rocket, four major banks with slip upload, and Binance Pay / RedotPay.</p>\n<p>This is a <strong>manual</strong> gateway — there is no live API connection to bKash/Nagad/Rocket/the banks/Binance. After checkout, the customer is sent to a dedicated on-site payment page (no theme header/footer) where they pick a method, send the money themselves, and submit their Transaction ID. The order stays in its normal pending state until you verify the transaction and mark it paid from FluentCart&#8217;s own Order Details screen.</p>\n<h3>Features</h3>\n<ul>\n<li>Mobile Banking (bKash, Nagad, Rocket), 4 banks with slip upload, Crypto (Binance, RedotPay)</li>\n<li>Optional QR code per method (paste an image URL in settings)</li>\n<li>Single global on/off switch for iBanking and for Crypto — individual methods inside each show automatically once you fill in their account details</li>\n<li>Editable instruction text per tab, including Bangla</li>\n<li>Same visual design as the EDD and Tutor LMS versions of ManiPay</li>\n<li>Submitted Transaction ID is written to the transaction&#8217;s Gateway ID field, so it&#8217;s visible directly on FluentCart&#8217;s Order Details screen — no separate admin page to check</li>\n<li>Dedicated <strong>ManiPay Orders</strong> admin screen (under FluentCart&#8217;s own admin menu) listing every order placed through ManiPay in one place — Trx ID, sender info, slip link, and payment status — with tabs to filter by &#8220;Awaiting verification&#8221; vs &#8220;Paid&#8221;, so you don&#8217;t have to dig through FluentCart&#8217;s full order list to find the ones waiting on you</li>\n</ul>\n<h3>Built from FluentCart&#8217;s official developer docs</h3>\n<p>Unlike some of the sibling ManiPay plugins (for Tutor LMS in particular), this one is built directly against FluentCart&#8217;s public developer documentation (dev.fluentcart.com) and the real open-source PayStack-for-FluentCart reference gateway, not reverse-engineered from a single third-party plugin. Confidence is higher, but as with any integration, <strong>test a full purchase end to end on staging</strong> before relying on it in production — checkout <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> redirected to the on-site payment page <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> submit a Transaction ID <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> confirm it shows correctly on the Order Details screen <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> mark the order paid manually.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/manipay-manual-payment-for-fluentcart.1.0.8.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/manipay-manual-payment-for-fluentcart/assets/screenshot-1.png?rev=3629115",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/manipay-manual-payment-for-fluentcart/assets/screenshot-2.png?rev=3629115",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/manipay-manual-payment-for-fluentcart/assets/screenshot-3.png?rev=3629115",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/manipay-manual-payment-for-fluentcart/assets/screenshot-4.png?rev=3629115",
+            "caption": ""
+        }
+    ],
+    "tags": {
+        "bangladesh": "Bangladesh",
+        "bkash": "bKash",
+        "fluentcart": "fluentcart",
+        "nagad": "nagad",
+        "payment-gateway": "payment gateway"
+    },
+    "stable_tag": "1.0.8",
+    "versions": {
+        "1.0.8": "https://downloads.wordpress.org/plugin/manipay-manual-payment-for-fluentcart.1.0.8.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/manipay-manual-payment-for-fluentcart.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/manipay-manual-payment-for-fluentcart/assets/banner-772x250.png?rev=3629115",
+        "high": "https://ps.w.org/manipay-manual-payment-for-fluentcart/assets/banner-1544x500.png?rev=3629115"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/manipay-manual-payment-for-fluentcart/assets/icon-128x128.png?rev=3629115",
+        "2x": "https://ps.w.org/manipay-manual-payment-for-fluentcart/assets/icon-256x256.png?rev=3629115"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
