@@ -1,0 +1,97 @@
+{
+    "name": "Lean SMTP",
+    "slug": "lean-smtp",
+    "version": "0.3.1",
+    "author": "<a href=\"https://profiles.wordpress.org/pjaudiomv/\">pjaudiomv</a>",
+    "author_profile": "https://profiles.wordpress.org/pjaudiomv/",
+    "contributors": {
+        "pjaudiomv": {
+            "profile": "https://profiles.wordpress.org/pjaudiomv/",
+            "avatar": "https://secure.gravatar.com/avatar/edd5e0d37d1bc75a4870f6a694d80e59cd1eee515dcf57b026699de25aa12509?s=96&d=monsterid&r=g",
+            "display_name": "pjaudiomv"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0.2",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/lean-smtp/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-07-31 11:17:00",
+    "added": "2026-07-31",
+    "homepage": "https://github.com/pjaudiomv/lean-smtp",
+    "sections": {
+        "description": "<p>Lean SMTP makes WordPress send its mail through a real mail service instead of the host&#8217;s default PHP mail, which improves deliverability. It is deliberately small: a handful of transports, a handful of settings, no upsells.</p>\n<p>Website: https://leansmtp.com</p>\n<p>Every provider below also offers plain SMTP, so the SMTP transport alone covers all of them. The API transports exist for hosts that block outbound mail ports (25/465/587), which is common on shared hosting and some managed platforms.</p>\n<ul>\n<li><strong>SMTP</strong> — any host/port with TLS, SSL, or no encryption, optional username/password.</li>\n<li><strong>Amazon SES (API)</strong> — the SES v2 API, signed with a hand-rolled AWS Signature V4 signer, so no AWS SDK is bundled.</li>\n<li><strong>Mailgun (API)</strong> — US or EU region, sending the message as MIME so attachments and formatting survive untouched.</li>\n<li><strong>Resend (API)</strong> — a single API key, nothing else to configure.</li>\n<li><strong>Offline</strong> — record every message and send nothing, for staging sites that must never mail real customers. wp_mail() still reports success, so plugins behave exactly as they would in production.</li>\n<li><strong>From identity</strong> — set the From name and address, and optionally force them over anything another plugin sets.</li>\n<li><strong>Reply-To</strong> — a site-wide default for replies, useful when the From address is a no-reply. A Reply-To the message set itself is always kept.</li>\n<li><strong>wp-config.php overrides</strong> — pin any setting in code instead of the database, so credentials can live in environment variables and never diverge between environments.</li>\n<li><strong>Failure alerts</strong> — an admin notice when mail stops going out, so a broken mailer isn&#8217;t discovered via missed password resets. It clears itself once mail works again.</li>\n<li><strong>WP-CLI</strong> — <code>wp lean-smtp test</code> and <code>wp lean-smtp status</code>.</li>\n<li><strong>Test email</strong> — a button on the settings page to confirm your configuration works.</li>\n<li><strong>Send log</strong> — optional; records the most recent sends (recipient, subject, result) with a viewer and a clear button. The message headers, attachment filenames and body can each be recorded too, behind their own settings and off by default.</li>\n<li><strong>Encrypted secrets</strong> — stored passwords and API keys are AES-256 encrypted, keyed to your site salts.</li>\n</ul>\n<p>Deliberately not included: Gmail and Microsoft 365 OAuth. Both need an OAuth consent flow, refresh-token storage, and (for Google) app verification — more machinery than the rest of this plugin combined. Use an app password or a provider above.</p>\n<h3>Configuring in wp-config.php</h3>\n<p>Any setting can be defined as a constant instead of saved in the database. The constant name is the option name in upper case, and it always wins — the settings page shows the field as read-only and names the constant, so what you see is always what is in force. Removing the constant restores whatever was saved before.</p>\n<pre><code>define( 'LEAN_SMTP_MAILER', 'ses' );\ndefine( 'LEAN_SMTP_FROM_EMAIL', 'noreply@example.com' );\ndefine( 'LEAN_SMTP_SES_REGION', 'us-east-1' );\ndefine( 'LEAN_SMTP_SES_ACCESS_KEY', 'AKIA…' );\ndefine( 'LEAN_SMTP_SES_SECRET_KEY', getenv( 'SES_SECRET_KEY' ) );\n</code></pre>\n<p>Secrets defined this way are used as-is and are never written to the database. Run <code>wp lean-smtp status</code> to see every setting and where it came from.</p>\n<h3>External services</h3>\n<p>Lean SMTP sends email through whichever mail service you configure. When — and only when — you select an API transport and your site sends mail, the plugin connects to that provider&#8217;s HTTPS API and transmits the message being sent (recipients, subject, body, headers, and any attachments) along with the credentials you entered, so the provider can authenticate the request and deliver the message. Nothing is sent until you configure and select a transport, and the plugin contacts no other services: there is no telemetry, tracking, or analytics.</p>\n<p>The provider you choose is the data controller for the mail you route through it. Review its terms and privacy policy:</p>\n<ul>\n<li>Amazon SES — sends to <code>email.{region}.amazonaws.com</code>. Terms: https://aws.amazon.com/service-terms/ · Privacy: https://aws.amazon.com/privacy/</li>\n<li>Mailgun — sends to <code>api.mailgun.net</code> or <code>api.eu.mailgun.net</code>. Terms: https://www.mailgun.com/legal/terms/ · Privacy: https://www.mailgun.com/legal/privacy-policy/</li>\n<li>Resend — sends to <code>api.resend.com</code>. Terms: https://resend.com/legal/terms-of-service · Privacy: https://resend.com/legal/privacy-policy</li>\n</ul>\n<p>The SMTP transport connects only to the host you configure and bundles no third-party service. The Offline mailer connects to nothing at all: messages are written to the local send log and never leave your server.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin and activate it.</li>\n<li>Go to Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Lean SMTP.</li>\n<li>Choose a mailer and fill in the connection details.</li>\n<li>Set your From Email and From Name.</li>\n<li>Save, then use &#8220;Send a Test Email&#8221; to confirm it works.</li>\n</ol>\n<p>For Amazon SES: create an IAM user limited to <code>ses:SendRawEmail</code>/<code>ses:SendEmail</code>, verify your From address (or domain) in the SES console, and, if your account is still in the SES sandbox, verify the recipient too.</p>\n<p>For Mailgun: use the sending domain exactly as it appears in your Mailgun dashboard, and pick the region matching the account the key was issued in — a US key is not valid against the EU stack.</p>\n<p>For Resend: create an API key with send permission and verify your From domain.</p>\n",
+        "changelog": "<h4>0.3.1</h4>\n<ul>\n<li>Stored passwords and API keys are no longer passed through sanitize_text_field(), which strips characters that are perfectly legal in a credential (angle brackets, percent-encoded sequences) and could leave a saved secret that no longer authenticates. Only control characters are removed now. If your password or API key contains such characters, re-enter it.</li>\n</ul>\n<h4>0.3.0</h4>\n<ul>\n<li>Added an Offline mailer: every message is recorded and nothing is sent, for staging sites that must not mail real customers. wp_mail() still reports success, so other plugins behave as they would in production.</li>\n<li>The send log can now record the message headers, attachment filenames and body. Each is a separate setting and both are off by default — a stored body contains password-reset links and anything else your site mails. Recorded content is shown in an expandable row in the log viewer, alongside the full error text for a failed send.</li>\n<li>Added a Reply-To setting, applied to both the SMTP and API paths. A Reply-To the message set for itself is always kept.</li>\n<li>The log table is now upgraded in place when the plugin is updated. Previously the table was only ever created on activation, which does not run on update.</li>\n</ul>\n<h4>0.2.1</h4>\n<ul>\n<li>The settings screen&#8217;s CSS and JavaScript are now enqueued as files on that screen only, instead of being printed inline.</li>\n<li>Each setting is now registered with its own named sanitize callback, with the wp-config.php constant guard applied as a separate filter on top.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>Added a Mailgun transport (US and EU regions), sending the assembled message as MIME.</li>\n<li>Added a Resend transport.</li>\n<li>Bcc recipients on API sends are now carried as an explicit envelope and the Bcc header is stripped from the delivered message, so hidden recipients are never disclosed to other recipients.</li>\n<li>Any setting can now be pinned in wp-config.php as an upper-case constant; a pinned setting renders read-only on the settings page and is left untouched when the form is saved.</li>\n<li>Added an admin notice when a send fails, so a silently broken mailer is noticed. It clears itself after the next successful send.</li>\n<li>Added WP-CLI commands: <code>wp lean-smtp test [&lt;recipient&gt;]</code> and <code>wp lean-smtp status</code>.</li>\n<li>The API transports now share one message assembly behind a Lean_SMTP_Api_Transport interface, so all of them reproduce core&#8217;s wp_mail() semantics identically.</li>\n</ul>\n<h4>0.1.1</h4>\n<ul>\n<li>Fixed Amazon SES sends failing with an HTTP 403 &#8220;signature does not match&#8221; error caused by the secret key being encrypted twice on its first save (WordPress runs a setting&#8217;s sanitize callback twice when the option is first created). Re-enter your SES secret key (and SMTP password) after updating.</li>\n<li>SES requests now sign only the required host and date headers, avoiding signature mismatches when the HTTP transport rewrites the Content-Type header.</li>\n<li>Fixed failed SES sends being written to the send log twice; every send is now recorded exactly once.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release. SMTP and Amazon SES (API) transports for wp_mail(), From name/email with optional forcing, a test-email button, optional send logging, and AES-256 at-rest encryption of stored credentials.</li>\n</ul>\n"
+    },
+    "short_description": "Route wp_mail() through SMTP or the Amazon SES, Mailgun, or Resend API — with From control, wp-config overrides, and mail-failure alerts.",
+    "description": "<p>Lean SMTP makes WordPress send its mail through a real mail service instead of the host&#8217;s default PHP mail, which improves deliverability. It is deliberately small: a handful of transports, a handful of settings, no upsells.</p>\n<p>Website: https://leansmtp.com</p>\n<p>Every provider below also offers plain SMTP, so the SMTP transport alone covers all of them. The API transports exist for hosts that block outbound mail ports (25/465/587), which is common on shared hosting and some managed platforms.</p>\n<ul>\n<li><strong>SMTP</strong> — any host/port with TLS, SSL, or no encryption, optional username/password.</li>\n<li><strong>Amazon SES (API)</strong> — the SES v2 API, signed with a hand-rolled AWS Signature V4 signer, so no AWS SDK is bundled.</li>\n<li><strong>Mailgun (API)</strong> — US or EU region, sending the message as MIME so attachments and formatting survive untouched.</li>\n<li><strong>Resend (API)</strong> — a single API key, nothing else to configure.</li>\n<li><strong>Offline</strong> — record every message and send nothing, for staging sites that must never mail real customers. wp_mail() still reports success, so plugins behave exactly as they would in production.</li>\n<li><strong>From identity</strong> — set the From name and address, and optionally force them over anything another plugin sets.</li>\n<li><strong>Reply-To</strong> — a site-wide default for replies, useful when the From address is a no-reply. A Reply-To the message set itself is always kept.</li>\n<li><strong>wp-config.php overrides</strong> — pin any setting in code instead of the database, so credentials can live in environment variables and never diverge between environments.</li>\n<li><strong>Failure alerts</strong> — an admin notice when mail stops going out, so a broken mailer isn&#8217;t discovered via missed password resets. It clears itself once mail works again.</li>\n<li><strong>WP-CLI</strong> — <code>wp lean-smtp test</code> and <code>wp lean-smtp status</code>.</li>\n<li><strong>Test email</strong> — a button on the settings page to confirm your configuration works.</li>\n<li><strong>Send log</strong> — optional; records the most recent sends (recipient, subject, result) with a viewer and a clear button. The message headers, attachment filenames and body can each be recorded too, behind their own settings and off by default.</li>\n<li><strong>Encrypted secrets</strong> — stored passwords and API keys are AES-256 encrypted, keyed to your site salts.</li>\n</ul>\n<p>Deliberately not included: Gmail and Microsoft 365 OAuth. Both need an OAuth consent flow, refresh-token storage, and (for Google) app verification — more machinery than the rest of this plugin combined. Use an app password or a provider above.</p>\n<h3>Configuring in wp-config.php</h3>\n<p>Any setting can be defined as a constant instead of saved in the database. The constant name is the option name in upper case, and it always wins — the settings page shows the field as read-only and names the constant, so what you see is always what is in force. Removing the constant restores whatever was saved before.</p>\n<pre><code>define( 'LEAN_SMTP_MAILER', 'ses' );\ndefine( 'LEAN_SMTP_FROM_EMAIL', 'noreply@example.com' );\ndefine( 'LEAN_SMTP_SES_REGION', 'us-east-1' );\ndefine( 'LEAN_SMTP_SES_ACCESS_KEY', 'AKIA…' );\ndefine( 'LEAN_SMTP_SES_SECRET_KEY', getenv( 'SES_SECRET_KEY' ) );\n</code></pre>\n<p>Secrets defined this way are used as-is and are never written to the database. Run <code>wp lean-smtp status</code> to see every setting and where it came from.</p>\n<h3>External services</h3>\n<p>Lean SMTP sends email through whichever mail service you configure. When — and only when — you select an API transport and your site sends mail, the plugin connects to that provider&#8217;s HTTPS API and transmits the message being sent (recipients, subject, body, headers, and any attachments) along with the credentials you entered, so the provider can authenticate the request and deliver the message. Nothing is sent until you configure and select a transport, and the plugin contacts no other services: there is no telemetry, tracking, or analytics.</p>\n<p>The provider you choose is the data controller for the mail you route through it. Review its terms and privacy policy:</p>\n<ul>\n<li>Amazon SES — sends to <code>email.{region}.amazonaws.com</code>. Terms: https://aws.amazon.com/service-terms/ · Privacy: https://aws.amazon.com/privacy/</li>\n<li>Mailgun — sends to <code>api.mailgun.net</code> or <code>api.eu.mailgun.net</code>. Terms: https://www.mailgun.com/legal/terms/ · Privacy: https://www.mailgun.com/legal/privacy-policy/</li>\n<li>Resend — sends to <code>api.resend.com</code>. Terms: https://resend.com/legal/terms-of-service · Privacy: https://resend.com/legal/privacy-policy</li>\n</ul>\n<p>The SMTP transport connects only to the host you configure and bundles no third-party service. The Offline mailer connects to nothing at all: messages are written to the local send log and never leave your server.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/lean-smtp.0.3.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/lean-smtp/assets/screenshot-1.png?rev=3629881",
+            "caption": "Settings page: pick a mailer — including Offline, which records mail without sending it — set the From identity and Reply-To, configure the transport, and choose how much of each message the log keeps."
+        },
+        {
+            "src": "https://ps.w.org/lean-smtp/assets/screenshot-2.png?rev=3629881",
+            "caption": "Amazon SES — region and IAM access key; the secret key is stored encrypted and never shown."
+        },
+        {
+            "src": "https://ps.w.org/lean-smtp/assets/screenshot-3.png?rev=3629881",
+            "caption": "Mailgun — sending domain, US/EU region, and API key."
+        },
+        {
+            "src": "https://ps.w.org/lean-smtp/assets/screenshot-4.png?rev=3629881",
+            "caption": "Resend — a single API key."
+        },
+        {
+            "src": "https://ps.w.org/lean-smtp/assets/screenshot-5.png?rev=3629881",
+            "caption": "Send a test email, and review the optional send log. When message content is recorded, each row expands to show the headers, attachment names and body that were sent."
+        }
+    ],
+    "tags": {
+        "email": "email",
+        "mail": "mail",
+        "ses": "SES",
+        "smtp": "smtp",
+        "wp_mail": "wp_mail"
+    },
+    "stable_tag": "0.3.1",
+    "versions": {
+        "0.3.1": "https://downloads.wordpress.org/plugin/lean-smtp.0.3.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/lean-smtp.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/lean-smtp/assets/banner-772x250.png?rev=3629881",
+        "high": "https://ps.w.org/lean-smtp/assets/banner-1544x500.png?rev=3629881"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/lean-smtp/assets/icon.svg?rev=3629881",
+        "svg": "https://ps.w.org/lean-smtp/assets/icon.svg?rev=3629881"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
