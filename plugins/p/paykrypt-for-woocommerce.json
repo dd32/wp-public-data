@@ -1,7 +1,7 @@
 {
     "name": "PayKrypt for WooCommerce",
     "slug": "paykrypt-for-woocommerce",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "author": "<a href=\"https://profiles.wordpress.org/paykryptio/\">paykryptio</a>",
     "author_profile": "https://profiles.wordpress.org/paykryptio/",
     "contributors": {
@@ -12,7 +12,7 @@
         }
     },
     "requires": "6.0",
-    "tested": "7.0",
+    "tested": "7.0.2",
     "requires_php": "7.4",
     "requires_plugins": [
         "woocommerce"
@@ -31,19 +31,20 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2026-07-07 11:59:00",
+    "last_updated": "2026-08-02 13:46:00",
     "added": "2026-07-03",
     "homepage": "https://docs.paykrypt.io/woocommerce",
     "sections": {
         "description": "<p>PayKrypt for WooCommerce lets merchants accept cryptocurrency payments through PayKrypt hosted checkout.</p>\n<p>The plugin creates a PayKrypt payment intent for each WooCommerce order, redirects the customer to PayKrypt hosted checkout, and updates the WooCommerce order through signed webhooks with scheduled polling as a fallback.</p>\n<h4>Features</h4>\n<ul>\n<li>Hosted crypto checkout powered by PayKrypt.</li>\n<li>Payment intent creation with per-order idempotency keys.</li>\n<li>Automatic WooCommerce order status polling.</li>\n<li>Signed webhook processing for faster payment updates.</li>\n<li>Manual order status sync from the WooCommerce order actions menu.</li>\n<li>Production and custom environment settings.</li>\n<li>Optional allowed asset and chain filters.</li>\n<li>HPOS-compatible order metadata.</li>\n<li>WooCommerce Checkout Blocks support.</li>\n</ul>\n<h4>Requirements</h4>\n<ul>\n<li>WordPress 6.0 or higher.</li>\n<li>WooCommerce 7.0 or higher.</li>\n<li>PHP 7.4 or higher.</li>\n<li>A PayKrypt merchant API key that can create and read payment intents.</li>\n</ul>\n<h3>External Service</h3>\n<p>This plugin connects to PayKrypt, a third-party hosted cryptocurrency payment service, when a customer chooses PayKrypt at checkout and while WooCommerce synchronizes the resulting payment status.</p>\n<p>To create a payment intent, the plugin sends the order total, currency, order number in the payment description, customer billing email address, configured allowed chains and assets, expiry, and amount tolerance to <code>https://api.paykrypt.io</code>. The merchant API key is sent in the Authorization header. During webhook-triggered, scheduled, and manual status synchronization, the plugin sends the PayKrypt payment intent ID to the same API. The returned intent ID, checkout URL, status, original amount and currency, last synchronization time, attempt count, and API error message are stored as private WooCommerce order metadata.</p>\n<p>PayKrypt sends signed payment event payloads to the generated WordPress REST API endpoint. The plugin verifies the signature and timestamp before scheduling an authoritative status lookup. Scheduled polling remains active if webhook delivery is delayed or unavailable.</p>\n<p>After the payment intent is created, the customer is redirected to PayKrypt hosted checkout at <code>https://gate.paykrypt.io</code>. PayKrypt may collect information from the customer under its own policies. The service is required for this plugin to process payments; no data is sent to PayKrypt until the merchant configures the plugin and a customer selects PayKrypt.</p>\n<ul>\n<li>PayKrypt service: https://paykrypt.io/</li>\n<li>PayKrypt API documentation: https://docs.paykrypt.io/</li>\n<li>PayKrypt Terms of Use: https://paykrypt.io/tos</li>\n<li>PayKrypt Privacy Policy: https://paykrypt.io/privacy</li>\n</ul>\n<h3>Order Status</h3>\n<ul>\n<li><code>awaiting_payment</code>, <code>detected</code>, <code>confirming</code>, <code>partial</code>: order remains pending/on-hold.</li>\n<li><code>confirmed</code> with <code>transactionsSummary.isFullyPaid</code>: order is marked paid.</li>\n<li><code>expired</code>, <code>canceled</code>, or <code>failed</code>: order is cancelled when not already paid.</li>\n<li><code>underpaid</code> or <code>overpaid</code>: an order note is added for merchant review.</li>\n</ul>\n",
         "installation": "<ol>\n<li>Install and activate WooCommerce.</li>\n<li>Upload the plugin ZIP through Plugins &gt; Add New Plugin &gt; Upload Plugin, or install it from the WordPress.org plugin directory.</li>\n<li>Activate PayKrypt for WooCommerce.</li>\n<li>In the PayKrypt merchant dashboard, create an API key that can create and read payment intents.</li>\n<li>In WooCommerce, open Settings &gt; Payments &gt; PayKrypt.</li>\n<li>Paste the PayKrypt API key and configure expiry, amount tolerance, and optional allowed chains/assets.</li>\n<li>Copy the generated Webhook Endpoint shown in the PayKrypt settings and register it in PayKrypt for <code>payment.detected.v1</code>, <code>payment.partial.v1</code>, and <code>payment.confirmed.v1</code>.</li>\n<li>Paste the one-time <code>whsec_...</code> secret returned by PayKrypt into the Webhook Secret field.</li>\n</ol>\n",
         "faq": "\n<dt id=\"do%20customers%20pay%20inside%20woocommerce%3F\">\nDo customers pay inside WooCommerce?\n</h4>\n<p>\n<p>No. Customers are redirected to PayKrypt hosted checkout. PayKrypt handles the crypto payment experience, address selection, QR code, and payment status page.</p>\n</p>\n<dt id=\"does%20this%20plugin%20require%20webhooks%3F\">\nDoes this plugin require webhooks?\n</h4>\n<p>\n<p>Webhooks are strongly recommended for immediate updates. Scheduled polling and the manual order action remain available as fallback reconciliation methods.</p>\n</p>\n<dt id=\"which%20api%20key%20should%20i%20use%3F\">\nWhich API key should I use?\n</h4>\n<p>\n<p>Use a PayKrypt merchant API key in the <code>pk_...</code> format that can create and read payment intents.</p>\n</p>\n<dt id=\"does%20the%20plugin%20support%20checkout%20blocks%3F\">\nDoes the plugin support Checkout Blocks?\n</h4>\n<p>\n<p>Yes. The plugin registers a payment method for WooCommerce Checkout Blocks as well as classic checkout.</p>\n</p>\n<dt id=\"does%20the%20plugin%20store%20private%20wallet%20keys%3F\">\nDoes the plugin store private wallet keys?\n</h4>\n<p>\n<p>No. The plugin stores only PayKrypt payment intent metadata and calls PayKrypt APIs using the configured merchant API key.</p>\n</p>\n\n",
-        "changelog": "<h4>0.2.0</h4>\n<ul>\n<li>Added signed webhook processing for detected, partial, and confirmed payments.</li>\n<li>Added Action Scheduler reconciliation with WP-Cron fallback.</li>\n<li>Prevented one failed order from stopping a polling batch.</li>\n<li>Added fair polling order, synchronization diagnostics, and intent amount/currency validation.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>Added hosted PayKrypt checkout redirect flow.</li>\n<li>Added polling-based order reconciliation.</li>\n<li>Added HPOS and Checkout Blocks compatibility.</li>\n</ul>\n"
+        "changelog": "<h4>0.3.0</h4>\n<ul>\n<li>Added an Enable test mode setting that must agree with your API key. If the two disagree, PayKrypt orders are refused at checkout instead of being settled the wrong way. This catches both a test key on a store that believes it is taking real money, and a live key on a store that believes it is testing.</li>\n<li>Added test mode awareness. A pk_test_ API key now labels the gateway in the admin and at checkout, shows a warning notice while the gateway is enabled, and records a note on every order it creates.</li>\n<li>Clarified that the Environment setting selects a self-hosted API host and is not how test mode is reached.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>Added signed webhook processing for detected, partial, and confirmed payments.</li>\n<li>Added Action Scheduler reconciliation with WP-Cron fallback.</li>\n<li>Prevented one failed order from stopping a polling batch.</li>\n<li>Added fair polling order, synchronization diagnostics, and intent amount/currency validation.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>Added hosted PayKrypt checkout redirect flow.</li>\n<li>Added polling-based order reconciliation.</li>\n<li>Added HPOS and Checkout Blocks compatibility.</li>\n</ul>\n"
     },
     "short_description": "Accept crypto payments in WooCommerce through PayKrypt hosted checkout.",
     "description": "<p>PayKrypt for WooCommerce lets merchants accept cryptocurrency payments through PayKrypt hosted checkout.</p>\n<p>The plugin creates a PayKrypt payment intent for each WooCommerce order, redirects the customer to PayKrypt hosted checkout, and updates the WooCommerce order through signed webhooks with scheduled polling as a fallback.</p>\n<h4>Features</h4>\n<ul>\n<li>Hosted crypto checkout powered by PayKrypt.</li>\n<li>Payment intent creation with per-order idempotency keys.</li>\n<li>Automatic WooCommerce order status polling.</li>\n<li>Signed webhook processing for faster payment updates.</li>\n<li>Manual order status sync from the WooCommerce order actions menu.</li>\n<li>Production and custom environment settings.</li>\n<li>Optional allowed asset and chain filters.</li>\n<li>HPOS-compatible order metadata.</li>\n<li>WooCommerce Checkout Blocks support.</li>\n</ul>\n<h4>Requirements</h4>\n<ul>\n<li>WordPress 6.0 or higher.</li>\n<li>WooCommerce 7.0 or higher.</li>\n<li>PHP 7.4 or higher.</li>\n<li>A PayKrypt merchant API key that can create and read payment intents.</li>\n</ul>\n<h3>External Service</h3>\n<p>This plugin connects to PayKrypt, a third-party hosted cryptocurrency payment service, when a customer chooses PayKrypt at checkout and while WooCommerce synchronizes the resulting payment status.</p>\n<p>To create a payment intent, the plugin sends the order total, currency, order number in the payment description, customer billing email address, configured allowed chains and assets, expiry, and amount tolerance to <code>https://api.paykrypt.io</code>. The merchant API key is sent in the Authorization header. During webhook-triggered, scheduled, and manual status synchronization, the plugin sends the PayKrypt payment intent ID to the same API. The returned intent ID, checkout URL, status, original amount and currency, last synchronization time, attempt count, and API error message are stored as private WooCommerce order metadata.</p>\n<p>PayKrypt sends signed payment event payloads to the generated WordPress REST API endpoint. The plugin verifies the signature and timestamp before scheduling an authoritative status lookup. Scheduled polling remains active if webhook delivery is delayed or unavailable.</p>\n<p>After the payment intent is created, the customer is redirected to PayKrypt hosted checkout at <code>https://gate.paykrypt.io</code>. PayKrypt may collect information from the customer under its own policies. The service is required for this plugin to process payments; no data is sent to PayKrypt until the merchant configures the plugin and a customer selects PayKrypt.</p>\n<ul>\n<li>PayKrypt service: https://paykrypt.io/</li>\n<li>PayKrypt API documentation: https://docs.paykrypt.io/</li>\n<li>PayKrypt Terms of Use: https://paykrypt.io/tos</li>\n<li>PayKrypt Privacy Policy: https://paykrypt.io/privacy</li>\n</ul>\n<h3>Order Status</h3>\n<ul>\n<li><code>awaiting_payment</code>, <code>detected</code>, <code>confirming</code>, <code>partial</code>: order remains pending/on-hold.</li>\n<li><code>confirmed</code> with <code>transactionsSummary.isFullyPaid</code>: order is marked paid.</li>\n<li><code>expired</code>, <code>canceled</code>, or <code>failed</code>: order is cancelled when not already paid.</li>\n<li><code>underpaid</code> or <code>overpaid</code>: an order note is added for merchant review.</li>\n</ul>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/paykrypt-for-woocommerce.0.2.0.zip",
+    "download_link": "https://downloads.wordpress.org/plugin/paykrypt-for-woocommerce.0.3.0.zip",
     "upgrade_notice": {
+        "0.3.0": "<p>There is a new Enable test mode setting that must match your API key, and PayKrypt orders are refused while the two disagree. Existing installs default it to off, so if you run a pk_test_ key you must tick it after upgrading. A test key settles orders with simulated payments and receives no real funds, so use a live pk_ key on a production store.</p>",
         "0.2.0": "<p>Register the webhook endpoint displayed in WooCommerce &gt; Settings &gt; Payments &gt; PayKrypt and save its one-time secret for immediate payment updates.</p>",
         "0.1.0": "<p>Initial public release.</p>"
     },
@@ -55,10 +56,11 @@
         "payment-gateway": "payment gateway",
         "woocommerce": "woocommerce"
     },
-    "stable_tag": "0.2.0",
+    "stable_tag": "0.3.0",
     "versions": {
         "0.1.0": "https://downloads.wordpress.org/plugin/paykrypt-for-woocommerce.0.1.0.zip",
         "0.2.0": "https://downloads.wordpress.org/plugin/paykrypt-for-woocommerce.0.2.0.zip",
+        "0.3.0": "https://downloads.wordpress.org/plugin/paykrypt-for-woocommerce.0.3.0.zip",
         "trunk": "https://downloads.wordpress.org/plugin/paykrypt-for-woocommerce.zip"
     },
     "business_model": false,
@@ -66,12 +68,12 @@
     "commercial_support_url": "",
     "donate_link": "",
     "banners": {
-        "low": "https://ps.w.org/paykrypt-for-woocommerce/assets/banner-772x250.png?rev=3598999",
-        "high": "https://ps.w.org/paykrypt-for-woocommerce/assets/banner-1544x500.png?rev=3598999"
+        "low": "https://ps.w.org/paykrypt-for-woocommerce/assets/banner-772x250.png?rev=3599083",
+        "high": "https://ps.w.org/paykrypt-for-woocommerce/assets/banner-1544x500.png?rev=3599083"
     },
     "icons": {
-        "1x": "https://ps.w.org/paykrypt-for-woocommerce/assets/icon-128x128.png?rev=3598999",
-        "2x": "https://ps.w.org/paykrypt-for-woocommerce/assets/icon-256x256.png?rev=3598999"
+        "1x": "https://ps.w.org/paykrypt-for-woocommerce/assets/icon-128x128.png?rev=3599083",
+        "2x": "https://ps.w.org/paykrypt-for-woocommerce/assets/icon-256x256.png?rev=3599083"
     },
     "blocks": [],
     "block_assets": [],
