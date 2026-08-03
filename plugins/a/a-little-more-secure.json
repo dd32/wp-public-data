@@ -1,24 +1,29 @@
 {
     "name": "A litte more secure",
     "slug": "a-little-more-secure",
-    "version": "1.0.4",
-    "author": "<a href=\"https://palasthotel.de\">Palasthotel </a>",
+    "version": "1.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/edwardbock/\">EdwardBock</a>",
     "author_profile": "https://profiles.wordpress.org/edwardbock/",
     "contributors": {
         "palasthotel": {
             "profile": "https://profiles.wordpress.org/palasthotel/",
-            "avatar": "https://secure.gravatar.com/avatar/c58364064b015c9661bd84ddd6cb105e?s=96&d=monsterid&r=g",
-            "display_name": "Palasthotel"
+            "avatar": "https://secure.gravatar.com/avatar/accf15c1985eae9d442a141dfab9b87c7cab6e09f2b36fa616d14ee57b39464b?s=96&d=monsterid&r=g",
+            "display_name": "Palasthotel GmbH"
         },
         "edwardbock": {
             "profile": "https://profiles.wordpress.org/edwardbock/",
-            "avatar": "https://secure.gravatar.com/avatar/61688debf1d8e5b56566cf10dd2eefbb?s=96&d=monsterid&r=g",
+            "avatar": "https://secure.gravatar.com/avatar/9260464387daf84ab84b68ac2cb20d65659f0c6e7728e64dba998d68c209a834?s=96&d=monsterid&r=g",
             "display_name": "EdwardBock"
+        },
+        "janaeggebrecht": {
+            "profile": "https://profiles.wordpress.org/janaeggebrecht/",
+            "avatar": "https://secure.gravatar.com/avatar/1c9c4832bed986865ed4e07bf4d6037fccf64a8d268e3dfed1ac7a8550626c90?s=96&d=monsterid&r=g",
+            "display_name": "Jana Eggebrecht"
         }
     },
-    "requires": "4.0",
-    "tested": "6.5.5",
-    "requires_php": false,
+    "requires": "5.0",
+    "tested": "6.7.5",
+    "requires_php": "8.2",
     "requires_plugins": [],
     "compatibility": [],
     "rating": 100,
@@ -34,18 +39,18 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 100,
-    "downloaded": 1302,
-    "last_updated": "2024-04-29 04:43:00",
+    "last_updated": "2026-08-03 12:39:00",
     "added": "2021-01-27",
     "homepage": "https://github.com/palasthotel/a-little-more-secure",
     "sections": {
-        "description": "<p>Stop bots from brute force hacking your wp-login.php</p>\n",
+        "description": "<p>Stop bots from brute force hacking your wp-login.php</p>\n<p>A request to wp-login.php without an unlock parameter answers with a 404 and a<br />\nholding page. JavaScript counts down a few seconds, then redirects to the same<br />\nURL with the parameter appended. Only that request renders a usable login form,<br />\nand only it carries the nonce that a login POST has to contain — a POST without<br />\na valid nonce is rejected.</p>\n<p>This raises the cost of naive automation. It is not a lockout mechanism: whoever<br />\nrequests the unlock URL first can read the nonce and post with it, which is why<br />\nthe plugin is called <em>a little</em> more secure.</p>\n<p>There is nothing to configure. Activating the plugin is enough.</p>\n<h3>Customising</h3>\n<p>Three filters, for a theme or a small plugin of your own.</p>\n<pre><code>a_little_more_secure_is_unlocked decides whether a request counts as unlocked.\n</code></pre>\n<p>By default that is the presence of the parameter; override it to implement your<br />\nown rule, for example a one-time token or an office IP allowlist:</p>\n<pre><code>add_filter( 'a_little_more_secure_is_unlocked', function ( $is_unlocked ) {\n    return $is_unlocked || my_own_check();\n} );\n\na_little_more_secure_get_param_name changes the name of the unlock parameter,\na-little-more-secure by default.\n\na_little_more_secure_redirect_wait_seconds changes the delay before the\n</code></pre>\n<p>redirect, 3 seconds by default.</p>\n<p>A theme with its own login form that posts to wp-login.php has to render the<br />\nnonce itself, otherwise the POST is rejected — call<br />\n    a_little_more_secure_nonce_field() inside the form. Forms built with<br />\n    wp_login_form() get it automatically.</p>\n<h4>Rotating the unlock parameter</h4>\n<p>The default parameter name is public knowledge, so a bot written for this plugin<br />\ncan hardcode it. If you want a name that changes over time, put the token in the<br />\nname itself: the parameter name filter runs both when the redirect URL is built<br />\nand when the request is checked, so both sides agree without storing anything.</p>\n<pre><code>function my_alms_token( int $bucketsAgo = 0 ): string {\n    $ttl    = 15 * MINUTE_IN_SECONDS;\n    $bucket = (int) floor( time() / $ttl ) - $bucketsAgo;\n\n    return 'alms_' . substr( hash_hmac( 'sha256', 'alms|' . $bucket, wp_salt( 'nonce' ) ), 0, 20 );\n}\n\nadd_filter( 'a_little_more_secure_get_param_name', function () {\n    return my_alms_token();\n} );\n\nadd_filter( 'a_little_more_secure_is_unlocked', function ( $is_unlocked ) {\n    return $is_unlocked || isset( $_GET[ my_alms_token( 1 ) ] );\n} );\n</code></pre>\n<p>Accepting the previous bucket as well keeps a request that crosses a bucket<br />\nboundary from being rejected, so the effective validity is 15 to 30 minutes.<br />\nKeep the token alphanumeric — PHP rewrites dots and spaces in parameter names.</p>\n<p>Be aware of what this does and does not do. It stops bots that hardcode the<br />\nparameter name. It does not stop anything that fetches the page and reads the<br />\nname out of it — the value has to be handed to the browser before anyone is<br />\nlogged in, so a scraper can always obtain it too.</p>\n<p>Three things to expect: bookmarked unlock URLs stop working once the token<br />\nexpires, though an expired token lands on the holding page and is redirected<br />\nwith a fresh one, so it costs one extra request. Keep the lifetime well above<br />\nthe redirect delay, otherwise the token can expire during the countdown. And be<br />\ncareful with page caching — a short-lived token in cached HTML means logins that<br />\nare rejected until the cache is refreshed.</p>\n",
         "installation": "<ol>\n<li>Upload <code>a-little-more-secure.zip</code> to the <code>/wp-content/plugins/</code> directory</li>\n<li>Extract the Plugin to a <code>a-little-more-secure</code> Folder</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</li>\n</ol>\n",
-        "changelog": "<h4>1.0.4</h4>\n<ul>\n<li>Check compatiblility with 6.5.2</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>Optimization: load textdomain properly</li>\n<li>Optimization: 404 if no valid login parameter</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Bugfix: Not redirected properly if hash in url</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>WP5.7 compatible</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First release</li>\n</ul>\n"
+        "faq": "\n<dt id=\"do%20i%20have%20to%20configure%20anything%3F\">\nDo I have to configure anything?\n</h4>\n<p>\n<p>No. Activate the plugin and it works. Everything that can be changed is changed<br />\nwith the filters described above, in a theme or a small plugin of your own.</p>\n</p>\n<dt id=\"why%20does%20my%20login%20page%20return%20a%20404%3F\">\nWhy does my login page return a 404?\n</h4>\n<p>\n<p>That is intentional. A request to wp-login.php without the unlock parameter is<br />\nanswered with a 404 so that automated scanners see a missing page. Your browser<br />\nstill shows the holding page and is redirected to the real form a few seconds<br />\nlater. Uptime monitors and scanners pointed at wp-login.php will report it as<br />\nmissing — point them at a different URL, or exclude wp-login.php.</p>\n</p>\n<dt id=\"i%20cannot%20log%20in.%20it%20says%20%22sorry%2C%20this%20feels%20not%20very%20secure%22.\">\nI cannot log in. It says &#8220;Sorry, this feels not very secure&#8221;.\n</h4>\n<p>\n<p>That message means the login form was submitted without a valid nonce. The usual<br />\ncauses:</p>\n<ol>\n<li>Something is caching wp-login.php. It must not be cached — the page carries a<br />\nnonce that goes stale.</li>\n<li>Your theme renders its own login form that posts to wp-login.php without the<br />\nnonce field. Call <code>a_little_more_secure_nonce_field()</code> inside the form.</li>\n<li>The login page sat open in a tab for more than a day. Nonces expire after at<br />\nmost 24 hours. Reload the page and log in again.</li>\n</ol>\n</p>\n<dt id=\"does%20it%20work%20without%20javascript%3F\">\nDoes it work without JavaScript?\n</h4>\n<p>\n<p>No. The redirect to the unlocked form is done in JavaScript, and only the<br />\nunlocked form carries the nonce a login needs. Without JavaScript you will see<br />\nthe login page but the submission is rejected. If that is a problem for you, add<br />\nyour own rule with the <code>a_little_more_secure_is_unlocked</code> filter.</p>\n</p>\n<dt id=\"does%20it%20protect%20xml-rpc%20and%20the%20rest%20api%3F\">\nDoes it protect XML-RPC and the REST API?\n</h4>\n<p>\n<p>No. The plugin only guards wp-login.php. Brute force attempts against<br />\nxmlrpc.php, the REST API or application passwords are unaffected, and those are<br />\ncommon targets. If you do not use XML-RPC, disable it separately.</p>\n</p>\n<dt id=\"can%20i%20keep%20using%20a%20bookmarked%20login%20url%3F\">\nCan I keep using a bookmarked login URL?\n</h4>\n<p>\n<p>Yes. The unlock parameter is a fixed name by default, so a bookmark such as<br />\nexample.com/wp-login.php?a-little-more-secure keeps working and skips the wait.<br />\nThat changes only if you set up a rotating parameter as described above.</p>\n</p>\n<dt id=\"does%20it%20work%20on%20multisite%3F\">\nDoes it work on multisite?\n</h4>\n<p>\n<p>Yes, network activated or per site. The plugin stores nothing and has no<br />\nper-site setup, so both work the same way.</p>\n</p>\n<dt id=\"does%20the%20plugin%20store%20any%20data%20about%20my%20visitors%3F\">\nDoes the plugin store any data about my visitors?\n</h4>\n<p>\n<p>No. It writes no options, sets no cookies and creates no database tables. The<br />\nonly thing it looks at is whether the unlock parameter is present in the request.</p>\n</p>\n<dt id=\"is%20my%20login%20secure%20now%3F\">\nIs my login secure now?\n</h4>\n<p>\n<p>More secure than before, but this is a speed bump, not a lock. The unlock<br />\nparameter and the nonce both have to be handed to a browser that is not logged<br />\nin yet, so anything that fetches the page can read them too. It defeats bots<br />\nthat post blindly at wp-login.php, which is most of them. It does not defeat a<br />\ndetermined attacker, and it does nothing about weak passwords or repeated<br />\nattempts from the same source — combine it with strong passwords and rate<br />\nlimiting.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.0</h4>\n<p><strong>Features</strong><br />\n* let sites decide for themselves when the login is unlocked (5d16264)</p>\n<p><strong>Bug Fixes</strong><br />\n* block direct access to the DEV wrapper too (45550fe)<br />\n* declare GPL-3.0 and the PHP version the plugin actually needs (141c4a2)<br />\n* harden the login gate and make the translations extractable (33f28cf)<br />\n* restore the public API function dropped in the rewrite (188482d)<br />\n* set the 404 before the login page starts printing (73b7856)<br />\n* stop the Playground blueprint from pinning an old version (1dd10cc)</p>\n<h4>1.0.4</h4>\n<ul>\n<li>Check compatiblility with 6.5.2</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>Optimization: load textdomain properly</li>\n<li>Optimization: 404 if no valid login parameter</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Bugfix: Not redirected properly if hash in url</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>WP5.7 compatible</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First release</li>\n</ul>\n"
     },
     "short_description": "Stop bots from brute force hacking your wp-login.php",
-    "description": "<p>Stop bots from brute force hacking your wp-login.php</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/a-little-more-secure.1.0.4.zip",
+    "description": "<p>Stop bots from brute force hacking your wp-login.php</p>\n<p>A request to wp-login.php without an unlock parameter answers with a 404 and a<br />\nholding page. JavaScript counts down a few seconds, then redirects to the same<br />\nURL with the parameter appended. Only that request renders a usable login form,<br />\nand only it carries the nonce that a login POST has to contain — a POST without<br />\na valid nonce is rejected.</p>\n<p>This raises the cost of naive automation. It is not a lockout mechanism: whoever<br />\nrequests the unlock URL first can read the nonce and post with it, which is why<br />\nthe plugin is called <em>a little</em> more secure.</p>\n<p>There is nothing to configure. Activating the plugin is enough.</p>\n<h3>Customising</h3>\n<p>Three filters, for a theme or a small plugin of your own.</p>\n<pre><code>a_little_more_secure_is_unlocked decides whether a request counts as unlocked.\n</code></pre>\n<p>By default that is the presence of the parameter; override it to implement your<br />\nown rule, for example a one-time token or an office IP allowlist:</p>\n<pre><code>add_filter( 'a_little_more_secure_is_unlocked', function ( $is_unlocked ) {\n    return $is_unlocked || my_own_check();\n} );\n\na_little_more_secure_get_param_name changes the name of the unlock parameter,\na-little-more-secure by default.\n\na_little_more_secure_redirect_wait_seconds changes the delay before the\n</code></pre>\n<p>redirect, 3 seconds by default.</p>\n<p>A theme with its own login form that posts to wp-login.php has to render the<br />\nnonce itself, otherwise the POST is rejected — call<br />\n    a_little_more_secure_nonce_field() inside the form. Forms built with<br />\n    wp_login_form() get it automatically.</p>\n<h4>Rotating the unlock parameter</h4>\n<p>The default parameter name is public knowledge, so a bot written for this plugin<br />\ncan hardcode it. If you want a name that changes over time, put the token in the<br />\nname itself: the parameter name filter runs both when the redirect URL is built<br />\nand when the request is checked, so both sides agree without storing anything.</p>\n<pre><code>function my_alms_token( int $bucketsAgo = 0 ): string {\n    $ttl    = 15 * MINUTE_IN_SECONDS;\n    $bucket = (int) floor( time() / $ttl ) - $bucketsAgo;\n\n    return 'alms_' . substr( hash_hmac( 'sha256', 'alms|' . $bucket, wp_salt( 'nonce' ) ), 0, 20 );\n}\n\nadd_filter( 'a_little_more_secure_get_param_name', function () {\n    return my_alms_token();\n} );\n\nadd_filter( 'a_little_more_secure_is_unlocked', function ( $is_unlocked ) {\n    return $is_unlocked || isset( $_GET[ my_alms_token( 1 ) ] );\n} );\n</code></pre>\n<p>Accepting the previous bucket as well keeps a request that crosses a bucket<br />\nboundary from being rejected, so the effective validity is 15 to 30 minutes.<br />\nKeep the token alphanumeric — PHP rewrites dots and spaces in parameter names.</p>\n<p>Be aware of what this does and does not do. It stops bots that hardcode the<br />\nparameter name. It does not stop anything that fetches the page and reads the<br />\nname out of it — the value has to be handed to the browser before anyone is<br />\nlogged in, so a scraper can always obtain it too.</p>\n<p>Three things to expect: bookmarked unlock URLs stop working once the token<br />\nexpires, though an expired token lands on the holding page and is redirected<br />\nwith a fresh one, so it costs one extra request. Keep the lifetime well above<br />\nthe redirect delay, otherwise the token can expire during the countdown. And be<br />\ncareful with page caching — a short-lived token in cached HTML means logins that<br />\nare rejected until the cache is refreshed.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/a-little-more-secure.1.1.0.zip",
     "upgrade_notice": [],
     "screenshots": [
         {
@@ -60,13 +65,14 @@
     "tags": {
         "security": "security"
     },
-    "stable_tag": "1.0.4",
+    "stable_tag": "1.1.0",
     "versions": {
         "1.0.0": "https://downloads.wordpress.org/plugin/a-little-more-secure.1.0.0.zip",
         "1.0.1": "https://downloads.wordpress.org/plugin/a-little-more-secure.1.0.1.zip",
         "1.0.2": "https://downloads.wordpress.org/plugin/a-little-more-secure.1.0.2.zip",
         "1.0.3": "https://downloads.wordpress.org/plugin/a-little-more-secure.1.0.3.zip",
         "1.0.4": "https://downloads.wordpress.org/plugin/a-little-more-secure.1.0.4.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/a-little-more-secure.1.1.0.zip",
         "trunk": "https://downloads.wordpress.org/plugin/a-little-more-secure.zip"
     },
     "business_model": false,
@@ -85,7 +91,7 @@
     "blueprints": [
         {
             "filename": "blueprint.json",
-            "url": "https://wordpress.org/plugins/wp-json/plugins/v1/plugin/a-little-more-secure/blueprint.json?rev=3078397"
+            "url": "https://wordpress.org/plugins/wp-json/plugins/v1/plugin/a-little-more-secure/blueprint.json?rev=3632907"
         }
     ],
     "preview_link": "https://wordpress.org/plugins/a-little-more-secure/?preview=1",
