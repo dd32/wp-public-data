@@ -1,0 +1,79 @@
+{
+    "name": "Epox Connector for WooCommerce",
+    "slug": "epox-connector-for-woocommerce",
+    "version": "1.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/epoxtech/\">epoxtech</a>",
+    "author_profile": "https://profiles.wordpress.org/epoxtech/",
+    "contributors": {
+        "epoxtech": {
+            "profile": "https://profiles.wordpress.org/epoxtech/",
+            "avatar": "https://secure.gravatar.com/avatar/060e330b5e3e34a16bf299bb9876f1a8aee5161c79107c7bc036e9bffb6b99a9?s=96&d=monsterid&r=g",
+            "display_name": "epoxtech"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0.2",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/epox-connector-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-04 19:13:00",
+    "added": "2026-08-04",
+    "homepage": "",
+    "sections": {
+        "description": "<p>This plugin is the store-side half of the Epox integration. Install it on your WooCommerce<br />\nstore and Epox can publish generated images and video straight into your products, reusing<br />\nthe WooCommerce API key you have already issued — there is nothing extra to configure.</p>\n<p>It exists because the generic WooCommerce product endpoint cannot express what the<br />\nintegration needs. Without this plugin, publishing one image takes three round trips<br />\n(upload, attach, verify) and WooCommerce re-downloads the file itself, which fails on some<br />\nhosting stacks and can leave duplicates behind on a retry. With it, the whole operation<br />\nhappens once, on your server, in a single transaction.</p>\n<p>What it adds:</p>\n<ul>\n<li><strong>One call per sync.</strong> Download, media-library registration, gallery placement and<br />\nmetadata all happen server-side in one request.</li>\n<li><strong>Safe retries.</strong> Every media item carries an idempotency key. If Epox retries a sync,<br />\nthe plugin returns the attachment it already created instead of importing a second copy.</li>\n<li><strong>All-or-nothing.</strong> If any part of a sync fails, attachments created during that request<br />\nare removed. A failed sync leaves no orphans in your media library.</li>\n<li><strong>Video support.</strong> Product video can be imported and linked to your gallery plugin&#8217;s<br />\nmetadata, which the standard WooCommerce product API has no way to express. The video file<br />\nitself can be imported into your media library — not just referenced by URL — verified<br />\nagainst &#8220;WooCommerce Gallery Slider&#8221; (<code>gallery-slider-for-woocommerce</code>, formerly WooGallery).</li>\n<li><strong>Variation images.</strong> One generated image can be assigned across several variations<br />\nwithout importing it more than once.</li>\n</ul>\n<h3>Endpoints</h3>\n<p>All routes live under <code>epox/v1</code> and authenticate with your existing WooCommerce<br />\nRead/Write API key.</p>\n<ul>\n<li><code>GET /wp-json/epox/v1/status</code> — reports the plugin version and capabilities.</li>\n<li><code>POST /wp-json/epox/v1/media-sync</code> — import media and attach it to a product or its variations.</li>\n<li><code>POST /wp-json/epox/v1/media-detach</code> — remove synced media from a product.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the plugin zip via <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin</strong>, or extract it into<br />\n   wp-content/plugins/.</li>\n<li>Activate <strong>Epox Connector for WooCommerce</strong>. WooCommerce must already be active — WordPress<br />\nwill tell you so and block activation otherwise.</li>\n<li>In Epox, connect the store as usual using a WooCommerce API key with <strong>Read/Write</strong><br />\npermissions. Epox detects the connector automatically.</li>\n</ol>\n<p>There are no settings screens. If the plugin is deactivated, Epox falls back to the<br />\nstandard WooCommerce API and keeps working. Deleting the plugin removes only its own<br />\nsettings — media it has already imported into your library is never touched.</p>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20a%20separate%20api%20key%20or%20password%3F\">\nDo I need a separate API key or password?\n</h4>\n<p>\n<p>No. The plugin registers its routes with WooCommerce&#8217;s own authentication, so the<br />\nconsumer key and secret you already gave Epox authorise these endpoints too.</p>\n</p>\n<dt id=\"what%20permissions%20does%20it%20require%3F\">\nWhat permissions does it require?\n</h4>\n<p>\n<p>The API key&#8217;s user must be able to edit products (shop manager or administrator, with a<br />\nRead/Write key). Every request is also checked against the specific product being changed.</p>\n</p>\n<dt id=\"my%20gallery%20plugin%20shows%20videos%20from%20a%20custom%20field.%20will%20this%20work%3F\">\nMy gallery plugin shows videos from a custom field. Will this work?\n</h4>\n<p>\n<p>Probably, and if not it is one filter away. The plugin writes the video URL to its own<br />\n    _epox_video_url field plus a configurable list of third-party keys — <code>wcgs_video</code> and<br />\n    _product_video_url by default. To target a different key, add to the<br />\n    epox_video_meta_keys filter or set the <code>epox_video_meta_keys</code> option.</p>\n<pre><code>wcgs_video is not a guess: it is the exact key \"WooCommerce Gallery Slider\" reads off the\n</code></pre>\n<p>gallery image&#8217;s own attachment (<code>get_post_meta( $image_id, 'wcgs_video', true )</code>), confirmed<br />\nagainst that plugin&#8217;s real source.</p>\n</p>\n<dt id=\"does%20the%20video%20need%20to%20already%20be%20hosted%20somewhere%2C%20or%20can%20epox%20upload%20it%20here%3F\">\nDoes the video need to already be hosted somewhere, or can Epox upload it here?\n</h4>\n<p>\n<p>Either. Send <code>video_url</code> (a string) to point at an already-hosted video — nothing is<br />\ndownloaded, the URL is written to your gallery plugin&#8217;s meta as-is. Send <code>video</code> (an object<br />\nwith a <code>url</code>) to have this plugin import the video file itself into your media library, the<br />\nsame way it imports images, then write <strong>that</strong> attachment&#8217;s own URL as the meta value. The<br />\ntwo are mutually exclusive on one media item.</p>\n</p>\n<dt id=\"will%20it%20delete%20my%20own%20product%20photos%3F\">\nWill it delete my own product photos?\n</h4>\n<p>\n<p>No. Removal only ever deletes files this plugin imported; anything you uploaded yourself<br />\nis detached from the product but left in your media library.</p>\n</p>\n<dt id=\"can%20it%20fetch%20media%20from%20anywhere%20on%20the%20internet%3F\">\nCan it fetch media from anywhere on the internet?\n</h4>\n<p>\n<p>Only over HTTPS, and only from public hosts — WordPress&#8217;s own URL safety checks apply. To<br />\nrestrict it further to specific hostnames, use the <code>epox_allowed_media_hosts</code> filter.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.0</h4>\n<ul>\n<li><code>media-sync</code> items accept a <code>video</code> object (in addition to the existing <code>video_url</code><br />\nstring) to import the video file itself into the media library — not just reference an<br />\nalready-hosted URL — then write the imported attachment&#8217;s own URL as the video meta.<br />\nIdempotent and rolled back atomically along with its thumbnail, same as everything else.<br />\nNew <code>video_upload</code> capability reported by <code>status</code>.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release: <code>status</code>, <code>media-sync</code> and <code>media-detach</code> endpoints, idempotent media<br />\nimport, atomic rollback, video metadata bridging and variation image assignment.</li>\n</ul>\n"
+    },
+    "short_description": "Companion plugin for Epox. Syncs AI-generated product images and video into WooCommerce in one authenticated call.",
+    "description": "<p>This plugin is the store-side half of the Epox integration. Install it on your WooCommerce<br />\nstore and Epox can publish generated images and video straight into your products, reusing<br />\nthe WooCommerce API key you have already issued — there is nothing extra to configure.</p>\n<p>It exists because the generic WooCommerce product endpoint cannot express what the<br />\nintegration needs. Without this plugin, publishing one image takes three round trips<br />\n(upload, attach, verify) and WooCommerce re-downloads the file itself, which fails on some<br />\nhosting stacks and can leave duplicates behind on a retry. With it, the whole operation<br />\nhappens once, on your server, in a single transaction.</p>\n<p>What it adds:</p>\n<ul>\n<li><strong>One call per sync.</strong> Download, media-library registration, gallery placement and<br />\nmetadata all happen server-side in one request.</li>\n<li><strong>Safe retries.</strong> Every media item carries an idempotency key. If Epox retries a sync,<br />\nthe plugin returns the attachment it already created instead of importing a second copy.</li>\n<li><strong>All-or-nothing.</strong> If any part of a sync fails, attachments created during that request<br />\nare removed. A failed sync leaves no orphans in your media library.</li>\n<li><strong>Video support.</strong> Product video can be imported and linked to your gallery plugin&#8217;s<br />\nmetadata, which the standard WooCommerce product API has no way to express. The video file<br />\nitself can be imported into your media library — not just referenced by URL — verified<br />\nagainst &#8220;WooCommerce Gallery Slider&#8221; (<code>gallery-slider-for-woocommerce</code>, formerly WooGallery).</li>\n<li><strong>Variation images.</strong> One generated image can be assigned across several variations<br />\nwithout importing it more than once.</li>\n</ul>\n<h3>Endpoints</h3>\n<p>All routes live under <code>epox/v1</code> and authenticate with your existing WooCommerce<br />\nRead/Write API key.</p>\n<ul>\n<li><code>GET /wp-json/epox/v1/status</code> — reports the plugin version and capabilities.</li>\n<li><code>POST /wp-json/epox/v1/media-sync</code> — import media and attach it to a product or its variations.</li>\n<li><code>POST /wp-json/epox/v1/media-detach</code> — remove synced media from a product.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/epox-connector-for-woocommerce.1.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "integration": "integration",
+        "media": "media",
+        "product-images": "product images",
+        "product-video": "product video",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.1.0",
+    "versions": {
+        "1.1.0": "https://downloads.wordpress.org/plugin/epox-connector-for-woocommerce.1.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/epox-connector-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/epox-connector-for-woocommerce/assets/banner-772x250.png?rev=3634534",
+        "high": "https://ps.w.org/epox-connector-for-woocommerce/assets/banner-1544x500.png?rev=3634534"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/epox-connector-for-woocommerce/assets/icon-128x128.png?rev=3634534",
+        "2x": "https://ps.w.org/epox-connector-for-woocommerce/assets/icon-256x256.png?rev=3634534"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
