@@ -1,0 +1,83 @@
+{
+    "name": "JRT Database and File Migrator",
+    "slug": "jrt-database-file-migrator",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/jrtwebsolutions/\">jrtwebsolutions</a>",
+    "author_profile": "https://profiles.wordpress.org/jrtwebsolutions/",
+    "contributors": {
+        "jrtwebsolutions": {
+            "profile": "https://profiles.wordpress.org/jrtwebsolutions/",
+            "avatar": "https://secure.gravatar.com/avatar/e12c55bf153832db585d30bf709b65ddfcb0fe39fe899883254feaa54499a7c5?s=96&d=monsterid&r=g",
+            "display_name": "jrtwebsolutions"
+        },
+        "freemius": {
+            "profile": "https://profiles.wordpress.org/freemius/",
+            "avatar": "https://secure.gravatar.com/avatar/a8fa402c1d48477b4ff77f381ec443b53c169a3649b3f457475fbd97cd38192e?s=96&d=monsterid&r=g",
+            "display_name": "Freemius"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.0.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/jrt-database-file-migrator/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-05 03:05:00",
+    "added": "2026-08-05",
+    "homepage": "https://mcsitemigration.jrtwebsolutions.com/",
+    "sections": {
+        "description": "<p>JRT Database and File Migrator moves WordPress databases between environments without corrupted serialized data, timeouts, or guesswork.</p>\n<p><strong>Free features</strong></p>\n<ul>\n<li>Export any selection of database tables to a SQL file (optionally gzip-compressed)</li>\n<li>Find &amp; replace on the way out — PHP-serialized and JSON values are rewritten safely with corrected string lengths</li>\n<li>Import a SQL file back into any site, including one that uses a different table prefix</li>\n<li>Chunked, resumable processing: large databases never hit PHP timeouts, and an interrupted job resumes where it stopped</li>\n</ul>\n<p><strong>Pro features (subscription)</strong></p>\n<ul>\n<li>Push &amp; pull your database directly between two connected sites over signed requests</li>\n<li>Transfer media uploads, themes and plugins alongside the database — only new and changed files are sent</li>\n<li>Destination checks are run before a transfer starts, so a server that cannot receive files says so up front instead of failing halfway</li>\n<li>Automatic safety backup before every import and pull</li>\n<li>Saved profiles: store a configuration once, re-run it in one click</li>\n</ul>\n<p>Pro licences are sold as subscriptions handled by Freemius, including checkout, invoices and licence management.</p>\n",
+        "faq": "\n<dt id=\"does%20the%20free%20version%20phone%20home%3F\">\nDoes the free version phone home?\n</h4>\n<p>\n<p>No data leaves your site unless you opt in to Freemius usage tracking or activate a Pro licence.</p>\n</p>\n<dt id=\"how%20does%20find%20%26%20replace%20handle%20serialized%20data%3F\">\nHow does find &amp; replace handle serialized data?\n</h4>\n<p>\n<p>Two strategies, chosen per value. Where the payload can be parsed, it is unserialized with object instantiation disabled, walked recursively, and re-serialized with corrected byte lengths. Where it cannot — for example when it contains objects of classes this site does not have — a token rewriter edits the <code>s:N:\"...\"</code> segments in place without ever instantiating anything, so PHP object injection is not possible either way.</p>\n<p>If a payload cannot be handled safely by either strategy it is left untouched. The plugin will not corrupt data to force a replacement.</p>\n</p>\n<dt id=\"which%20files%20are%20transferred%3F\">\nWhich files are transferred?\n</h4>\n<p>\n<p>Media uploads, themes and plugins, each selectable independently. Files are compared by size and modification time, so re-running a transfer only sends what actually changed.</p>\n<p>Anything else under <code>wp-content/</code> — including <code>mu-plugins/</code>, caches, and files at the site root such as <code>.htaccess</code> — is not transferred. Move those yourself if your site depends on them.</p>\n</p>\n<dt id=\"can%20i%20pull%20a%20live%20site%20down%20to%20a%20local%20development%20install%3F\">\nCan I pull a live site down to a local development install?\n</h4>\n<p>\n<p>Yes, and this is the direction to use. A pull is driven entirely by the site you are sitting at: it makes outbound requests to the live server, which never needs to reach back. That means your local machine does not have to be publicly reachable, and it does not need HTTPS of its own.</p>\n<p>Pushing <em>to</em> a local machine from a live server is not possible without a tunnel, because the live server would have to open a connection to your desktop.</p>\n</p>\n<dt id=\"a%20transfer%20failed%20with%20a%20permissions%20error.%20what%20now%3F\">\nA transfer failed with a permissions error. What now?\n</h4>\n<p>\n<p>The destination reports the directory it could not write to. Give the web server write access to that directory and run the transfer again.</p>\n<p>Transferred files are given the same permissions WordPress itself uses for new files (<code>FS_CHMOD_FILE</code> / <code>FS_CHMOD_DIR</code>), so a restrictive umask on the receiving server cannot leave you with files the web server is unable to read back.</p>\n</p>\n<dt id=\"my%20local%20install%20cannot%20verify%20the%20live%20site%27s%20certificate.\">\nMy local install cannot verify the live site&#8217;s certificate.\n</h4>\n<p>\n<p>Turn off &#8220;Verify TLS certificates&#8221; in Settings. This is separate from the plain-HTTP option, so switching it off does not otherwise weaken how sites connect. Leave it on in production.</p>\n</p>\n<dt id=\"transfers%20time%20out%20against%20a%20slow%20server.\">\nTransfers time out against a slow server.\n</h4>\n<p>\n<p>Raise &#8220;Remote request timeout&#8221; in Settings. A request that times out part way through cannot be retried safely, because it may already have been applied on the other side, so it ends the transfer rather than risking duplicate work.</p>\n</p>\n<dt id=\"how%20are%20site-to-site%20transfers%20secured%3F\">\nHow are site-to-site transfers secured?\n</h4>\n<p>\n<p>Each site has a random 64-character connection key. Every request between sites is signed with HMAC-SHA256, has a 5-minute validity window, and replay protection. HTTPS is required by default.</p>\n</p>\n<dt id=\"does%20it%20work%20on%20multisite%3F\">\nDoes it work on multisite?\n</h4>\n<p>\n<p>Not yet. Multisite support is planned.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>Free: table-selective export, serialized-safe find &amp; replace, import across differing table prefixes, resumable chunked jobs.</li>\n<li>Pro: push/pull database transfers between connected sites, media/theme/plugin file transfers, automatic safety backups, saved profiles.</li>\n<li>Pro: destination writability is checked before a transfer begins, and permission failures report the directory at fault instead of a generic error.</li>\n<li>Pro: TLS certificate verification and the remote request timeout are configurable independently of the plain-HTTP option.</li>\n</ul>\n"
+    },
+    "short_description": "Move WordPress databases and files between environments with safe find &amp; replace, exports, imports, and site-to-site transfers.",
+    "description": "<p>JRT Database and File Migrator moves WordPress databases between environments without corrupted serialized data, timeouts, or guesswork.</p>\n<p><strong>Free features</strong></p>\n<ul>\n<li>Export any selection of database tables to a SQL file (optionally gzip-compressed)</li>\n<li>Find &amp; replace on the way out — PHP-serialized and JSON values are rewritten safely with corrected string lengths</li>\n<li>Import a SQL file back into any site, including one that uses a different table prefix</li>\n<li>Chunked, resumable processing: large databases never hit PHP timeouts, and an interrupted job resumes where it stopped</li>\n</ul>\n<p><strong>Pro features (subscription)</strong></p>\n<ul>\n<li>Push &amp; pull your database directly between two connected sites over signed requests</li>\n<li>Transfer media uploads, themes and plugins alongside the database — only new and changed files are sent</li>\n<li>Destination checks are run before a transfer starts, so a server that cannot receive files says so up front instead of failing halfway</li>\n<li>Automatic safety backup before every import and pull</li>\n<li>Saved profiles: store a configuration once, re-run it in one click</li>\n</ul>\n<p>Pro licences are sold as subscriptions handled by Freemius, including checkout, invoices and licence management.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/jrt-database-file-migrator.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "database": "database",
+        "export": "export",
+        "find-replace": "find &amp; replace",
+        "import": "import",
+        "migration": "migration"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/jrt-database-file-migrator.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/jrt-database-file-migrator.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/jrt-database-file-migrator/assets/banner-772x250.png?rev=3634788",
+        "high": "https://ps.w.org/jrt-database-file-migrator/assets/banner-1544x500.png?rev=3634788"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/jrt-database-file-migrator/assets/icon-128x128.png?rev=3634788",
+        "2x": "https://ps.w.org/jrt-database-file-migrator/assets/icon-256x256.png?rev=3634788"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
