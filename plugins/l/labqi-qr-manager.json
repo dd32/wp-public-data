@@ -1,0 +1,83 @@
+{
+    "name": "Labqi QR Manager",
+    "slug": "labqi-qr-manager",
+    "version": "1.2.1",
+    "author": "<a href=\"https://profiles.wordpress.org/rinkurana11/\">Rinku Web Hopers</a>",
+    "author_profile": "https://profiles.wordpress.org/rinkurana11/",
+    "contributors": {
+        "rinkurana11": {
+            "profile": "https://profiles.wordpress.org/rinkurana11/",
+            "avatar": "https://secure.gravatar.com/avatar/6b16b562b98fb86a8047f93aa0022c83c1abd840fc60ded969eedaa596965286?s=96&d=monsterid&r=g",
+            "display_name": "Rinku Web Hopers"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.0.2",
+    "requires_php": "8.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/labqi-qr-manager/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-05 17:46:00",
+    "added": "2026-08-05",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Labqi QR Manager is a complete QR code management solution for WordPress.</p>\n<p><strong>Features:</strong></p>\n<ul>\n<li>Generate QR codes (PNG, 500×500) using endroid/qr-code v6</li>\n<li>Link-type QR codes — redirect to any URL on scan</li>\n<li>Attachment-type QR codes — serve PDF, DOCX, XLSX, PNG, JPG, WEBP securely</li>\n<li>Custom rewrite endpoint: <code>yoursite.com/qr/{code}</code></li>\n<li>Scan tracking — count + last-scan timestamp per QR</li>\n<li>Bulk CSV import with per-row error reporting</li>\n<li>Export to CSV, Excel (XLSX), or ZIP (images + manifest)</li>\n<li>Bootstrap 5 admin UI with DataTables, SweetAlert2</li>\n<li>Analytics dashboard widget</li>\n<li>Settings: QR size, margin, logo overlay, default status</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>labqi-qr-manager</code> folder to <code>/wp-content/plugins/</code></li>\n<li>Activate the plugin in WordPress › Plugins</li>\n<li>Go to Settings › Permalinks and click Save (to flush rewrite rules)</li>\n<li>Visit Labqi QR Manager in the admin sidebar</li>\n</ol>\n",
+        "faq": "\n<dt id=\"where%20are%20qr%20images%20stored%3F\">\nWhere are QR images stored?\n</h4>\n<p>\n<p>Inside <code>wp-content/uploads/labqi-qr-manager/qr-codes/</code>, so files survive plugin updates and reinstalls.</p>\n</p>\n<dt id=\"are%20attachment%20files%20publicly%20accessible%3F\">\nAre attachment files publicly accessible?\n</h4>\n<p>\n<p>No. A <code>.htaccess</code> blocks direct access. Files are served through PHP only.</p>\n</p>\n<dt id=\"how%20do%20i%20change%20qr%20size%20or%20add%20a%20logo%3F\">\nHow do I change QR size or add a logo?\n</h4>\n<p>\n<p>Go to Labqi QR Manager › Settings.</p>\n</p>\n\n",
+        "changelog": "<h4>1.2.1</h4>\n<ul>\n<li>Fixed nonce checks that WordPress.org&#8217;s Plugin Check scanner couldn&#8217;t verify: several AJAX handlers and the Add/Edit form handler called a custom security wrapper method instead of WordPress core&#8217;s check_ajax_referer()/check_admin_referer() directly. The wrapper genuinely did call wp_verify_nonce() and current_user_can() correctly, but automated scanners can&#8217;t trace into custom methods — all handlers now call the core functions directly.</li>\n<li>Moved the nonce check in the Add/Edit form handler earlier, before the submitted action type is read (previously it was only verified deeper inside the add/update logic)</li>\n<li>Sanitized $_FILES data field-by-field at the point of use (name, type) instead of passing the raw array through, and explicitly sanitized the &#8220;default_status&#8221; setting instead of relying only on a whitelist check</li>\n<li>Added sanitize_text_field()/sanitize_key() before re-displaying submitted form values on validation errors (previously only wp_unslash() + esc_attr(), which escapes safely for output but skips the sanitize step)</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Renamed the plugin again from &#8220;ProductQRScan Pro&#8221; to &#8220;Labqi QR Manager&#8221; (slug: labqi-qr-manager) — WordPress.org&#8217;s reviewer AI flagged &#8220;Product QR Scan&#8221; as too purely descriptive of the plugin&#8217;s functionality to be a distinctive name, even with &#8220;Pro&#8221; appended</li>\n<li>Fixed several leftover references to the previous plugin name that the automated rename missed the first time (a page heading, the admin sidebar menu label, and internal page-slug/query-var prefixes)</li>\n<li>Fixed an admin-page asset loading bug introduced by the rename: WordPress&#8217; submenu page hook suffix must exactly match the parent menu slug&#8217;s hyphens (e.g. &#8220;labqi-qr_page_labqi-qr-add&#8221;); an earlier pass had generated an underscore in that position, which silently prevented Bootstrap/DataTables/custom JS/CSS from loading on the Add, Import, and Settings pages</li>\n</ul>\n<h4>1.1.2</h4>\n<ul>\n<li>Fixed: the &#8220;All QR Codes&#8221; page list showed &#8220;NaN&#8221; for total entries/pages. <code>wp_send_json_success()</code> nests the AJAX response inside a <code>data</code> envelope, but DataTables reads <code>recordsTotal</code>/<code>recordsFiltered</code> from the top level of the response — the frontend now hoists those fields correctly before DataTables reads them</li>\n<li>Fixed: a leftover page heading still read &#8220;QR Code Master&#8221; instead of the current plugin name</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>Completed the library update from 1.1.0: endroid/qr-code was still on 5.1.0 (unchanged) and DataTables had only received a patch bump — both are now updated to their current stable releases (endroid/qr-code 6.0.9, DataTables 3.0.0)</li>\n<li>Fixed a stray FAQ answer that pointed to the wrong QR image storage path</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Renamed the plugin from &#8220;QR Master Pro&#8221; to &#8220;Labqi QR Manager&#8221; (slug: labqi-qr-manager) to resolve a trademark/naming conflict flagged during WordPress.org review</li>\n<li>Removed load_plugin_textdomain() call (unnecessary on WordPress.org since WP 4.6, translations are loaded automatically)</li>\n<li>Fixed: uploaded PDF/attachment files now live in a plugin-slug-namespaced uploads folder (wp-content/uploads/labqi-qr-manager/qr-pdfs/) instead of a bare top-level uploads/qr-pdfs/ folder; existing files are migrated automatically</li>\n<li>Fixed: the Logo setting no longer asks for a typed absolute server file path — it now uses the WordPress Media Library picker and stores a portable attachment ID</li>\n<li>Fixed: moved an inline  block on the QR error page into a properly enqueued stylesheet</li>\n<li>Updated bundled libraries to current stable releases: Bootstrap 5.3.3 <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> 5.3.8, DataTables 1.13.8 <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> 3.0.0, endroid/qr-code 5.1.0 <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> 6.0.9 (PHP requirement stays at 8.2 — a newer 6.1.x line of endroid/qr-code requires PHP 8.4 and was intentionally not used)</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>Massive package size reduction (26MB <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> ~3MB installed) to fit WordPress.org&#8217;s 10MB upload limit:\n<ul>\n<li>Removed an unused 16MB bundled font (only needed for a QR &#8220;label&#8221; feature this plugin never uses)</li>\n<li>Replaced the phpoffice/phpspreadsheet library with a small built-in XLSX writer (no functionality change — XLSX export still has the same styled header, frozen header row, and auto-sized columns)</li>\n</ul>\n</li>\n<li>No user-facing behavior changes in this release</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Fixed: removed bundled hidden file (.htaccess) and obsolete legacy uploads folder from the package</li>\n<li>Fixed: missing direct-access protection in templates/error.php</li>\n<li>Fixed: Domain Path header now points to an existing languages/ folder</li>\n<li>Fixed: replaced move_uploaded_file() with a WP_Filesystem-based secure upload handler</li>\n<li>Fixed: replaced parse_url() with wp_parse_url(), unlink() with wp_delete_file()</li>\n<li>Improved: all database queries now use $wpdb-&gt;prepare() with %i identifier placeholders for table/column names</li>\n<li>Improved: added missing translator comments for all strings with placeholders</li>\n<li>Improved: internal redirects now use wp_safe_redirect(); external QR-destination redirects remain wp_redirect() by design (admin-configured destinations, not public input)</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>QR code images now stored under wp-content/uploads/ instead of inside the plugin folder (data now survives plugin updates/reinstalls; existing images are migrated automatically)</li>\n<li>Uninstall now fully removes all generated QR images and attachments</li>\n<li>Removed unused legacy code files</li>\n<li>Minor readme and translation string fixes</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
+    },
+    "short_description": "Professional QR Code management — generate, track, bulk import, and export QR codes with a full redirect system.",
+    "description": "<p>Labqi QR Manager is a complete QR code management solution for WordPress.</p>\n<p><strong>Features:</strong></p>\n<ul>\n<li>Generate QR codes (PNG, 500×500) using endroid/qr-code v6</li>\n<li>Link-type QR codes — redirect to any URL on scan</li>\n<li>Attachment-type QR codes — serve PDF, DOCX, XLSX, PNG, JPG, WEBP securely</li>\n<li>Custom rewrite endpoint: <code>yoursite.com/qr/{code}</code></li>\n<li>Scan tracking — count + last-scan timestamp per QR</li>\n<li>Bulk CSV import with per-row error reporting</li>\n<li>Export to CSV, Excel (XLSX), or ZIP (images + manifest)</li>\n<li>Bootstrap 5 admin UI with DataTables, SweetAlert2</li>\n<li>Analytics dashboard widget</li>\n<li>Settings: QR size, margin, logo overlay, default status</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/labqi-qr-manager.1.2.1.zip",
+    "upgrade_notice": {
+        "1.2.1": "<p>Addresses WordPress.org review feedback on nonce/permission checks and input sanitization. No functional changes for end users. Safe to update.</p>",
+        "1.2.0": "<p>Plugin renamed to Labqi QR Manager (was ProductQRScan Pro) per WordPress.org review, plus a fix for admin styling that could fail to load on the Add/Import/Settings pages. Safe to update.</p>",
+        "1.1.2": "<p>Fixes the &quot;NaN&quot; entries/pagination bug on the QR list page and a leftover old page title. Safe to update.</p>",
+        "1.1.1": "<p>Completes the WordPress.org-requested library updates (endroid/qr-code and DataTables) that were missed in 1.1.0. Safe to update.</p>",
+        "1.1.0": "<p>Plugin renamed to Labqi QR Manager. If you had a Logo set, please re-select it via Settings after updating.</p>",
+        "1.0.3": "<p>Major size reduction, no functionality changes — safe to update.</p>",
+        "1.0.2": "<p>Code quality and WordPress.org compliance fixes — no action needed, safe to update.</p>",
+        "1.0.1": "<p>Storage location change for QR images — files are migrated automatically on activation, no action needed.</p>",
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "bulk-import": "bulk import",
+        "qr-code": "qr code",
+        "qr-generator": "qr generator",
+        "qr-redirect": "qr redirect",
+        "qr-tracking": "qr tracking"
+    },
+    "stable_tag": "1.2.1",
+    "versions": {
+        "1.2.1": "https://downloads.wordpress.org/plugin/labqi-qr-manager.1.2.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/labqi-qr-manager.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/labqi-qr-manager.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
