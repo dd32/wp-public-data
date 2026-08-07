@@ -1,0 +1,78 @@
+{
+    "name": "Enable Block Editor for WC Products",
+    "slug": "enable-block-editor-for-wc-products",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/jconti/\">Jose Conti</a>",
+    "author_profile": "https://profiles.wordpress.org/jconti/",
+    "contributors": {
+        "jconti": {
+            "profile": "https://profiles.wordpress.org/jconti/",
+            "avatar": "https://secure.gravatar.com/avatar/66d9f7c1bae303cbc8194ac1ad9a63b433d14b16c514477a64e3a9764daa76a1?s=96&d=monsterid&r=g",
+            "display_name": "Jose Conti"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.0.3",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/enable-block-editor-for-wc-products/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-07 16:02:00",
+    "added": "2026-08-07",
+    "homepage": "https://plugins.joseconti.com/",
+    "sections": {
+        "description": "<p>Enable Block Editor for WC Products turns on the WordPress block editor (Gutenberg) for WooCommerce products and provides a generic, extensible <strong>saver framework</strong> so plugin data persists when you press &#8220;Update&#8221;. The bundled reference adapter fixes WooCommerce variations: variation edits persist on &#8220;Update&#8221; without having to click the variations panel &#8220;Save changes&#8221; button.</p>\n<p><strong>Why this plugin exists.</strong> WooCommerce is not going to add block-editor support to the current product editor. Instead, it will eventually release a brand-new product editor (v3) — a completely fresh interface — but that work is only just starting and may take a long time to ship. Until that day comes, this plugin lets you edit your WooCommerce products with the block editor (Gutenberg) <strong>today</strong>. It is a temporary bridge, not a permanent replacement: when the new v3 product editor is finally released, you can simply deactivate this plugin.</p>\n<p>This also addresses the silent data loss described in WooCommerce issue <a href=\"https://github.com/woocommerce/woocommerce/issues/35242\" rel=\"nofollow ugc\">#35242</a>, which will not be fixed in the current editor: WooCommerce does not support the core block editor for products, so panels that save over their own AJAX channel can lose data on &#8220;Update&#8221;. This plugin bridges that gap in the meantime.</p>\n<h4>What actually breaks in Gutenberg (and what does not)</h4>\n<p>When the block editor is enabled for products, pressing &#8220;Update&#8221; saves the post over REST. Two kinds of third-party data behave differently:</p>\n<ol>\n<li><strong>Standard meta boxes</strong> that save on <code>save_post</code> reading <code>$_POST</code> already persist in Gutenberg via WordPress&#8217; meta box compatibility layer. They need nothing from this plugin.</li>\n<li><strong>Save routines bound to the classic form submit via a private AJAX channel</strong> (WooCommerce variations, or a panel with its own AJAX save/actions) break, because that submit event does not exist in the block editor. The generic solution is a <strong>savers registry</strong> that each plugin opts into.</li>\n</ol>\n<p>This plugin is that framework. The WooCommerce variations saver is just the bundled reference adapter, registered through the same public API any third party uses.</p>\n<h4>How it works</h4>\n<p>The bridge listens to the Gutenberg save cycle (<code>wp.data.subscribe</code>, the saving<span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span>saved transition, autosaves ignored). On each save it runs the registered savers; each saver re-triggers a native save (typically by clicking the plugin&#8217;s own button) only when its rows are dirty. The bundled adapter clicks WooCommerce&#8217;s <code>button.save-variation-changes</code> when there are <code>.variation-needs-update</code> rows, firing WooCommerce&#8217;s own <code>woocommerce_save_variations</code> AJAX (which carries its nonce and capability checks). The plugin never serializes fields by hand and adds no REST endpoints.</p>\n<h4>Two strategies</h4>\n<ul>\n<li><strong>Bridge (default):</strong> Gutenberg on all products plus the variation save bridge.</li>\n<li><strong>Classic (fallback):</strong> variable products edit in the classic editor; the bridge is not loaded. Enable with <code>define( 'EBEFWCP_MODE', 'classic' );</code> or the <code>ebefwcp_mode</code> filter.</li>\n</ul>\n<h4>For plugin developers</h4>\n<p>Register your own saver through the public API exposed on <code>window.ebefwcp</code>:</p>\n<pre><code>window.ebefwcp.registerSaver( { id: 'my-plugin/my-panel', dirtySelector: '#my_panel .my-row.needs-update', buttonSelector: 'button.my-plugin-save' } );\n</code></pre>\n<p>Full JS and PHP extension points, plus an AJAX integration guide, are documented in the plugin&#8217;s <code>docs/api/</code> directory.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin to <code>wp-content/plugins/enable-block-editor-for-wc-products/</code>, or install it through the Plugins screen in WordPress.</li>\n<li>Ensure WooCommerce is installed and active (required). If it is not, an admin notice appears and the plugin stays inactive in effect.</li>\n<li>Activate &#8220;Enable Block Editor for WC Products&#8221; through the Plugins screen.</li>\n</ol>\n<p>Product edit screens then load in the block editor, and pressing &#8220;Update&#8221; persists variation edits — no need to click the variations panel &#8220;Save changes&#8221; button.</p>\n",
+        "faq": "\n<dt id=\"does%20it%20require%20woocommerce%3F\">\nDoes it require WooCommerce?\n</h4>\n<p>\n<p>Yes. WooCommerce 7.0 or newer is required (<code>Requires Plugins: woocommerce</code>). If WooCommerce is not active, the plugin shows an admin notice and does nothing.</p>\n</p>\n<dt id=\"will%20my%20third-party%20meta%20boxes%20still%20save%3F\">\nWill my third-party meta boxes still save?\n</h4>\n<p>\n<p>Standard meta boxes that save on <code>save_post</code> from <code>$_POST</code> already persist in Gutenberg and need nothing extra. Panels that save through their own AJAX channel must opt in by registering a saver via <code>window.ebefwcp.registerSaver()</code>.</p>\n</p>\n<dt id=\"i%20need%20to%20edit%20a%20product%20with%20a%20plugin%20that%20uses%20ajax%20and%20is%20not%20adapted.%20can%20i%20switch%20to%20the%20classic%20editor%20just%20for%20that%20product%3F\">\nI need to edit a product with a plugin that uses AJAX and is not adapted. Can I switch to the classic editor just for that product?\n</h4>\n<p>\n<p>Yes. On the product edit screen there is an <strong>Editor</strong> box with an <strong>&#8220;Edit in classic editor&#8221;</strong> button. It reopens that product in the classic editor for that page load only — edit, save (your unadapted AJAX panel works as usual), and after saving the product returns to the block editor. Nothing is stored: the switch lives only in the URL. While in the classic editor a <strong>&#8220;Switch to block editor&#8221;</strong> button is available too. This works in both strategies (bridge and classic).</p>\n</p>\n<dt id=\"my%20variable%20products%20show%20issues%20in%20gutenberg.%20can%20i%20keep%20them%20in%20the%20classic%20editor%3F\">\nMy variable products show issues in Gutenberg. Can I keep them in the classic editor?\n</h4>\n<p>\n<p>Yes. Switch to the classic fallback with <code>define( 'EBEFWCP_MODE', 'classic' );</code> (or the <code>ebefwcp_mode</code> filter). Variable products then edit in the classic editor while non-variable products stay in Gutenberg.</p>\n</p>\n<dt id=\"does%20it%20add%20database%20tables%2C%20options%20or%20rest%20endpoints%3F\">\nDoes it add database tables, options or REST endpoints?\n</h4>\n<p>\n<p>No. The plugin stores nothing of its own and adds no REST endpoints; it only re-triggers WooCommerce&#8217;s native save.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>First release.</li>\n<li>Per-product &#8220;Edit in classic editor&#8221; button on the product edit screen: a temporary, no-storage escape hatch for AJAX panels that have not been adapted to the block editor. Save and the product returns to the block editor.</li>\n</ul>\n<h4>0.3.0</h4>\n<ul>\n<li>Bridge strategy (default) keeps Gutenberg on all products and re-triggers WooCommerce&#8217;s native variation save on the Gutenberg save cycle.</li>\n<li>Classic strategy (fallback) routes variable products to the classic editor.</li>\n<li>Extensible saver framework with a public <code>window.ebefwcp.registerSaver()</code> API and PHP filters/actions.</li>\n</ul>\n"
+    },
+    "short_description": "Enables the block editor (Gutenberg) for WooCommerce products and keeps variation edits when pressing &quot;Update&quot;, via an extensible saver framework.",
+    "description": "<p>Enable Block Editor for WC Products turns on the WordPress block editor (Gutenberg) for WooCommerce products and provides a generic, extensible <strong>saver framework</strong> so plugin data persists when you press &#8220;Update&#8221;. The bundled reference adapter fixes WooCommerce variations: variation edits persist on &#8220;Update&#8221; without having to click the variations panel &#8220;Save changes&#8221; button.</p>\n<p><strong>Why this plugin exists.</strong> WooCommerce is not going to add block-editor support to the current product editor. Instead, it will eventually release a brand-new product editor (v3) — a completely fresh interface — but that work is only just starting and may take a long time to ship. Until that day comes, this plugin lets you edit your WooCommerce products with the block editor (Gutenberg) <strong>today</strong>. It is a temporary bridge, not a permanent replacement: when the new v3 product editor is finally released, you can simply deactivate this plugin.</p>\n<p>This also addresses the silent data loss described in WooCommerce issue <a href=\"https://github.com/woocommerce/woocommerce/issues/35242\" rel=\"nofollow ugc\">#35242</a>, which will not be fixed in the current editor: WooCommerce does not support the core block editor for products, so panels that save over their own AJAX channel can lose data on &#8220;Update&#8221;. This plugin bridges that gap in the meantime.</p>\n<h4>What actually breaks in Gutenberg (and what does not)</h4>\n<p>When the block editor is enabled for products, pressing &#8220;Update&#8221; saves the post over REST. Two kinds of third-party data behave differently:</p>\n<ol>\n<li><strong>Standard meta boxes</strong> that save on <code>save_post</code> reading <code>$_POST</code> already persist in Gutenberg via WordPress&#8217; meta box compatibility layer. They need nothing from this plugin.</li>\n<li><strong>Save routines bound to the classic form submit via a private AJAX channel</strong> (WooCommerce variations, or a panel with its own AJAX save/actions) break, because that submit event does not exist in the block editor. The generic solution is a <strong>savers registry</strong> that each plugin opts into.</li>\n</ol>\n<p>This plugin is that framework. The WooCommerce variations saver is just the bundled reference adapter, registered through the same public API any third party uses.</p>\n<h4>How it works</h4>\n<p>The bridge listens to the Gutenberg save cycle (<code>wp.data.subscribe</code>, the saving<span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span>saved transition, autosaves ignored). On each save it runs the registered savers; each saver re-triggers a native save (typically by clicking the plugin&#8217;s own button) only when its rows are dirty. The bundled adapter clicks WooCommerce&#8217;s <code>button.save-variation-changes</code> when there are <code>.variation-needs-update</code> rows, firing WooCommerce&#8217;s own <code>woocommerce_save_variations</code> AJAX (which carries its nonce and capability checks). The plugin never serializes fields by hand and adds no REST endpoints.</p>\n<h4>Two strategies</h4>\n<ul>\n<li><strong>Bridge (default):</strong> Gutenberg on all products plus the variation save bridge.</li>\n<li><strong>Classic (fallback):</strong> variable products edit in the classic editor; the bridge is not loaded. Enable with <code>define( 'EBEFWCP_MODE', 'classic' );</code> or the <code>ebefwcp_mode</code> filter.</li>\n</ul>\n<h4>For plugin developers</h4>\n<p>Register your own saver through the public API exposed on <code>window.ebefwcp</code>:</p>\n<pre><code>window.ebefwcp.registerSaver( { id: 'my-plugin/my-panel', dirtySelector: '#my_panel .my-row.needs-update', buttonSelector: 'button.my-plugin-save' } );\n</code></pre>\n<p>Full JS and PHP extension points, plus an AJAX integration guide, are documented in the plugin&#8217;s <code>docs/api/</code> directory.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/enable-block-editor-for-wc-products.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>First release.</p>",
+        "0.3.0": "<p>Adds the bridge/classic strategies and the extensible saver framework.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "block-editor": "block-editor",
+        "gutenberg": "gutenberg",
+        "products": "products",
+        "variations": "variations",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/enable-block-editor-for-wc-products.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/enable-block-editor-for-wc-products.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/enable-block-editor-for-wc-products.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
