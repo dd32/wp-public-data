@@ -1,7 +1,7 @@
 {
     "name": "MediaNest Upload Manager",
     "slug": "medianest-upload-manager",
-    "version": "1.1.1",
+    "version": "2.0.0",
     "author": "<a href=\"https://profiles.wordpress.org/dilip2615/\">Dilip Modhavadiya</a>",
     "author_profile": "https://profiles.wordpress.org/dilip2615/",
     "contributors": {
@@ -22,7 +22,7 @@
         }
     },
     "requires": "6.7",
-    "tested": "7.0.2",
+    "tested": "7.0.3",
     "requires_php": "7.4",
     "requires_plugins": [],
     "compatibility": [],
@@ -39,23 +39,25 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2026-08-01 12:46:00",
+    "last_updated": "2026-08-08 10:34:00",
     "added": "2026-05-21",
     "homepage": "",
     "sections": {
-        "description": "<p>This plugin adds a wp-admin screen under Media where you can:</p>\n<ul>\n<li>Upload files (supports chunked upload via Plupload)</li>\n<li>Browse uploaded files in a directory tree</li>\n<li>Import images (JPG, PNG, GIF, WebP) and PDF files from this directory into the Media Library</li>\n</ul>\n<p>Note: Upload size ultimately depends on server limits (PHP upload_max_filesize, post_max_size, timeouts, etc.). Chunking can help with stability but cannot bypass hard limits on your hosting.</p>\n",
-        "installation": "<ol>\n<li>Upload the plugin folder to /wp-content/plugins/</li>\n<li>Activate the plugin through the Plugins menu in WordPress</li>\n<li>Go to Media <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> MediaNest Upload Manager</li>\n</ol>\n",
-        "faq": "\n<dt id=\"does%20this%20plugin%20create%2Fmodify%20files%20outside%20wordpress%20uploads%3F\">\nDoes this plugin create/modify files outside WordPress uploads?\n</h4>\n<p>\n<p>No. Uploaded content is stored inside your WordPress uploads directory only (in a dedicated subfolder).</p>\n</p>\n\n",
-        "changelog": "<h4>1.1.1</h4>\n<ul>\n<li>Updated branding and improved admin/readme wording for WordPress.org.</li>\n<li>Security: restrict uploads and imports to images (JPG, PNG, GIF, WebP) and PDF only.</li>\n<li>Security: server-side content validation (image MIME detection, PDF magic bytes).</li>\n<li>Security: harden upload subfolders with index.php and .htaccess (Apache).</li>\n<li>Security: validate assembled file size after chunked uploads.</li>\n<li>Initial release.</li>\n</ul>\n"
+        "description": "<p>MediaNest Upload Manager is a complete media staging and workflow platform for WordPress.</p>\n<p><em>Features:</em></p>\n<ul>\n<li>Chunked uploads (Plupload) with pause/cancel</li>\n<li>Folder drag-and-drop upload</li>\n<li>Directory browser with search and filter</li>\n<li>File preview (images, PDF) and URL copy</li>\n<li>Delete, rename, and move files</li>\n<li>Single, bulk, and folder import to Media Library</li>\n<li>Import status tracking in tree view</li>\n<li>Settings page (file types, roles, duplicates, import destination)</li>\n<li>Activity / audit log</li>\n<li>REST API (<code>/wp-json/mediupma/v1/</code>)</li>\n<li>Action/filter hooks for developers</li>\n<li>Gutenberg block: MediaNest File Browser</li>\n<li>Frontend shortcode: <code>[medianest_upload folder=\"client-name\"]</code></li>\n<li>Webhook notifications (optional)</li>\n</ul>\n<h3>Shortcode</h3>\n<p>Display a frontend upload form for logged-in users:</p>\n<p>[medianest_upload folder=&#8221;optional/subfolder&#8221; roles=&#8221;subscriber,contributor&#8221;]</p>\n<p><em>Attributes:</em></p>\n<ul>\n<li>folder -&gt; Target subfolder inside the staging directory (optional).</li>\n<li>roles -&gt; Comma-separated WordPress roles allowed to upload (optional).</li>\n</ul>\n<h3>REST API</h3>\n<p>The REST API lets external tools and custom integrations work with the staging folder. Enable it in Media <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> MediaNest Settings.</p>\n<p>Namespace: mediupma/v1<br />\nBase URL: /wp-json/mediupma/v1/</p>\n<h4>Authentication</h4>\n<p>Requests must be made by a logged-in WordPress user. Send the REST nonce header: X-WP-Nonce</p>\n<p>You can also use Application Passwords. Each endpoint checks plugin capabilities (view, import, delete, or manage_options).</p>\n<h4>GET /files</h4>\n<p>List all files and folders in the staging directory.</p>\n<p>Example: GET /wp-json/mediupma/v1/files</p>\n<p>Returns a tree array with file name, relative path, size, mime type, and URL.</p>\n<p>Permission: User can view staging files.</p>\n<h4>POST /import</h4>\n<p>Import one or more staging files into the Media Library.</p>\n<p>Example: POST /wp-json/mediupma/v1/import</p>\n<p>Body: JSON object with a relatives array of file paths, e.g. invoices/2026/photo.jpg</p>\n<p>Returns success, failed, and skipped arrays.</p>\n<p>Permission: User can import files.</p>\n<h4>DELETE /files/{path}</h4>\n<p>Delete a file or empty folder from the staging directory.</p>\n<p>Example: DELETE /wp-json/mediupma/v1/files/invoices/2026/photo.jpg</p>\n<p>Returns a success message on delete.</p>\n<p>Permission: User can delete staging files.</p>\n<h4>GET /activity</h4>\n<p>Retrieve the latest activity log entries (upload, import, delete).</p>\n<p>Example: GET /wp-json/mediupma/v1/activity</p>\n<p>Returns an entries array with action, relative path, user, and timestamp.</p>\n<p>Permission: User can view staging files.</p>\n<h4>GET /settings</h4>\n<p>Read plugin settings. The webhook URL is excluded for security.</p>\n<p>Example: GET /wp-json/mediupma/v1/settings</p>\n<p>Permission: manage_options (administrator only).</p>\n<h3>Developer Hooks</h3>\n<p>Extend or customize plugin behavior using WordPress actions and filters.</p>\n<h4>Action Hooks</h4>\n<p>Run custom code when staging files are uploaded, imported, or deleted.</p>\n<p>Upload:</p>\n<ul>\n<li>mediupma_before_upload -&gt; Before upload completes. Args: relative path, user ID.</li>\n<li>mediupma_after_upload -&gt; After file is saved. Args: relative path, user ID.</li>\n</ul>\n<p>Import:</p>\n<ul>\n<li>mediupma_before_import -&gt; Before Media Library import. Args: relative path, user ID.</li>\n<li>mediupma_after_import -&gt; After successful import. Args: attachment ID, relative path, user ID.</li>\n</ul>\n<p>Delete:</p>\n<ul>\n<li>mediupma_before_delete -&gt; Before delete. Args: relative path, user ID.</li>\n<li>mediupma_after_delete -&gt; After delete. Args: relative path, user ID.</li>\n</ul>\n<h4>Filter Hooks</h4>\n<p>Modify plugin defaults and permissions.</p>\n<ul>\n<li>mediupma_allowed_extensions -&gt; Filter allowed file extensions. Args: extensions array.</li>\n<li>mediupma_import_attachment_args -&gt; Filter attachment data before import. Args: args array, relative path.</li>\n<li>mediupma_can_manage -&gt; Filter user permission for an action. Args: can (bool), user ID, action name.</li>\n</ul>\n<h4>Example</h4>\n<p>Use add_action on mediupma_after_import with 3 parameters: attachment ID, relative path, and user ID.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to <code>/wp-content/plugins/</code></li>\n<li>Activate the plugin through the Plugins menu in WordPress</li>\n<li>Go to Media -&gt; MediaNest Upload Manager</li>\n<li>Configure settings at Media -&gt; MediaNest Settings</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20plugin%20create%20files%20outside%20wordpress%20uploads%3F\">\nDoes this plugin create files outside WordPress uploads?\n</h4>\n<p>\n<p>No. All content stays inside your WordPress uploads directory.</p>\n</p>\n<dt id=\"can%20i%20allow%20video%20files%3F\">\nCan I allow video files?\n</h4>\n<p>\n<p>Yes. Go to Media -&gt; MediaNest Settings and configure allowed extensions.</p>\n</p>\n<dt id=\"how%20do%20i%20add%20frontend%20upload%20for%20clients%3F\">\nHow do I add frontend upload for clients?\n</h4>\n<p>\n<p>Use the shortcode: <code>[medianest_upload folder=\"client-deliveries\" roles=\"subscriber\"]</code></p>\n</p>\n\n",
+        "changelog": "<h4>2.0.0</h4>\n<ul>\n<li>Added file management: delete, rename, and move files from the directory browser.</li>\n<li>Added bulk import, folder import, and import status tracking in the tree view.</li>\n<li>Added image/PDF preview, copy URL, search, and file-type filters.</li>\n<li>Added settings page for file types, roles, duplicate handling, import destination, and uninstall cleanup.</li>\n<li>Added activity log, REST API, developer hooks, optional webhooks, Gutenberg block, and frontend shortcode.</li>\n<li>Added folder upload and upload queue pause/cancel controls.</li>\n<li>Added video and audio file support (configurable in settings).</li>\n<li>Improved chunked upload performance with memory-efficient file append.</li>\n<li>Fixed Copy URL on HTTP and local development sites.</li>\n<li>Added activation hook, translations support, and role-based permissions.</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>Updated branding and improved admin/readme wording for WordPress.org.</li>\n<li>Security: restrict uploads and imports to images (JPG, PNG, GIF, WebP) and PDF only.</li>\n<li>Security: server-side content validation (image MIME detection, PDF magic bytes).</li>\n<li>Security: harden upload subfolders with index.php and .htaccess (Apache).</li>\n<li>Security: validate assembled file size after chunked uploads.</li>\n<li>Initial release.</li>\n</ul>\n"
     },
     "short_description": "Upload files into a dedicated uploads subfolder, browse from wp-admin, and import into the Media Library.",
-    "description": "<p>This plugin adds a wp-admin screen under Media where you can:</p>\n<ul>\n<li>Upload files (supports chunked upload via Plupload)</li>\n<li>Browse uploaded files in a directory tree</li>\n<li>Import images (JPG, PNG, GIF, WebP) and PDF files from this directory into the Media Library</li>\n</ul>\n<p>Note: Upload size ultimately depends on server limits (PHP upload_max_filesize, post_max_size, timeouts, etc.). Chunking can help with stability but cannot bypass hard limits on your hosting.</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/medianest-upload-manager.1.1.1.zip",
-    "upgrade_notice": [],
+    "description": "<p>MediaNest Upload Manager is a complete media staging and workflow platform for WordPress.</p>\n<p><em>Features:</em></p>\n<ul>\n<li>Chunked uploads (Plupload) with pause/cancel</li>\n<li>Folder drag-and-drop upload</li>\n<li>Directory browser with search and filter</li>\n<li>File preview (images, PDF) and URL copy</li>\n<li>Delete, rename, and move files</li>\n<li>Single, bulk, and folder import to Media Library</li>\n<li>Import status tracking in tree view</li>\n<li>Settings page (file types, roles, duplicates, import destination)</li>\n<li>Activity / audit log</li>\n<li>REST API (<code>/wp-json/mediupma/v1/</code>)</li>\n<li>Action/filter hooks for developers</li>\n<li>Gutenberg block: MediaNest File Browser</li>\n<li>Frontend shortcode: <code>[medianest_upload folder=\"client-name\"]</code></li>\n<li>Webhook notifications (optional)</li>\n</ul>\n<h3>Shortcode</h3>\n<p>Display a frontend upload form for logged-in users:</p>\n<p>[medianest_upload folder=&#8221;optional/subfolder&#8221; roles=&#8221;subscriber,contributor&#8221;]</p>\n<p><em>Attributes:</em></p>\n<ul>\n<li>folder -&gt; Target subfolder inside the staging directory (optional).</li>\n<li>roles -&gt; Comma-separated WordPress roles allowed to upload (optional).</li>\n</ul>\n<h3>REST API</h3>\n<p>The REST API lets external tools and custom integrations work with the staging folder. Enable it in Media <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> MediaNest Settings.</p>\n<p>Namespace: mediupma/v1<br />\nBase URL: /wp-json/mediupma/v1/</p>\n<h4>Authentication</h4>\n<p>Requests must be made by a logged-in WordPress user. Send the REST nonce header: X-WP-Nonce</p>\n<p>You can also use Application Passwords. Each endpoint checks plugin capabilities (view, import, delete, or manage_options).</p>\n<h4>GET /files</h4>\n<p>List all files and folders in the staging directory.</p>\n<p>Example: GET /wp-json/mediupma/v1/files</p>\n<p>Returns a tree array with file name, relative path, size, mime type, and URL.</p>\n<p>Permission: User can view staging files.</p>\n<h4>POST /import</h4>\n<p>Import one or more staging files into the Media Library.</p>\n<p>Example: POST /wp-json/mediupma/v1/import</p>\n<p>Body: JSON object with a relatives array of file paths, e.g. invoices/2026/photo.jpg</p>\n<p>Returns success, failed, and skipped arrays.</p>\n<p>Permission: User can import files.</p>\n<h4>DELETE /files/{path}</h4>\n<p>Delete a file or empty folder from the staging directory.</p>\n<p>Example: DELETE /wp-json/mediupma/v1/files/invoices/2026/photo.jpg</p>\n<p>Returns a success message on delete.</p>\n<p>Permission: User can delete staging files.</p>\n<h4>GET /activity</h4>\n<p>Retrieve the latest activity log entries (upload, import, delete).</p>\n<p>Example: GET /wp-json/mediupma/v1/activity</p>\n<p>Returns an entries array with action, relative path, user, and timestamp.</p>\n<p>Permission: User can view staging files.</p>\n<h4>GET /settings</h4>\n<p>Read plugin settings. The webhook URL is excluded for security.</p>\n<p>Example: GET /wp-json/mediupma/v1/settings</p>\n<p>Permission: manage_options (administrator only).</p>\n<h3>Developer Hooks</h3>\n<p>Extend or customize plugin behavior using WordPress actions and filters.</p>\n<h4>Action Hooks</h4>\n<p>Run custom code when staging files are uploaded, imported, or deleted.</p>\n<p>Upload:</p>\n<ul>\n<li>mediupma_before_upload -&gt; Before upload completes. Args: relative path, user ID.</li>\n<li>mediupma_after_upload -&gt; After file is saved. Args: relative path, user ID.</li>\n</ul>\n<p>Import:</p>\n<ul>\n<li>mediupma_before_import -&gt; Before Media Library import. Args: relative path, user ID.</li>\n<li>mediupma_after_import -&gt; After successful import. Args: attachment ID, relative path, user ID.</li>\n</ul>\n<p>Delete:</p>\n<ul>\n<li>mediupma_before_delete -&gt; Before delete. Args: relative path, user ID.</li>\n<li>mediupma_after_delete -&gt; After delete. Args: relative path, user ID.</li>\n</ul>\n<h4>Filter Hooks</h4>\n<p>Modify plugin defaults and permissions.</p>\n<ul>\n<li>mediupma_allowed_extensions -&gt; Filter allowed file extensions. Args: extensions array.</li>\n<li>mediupma_import_attachment_args -&gt; Filter attachment data before import. Args: args array, relative path.</li>\n<li>mediupma_can_manage -&gt; Filter user permission for an action. Args: can (bool), user ID, action name.</li>\n</ul>\n<h4>Example</h4>\n<p>Use add_action on mediupma_after_import with 3 parameters: attachment ID, relative path, and user ID.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/medianest-upload-manager.2.0.0.zip",
+    "upgrade_notice": {
+        "2.0.0": "<p>Major update: file management, settings, bulk import, REST API, activity log, Gutenberg block, frontend shortcode, and developer hooks.</p>"
+    },
     "screenshots": [
         {
             "src": "https://ps.w.org/medianest-upload-manager/assets/screenshot-1.png?rev=3542368",
-            "caption": "Admin screen for uploading files, browsing the directory tree, and importing files into Media."
+            "caption": ""
         }
     ],
     "tags": {
@@ -65,9 +67,10 @@
         "media": "media",
         "upload": "upload"
     },
-    "stable_tag": "1.1.1",
+    "stable_tag": "2.0.0",
     "versions": {
         "1.1.1": "https://downloads.wordpress.org/plugin/medianest-upload-manager.1.1.1.zip",
+        "2.0.0": "https://downloads.wordpress.org/plugin/medianest-upload-manager.2.0.0.zip",
         "trunk": "https://downloads.wordpress.org/plugin/medianest-upload-manager.zip"
     },
     "business_model": false,
@@ -82,9 +85,35 @@
         "1x": "https://ps.w.org/medianest-upload-manager/assets/icon-256x256.png?rev=3544749",
         "2x": "https://ps.w.org/medianest-upload-manager/assets/icon-256x256.png?rev=3544749"
     },
-    "blocks": [],
+    "blocks": {
+        "medianest-upload-manager/file-browser": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "medianest-upload-manager/file-browser",
+            "version": "2.0.0",
+            "title": "MediaNest File Browser",
+            "category": "media",
+            "icon": "portfolio",
+            "description": "Display files from the MediaNest staging folder.",
+            "textdomain": "medianest-upload-manager",
+            "editorScript": "mediupma-block-editor",
+            "attributes": {
+                "folder": {
+                    "type": "string",
+                    "default": ""
+                },
+                "title": {
+                    "type": "string",
+                    "default": "MediaNest Files"
+                }
+            },
+            "supports": {
+                "html": false
+            }
+        }
+    },
     "block_assets": [],
-    "author_block_count": 0,
+    "author_block_count": 1,
     "author_block_rating": 0,
     "blueprints": [],
     "preview_link": "",
