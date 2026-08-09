@@ -1,7 +1,7 @@
 {
     "name": "HyperPress | Hypermedia for WordPress (HTMX or Datastar)",
     "slug": "api-for-htmx",
-    "version": "3.5.8",
+    "version": "3.5.9",
     "author": "<a href=\"https://profiles.wordpress.org/tcattd/\">Esteban</a>",
     "author_profile": "https://profiles.wordpress.org/tcattd/",
     "contributors": {
@@ -12,7 +12,7 @@
         }
     },
     "requires": "6.5",
-    "tested": "7.0.2",
+    "tested": "7.0.3",
     "requires_php": "8.2",
     "requires_plugins": [],
     "compatibility": [],
@@ -29,7 +29,7 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 10,
-    "last_updated": "2026-08-04 21:35:00",
+    "last_updated": "2026-08-09 20:57:00",
     "added": "2024-07-05",
     "homepage": "https://github.com/EstebanForge/HyperPress",
     "sections": {
@@ -40,7 +40,7 @@
     },
     "short_description": "Build reactive WordPress blocks and pages with HTMX or Datastar (Alpine alongside HTMX), using only PHP and HTML attributes. No JavaScript required.",
     "description": "<p><strong>Reactive WordPress without writing JavaScript.</strong></p>\n<p>HyperPress brings modern hypermedia to WordPress. Use <strong>HTMX</strong> or <strong>Datastar</strong> to build rich, interactive blocks and pages, all with the simplicity of PHP. <strong>Alpine</strong> rides alongside HTMX for the lightweight client-side reactivity HTMX lacks. No JavaScript build step, no React, no webpack, no client-side state to manage. You write HTML attributes and server-side PHP; the hypermedia libraries handle the interactivity.</p>\n<p>Hypermedia is an old idea applied to the modern web. Instead of shipping a heavy JavaScript SPA that talks JSON to a REST API, you let the server render HTML fragments and swap them into the page. The result is simpler code, smaller payloads, and a development model that stays close to how WordPress already works. <a href=\"https://hypermedia.systems/\" rel=\"nofollow ugc\">Read more about hypermedia</a>.</p>\n<p><strong>📦 TWO HYPERMEDIA ENGINES, ONE PLUGIN</strong></p>\n<p>HyperPress bundles two hypermedia engines locally, from the plugin folder (no external requests unless you opt in):</p>\n<ul>\n<li><a href=\"https://htmx.org/\" rel=\"nofollow ugc\"><strong>HTMX</strong></a> with <a href=\"https://hyperscript.org/\" rel=\"nofollow ugc\">Hyperscript</a> for attribute-driven AJAX, partial HTML rendering, and progressive enhancement.</li>\n<li><a href=\"https://data-star.dev/\" rel=\"nofollow ugc\"><strong>Datastar</strong></a> for reactive, server-driven SSE-style updates with fine-grained DOM patching.</li>\n</ul>\n<p>HTMX has no built-in client-side reactivity, which is the gap Datastar fills natively. To close that gap on the HTMX side, HyperPress also bundles <a href=\"https://alpine-ajax.js.org/\" rel=\"nofollow ugc\"><strong>Alpine Ajax</strong></a> with <a href=\"https://alpinejs.dev/\" rel=\"nofollow ugc\"><strong>Alpine.js</strong></a> as a companion to HTMX, for lightweight reactive components and small client-side expressions.</p>\n<p>Pick one engine per block, or mix and match. Each library loads only when you use it.</p>\n<p><strong>🔌 REST ENDPOINT FOR HYPERMEDIA</strong></p>\n<p>HyperPress exposes a dedicated <code>/wp-html/v1/</code> REST namespace built for partial HTML rendering. Your server callbacks return HTML fragments, not JSON. The hypermedia libraries request that HTML and swap it into the page. This is the core of the reactive loop:</p>\n<ol>\n<li>A user interacts with an element (click, input, scroll).</li>\n<li>HTMX, Alpine Ajax, or Datastar issues a request to <code>/wp-html/v1/</code>.</li>\n<li>Your PHP callback renders an HTML fragment.</li>\n<li>The library swaps the fragment into the DOM.</li>\n</ol>\n<p>No client-side templating. No JSON serialization of data you only need to display. The server stays the single source of truth.</p>\n<p><strong>🧱 BUILD GUTENBERG BLOCKS WITH PHP</strong></p>\n<p>Through the bundled <strong>HyperBlocks</strong> library, HyperPress lets you register and render WordPress Gutenberg blocks using PHP templates and <code>block.json</code>, with server-side rendering. No React, no JSX, no build pipeline. Two authoring modes:</p>\n<ul>\n<li><strong>Fluent API</strong>: build blocks programmatically with a readable PHP chain.</li>\n<li><strong>block.json</strong>: the standard WordPress approach, with HyperPress handling field wiring and server-side render.</li>\n</ul>\n<p>Templates use the <code>.hp.php</code>, <code>.hm.php</code>, and <code>.hb.php</code> extensions and are served from your theme&#8217;s <code>hypermedia/</code> directory or custom registered paths. Combine blocks with the custom-field system below and you get editable, reactive content without touching JavaScript.</p>\n<p><strong>🎚 CUSTOM FIELDS AND OPTIONS PAGES</strong></p>\n<p>Through the bundled <strong>HyperFields</strong> library, HyperPress gives you a decoupled custom-field system with conditional logic, options pages, and export/import. Define fields in PHP, render them in the block inspector or on an options page, and read values with the <code>hf_get_field()</code> helper. This replaces the need for a separate custom-fields plugin when you build hypermedia-driven sites.</p>\n<p><strong>🧩 GLOBAL HELPER FUNCTIONS</strong></p>\n<p>HyperPress exposes one helper prefix per library, mirroring how WordPress itself exposes helpers:</p>\n<ul>\n<li><code>hp_*</code> for HyperPress (for example <code>hp_get_endpoint_url()</code>, <code>hp_get_option()</code>)</li>\n<li><code>hf_*</code> for HyperFields (for example <code>hf_field()</code>, <code>hf_get_field()</code>)</li>\n<li><code>hb_*</code> for HyperBlocks (for example <code>hb_block()</code>, <code>hb_field()</code>)</li>\n</ul>\n<p>All helpers are <code>function_exists</code>-guarded for first-to-boot safety, so a second plugin shipping the same libraries never fatals.</p>\n<p><strong>🔌 AJAX, PARTIAL RENDER, AND SERVER-SENT EVENTS</strong></p>\n<p>Because HyperPress returns HTML fragments from the server, you get several patterns for free:</p>\n<ul>\n<li><strong>AJAX</strong>: standard HTMX <code>hx-get</code> / <code>hx-post</code> requests that swap HTML.</li>\n<li><strong>Partial HTML rendering</strong>: render only the part of the page that changed.</li>\n<li><strong>Server-Sent Events (SSE)</strong> and reactive streams via Datastar, for live data and dashboards.</li>\n<li><strong>Out-of-band swaps</strong>: update multiple page regions from a single response.</li>\n<li><strong>Progressive enhancement</strong>: forms and links keep working before JavaScript loads.</li>\n</ul>\n<p><strong>🔒 LOCAL-FIRST, CDN OPT-IN</strong></p>\n<p>For privacy and security, every third-party library is served locally from the plugin folder by default. No request leaves your site. If you prefer a CDN, there is an explicit opt-in (using the unpkg.com service). You must turn it on deliberately; it is never enforced.</p>\n<p><strong>🧰 EXTENSIBLE WITHOUT EDITING CORE</strong></p>\n<p>HyperPress is built around WordPress hooks. Customize routing, rendering, asset loading, and admin behavior without touching plugin files:</p>\n<ul>\n<li>Filters and actions for every extension point.</li>\n<li><code>hyperpress/admin/show_menu</code> to show or hide the Settings page when HyperPress is consumed as a library.</li>\n<li>Template loader hooks so you can serve templates from custom paths.</li>\n<li>First-to-boot <code>LOADED</code> guards in each library prevent double-initialization when multiple plugins bundle HyperPress.</li>\n</ul>\n<p><strong>🌐 MULTISITE, PERFORMANCE, AND TRANSLATION</strong></p>\n<ul>\n<li><strong>Multisite compatible</strong>: activate per-site or network-wide.</li>\n<li><strong>Performance</strong>: libraries load only when used; no global scripts on every page.</li>\n<li><strong>Translation ready</strong>: contribute translations via translate.wordpress.org.</li>\n<li><strong>Developer friendly</strong>: clean namespacing, <code>::class</code> references throughout (Mozart-prefix safe), and committed <code>vendor/</code> so WordPress.org users get a working zip without running Composer.</li>\n</ul>\n<p><strong>🛠 HOW IT WORKS</strong></p>\n<p>The reactive loop in HyperPress is a thin layer over standard WordPress rendering:</p>\n<ol>\n<li>\n<p>You add a hypermedia attribute to an element. With HTMX, for example, a search box can request results as the user types:</p>\n<p><code>&lt;input type=\"search\"<br />\n   name=\"q\"<br />\n   hx-get=\"/wp-json/wp-html/v1/search\"<br />\n   hx-trigger=\"keyup changed delay:300ms\"<br />\n   hx-target=\"#results\"&gt;</code></p>\n</li>\n<li>\n<p>The request hits the <code>/wp-html/v1/</code> REST namespace, which HyperPress registers for partial HTML rendering.</p>\n</li>\n<li>Your PHP callback runs a normal WordPress query and returns an HTML fragment, not JSON.</li>\n<li>HTMX swaps the fragment into <code>#results</code>. The URL, history, and server state stay in sync automatically.</li>\n</ol>\n<p>The same loop works with Alpine Ajax (<code>x-ajax</code>) and Datastar (signals + SSE). You pick the library that fits the interaction; HyperPress handles routing and rendering for all of them.</p>\n<p><strong>💡 COMMON REACTIVE PATTERNS</strong></p>\n<p>Because the server returns HTML fragments, these patterns become a few attributes instead of a JavaScript module:</p>\n<ul>\n<li><strong>Live search</strong>: filter a list as the user types, with a debounce trigger.</li>\n<li><strong>Infinite scroll</strong>: append the next page of results when the user reaches the bottom.</li>\n<li><strong>Form submission and validation</strong>: POST a form, return the updated fragment or inline validation errors, no page reload.</li>\n<li><strong>Inline edit</strong>: click to edit a field, submit, swap the saved value back.</li>\n<li><strong>Modal dialogs</strong>: load a partial into a modal, close it, update the row behind it.</li>\n<li><strong>Live dashboards</strong>: stream updates over Server-Sent Events with Datastar for real-time data.</li>\n<li><strong>Dependent selects and conditional fields</strong>: refresh part of a form when a selection changes.</li>\n<li><strong>Out-of-band swaps</strong>: update the cart count and the cart body from a single add-to-cart response.</li>\n</ul>\n<p><strong>⚖ HYPERMEDIA VS A JSON REST API / SPA</strong></p>\n<p>The default modern approach is a React or Vue SPA that calls a JSON REST API. That model is powerful but adds a build step, a client-side state layer, and JSON serialization for data you only display. HyperPress offers a lighter path:</p>\n<ul>\n<li>The server renders HTML, the same way WordPress already renders templates.</li>\n<li>The client swaps fragments, with no client-side template engine.</li>\n<li>You keep a single source of truth on the server.</li>\n<li>Pages stay progressively enhanced and work before JavaScript loads.</li>\n</ul>\n<p>You are never locked in. HyperPress exposes a standard REST namespace, so you can still call JSON endpoints when a screen genuinely needs them. Hypermedia is a tool in the toolbox, not a replacement for the REST API.</p>\n<p><strong>🎯 PERFECT FOR:</strong></p>\n<ul>\n<li>Developers who want reactive WordPress UIs without a JavaScript build step.</li>\n<li>Teams migrating away from a heavy SPA back toward server-rendered HTML.</li>\n<li>Agencies building custom Gutenberg blocks in pure PHP.</li>\n<li>Anyone exploring HTMX, Datastar, or Alpine Ajax in a WordPress context.</li>\n<li>Sites that need live data, dashboards, or partial updates without a full REST/JSON layer.</li>\n</ul>\n<p><strong>⚡ QUICK START</strong></p>\n<ol>\n<li>Install and activate HyperPress.</li>\n<li>Open Settings &gt; HyperPress and choose which libraries to load.</li>\n<li>Add HTMX, Datastar, or Alpine attributes to your markup, or build a PHP block with HyperBlocks.</li>\n<li>Point requests at the <code>/wp-html/v1/</code> endpoint (or use the provided helpers).</li>\n<li>Your page is now reactive, with no JavaScript written.</li>\n</ol>\n<p><a href=\"https://github.com/EstebanForge/HyperPress\" rel=\"nofollow ugc\">Check the full feature set on GitHub</a>.</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/api-for-htmx.3.5.8.zip",
+    "download_link": "https://downloads.wordpress.org/plugin/api-for-htmx.3.5.9.zip",
     "upgrade_notice": {
         "3.5.6": "<p>Restores the Settings &gt; HyperPress options page and modernizes the bundled Hyper libraries. Requires WordPress 6.5+ and PHP 8.2+.</p>"
     },
@@ -61,7 +61,7 @@
         "htmx": "htmx",
         "hypermedia": "hypermedia"
     },
-    "stable_tag": "3.5.8",
+    "stable_tag": "3.5.9",
     "versions": {
         "0.9.1": "https://downloads.wordpress.org/plugin/api-for-htmx.0.9.1.zip",
         "1.0.0": "https://downloads.wordpress.org/plugin/api-for-htmx.1.0.0.zip",
@@ -88,6 +88,7 @@
         "3.5.6": "https://downloads.wordpress.org/plugin/api-for-htmx.3.5.6.zip",
         "3.5.7": "https://downloads.wordpress.org/plugin/api-for-htmx.3.5.7.zip",
         "3.5.8": "https://downloads.wordpress.org/plugin/api-for-htmx.3.5.8.zip",
+        "3.5.9": "https://downloads.wordpress.org/plugin/api-for-htmx.3.5.9.zip",
         "trunk": "https://downloads.wordpress.org/plugin/api-for-htmx.zip"
     },
     "business_model": false,
@@ -103,52 +104,6 @@
         "2x": "https://ps.w.org/api-for-htmx/assets/icon-256x256.png?rev=3338336"
     },
     "blocks": {
-        "hyperblocks/quote-block-json": {
-            "apiVersion": 3,
-            "hyperblocks": true,
-            "name": "hyperblocks/quote-block-json",
-            "title": "HB Quote Block (JSON)",
-            "description": "A quote block with author attribution and styling - block.json implementation.",
-            "category": "widgets",
-            "icon": "format-quote",
-            "keywords": [
-                "quote",
-                "blockquote",
-                "author",
-                "testimonial"
-            ],
-            "supports": {
-                "html": false,
-                "anchor": true,
-                "spacing": {
-                    "padding": true,
-                    "margin": true
-                }
-            },
-            "attributes": {
-                "quote_text": {
-                    "type": "string",
-                    "default": ""
-                },
-                "quote_author": {
-                    "type": "string",
-                    "default": ""
-                },
-                "author_title": {
-                    "type": "string",
-                    "default": ""
-                },
-                "background_color": {
-                    "type": "string",
-                    "default": "#f9f9f9"
-                },
-                "text_color": {
-                    "type": "string",
-                    "default": "#333333"
-                }
-            },
-            "render": "file:./render.php"
-        },
         "hyperblocks/hero-banner-json": {
             "apiVersion": 3,
             "hyperblocks": true,
@@ -237,6 +192,52 @@
                 "background_color": {
                     "type": "string",
                     "default": "#ffffff"
+                },
+                "text_color": {
+                    "type": "string",
+                    "default": "#333333"
+                }
+            },
+            "render": "file:./render.php"
+        },
+        "hyperblocks/quote-block-json": {
+            "apiVersion": 3,
+            "hyperblocks": true,
+            "name": "hyperblocks/quote-block-json",
+            "title": "HB Quote Block (JSON)",
+            "description": "A quote block with author attribution and styling - block.json implementation.",
+            "category": "widgets",
+            "icon": "format-quote",
+            "keywords": [
+                "quote",
+                "blockquote",
+                "author",
+                "testimonial"
+            ],
+            "supports": {
+                "html": false,
+                "anchor": true,
+                "spacing": {
+                    "padding": true,
+                    "margin": true
+                }
+            },
+            "attributes": {
+                "quote_text": {
+                    "type": "string",
+                    "default": ""
+                },
+                "quote_author": {
+                    "type": "string",
+                    "default": ""
+                },
+                "author_title": {
+                    "type": "string",
+                    "default": ""
+                },
+                "background_color": {
+                    "type": "string",
+                    "default": "#f9f9f9"
                 },
                 "text_color": {
                     "type": "string",
