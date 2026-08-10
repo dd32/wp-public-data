@@ -1,0 +1,101 @@
+{
+    "name": "GrabWP Restore",
+    "slug": "grabwp-restore",
+    "version": "1.0.3",
+    "author": "<a href=\"https://profiles.wordpress.org/taicv/\">taicv</a>",
+    "author_profile": "https://profiles.wordpress.org/taicv/",
+    "contributors": {
+        "taicv": {
+            "profile": "https://profiles.wordpress.org/taicv/",
+            "avatar": "https://secure.gravatar.com/avatar/43aa04eb306369d5c132f3df6250f338bf277f229ead1afcb266cc79510003be?s=96&d=monsterid&r=g",
+            "display_name": "taicv"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.0.3",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/grabwp-restore/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-10 10:12:00",
+    "added": "2026-08-10",
+    "homepage": "",
+    "sections": {
+        "description": "<p>GrabWP Restore is a standalone WordPress plugin that restores a full site from a GrabWP Tenancy Pro export archive. It handles database import with prefix rewriting, file restoration (uploads, plugins, themes), and site URL updates.</p>\n<p><strong>Features:</strong></p>\n<ul>\n<li>WordPress-validated ZIP upload stored outside the public web root</li>\n<li>Streaming SQL import (handles large databases)</li>\n<li>Automatic table prefix rewriting</li>\n<li>MySQL collation compatibility (MySQL 5.7 / 8.0)</li>\n<li>Safe rename-to-.old strategy for existing files</li>\n<li>Site URL auto-update</li>\n<li>Path traversal protection</li>\n<li>Progress tracking with step-by-step feedback</li>\n</ul>\n<p><strong>Important:</strong> This is a destructive operation. It will REPLACE your entire WordPress site. Back up your current site before using this plugin.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>grabwp-restore</code> folder to <code>/wp-content/plugins/</code></li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu</li>\n<li>Go to Tools &gt; GrabWP Restore</li>\n<li>Upload your GrabWP export ZIP file</li>\n<li>Check &#8220;I have backed up my website&#8221; and confirm the destructive operation</li>\n<li>Wait for the restore to complete</li>\n<li>Log in with the credentials from the exported site</li>\n<li>Remove <code>.old</code> directories from wp-content/ (uploads.old, plugins.old, themes.old)</li>\n<li>Deactivate and delete this plugin</li>\n</ol>\n",
+        "faq": "\n<dt id=\"will%20this%20work%20with%20any%20wordpress%20backup%3F\">\nWill this work with any WordPress backup?\n</h4>\n<p>\n<p>No. This plugin only works with ZIP files exported by GrabWP Tenancy Pro&#8217;s backup feature.</p>\n</p>\n<dt id=\"will%20i%20lose%20my%20current%20site%3F\">\nWill I lose my current site?\n</h4>\n<p>\n<p>Yes. This plugin replaces your entire database and renames your existing content directories to .old. You can restore them manually if needed.</p>\n</p>\n<dt id=\"what%20credentials%20do%20i%20use%20after%20restore%3F\">\nWhat credentials do I use after restore?\n</h4>\n<p>\n<p>The admin credentials from the exported site. Your current credentials will no longer work.</p>\n</p>\n<dt id=\"what%20are%20the%20.old%20directories%3F\">\nWhat are the .old directories?\n</h4>\n<p>\n<p>Before restoring, the plugin renames your existing plugins/, themes/, and uploads/ directories to plugins.old/, themes.old/, and uploads.old/. You can delete them after verifying the restore worked correctly.</p>\n</p>\n<dt id=\"what%20about%20large%20files%3F\">\nWhat about large files?\n</h4>\n<p>\n<p>The archive must fit within the server&#8217;s upload_max_filesize and post_max_size limits. Chunked uploads were removed so uploads can use WordPress core validation without custom file assembly.</p>\n</p>\n<dt id=\"where%20are%20temporary%20files%20stored%3F\">\nWhere are temporary files stored?\n</h4>\n<p>\n<p>The uploaded ZIP and restore job state are stored with private permissions in the operating system temporary directory. Restore refuses to start if that directory resolves inside the web root. database.sql is streamed directly from the ZIP and is never extracted to disk.</p>\n</p>\n<dt id=\"does%20this%20support%20wordpress%20multisite%3F\">\nDoes this support WordPress Multisite?\n</h4>\n<p>\n<p>No. Restore is intentionally disabled on Multisite because replacing network-wide plugins, themes, and database tables safely requires a separate network-aware workflow.</p>\n</p>\n<dt id=\"why%20is%20a%20restore%20step%20available%20after%20my%20login%20session%20changes%3F\">\nWhy is a restore step available after my login session changes?\n</h4>\n<p>\n<p>Importing the database can replace the users and sessions tables. Remaining steps therefore use a high-entropy, short-lived job token. Only a hash of that token is stored, failed attempts are limited, and abandoned temporary state expires after six hours.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.3</h4>\n<ul>\n<li>Security: Store uploaded archives and job state in the private system temporary directory — never under web-accessible uploads, and never protected only by .htaccess.</li>\n<li>Security: Stream database.sql directly from the ZIP without extracting it to disk.</li>\n<li>Security: Reject uploads that resolve inside the web root; verify ZIP integrity with ZipArchive::CHECKCONS.</li>\n<li>Security: Replace client-controlled chunk filenames with WordPress core ZIP upload validation.</li>\n<li>Security: Validate all archive paths and symlink attributes before writing.</li>\n<li>Security: Skip executable and server-configuration entries under uploads while restoring normal media files.</li>\n<li>Security: Preflight SQL statements against site-table and operation allowlists before modifying the database.</li>\n<li>Security: Store only a one-way job-token hash, limit failed token attempts, and purge the archive on abort.</li>\n<li>Security: Disable restore on Multisite to prevent network-wide destructive operations from subsite context.</li>\n<li>Compatibility: Use WP_Filesystem for file writes, moves, copies, and recursive deletion.</li>\n<li>Change: Remove chunked upload support; server upload limits now apply.</li>\n<li>Fix: Stage plugin self-preservation outside the web root; remove uninstall leftovers including legacy uploads/grabwp-restore.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Security: Stop extracting plugins/themes into the working directory; restore them directly to their final wp-content destinations.</li>\n<li>Security: Use <code>$wpdb</code> <code>%i</code> placeholders for all dynamic table and column identifiers instead of string interpolation.</li>\n<li>Security: Validate table/column names from <code>SHOW TABLES</code> / <code>SHOW COLUMNS</code> with an identifier allowlist before use in SQL.</li>\n<li>Compatibility: Raise minimum WordPress version to 6.2 (required for <code>%i</code> support).</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Fix: Sanitize all <code>$_POST</code> and <code>$_FILES</code> inputs per WordPress coding standards.</li>\n<li>Fix: Authenticate restore steps with an HMAC job token after database replacement invalidates the session nonce.</li>\n<li>Fix: Use <code>wp_upload_dir()['basedir']</code> instead of hardcoded <code>WP_CONTENT_DIR . '/uploads'</code> to support custom and multisite upload paths.</li>\n<li>Fix: Replace bulk <code>ZipArchive::extractTo()</code> with per-file extraction to prevent symlink-based path escapes.</li>\n<li>Fix: Document indexed URL replacement queries used by the database migration.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release: restore a full WordPress site from a GrabWP Tenancy Pro export ZIP (database, uploads, plugins, and themes).</li>\n<li>Admin UI at Tools &gt; GrabWP Restore with step-by-step progress feedback (administrator only; requires explicit backup confirmation).</li>\n<li>Chunked ZIP upload (2 MB per chunk) to bypass PHP upload size limits.</li>\n<li>Archive validation for GrabWP export structure (<code>database.sql</code>, <code>metadata.json</code>) with path traversal protection during extraction.</li>\n<li>Streaming SQL import for large databases, with automatic table prefix rewriting to match the destination site.</li>\n<li>MySQL collation compatibility for MySQL 5.7 and 8.0.</li>\n<li>Site URL auto-update and database-wide URL search-and-replace (including serialized and theme-encoded data).</li>\n<li>Safe file restore: existing plugins, themes, and uploads directories are renamed to .old before replacement.</li>\n<li>Temporary working files cleaned up on plugin deactivation.</li>\n</ul>\n"
+    },
+    "short_description": "Restore a full WordPress site from a GrabWP tenant export ZIP file.",
+    "description": "<p>GrabWP Restore is a standalone WordPress plugin that restores a full site from a GrabWP Tenancy Pro export archive. It handles database import with prefix rewriting, file restoration (uploads, plugins, themes), and site URL updates.</p>\n<p><strong>Features:</strong></p>\n<ul>\n<li>WordPress-validated ZIP upload stored outside the public web root</li>\n<li>Streaming SQL import (handles large databases)</li>\n<li>Automatic table prefix rewriting</li>\n<li>MySQL collation compatibility (MySQL 5.7 / 8.0)</li>\n<li>Safe rename-to-.old strategy for existing files</li>\n<li>Site URL auto-update</li>\n<li>Path traversal protection</li>\n<li>Progress tracking with step-by-step feedback</li>\n</ul>\n<p><strong>Important:</strong> This is a destructive operation. It will REPLACE your entire WordPress site. Back up your current site before using this plugin.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/grabwp-restore.1.0.3.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/grabwp-restore/assets/screenshot-1.jpg?rev=3640327",
+            "caption": "Upload screen with backup warning"
+        },
+        {
+            "src": "https://ps.w.org/grabwp-restore/assets/screenshot-2.jpg?rev=3640327",
+            "caption": "ZIP upload in progress"
+        },
+        {
+            "src": "https://ps.w.org/grabwp-restore/assets/screenshot-3.jpg?rev=3640327",
+            "caption": "Validating archive before restore"
+        },
+        {
+            "src": "https://ps.w.org/grabwp-restore/assets/screenshot-4.jpg?rev=3640327",
+            "caption": "Importing the database"
+        },
+        {
+            "src": "https://ps.w.org/grabwp-restore/assets/screenshot-5.jpg?rev=3640327",
+            "caption": "Restoring uploads, themes, and plugins"
+        },
+        {
+            "src": "https://ps.w.org/grabwp-restore/assets/screenshot-6.jpg?rev=3640327",
+            "caption": "Success screen with .old cleanup notice"
+        }
+    ],
+    "tags": {
+        "backup": "backup",
+        "import": "import",
+        "migration": "migration",
+        "restore": "restore"
+    },
+    "stable_tag": "1.0.3",
+    "versions": {
+        "1.0.3": "https://downloads.wordpress.org/plugin/grabwp-restore.1.0.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/grabwp-restore.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/grabwp-restore/assets/banner-772x250.jpg?rev=3640327",
+        "high": "https://ps.w.org/grabwp-restore/assets/banner-1544x500.jpg?rev=3640327"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/grabwp-restore/assets/icon-128x128.jpg?rev=3640327",
+        "2x": "https://ps.w.org/grabwp-restore/assets/icon-256x256.jpg?rev=3640327"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
