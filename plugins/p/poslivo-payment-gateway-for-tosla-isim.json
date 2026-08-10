@@ -1,0 +1,87 @@
+{
+    "name": "Poslivo Payment Gateway for Tosla İşim",
+    "slug": "poslivo-payment-gateway-for-tosla-isim",
+    "version": "1.2.8",
+    "author": "<a href=\"https://profiles.wordpress.org/erayvibe/\">Eray Bektaş</a>",
+    "author_profile": "https://profiles.wordpress.org/erayvibe/",
+    "contributors": {
+        "erayvibe": {
+            "profile": "https://profiles.wordpress.org/erayvibe/",
+            "avatar": "https://secure.gravatar.com/avatar/7008525ed5f9e674007e55322dfcaedfe34e85991cc395f5d24b1adfcd58f7e2?s=96&d=monsterid&r=g",
+            "display_name": "Eray Bektaş"
+        }
+    },
+    "requires": "6.6",
+    "tested": "7.0.3",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/poslivo-payment-gateway-for-tosla-isim/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-10 14:15:00",
+    "added": "2026-08-10",
+    "homepage": "",
+    "sections": {
+        "description": "<p>This independent plugin lets a merchant connect WooCommerce to Tosla İşim Sanal POS and accept 3D Secure payments. It is not affiliated with, endorsed by or an official product of Tosla or AkÖde.</p>\n<ul>\n<li>Classic and block checkout support</li>\n<li>3D Secure callback hash validation and payment inquiry</li>\n<li>Installment and commission information</li>\n<li>Order notes and privacy-safe transaction logs for the last seven days</li>\n<li>Deferred 3D Secure verification to close abandoned payment attempts safely</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the Tosla İşim payment service operated by AkÖde. The connection is required for the payment gateway to function.</p>\n<p>The service is contacted in the following situations:</p>\n<ul>\n<li>When a store administrator saves the gateway settings, to verify the API credentials.</li>\n<li>When a customer enters the first six card digits, to request available installment and commission information if the merchant account supports installments.</li>\n<li>When a customer places an order, to create a 3D Secure payment session.</li>\n<li>After Tosla returns the customer to the store, to verify the signed callback and confirm the payment status.</li>\n<li>When a store administrator requests a full or partial refund from WooCommerce.</li>\n<li>When a scheduled check confirms the status of an unfinished 3D Secure payment.</li>\n</ul>\n<p>Depending on the operation, the plugin sends the Tosla İşim API the merchant API credentials, order reference, amount, currency, installment count, callback URL, store domain and WordPress/WooCommerce version information. Cardholder name, card number, expiry date and CVV are processed transiently during checkout and then submitted from the customer&#8217;s browser to Tosla&#8217;s HTTPS 3D Secure card form. They are not persisted by the plugin.</p>\n<p>Tosla İşim service information and merchant registration:<br />\nhttps://isim.tosla.com/auth/register/</p>\n<p>Tosla İşim privacy disclosure:<br />\nhttps://tosla.com/isim/tosla-isim-kvkk-aydinlatma</p>\n<p>By enabling this gateway, the store owner agrees to use the Tosla İşim service under the terms presented by Tosla and AkÖde.</p>\n<h3>Privacy</h3>\n<p>The plugin does not store card numbers, expiry dates, CVV values or full callback payloads. Tosla API credentials are stored in the WordPress options table as part of the WooCommerce payment gateway settings and are available only to authorized store administrators. A sanitized payment failure message may be stored in the related WooCommerce order note; a one-time copy used to show the checkout error is deleted after it is displayed.</p>\n<p>The plugin keeps a privacy-safe transaction event log containing the WooCommerce order ID, event type, payment type and timestamp. Entries are automatically deleted after seven days and the log is removed when the plugin is uninstalled.</p>\n<p>Store owners remain responsible for informing customers about the Tosla İşim payment service and maintaining an appropriate privacy notice for their store.</p>\n<h3>Support</h3>\n<p>For Tosla İşim Virtual POS account or service support, contact Tosla at posdestek@tosla.com. For plugin setup and bug reports, use the WordPress.org support forum once the plugin is published.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin.</li>\n<li>Go to WooCommerce &gt; Settings &gt; Payments &gt; Tosla İşim.</li>\n<li>Enter your Tosla İşim API details and enable the payment method.</li>\n</ol>\n",
+        "changelog": "<h4>1.2.8</h4>\n<ul>\n<li>Fix WordPress Plugin Check translator-comment and output-escaping findings.</li>\n<li>Document justified raw signed-callback and API-secret handling for WPCS while keeping field-specific sanitization.</li>\n<li>Prevent settings validation errors from emitting HTML before WordPress admin headers are sent.</li>\n</ul>\n<h4>1.2.7</h4>\n<ul>\n<li>Require a successful inquiry result before a signed bank decline can mark an order failed.</li>\n<li>Preserve all valid API password punctuation while removing invalid UTF-8 and control characters.</li>\n<li>Reject installment packages carrying malformed or non-success API result codes.</li>\n<li>Keep random entropy in every Tosla order reference and validate the hosted 3D form URL again before checkout.</li>\n<li>Align the main plugin filename with the WordPress.org slug and remove unpublished legacy option identifiers.</li>\n<li>Require an HTTPS WooCommerce checkout and generate the Tosla callback URL with HTTPS.</li>\n<li>Bound remote response text, installment package iteration and privacy-safe log fields to prevent oversized stored data.</li>\n<li>Reject malformed non-scalar operation codes and guard minor-unit conversion against numeric overflow.</li>\n<li>Add suggested Tosla İşim data-processing text to the WordPress privacy policy guide.</li>\n<li>Require both generic and bank response codes to indicate success when Tosla supplies both values.</li>\n<li>Run a server-to-server inquiry before finalizing a signed failure callback, preventing stale callback results from overriding an approved payment.</li>\n<li>Preserve the page total on order-pay installment requests when no cart session is available.</li>\n<li>Disable the gateway by default and strengthen cardholder, expiry and remote response validation.</li>\n<li>Harden malformed Tosla response handling to avoid PHP conversion warnings.</li>\n<li>Reject non-numeric API result codes instead of allowing PHP integer coercion to treat them as success.</li>\n<li>Reconcile unfinished 3D attempts before a retry to prevent delayed approvals from causing duplicate charges.</li>\n<li>Preserve the checkout total when installment lookup is unavailable and remove one-time failure tokens through a server-side redirect.</li>\n</ul>\n<h4>1.2.5</h4>\n<ul>\n<li>Harden callback processing so invalid signatures cannot change order status and unsigned bank messages are ignored.</li>\n<li>Keep uncertain callback and inquiry results on hold for scheduled or manual verification instead of allowing duplicate payment attempts.</li>\n<li>Fix Checkout Blocks API method compatibility and require a valid classic checkout nonce outside Store API requests.</li>\n<li>Validate installment authorization server-side, use integer minor units for payment and refund amounts, and improve retry fee rollback.</li>\n<li>Improve asynchronous installment request handling, 3D form URL validation, transaction log integrity and cleanup.</li>\n<li>Synchronize plugin, readme and translation metadata versions.</li>\n</ul>\n<h4>1.2.4</h4>\n<ul>\n<li>Read only the specific checkout and callback fields required by the gateway instead of processing complete request arrays.</li>\n<li>Use <code>wp_safe_remote_post()</code> and public HTTPS URL validation for merchant-configured API endpoints.</li>\n<li>Validate callback hash parameters defensively and compare callback hashes with <code>hash_equals()</code>.</li>\n<li>Remove the bundled third-party card-formatting library and replace it with plugin-owned, isolated formatting code.</li>\n<li>Cache API credential verification briefly to prevent repeated checkout requests and correctly expose installment authorization to block checkout.</li>\n<li>Sanitize installment API responses and validate commission values before using or returning them.</li>\n<li>Prevent duplicate installment fee items when a customer retries payment.</li>\n<li>Add deactivation and uninstall cleanup for scheduled checks, settings and privacy-safe logs.</li>\n<li>Document the external Tosla İşim service, transmitted data and working HTML privacy URL.</li>\n</ul>\n<h4>1.2.3</h4>\n<ul>\n<li>Replaced generic global identifiers, hooks, options and script handles with the unique <code>poslivo_tosla_isim</code> prefix.</li>\n<li>Replaced slow direct PDF links with the working Tosla İşim service registration page and clarified where applicable legal notices are shown.</li>\n</ul>\n<h4>1.2.2</h4>\n<ul>\n<li>Renamed the independent product identity to Poslivo.</li>\n</ul>\n<h4>1.2.1</h4>\n<ul>\n<li>Use the developer&#8217;s Eray Bektaş identity and website in the plugin metadata.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Renamed the plugin and slug to make its independent status clear.</li>\n<li>Removed remote JavaScript loading and use WordPress script APIs for all plugin scripts.</li>\n<li>Removed the administrative success-notice suppression.</li>\n</ul>\n<h4>1.1.12</h4>\n<ul>\n<li>Align the WordPress.org plugin slug and text domain.</li>\n</ul>\n<h4>1.1.11</h4>\n<ul>\n<li>Check unfinished 3D Secure sessions after 30 minutes. Approved payments are completed; confirmed incomplete payments are cancelled with an order note. Temporary Tosla connection errors leave the order pending and are retried safely.</li>\n</ul>\n<h4>1.1.10</h4>\n<ul>\n<li>Store the Tosla order reference when the test API returns a zero transaction identifier.</li>\n</ul>\n<h4>1.1.9</h4>\n<ul>\n<li>Versioned Blocks checkout script so checkout updates are not held by browser caches.</li>\n</ul>\n<h4>1.1.8</h4>\n<ul>\n<li>Fixed WooCommerce Blocks checkout visibility when a transient Tosla connection check is slow.</li>\n</ul>\n<h4>1.1.7</h4>\n<ul>\n<li>Added full and partial refunds through the WooCommerce order edit screen.</li>\n</ul>\n<h4>1.1.6</h4>\n<ul>\n<li>Added explicit checkout validation and documented security exceptions for the signed Tosla callback and WooCommerce core hooks.</li>\n</ul>\n<h4>1.1.5</h4>\n<ul>\n<li>Improved output escaping, card validation and administrative settings security checks found by Plugin Check.</li>\n</ul>\n<h4>1.1.4</h4>\n<ul>\n<li>Added privacy-safe transaction logs for the last seven days.</li>\n<li>Added Luhn and expiry-date validation for card numbers.</li>\n<li>Improved release metadata and asset versioning.</li>\n</ul>\n"
+    },
+    "short_description": "Independent WooCommerce 3D Secure payment gateway integration for Tosla İşim Sanal POS.",
+    "description": "<p>This independent plugin lets a merchant connect WooCommerce to Tosla İşim Sanal POS and accept 3D Secure payments. It is not affiliated with, endorsed by or an official product of Tosla or AkÖde.</p>\n<ul>\n<li>Classic and block checkout support</li>\n<li>3D Secure callback hash validation and payment inquiry</li>\n<li>Installment and commission information</li>\n<li>Order notes and privacy-safe transaction logs for the last seven days</li>\n<li>Deferred 3D Secure verification to close abandoned payment attempts safely</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the Tosla İşim payment service operated by AkÖde. The connection is required for the payment gateway to function.</p>\n<p>The service is contacted in the following situations:</p>\n<ul>\n<li>When a store administrator saves the gateway settings, to verify the API credentials.</li>\n<li>When a customer enters the first six card digits, to request available installment and commission information if the merchant account supports installments.</li>\n<li>When a customer places an order, to create a 3D Secure payment session.</li>\n<li>After Tosla returns the customer to the store, to verify the signed callback and confirm the payment status.</li>\n<li>When a store administrator requests a full or partial refund from WooCommerce.</li>\n<li>When a scheduled check confirms the status of an unfinished 3D Secure payment.</li>\n</ul>\n<p>Depending on the operation, the plugin sends the Tosla İşim API the merchant API credentials, order reference, amount, currency, installment count, callback URL, store domain and WordPress/WooCommerce version information. Cardholder name, card number, expiry date and CVV are processed transiently during checkout and then submitted from the customer&#8217;s browser to Tosla&#8217;s HTTPS 3D Secure card form. They are not persisted by the plugin.</p>\n<p>Tosla İşim service information and merchant registration:<br />\nhttps://isim.tosla.com/auth/register/</p>\n<p>Tosla İşim privacy disclosure:<br />\nhttps://tosla.com/isim/tosla-isim-kvkk-aydinlatma</p>\n<p>By enabling this gateway, the store owner agrees to use the Tosla İşim service under the terms presented by Tosla and AkÖde.</p>\n<h3>Privacy</h3>\n<p>The plugin does not store card numbers, expiry dates, CVV values or full callback payloads. Tosla API credentials are stored in the WordPress options table as part of the WooCommerce payment gateway settings and are available only to authorized store administrators. A sanitized payment failure message may be stored in the related WooCommerce order note; a one-time copy used to show the checkout error is deleted after it is displayed.</p>\n<p>The plugin keeps a privacy-safe transaction event log containing the WooCommerce order ID, event type, payment type and timestamp. Entries are automatically deleted after seven days and the log is removed when the plugin is uninstalled.</p>\n<p>Store owners remain responsible for informing customers about the Tosla İşim payment service and maintaining an appropriate privacy notice for their store.</p>\n<h3>Support</h3>\n<p>For Tosla İşim Virtual POS account or service support, contact Tosla at posdestek@tosla.com. For plugin setup and bug reports, use the WordPress.org support forum once the plugin is published.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/poslivo-payment-gateway-for-tosla-isim.1.2.8.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/poslivo-payment-gateway-for-tosla-isim/assets/screenshot-1.png?rev=3640706",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/poslivo-payment-gateway-for-tosla-isim/assets/screenshot-2.png?rev=3640706",
+            "caption": ""
+        }
+    ],
+    "tags": {
+        "3d-secure": "3D Secure",
+        "payment-gateway": "payment gateway",
+        "tosla": "tosla",
+        "virtual-pos": "virtual pos",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.2.8",
+    "versions": {
+        "1.2.8": "https://downloads.wordpress.org/plugin/poslivo-payment-gateway-for-tosla-isim.1.2.8.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/poslivo-payment-gateway-for-tosla-isim.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/poslivo-payment-gateway-for-tosla-isim/assets/banner-772x250.png?rev=3640689",
+        "high": "https://ps.w.org/poslivo-payment-gateway-for-tosla-isim/assets/banner-1544x500.png?rev=3640689"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/poslivo-payment-gateway-for-tosla-isim/assets/icon-128x128.png?rev=3640689",
+        "2x": "https://ps.w.org/poslivo-payment-gateway-for-tosla-isim/assets/icon-256x256.png?rev=3640689"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

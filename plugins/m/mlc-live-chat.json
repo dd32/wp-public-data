@@ -1,0 +1,75 @@
+{
+    "name": "MLC Live Chat",
+    "slug": "mlc-live-chat",
+    "version": "2.3.2",
+    "author": "<a href=\"https://profiles.wordpress.org/hshhiri/\">Hadi Shiri</a>",
+    "author_profile": "https://profiles.wordpress.org/hshhiri/",
+    "contributors": {
+        "hshhiri": {
+            "profile": "https://profiles.wordpress.org/hshhiri/",
+            "avatar": "https://secure.gravatar.com/avatar/3417d14caf97c423b1b8c894b817e5e9c0f28bc41a0f1354b7d533f5eb22bb7f?s=96&d=monsterid&r=g",
+            "display_name": "Hadi Shiri"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.0.3",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/mlc-live-chat/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-10 14:43:00",
+    "added": "2026-08-10",
+    "homepage": "",
+    "sections": {
+        "description": "<p>MLC Live Chat adds a live chat widget to your site that forwards visitor messages to your Bale bot, and lets you reply either from Bale itself or directly from the WordPress dashboard. The plugin stores all conversation data in your own WordPress database, ensuring full privacy and control.</p>\n<h4>Features</h4>\n<ul>\n<li>Live chat delivered through the Bale messenger</li>\n<li>Dedicated conversations dashboard in wp-admin with direct reply support</li>\n<li>Floating admin-bar/dashboard notification for new messages</li>\n<li>Customizable chat widget (colors, position, welcome message)</li>\n<li>Automatic or manual naming of guest conversations</li>\n<li>Compatible with Elementor and other page builders — the widget does not load inside the live-preview editor to avoid conflicts</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the Bale messenger&#8217;s Bot API (tapi.bale.ai), which is required for its core functionality: delivering visitor chat messages to your Bale bot and receiving the admin&#8217;s replies back to the visitor.</p>\n<p>It sends data to this service in two situations:<br />\n* When a visitor sends a message through the chat widget, the message text is sent to tapi.bale.ai so it can be forwarded to the site owner&#8217;s Bale bot.<br />\n* When the site owner replies (from Bale or from the WordPress dashboard), the plugin calls tapi.bale.ai to deliver that reply, and Bale calls back a webhook URL on your own site to pass admin replies to the plugin.</p>\n<p>No data is sent unless the plugin is enabled and a Bale bot token has been configured by the site owner in the plugin settings.</p>\n<p>This service is provided by &#8220;Bale&#8221; (Sadad Informatics Corporation / Bank Melli Iran): <a href=\"https://bale.ai/terms\" rel=\"nofollow ugc\">Terms of Service</a>, <a href=\"https://docs.bale.ai/\" rel=\"nofollow ugc\">API documentation</a>.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to <code>/wp-content/plugins/</code>, or install it through the WordPress plugin installer.</li>\n<li>Activate the plugin from the &#8220;Plugins&#8221; menu.</li>\n<li>Go to the plugin settings, enter your Bale bot token and admin chat ID.</li>\n<li>Click &#8220;Set webhook automatically&#8221; so the plugin registers the delivery URL with your bot.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"why%20aren%27t%20messages%20being%20delivered%20to%20bale%3F\">\nWhy aren&#8217;t messages being delivered to Bale?\n</h4>\n<p>\n<p>Use the &#8220;Check current webhook status&#8221; button in the settings page to diagnose the connection between your server and the Bale API.</p>\n</p>\n<dt id=\"is%20this%20plugin%20compatible%20with%20elementor%3F\">\nIs this plugin compatible with Elementor?\n</h4>\n<p>\n<p>Yes. The chat widget is automatically disabled while editing in Elementor&#8217;s live preview (as well as Divi, Beaver Builder, and Visual Composer) to avoid interfering with the builder&#8217;s editing tools; it displays normally for visitors on the published site.</p>\n</p>\n\n",
+        "changelog": "<h4>2.3.2</h4>\n<ul>\n<li>Moved the debug log directory back under <code>wp_upload_dir()</code> (a randomized, per-site subfolder) instead of a custom path directly under <code>WP_CONTENT_DIR</code>, per the plugin directory&#8217;s guidance on determining writable locations correctly.</li>\n<li>Replaced all direct <code>file_put_contents()</code>/<code>file_get_contents()</code> calls for log files with <code>WP_Filesystem</code>, for better compatibility across hosting environments.</li>\n<li>Log files are now capped at 500KB (oldest entries are trimmed) to keep the read-then-write pattern required by <code>WP_Filesystem</code> fast.</li>\n</ul>\n<h4>2.3.1</h4>\n<ul>\n<li>Fixed the Bale &#8220;Reply&#8221; button (and <code>/reply</code> command) not delivering replies after upgrading from 2.2.x. The REST API namespace changed in 2.3.0, which left the webhook URL previously registered with Bale pointing to a route that no longer existed; the plugin now automatically re-registers the webhook on the new route the first time it runs after this update, without any action needed from the site owner. Sites still on 2.3.0 can also fix this immediately by clicking &#8220;Set webhook automatically&#8221; in the settings page.</li>\n</ul>\n<h4>2.3.0</h4>\n<ul>\n<li>Renamed all PHP classes, functions, constants, option names, AJAX actions, the REST API namespace, and JS globals from the <code>mlc</code>/<code>MLC</code> prefix (3 characters) to <code>mlclich</code>/<code>MLCLICH</code>, to comply with the WordPress.org plugin directory&#8217;s uniqueness requirements. The plugin slug and text domain (<code>mlc-live-chat</code>) are unchanged.</li>\n<li>Security fix: the webhook signature check (<code>verify_secret()</code>) previously allowed requests through when no secret was configured yet; it now rejects them instead, closing a window where replies could be spoofed on a freshly-activated site.</li>\n<li>Moved all inline <code>&lt;script&gt;</code>/<code>&lt;style&gt;</code> blocks in admin pages and the chat widget to properly enqueued files via <code>wp_enqueue_script()</code>/<code>wp_enqueue_style()</code>, <code>wp_localize_script()</code>, and <code>wp_add_inline_style()</code>.</li>\n<li>The <code>register_setting()</code> sanitize callback now fully sanitizes every settings field (previously only two of the fields were handled there, relying on the AJAX handler for the rest).</li>\n<li>Lowered the admin menu position so it no longer competes with WordPress core menu items.</li>\n<li>Moved the debug log files out of <code>wp-content/uploads</code> (a web-accessible directory) to a dedicated folder outside of it, with a randomized per-site filename, so log contents are not exposed regardless of web server type (this previously relied on <code>.htaccess</code>, which Nginx ignores by default).</li>\n<li>Documented the plugin&#8217;s use of the Bale Bot API as an external service in the readme, per the plugin directory&#8217;s guidelines.</li>\n</ul>\n<h4>2.2.9</h4>\n<ul>\n<li>Fixed two unescaped/unprepared SQL warnings in the sessions-overview and new-messages queries by inlining the SQL directly into <code>$wpdb-&gt;prepare()</code> calls.</li>\n<li>Added a lightweight object-cache layer (<code>wp_cache_get()</code>/<code>wp_cache_set()</code>) to frequently-read queries to reduce direct-database-query notices and improve performance; the cache is invalidated on every write.</li>\n<li>Polling queries (new admin replies, live message count) remain intentionally uncached to keep the chat real-time.</li>\n</ul>\n<h4>2.2.8</h4>\n<ul>\n<li>Removed the temporary connectivity diagnostic tool (ping-test buttons and its unauthenticated logging endpoint) from the settings page.</li>\n<li>Replaced remaining direct SQL string interpolation with <code>$wpdb-&gt;prepare()</code> identifier placeholders (<code>%i</code>), removing all direct-database-query warnings.</li>\n<li>Bumped minimum required WordPress version to 6.2 (required by the <code>%i</code> placeholder) and updated &#8220;Tested up to&#8221; to the current release.</li>\n</ul>\n<h4>2.2.7</h4>\n<ul>\n<li>Plugin now supports the Bale messenger exclusively; other messenger integrations have been removed.</li>\n<li>Security hardening: added missing input unslashing/sanitization, escaped all admin-page output, and reduced direct database query warnings.</li>\n<li>Replaced direct filesystem calls with WordPress-recommended equivalents (<code>wp_delete_file()</code>, <code>WP_Filesystem</code>).</li>\n<li>Removed the deprecated <code>load_plugin_textdomain()</code> call and the unused <code>Domain Path</code> header.</li>\n</ul>\n<h4>2.2.1</h4>\n<ul>\n<li>Fixed a critical bug where the settings sanitize function always returned &#8220;enabled&#8221; as active.</li>\n<li>Fixed conflicts with Elementor&#8217;s live preview mode.</li>\n<li>Added ABSPATH security guard to all PHP files.</li>\n<li>Added readme.txt for release on the WordPress plugin repository.</li>\n</ul>\n<h4>2.1.0 &#8211; 2.2.0</h4>\n<ul>\n<li>Added the conversations dashboard, floating notification icon, automatic webhook detection, and various security and UI improvements.</li>\n</ul>\n"
+    },
+    "short_description": "Live chat widget that forwards messages to your Bale bot, with replies from the WordPress dashboard.",
+    "description": "<p>MLC Live Chat adds a live chat widget to your site that forwards visitor messages to your Bale bot, and lets you reply either from Bale itself or directly from the WordPress dashboard. The plugin stores all conversation data in your own WordPress database, ensuring full privacy and control.</p>\n<h4>Features</h4>\n<ul>\n<li>Live chat delivered through the Bale messenger</li>\n<li>Dedicated conversations dashboard in wp-admin with direct reply support</li>\n<li>Floating admin-bar/dashboard notification for new messages</li>\n<li>Customizable chat widget (colors, position, welcome message)</li>\n<li>Automatic or manual naming of guest conversations</li>\n<li>Compatible with Elementor and other page builders — the widget does not load inside the live-preview editor to avoid conflicts</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the Bale messenger&#8217;s Bot API (tapi.bale.ai), which is required for its core functionality: delivering visitor chat messages to your Bale bot and receiving the admin&#8217;s replies back to the visitor.</p>\n<p>It sends data to this service in two situations:<br />\n* When a visitor sends a message through the chat widget, the message text is sent to tapi.bale.ai so it can be forwarded to the site owner&#8217;s Bale bot.<br />\n* When the site owner replies (from Bale or from the WordPress dashboard), the plugin calls tapi.bale.ai to deliver that reply, and Bale calls back a webhook URL on your own site to pass admin replies to the plugin.</p>\n<p>No data is sent unless the plugin is enabled and a Bale bot token has been configured by the site owner in the plugin settings.</p>\n<p>This service is provided by &#8220;Bale&#8221; (Sadad Informatics Corporation / Bank Melli Iran): <a href=\"https://bale.ai/terms\" rel=\"nofollow ugc\">Terms of Service</a>, <a href=\"https://docs.bale.ai/\" rel=\"nofollow ugc\">API documentation</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/mlc-live-chat.2.3.2.zip",
+    "upgrade_notice": {
+        "2.3.2": "<p>Moves log storage to the standard uploads-based writable location and uses WP_Filesystem for all log file operations, per WordPress.org plugin guidelines.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "bale": "bale",
+        "chat-widget": "chat widget",
+        "live-chat": "live chat",
+        "messenger": "messenger",
+        "support": "support"
+    },
+    "stable_tag": "2.3.2",
+    "versions": {
+        "2.3.2": "https://downloads.wordpress.org/plugin/mlc-live-chat.2.3.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/mlc-live-chat.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/mlc-live-chat.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
