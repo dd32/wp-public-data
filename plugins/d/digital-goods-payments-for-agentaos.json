@@ -1,0 +1,84 @@
+{
+    "name": "Digital Goods Payments for AgentaOS",
+    "slug": "digital-goods-payments-for-agentaos",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/milemilosheski/\">milemilosheski</a>",
+    "author_profile": "https://profiles.wordpress.org/milemilosheski/",
+    "contributors": {
+        "milemilosheski": {
+            "profile": "https://profiles.wordpress.org/milemilosheski/",
+            "avatar": "https://secure.gravatar.com/avatar/3bc3fa4e839ccb7440821c0b52f20c2804483ace85b69fd67a3915ede91edbe3?s=96&d=monsterid&r=g",
+            "display_name": "milemilosheski"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.0.4",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/digital-goods-payments-for-agentaos/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-13 16:11:00",
+    "added": "2026-08-13",
+    "homepage": "https://profiles.wordpress.org/milemilosheski/",
+    "sections": {
+        "description": "<p>AgentaOS Pay adds an AgentaOS payment gateway to WooCommerce for selling digital goods.</p>\n<p><strong>Important: digital goods only.</strong> This gateway is for non-shippable products (virtual / downloadable). It automatically hides itself at checkout whenever the cart contains any physical (shippable) product, and the product-page &#8220;Buy now&#8221; button is never shown for physical products. It does not support physical goods.</p>\n<ul>\n<li><strong>Hosted, seamless checkout</strong> — buyers pay on a secure AgentaOS page and return to your store fulfilled.</li>\n<li><strong>Fast checkout on product pages</strong> — a &#8220;Buy now&#8221; button skips the cart and goes straight to AgentaOS.</li>\n<li><strong>Standard checkout</strong> — works on both the classic checkout and the Cart/Checkout Blocks.</li>\n<li><strong>Sandbox &amp; live environments</strong> — separate keys and webhook secrets, switch with one setting.</li>\n<li><strong>Signed webhooks</strong> — HMAC-SHA256 verification, plus a server-side return check so orders are fulfilled even where webhooks can&#8217;t reach the store (e.g. local dev).</li>\n<li><strong>Digital-goods aware</strong> — virtual/downloadable orders auto-complete so downloads unlock instantly.</li>\n</ul>\n<h4>Architecture note: the @agentaos/pay npm package</h4>\n<p>WooCommerce runs on PHP, so the gateway itself is implemented in PHP and calls the AgentaOS REST API directly (the same API the SDK wraps). The official <code>@agentaos/pay</code> Node SDK holds a <strong>secret</strong> key and is therefore server-side only — it must never run in a shopper&#8217;s browser. It is wired into this plugin&#8217;s <code>package.json</code> and used by <code>tools/webhook-listener.mjs</code> for local webhook testing.</p>\n<h3>External services</h3>\n<p>This plugin connects to the AgentaOS payment API to create and verify payments. This connection is required for the gateway to function.</p>\n<p>When a customer pays, the plugin sends the following to AgentaOS (https://api.agentaos.ai): the payment amount and currency, an order description, the buyer&#8217;s email and name, your store&#8217;s success and webhook URLs, and order identifiers (order id and order key). AgentaOS returns a hosted checkout URL, and the customer is redirected there to complete payment. AgentaOS then notifies your store of the result via a signed webhook and/or when the customer returns.</p>\n<p>No data is sent unless a customer initiates a payment with this gateway. The plugin loads no third-party scripts on your site.</p>\n<ul>\n<li>Service: AgentaOS — https://agentaos.ai</li>\n<li>Terms of Service: https://agentaos.ai/terms</li>\n<li>Privacy Policy: https://agentaos.ai/privacy</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>digital-goods-payments-for-agentaos</code> folder to <code>/wp-content/plugins/</code> and activate it.</li>\n<li>Go to <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Payments <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> AgentaOS Pay</strong>.</li>\n<li>Choose the <strong>Environment</strong> (Sandbox or Live).</li>\n<li>Paste your secret key(s) from <strong>AgentaOS dashboard <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Developers <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> API Keys</strong>:\n<ul>\n<li>Sandbox keys begin with <code>sk_test_</code>.</li>\n<li>Live keys begin with <code>sk_live_</code>.</li>\n</ul>\n</li>\n<li>In the AgentaOS dashboard, add a webhook endpoint pointing at the URL shown on the settings screen (<code>/wp-json/agentaos/v1/webhook</code>), subscribe to <code>checkout.session.completed</code>, and paste the signing secret (<code>whsec_...</code>) into the matching field.</li>\n<li>Enable the gateway and save.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20the%20webhook%20need%20to%20be%20reachable%20for%20orders%20to%20complete%3F\">\nDoes the webhook need to be reachable for orders to complete?\n</h4>\n<p>\n<p>In production, yes — configure it. On local environments the plugin also verifies the session server-side when the buyer returns to the thank-you page, so orders still complete without a public webhook URL.</p>\n</p>\n<dt id=\"how%20are%20duplicate%20charges%20avoided%3F\">\nHow are duplicate charges avoided?\n</h4>\n<p>\n<p>Each checkout session is created with an idempotency key derived from the order id and total.</p>\n</p>\n<dt id=\"my%20store%20currency%20is%20not%20eur%2Fusd%20%E2%80%94%20can%20i%20still%20use%20agentaos%3F\">\nMy store currency is not EUR/USD — can I still use AgentaOS?\n</h4>\n<p>\n<p>AgentaOS only accepts EUR, USD, EURC, EURe and USDC. If your store uses another currency, set a <strong>Settlement currency</strong> and a <strong>Conversion rate</strong> on the gateway settings screen. The order total is converted to the settlement currency before it is sent to AgentaOS, the customer is charged that converted amount, and payment confirmation is validated against it. The WooCommerce order stays in your store currency, and a note records the converted amount. If your store already uses a supported currency, no conversion happens.</p>\n</p>\n<dt id=\"how%20do%20refunds%20work%3F\">\nHow do refunds work?\n</h4>\n<p>\n<p>AgentaOS provides no refund API, so refunds cannot be automated. Issue the refund from your AgentaOS dashboard, then use WooCommerce&#8217;s built-in <strong>Refund manually</strong> button on the order to record it (this keeps stock and reporting accurate; it does not move money). AgentaOS orders show a reminder of this workflow on the order screen.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Accept payments for digital goods in WooCommerce via AgentaOS: hosted checkout, product-page fast checkout, sandbox and live.",
+    "description": "<p>AgentaOS Pay adds an AgentaOS payment gateway to WooCommerce for selling digital goods.</p>\n<p><strong>Important: digital goods only.</strong> This gateway is for non-shippable products (virtual / downloadable). It automatically hides itself at checkout whenever the cart contains any physical (shippable) product, and the product-page &#8220;Buy now&#8221; button is never shown for physical products. It does not support physical goods.</p>\n<ul>\n<li><strong>Hosted, seamless checkout</strong> — buyers pay on a secure AgentaOS page and return to your store fulfilled.</li>\n<li><strong>Fast checkout on product pages</strong> — a &#8220;Buy now&#8221; button skips the cart and goes straight to AgentaOS.</li>\n<li><strong>Standard checkout</strong> — works on both the classic checkout and the Cart/Checkout Blocks.</li>\n<li><strong>Sandbox &amp; live environments</strong> — separate keys and webhook secrets, switch with one setting.</li>\n<li><strong>Signed webhooks</strong> — HMAC-SHA256 verification, plus a server-side return check so orders are fulfilled even where webhooks can&#8217;t reach the store (e.g. local dev).</li>\n<li><strong>Digital-goods aware</strong> — virtual/downloadable orders auto-complete so downloads unlock instantly.</li>\n</ul>\n<h4>Architecture note: the @agentaos/pay npm package</h4>\n<p>WooCommerce runs on PHP, so the gateway itself is implemented in PHP and calls the AgentaOS REST API directly (the same API the SDK wraps). The official <code>@agentaos/pay</code> Node SDK holds a <strong>secret</strong> key and is therefore server-side only — it must never run in a shopper&#8217;s browser. It is wired into this plugin&#8217;s <code>package.json</code> and used by <code>tools/webhook-listener.mjs</code> for local webhook testing.</p>\n<h3>External services</h3>\n<p>This plugin connects to the AgentaOS payment API to create and verify payments. This connection is required for the gateway to function.</p>\n<p>When a customer pays, the plugin sends the following to AgentaOS (https://api.agentaos.ai): the payment amount and currency, an order description, the buyer&#8217;s email and name, your store&#8217;s success and webhook URLs, and order identifiers (order id and order key). AgentaOS returns a hosted checkout URL, and the customer is redirected there to complete payment. AgentaOS then notifies your store of the result via a signed webhook and/or when the customer returns.</p>\n<p>No data is sent unless a customer initiates a payment with this gateway. The plugin loads no third-party scripts on your site.</p>\n<ul>\n<li>Service: AgentaOS — https://agentaos.ai</li>\n<li>Terms of Service: https://agentaos.ai/terms</li>\n<li>Privacy Policy: https://agentaos.ai/privacy</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/digital-goods-payments-for-agentaos.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/digital-goods-payments-for-agentaos/assets/screenshot-1.png?rev=3645791",
+            "caption": "AgentaOS Pay settings under WooCommerce → Settings → Payments (environment, keys, currency conversion)."
+        }
+    ],
+    "tags": {
+        "agentaos": "agentaos",
+        "checkout": "checkout",
+        "digital-goods": "digital goods",
+        "payments": "payments",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/digital-goods-payments-for-agentaos.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/digital-goods-payments-for-agentaos.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/digital-goods-payments-for-agentaos/assets/banner-772x250.png?rev=3645791",
+        "high": "https://ps.w.org/digital-goods-payments-for-agentaos/assets/banner-1544x500.png?rev=3645791"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/digital-goods-payments-for-agentaos/assets/icon-128x128.png?rev=3645791",
+        "2x": "https://ps.w.org/digital-goods-payments-for-agentaos/assets/icon-256x256.png?rev=3645791"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
