@@ -1,7 +1,7 @@
 {
     "name": "KP Agent Ready",
     "slug": "kp-agent-ready",
-    "version": "1.1.98",
+    "version": "1.1.99",
     "author": "<a href=\"https://profiles.wordpress.org/kevp75/\">Kevin Pirnie</a>",
     "author_profile": "https://profiles.wordpress.org/kevp75/",
     "contributors": {
@@ -12,7 +12,7 @@
         }
     },
     "requires": "6.8",
-    "tested": false,
+    "tested": "7.1",
     "requires_php": "8.2",
     "requires_plugins": [],
     "compatibility": [],
@@ -29,7 +29,7 @@
     "support_threads": 2,
     "support_threads_resolved": 2,
     "active_installs": 50,
-    "last_updated": "2026-08-13 14:17:00",
+    "last_updated": "2026-08-13 19:08:00",
     "added": "2026-05-02",
     "homepage": "https://github.com/kpirnie/wppplugin-kp-agent-ready",
     "sections": {
@@ -40,7 +40,7 @@
     },
     "short_description": "Make your WordPress site discoverable and usable by AI agents via well-known endpoints, MCP, OAuth, and Markdown negotiation.",
     "description": "<p>AI agents — tools like ChatGPT, Claude, Copilot, and the growing ecosystem of autonomous AI systems — are increasingly being pointed at websites to gather information, interact with APIs, and perform tasks on behalf of users. For a site to work well with these agents, it needs to speak the right language: publishing structured discovery files, declaring its capabilities, and responding to agent-specific requests in the right format.</p>\n<p><strong>KP Agent Ready</strong> handles all of that for your WordPress site. It implements the current set of agent-readiness standards and the broader AI agent ecosystem — without requiring you to manually create files, edit server configs, or touch a line of code. Everything is managed from a dedicated settings page in the WordPress admin.</p>\n<h4>What It Does</h4>\n<p><strong>RFC 8288 Link Response Headers</strong><br />\nEvery response your site sends will include <code>Link</code> headers pointing agents to your API catalog, agent skills index, and MCP server card. This is how agents find your discovery documents without having to guess URLs.</p>\n<p><strong>API Catalog — <code>/.well-known/api-catalog</code></strong><br />\nPublishes a machine-readable catalog of your site&#8217;s APIs in the <code>application/linkset+json</code> format defined by RFC 9727. Each entry in the catalog can point to an OpenAPI specification, human-readable documentation, and a health/status endpoint. If you have not configured any entries yet, the plugin serves a sensible fallback automatically so the endpoint is always valid.</p>\n<p><strong>Agent Skills Index — <code>/.well-known/agent-skills/index.json</code></strong><br />\nPublishes a skills discovery index per the Agent Skills Discovery RFC v0.2.0. This tells agents what your site can <em>do</em> — search your blog, browse your portfolio, submit a contact form, and so on.</p>\n<p>Skills are built from three sources:</p>\n<ul>\n<li><strong>Blog articles</strong> — a search skill and a browse skill, toggled with a single switch</li>\n<li><strong>Custom post types</strong> — any public CPT registered on your site appears as a checkbox; tick it and it gets a browse skill pointing to its archive</li>\n<li><strong>Manual entries</strong> — define any additional skill with a name, type, description, URL, and an optional sha256 digest</li>\n</ul>\n<p><strong>MCP Server Card — <code>/.well-known/mcp/server-card.json</code></strong><br />\nPublishes an MCP Server Card (SEP-1649) identifying your site to Model Context Protocol clients. Configurable name, version, description, transport endpoint, and a capability list. If you do not have an MCP server running yet, just leave the transport blank — the card is still valid and useful for discovery.</p>\n<p><strong>OAuth / OIDC Discovery — <code>/.well-known/openid-configuration</code> or <code>/.well-known/oauth-authorization-server</code></strong><br />\nIf your site exposes protected APIs that require authentication, this feature publishes the discovery metadata agents need to authenticate. Supports both OpenID Connect Discovery 1.0 and RFC 8414. Disabled by default — only enable it if you have the infrastructure in place.</p>\n<p><strong>OAuth Protected Resource Metadata — <code>/.well-known/oauth-protected-resource</code></strong><br />\nComplements the OAuth/OIDC feature by publishing RFC 9728 Protected Resource Metadata. Disabled by default.</p>\n<p><strong>robots.txt Content Signals</strong><br />\nAppends Content Signals directives to your <code>robots.txt</code> file, declaring your preferences for how AI systems may use your content:</p>\n<ul>\n<li><strong>ai-train</strong> — whether AI companies may use your content to train models</li>\n<li><strong>search</strong> — whether search engines may index your content</li>\n<li><strong>ai-input</strong> — whether AI retrieval systems (RAG) may use your content as input</li>\n</ul>\n<p><strong>Markdown Negotiation</strong><br />\nWhen an AI agent sends a request with the <code>Accept: text/markdown</code> header, the plugin intercepts the response for singular posts and pages and returns a clean Markdown version of the content. Regular browser requests are completely unaffected.</p>\n<p><strong>WebMCP</strong><br />\nInjects a small JavaScript snippet into your page footer that calls <code>navigator.modelContext.provideContext()</code>, exposing your site&#8217;s key actions as tools to AI agents running in the browser. Built-in tools include blog search, portfolio navigation, and contact page navigation — each individually toggleable.</p>\n<p><strong>llms.txt and llms-full.txt</strong><br />\nGenerates physical <code>/llms.txt</code> and <code>/llms-full.txt</code> files in your WordPress web root per the <a href=\"https://llmstxt.org\" rel=\"nofollow ugc\">llmstxt.org</a> specification. These files give AI systems a structured, readable index of your site&#8217;s content — who you are, what pages exist, and what your posts are about.</p>\n<pre><code>llms.txt contains your site header and a clean list of links by content type. `llms-full.txt` contains the same structure but expands each entry with an excerpt or truncated content block so AI systems can understand the content without fetching every URL.\n</code></pre>\n<p>Files are regenerated automatically when posts are published, unpublished, or trashed, and whenever settings are saved. A manual Regenerate button is available in the llms.txt settings tab. If your host prevents direct file writes, the generated content is displayed in the admin as a copyable textarea so you can create the files manually.</p>\n<p>Configurable options include a custom intro block, toggling pages and posts independently, selecting additional custom post types, setting the excerpt word limit for <code>llms-full.txt</code>, and defining optional additional links that appear under an <code>## Optional</code> section in both files.</p>\n<h4>Developer Filters</h4>\n<p>Two filters let themes and other plugins extend the plugin&#8217;s output without touching settings:</p>\n<pre><code>kp_agent_skills — add entries to the agent skills index:\n\nadd_filter( 'kp_agent_skills', function ( array $skills ): array {\n    $skills[] = [\n        'name'        =&gt; 'my-skill',\n        'type'        =&gt; 'api',\n        'description' =&gt; 'Does something useful.',\n        'url'         =&gt; 'https://yoursite.com/api/endpoint',\n    ];\n    return $skills;\n} );\n\nkp_webmcp_tools — add tools to the WebMCP context:\n\nadd_filter( 'kp_webmcp_tools', function ( array $tools ): array {\n    // $tools is the PHP array that becomes the JS tools array\n    return $tools;\n} );\n</code></pre>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/kp-agent-ready.1.1.98.zip",
+    "download_link": "https://downloads.wordpress.org/plugin/kp-agent-ready.1.1.99.zip",
     "upgrade_notice": [],
     "screenshots": [
         {
@@ -83,7 +83,7 @@
         "mcp": "mcp",
         "well-known": "well-known"
     },
-    "stable_tag": "1.1.98",
+    "stable_tag": "1.1.99",
     "versions": {
         "1.1.24": "https://downloads.wordpress.org/plugin/kp-agent-ready.1.1.24.zip",
         "1.1.37": "https://downloads.wordpress.org/plugin/kp-agent-ready.1.1.37.zip",
@@ -92,6 +92,7 @@
         "1.1.59": "https://downloads.wordpress.org/plugin/kp-agent-ready.1.1.59.zip",
         "1.1.88": "https://downloads.wordpress.org/plugin/kp-agent-ready.1.1.88.zip",
         "1.1.98": "https://downloads.wordpress.org/plugin/kp-agent-ready.1.1.98.zip",
+        "1.1.99": "https://downloads.wordpress.org/plugin/kp-agent-ready.1.1.99.zip",
         "trunk": "https://downloads.wordpress.org/plugin/kp-agent-ready.zip"
     },
     "business_model": false,
