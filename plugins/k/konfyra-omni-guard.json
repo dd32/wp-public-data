@@ -1,0 +1,70 @@
+{
+    "name": "Konfyra Omni Guard",
+    "slug": "konfyra-omni-guard",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/gsrcoimbatore/\">gsrcoimbatore</a>",
+    "author_profile": "https://profiles.wordpress.org/gsrcoimbatore/",
+    "contributors": {
+        "gsrcoimbatore": {
+            "profile": "https://profiles.wordpress.org/gsrcoimbatore/",
+            "avatar": "https://secure.gravatar.com/avatar/c8d3fed371d0599982e1b49837cb9b8480516ac4dfd22734d2a8b0d51909c996?s=96&d=monsterid&r=g",
+            "display_name": "gsrcoimbatore"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0.4",
+    "requires_php": "8.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/konfyra-omni-guard/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-14 19:47:00",
+    "added": "2026-08-14",
+    "homepage": "https://konfyra.com/omni-guard/",
+    "sections": {
+        "description": "<p><strong>The problem Omni Guard solves:</strong></p>\n<p>Prevents WordPress White Screen of Death from missing plugin dependencies. Static scanner, runtime guard, pre-flight checks. Free.</p>\n<p>This happens constantly. WordPress has no built-in protection for it. Omni Guard fills that gap.</p>\n<p><strong>How it works — four layers of protection:</strong></p>\n<p><strong>1. Static Scanner</strong><br />\nAnalyses the PHP source code of all active plugins using PHP&#8217;s tokeniser (no regex, no exec). Builds a dependency map: which plugin calls functions defined in which other plugin. Runs twice daily via WP-Cron and whenever a plugin is activated or deactivated.</p>\n<p><strong>2. Runtime Error Handler</strong><br />\nRegisters a <code>set_error_handler()</code> and <code>register_shutdown_function()</code> at priority 1, before any other plugin fires. If an undefined function call occurs at runtime, Omni Guard catches it, logs the incident, and — in admin — shows a clean recovery page instead of a blank screen.</p>\n<p><strong>3. Dependency Pre-flight Check</strong><br />\nOn every admin request, reads the dependency map and verifies that every mapped cross-plugin function actually exists right now. If any is missing, an admin notice fires <em>before</em> any plugin code tries to call it.</p>\n<p><strong>4. Developer Safety Shims — <code>og_call()</code>, <code>og_exists()</code>, <code>og_guard()</code></strong><br />\nGlobal helper functions that plugin developers can use to make their cross-plugin calls crash-proof:</p>\n<pre><code>`php\n</code></pre>\n<p>// Returns WP_Error if missing — never crashes<br />\n$result = og_call( &#8216;some_plugin_function&#8217;, $arg1, $arg2 );</p>\n<p>// Boolean existence check<br />\nif ( og_exists( &#8216;some_plugin_function&#8217; ) ) { &#8230; }</p>\n<p>// Call with a fallback<br />\n$result = og_guard( &#8216;some_plugin_function&#8217;, fn() =&gt; &#8216;default&#8217;, $arg1 );<br />\n    `</p>\n<p><strong>Admin Dashboard includes:</strong><br />\n* Live dependency health overview with KPI cards<br />\n* Full dependency map (filterable by risk level: high / medium / low)<br />\n* Incident log with detection method, timestamp, URL, and alert status<br />\n* Pre-flight status: functions missing <em>right now</em><br />\n* Settings: scan depth, email alerts, whitelist, ignore list, danger zone</p>\n<p><strong>Email alerts</strong> are throttled to once per function per hour, with a maximum of 5 per day, to avoid noise.</p>\n<p><strong>Zero impact on production performance</strong> — scanning runs in WP-Cron background jobs. The runtime guard adds a single error handler registration at init. No database queries on the frontend unless a pre-flight is triggered.</p>\n",
+        "installation": "<ol>\n<li>Upload <code>omni-guard.zip</code> via Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin</li>\n<li>Activate</li>\n<li>Go to <strong>Omni Guard <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Dashboard</strong></li>\n<li>Click <strong>Run Scan Now</strong> to build the initial dependency map</li>\n<li>Optionally enable email alerts under <strong>Omni Guard <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings</strong></li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20fix%20missing%20dependencies%3F\">\nDoes this fix missing dependencies?\n</h4>\n<p>\n<p>No. It prevents your site from crashing when they go missing, logs the incident, and alerts you. You still need to re-activate the missing plugin or remove the dependency.</p>\n</p>\n<dt id=\"does%20the%20scanner%20modify%20any%20plugin%20files%3F\">\nDoes the scanner modify any plugin files?\n</h4>\n<p>\n<p>Never. Omni Guard is read-only at the filesystem level. It analyses files but never writes to them.</p>\n</p>\n<dt id=\"will%20this%20slow%20down%20my%20site%3F\">\nWill this slow down my site?\n</h4>\n<p>\n<p>No. Scanning runs in WP-Cron background tasks. The runtime guard registers one error handler — effectively zero overhead.</p>\n</p>\n<dt id=\"what%20php%20version%20is%20required%3F\">\nWhat PHP version is required?\n</h4>\n<p>\n<p>PHP 8.0 or higher (uses match expressions, named arguments, first-class callables).</p>\n</p>\n<dt id=\"what%20is%20a%20risk%20level%3F\">\nWhat is a risk level?\n</h4>\n<p>\n<p>High (3): Functions related to auth, payment, security, or sanitisation.<br />\nMedium (2): Data functions — get_, set_, update_, delete_, etc.<br />\nLow (1): Utility/helper functions unlikely to cause data loss if missing.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>Static scanner with PHP tokeniser.</li>\n<li>Runtime error handler + shutdown handler.</li>\n<li>Pre-flight dependency checker.</li>\n<li>og_call(), og_exists(), og_guard() global shims.</li>\n<li>Admin dashboard: Dashboard, Dependency Map, Incident Log, Settings.</li>\n<li>Email alerts with throttling.</li>\n<li>REST API endpoints for live dashboard refresh.</li>\n<li>Deactivation detection: immediate alert when a provider plugin is turned off.</li>\n</ul>\n"
+    },
+    "short_description": "Prevents WordPress &quot;White Screen of Death&quot; crashes caused by missing plugin dependencies. Scans, guards, and alerts — silently.",
+    "description": "<p><strong>The problem Omni Guard solves:</strong></p>\n<p>Prevents WordPress White Screen of Death from missing plugin dependencies. Static scanner, runtime guard, pre-flight checks. Free.</p>\n<p>This happens constantly. WordPress has no built-in protection for it. Omni Guard fills that gap.</p>\n<p><strong>How it works — four layers of protection:</strong></p>\n<p><strong>1. Static Scanner</strong><br />\nAnalyses the PHP source code of all active plugins using PHP&#8217;s tokeniser (no regex, no exec). Builds a dependency map: which plugin calls functions defined in which other plugin. Runs twice daily via WP-Cron and whenever a plugin is activated or deactivated.</p>\n<p><strong>2. Runtime Error Handler</strong><br />\nRegisters a <code>set_error_handler()</code> and <code>register_shutdown_function()</code> at priority 1, before any other plugin fires. If an undefined function call occurs at runtime, Omni Guard catches it, logs the incident, and — in admin — shows a clean recovery page instead of a blank screen.</p>\n<p><strong>3. Dependency Pre-flight Check</strong><br />\nOn every admin request, reads the dependency map and verifies that every mapped cross-plugin function actually exists right now. If any is missing, an admin notice fires <em>before</em> any plugin code tries to call it.</p>\n<p><strong>4. Developer Safety Shims — <code>og_call()</code>, <code>og_exists()</code>, <code>og_guard()</code></strong><br />\nGlobal helper functions that plugin developers can use to make their cross-plugin calls crash-proof:</p>\n<pre><code>`php\n</code></pre>\n<p>// Returns WP_Error if missing — never crashes<br />\n$result = og_call( &#8216;some_plugin_function&#8217;, $arg1, $arg2 );</p>\n<p>// Boolean existence check<br />\nif ( og_exists( &#8216;some_plugin_function&#8217; ) ) { &#8230; }</p>\n<p>// Call with a fallback<br />\n$result = og_guard( &#8216;some_plugin_function&#8217;, fn() =&gt; &#8216;default&#8217;, $arg1 );<br />\n    `</p>\n<p><strong>Admin Dashboard includes:</strong><br />\n* Live dependency health overview with KPI cards<br />\n* Full dependency map (filterable by risk level: high / medium / low)<br />\n* Incident log with detection method, timestamp, URL, and alert status<br />\n* Pre-flight status: functions missing <em>right now</em><br />\n* Settings: scan depth, email alerts, whitelist, ignore list, danger zone</p>\n<p><strong>Email alerts</strong> are throttled to once per function per hour, with a maximum of 5 per day, to avoid noise.</p>\n<p><strong>Zero impact on production performance</strong> — scanning runs in WP-Cron background jobs. The runtime guard adds a single error handler registration at init. No database queries on the frontend unless a pre-flight is triggered.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/konfyra-omni-guard.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "dependency-guard": "dependency guard",
+        "fatal-error": "fatal error",
+        "plugin-dependencies": "plugin dependencies",
+        "safety": "safety",
+        "white-screen-of-death": "white-screen-of-death"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/konfyra-omni-guard.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
