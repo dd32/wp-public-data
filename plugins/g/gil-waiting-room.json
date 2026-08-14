@@ -1,0 +1,88 @@
+{
+    "name": "GIL Waiting Room",
+    "slug": "gil-waiting-room",
+    "version": "2.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/mateusgetulio/\">Mateus Getulio Vieira</a>",
+    "author_profile": "https://profiles.wordpress.org/mateusgetulio/",
+    "contributors": {
+        "mateusgetulio": {
+            "profile": "https://profiles.wordpress.org/mateusgetulio/",
+            "avatar": "https://secure.gravatar.com/avatar/894c83e8e73a6bd5ff48aab220756199c20526c6223dcf757d7123fb18b42a95?s=96&d=monsterid&r=g",
+            "display_name": "Mateus Getulio Vieira"
+        }
+    },
+    "requires": "5.9",
+    "tested": "7.0.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/gil-waiting-room/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-14 11:09:00",
+    "added": "2026-08-14",
+    "homepage": "https://github.com/mateusgetulio/GIL",
+    "sections": {
+        "description": "<p>What happens when a sale, a campaign, or a viral post sends more visitors than your server can comfortably handle?</p>\n<p>GIL Waiting Room creates a virtual waiting room in front of your site. You choose how many visitors may browse at the same time; everyone above that limit is placed in a fair, first-come-first-served queue and sees a clean lobby page with their live position and an estimated wait. As soon as a spot opens, the next visitor in line is admitted automatically, no refresh or action needed.</p>\n<h4>How it works</h4>\n<ul>\n<li>Each visitor gets a signed, HttpOnly cookie so their place in line survives reloads and short absences.</li>\n<li>Admission is atomic at the database level, so the limit holds even under bursts of concurrent traffic.</li>\n<li>Admitted visitors keep their spot for a session length you configure; when it expires, the spot goes to the next person in line.</li>\n<li>The lobby page polls a lightweight status endpoint every few seconds, shows live progress, and lets the visitor in the moment they are admitted.</li>\n<li>The lobby adapts to the visitor&#8217;s light or dark system theme, respects reduced-motion preferences, and announces progress to screen readers.</li>\n<li>Preview the waiting room from the settings page before enabling it, and watch live admitted/waiting counts during a spike.</li>\n<li>The lobby is served with HTTP 503 and a Retry-After header, so search engines understand the site is temporarily busy and do not index the lobby.</li>\n<li>Administrators are never gated, so you cannot lock yourself out.</li>\n</ul>\n<h4>What this plugin is not</h4>\n<p>GIL Waiting Room manages capacity, it is not DDoS protection. Requests still reach PHP; the plugin decides who may browse. If you are under attack, you need protection at the network or CDN layer.</p>\n<p>If a full-page cache or CDN serves your pages without hitting PHP, those cached hits cannot be queued. The waiting room works for requests that reach WordPress.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin to <code>/wp-content/plugins/</code>, or install it through the WordPress plugins screen.</li>\n<li>Activate the plugin.</li>\n<li>Open the &#8220;GIL Waiting Room&#8221; menu in your admin sidebar.</li>\n<li>Set the concurrent visitor limit and session length, then enable the waiting room.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20the%20waiting%20room%20apply%20to%20wp-admin%20or%20the%20login%20page%3F\">\nDoes the waiting room apply to wp-admin or the login page?\n</h4>\n<p>\n<p>No. Only the front end is gated. Administrators are also exempt on the front end.</p>\n</p>\n<dt id=\"can%20visitors%20skip%20the%20line%20by%20clearing%20cookies%3F\">\nCan visitors skip the line by clearing cookies?\n</h4>\n<p>\n<p>Clearing cookies discards the visitor&#8217;s identity, so they re-enter at the back of the line. The cookie is signed, so it cannot be forged to gain admission.</p>\n</p>\n<dt id=\"how%20is%20the%20estimated%20wait%20calculated%3F\">\nHow is the estimated wait calculated?\n</h4>\n<p>\n<p>It is a simple upper-bound estimate: your position divided by the visitor limit, times the configured session length.</p>\n</p>\n<dt id=\"where%20is%20the%20queue%20stored%2C%20and%20can%20i%20reset%20it%3F\">\nWhere is the queue stored, and can I reset it?\n</h4>\n<p>\n<p>In a dedicated database table. The settings page shows live admitted and waiting counts and has a button to clear the queue.</p>\n</p>\n<dt id=\"does%20the%20plugin%20collect%20any%20personal%20data%20or%20contact%20external%20servers%3F\">\nDoes the plugin collect any personal data or contact external servers?\n</h4>\n<p>\n<p>No. The plugin makes no external requests of any kind, includes no analytics, and collects no personal data. The visitor cookie contains only a random identifier and a signature, nothing identifying, and the queue table stores that identifier with timestamps. Uninstalling removes the table and all plugin options.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20page%20caching%3F\">\nDoes it work with page caching?\n</h4>\n<p>\n<p>Only requests that reach PHP can be queued. If a full-page cache or CDN answers a request by itself, the waiting room never sees it.</p>\n</p>\n\n",
+        "changelog": "<h4>2.0.1</h4>\n<ul>\n<li>The lobby page now loads its CSS and JavaScript through wp_enqueue_style() and wp_enqueue_script() instead of inline blocks.</li>\n<li>Fixed the lobby favicon, which was stripped and rendered as an empty reference.</li>\n</ul>\n<h4>2.0.0</h4>\n<ul>\n<li>Complete rework of the admission engine: atomic admission under a database lock, FIFO promotion, and a fatal-error fix at exact capacity.</li>\n<li>Visitor identity moved from PHP sessions to a signed, HttpOnly cookie.</li>\n<li>New lobby page: self-contained, served with HTTP 503 and Retry-After, polls a REST status endpoint and admits automatically.</li>\n<li>Administrators are never gated.</li>\n<li>Queue clearing is now nonce-protected; settings are validated server-side.</li>\n<li>All external assets removed; everything ships with the plugin.</li>\n<li>Redesigned lobby (light/dark themes, progress bar, reduced-motion and screen-reader support) and settings page (live-updating counts, status line, lobby preview).</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "A virtual waiting room for WordPress. Caps concurrent visitors at a limit you choose and queues everyone else with live position updates.",
+    "description": "<p>What happens when a sale, a campaign, or a viral post sends more visitors than your server can comfortably handle?</p>\n<p>GIL Waiting Room creates a virtual waiting room in front of your site. You choose how many visitors may browse at the same time; everyone above that limit is placed in a fair, first-come-first-served queue and sees a clean lobby page with their live position and an estimated wait. As soon as a spot opens, the next visitor in line is admitted automatically, no refresh or action needed.</p>\n<h4>How it works</h4>\n<ul>\n<li>Each visitor gets a signed, HttpOnly cookie so their place in line survives reloads and short absences.</li>\n<li>Admission is atomic at the database level, so the limit holds even under bursts of concurrent traffic.</li>\n<li>Admitted visitors keep their spot for a session length you configure; when it expires, the spot goes to the next person in line.</li>\n<li>The lobby page polls a lightweight status endpoint every few seconds, shows live progress, and lets the visitor in the moment they are admitted.</li>\n<li>The lobby adapts to the visitor&#8217;s light or dark system theme, respects reduced-motion preferences, and announces progress to screen readers.</li>\n<li>Preview the waiting room from the settings page before enabling it, and watch live admitted/waiting counts during a spike.</li>\n<li>The lobby is served with HTTP 503 and a Retry-After header, so search engines understand the site is temporarily busy and do not index the lobby.</li>\n<li>Administrators are never gated, so you cannot lock yourself out.</li>\n</ul>\n<h4>What this plugin is not</h4>\n<p>GIL Waiting Room manages capacity, it is not DDoS protection. Requests still reach PHP; the plugin decides who may browse. If you are under attack, you need protection at the network or CDN layer.</p>\n<p>If a full-page cache or CDN serves your pages without hitting PHP, those cached hits cannot be queued. The waiting room works for requests that reach WordPress.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/gil-waiting-room.2.0.1.zip",
+    "upgrade_notice": {
+        "2.0.0": "<p>Complete rework. The queue table is rebuilt on activation; settings are preserved.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/gil-waiting-room/assets/screenshot-1.png?rev=3647205",
+            "caption": "The waiting room lobby with live position and estimated wait."
+        },
+        {
+            "src": "https://ps.w.org/gil-waiting-room/assets/screenshot-2.png?rev=3647205",
+            "caption": "The settings page with live queue status."
+        }
+    ],
+    "tags": {
+        "capacity": "capacity",
+        "high-traffic": "high traffic",
+        "queue": "queue",
+        "traffic": "traffic",
+        "waiting-room": "waiting room"
+    },
+    "stable_tag": "2.0.1",
+    "versions": {
+        "2.0.1": "https://downloads.wordpress.org/plugin/gil-waiting-room.2.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/gil-waiting-room.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/gil-waiting-room/assets/banner-772x250.png?rev=3647241",
+        "high": "https://ps.w.org/gil-waiting-room/assets/banner-1544x500.png?rev=3647241"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/gil-waiting-room/assets/icon-128x128.png?rev=3647241",
+        "2x": "https://ps.w.org/gil-waiting-room/assets/icon-256x256.png?rev=3647241"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
