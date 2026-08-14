@@ -1,0 +1,99 @@
+{
+    "name": "Cloud Migrate",
+    "slug": "cloud-migrate",
+    "version": "3.20.0",
+    "author": "<a href=\"https://profiles.wordpress.org/djekanovic/\">djekanovic</a>",
+    "author_profile": "https://profiles.wordpress.org/djekanovic/",
+    "contributors": {
+        "djekanovic": {
+            "profile": "https://profiles.wordpress.org/djekanovic/",
+            "avatar": "https://secure.gravatar.com/avatar/c1556b2a66658be8aa6f5b6836bac7c354807a0418442484ca89f1d93d777a51?s=96&d=monsterid&r=g",
+            "display_name": "djekanovic"
+        }
+    },
+    "requires": "5.6",
+    "tested": "7.0.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/cloud-migrate/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-14 01:19:00",
+    "added": "2026-08-14",
+    "homepage": "https://github.com/djekanovic/cloud-migrate",
+    "sections": {
+        "description": "<p>Cloud Migrate copies a complete WordPress site — database, media, plugins and themes — from one host to another. You install the plugin on both sites, generate a connection key on the site you are moving <strong>from</strong>, paste it into the site you are moving <strong>to</strong>, and press Start. The destination pulls everything across by itself.</p>\n<p>There is no export file to download, nothing to upload by hand, and no need for FTP, SSH or database credentials.</p>\n<h4>Built for real hosting</h4>\n<p>Most migration failures come from host limits, not from the migration itself. Cloud Migrate is designed around them:</p>\n<ul>\n<li><strong>Resumable, chunked transfers.</strong> Work is split into small slices, each one bounded by the host&#8217;s own <code>memory_limit</code> and <code>max_execution_time</code>. No single request needs more than a few seconds or a few MB.</li>\n<li><strong>Adapts to what the host can take.</strong> It starts at the fastest pace both servers allow, halves it automatically after a failed request, and climbs back once conditions improve. Nothing to configure.</li>\n<li><strong>Batched small-file transfers.</strong> Sites with thousands of small files are limited by request count, not bandwidth, so many files are fetched per request and several requests run in parallel.</li>\n<li><strong>Recovers from out-of-memory conditions</strong> by reducing the transfer pace and continuing, instead of failing.</li>\n<li><strong>Survives different table prefixes.</strong> If the two sites use different prefixes, tables are imported under their original names and <code>wp-config.php</code> is repointed at them (a backup is kept). Tables are never renamed, because WordPress stores the prefix inside user roles and capabilities.</li>\n<li><strong>Handles newer database servers.</strong> Collations the destination does not recognise (for example MariaDB 11.4&#8217;s <code>uca1400</code> family) are mapped to the closest supported equivalent.</li>\n</ul>\n<h4>Safe by default</h4>\n<ul>\n<li>Your current administrator account is copied into the migrated database, so you can still sign in afterwards with the same username and password.</li>\n<li>The destination&#8217;s original database tables are left untouched until you choose to delete them, so the migration can be undone.</li>\n<li>Serialized data is unserialized, rewritten and re-serialized properly — URLs are also replaced in JSON-escaped and URL-encoded forms, which is what page builders such as Elementor store internally.</li>\n<li>Connection keys are signed with HMAC-SHA256, are valid for three hours, and can be revoked at any time.</li>\n<li>A built-in debug report shows the environment, host limits, transfer throughput and every logged request. It contains no passwords and no connection keys.</li>\n</ul>\n<h4>What is transferred</h4>\n<p>The database is always migrated. You choose whether to include media/uploads, plugins, themes and must-use plugins.</p>\n<h3>External services</h3>\n<p>This plugin communicates with <strong>the other WordPress site you are migrating to or from</strong> — a site whose address you supply yourself by pasting its connection key. No third-party service is contacted, and no data is sent anywhere else.</p>\n<ul>\n<li><strong>What is sent:</strong> the connection key you generated, and requests for database rows and files.</li>\n<li><strong>When:</strong> only while a migration is running, and only to the site the connection key was issued for.</li>\n<li><strong>What is received:</strong> that site&#8217;s database contents and files.</li>\n</ul>\n<p>No analytics, telemetry, tracking or external API calls of any kind are made. The plugin loads no remote scripts, fonts or images.</p>\n",
+        "installation": "<ol>\n<li>Install and activate Cloud Migrate on <strong>both</strong> the source site and the destination site.</li>\n<li>On the <strong>source</strong> site, open Cloud Migrate and click <em>Generate connection key</em>, then copy it.</li>\n<li>On the <strong>destination</strong> site, open Cloud Migrate, paste the key, choose what to include, and click <em>Start migration</em>.</li>\n<li>Leave the browser tab open while the migration runs. Progress, transfer speed and estimated time remaining are shown live.</li>\n<li>When it finishes, check the site. If everything looks right, use <em>Looks good — delete backups</em> to remove the old tables. If not, use <em>Undo migration</em>.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20need%20ftp%2C%20ssh%20or%20database%20access%3F\">\nDoes this need FTP, SSH or database access?\n</h4>\n<p>\n<p>No. The two sites talk to each other over the WordPress REST API, authenticated with the connection key.</p>\n</p>\n<dt id=\"will%20i%20be%20logged%20out%20after%20migrating%3F\">\nWill I be logged out after migrating?\n</h4>\n<p>\n<p>No. User accounts come from the source site, but your current administrator account is copied across with its password hash intact, so the same username and password keep working.</p>\n</p>\n<dt id=\"what%20if%20my%20host%20is%20slow%20or%20has%20low%20limits%3F\">\nWhat if my host is slow or has low limits?\n</h4>\n<p>\n<p>That is the case the plugin is built for. It measures each host&#8217;s limits and sizes its work accordingly, backing off automatically when a request fails and resuming where it left off.</p>\n</p>\n<dt id=\"what%20happens%20if%20a%20migration%20is%20interrupted%3F\">\nWhat happens if a migration is interrupted?\n</h4>\n<p>\n<p>Nothing is lost. Progress is saved after every slice of work. Reopen the page and click <em>Resume</em>.</p>\n</p>\n<dt id=\"can%20i%20undo%20a%20migration%3F\">\nCan I undo a migration?\n</h4>\n<p>\n<p>Yes. The destination&#8217;s original tables are kept until you explicitly delete them. <em>Undo migration</em> puts the site back on them.</p>\n</p>\n<dt id=\"do%20both%20sites%20need%20the%20same%20plugin%20version%3F\">\nDo both sites need the same plugin version?\n</h4>\n<p>\n<p>They should. Some transfer optimisations require a matching version on both ends; when versions differ the plugin falls back to a slower but compatible mode and says so in the log.</p>\n</p>\n<dt id=\"is%20multisite%20supported%3F\">\nIs multisite supported?\n</h4>\n<p>\n<p>Not yet. Multisite networks are detected and refused rather than migrated incorrectly.</p>\n</p>\n\n",
+        "changelog": "<h4>3.20.0</h4>\n<ul>\n<li>Renamed to Cloud Migrate. Your settings, connection keys and any migration already in progress are unaffected.</li>\n</ul>\n<h4>3.19.0</h4>\n<ul>\n<li>Hardened database access: every table name is now validated as a bare SQL identifier before it can reach a query, so a malformed or hostile name from the source site is rejected outright.</li>\n<li>Switched file deletion to WordPress&#8217;s own <code>wp_delete_file()</code>.</li>\n<li>Removed a redundant <code>load_plugin_textdomain()</code> call; translations load automatically since WordPress 4.6.</li>\n<li>Documented in code why raw database and byte-range filesystem access are unavoidable for a migration tool.</li>\n</ul>\n<h4>3.18.2</h4>\n<ul>\n<li>Declared compatibility with WordPress 7.0.</li>\n<li>Added a translation template at <code>languages/cloud-migrate.pot</code> (161 strings), so the plugin is ready for translators.</li>\n</ul>\n<h4>3.18.1</h4>\n<ul>\n<li>Fixed: zero-byte files (empty RTL stylesheets, placeholder scripts, <code>index.html</code> guards) were reported as unreadable and skipped, because PHP 8 raises an error when reading zero bytes. They now transfer as real empty files.</li>\n<li>Skip messages now state the underlying reason instead of a generic &#8220;unreadable&#8221;.</li>\n</ul>\n<h4>3.18.0</h4>\n<ul>\n<li>Redesigned the admin screen: card layout, numbered steps, status badges and clearer progress reporting.</li>\n</ul>\n<h4>3.17.0</h4>\n<ul>\n<li>Added: automatic fallback to single-file transfers if the source site cannot serve batch requests, so a migration completes instead of failing.</li>\n<li>Added: the source site now reports PHP fatals as readable messages rather than a generic error page.</li>\n<li>Hardened the source endpoint against a single problem file taking down a request.</li>\n</ul>\n<h4>3.16.0</h4>\n<ul>\n<li>Fixed: out-of-memory conditions during parallel transfers. Batch size now accounts for the memory each in-flight response costs, payloads are released as soon as they are written, and an out-of-memory event automatically reduces the transfer pace and continues.</li>\n</ul>\n<h4>3.15.0</h4>\n<ul>\n<li>Fixed: a large file at the head of the queue could stall the transfer indefinitely.</li>\n<li>Fixed: the file phase could finalize while files were still queued.</li>\n<li>Ticks now return promptly so progress updates in real time.</li>\n</ul>\n<h4>3.14.0</h4>\n<ul>\n<li>Added: small-file batching and parallel requests. Sites made up of many small files migrate dramatically faster.</li>\n<li>Added: transfer throughput, estimated time remaining and guidance on what limits the speed.</li>\n</ul>\n<h4>3.13.0</h4>\n<ul>\n<li>Styled confirmation dialogs in place of browser popups.</li>\n</ul>\n<h4>3.12.0</h4>\n<ul>\n<li>Transfer pace now scales up on capable hosts instead of being capped, with filters to raise the ceiling further.</li>\n</ul>\n<h4>3.10.0</h4>\n<ul>\n<li>The debug report is now scoped to the current migration only.</li>\n</ul>\n<h4>3.9.0</h4>\n<ul>\n<li>Added: unsupported database collations (such as MariaDB 11.4&#8217;s <code>uca1400</code> family) are mapped to the closest supported equivalent.</li>\n</ul>\n<h4>3.4.0</h4>\n<ul>\n<li>Fixed: exclusion rules no longer skip plugin source files that live in a directory named <code>cache</code>.</li>\n</ul>\n<h4>3.2.0</h4>\n<ul>\n<li>Fixed: Elementor dynamic tags with empty settings no longer cause a fatal error after migration.</li>\n</ul>\n<h4>3.1.0</h4>\n<ul>\n<li>URLs are now replaced in JSON-escaped and URL-encoded forms as well as plain text, which page builders rely on.</li>\n</ul>\n<h4>3.0.0</h4>\n<ul>\n<li>Renamed to Cloud Migrate, moved to its own top-level admin menu.</li>\n</ul>\n"
+    },
+    "short_description": "Move a WordPress site to another host with a single connection key. No FTP, no SSH, no database credentials, no file size limits.",
+    "description": "<p>Cloud Migrate copies a complete WordPress site — database, media, plugins and themes — from one host to another. You install the plugin on both sites, generate a connection key on the site you are moving <strong>from</strong>, paste it into the site you are moving <strong>to</strong>, and press Start. The destination pulls everything across by itself.</p>\n<p>There is no export file to download, nothing to upload by hand, and no need for FTP, SSH or database credentials.</p>\n<h4>Built for real hosting</h4>\n<p>Most migration failures come from host limits, not from the migration itself. Cloud Migrate is designed around them:</p>\n<ul>\n<li><strong>Resumable, chunked transfers.</strong> Work is split into small slices, each one bounded by the host&#8217;s own <code>memory_limit</code> and <code>max_execution_time</code>. No single request needs more than a few seconds or a few MB.</li>\n<li><strong>Adapts to what the host can take.</strong> It starts at the fastest pace both servers allow, halves it automatically after a failed request, and climbs back once conditions improve. Nothing to configure.</li>\n<li><strong>Batched small-file transfers.</strong> Sites with thousands of small files are limited by request count, not bandwidth, so many files are fetched per request and several requests run in parallel.</li>\n<li><strong>Recovers from out-of-memory conditions</strong> by reducing the transfer pace and continuing, instead of failing.</li>\n<li><strong>Survives different table prefixes.</strong> If the two sites use different prefixes, tables are imported under their original names and <code>wp-config.php</code> is repointed at them (a backup is kept). Tables are never renamed, because WordPress stores the prefix inside user roles and capabilities.</li>\n<li><strong>Handles newer database servers.</strong> Collations the destination does not recognise (for example MariaDB 11.4&#8217;s <code>uca1400</code> family) are mapped to the closest supported equivalent.</li>\n</ul>\n<h4>Safe by default</h4>\n<ul>\n<li>Your current administrator account is copied into the migrated database, so you can still sign in afterwards with the same username and password.</li>\n<li>The destination&#8217;s original database tables are left untouched until you choose to delete them, so the migration can be undone.</li>\n<li>Serialized data is unserialized, rewritten and re-serialized properly — URLs are also replaced in JSON-escaped and URL-encoded forms, which is what page builders such as Elementor store internally.</li>\n<li>Connection keys are signed with HMAC-SHA256, are valid for three hours, and can be revoked at any time.</li>\n<li>A built-in debug report shows the environment, host limits, transfer throughput and every logged request. It contains no passwords and no connection keys.</li>\n</ul>\n<h4>What is transferred</h4>\n<p>The database is always migrated. You choose whether to include media/uploads, plugins, themes and must-use plugins.</p>\n<h3>External services</h3>\n<p>This plugin communicates with <strong>the other WordPress site you are migrating to or from</strong> — a site whose address you supply yourself by pasting its connection key. No third-party service is contacted, and no data is sent anywhere else.</p>\n<ul>\n<li><strong>What is sent:</strong> the connection key you generated, and requests for database rows and files.</li>\n<li><strong>When:</strong> only while a migration is running, and only to the site the connection key was issued for.</li>\n<li><strong>What is received:</strong> that site&#8217;s database contents and files.</li>\n</ul>\n<p>No analytics, telemetry, tracking or external API calls of any kind are made. The plugin loads no remote scripts, fonts or images.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/cloud-migrate.3.20.0.zip",
+    "upgrade_notice": {
+        "3.20.0": "<p>Renamed to Cloud Migrate. Nothing else changes; your settings and any migration in progress are kept.</p>",
+        "3.19.0": "<p>Hardens database access and adopts WordPress file-deletion APIs.</p>",
+        "3.18.2": "<p>Declares WordPress 7.0 compatibility and adds a translation template.</p>",
+        "3.18.1": "<p>Fixes zero-byte files being skipped during transfer. Update on both sites.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/cloud-migrate/assets/screenshot-1.png?rev=3646479",
+            "caption": "Generate a connection key on the source site, paste it on the destination."
+        },
+        {
+            "src": "https://ps.w.org/cloud-migrate/assets/screenshot-2.png?rev=3646479",
+            "caption": "Live progress with transfer speed, estimated time remaining and current chunk size."
+        },
+        {
+            "src": "https://ps.w.org/cloud-migrate/assets/screenshot-3.png?rev=3646479",
+            "caption": "Site information panel showing environment and PHP limits with recommendations."
+        },
+        {
+            "src": "https://ps.w.org/cloud-migrate/assets/screenshot-4.png?rev=3646479",
+            "caption": "Debug report for diagnosing a problem migration."
+        }
+    ],
+    "tags": {
+        "backup": "backup",
+        "clone": "clone",
+        "migrate": "migrate",
+        "migration": "migration",
+        "move-site": "move site"
+    },
+    "stable_tag": "3.20.0",
+    "versions": {
+        "3.20.0": "https://downloads.wordpress.org/plugin/cloud-migrate.3.20.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/cloud-migrate.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/cloud-migrate/assets/banner-772x250.png?rev=3646479",
+        "high": "https://ps.w.org/cloud-migrate/assets/banner-1544x500.png?rev=3646479"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/cloud-migrate/assets/icon-128x128.png?rev=3646479",
+        "2x": "https://ps.w.org/cloud-migrate/assets/icon-256x256.png?rev=3646479"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
