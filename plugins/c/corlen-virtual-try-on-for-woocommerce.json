@@ -1,0 +1,79 @@
+{
+    "name": "Corlen Virtual Try-On for WooCommerce",
+    "slug": "corlen-virtual-try-on-for-woocommerce",
+    "version": "1.3.1",
+    "author": "<a href=\"https://profiles.wordpress.org/raheelgul063/\">raheelgul063</a>",
+    "author_profile": "https://profiles.wordpress.org/raheelgul063/",
+    "contributors": {
+        "raheelgul063": {
+            "profile": "https://profiles.wordpress.org/raheelgul063/",
+            "avatar": "https://secure.gravatar.com/avatar/3881ee64a9b709b11b8a488117c4a286182249ed7d76e740631ca6f2576f6b55?s=96&d=monsterid&r=g",
+            "display_name": "raheelgul063"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0.4",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/corlen-virtual-try-on-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-15 17:51:00",
+    "added": "2026-08-15",
+    "homepage": "https://www.corlen.io/developers",
+    "sections": {
+        "description": "<p>Corlen adds a &#8220;Try It On&#8221; button to your WooCommerce product pages. A shopper uploads (or takes) a photo, picks a size, and sees an AI-generated preview of themselves wearing the product in about 10 to 15 seconds. No app, no account for the shopper, nothing installed on their device.</p>\n<p>This plugin requires a free Corlen developer account and API key. Create one at <a href=\"https://www.corlen.io/developers\" rel=\"nofollow ugc\">corlen.io/developers</a> &#8211; the free trial includes enough generations to test this on your own store before you decide whether to keep it running.</p>\n<h4>Privacy</h4>\n<p>The shopper&#8217;s photo is sent directly to Corlen&#8217;s API as part of the request, processed in memory to generate the preview, and never written to disk anywhere in this plugin. Corlen&#8217;s own API does not store the customer photo either &#8211; see corlen.io/privacy for the full policy.</p>\n<p>Your Corlen API key is stored only in your own WordPress database (under Settings, same as any other WooCommerce extension&#8217;s API credentials) and is never sent to the shopper&#8217;s browser. The browser only ever talks to your own site&#8217;s REST API; your site&#8217;s server is the only thing that ever holds the key.</p>\n<h4>What you configure</h4>\n<ul>\n<li>One API key, entered once under WooCommerce &gt; Settings &gt; Corlen Try-On.</li>\n<li>Per product: turn try-on on or off, and optionally the garment&#8217;s fit region (upper body / lower body / full body) and type (t-shirt, jacket, jeans, etc). If you leave the garment image blank, your product&#8217;s existing featured image is used automatically.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Install and activate WooCommerce first if you haven&#8217;t already.</li>\n<li>Upload this plugin&#8217;s folder to <code>/wp-content/plugins/</code>, or install it through the Plugins screen directly.</li>\n<li>Activate Corlen Virtual Try-On for WooCommerce.</li>\n<li>Go to WooCommerce &gt; Settings &gt; Corlen Try-On and paste in your API key from corlen.io/developers.</li>\n<li>Edit a product, open the new &#8220;Corlen Try-On&#8221; tab in Product data, and check &#8220;Enable virtual try-on&#8221;.</li>\n<li>Visit that product page on your storefront &#8211; the Try It On button appears automatically.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20store%20my%20customers%27%20photos%3F\">\nDoes this store my customers&#8217; photos?\n</h4>\n<p>\n<p>No. The photo is used once to generate the preview and is never written to storage by this plugin or by Corlen&#8217;s API.</p>\n</p>\n<dt id=\"do%20i%20need%20a%20corlen%20account%3F\">\nDo I need a Corlen account?\n</h4>\n<p>\n<p>Yes, a free developer account at corlen.io/developers, which includes a trial with a limited number of generations so you can test this on your own store first.</p>\n</p>\n<dt id=\"does%20this%20work%20with%20any%20theme%3F\">\nDoes this work with any theme?\n</h4>\n<p>\n<p>The button renders wherever WooCommerce&#8217;s own <code>woocommerce_after_add_to_cart_button</code> hook fires, which every standard WooCommerce-compatible theme supports.</p>\n</p>\n\n",
+        "changelog": "<h4>1.3.1</h4>\n<ul>\n<li>Compliance: the settings page no longer registers a filter under WooCommerce&#8217;s own &#8220;woocommerce_&#8221; hook prefix. The settings array is returned directly, which WooCommerce consumes exactly the same way. Addresses WordPress.org plugin review feedback.</li>\n</ul>\n<h4>1.3.0</h4>\n<ul>\n<li>Fix: the real cause of intermittent &#8220;This is taking longer than usual&#8221; errors. A generation whose server-side worker was cut short could leave the job stuck reporting &#8220;processing&#8221; forever, so the widget waited out its full timeout for an answer that was never coming, and the attempt left no trace in your usage log. Generations are now bounded by a deadline that always produces a real result, and any job that still goes unanswered is reported as a genuine failure with its credit returned.</li>\n<li>Fix: a photo already small enough to skip resizing was uploaded with a filename extension that did not match its real format.</li>\n<li>Fix: closing the try-on popup (or starting over) while a preview was still generating left the old request running in the background, where it could later reopen the popup or overwrite the new attempt.</li>\n<li>Fix: the status endpoint read its job id in a way a query string could override.</li>\n<li>Fix: &#8220;Collect shopper emails&#8221; was not removed on uninstall.</li>\n<li>Improved: the accent colour is validated before use, the garment type is validated on save against the same list the dropdown offers, and the plugin&#8217;s own homepage link now points to the right page.</li>\n</ul>\n<h4>1.2.2</h4>\n<ul>\n<li>Fix: &#8220;This is taking longer than usual&#8221; could show even when generation had already finished successfully in under 30 seconds. Root cause was caching: repeated status-check requests could be served a stale, earlier &#8220;still processing&#8221; answer instead of the real, current one. The status endpoint now sends explicit no-cache headers, and the widget adds a cache-busting parameter to every poll as a second layer of protection.</li>\n</ul>\n<h4>1.2.1</h4>\n<ul>\n<li>Improved the shopper result email: real Corlen logo instead of flat gold text, left-aligned layout instead of a centered card, warmer copy, and a &#8220;Shop [product]&#8221; button linking back to the product page.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>New: &#8220;Collect shopper emails&#8221; now actually emails the shopper their try-on photo as an attachment (not just recorded for the merchant). Photo is never stored anywhere &#8211; it passes through the one outgoing email only.</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>Fix: the &#8220;Collect shopper emails&#8221; field submitted as a nested HTML form inside WooCommerce&#8217;s own add-to-cart form, which browsers silently ignore, causing the Send button to reload the page instead of saving the email. Rebuilt without a nested form.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>New: optional shopper email capture after a try-on result, off by default toggle under WooCommerce &gt; Settings &gt; Corlen Try-On &gt; &#8220;Collect shopper emails&#8221; (on by default). Always opt-in, shown only after a shopper has already seen their result. Captured emails appear under Leads in your Corlen developer dashboard alongside leads from any other Corlen integration.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Let shoppers upload a photo and see themselves wearing your products before they buy, powered by the Corlen virtual try-on API.",
+    "description": "<p>Corlen adds a &#8220;Try It On&#8221; button to your WooCommerce product pages. A shopper uploads (or takes) a photo, picks a size, and sees an AI-generated preview of themselves wearing the product in about 10 to 15 seconds. No app, no account for the shopper, nothing installed on their device.</p>\n<p>This plugin requires a free Corlen developer account and API key. Create one at <a href=\"https://www.corlen.io/developers\" rel=\"nofollow ugc\">corlen.io/developers</a> &#8211; the free trial includes enough generations to test this on your own store before you decide whether to keep it running.</p>\n<h4>Privacy</h4>\n<p>The shopper&#8217;s photo is sent directly to Corlen&#8217;s API as part of the request, processed in memory to generate the preview, and never written to disk anywhere in this plugin. Corlen&#8217;s own API does not store the customer photo either &#8211; see corlen.io/privacy for the full policy.</p>\n<p>Your Corlen API key is stored only in your own WordPress database (under Settings, same as any other WooCommerce extension&#8217;s API credentials) and is never sent to the shopper&#8217;s browser. The browser only ever talks to your own site&#8217;s REST API; your site&#8217;s server is the only thing that ever holds the key.</p>\n<h4>What you configure</h4>\n<ul>\n<li>One API key, entered once under WooCommerce &gt; Settings &gt; Corlen Try-On.</li>\n<li>Per product: turn try-on on or off, and optionally the garment&#8217;s fit region (upper body / lower body / full body) and type (t-shirt, jacket, jeans, etc). If you leave the garment image blank, your product&#8217;s existing featured image is used automatically.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/corlen-virtual-try-on-for-woocommerce.1.3.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "ai": "AI",
+        "fashion": "fashion",
+        "fitting-room": "fitting room",
+        "virtual-try-on": "virtual try on",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.3.1",
+    "versions": {
+        "1.3.1": "https://downloads.wordpress.org/plugin/corlen-virtual-try-on-for-woocommerce.1.3.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/corlen-virtual-try-on-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/corlen-virtual-try-on-for-woocommerce/assets/banner-772x250.png?rev=3648930",
+        "high": "https://ps.w.org/corlen-virtual-try-on-for-woocommerce/assets/banner-1544x500.png?rev=3648930"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/corlen-virtual-try-on-for-woocommerce/assets/icon-128x128.png?rev=3648930",
+        "2x": "https://ps.w.org/corlen-virtual-try-on-for-woocommerce/assets/icon-256x256.png?rev=3648930"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
