@@ -1,0 +1,94 @@
+{
+    "name": "PaidRadar",
+    "slug": "paidradar",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/famosmedia/\">famosmedia</a>",
+    "author_profile": "https://profiles.wordpress.org/famosmedia/",
+    "contributors": {
+        "famosmedia": {
+            "profile": "https://profiles.wordpress.org/famosmedia/",
+            "avatar": "https://secure.gravatar.com/avatar/183ab646e9c6d539f444ba2e3900cd14740714b2135a61eb0c0c3a660ee38576?s=96&d=monsterid&r=g",
+            "display_name": "famosmedia"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.0.4",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/paidradar/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-15 11:59:00",
+    "added": "2026-08-15",
+    "homepage": "https://usepaidradar.com/",
+    "sections": {
+        "description": "<p><strong>The gateway charged the customer — but your WooCommerce order is still stuck on &#8220;pending payment&#8221;.</strong> This happens when the confirmation webhook never arrives (firewall, timeout, HTTP 204, live/test key mix-up, a crash right after checkout). The money is captured, the order never fulfils, and you only notice at month-end.</p>\n<p><strong>PaidRadar</strong> fixes exactly this. It scans your WooCommerce orders that are stuck in <em>pending</em>, <em>on-hold</em> or <em>failed</em>, re-queries the payment gateway&#8217;s API (read-only), and — only when the gateway <strong>unambiguously</strong> reports the payment as captured — completes the order the correct way via WooCommerce&#8217;s own <code>payment_complete()</code> flow (stock, status and emails all fire correctly). Every action is written to a full <strong>payment audit trail</strong> and the admin is alerted.</p>\n<p>This is <strong>payment recovery</strong>, not dunning: it does not chase the customer for a payment that already succeeded, and it does not touch your accounting. It repairs the <em>order state</em> after a <strong>missed webhook</strong>.</p>\n<h4>What it does</h4>\n<ul>\n<li>Finds WooCommerce orders <strong>stuck in pending / on-hold / failed</strong> that carry a gateway transaction id.</li>\n<li>Re-queries <strong>Stripe</strong> (PaymentIntent) and <strong>PayPal</strong> (Orders API v2) — <strong>read-only</strong>, no money is ever moved.</li>\n<li>Completes only <strong>unambiguously paid</strong> orders via <code>payment_complete()</code> (never a blind status change).</li>\n<li>Never completes <strong>refunded</strong> or <strong>disputed</strong> payments — it flags the drift and alerts you instead.</li>\n<li>Writes a <strong>lasting payment audit trail</strong> (gateway response snapshot, before/after status, actor, timestamp).</li>\n<li>Runs a <strong>daily automatic scan</strong> (Action Scheduler) plus a manual <strong>&#8220;Check now&#8221;</strong> button.</li>\n<li><strong>Idempotent</strong> and <strong>rate-limited</strong> — never double-completes an order, backs off on gateway rate limits.</li>\n<li><strong>HPOS-compatible</strong> and Cart/Checkout-Blocks compatible.</li>\n</ul>\n<h4>Why PaidRadar is different</h4>\n<p>Reconciliation plugins push <em>correct</em> orders into your accounting. Dunning plugins email customers to <em>retry</em> a payment. Auto-complete plugins only finish orders WooCommerce already knows are paid. <strong>None of them recover an order that was actually paid at the gateway but got stuck because the webhook was missed.</strong> PaidRadar does.</p>\n<h4>Supported gateways (v1)</h4>\n<ul>\n<li>Stripe (official WooCommerce Stripe gateway)</li>\n<li>PayPal (WooCommerce PayPal Payments / PPCP)</li>\n</ul>\n<h4>Privacy</h4>\n<p>Self-hosted. PaidRadar uses the API keys already stored by your Stripe / PayPal plugin to make read-only status calls. No data leaves your store for any third-party PaidRadar service — there is none.</p>\n<h3>External services</h3>\n<p>To determine whether a stuck order was actually paid, PaidRadar contacts the payment gateway that processed the order. It uses the API credentials that are <strong>already configured in your existing Stripe and/or PayPal plugin</strong> — it does not add its own account or send data to any PaidRadar-operated service (there is none).</p>\n<p><strong>Stripe</strong><br />\nPaidRadar calls the Stripe API (<code>https://api.stripe.com</code>) to read the status of a PaymentIntent when an order placed through the Stripe gateway is stuck. It sends the order&#8217;s Stripe PaymentIntent id and authenticates with your Stripe secret key (read-only request; no charge, capture or refund is performed). This happens during a manual &#8220;Check now&#8221; scan and during the scheduled daily scan, only for candidate orders.<br />\nThis service is provided by Stripe, Inc. — Terms: https://stripe.com/legal — Privacy Policy: https://stripe.com/privacy</p>\n<p><strong>PayPal</strong><br />\nPaidRadar calls the PayPal Orders API (<code>https://api-m.paypal.com</code>, or <code>https://api-m.sandbox.paypal.com</code> in sandbox mode) to read the status of an order placed through the PayPal (PPCP) gateway. It first requests an OAuth token using your PayPal client id and secret, then sends the order&#8217;s PayPal order id to read its status (read-only request; no capture or refund is performed). This happens during a manual &#8220;Check now&#8221; scan and during the scheduled daily scan, only for candidate orders.<br />\nThis service is provided by PayPal, Inc. — Terms: https://www.paypal.com/us/legalhub/useragreement-full — Privacy Policy: https://www.paypal.com/us/legalhub/privacy-full</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>paidradar</code> folder to <code>/wp-content/plugins/</code> or install via the Plugins screen.</li>\n<li>Activate <strong>PaidRadar</strong> through the <em>Plugins</em> screen. WooCommerce must be active.</li>\n<li>Go to <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> PaidRadar</strong>.</li>\n<li>Confirm your gateways are enabled, set the look-back window and alert e-mail.</li>\n<li>Click <strong>Check now</strong> for an immediate scan, or let the daily scan run automatically.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"why%20is%20my%20woocommerce%20order%20stuck%20on%20pending%20after%20the%20customer%20paid%3F\">\nWhy is my WooCommerce order stuck on pending after the customer paid?\n</h4>\n<p>\n<p>Almost always a missed webhook/IPN: the gateway charged the card and tried to notify WooCommerce, but the notification never arrived or was rejected (a security plugin or firewall blocked the endpoint, a timeout, an HTTP 204, or a live/test key mismatch). The payment succeeded; WooCommerce just never heard about it. PaidRadar asks the gateway directly and repairs the order.</p>\n</p>\n<dt id=\"will%20paidradar%20ever%20complete%20an%20order%20that%20was%20not%20actually%20paid%3F\">\nWill PaidRadar ever complete an order that was not actually paid?\n</h4>\n<p>\n<p>No. It is conservative by default: an order is only completed when the gateway reports the payment as unambiguously captured <strong>and</strong> a transaction id is present. Unpaid, refunded, disputed or unknown results are logged and (where relevant) alerted, never completed.</p>\n</p>\n<dt id=\"does%20it%20move%20money%2C%20issue%20refunds%20or%20capture%20payments%3F\">\nDoes it move money, issue refunds or capture payments?\n</h4>\n<p>\n<p>No. Every gateway call is strictly read-only. PaidRadar only reads the payment status; it never captures, refunds or voids.</p>\n</p>\n<dt id=\"which%20gateways%20are%20supported%3F\">\nWhich gateways are supported?\n</h4>\n<p>\n<p>Stripe and PayPal (PPCP) in this free version. More gateways are planned.</p>\n</p>\n<dt id=\"is%20it%20compatible%20with%20high-performance%20order%20storage%20%28hpos%29%3F\">\nIs it compatible with High-Performance Order Storage (HPOS)?\n</h4>\n<p>\n<p>Yes. PaidRadar declares HPOS and Cart/Checkout-Blocks compatibility and only uses the official <code>wc_get_orders()</code> / <code>WC_Order</code> API — never direct database queries against orders.</p>\n</p>\n<dt id=\"where%20is%20the%20audit%20trail%20stored%3F\">\nWhere is the audit trail stored?\n</h4>\n<p>\n<p>In a dedicated table, <code>wp_paidradar_log</code> (prefix may differ). You can view it under <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> PaidRadar</strong> and export it as CSV.</p>\n</p>\n<dt id=\"does%20it%20chase%20customers%20to%20pay%20again%3F\">\nDoes it chase customers to pay again?\n</h4>\n<p>\n<p>No. That is dunning / failed-order-rescue, and it is the wrong tool when the customer already paid. PaidRadar handles the <em>already-paid-but-stuck</em> case.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release: Stripe + PayPal read-only status recovery, conservative <code>payment_complete()</code> reconciliation, audit trail, daily Action Scheduler scan, manual &#8220;Check now&#8221;, admin alerts, HPOS compatibility.</li>\n</ul>\n"
+    },
+    "short_description": "Recover paid-but-stuck WooCommerce orders. When a webhook is missed, PaidRadar re-queries Stripe &amp; PayPal, completes the order correctly, and logs it.",
+    "description": "<p><strong>The gateway charged the customer — but your WooCommerce order is still stuck on &#8220;pending payment&#8221;.</strong> This happens when the confirmation webhook never arrives (firewall, timeout, HTTP 204, live/test key mix-up, a crash right after checkout). The money is captured, the order never fulfils, and you only notice at month-end.</p>\n<p><strong>PaidRadar</strong> fixes exactly this. It scans your WooCommerce orders that are stuck in <em>pending</em>, <em>on-hold</em> or <em>failed</em>, re-queries the payment gateway&#8217;s API (read-only), and — only when the gateway <strong>unambiguously</strong> reports the payment as captured — completes the order the correct way via WooCommerce&#8217;s own <code>payment_complete()</code> flow (stock, status and emails all fire correctly). Every action is written to a full <strong>payment audit trail</strong> and the admin is alerted.</p>\n<p>This is <strong>payment recovery</strong>, not dunning: it does not chase the customer for a payment that already succeeded, and it does not touch your accounting. It repairs the <em>order state</em> after a <strong>missed webhook</strong>.</p>\n<h4>What it does</h4>\n<ul>\n<li>Finds WooCommerce orders <strong>stuck in pending / on-hold / failed</strong> that carry a gateway transaction id.</li>\n<li>Re-queries <strong>Stripe</strong> (PaymentIntent) and <strong>PayPal</strong> (Orders API v2) — <strong>read-only</strong>, no money is ever moved.</li>\n<li>Completes only <strong>unambiguously paid</strong> orders via <code>payment_complete()</code> (never a blind status change).</li>\n<li>Never completes <strong>refunded</strong> or <strong>disputed</strong> payments — it flags the drift and alerts you instead.</li>\n<li>Writes a <strong>lasting payment audit trail</strong> (gateway response snapshot, before/after status, actor, timestamp).</li>\n<li>Runs a <strong>daily automatic scan</strong> (Action Scheduler) plus a manual <strong>&#8220;Check now&#8221;</strong> button.</li>\n<li><strong>Idempotent</strong> and <strong>rate-limited</strong> — never double-completes an order, backs off on gateway rate limits.</li>\n<li><strong>HPOS-compatible</strong> and Cart/Checkout-Blocks compatible.</li>\n</ul>\n<h4>Why PaidRadar is different</h4>\n<p>Reconciliation plugins push <em>correct</em> orders into your accounting. Dunning plugins email customers to <em>retry</em> a payment. Auto-complete plugins only finish orders WooCommerce already knows are paid. <strong>None of them recover an order that was actually paid at the gateway but got stuck because the webhook was missed.</strong> PaidRadar does.</p>\n<h4>Supported gateways (v1)</h4>\n<ul>\n<li>Stripe (official WooCommerce Stripe gateway)</li>\n<li>PayPal (WooCommerce PayPal Payments / PPCP)</li>\n</ul>\n<h4>Privacy</h4>\n<p>Self-hosted. PaidRadar uses the API keys already stored by your Stripe / PayPal plugin to make read-only status calls. No data leaves your store for any third-party PaidRadar service — there is none.</p>\n<h3>External services</h3>\n<p>To determine whether a stuck order was actually paid, PaidRadar contacts the payment gateway that processed the order. It uses the API credentials that are <strong>already configured in your existing Stripe and/or PayPal plugin</strong> — it does not add its own account or send data to any PaidRadar-operated service (there is none).</p>\n<p><strong>Stripe</strong><br />\nPaidRadar calls the Stripe API (<code>https://api.stripe.com</code>) to read the status of a PaymentIntent when an order placed through the Stripe gateway is stuck. It sends the order&#8217;s Stripe PaymentIntent id and authenticates with your Stripe secret key (read-only request; no charge, capture or refund is performed). This happens during a manual &#8220;Check now&#8221; scan and during the scheduled daily scan, only for candidate orders.<br />\nThis service is provided by Stripe, Inc. — Terms: https://stripe.com/legal — Privacy Policy: https://stripe.com/privacy</p>\n<p><strong>PayPal</strong><br />\nPaidRadar calls the PayPal Orders API (<code>https://api-m.paypal.com</code>, or <code>https://api-m.sandbox.paypal.com</code> in sandbox mode) to read the status of an order placed through the PayPal (PPCP) gateway. It first requests an OAuth token using your PayPal client id and secret, then sends the order&#8217;s PayPal order id to read its status (read-only request; no capture or refund is performed). This happens during a manual &#8220;Check now&#8221; scan and during the scheduled daily scan, only for candidate orders.<br />\nThis service is provided by PayPal, Inc. — Terms: https://www.paypal.com/us/legalhub/useragreement-full — Privacy Policy: https://www.paypal.com/us/legalhub/privacy-full</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/paidradar.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/paidradar/assets/screenshot-1.png?rev=3648536",
+            "caption": "PaidRadar dashboard: last run, total recovered, and the \"Check now\" button."
+        },
+        {
+            "src": "https://ps.w.org/paidradar/assets/screenshot-2.png?rev=3648536",
+            "caption": "The payment audit trail with per-order events and status transitions."
+        },
+        {
+            "src": "https://ps.w.org/paidradar/assets/screenshot-3.png?rev=3648536",
+            "caption": "Settings: look-back window, enabled gateways and alert e-mail."
+        }
+    ],
+    "tags": {
+        "payment-recovery": "payment recovery",
+        "paypal": "paypal",
+        "stripe": "stripe",
+        "stuck-pending-order": "stuck pending order",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/paidradar.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/paidradar.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/paidradar/assets/banner-772x250.png?rev=3648536",
+        "high": "https://ps.w.org/paidradar/assets/banner-1544x500.png?rev=3648536"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/paidradar/assets/icon-128x128.png?rev=3648536",
+        "2x": "https://ps.w.org/paidradar/assets/icon-256x256.png?rev=3648536"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
