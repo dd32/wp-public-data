@@ -1,5 +1,5 @@
 {
-    "name": "NoorPDP &#8211; Build WooCommerce Product Pages and Customize",
+    "name": "NoorPDP &#8211; Build Custom WooCommerce Product Pages",
     "slug": "noorpdp",
     "version": "1.0.0",
     "author": "<a href=\"https://profiles.wordpress.org/noorealam/\">noorealam</a>",
@@ -31,7 +31,7 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2026-08-15 10:57:00",
+    "last_updated": "2026-08-16 16:01:00",
     "added": "2026-08-15",
     "homepage": "",
     "sections": {
@@ -43,7 +43,32 @@
     "description": "<p>NoorPDP lets you redesign the WooCommerce single product page without touching a theme file:</p>\n<ul>\n<li>Product Title, Rating, Price, Short Description, Add to Cart, Meta, Gallery, Tabs and Breadcrumbs blocks — each a thin wrapper around WooCommerce&#8217;s own <code>woocommerce_template_single_*()</code> functions, so variations, stock handling and reviews keep working exactly as WooCommerce implements them</li>\n<li>Product Grid and Related Products blocks for latest/related/upsell product listings</li>\n<li>Container, Heading, Button, Accordion and Tabs layout blocks for arranging everything</li>\n<li>Product Layouts — full page arrangements built in the standard block editor, so it works on any theme, not just block themes</li>\n<li>Assign a Layout per product, per product category, or as the site-wide default; unconfigured products keep rendering exactly as vanilla WooCommerce always has</li>\n<li>An editor Template Library with premade full layouts and drop-in sections (FAQ accordion, trust badges, feature table)</li>\n</ul>\n<p>Everything above is free — no license, upsell, or locked feature anywhere in the plugin.</p>\n<h3>External services</h3>\n<p>This plugin includes an optional &#8220;Cloud Templates&#8221; source that can fetch additional premade templates from a remote API. It is <strong>disabled by default</strong> and only activates if a site or another plugin explicitly defines the <code>NOORPDP_CLOUD_URL</code> constant (or hooks the <code>noorpdp/cloud_api_url</code> filter) with a real endpoint URL — out of the box, this plugin makes no external requests at all.</p>\n<p>When enabled, the plugin sends a single <code>GET</code> request to the configured URL (no personal or site-identifying data included beyond standard HTTP headers) to retrieve a JSON list of templates, and caches the response in a transient for 12 hours.</p>\n<h3>Source Code</h3>\n<p>The JavaScript in the <code>build/</code> directory is compiled from the human-readable source in <code>src/</code>. Full source, including the build tooling, is available at https://github.com/noorealamdev/noorpdp. To regenerate the compiled files:</p>\n<pre><code>npm install &amp;&amp; npm run build\n</code></pre>\n",
     "download_link": "https://downloads.wordpress.org/plugin/noorpdp.1.0.0.zip",
     "upgrade_notice": [],
-    "screenshots": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/noorpdp/assets/screenshot-1.png?rev=3649904",
+            "caption": "Screenshot 1 showing frontend product page."
+        },
+        {
+            "src": "https://ps.w.org/noorpdp/assets/screenshot-2.png?rev=3649904",
+            "caption": "Screenshot 2 showing frontend product page."
+        },
+        {
+            "src": "https://ps.w.org/noorpdp/assets/screenshot-3.png?rev=3649904",
+            "caption": "Screenshot 3 showing frontend product page."
+        },
+        {
+            "src": "https://ps.w.org/noorpdp/assets/screenshot-4.png?rev=3649904",
+            "caption": "Screenshot 4 showing frontend product page."
+        },
+        {
+            "src": "https://ps.w.org/noorpdp/assets/screenshot-5.png?rev=3649904",
+            "caption": "Screenshot 5 showing frontend product page."
+        },
+        {
+            "src": "https://ps.w.org/noorpdp/assets/screenshot-6.png?rev=3649904",
+            "caption": "Screenshot 6 showing frontend product page."
+        }
+    ],
     "tags": {
         "blocks": "blocks",
         "gutenberg": "gutenberg",
@@ -68,24 +93,117 @@
         "1x": "https://ps.w.org/noorpdp/assets/icon-128x128.png?rev=3648451"
     },
     "blocks": {
-        "noorpdp/product-meta": {
+        "noorpdp/faq": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "noorpdp/product-meta",
-            "title": "Product Meta",
+            "name": "noorpdp/faq",
+            "title": "FAQ Accordion",
             "category": "noorpdp",
-            "icon": "info",
-            "description": "Displays the current WooCommerce product's SKU, categories and tags.",
+            "icon": "editor-help",
+            "description": "A collapsible list of frequently asked questions about the product.",
             "keywords": [
-                "woocommerce",
-                "product",
-                "sku",
-                "categories",
-                "tags"
+                "faq",
+                "questions",
+                "accordion",
+                "section"
             ],
             "version": "1.0.0",
             "textdomain": "noorpdp",
+            "attributes": {
+                "title": {
+                    "type": "string",
+                    "source": "html",
+                    "selector": "h2",
+                    "default": "Frequently Asked Questions"
+                },
+                "align": {
+                    "type": "string"
+                },
+                "boxed": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "boxedWidth": {
+                    "type": "number",
+                    "default": 800
+                },
+                "style": {
+                    "type": "object",
+                    "default": {
+                        "spacing": {
+                            "padding": {
+                                "top": "4rem",
+                                "right": "1.5rem",
+                                "bottom": "4rem",
+                                "left": "1.5rem"
+                            }
+                        }
+                    }
+                }
+            },
             "supports": {
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "anchor": true,
+                "html": false,
+                "color": {
+                    "background": true,
+                    "text": true,
+                    "gradients": true
+                },
+                "typography": {
+                    "fontSize": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true,
+                    "blockGap": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "width": true,
+                    "color": true
+                },
+                "shadow": true
+            },
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css",
+            "editorStyle": "file:./index.css"
+        },
+        "noorpdp/product-tabs": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "noorpdp/product-tabs",
+            "title": "Product Tabs",
+            "category": "noorpdp",
+            "icon": "editor-table",
+            "description": "Displays the current WooCommerce product's description, additional information and reviews tabs.",
+            "keywords": [
+                "woocommerce",
+                "product",
+                "tabs",
+                "reviews",
+                "description"
+            ],
+            "version": "1.0.0",
+            "textdomain": "noorpdp",
+            "attributes": {
+                "boxed": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "boxedWidth": {
+                    "type": "number",
+                    "default": 1200
+                }
+            },
+            "supports": {
+                "align": [
+                    "wide",
+                    "full"
+                ],
                 "anchor": true,
                 "html": false,
                 "color": {
@@ -95,11 +213,7 @@
                 },
                 "typography": {
                     "fontSize": true,
-                    "lineHeight": true,
-                    "__experimentalFontFamily": true,
-                    "__experimentalFontWeight": true,
-                    "__experimentalLetterSpacing": true,
-                    "__experimentalTextTransform": true
+                    "__experimentalFontWeight": true
                 },
                 "spacing": {
                     "margin": true,
@@ -116,29 +230,34 @@
             "style": "file:./style-index.css",
             "render": "file:./render.php"
         },
-        "noorpdp/tabs": {
+        "noorpdp/accordion": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "noorpdp/tabs",
-            "title": "Tabs",
+            "name": "noorpdp/accordion",
+            "title": "Accordion",
             "category": "noorpdp",
-            "icon": "table-row-after",
-            "description": "Organize content into switchable tabs. Powered by the WordPress Interactivity API with full keyboard support.",
+            "icon": "menu-alt",
+            "description": "Collapsible content panels, perfect for FAQs. Powered by the WordPress Interactivity API — no jQuery, minimal footprint.",
             "keywords": [
-                "tabs",
-                "tabbed",
-                "toggle"
+                "accordion",
+                "faq",
+                "toggle",
+                "collapse"
             ],
             "version": "1.0.0",
             "textdomain": "noorpdp",
             "attributes": {
+                "allowMultiple": {
+                    "type": "boolean",
+                    "default": false
+                },
                 "boxed": {
                     "type": "boolean",
                     "default": true
                 },
                 "boxedWidth": {
                     "type": "number",
-                    "default": 1200
+                    "default": 800
                 }
             },
             "supports": {
@@ -166,497 +285,25 @@
             "editorScript": "file:./index.js",
             "style": "file:./style-index.css",
             "editorStyle": "file:./index.css",
-            "render": "file:./render.php",
             "viewScriptModule": "file:./view.js"
         },
-        "noorpdp/feature-cards": {
+        "noorpdp/product-specifications": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "noorpdp/feature-cards",
-            "title": "Feature Cards",
-            "category": "noorpdp",
-            "icon": "grid-view",
-            "description": "A row or grid of cards, each with a heading and a line of supporting text — useful for ingredients, benefits, or feature highlights.",
-            "keywords": [
-                "cards",
-                "features",
-                "benefits",
-                "grid",
-                "list"
-            ],
-            "version": "1.0.0",
-            "textdomain": "noorpdp",
-            "attributes": {
-                "items": {
-                    "type": "array",
-                    "default": [
-                        {
-                            "heading": "Elderberry Extract",
-                            "text": "Strengthens your first line of defense against seasonal threats."
-                        },
-                        {
-                            "heading": "Echinacea Purpurea",
-                            "text": "Activates natural immune response for faster recovery."
-                        },
-                        {
-                            "heading": "Crystalline Ginger",
-                            "text": "Relieves internal inflammation and supports respiratory health."
-                        }
-                    ]
-                },
-                "columns": {
-                    "type": "number",
-                    "default": 1
-                },
-                "cardBackground": {
-                    "type": "string",
-                    "default": ""
-                },
-                "cardRadius": {
-                    "type": "number",
-                    "default": 0
-                },
-                "cardPadding": {
-                    "type": "number",
-                    "default": 0
-                },
-                "boxed": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "boxedWidth": {
-                    "type": "number",
-                    "default": 1200
-                }
-            },
-            "supports": {
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "anchor": true,
-                "html": false,
-                "color": {
-                    "background": true,
-                    "text": true,
-                    "gradients": true
-                },
-                "typography": {
-                    "fontSize": true,
-                    "lineHeight": true,
-                    "__experimentalFontFamily": true,
-                    "__experimentalFontWeight": true,
-                    "__experimentalLetterSpacing": true,
-                    "__experimentalTextTransform": true
-                },
-                "spacing": {
-                    "margin": true,
-                    "padding": true,
-                    "blockGap": true
-                },
-                "__experimentalBorder": {
-                    "radius": true,
-                    "width": true,
-                    "color": true
-                },
-                "shadow": true
-            },
-            "editorScript": "file:./index.js",
-            "style": "file:./style-index.css",
-            "render": "file:./render.php"
-        },
-        "noorpdp/product-gallery-carousel": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "noorpdp/product-gallery-carousel",
-            "title": "Product Gallery Carousel",
-            "category": "noorpdp",
-            "icon": "images-alt2",
-            "description": "A swipeable carousel of the current WooCommerce product's own images, with an optional thumbnail strip.",
-            "keywords": [
-                "woocommerce",
-                "product",
-                "gallery",
-                "images",
-                "carousel",
-                "slider"
-            ],
-            "version": "1.0.0",
-            "textdomain": "noorpdp",
-            "attributes": {
-                "showThumbnails": {
-                    "type": "boolean",
-                    "default": true
-                }
-            },
-            "supports": {
-                "anchor": true,
-                "html": false,
-                "color": {
-                    "background": true,
-                    "text": true,
-                    "gradients": true
-                },
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                },
-                "__experimentalBorder": {
-                    "radius": true,
-                    "width": true,
-                    "color": true
-                },
-                "shadow": true
-            },
-            "editorScript": "file:./index.js",
-            "style": "file:./style-index.css",
-            "viewScript": "file:./view.js",
-            "render": "file:./render.php"
-        },
-        "noorpdp/comparison-table": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "noorpdp/comparison-table",
-            "title": "Comparison Table",
+            "name": "noorpdp/product-specifications",
+            "title": "Product Specifications",
             "category": "noorpdp",
             "icon": "editor-table",
-            "description": "A feature-by-feature comparison table, useful for plans, variants, size guides or specs.",
-            "keywords": [
-                "comparison",
-                "table",
-                "specs",
-                "features",
-                "size guide"
-            ],
-            "version": "1.0.0",
-            "textdomain": "noorpdp",
-            "attributes": {
-                "title": {
-                    "type": "string",
-                    "source": "html",
-                    "selector": "h2",
-                    "default": "Compare Options"
-                },
-                "boxed": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "boxedWidth": {
-                    "type": "number",
-                    "default": 1000
-                },
-                "style": {
-                    "type": "object",
-                    "default": {
-                        "spacing": {
-                            "padding": {
-                                "top": "3rem",
-                                "right": "1.5rem",
-                                "bottom": "3rem",
-                                "left": "1.5rem"
-                            }
-                        }
-                    }
-                }
-            },
-            "supports": {
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "anchor": true,
-                "html": false,
-                "color": {
-                    "background": true,
-                    "text": true,
-                    "gradients": true
-                },
-                "typography": {
-                    "fontSize": true
-                },
-                "spacing": {
-                    "margin": true,
-                    "padding": true,
-                    "blockGap": true
-                },
-                "__experimentalBorder": {
-                    "radius": true,
-                    "width": true,
-                    "color": true
-                },
-                "shadow": true
-            },
-            "editorScript": "file:./index.js",
-            "style": "file:./style-index.css"
-        },
-        "noorpdp/hero": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "noorpdp/hero",
-            "title": "Hero",
-            "category": "noorpdp",
-            "icon": "cover-image",
-            "description": "A full-width hero section with a heading, subheading, call-to-action button and an optional background image or video.",
-            "keywords": [
-                "hero",
-                "banner",
-                "section",
-                "cover"
-            ],
-            "version": "1.0.0",
-            "textdomain": "noorpdp",
-            "attributes": {
-                "heading": {
-                    "type": "string",
-                    "source": "html",
-                    "selector": ".noorpdp-hero__heading",
-                    "default": "Your Hero Heading"
-                },
-                "subheading": {
-                    "type": "string",
-                    "source": "html",
-                    "selector": ".noorpdp-hero__subheading",
-                    "default": ""
-                },
-                "backgroundType": {
-                    "type": "string",
-                    "default": "image"
-                },
-                "backgroundImage": {
-                    "type": "object",
-                    "default": {
-                        "url": "",
-                        "id": 0
-                    }
-                },
-                "backgroundVideo": {
-                    "type": "object",
-                    "default": {
-                        "url": "",
-                        "id": 0
-                    }
-                },
-                "overlayColor": {
-                    "type": "string",
-                    "default": "#000000"
-                },
-                "overlayOpacity": {
-                    "type": "number",
-                    "default": 0
-                },
-                "textAlign": {
-                    "type": "string",
-                    "default": "center"
-                },
-                "headingFontSize": {
-                    "type": "string",
-                    "default": ""
-                },
-                "subheadingFontSize": {
-                    "type": "string",
-                    "default": ""
-                },
-                "align": {
-                    "type": "string"
-                },
-                "boxed": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "boxedWidth": {
-                    "type": "number",
-                    "default": 700
-                },
-                "style": {
-                    "type": "object",
-                    "default": {
-                        "spacing": {
-                            "padding": {
-                                "top": "5rem",
-                                "right": "1.5rem",
-                                "bottom": "5rem",
-                                "left": "1.5rem"
-                            }
-                        }
-                    }
-                }
-            },
-            "supports": {
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "anchor": true,
-                "html": false,
-                "color": {
-                    "background": true,
-                    "text": true,
-                    "gradients": true,
-                    "enableContrastChecker": false
-                },
-                "spacing": {
-                    "margin": true,
-                    "padding": true,
-                    "blockGap": true
-                },
-                "__experimentalBorder": {
-                    "radius": true,
-                    "width": true,
-                    "color": true
-                },
-                "shadow": true
-            },
-            "editorScript": "file:./index.js",
-            "style": "file:./style-index.css",
-            "editorStyle": "file:./index.css"
-        },
-        "noorpdp/product-grid": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "noorpdp/product-grid",
-            "title": "Product Grid",
-            "category": "noorpdp",
-            "icon": "grid-view",
-            "description": "Display a responsive grid of WooCommerce products (latest, related, upsells or cross-sells), rendered dynamically so it always stays up to date.",
-            "keywords": [
-                "products",
-                "grid",
-                "related",
-                "upsells",
-                "cross-sells",
-                "woocommerce"
-            ],
-            "version": "1.0.0",
-            "textdomain": "noorpdp",
-            "attributes": {
-                "relation": {
-                    "type": "string",
-                    "default": "latest"
-                },
-                "productsToShow": {
-                    "type": "number",
-                    "default": 4
-                },
-                "columns": {
-                    "type": "number",
-                    "default": 4
-                },
-                "order": {
-                    "type": "string",
-                    "default": "desc"
-                },
-                "orderBy": {
-                    "type": "string",
-                    "default": "date"
-                },
-                "showImage": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showPrice": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showAddToCart": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "boxed": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "boxedWidth": {
-                    "type": "number",
-                    "default": 1200
-                },
-                "noorpdpVisibility": {
-                    "type": "object",
-                    "default": {
-                        "hideOnMobile": false,
-                        "hideOnTablet": false,
-                        "hideOnDesktop": false
-                    }
-                },
-                "noorpdpAnimation": {
-                    "type": "object",
-                    "default": {
-                        "type": "none",
-                        "duration": 600,
-                        "delay": 0
-                    }
-                }
-            },
-            "supports": {
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "anchor": true,
-                "html": false,
-                "color": {
-                    "background": true,
-                    "text": true,
-                    "link": true
-                },
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                },
-                "typography": {
-                    "fontSize": true
-                },
-                "__experimentalBorder": {
-                    "radius": true,
-                    "width": true,
-                    "color": true
-                },
-                "shadow": true
-            },
-            "editorScript": "file:./index.js",
-            "style": "file:./style-index.css",
-            "render": "file:./render.php",
-            "example": {
-                "attributes": {
-                    "productsToShow": 3,
-                    "columns": 3
-                }
-            }
-        },
-        "noorpdp/product-reviews": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "noorpdp/product-reviews",
-            "title": "Product Reviews",
-            "category": "noorpdp",
-            "icon": "star-filled",
-            "description": "A rating summary with a star breakdown and a responsive grid of the current WooCommerce product's reviews, rendered dynamically so it always stays up to date.",
+            "description": "Displays the current WooCommerce product's attributes as a specification table, the same data shown in the native Additional Information tab.",
             "keywords": [
                 "woocommerce",
                 "product",
-                "reviews",
-                "ratings",
-                "testimonials"
+                "specifications",
+                "attributes",
+                "specs"
             ],
             "version": "1.0.0",
             "textdomain": "noorpdp",
-            "attributes": {
-                "reviewsToShow": {
-                    "type": "number",
-                    "default": 12
-                },
-                "columns": {
-                    "type": "number",
-                    "default": 3
-                },
-                "boxed": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "boxedWidth": {
-                    "type": "number",
-                    "default": 1200
-                }
-            },
             "supports": {
                 "anchor": true,
                 "html": false,
@@ -667,102 +314,6 @@
                 },
                 "typography": {
                     "fontSize": true
-                },
-                "spacing": {
-                    "margin": true,
-                    "padding": true,
-                    "blockGap": true
-                },
-                "__experimentalBorder": {
-                    "radius": true,
-                    "width": true,
-                    "color": true
-                },
-                "shadow": true
-            },
-            "editorScript": "file:./index.js",
-            "style": "file:./style-index.css",
-            "viewScript": "file:./view.js",
-            "render": "file:./render.php"
-        },
-        "noorpdp/product-title": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "noorpdp/product-title",
-            "title": "Product Title",
-            "category": "noorpdp",
-            "icon": "heading",
-            "description": "Displays the current WooCommerce product's title.",
-            "keywords": [
-                "woocommerce",
-                "product",
-                "title"
-            ],
-            "version": "1.0.0",
-            "textdomain": "noorpdp",
-            "supports": {
-                "anchor": true,
-                "html": false,
-                "color": {
-                    "background": true,
-                    "text": true,
-                    "gradients": true
-                },
-                "typography": {
-                    "fontSize": true,
-                    "lineHeight": true,
-                    "__experimentalFontFamily": true,
-                    "__experimentalFontWeight": true,
-                    "__experimentalLetterSpacing": true,
-                    "__experimentalTextTransform": true
-                },
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                },
-                "__experimentalBorder": {
-                    "radius": true,
-                    "width": true,
-                    "color": true
-                },
-                "shadow": true
-            },
-            "editorScript": "file:./index.js",
-            "style": "file:./style-index.css",
-            "render": "file:./render.php"
-        },
-        "noorpdp/product-category": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "noorpdp/product-category",
-            "title": "Product Category",
-            "category": "noorpdp",
-            "icon": "category",
-            "description": "Displays the current WooCommerce product's category as a small label — useful right above the Product Title.",
-            "keywords": [
-                "woocommerce",
-                "product",
-                "category",
-                "kicker",
-                "label"
-            ],
-            "version": "1.0.0",
-            "textdomain": "noorpdp",
-            "supports": {
-                "anchor": true,
-                "html": false,
-                "color": {
-                    "background": true,
-                    "text": true,
-                    "gradients": true
-                },
-                "typography": {
-                    "fontSize": true,
-                    "lineHeight": true,
-                    "__experimentalFontFamily": true,
-                    "__experimentalFontWeight": true,
-                    "__experimentalLetterSpacing": true,
-                    "__experimentalTextTransform": true
                 },
                 "spacing": {
                     "margin": true,
@@ -898,6 +449,148 @@
             "viewScript": "file:./view.js",
             "render": "file:./render.php"
         },
+        "noorpdp/container": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "noorpdp/container",
+            "title": "Container",
+            "category": "noorpdp",
+            "icon": "align-wide",
+            "description": "A flexible wrapper section for grouping and laying out other blocks.",
+            "keywords": [
+                "section",
+                "wrapper",
+                "group",
+                "row"
+            ],
+            "version": "1.0.0",
+            "textdomain": "noorpdp",
+            "supports": {
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "anchor": true,
+                "html": false,
+                "color": {
+                    "background": true,
+                    "text": true,
+                    "gradients": true,
+                    "link": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true,
+                    "blockGap": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "width": true,
+                    "color": true
+                },
+                "shadow": true,
+                "layout": true
+            },
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css",
+            "editorStyle": "file:./index.css"
+        },
+        "noorpdp/feature-cards": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "noorpdp/feature-cards",
+            "title": "Feature Cards",
+            "category": "noorpdp",
+            "icon": "grid-view",
+            "description": "A row or grid of cards, each with a heading and a line of supporting text — useful for ingredients, benefits, or feature highlights.",
+            "keywords": [
+                "cards",
+                "features",
+                "benefits",
+                "grid",
+                "list"
+            ],
+            "version": "1.0.0",
+            "textdomain": "noorpdp",
+            "attributes": {
+                "items": {
+                    "type": "array",
+                    "default": [
+                        {
+                            "heading": "Elderberry Extract",
+                            "text": "Strengthens your first line of defense against seasonal threats."
+                        },
+                        {
+                            "heading": "Echinacea Purpurea",
+                            "text": "Activates natural immune response for faster recovery."
+                        },
+                        {
+                            "heading": "Crystalline Ginger",
+                            "text": "Relieves internal inflammation and supports respiratory health."
+                        }
+                    ]
+                },
+                "columns": {
+                    "type": "number",
+                    "default": 1
+                },
+                "cardBackground": {
+                    "type": "string",
+                    "default": ""
+                },
+                "cardRadius": {
+                    "type": "number",
+                    "default": 0
+                },
+                "cardPadding": {
+                    "type": "number",
+                    "default": 0
+                },
+                "boxed": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "boxedWidth": {
+                    "type": "number",
+                    "default": 1200
+                }
+            },
+            "supports": {
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "anchor": true,
+                "html": false,
+                "color": {
+                    "background": true,
+                    "text": true,
+                    "gradients": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true,
+                    "__experimentalFontWeight": true,
+                    "__experimentalLetterSpacing": true,
+                    "__experimentalTextTransform": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true,
+                    "blockGap": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "width": true,
+                    "color": true
+                },
+                "shadow": true
+            },
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css",
+            "render": "file:./render.php"
+        },
         "noorpdp/sticky-add-to-cart": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
@@ -948,23 +641,399 @@
             "viewScript": "file:./view.js",
             "render": "file:./render.php"
         },
-        "noorpdp/product-specifications": {
+        "noorpdp/product-meta": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "noorpdp/product-specifications",
-            "title": "Product Specifications",
+            "name": "noorpdp/product-meta",
+            "title": "Product Meta",
             "category": "noorpdp",
-            "icon": "editor-table",
-            "description": "Displays the current WooCommerce product's attributes as a specification table, the same data shown in the native Additional Information tab.",
+            "icon": "info",
+            "description": "Displays the current WooCommerce product's SKU, categories and tags.",
             "keywords": [
                 "woocommerce",
                 "product",
-                "specifications",
-                "attributes",
-                "specs"
+                "sku",
+                "categories",
+                "tags"
             ],
             "version": "1.0.0",
             "textdomain": "noorpdp",
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "color": {
+                    "background": true,
+                    "text": true,
+                    "gradients": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true,
+                    "__experimentalFontWeight": true,
+                    "__experimentalLetterSpacing": true,
+                    "__experimentalTextTransform": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "width": true,
+                    "color": true
+                },
+                "shadow": true
+            },
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css",
+            "render": "file:./render.php"
+        },
+        "noorpdp/heading": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "noorpdp/heading",
+            "title": "Advanced Heading",
+            "category": "noorpdp",
+            "icon": "heading",
+            "description": "A heading block with adjustable level, alignment, colors and typography.",
+            "keywords": [
+                "title",
+                "heading",
+                "subtitle"
+            ],
+            "version": "1.0.0",
+            "textdomain": "noorpdp",
+            "attributes": {
+                "content": {
+                    "type": "string",
+                    "source": "html",
+                    "selector": "h1,h2,h3,h4,h5,h6",
+                    "default": ""
+                },
+                "level": {
+                    "type": "number",
+                    "default": 2
+                },
+                "textAlign": {
+                    "type": "string"
+                }
+            },
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "color": {
+                    "background": true,
+                    "text": true,
+                    "gradients": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true,
+                    "__experimentalFontWeight": true,
+                    "__experimentalLetterSpacing": true,
+                    "__experimentalTextTransform": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "width": true,
+                    "color": true
+                },
+                "shadow": true
+            },
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css",
+            "editorStyle": "file:./index.css"
+        },
+        "noorpdp/product-category": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "noorpdp/product-category",
+            "title": "Product Category",
+            "category": "noorpdp",
+            "icon": "category",
+            "description": "Displays the current WooCommerce product's category as a small label — useful right above the Product Title.",
+            "keywords": [
+                "woocommerce",
+                "product",
+                "category",
+                "kicker",
+                "label"
+            ],
+            "version": "1.0.0",
+            "textdomain": "noorpdp",
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "color": {
+                    "background": true,
+                    "text": true,
+                    "gradients": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true,
+                    "__experimentalFontWeight": true,
+                    "__experimentalLetterSpacing": true,
+                    "__experimentalTextTransform": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "width": true,
+                    "color": true
+                },
+                "shadow": true
+            },
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css",
+            "render": "file:./render.php"
+        },
+        "noorpdp/product-title": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "noorpdp/product-title",
+            "title": "Product Title",
+            "category": "noorpdp",
+            "icon": "heading",
+            "description": "Displays the current WooCommerce product's title.",
+            "keywords": [
+                "woocommerce",
+                "product",
+                "title"
+            ],
+            "version": "1.0.0",
+            "textdomain": "noorpdp",
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "color": {
+                    "background": true,
+                    "text": true,
+                    "gradients": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true,
+                    "__experimentalFontWeight": true,
+                    "__experimentalLetterSpacing": true,
+                    "__experimentalTextTransform": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "width": true,
+                    "color": true
+                },
+                "shadow": true
+            },
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css",
+            "render": "file:./render.php"
+        },
+        "noorpdp/product-breadcrumbs": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "noorpdp/product-breadcrumbs",
+            "title": "Product Breadcrumbs",
+            "category": "noorpdp",
+            "icon": "arrow-right-alt",
+            "description": "Displays the WooCommerce breadcrumb trail for the current product.",
+            "keywords": [
+                "woocommerce",
+                "breadcrumbs",
+                "navigation"
+            ],
+            "version": "1.0.0",
+            "textdomain": "noorpdp",
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "color": {
+                    "background": true,
+                    "text": true,
+                    "gradients": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true,
+                    "__experimentalFontWeight": true,
+                    "__experimentalLetterSpacing": true,
+                    "__experimentalTextTransform": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "width": true,
+                    "color": true
+                },
+                "shadow": true
+            },
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css",
+            "render": "file:./render.php"
+        },
+        "noorpdp/product-reviews": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "noorpdp/product-reviews",
+            "title": "Product Reviews",
+            "category": "noorpdp",
+            "icon": "star-filled",
+            "description": "A rating summary with a star breakdown and a responsive grid of the current WooCommerce product's reviews, rendered dynamically so it always stays up to date.",
+            "keywords": [
+                "woocommerce",
+                "product",
+                "reviews",
+                "ratings",
+                "testimonials"
+            ],
+            "version": "1.0.0",
+            "textdomain": "noorpdp",
+            "attributes": {
+                "reviewsToShow": {
+                    "type": "number",
+                    "default": 12
+                },
+                "columns": {
+                    "type": "number",
+                    "default": 3
+                },
+                "boxed": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "boxedWidth": {
+                    "type": "number",
+                    "default": 1200
+                }
+            },
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "color": {
+                    "background": true,
+                    "text": true,
+                    "gradients": true
+                },
+                "typography": {
+                    "fontSize": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true,
+                    "blockGap": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "width": true,
+                    "color": true
+                },
+                "shadow": true
+            },
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css",
+            "viewScript": "file:./view.js",
+            "render": "file:./render.php"
+        },
+        "noorpdp/product-short-description": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "noorpdp/product-short-description",
+            "title": "Product Short Description",
+            "category": "noorpdp",
+            "icon": "align-left",
+            "description": "Displays the current WooCommerce product's short description (excerpt).",
+            "keywords": [
+                "woocommerce",
+                "product",
+                "excerpt",
+                "summary"
+            ],
+            "version": "1.0.0",
+            "textdomain": "noorpdp",
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "color": {
+                    "background": true,
+                    "text": true,
+                    "gradients": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true,
+                    "__experimentalFontWeight": true,
+                    "__experimentalLetterSpacing": true,
+                    "__experimentalTextTransform": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "width": true,
+                    "color": true
+                },
+                "shadow": true
+            },
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css",
+            "render": "file:./render.php"
+        },
+        "noorpdp/button": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "noorpdp/button",
+            "title": "Advanced Button",
+            "category": "noorpdp",
+            "icon": "button",
+            "description": "A customizable call-to-action button with link, colors and typography options.",
+            "keywords": [
+                "button",
+                "cta",
+                "link"
+            ],
+            "version": "1.0.0",
+            "textdomain": "noorpdp",
+            "attributes": {
+                "text": {
+                    "type": "string",
+                    "source": "html",
+                    "selector": "a",
+                    "default": ""
+                },
+                "url": {
+                    "type": "string",
+                    "default": ""
+                },
+                "opensInNewTab": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "textAlign": {
+                    "type": "string"
+                }
+            },
             "supports": {
                 "anchor": true,
                 "html": false,
@@ -981,15 +1050,15 @@
                     "padding": true
                 },
                 "__experimentalBorder": {
+                    "color": true,
                     "radius": true,
-                    "width": true,
-                    "color": true
+                    "width": true
                 },
                 "shadow": true
             },
             "editorScript": "file:./index.js",
             "style": "file:./style-index.css",
-            "render": "file:./render.php"
+            "editorStyle": "file:./index.css"
         },
         "noorpdp/icon-list": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
@@ -1123,6 +1192,118 @@
             "viewScript": "file:./view.js",
             "render": "file:./render.php"
         },
+        "noorpdp/product-grid": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "noorpdp/product-grid",
+            "title": "Product Grid",
+            "category": "noorpdp",
+            "icon": "grid-view",
+            "description": "Display a responsive grid of WooCommerce products (latest, related, upsells or cross-sells), rendered dynamically so it always stays up to date.",
+            "keywords": [
+                "products",
+                "grid",
+                "related",
+                "upsells",
+                "cross-sells",
+                "woocommerce"
+            ],
+            "version": "1.0.0",
+            "textdomain": "noorpdp",
+            "attributes": {
+                "relation": {
+                    "type": "string",
+                    "default": "latest"
+                },
+                "productsToShow": {
+                    "type": "number",
+                    "default": 4
+                },
+                "columns": {
+                    "type": "number",
+                    "default": 4
+                },
+                "order": {
+                    "type": "string",
+                    "default": "desc"
+                },
+                "orderBy": {
+                    "type": "string",
+                    "default": "date"
+                },
+                "showImage": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showPrice": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showAddToCart": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "boxed": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "boxedWidth": {
+                    "type": "number",
+                    "default": 1200
+                },
+                "noorpdpVisibility": {
+                    "type": "object",
+                    "default": {
+                        "hideOnMobile": false,
+                        "hideOnTablet": false,
+                        "hideOnDesktop": false
+                    }
+                },
+                "noorpdpAnimation": {
+                    "type": "object",
+                    "default": {
+                        "type": "none",
+                        "duration": 600,
+                        "delay": 0
+                    }
+                }
+            },
+            "supports": {
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "anchor": true,
+                "html": false,
+                "color": {
+                    "background": true,
+                    "text": true,
+                    "link": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "width": true,
+                    "color": true
+                },
+                "shadow": true
+            },
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css",
+            "render": "file:./render.php",
+            "example": {
+                "attributes": {
+                    "productsToShow": 3,
+                    "columns": 3
+                }
+            }
+        },
         "noorpdp/product-price": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
@@ -1168,85 +1349,6 @@
             "editorScript": "file:./index.js",
             "style": "file:./style-index.css",
             "render": "file:./render.php"
-        },
-        "noorpdp/faq": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "noorpdp/faq",
-            "title": "FAQ Accordion",
-            "category": "noorpdp",
-            "icon": "editor-help",
-            "description": "A collapsible list of frequently asked questions about the product.",
-            "keywords": [
-                "faq",
-                "questions",
-                "accordion",
-                "section"
-            ],
-            "version": "1.0.0",
-            "textdomain": "noorpdp",
-            "attributes": {
-                "title": {
-                    "type": "string",
-                    "source": "html",
-                    "selector": "h2",
-                    "default": "Frequently Asked Questions"
-                },
-                "align": {
-                    "type": "string"
-                },
-                "boxed": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "boxedWidth": {
-                    "type": "number",
-                    "default": 800
-                },
-                "style": {
-                    "type": "object",
-                    "default": {
-                        "spacing": {
-                            "padding": {
-                                "top": "4rem",
-                                "right": "1.5rem",
-                                "bottom": "4rem",
-                                "left": "1.5rem"
-                            }
-                        }
-                    }
-                }
-            },
-            "supports": {
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "anchor": true,
-                "html": false,
-                "color": {
-                    "background": true,
-                    "text": true,
-                    "gradients": true
-                },
-                "typography": {
-                    "fontSize": true
-                },
-                "spacing": {
-                    "margin": true,
-                    "padding": true,
-                    "blockGap": true
-                },
-                "__experimentalBorder": {
-                    "radius": true,
-                    "width": true,
-                    "color": true
-                },
-                "shadow": true
-            },
-            "editorScript": "file:./index.js",
-            "style": "file:./style-index.css",
-            "editorStyle": "file:./index.css"
         },
         "noorpdp/product-rating": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
@@ -1296,24 +1398,123 @@
             "style": "file:./style-index.css",
             "render": "file:./render.php"
         },
-        "noorpdp/product-tabs": {
+        "noorpdp/product-gallery-carousel": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "noorpdp/product-tabs",
-            "title": "Product Tabs",
+            "name": "noorpdp/product-gallery-carousel",
+            "title": "Product Gallery Carousel",
             "category": "noorpdp",
-            "icon": "editor-table",
-            "description": "Displays the current WooCommerce product's description, additional information and reviews tabs.",
+            "icon": "images-alt2",
+            "description": "A swipeable carousel of the current WooCommerce product's own images, with an optional thumbnail strip.",
             "keywords": [
                 "woocommerce",
                 "product",
-                "tabs",
-                "reviews",
-                "description"
+                "gallery",
+                "images",
+                "carousel",
+                "slider"
             ],
             "version": "1.0.0",
             "textdomain": "noorpdp",
             "attributes": {
+                "showThumbnails": {
+                    "type": "boolean",
+                    "default": true
+                }
+            },
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "color": {
+                    "background": true,
+                    "text": true,
+                    "gradients": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "width": true,
+                    "color": true
+                },
+                "shadow": true
+            },
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css",
+            "viewScript": "file:./view.js",
+            "render": "file:./render.php"
+        },
+        "noorpdp/product-add-to-cart": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "noorpdp/product-add-to-cart",
+            "title": "Product Add to Cart",
+            "category": "noorpdp",
+            "icon": "cart",
+            "description": "Displays the WooCommerce add-to-cart form for the current product, including variations, quantity and stock handling.",
+            "keywords": [
+                "woocommerce",
+                "product",
+                "cart",
+                "buy",
+                "variations"
+            ],
+            "version": "1.0.0",
+            "textdomain": "noorpdp",
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "color": {
+                    "background": true,
+                    "text": true,
+                    "gradients": true
+                },
+                "typography": {
+                    "fontSize": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "width": true,
+                    "color": true
+                },
+                "shadow": true
+            },
+            "editorScript": "file:./index.js",
+            "style": "file:./style-index.css",
+            "viewScript": "file:./view.js",
+            "render": "file:./render.php"
+        },
+        "noorpdp/related-products": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "noorpdp/related-products",
+            "title": "Related Products",
+            "category": "noorpdp",
+            "icon": "networking",
+            "description": "Displays WooCommerce's related products for the current product.",
+            "keywords": [
+                "woocommerce",
+                "product",
+                "related",
+                "cross-sell"
+            ],
+            "version": "1.0.0",
+            "textdomain": "noorpdp",
+            "attributes": {
+                "productsToShow": {
+                    "type": "number",
+                    "default": 4
+                },
+                "columns": {
+                    "type": "number",
+                    "default": 4
+                },
                 "boxed": {
                     "type": "boolean",
                     "default": true
@@ -1336,8 +1537,7 @@
                     "gradients": true
                 },
                 "typography": {
-                    "fontSize": true,
-                    "__experimentalFontWeight": true
+                    "fontSize": true
                 },
                 "spacing": {
                     "margin": true,
@@ -1354,41 +1554,57 @@
             "style": "file:./style-index.css",
             "render": "file:./render.php"
         },
-        "noorpdp/button": {
+        "noorpdp/comparison-table": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "noorpdp/button",
-            "title": "Advanced Button",
+            "name": "noorpdp/comparison-table",
+            "title": "Comparison Table",
             "category": "noorpdp",
-            "icon": "button",
-            "description": "A customizable call-to-action button with link, colors and typography options.",
+            "icon": "editor-table",
+            "description": "A feature-by-feature comparison table, useful for plans, variants, size guides or specs.",
             "keywords": [
-                "button",
-                "cta",
-                "link"
+                "comparison",
+                "table",
+                "specs",
+                "features",
+                "size guide"
             ],
             "version": "1.0.0",
             "textdomain": "noorpdp",
             "attributes": {
-                "text": {
+                "title": {
                     "type": "string",
                     "source": "html",
-                    "selector": "a",
-                    "default": ""
+                    "selector": "h2",
+                    "default": "Compare Options"
                 },
-                "url": {
-                    "type": "string",
-                    "default": ""
-                },
-                "opensInNewTab": {
+                "boxed": {
                     "type": "boolean",
-                    "default": false
+                    "default": true
                 },
-                "textAlign": {
-                    "type": "string"
+                "boxedWidth": {
+                    "type": "number",
+                    "default": 1000
+                },
+                "style": {
+                    "type": "object",
+                    "default": {
+                        "spacing": {
+                            "padding": {
+                                "top": "3rem",
+                                "right": "1.5rem",
+                                "bottom": "3rem",
+                                "left": "1.5rem"
+                            }
+                        }
+                    }
                 }
             },
             "supports": {
+                "align": [
+                    "wide",
+                    "full"
+                ],
                 "anchor": true,
                 "html": false,
                 "color": {
@@ -1401,50 +1617,6 @@
                 },
                 "spacing": {
                     "margin": true,
-                    "padding": true
-                },
-                "__experimentalBorder": {
-                    "color": true,
-                    "radius": true,
-                    "width": true
-                },
-                "shadow": true
-            },
-            "editorScript": "file:./index.js",
-            "style": "file:./style-index.css",
-            "editorStyle": "file:./index.css"
-        },
-        "noorpdp/container": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "noorpdp/container",
-            "title": "Container",
-            "category": "noorpdp",
-            "icon": "align-wide",
-            "description": "A flexible wrapper section for grouping and laying out other blocks.",
-            "keywords": [
-                "section",
-                "wrapper",
-                "group",
-                "row"
-            ],
-            "version": "1.0.0",
-            "textdomain": "noorpdp",
-            "supports": {
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "anchor": true,
-                "html": false,
-                "color": {
-                    "background": true,
-                    "text": true,
-                    "gradients": true,
-                    "link": true
-                },
-                "spacing": {
-                    "margin": true,
                     "padding": true,
                     "blockGap": true
                 },
@@ -1453,41 +1625,34 @@
                     "width": true,
                     "color": true
                 },
-                "shadow": true,
-                "layout": true
+                "shadow": true
             },
             "editorScript": "file:./index.js",
-            "style": "file:./style-index.css",
-            "editorStyle": "file:./index.css"
+            "style": "file:./style-index.css"
         },
-        "noorpdp/accordion": {
+        "noorpdp/tabs": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "noorpdp/accordion",
-            "title": "Accordion",
+            "name": "noorpdp/tabs",
+            "title": "Tabs",
             "category": "noorpdp",
-            "icon": "menu-alt",
-            "description": "Collapsible content panels, perfect for FAQs. Powered by the WordPress Interactivity API — no jQuery, minimal footprint.",
+            "icon": "table-row-after",
+            "description": "Organize content into switchable tabs. Powered by the WordPress Interactivity API with full keyboard support.",
             "keywords": [
-                "accordion",
-                "faq",
-                "toggle",
-                "collapse"
+                "tabs",
+                "tabbed",
+                "toggle"
             ],
             "version": "1.0.0",
             "textdomain": "noorpdp",
             "attributes": {
-                "allowMultiple": {
-                    "type": "boolean",
-                    "default": false
-                },
                 "boxed": {
                     "type": "boolean",
                     "default": true
                 },
                 "boxedWidth": {
                     "type": "number",
-                    "default": 800
+                    "default": 1200
                 }
             },
             "supports": {
@@ -1515,6 +1680,7 @@
             "editorScript": "file:./index.js",
             "style": "file:./style-index.css",
             "editorStyle": "file:./index.css",
+            "render": "file:./render.php",
             "viewScriptModule": "file:./view.js"
         },
         "noorpdp/trust-badges": {
@@ -1596,123 +1762,75 @@
             "style": "file:./style-index.css",
             "render": "file:./render.php"
         },
-        "noorpdp/product-breadcrumbs": {
+        "noorpdp/hero": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "noorpdp/product-breadcrumbs",
-            "title": "Product Breadcrumbs",
+            "name": "noorpdp/hero",
+            "title": "Hero",
             "category": "noorpdp",
-            "icon": "arrow-right-alt",
-            "description": "Displays the WooCommerce breadcrumb trail for the current product.",
+            "icon": "cover-image",
+            "description": "A full-width hero section with a heading, subheading, call-to-action button and an optional background image or video.",
             "keywords": [
-                "woocommerce",
-                "breadcrumbs",
-                "navigation"
-            ],
-            "version": "1.0.0",
-            "textdomain": "noorpdp",
-            "supports": {
-                "anchor": true,
-                "html": false,
-                "color": {
-                    "background": true,
-                    "text": true,
-                    "gradients": true
-                },
-                "typography": {
-                    "fontSize": true,
-                    "lineHeight": true,
-                    "__experimentalFontFamily": true,
-                    "__experimentalFontWeight": true,
-                    "__experimentalLetterSpacing": true,
-                    "__experimentalTextTransform": true
-                },
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                },
-                "__experimentalBorder": {
-                    "radius": true,
-                    "width": true,
-                    "color": true
-                },
-                "shadow": true
-            },
-            "editorScript": "file:./index.js",
-            "style": "file:./style-index.css",
-            "render": "file:./render.php"
-        },
-        "noorpdp/product-short-description": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "noorpdp/product-short-description",
-            "title": "Product Short Description",
-            "category": "noorpdp",
-            "icon": "align-left",
-            "description": "Displays the current WooCommerce product's short description (excerpt).",
-            "keywords": [
-                "woocommerce",
-                "product",
-                "excerpt",
-                "summary"
-            ],
-            "version": "1.0.0",
-            "textdomain": "noorpdp",
-            "supports": {
-                "anchor": true,
-                "html": false,
-                "color": {
-                    "background": true,
-                    "text": true,
-                    "gradients": true
-                },
-                "typography": {
-                    "fontSize": true,
-                    "lineHeight": true,
-                    "__experimentalFontFamily": true,
-                    "__experimentalFontWeight": true,
-                    "__experimentalLetterSpacing": true,
-                    "__experimentalTextTransform": true
-                },
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                },
-                "__experimentalBorder": {
-                    "radius": true,
-                    "width": true,
-                    "color": true
-                },
-                "shadow": true
-            },
-            "editorScript": "file:./index.js",
-            "style": "file:./style-index.css",
-            "render": "file:./render.php"
-        },
-        "noorpdp/related-products": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "noorpdp/related-products",
-            "title": "Related Products",
-            "category": "noorpdp",
-            "icon": "networking",
-            "description": "Displays WooCommerce's related products for the current product.",
-            "keywords": [
-                "woocommerce",
-                "product",
-                "related",
-                "cross-sell"
+                "hero",
+                "banner",
+                "section",
+                "cover"
             ],
             "version": "1.0.0",
             "textdomain": "noorpdp",
             "attributes": {
-                "productsToShow": {
-                    "type": "number",
-                    "default": 4
+                "heading": {
+                    "type": "string",
+                    "source": "html",
+                    "selector": ".noorpdp-hero__heading",
+                    "default": "Your Hero Heading"
                 },
-                "columns": {
+                "subheading": {
+                    "type": "string",
+                    "source": "html",
+                    "selector": ".noorpdp-hero__subheading",
+                    "default": ""
+                },
+                "backgroundType": {
+                    "type": "string",
+                    "default": "image"
+                },
+                "backgroundImage": {
+                    "type": "object",
+                    "default": {
+                        "url": "",
+                        "id": 0
+                    }
+                },
+                "backgroundVideo": {
+                    "type": "object",
+                    "default": {
+                        "url": "",
+                        "id": 0
+                    }
+                },
+                "overlayColor": {
+                    "type": "string",
+                    "default": "#000000"
+                },
+                "overlayOpacity": {
                     "type": "number",
-                    "default": 4
+                    "default": 0
+                },
+                "textAlign": {
+                    "type": "string",
+                    "default": "center"
+                },
+                "headingFontSize": {
+                    "type": "string",
+                    "default": ""
+                },
+                "subheadingFontSize": {
+                    "type": "string",
+                    "default": ""
+                },
+                "align": {
+                    "type": "string"
                 },
                 "boxed": {
                     "type": "boolean",
@@ -1720,7 +1838,20 @@
                 },
                 "boxedWidth": {
                     "type": "number",
-                    "default": 1200
+                    "default": 700
+                },
+                "style": {
+                    "type": "object",
+                    "default": {
+                        "spacing": {
+                            "padding": {
+                                "top": "5rem",
+                                "right": "1.5rem",
+                                "bottom": "5rem",
+                                "left": "1.5rem"
+                            }
+                        }
+                    }
                 }
             },
             "supports": {
@@ -1733,119 +1864,13 @@
                 "color": {
                     "background": true,
                     "text": true,
-                    "gradients": true
-                },
-                "typography": {
-                    "fontSize": true
+                    "gradients": true,
+                    "enableContrastChecker": false
                 },
                 "spacing": {
                     "margin": true,
-                    "padding": true
-                },
-                "__experimentalBorder": {
-                    "radius": true,
-                    "width": true,
-                    "color": true
-                },
-                "shadow": true
-            },
-            "editorScript": "file:./index.js",
-            "style": "file:./style-index.css",
-            "render": "file:./render.php"
-        },
-        "noorpdp/product-add-to-cart": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "noorpdp/product-add-to-cart",
-            "title": "Product Add to Cart",
-            "category": "noorpdp",
-            "icon": "cart",
-            "description": "Displays the WooCommerce add-to-cart form for the current product, including variations, quantity and stock handling.",
-            "keywords": [
-                "woocommerce",
-                "product",
-                "cart",
-                "buy",
-                "variations"
-            ],
-            "version": "1.0.0",
-            "textdomain": "noorpdp",
-            "supports": {
-                "anchor": true,
-                "html": false,
-                "color": {
-                    "background": true,
-                    "text": true,
-                    "gradients": true
-                },
-                "typography": {
-                    "fontSize": true
-                },
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                },
-                "__experimentalBorder": {
-                    "radius": true,
-                    "width": true,
-                    "color": true
-                },
-                "shadow": true
-            },
-            "editorScript": "file:./index.js",
-            "style": "file:./style-index.css",
-            "viewScript": "file:./view.js",
-            "render": "file:./render.php"
-        },
-        "noorpdp/heading": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "noorpdp/heading",
-            "title": "Advanced Heading",
-            "category": "noorpdp",
-            "icon": "heading",
-            "description": "A heading block with adjustable level, alignment, colors and typography.",
-            "keywords": [
-                "title",
-                "heading",
-                "subtitle"
-            ],
-            "version": "1.0.0",
-            "textdomain": "noorpdp",
-            "attributes": {
-                "content": {
-                    "type": "string",
-                    "source": "html",
-                    "selector": "h1,h2,h3,h4,h5,h6",
-                    "default": ""
-                },
-                "level": {
-                    "type": "number",
-                    "default": 2
-                },
-                "textAlign": {
-                    "type": "string"
-                }
-            },
-            "supports": {
-                "anchor": true,
-                "html": false,
-                "color": {
-                    "background": true,
-                    "text": true,
-                    "gradients": true
-                },
-                "typography": {
-                    "fontSize": true,
-                    "lineHeight": true,
-                    "__experimentalFontFamily": true,
-                    "__experimentalFontWeight": true,
-                    "__experimentalLetterSpacing": true,
-                    "__experimentalTextTransform": true
-                },
-                "spacing": {
-                    "margin": true,
-                    "padding": true
+                    "padding": true,
+                    "blockGap": true
                 },
                 "__experimentalBorder": {
                     "radius": true,
@@ -1858,26 +1883,29 @@
             "style": "file:./style-index.css",
             "editorStyle": "file:./index.css"
         },
-        "noorpdp/tab": {
+        "noorpdp/accordion-item": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "noorpdp/tab",
-            "title": "Tab",
+            "name": "noorpdp/accordion-item",
+            "title": "Accordion Item",
             "category": "noorpdp",
-            "icon": "table-row-after",
-            "description": "A single tab panel inside a Tabs block.",
+            "icon": "menu-alt",
+            "description": "A single collapsible panel inside an Accordion.",
             "keywords": [
-                "tab",
+                "accordion",
+                "item",
                 "panel"
             ],
             "version": "1.0.0",
             "textdomain": "noorpdp",
             "parent": [
-                "noorpdp/tabs"
+                "noorpdp/accordion"
             ],
             "attributes": {
                 "title": {
                     "type": "string",
+                    "source": "html",
+                    "selector": ".noorpdp-accordion__title",
                     "default": ""
                 },
                 "uid": {
@@ -1911,29 +1939,26 @@
             },
             "editorScript": "file:./index.js"
         },
-        "noorpdp/accordion-item": {
+        "noorpdp/tab": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "noorpdp/accordion-item",
-            "title": "Accordion Item",
+            "name": "noorpdp/tab",
+            "title": "Tab",
             "category": "noorpdp",
-            "icon": "menu-alt",
-            "description": "A single collapsible panel inside an Accordion.",
+            "icon": "table-row-after",
+            "description": "A single tab panel inside a Tabs block.",
             "keywords": [
-                "accordion",
-                "item",
+                "tab",
                 "panel"
             ],
             "version": "1.0.0",
             "textdomain": "noorpdp",
             "parent": [
-                "noorpdp/accordion"
+                "noorpdp/tabs"
             ],
             "attributes": {
                 "title": {
                     "type": "string",
-                    "source": "html",
-                    "selector": ".noorpdp-accordion__title",
                     "default": ""
                 },
                 "uid": {
