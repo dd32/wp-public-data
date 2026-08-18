@@ -1,7 +1,7 @@
 {
     "name": "Arts Smooth Scrolling for Elementor",
     "slug": "smooth-scrolling-for-elementor",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "author": "<a href=\"https://profiles.wordpress.org/artemsemkin/\">Artem Semkin</a>",
     "author_profile": "https://profiles.wordpress.org/artemsemkin/",
     "contributors": {
@@ -12,7 +12,7 @@
         }
     },
     "requires": "6.2",
-    "tested": "7.0.4",
+    "tested": "7.1",
     "requires_php": "8.0",
     "requires_plugins": [
         "elementor"
@@ -31,18 +31,18 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2026-08-17 08:32:00",
+    "last_updated": "2026-08-18 14:39:00",
     "added": "2026-08-17",
     "homepage": "https://artemsemkin.com/plugins/smooth-scrolling-for-elementor/",
     "sections": {
         "description": "<p>Smooth Scrolling adds Lenis-powered momentum scrolling to your Elementor site: the page glides to a stop instead of snapping, in-page anchor links animate to their target, and GSAP&#8217;s ScrollTrigger stays in sync automatically when it&#8217;s on the page.</p>\n<p>It works the moment you activate it — there&#8217;s nothing to switch on. Tune the duration and easing to taste, and the rest of the site keeps working as before — Elementor Sticky, dynamic content, everything.</p>\n<p>Scrolling is powered by Lenis (MIT) by darkroom.engineering, compiled into the plugin&#8217;s own bundle.</p>\n<h4>What it does</h4>\n<ul>\n<li><strong>Momentum scrolling.</strong> The page scrolls through Lenis instead of the browser&#8217;s native scroll, with a duration and easing curve set from Site Settings.</li>\n<li><strong>Anchor links.</strong> Clicking a same-page <code>#anchor</code> link (or a bare <code>#</code>) scrolls smoothly to the target, using a slightly snappier easing than the main scroll.</li>\n<li><strong>GSAP ScrollTrigger sync.</strong> If GSAP and ScrollTrigger are already on the page, the engine detects them, drives its render loop off GSAP&#8217;s ticker instead of a separate animation-frame loop, and keeps ScrollTrigger&#8217;s cached scroll position current on every frame.</li>\n<li><strong>Disable on touch devices.</strong> On by default: phones and tablets never download the engine, since there&#8217;s no pointer-driven scrolling to smooth there.</li>\n</ul>\n<h4>Configuration</h4>\n<p>Everything lives in one tab: Elementor <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Site Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Smooth Scrolling. Duration, easing (Expo Out or Linear), and the disable-on-touch switch. Changes apply live in the editor preview.</p>\n<h4>Footprint</h4>\n<p>A small inline loader sets the page&#8217;s scroll state synchronously and fetches the engine bundle itself — nothing is enqueued. On a device where Disable on Touch Devices applies, that fetch never happens.</p>\n",
         "installation": "<ol>\n<li>Install and activate Elementor (the free version is fine).</li>\n<li>Install and activate Arts Smooth Scrolling for Elementor.</li>\n<li>Browse your site. Smooth scrolling is already running. To tune duration and easing, open Elementor&#8217;s Site Settings and find the Smooth Scrolling tab.</li>\n</ol>\n",
         "faq": "\n<dt id=\"how%20do%20i%20access%20the%20lenis%20instance%20from%20javascript%3F\">\nHow do I access the Lenis instance from JavaScript?\n</h4>\n<p>\n<p>window.artsSmoothScrolling.ready is a promise that resolves once the engine has started. <code>window.artsSmoothScrolling.lenis</code> is a getter for the live Lenis instance, null while the engine isn&#8217;t running.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20gsap%20and%20scrolltrigger%3F\">\nDoes it work with GSAP and ScrollTrigger?\n</h4>\n<p>\n<p>Yes, automatically. If <code>window.gsap</code> is present, the engine drives Lenis off GSAP&#8217;s ticker (added with priority, so it runs ahead of GSAP&#8217;s own tweens) instead of its own animation-frame loop, and calls <code>gsap.ticker.lagSmoothing(0)</code> once — the standard recipe for pairing GSAP with a smooth-scroll library. That call changes a global GSAP setting and is not reverted if smooth scrolling is later disabled.</p>\n</p>\n<dt id=\"what%20happens%20when%20i%20click%20a%20link%20like%20%2F%23pricing%20on%20a%20page%20that%20isn%27t%20the%20homepage%3F\">\nWhat happens when I click a link like /#pricing on a page that isn&#8217;t the homepage?\n</h4>\n<p>\n<p>It navigates to the homepage and then scrolls to the <code>pricing</code> anchor there — the same thing that link does in any browser without this plugin. There&#8217;s no trailing-slash normalization in the same-page check, so a link is only treated as pointing at the current page when its URL matches exactly.</p>\n</p>\n<dt id=\"does%20it%20affect%20elementor%27s%20sticky%20elements%3F\">\nDoes it affect Elementor&#8217;s Sticky elements?\n</h4>\n<p>\n<p>Elementor&#8217;s Sticky effect has its own &#8220;Anchor Offset&#8221; (<code>sticky_anchor_link_offset</code>) setting for compensating anchor-link scroll targets under a sticky header. That offset isn&#8217;t applied while smooth scrolling is active, since anchor scrolling then goes through Lenis rather than Elementor&#8217;s native scroll handling.</p>\n</p>\n<dt id=\"does%20it%20load%20anything%20on%20touch%20devices%3F\">\nDoes it load anything on touch devices?\n</h4>\n<p>\n<p>Not when Disable on Touch Devices is on, which is the default. The inline loader checks a media query before ever requesting the engine bundle, so phones and tablets download nothing.</p>\n</p>\n<dt id=\"how%20do%20i%20turn%20it%20off%3F\">\nHow do I turn it off?\n</h4>\n<p>\n<p>Deactivate the plugin, or for conditional control use the <code>arts_smooth_scrolling/enabled</code> PHP filter.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20ajax%20page-transition%20plugins%20%28barba.js-based%20themes%2C%20etc.%29%3F\">\nDoes it work with AJAX page-transition plugins (Barba.js-based themes, etc.)?\n</h4>\n<p>\n<p>Not certified yet with 1.0.0. The engine is designed to persist across such transitions rather than re-initialize on every page swap, but this hasn&#8217;t been tested against specific transitions plugins. If you run into issues, please report them.</p>\n</p>\n\n",
-        "changelog": "<h4>1.0.0</h4>\n<p>Initial release.</p>\n"
+        "changelog": "<h4>1.0.1</h4>\n<ul>\n<li>improved: confirmed compatibility with WordPress 7.1.</li>\n</ul>\n<h4>1.0.0</h4>\n<p>Initial release.</p>\n"
     },
     "short_description": "Lenis-powered momentum scrolling for Elementor, with automatic GSAP ScrollTrigger sync and zero engine bytes on touch devices.",
     "description": "<p>Smooth Scrolling adds Lenis-powered momentum scrolling to your Elementor site: the page glides to a stop instead of snapping, in-page anchor links animate to their target, and GSAP&#8217;s ScrollTrigger stays in sync automatically when it&#8217;s on the page.</p>\n<p>It works the moment you activate it — there&#8217;s nothing to switch on. Tune the duration and easing to taste, and the rest of the site keeps working as before — Elementor Sticky, dynamic content, everything.</p>\n<p>Scrolling is powered by Lenis (MIT) by darkroom.engineering, compiled into the plugin&#8217;s own bundle.</p>\n<h4>What it does</h4>\n<ul>\n<li><strong>Momentum scrolling.</strong> The page scrolls through Lenis instead of the browser&#8217;s native scroll, with a duration and easing curve set from Site Settings.</li>\n<li><strong>Anchor links.</strong> Clicking a same-page <code>#anchor</code> link (or a bare <code>#</code>) scrolls smoothly to the target, using a slightly snappier easing than the main scroll.</li>\n<li><strong>GSAP ScrollTrigger sync.</strong> If GSAP and ScrollTrigger are already on the page, the engine detects them, drives its render loop off GSAP&#8217;s ticker instead of a separate animation-frame loop, and keeps ScrollTrigger&#8217;s cached scroll position current on every frame.</li>\n<li><strong>Disable on touch devices.</strong> On by default: phones and tablets never download the engine, since there&#8217;s no pointer-driven scrolling to smooth there.</li>\n</ul>\n<h4>Configuration</h4>\n<p>Everything lives in one tab: Elementor <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Site Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Smooth Scrolling. Duration, easing (Expo Out or Linear), and the disable-on-touch switch. Changes apply live in the editor preview.</p>\n<h4>Footprint</h4>\n<p>A small inline loader sets the page&#8217;s scroll state synchronously and fetches the engine bundle itself — nothing is enqueued. On a device where Disable on Touch Devices applies, that fetch never happens.</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/smooth-scrolling-for-elementor.1.0.0.zip",
+    "download_link": "https://downloads.wordpress.org/plugin/smooth-scrolling-for-elementor.1.0.1.zip",
     "upgrade_notice": [],
     "screenshots": [
         {
@@ -61,9 +61,10 @@
         "scrolling": "scrolling",
         "smooth-scroll": "smooth scroll"
     },
-    "stable_tag": "1.0.0",
+    "stable_tag": "1.0.1",
     "versions": {
         "1.0.0": "https://downloads.wordpress.org/plugin/smooth-scrolling-for-elementor.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/smooth-scrolling-for-elementor.1.0.1.zip",
         "trunk": "https://downloads.wordpress.org/plugin/smooth-scrolling-for-elementor.zip"
     },
     "business_model": false,
