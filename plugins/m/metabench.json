@@ -1,0 +1,78 @@
+{
+    "name": "MetaBench",
+    "slug": "metabench",
+    "version": "1.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/silver222/\">Silver222</a>",
+    "author_profile": "https://profiles.wordpress.org/silver222/",
+    "contributors": {
+        "silver222": {
+            "profile": "https://profiles.wordpress.org/silver222/",
+            "avatar": "https://secure.gravatar.com/avatar/c8bde7eacb3bdecc0d339cf93c37bc2bc6166dadebf61a0faf269cf5cf16c7e3?s=96&d=monsterid&r=g",
+            "display_name": "Silver222"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/metabench/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-18 13:05:00",
+    "added": "2026-08-18",
+    "homepage": "",
+    "sections": {
+        "description": "<p>MetaBench replaces the cramped core Custom Fields box with a panel built for<br />\nsites that actually have a lot of metadata.</p>\n<ul>\n<li><strong>Search</strong> across both keys and values, with matches highlighted as you type.</li>\n<li><strong>Filter</strong> by value type — text, number, long text, array, JSON or empty.</li>\n<li><strong>Sort</strong> by key, by value size, or by raw database order.</li>\n<li><strong>Edit in place</strong>, with a textarea for long values and JSON editing for<br />\nserialised arrays.</li>\n<li><strong>Rename, create and delete</strong> fields, each independently switchable.</li>\n<li>Works on <strong>posts and terms</strong>, on whichever post types and taxonomies you<br />\nenable.</li>\n<li>Works in the <strong>block editor and the classic editor</strong> with no duplicated UI.</li>\n</ul>\n<h4>Permissions</h4>\n<p>For ordinary meta keys, every read and write goes through the per-key<br />\ncapabilities that core derives from <code>register_meta()</code> auth callbacks. A user who<br />\ncannot edit such a field through core cannot edit it through MetaBench either.</p>\n<p>Protected keys — those beginning with an underscore, where ACF, SEO plugins and<br />\nWooCommerce keep their data — work differently, and the difference is worth<br />\nunderstanding.</p>\n<pre><code>map_meta_cap() denies `edit_post_meta` on a protected key for *every* role,\n</code></pre>\n<p>including administrators, unless a plugin has registered an <code>auth_..._meta_...</code><br />\nfilter for that specific key. That blanket denial is aimed at untrusted REST and<br />\nXML-RPC callers, and it makes the core capability unusable as a gate for a<br />\ndeliberate administrative tool.</p>\n<p>MetaBench therefore gates protected keys separately. They are listed and<br />\neditable only when <strong>both</strong>:</p>\n<ol>\n<li>&#8220;Show protected fields&#8221; is switched on in the settings, and</li>\n<li>the user holds <code>manage_options</code> (filterable via<br />\n   metabench_protected_capability).</li>\n</ol>\n<p>This is an intentional step past the core denial, kept as narrow and explicit as<br />\npossible. If you do not want that behaviour on your site, leave the setting off<br />\n— which is the default — and MetaBench will never touch a protected key.</p>\n<h4>Translations</h4>\n<p>MetaBench ships translated into German, Spanish, French, Italian, Japanese,<br />\nDutch, Polish, Brazilian Portuguese, Russian, Ukrainian and Simplified Chinese,<br />\ncovering all 119 translatable strings.</p>\n<p>Every string the JavaScript panel displays is defined in PHP and handed to the<br />\nbrowser through <code>wp_localize_script()</code>, so the whole interface translates from a<br />\nsingle <code>.po</code> file with no JavaScript build step and no separate JSON language<br />\npacks.</p>\n<p>To retranslate or add a locale, edit the <code>.po</code> file in <code>languages/</code> with Poedit<br />\nor any gettext editor, then recompile:</p>\n<pre><code>wp i18n make-mo languages/ languages/\nwp i18n make-php languages/\n</code></pre>\n<p>After changing translatable strings in the source, regenerate the template with<br />\n    wp i18n make-pot . languages/metabench.pot &#8211;domain=metabench.</p>\n<h4>For developers</h4>\n<p>Filters:</p>\n<ul>\n<li><code>metabench_settings</code> — the effective settings array.</li>\n<li><code>metabench_required_capability</code> — the capability gating the panel.</li>\n<li><code>metabench_protected_capability</code> — the capability gating protected keys.</li>\n<li><code>metabench_available_post_types</code> / <code>metabench_available_taxonomies</code> — the<br />\nchoices offered on the settings screen.</li>\n<li><code>metabench_get_items</code> — the rows returned for an object.</li>\n<li><code>metabench_validate_key</code> — return a <code>WP_Error</code> to block a write.</li>\n</ul>\n<p>REST routes, all under <code>metabench/v1</code>:</p>\n<ul>\n<li><code>GET    /fields/&lt;object_type&gt;/&lt;object_id&gt;</code></li>\n<li><code>POST   /fields/&lt;object_type&gt;/&lt;object_id&gt;</code></li>\n<li><code>POST   /fields/&lt;object_type&gt;/&lt;object_id&gt;/&lt;meta_id&gt;</code></li>\n<li><code>DELETE /fields/&lt;object_type&gt;/&lt;object_id&gt;/&lt;meta_id&gt;</code></li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>metabench</code> folder to <code>/wp-content/plugins/</code>.</li>\n<li>Activate the plugin through the Plugins screen.</li>\n<li>Visit <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> MetaBench</strong> and enable the post types and taxonomies you<br />\nwant the panel on.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20changes%20save%20when%20i%20update%20the%20post%3F\">\nDo changes save when I update the post?\n</h4>\n<p>\n<p>No. Each field saves immediately over the REST API, independently of the post.<br />\nThat means you can fix one meta value without publishing unrelated draft edits,<br />\nbut it also means there is no undo — the panel says so beneath the table.</p>\n</p>\n<dt id=\"why%20can%20i%20not%20see%20my%20acf%20fields%3F\">\nWhy can I not see my ACF fields?\n</h4>\n<p>\n<p>ACF stores its values in protected keys beginning with an underscore. Enable<br />\n&#8220;Show protected fields&#8221; under Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> MetaBench, and note that only users<br />\nwith <code>manage_options</code> will see them. Editing those by hand can desynchronise<br />\nACF&#8217;s own field references, so change them only when you know what a key does.</p>\n</p>\n<dt id=\"why%20is%20one%20of%20my%20fields%20read%20only%3F\">\nWhy is one of my fields read only?\n</h4>\n<p>\n<p>Either you lack the capability for that key, or the stored value is a<br />\nserialised PHP object. Objects cannot round-trip through the JSON editor<br />\nwithout risking data loss, so MetaBench shows them but refuses to write them.</p>\n</p>\n<dt id=\"does%20it%20handle%20duplicate%20meta%20keys%3F\">\nDoes it handle duplicate meta keys?\n</h4>\n<p>\n<p>Yes. Rows are addressed by <code>meta_id</code>, so several rows sharing one key are<br />\nlisted and edited individually rather than collapsed into one.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.1</h4>\n<ul>\n<li>Hardened deserialization of stored meta values so a protected-key payload<br />\ncan no longer instantiate arbitrary PHP objects on read.</li>\n<li>Corrected a docblock that claimed object-cache caching the code doesn&#8217;t do.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "A workbench for metadata. Search, filter, sort and edit custom fields for posts and terms from one fast panel.",
+    "description": "<p>MetaBench replaces the cramped core Custom Fields box with a panel built for<br />\nsites that actually have a lot of metadata.</p>\n<ul>\n<li><strong>Search</strong> across both keys and values, with matches highlighted as you type.</li>\n<li><strong>Filter</strong> by value type — text, number, long text, array, JSON or empty.</li>\n<li><strong>Sort</strong> by key, by value size, or by raw database order.</li>\n<li><strong>Edit in place</strong>, with a textarea for long values and JSON editing for<br />\nserialised arrays.</li>\n<li><strong>Rename, create and delete</strong> fields, each independently switchable.</li>\n<li>Works on <strong>posts and terms</strong>, on whichever post types and taxonomies you<br />\nenable.</li>\n<li>Works in the <strong>block editor and the classic editor</strong> with no duplicated UI.</li>\n</ul>\n<h4>Permissions</h4>\n<p>For ordinary meta keys, every read and write goes through the per-key<br />\ncapabilities that core derives from <code>register_meta()</code> auth callbacks. A user who<br />\ncannot edit such a field through core cannot edit it through MetaBench either.</p>\n<p>Protected keys — those beginning with an underscore, where ACF, SEO plugins and<br />\nWooCommerce keep their data — work differently, and the difference is worth<br />\nunderstanding.</p>\n<pre><code>map_meta_cap() denies `edit_post_meta` on a protected key for *every* role,\n</code></pre>\n<p>including administrators, unless a plugin has registered an <code>auth_..._meta_...</code><br />\nfilter for that specific key. That blanket denial is aimed at untrusted REST and<br />\nXML-RPC callers, and it makes the core capability unusable as a gate for a<br />\ndeliberate administrative tool.</p>\n<p>MetaBench therefore gates protected keys separately. They are listed and<br />\neditable only when <strong>both</strong>:</p>\n<ol>\n<li>&#8220;Show protected fields&#8221; is switched on in the settings, and</li>\n<li>the user holds <code>manage_options</code> (filterable via<br />\n   metabench_protected_capability).</li>\n</ol>\n<p>This is an intentional step past the core denial, kept as narrow and explicit as<br />\npossible. If you do not want that behaviour on your site, leave the setting off<br />\n— which is the default — and MetaBench will never touch a protected key.</p>\n<h4>Translations</h4>\n<p>MetaBench ships translated into German, Spanish, French, Italian, Japanese,<br />\nDutch, Polish, Brazilian Portuguese, Russian, Ukrainian and Simplified Chinese,<br />\ncovering all 119 translatable strings.</p>\n<p>Every string the JavaScript panel displays is defined in PHP and handed to the<br />\nbrowser through <code>wp_localize_script()</code>, so the whole interface translates from a<br />\nsingle <code>.po</code> file with no JavaScript build step and no separate JSON language<br />\npacks.</p>\n<p>To retranslate or add a locale, edit the <code>.po</code> file in <code>languages/</code> with Poedit<br />\nor any gettext editor, then recompile:</p>\n<pre><code>wp i18n make-mo languages/ languages/\nwp i18n make-php languages/\n</code></pre>\n<p>After changing translatable strings in the source, regenerate the template with<br />\n    wp i18n make-pot . languages/metabench.pot &#8211;domain=metabench.</p>\n<h4>For developers</h4>\n<p>Filters:</p>\n<ul>\n<li><code>metabench_settings</code> — the effective settings array.</li>\n<li><code>metabench_required_capability</code> — the capability gating the panel.</li>\n<li><code>metabench_protected_capability</code> — the capability gating protected keys.</li>\n<li><code>metabench_available_post_types</code> / <code>metabench_available_taxonomies</code> — the<br />\nchoices offered on the settings screen.</li>\n<li><code>metabench_get_items</code> — the rows returned for an object.</li>\n<li><code>metabench_validate_key</code> — return a <code>WP_Error</code> to block a write.</li>\n</ul>\n<p>REST routes, all under <code>metabench/v1</code>:</p>\n<ul>\n<li><code>GET    /fields/&lt;object_type&gt;/&lt;object_id&gt;</code></li>\n<li><code>POST   /fields/&lt;object_type&gt;/&lt;object_id&gt;</code></li>\n<li><code>POST   /fields/&lt;object_type&gt;/&lt;object_id&gt;/&lt;meta_id&gt;</code></li>\n<li><code>DELETE /fields/&lt;object_type&gt;/&lt;object_id&gt;/&lt;meta_id&gt;</code></li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/metabench.1.0.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "custom-fields": "custom fields",
+        "developer": "developer",
+        "metadata": "metadata",
+        "post-meta": "post meta",
+        "term-meta": "term-meta"
+    },
+    "stable_tag": "1.0.1",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/metabench.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/metabench.1.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/metabench.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/metabench/assets/banner-772x250.png?rev=3652904",
+        "high": "https://ps.w.org/metabench/assets/banner-1544x500.png?rev=3652904"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/metabench/assets/icon-128x128.png?rev=3652904",
+        "2x": "https://ps.w.org/metabench/assets/icon-256x256.png?rev=3652904"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
