@@ -1,0 +1,77 @@
+{
+    "name": "Capo &#8211; Head Optimizer",
+    "slug": "capo-head-optimizer",
+    "version": "0.1.3",
+    "author": "<a href=\"https://profiles.wordpress.org/rviscomi/\">Rick Viscomi</a>",
+    "author_profile": "https://profiles.wordpress.org/rviscomi/",
+    "contributors": {
+        "rviscomi": {
+            "profile": "https://profiles.wordpress.org/rviscomi/",
+            "avatar": "https://secure.gravatar.com/avatar/fc41a928f0ce437d059d8b2f9c3c181abcb4bcf19b637b8a722e505edc3a2759?s=96&d=monsterid&r=g",
+            "display_name": "Rick Viscomi"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/capo-head-optimizer/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-19 13:30:00",
+    "added": "2026-08-19",
+    "homepage": "https://github.com/rviscomi/capo-wp",
+    "sections": {
+        "description": "<p>In standard WordPress sites, WordPress Core, themes, SEO plugins, analytics scripts, and third-party plugins inject elements into <code>wp_head()</code> in arbitrary order. This can lead to critical performance pitfalls:</p>\n<ul>\n<li><strong>Delayed Title Tag Rendering:</strong> SEO metadata and large JSON-LD blocks placed before <code>&lt;title&gt;</code>.</li>\n<li><strong>Delayed Resource Discovery:</strong> Preconnects, preloads, and async scripts pushed below dozens of CSS stylesheets.</li>\n<li><strong>Render-Blocking Bottlenecks:</strong> External synchronous scripts blocking CSS and parser execution.</li>\n</ul>\n<p><strong>Capo solves this automatically.</strong> By intercepting the page response via output buffering, Capo uses a deterministic, stable sorting algorithm to reorder <code>&lt;head&gt;</code> elements strictly according to browser critical rendering path priorities.</p>\n<h3>The Capo Head Priority Spectrum</h3>\n<p>Capo organizes elements into 11 strict priority tiers (Weight 10 down to 0):</p>\n<ol>\n<li><strong>Weight 10 (Critical Meta &amp; Viewport):</strong> <code>&lt;base&gt;</code>, <code>&lt;meta charset&gt;</code>, <code>&lt;meta name=\"viewport\"&gt;</code>, critical <code>http-equiv</code> headers (CSP, origin-trial, accept-ch).</li>\n<li><strong>Weight 9 (Title):</strong> <code>&lt;title&gt;</code>.</li>\n<li><strong>Weight 8 (Preconnect):</strong> <code>&lt;link rel=\"preconnect\"&gt;</code>.</li>\n<li><strong>Weight 7 (Async Script):</strong> <code>&lt;script src=\"...\" async&gt;</code>.</li>\n<li><strong>Weight 6 (CSS @import Styles):</strong> <code>&lt;style&gt;</code> blocks containing <code>@import</code> rules.</li>\n<li><strong>Weight 5 (Sync / Inline Scripts):</strong> Synchronous/inline JavaScript (<code>&lt;script&gt;</code> without defer/async).</li>\n<li><strong>Weight 4 (Stylesheets &amp; Style Blocks):</strong> <code>&lt;link rel=\"stylesheet\"&gt;</code>, <code>&lt;style&gt;</code> blocks.</li>\n<li><strong>Weight 3 (Preload):</strong> <code>&lt;link rel=\"preload\"&gt;</code>, <code>&lt;link rel=\"modulepreload\"&gt;</code>.</li>\n<li><strong>Weight 2 (Defer Script):</strong> <code>&lt;script src=\"...\" defer&gt;</code>, <code>&lt;script src=\"...\" type=\"module\"&gt;</code>.</li>\n<li><strong>Weight 1 (Prefetch / Prerender):</strong> <code>&lt;link rel=\"prefetch\"&gt;</code>, <code>&lt;link rel=\"dns-prefetch\"&gt;</code>, <code>&lt;link rel=\"prerender\"&gt;</code>, <code>&lt;script type=\"speculationrules\"&gt;</code>.</li>\n<li><strong>Weight 0 (Other Metadata):</strong> OpenGraph, Twitter cards, Schema JSON-LD, RSS feeds, favicons, robots metadata.</li>\n</ol>\n<h3>Features</h3>\n<ul>\n<li><strong>Zero Configuration:</strong> Activate the plugin and your <code>&lt;head&gt;</code> is immediately optimized.</li>\n<li><strong>Deterministic Stable Sort:</strong> Equal-weight elements retain their exact relative order, preserving CSS cascade specificity and JavaScript dependencies.</li>\n<li><strong>Full Cache Compatibility:</strong> Works seamlessly with WP Super Cache, W3 Total Cache, WP Rocket, LiteSpeed Cache, and Cloudflare.</li>\n<li><strong>Safe HTML Tokenizer:</strong> Respects HTML comments, conditional comments (<code>&lt;!--[if ...]&gt;</code>), CDATA blocks, and inline script markup.</li>\n<li><strong>Site Health &amp; Admin Diagnostics:</strong> Real-time <code>&lt;head&gt;</code> hygiene warnings and diagnostic status in Tools &gt; Site Health and Admin Toolbar.</li>\n<li><strong>Testing &amp; Bypass Mode:</strong> Append <code>?capo=off</code> to any frontend URL to inspect the un-reordered head.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/capo-head-optimizer</code> directory, or install the plugin through the WordPress plugins screen directly.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> screen in WordPress.</li>\n<li>If you use a page caching plugin (e.g. WP Super Cache, WP Rocket), clear/flush your cache.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20capo%20break%20script%20dependencies%20or%20stylesheet%20cascading%3F\">\nDoes Capo break script dependencies or stylesheet cascading?\n</h4>\n<p>\n<p>No. Capo uses a deterministic stable sort. If you have multiple stylesheets (all Weight 4) or multiple scripts (all Weight 5), they will maintain their exact original relative order.</p>\n</p>\n<dt id=\"does%20capo%20work%20with%20page%20caching%20plugins%3F\">\nDoes Capo work with page caching plugins?\n</h4>\n<p>\n<p>Yes. Page caching plugins capture the output buffer generated by WordPress. With Capo activated, the cached HTML stored on disk or in memory will already have its <code>&lt;head&gt;</code> sorted, incurring 0ms runtime overhead for cached visitors.</p>\n</p>\n<dt id=\"how%20can%20i%20test%20the%20difference%3F\">\nHow can I test the difference?\n</h4>\n<p>\n<p>You can view any page with <code>?capo=off</code> appended to the URL to bypass reordering and compare your raw <code>&lt;head&gt;</code> output against the optimized output.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.3</h4>\n<ul>\n<li>Added support for Speculation Rules API (<code>&lt;script type=\"speculationrules\"&gt;</code>) classified as Weight 1 (Prefetch / Prerender) matching <code>@rviscomi/capo.js</code> v2.2.1.</li>\n<li>Enhanced HTML tokenizer and attribute parsing to robustly preserve tags with <code>&gt;</code> inside quoted attributes, boolean attributes, and empty string attributes.</li>\n<li>Added full support for HTML conditional comments (<code>&lt;!--[if ...]&gt;</code>) and CDATA sections in <code>&lt;head&gt;</code>.</li>\n<li>Hardened Admin Toolbar diagnostic injection against regex backreference exploits using safe substring replacement.</li>\n<li>Added pass-by-reference <code>$analysis</code> parameter and static accessor/reset methods to Parser for optimized memory lifecycle management.</li>\n<li>Extended Site Health loopback check request timeout to 10 seconds via dynamic filter.</li>\n<li>Consolidated test bootstrap harness and added CI matrix testing across PHP 7.4 through 8.3.</li>\n</ul>\n<h4>0.1.2</h4>\n<ul>\n<li>Adhered strictly to WordPress.org Plugin Directory guidelines and security standards.</li>\n<li>Changed debug performance HTML comment to opt-in by default and removed external URLs.</li>\n<li>Added uninstall.php handler to clean up database options on deletion.</li>\n<li>Fixed PHP 7.4 backwards compatibility in origin trial subdomain validation.</li>\n<li>Removed insecure sslverify override from Site Health loopback check.</li>\n<li>Enforced 5-tag maximum limit in readme metadata.</li>\n</ul>\n<h4>0.1.1</h4>\n<ul>\n<li>Added <code>&lt;head&gt;</code> validation engine with Origin Trial binary token decoding and origin/expiry checks.</li>\n<li>Added live page diagnostics to frontend WordPress Admin Toolbar with scrollable warnings dropdown.</li>\n<li>Added HTML syntax highlighting and decoded token metadata table in WordPress Site Health.</li>\n<li>Improved toolbar integration and output buffering lifecycle.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial public beta release.</li>\n<li>Output buffering engine for automatic <code>&lt;head&gt;</code> reordering.</li>\n<li>1:1 parity with <code>@rviscomi/capo.js</code> rules and validation engine.</li>\n<li>Site Health integration and bypass mode (<code>?capo=off</code>).</li>\n</ul>\n"
+    },
+    "short_description": "Automatically reorders the HTML head of your WordPress pages for optimal browser rendering performance using the Capo.js methodology.",
+    "description": "<p>In standard WordPress sites, WordPress Core, themes, SEO plugins, analytics scripts, and third-party plugins inject elements into <code>wp_head()</code> in arbitrary order. This can lead to critical performance pitfalls:</p>\n<ul>\n<li><strong>Delayed Title Tag Rendering:</strong> SEO metadata and large JSON-LD blocks placed before <code>&lt;title&gt;</code>.</li>\n<li><strong>Delayed Resource Discovery:</strong> Preconnects, preloads, and async scripts pushed below dozens of CSS stylesheets.</li>\n<li><strong>Render-Blocking Bottlenecks:</strong> External synchronous scripts blocking CSS and parser execution.</li>\n</ul>\n<p><strong>Capo solves this automatically.</strong> By intercepting the page response via output buffering, Capo uses a deterministic, stable sorting algorithm to reorder <code>&lt;head&gt;</code> elements strictly according to browser critical rendering path priorities.</p>\n<h3>The Capo Head Priority Spectrum</h3>\n<p>Capo organizes elements into 11 strict priority tiers (Weight 10 down to 0):</p>\n<ol>\n<li><strong>Weight 10 (Critical Meta &amp; Viewport):</strong> <code>&lt;base&gt;</code>, <code>&lt;meta charset&gt;</code>, <code>&lt;meta name=\"viewport\"&gt;</code>, critical <code>http-equiv</code> headers (CSP, origin-trial, accept-ch).</li>\n<li><strong>Weight 9 (Title):</strong> <code>&lt;title&gt;</code>.</li>\n<li><strong>Weight 8 (Preconnect):</strong> <code>&lt;link rel=\"preconnect\"&gt;</code>.</li>\n<li><strong>Weight 7 (Async Script):</strong> <code>&lt;script src=\"...\" async&gt;</code>.</li>\n<li><strong>Weight 6 (CSS @import Styles):</strong> <code>&lt;style&gt;</code> blocks containing <code>@import</code> rules.</li>\n<li><strong>Weight 5 (Sync / Inline Scripts):</strong> Synchronous/inline JavaScript (<code>&lt;script&gt;</code> without defer/async).</li>\n<li><strong>Weight 4 (Stylesheets &amp; Style Blocks):</strong> <code>&lt;link rel=\"stylesheet\"&gt;</code>, <code>&lt;style&gt;</code> blocks.</li>\n<li><strong>Weight 3 (Preload):</strong> <code>&lt;link rel=\"preload\"&gt;</code>, <code>&lt;link rel=\"modulepreload\"&gt;</code>.</li>\n<li><strong>Weight 2 (Defer Script):</strong> <code>&lt;script src=\"...\" defer&gt;</code>, <code>&lt;script src=\"...\" type=\"module\"&gt;</code>.</li>\n<li><strong>Weight 1 (Prefetch / Prerender):</strong> <code>&lt;link rel=\"prefetch\"&gt;</code>, <code>&lt;link rel=\"dns-prefetch\"&gt;</code>, <code>&lt;link rel=\"prerender\"&gt;</code>, <code>&lt;script type=\"speculationrules\"&gt;</code>.</li>\n<li><strong>Weight 0 (Other Metadata):</strong> OpenGraph, Twitter cards, Schema JSON-LD, RSS feeds, favicons, robots metadata.</li>\n</ol>\n<h3>Features</h3>\n<ul>\n<li><strong>Zero Configuration:</strong> Activate the plugin and your <code>&lt;head&gt;</code> is immediately optimized.</li>\n<li><strong>Deterministic Stable Sort:</strong> Equal-weight elements retain their exact relative order, preserving CSS cascade specificity and JavaScript dependencies.</li>\n<li><strong>Full Cache Compatibility:</strong> Works seamlessly with WP Super Cache, W3 Total Cache, WP Rocket, LiteSpeed Cache, and Cloudflare.</li>\n<li><strong>Safe HTML Tokenizer:</strong> Respects HTML comments, conditional comments (<code>&lt;!--[if ...]&gt;</code>), CDATA blocks, and inline script markup.</li>\n<li><strong>Site Health &amp; Admin Diagnostics:</strong> Real-time <code>&lt;head&gt;</code> hygiene warnings and diagnostic status in Tools &gt; Site Health and Admin Toolbar.</li>\n<li><strong>Testing &amp; Bypass Mode:</strong> Append <code>?capo=off</code> to any frontend URL to inspect the un-reordered head.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/capo-head-optimizer.0.1.3.zip",
+    "upgrade_notice": {
+        "0.1.3": "<p>Adds Speculation Rules API classification, tokenizer robustness for conditional comments/CDATA/quoted attributes, Admin Bar security hardening, and parity with capo.js v2.2.1.</p>",
+        "0.1.2": "<p>Adds full WordPress.org directory compliance, opt-in debug comments, uninstall cleanup, and PHP 7.4 compatibility improvements.</p>",
+        "0.1.1": "<p>Includes validation engine, Admin Toolbar live diagnostics, and enhanced Site Health inspection.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "head": "head",
+        "performance": "performance",
+        "seo": "seo",
+        "speed": "speed",
+        "web-vitals": "web vitals"
+    },
+    "stable_tag": "0.1.3",
+    "versions": {
+        "0.1.3": "https://downloads.wordpress.org/plugin/capo-head-optimizer.0.1.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/capo-head-optimizer.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://rviscomi.dev/",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/capo-head-optimizer.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
