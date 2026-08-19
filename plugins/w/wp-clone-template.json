@@ -1,19 +1,19 @@
 {
     "name": "Export Themes",
     "slug": "wp-clone-template",
-    "version": "2.12",
-    "author": "<a href=\"https://milardovich.com.ar/\">Sergio Milardovich</a>",
+    "version": "3.0",
+    "author": "<a href=\"https://profiles.wordpress.org/milardovich/\">Sergio Milardovich</a>",
     "author_profile": "https://profiles.wordpress.org/milardovich/",
     "contributors": {
         "milardovich": {
             "profile": "https://profiles.wordpress.org/milardovich/",
-            "avatar": "https://secure.gravatar.com/avatar/815dffeba082e9aeafd3c9b654ddc39e?s=96&d=monsterid&r=g",
+            "avatar": "https://secure.gravatar.com/avatar/11da9ccfef937bdd800568c509f31a2f3ca684d7219a78736c6ba817d2cb2546?s=96&d=monsterid&r=g",
             "display_name": "Sergio Milardovich"
         }
     },
-    "requires": "4.0",
-    "tested": "5.4.16",
-    "requires_php": false,
+    "requires": "6.0",
+    "tested": "7.0.4",
+    "requires_php": "7.4",
     "requires_plugins": [],
     "compatibility": [],
     "rating": 98,
@@ -28,48 +28,51 @@
     "support_url": "https://wordpress.org/support/plugin/wp-clone-template/",
     "support_threads": 0,
     "support_threads_resolved": 0,
-    "active_installs": 6000,
-    "downloaded": 117270,
-    "last_updated": "2020-04-10 17:25:00",
+    "active_installs": 2000,
+    "last_updated": "2026-08-19 00:45:00",
     "added": "2011-04-26",
-    "homepage": "",
+    "homepage": "https://wordpress.org/plugins/wp-clone-template/",
     "sections": {
-        "description": "<p>With this plugin you&#8217;ll be able to export your themes in a .zip file and then install with that .zip file the same theme in other servers using the &#8220;upload&#8221; feature of wordpress.</p>\n<h3>Usage</h3>\n<p>After installing the plugin, you need to go to the &#8220;Export&#8221; subsection in the &#8220;Appearence&#8221; menu. Just select the theme you want and then click in the &#8220;Export&#8221; button. You will get a .zip file to download. Once you have the .zip file in your computer, you can install the theme going to Appearence/Themes/Install Themes/Upload in your wordpress administration pannel, and then select your .zip file and click on &#8220;Install now&#8221;.</p>\n",
-        "installation": "<p>Just paste this folder to the wp-content/plugins folder in your server and then activate it from the backend. You will found a new item in the &#8220;Appearence&#8221; menu called &#8220;Export&#8221;.<br />\nBesides, you can also use the WordPress repository from the dashboard to install it.</p>\n",
-        "changelog": "<p>[29-11-2011] 1.5<br />\n* Permisson problems fixed.<br />\n* Warnings added.<br />\n* Directory structure changed.</p>\n<p>[04-09-2014] 2.0<br />\n* Security bug fixed<br />\n* Old zip files are automatically deleted<br />\n* Better session management<br />\n* 100% WP 4.0 Compatible</p>\n<p>[22-09-2018] 2.1<br />\n* Warning fixed<br />\n* Language functions added</p>\n<p>[22-09-2018] 2.1<br />\n* Typo fixed</p>\n"
+        "description": "<p>With this plugin you can export any installed theme as a <code>.zip</code> file and then install that<br />\nsame theme on another server through the normal &#8220;Upload Theme&#8221; screen.</p>\n<h3>Usage</h3>\n<p>Go to Appearance &gt; Export, pick the theme you want and press &#8220;Export&#8221;. Your browser downloads<br />\na <code>.zip</code> file. On the other site, go to Appearance &gt; Themes &gt; Add New &gt; Upload Theme, choose<br />\nthat file and press &#8220;Install Now&#8221;.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>A new &#8220;Export&#8221; item appears under the &#8220;Appearance&#8221; menu.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"who%20can%20export%20a%20theme%3F\">\nWho can export a theme?\n</h4>\n<p>\n<p>Users who can install themes (administrators on a single site, super admins on multisite).<br />\nAn export contains the theme&#8217;s full PHP source, so the plugin no longer settles for the<br />\nweaker <code>manage_options</code> check it used up to 2.12. You can change this with the<br />\n    wpct_capability filter.</p>\n</p>\n<dt id=\"are%20development%20files%20included%3F\">\nAre development files included?\n</h4>\n<p>\n<p>.git, <code>.svn</code>, <code>.hg</code>, <code>node_modules</code> and <code>.DS_Store</code> are left out. Use the<br />\n    wpct_should_skip_file filter to change that.</p>\n</p>\n\n",
+        "changelog": "<h4>3.0</h4>\n<ul>\n<li>Compatible with WordPress 7.0 and PHP 8.</li>\n<li>Fixed: the plugin could not be activated at all on PHP 8. The activation hook pointed at<br />\n  install_wpct, but the function is called <code>wpct_install_wpct</code>; an invalid callback is a<br />\nfatal TypeError since PHP 8.</li>\n<li>Fixed: exporting died with &#8220;Path cannot be empty&#8221;. The bundled PclZip library still used a<br />\nPHP 4 style constructor, which PHP 8 no longer treats as a constructor, so the archive name<br />\nwas never set. Exports now use ZipArchive, and fall back to the maintained copy of PclZip<br />\nthat ships with WordPress.</li>\n<li>Fixed: removed the third argument of <code>define()</code>, dropped in PHP 8.</li>\n<li>Security: the export form had no nonce and no capability check on submit, so any logged-in<br />\nvisitor could be made to trigger an export through a crafted request. Both are enforced now.</li>\n<li>Security: the requested theme name was pasted straight into a filesystem path. It is now<br />\nvalidated against the list of installed themes.</li>\n<li>Security: archives were written into the plugin&#8217;s own folder and served by redirect, which<br />\nleft every export downloadable by anyone who guessed the URL. They are now built outside the<br />\nweb root, streamed to the browser and deleted immediately. Activating this version also<br />\ndeletes any archive left behind by an older one.</li>\n<li>Removed: <code>session_start()</code> and <code>ob_start()</code> on every request, which broke page caching and<br />\nemitted notices.</li>\n<li>Removed: the bundled 5,700 line copy of PclZip.</li>\n<li>Fixed: the theme list no longer comes from a hand-rolled <code>readdir()</code> on a path guessed with<br />\n  substr($_SERVER[&#8216;SCRIPT_FILENAME&#8217;], 0, -19). It uses <code>wp_get_themes()</code>, so themes in a<br />\ncustom theme root are listed too, with their real names.</li>\n<li>Fixed: all output is escaped, and the form no longer relies on PHP short open tags.</li>\n<li>Added: proper internationalisation with the <code>wp-clone-template</code> text domain.</li>\n<li>Added: <code>wpct_capability</code> and <code>wpct_should_skip_file</code> filters.</li>\n</ul>\n<h4>2.12</h4>\n<ul>\n<li>Typo fixed</li>\n</ul>\n<h4>2.1</h4>\n<ul>\n<li>Warning fixed</li>\n<li>Language functions added</li>\n</ul>\n<h4>2.0</h4>\n<ul>\n<li>Security bug fixed</li>\n<li>Old zip files are automatically deleted</li>\n<li>Better session management</li>\n<li>100% WP 4.0 Compatible</li>\n</ul>\n<h4>1.5</h4>\n<ul>\n<li>Permisson problems fixed.</li>\n<li>Warnings added.</li>\n<li>Directory structure changed.</li>\n</ul>\n"
     },
-    "short_description": "With this plugin you&#039;ll be able to export your themes in a .zip file and then install with that .zip file the same theme in other servers using t &hellip;",
-    "description": "<p>With this plugin you&#8217;ll be able to export your themes in a .zip file and then install with that .zip file the same theme in other servers using the &#8220;upload&#8221; feature of wordpress.</p>\n<h3>Usage</h3>\n<p>After installing the plugin, you need to go to the &#8220;Export&#8221; subsection in the &#8220;Appearence&#8221; menu. Just select the theme you want and then click in the &#8220;Export&#8221; button. You will get a .zip file to download. Once you have the .zip file in your computer, you can install the theme going to Appearence/Themes/Install Themes/Upload in your wordpress administration pannel, and then select your .zip file and click on &#8220;Install now&#8221;.</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/wp-clone-template.2.2.zip",
-    "upgrade_notice": [],
+    "short_description": "Export any installed theme as a .zip file you can upload to another WordPress site.",
+    "description": "<p>With this plugin you can export any installed theme as a <code>.zip</code> file and then install that<br />\nsame theme on another server through the normal &#8220;Upload Theme&#8221; screen.</p>\n<h3>Usage</h3>\n<p>Go to Appearance &gt; Export, pick the theme you want and press &#8220;Export&#8221;. Your browser downloads<br />\na <code>.zip</code> file. On the other site, go to Appearance &gt; Themes &gt; Add New &gt; Upload Theme, choose<br />\nthat file and press &#8220;Install Now&#8221;.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/wp-clone-template.3.0.zip",
+    "upgrade_notice": {
+        "3.0": "<p>Required update: 2.12 cannot be activated on PHP 8 and its export was broken. Also fixes a\nmissing CSRF check and stops leaving exported themes publicly downloadable.</p>"
+    },
     "screenshots": [
         {
-            "src": "https://ps.w.org/wp-clone-template/trunk/screenshot-1.png?rev=2281093",
-            "caption": "\"Export\" option in the apparience menu."
+            "src": "https://ps.w.org/wp-clone-template/trunk/screenshot-1.png?rev=3653686",
+            "caption": "\"Export\" option in the Appearance menu."
         },
         {
-            "src": "https://ps.w.org/wp-clone-template/trunk/screenshot-2.png?rev=2281093",
-            "caption": "Wp-clone-template running."
+            "src": "https://ps.w.org/wp-clone-template/trunk/screenshot-2.png?rev=3653686",
+            "caption": "The export screen."
         },
         {
-            "src": "https://ps.w.org/wp-clone-template/trunk/screenshot-3.png?rev=2281093",
-            "caption": "Just another screenshot."
+            "src": "https://ps.w.org/wp-clone-template/trunk/screenshot-3.png?rev=3653686",
+            "caption": ""
         }
     ],
     "tags": {
-        "clone-templates": "clone templates",
-        "copy-themes": "copy themes",
-        "template": "template",
-        "templates": "templates",
+        "backup": "backup",
+        "clone": "clone",
+        "export": "export",
+        "exporter": "exporter",
         "themes": "themes"
     },
-    "stable_tag": "2.2",
+    "stable_tag": "3.0",
     "versions": {
         "1.0": "https://downloads.wordpress.org/plugin/wp-clone-template.1.0.zip",
         "1.5": "https://downloads.wordpress.org/plugin/wp-clone-template.1.5.zip",
         "2.0": "https://downloads.wordpress.org/plugin/wp-clone-template.2.0.zip",
         "2.1": "https://downloads.wordpress.org/plugin/wp-clone-template.2.1.zip",
         "2.2": "https://downloads.wordpress.org/plugin/wp-clone-template.2.2.zip",
+        "3.0": "https://downloads.wordpress.org/plugin/wp-clone-template.3.0.zip",
         "trunk": "https://downloads.wordpress.org/plugin/wp-clone-template.zip"
     },
     "business_model": false,
