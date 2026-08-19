@@ -1,7 +1,7 @@
 {
     "name": "Stackedboost COD Deposit Rules for WooCommerce",
     "slug": "stackedboost-cod-deposit-rules",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "author": "<a href=\"https://profiles.wordpress.org/stackedboost/\">stackedboost</a>",
     "author_profile": "https://profiles.wordpress.org/stackedboost/",
     "contributors": {
@@ -31,22 +31,44 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2026-08-19 06:36:00",
+    "last_updated": "2026-08-19 07:33:00",
     "added": "2026-08-19",
     "homepage": "",
     "sections": {
         "description": "<p>Cash on Delivery is convenient for customers, but it is also the order type most likely to be refused at the door. The customer never answers, the courier goes back, and the merchant pays for shipping in both directions with nothing to show for it.</p>\n<p>Stackedboost COD Deposit Rules lets you set rules that catch the orders most likely to fail. When a rule matches it either asks for a partial advance payment, so the customer pays some of it now and the rest on delivery, or it simply takes Cash on Delivery off the table for that order.</p>\n<p>Every rule runs on data your own store already has. There is no external service, no API key, no account to create, and no data leaves your site.</p>\n<p><strong>What the free version does, in full:</strong></p>\n<ul>\n<li>Require an advance payment, as a percentage or a flat amount. When a rule matches, the checkout total drops to the deposit, the customer pays that with any normal payment method, and the balance is collected on delivery as usual. Cash on Delivery itself is withdrawn for that order, because Cash on Delivery collects nothing at checkout and so cannot take a deposit.</li>\n<li>Or skip the deposit entirely and simply hide COD when a rule matches, so the customer pays the full amount up front.</li>\n<li>Rules you can combine, all checked locally:\n<ul>\n<li>Cart total is above a threshold you set</li>\n<li>Shipping country is different from billing country</li>\n<li>Guest checkout with no previous completed order on the store</li>\n<li>Customer has a previous order that was cancelled or failed while paying by COD</li>\n</ul>\n</li>\n<li>Works with the classic checkout and the block based checkout.</li>\n<li>Compatible with High-Performance Order Storage (HPOS).</li>\n<li>Shows the balance still due on delivery on the order screen, in the admin order list, and in the order emails sent to the customer.</li>\n</ul>\n<p>None of this is a fraud guarantee. It reduces your exposure by moving part of the payment up front on the orders most likely to be refused. Customers can still refuse a COD order after paying a deposit, though it happens far less often once money has changed hands.</p>\n<p><strong>Stackedboost COD Deposit Rules Pro</strong></p>\n<p>The paid version adds per-customer history of COD refusals and returns, CSV export of that history, a rule builder that supports AND/OR across multiple conditions, and the ability to bulk-apply a rule to existing pending orders. The free version does not need Pro to be useful. Pro is for stores that want deeper history and more rule combinations.</p>\n",
         "installation": "<ol>\n<li>Upload the <code>stackedboost-cod-deposit-rules</code> folder to <code>/wp-content/plugins/</code>, or install it through the Plugins screen in WordPress by searching for &#8220;Stackedboost COD Deposit Rules&#8221;.</li>\n<li>Activate the plugin through the Plugins screen.</li>\n<li>Go to WooCommerce &gt; Settings &gt; COD Deposit Rules to set your rules and your advance payment amount or percentage.</li>\n<li>Save. The rules take effect on the next checkout that matches them.</li>\n</ol>\n",
         "faq": "\n<dt id=\"does%20this%20work%20with%20the%20woocommerce%20block%20based%20checkout%2C%20or%20only%20the%20classic%20shortcode%20checkout%3F\">\nDoes this work with the WooCommerce block based checkout, or only the classic shortcode checkout?\n</h4>\n<p>\n<p>Both, and the block checkout needed real work rather than a claim. The advance payment is applied as a cart fee, which both checkouts calculate the same way. Hiding Cash on Delivery is different: the block checkout does not honour the usual payment gateway filter, so a plugin that only filters the gateway will appear to work on the classic checkout and quietly do nothing on the block one. This plugin publishes the decision onto the Store API cart and registers the front end callback WooCommerce documents for this, so the method is genuinely withdrawn in both. The gateway filter stays in place as well, so even if the script fails to load, an order cannot be placed with Cash on Delivery when a rule matched.</p>\n</p>\n<dt id=\"does%20this%20plugin%20send%20any%20of%20my%20store%20or%20customer%20data%20anywhere%3F\">\nDoes this plugin send any of my store or customer data anywhere?\n</h4>\n<p>\n<p>No. Every rule is evaluated using data already stored in your WordPress database, on your own server. There is no external API call, no license check that phones home for the free version, and no analytics collection. Nothing about your orders or customers leaves your site.</p>\n</p>\n<dt id=\"what%20actually%20happens%20to%20the%20advance%20payment%20and%20the%20balance%3F\">\nWhat actually happens to the advance payment and the balance?\n</h4>\n<p>\n<p>The advance payment is charged at checkout through whichever payment gateway you already use for prepaid methods on your store, exactly like a normal order paid in full. The remaining balance is recorded as a separate amount on the order (visible on the order screen, in the admin order list, and in the emails sent to the customer) so you and the customer both know what is still owed on delivery. The plugin does not automatically charge the balance. Collecting it on delivery is a manual, real-world step, the same as any other COD order.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20my%20payment%20gateway%3F\">\nDoes it work with my payment gateway?\n</h4>\n<p>\n<p>Yes, with any gateway. The advance payment is simply charged as the order total at checkout, using whatever gateway is enabled for that order. COD Deposit Rules does not require a specific gateway or add one of its own.</p>\n</p>\n<dt id=\"will%20this%20affect%20my%20sales%20reports%20or%20accounting%3F\">\nWill this affect my sales reports or accounting?\n</h4>\n<p>\n<p>Be aware of this before you rely on it: when an advance payment applies, the order total recorded in WooCommerce is the amount actually charged at checkout, not the full cart value. The remaining balance is recorded separately, not folded into the order total. If you build reports directly off order totals, a COD order with an advance payment will show the deposit amount, not the full order value, so factor that in when reading revenue reports for COD orders.</p>\n</p>\n<dt id=\"can%20i%20set%20different%20rules%20for%20different%20amounts%20or%20countries%20at%20the%20same%20time%3F\">\nCan I set different rules for different amounts or countries at the same time?\n</h4>\n<p>\n<p>In the free version, all your active rules are checked together and if any one matches, the action you configured (require advance payment or hide COD) applies. Combining rules with AND/OR logic, so you can require different behavior depending on which combination of conditions is met, is a Pro feature.</p>\n</p>\n<dt id=\"does%20this%20stop%20chargebacks%20or%20guarantee%20i%20won%27t%20get%20a%20fake%20order%3F\">\nDoes this stop chargebacks or guarantee I won&#8217;t get a fake order?\n</h4>\n<p>\n<p>No. Nothing can guarantee that. This plugin reduces the financial exposure of a refused COD delivery by collecting part of the payment before the order ships. It does not detect fraud, verify identity, or block anyone from ordering.</p>\n</p>\n\n",
-        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>Advance payment (percentage or flat amount) before COD is allowed.</li>\n<li>Option to hide COD entirely when a rule matches.</li>\n<li>Built-in rules: cart total threshold, shipping/billing country mismatch, guest checkout with no prior order, prior cancelled or failed COD order.</li>\n<li>Classic checkout and block checkout support.</li>\n<li>HPOS compatible.</li>\n<li>Balance due on delivery shown on the order, in admin, and in order emails.</li>\n</ul>\n"
+        "changelog": "<h4>1.1.0</h4>\n<ul>\n<li>New settings screen, built around the split this plugin creates: money taken at checkout against money still due on delivery, read from your own orders.</li>\n<li>Added a breakdown of which rules actually matched, so you can see which risk is real in your store.</li>\n<li>Before any order has matched, the screen now previews the split your current settings would produce on an example order.</li>\n<li>The order screen panel now shows the same two figures in the same layout.</li>\n<li>New plugin icon and banner.</li>\n<li>No changes to how deposits are calculated or collected.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>Advance payment (percentage or flat amount) before COD is allowed.</li>\n<li>Option to hide COD entirely when a rule matches.</li>\n<li>Built-in rules: cart total threshold, shipping/billing country mismatch, guest checkout with no prior order, prior cancelled or failed COD order.</li>\n<li>Classic checkout and block checkout support.</li>\n<li>HPOS compatible.</li>\n<li>Balance due on delivery shown on the order, in admin, and in order emails.</li>\n</ul>\n"
     },
     "short_description": "Require an advance payment or hide Cash on Delivery for risky orders, using rules based on your own store data.",
     "description": "<p>Cash on Delivery is convenient for customers, but it is also the order type most likely to be refused at the door. The customer never answers, the courier goes back, and the merchant pays for shipping in both directions with nothing to show for it.</p>\n<p>Stackedboost COD Deposit Rules lets you set rules that catch the orders most likely to fail. When a rule matches it either asks for a partial advance payment, so the customer pays some of it now and the rest on delivery, or it simply takes Cash on Delivery off the table for that order.</p>\n<p>Every rule runs on data your own store already has. There is no external service, no API key, no account to create, and no data leaves your site.</p>\n<p><strong>What the free version does, in full:</strong></p>\n<ul>\n<li>Require an advance payment, as a percentage or a flat amount. When a rule matches, the checkout total drops to the deposit, the customer pays that with any normal payment method, and the balance is collected on delivery as usual. Cash on Delivery itself is withdrawn for that order, because Cash on Delivery collects nothing at checkout and so cannot take a deposit.</li>\n<li>Or skip the deposit entirely and simply hide COD when a rule matches, so the customer pays the full amount up front.</li>\n<li>Rules you can combine, all checked locally:\n<ul>\n<li>Cart total is above a threshold you set</li>\n<li>Shipping country is different from billing country</li>\n<li>Guest checkout with no previous completed order on the store</li>\n<li>Customer has a previous order that was cancelled or failed while paying by COD</li>\n</ul>\n</li>\n<li>Works with the classic checkout and the block based checkout.</li>\n<li>Compatible with High-Performance Order Storage (HPOS).</li>\n<li>Shows the balance still due on delivery on the order screen, in the admin order list, and in the order emails sent to the customer.</li>\n</ul>\n<p>None of this is a fraud guarantee. It reduces your exposure by moving part of the payment up front on the orders most likely to be refused. Customers can still refuse a COD order after paying a deposit, though it happens far less often once money has changed hands.</p>\n<p><strong>Stackedboost COD Deposit Rules Pro</strong></p>\n<p>The paid version adds per-customer history of COD refusals and returns, CSV export of that history, a rule builder that supports AND/OR across multiple conditions, and the ability to bulk-apply a rule to existing pending orders. The free version does not need Pro to be useful. Pro is for stores that want deeper history and more rule combinations.</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/stackedboost-cod-deposit-rules.1.0.0.zip",
+    "download_link": "https://downloads.wordpress.org/plugin/stackedboost-cod-deposit-rules.1.1.0.zip",
     "upgrade_notice": {
+        "1.1.0": "<p>A clearer settings screen that now shows what the plugin has actually secured. Deposit behaviour is unchanged.</p>",
         "1.0.0": "<p>Initial release.</p>"
     },
-    "screenshots": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/stackedboost-cod-deposit-rules/assets/screenshot-1.png?rev=3654058",
+            "caption": "The COD Deposit Rules settings screen: when to act, how much to take up front, and the rules that decide."
+        },
+        {
+            "src": "https://ps.w.org/stackedboost-cod-deposit-rules/assets/screenshot-2.png?rev=3654058",
+            "caption": "The four built-in rules with their thresholds: order value, shipping versus billing country, guest with no prior order, and previous cancelled or failed COD orders."
+        },
+        {
+            "src": "https://ps.w.org/stackedboost-cod-deposit-rules/assets/screenshot-3.png?rev=3654058",
+            "caption": "The block checkout from the customer's side once a rule has matched. The order summary shows the subtotal, the balance held back for delivery, and the reduced amount payable now."
+        },
+        {
+            "src": "https://ps.w.org/stackedboost-cod-deposit-rules/assets/screenshot-4.png?rev=3654058",
+            "caption": "The order screen, showing what was paid at checkout, what the driver should collect, and which rules matched."
+        },
+        {
+            "src": "https://ps.w.org/stackedboost-cod-deposit-rules/assets/screenshot-5.png?rev=3654058",
+            "caption": "The orders list with the On delivery column, so a matching order is obvious without opening it."
+        }
+    ],
     "tags": {
         "advance-payment": "advance payment",
         "cash-on-delivery": "cash on delivery",
@@ -54,18 +76,23 @@
         "fake-orders": "fake orders",
         "woocommerce": "woocommerce"
     },
-    "stable_tag": "1.0.0",
+    "stable_tag": "1.1.0",
     "versions": {
         "1.0.0": "https://downloads.wordpress.org/plugin/stackedboost-cod-deposit-rules.1.0.0.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/stackedboost-cod-deposit-rules.1.1.0.zip",
         "trunk": "https://downloads.wordpress.org/plugin/stackedboost-cod-deposit-rules.zip"
     },
     "business_model": false,
     "repository_url": "",
     "commercial_support_url": "",
     "donate_link": "",
-    "banners": [],
+    "banners": {
+        "low": "https://ps.w.org/stackedboost-cod-deposit-rules/assets/banner-772x250.png?rev=3654058",
+        "high": "https://ps.w.org/stackedboost-cod-deposit-rules/assets/banner-1544x500.png?rev=3654058"
+    },
     "icons": {
-        "default": "https://s.w.org/plugins/geopattern-icon/stackedboost-cod-deposit-rules.svg"
+        "1x": "https://ps.w.org/stackedboost-cod-deposit-rules/assets/icon-128x128.png?rev=3654058",
+        "2x": "https://ps.w.org/stackedboost-cod-deposit-rules/assets/icon-256x256.png?rev=3654058"
     },
     "blocks": [],
     "block_assets": [],
