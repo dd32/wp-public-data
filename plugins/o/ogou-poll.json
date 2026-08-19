@@ -1,7 +1,7 @@
 {
     "name": "Ogou Poll Lite",
     "slug": "ogou-poll",
-    "version": "3.50.0",
+    "version": "3.50.1",
     "author": "<a href=\"https://profiles.wordpress.org/belony509/\">OgouLabs</a>",
     "author_profile": "https://profiles.wordpress.org/belony509/",
     "contributors": {
@@ -12,7 +12,7 @@
         }
     },
     "requires": "6.0",
-    "tested": "7.0.3",
+    "tested": "7.1",
     "requires_php": "8.0",
     "requires_plugins": [],
     "compatibility": [],
@@ -29,18 +29,18 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2026-08-06 21:38:00",
+    "last_updated": "2026-08-19 21:57:00",
     "added": "2026-07-23",
     "homepage": "https://ogoulabs.com/ogou-poll",
     "sections": {
         "description": "<p>Ogou Poll is a free, fully functional voting plugin for contests, talent shows, and reality-show style competitions. Create a contest, add candidates (photo or video), and let signed-in visitors vote. Each contest gives every user a set number of free votes that you choose.</p>\n<p>Features included and fully working in this free plugin:</p>\n<ul>\n<li>Unlimited contests with start/end dates and a live countdown</li>\n<li>Candidates with photo or video, bio, and drag-and-drop ordering</li>\n<li>Free voting: give each signed-in user a fixed number of votes per contest</li>\n<li>Live leaderboard with medal badges for the top three</li>\n<li>Results and countdown shortcodes</li>\n<li>Two polished card designs (Liquid Glass and Flat Modern)</li>\n<li>A clean, dark admin dashboard with vote and participation charts</li>\n<li>Editor blocks: Ogou Poll, Ogou Leaderboard and Ogou Top 3 — pick the contest from a menu, no shortcode or ID needed</li>\n<li>&#8220;Ogou — Top 3&#8221; sidebar widget for any widget area</li>\n<li>Social share buttons on every candidate (WhatsApp, Facebook, X, Telegram, copy link)</li>\n<li>Shortcodes: [ogou_poll], [ogou_leaderboard], [ogou_results], [ogou_countdown], [ogou_candidate_card]</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin does not connect to any external or third-party services. All voting, tallying, and data storage happen on your own WordPress site.</p>\n",
         "installation": "<ol>\n<li>Upload the <code>ogou-poll</code> folder to <code>/wp-content/plugins/</code>, or install the plugin through the Plugins screen in WordPress.</li>\n<li>Activate the plugin through the Plugins screen.</li>\n<li>Go to Ogou Poll in the admin menu and create your first contest.</li>\n<li>Add candidates (photo or video) to the contest.</li>\n<li>Put <code>[ogou_poll id=\"1\"]</code> on any page or post to show the voting grid (replace 1 with your contest ID).</li>\n</ol>\n",
         "faq": "\n<dt id=\"how%20do%20people%20vote%3F\">\nHow do people vote?\n</h4>\n<p>\n<p>Add the [ogou_poll id=&#8221;1&#8243;] shortcode to any page. Signed-in users get the number of free votes you set for that contest and tap &#8220;Vote&#8221; on a candidate.</p>\n</p>\n<dt id=\"how%20do%20i%20set%20the%20number%20of%20free%20votes%3F\">\nHow do I set the number of free votes?\n</h4>\n<p>\n<p>When you create or edit a contest, set &#8220;Free votes per user&#8221;. Each signed-in user gets that many votes in that contest.</p>\n</p>\n<dt id=\"is%20there%20a%20paid%20version%3F\">\nIs there a paid version?\n</h4>\n<p>\n<p>A separate premium plugin, Ogou Poll Pro (available from the developer&#8217;s own site, ogoulabs.com), adds paid coin voting, payment gateways, judges, rounds, VIP passes, winner payouts, promo codes, notifications, and a public API. Those features are not part of this free plugin.</p>\n</p>\n\n",
-        "changelog": "<h4>3.50.0</h4>\n<ul>\n<li>New: Gutenberg blocks for the poll, leaderboard and a Top 3 podium — choose the contest from a dropdown, no shortcode required.</li>\n<li>New: &#8220;Ogou — Top 3&#8221; sidebar widget.</li>\n<li>Social share buttons (WhatsApp, Facebook, X, Telegram, copy link) on every candidate card.</li>\n</ul>\n<h4>3.49.1</h4>\n<ul>\n<li>Free voting is fully self-contained: one vote per tap, with a per-contest allowance you choose.</li>\n<li>Two polished card designs (Liquid Glass and Flat Modern).</li>\n<li>Accessibility and layout fixes for candidate cards and country flags.</li>\n<li>Tested up to WordPress 6.7.</li>\n</ul>\n<h4>3.41.2</h4>\n<ul>\n<li>Country badges now show the actual flag emoji next to the ISO code (e.g. 🇨🇩 CD). Flags are derived from the country code — no image assets required, so any country with a valid two-letter code works automatically.</li>\n</ul>\n<h4>3.41.1</h4>\n<ul>\n<li>Critical fix: migrations 16 (candidate fields — category, country, tagline) and 17 (performance indexes) were being silently skipped by the migrator because they didn&#8217;t return their class name at the end of the file. Without those columns, saving a candidate failed at the database layer, the new fields never appeared, and the admin page appeared to redirect. All three symptoms trace to the same missing <code>return … ::class;</code> line.</li>\n</ul>\n<h4>3.41.0</h4>\n<ul>\n<li>Performance: eliminated MySQL transactions and FOR UPDATE row locks from the coin deduction path. Replaced with a single atomic UPDATE WHERE coins_balance &gt;= N — no lock is held during a vote, eliminating the main source of database queue build-up under concurrent voting.</li>\n<li>Performance: write-behind vote buffer (VoteBuffer). Under load, vote_count updates accumulate in the WordPress Object Cache (Redis-backed if available) and are flushed to the database in batch every 30 seconds — reducing DB writes from one-per-click to one-per-candidate-per-30s.</li>\n<li>Performance: rate-limit checks (per-user interval, hourly cap, per-IP cap) now served from Object Cache instead of COUNT(*) DB queries. The cache key expires at the end of the look-back window so the next vote always gets an accurate check.</li>\n<li>Performance: after a successful vote, in-memory rate-limit counters are incremented immediately so a second rapid vote is blocked without a DB query.</li>\n<li>Performance (migration 17): three new composite indexes on wp_ogou_votes — (ip_hash, contest_id, voted_at), (user_id, contest_id, voted_at) — and on wallet_ledger (user_id, created_at). Covers all hot-path COUNT(*) and range queries used during a live vote event.</li>\n</ul>\n<h4>3.41.0</h4>\n<ul>\n<li>Performance for large live events: the live board and candidate grid are now served from a short cache instead of being rebuilt on every vote, so heavy voting no longer hammers the database. Tune the refresh interval under Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Vote limits.</li>\n<li>Fewer database queries per vote.</li>\n</ul>\n<h4>3.40.1</h4>\n<ul>\n<li>Fix: the database upgrade for the new candidate fields (category, country, tagline) now runs on update, so those fields save and appear on the grid.</li>\n<li>Fix: the Details and Vote buttons now work in the List and Podium layouts (not only in the card grid).</li>\n</ul>\n<h4>3.40.0</h4>\n<ul>\n<li>New candidate fields: category (Model, Artist, Entrepreneur…), country with an ISO flag badge, and an optional tagline shown under the name.</li>\n<li>Candidate grids can now use five layouts — Cards, List, Podium, Compact and Showcase — set a site default under Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Design or per page with [ogou_poll layout=&#8221;list&#8221;].</li>\n<li>Seven new visual skins in addition to the originals: Aurora, Spotlight, Neon Arena, Editorial, Kente, Gala and Pop.</li>\n<li>Optional stats bar above the grid (candidates, total votes, current leader, voting status) via [ogou_poll show_stats=&#8221;1&#8243;].</li>\n</ul>\n<h4>3.39.0</h4>\n<ul>\n<li>Full separation of the free and paid editions. Every paid feature&#8217;s code path is now physically excluded from the free build — not only the standalone features (daily rewards, referrals, VIP, judge scoring) but also all paid logic that was woven into shared files: multi-round elimination, paid coin purchase and reconciliation, payment gateways, payouts, promo codes, the public API, fraud signals, revenue/VIP analytics, and their settings, migrations, REST routes, admin panels and emails. The free plugin ships only its free features.</li>\n</ul>\n<h4>3.38.0</h4>\n<ul>\n<li>The free edition now ships only its free features. All paid feature code — daily rewards, referrals, VIP passes, judge scoring, promo codes, payouts, public API, fraud signals and their repositories, migrations, admin pages and shortcodes — is removed from the free build rather than shipped and locked.</li>\n<li>Security: OTP request rate limiting is now keyed per recipient, so a site with IP capture turned off can no longer rate-limit every user at once.</li>\n</ul>\n<h4>3.37.4</h4>\n<ul>\n<li>Compliance: cleared all WordPress.org Plugin Check errors (escaped exception + output strings, added translator comments) and silenced the expected custom-table database + verified-nonce warnings. Plugin Check now reports 0 errors.</li>\n</ul>\n<h4>3.37.3</h4>\n<ul>\n<li>Frontend: the card Share button is now a clear labelled pill (icon + &#8220;Share&#8221;) instead of a tiny icon, so voters can see it is a button.</li>\n</ul>\n<h4>3.37.2</h4>\n<ul>\n<li>Free edition: removed Pro-only fields and sections that don&#8217;t work in the free build — Judge weight &amp; Currency (contest form) and Coin settings, CAPTCHA, Daily reward, Referral &amp; Voter notifications (Settings). They appear only in Pro.</li>\n</ul>\n<h4>3.37.1</h4>\n<ul>\n<li>Free edition: the Tools shortcode reference and page generator now list only the shortcodes that work in the free build (Pro shortcodes like [ogou_buy_coins] are hidden).</li>\n</ul>\n<h4>3.37.0</h4>\n<ul>\n<li>Free edition: Pro feature code is now physically removed from the build (not disabled), so the free plugin contains no always-false/always-true gating.</li>\n<li>Updated the bundled Chart.js library to 4.5.1.</li>\n<li>Admin menu styling now loads via wp_enqueue_style instead of inline output.</li>\n</ul>\n<h4>3.36.7</h4>\n<ul>\n<li>Exchange rates (multi-currency) is now correctly Pro-only; removed from the Lite edition.</li>\n</ul>\n<h4>3.36.6</h4>\n<ul>\n<li>Redesigned light theme: airy white cards with soft shadows, no clunky header bar; the sidebar is now always dark (no light mode).</li>\n</ul>\n<h4>3.36.5</h4>\n<ul>\n<li>Light theme: solid dark sidebar so the neon group labels and menu items are readable; logo now has a clear margin.</li>\n</ul>\n<h4>3.36.4</h4>\n<ul>\n<li>Admin readability fixes: light-theme titles and buttons, dark-on-dark sidebar text, and an even 20px inset on all panels.</li>\n</ul>\n<h4>3.36.3</h4>\n<ul>\n<li>Free per-contest voting: give each signed-in user a set number of votes.</li>\n<li>Contests, candidates, live leaderboard, results and countdown.</li>\n<li>Clean dark admin dashboard with a collapsible sidebar and weekly trend indicators.</li>\n<li>All assets bundled locally; no third-party CDN requests.</li>\n</ul>\n"
+        "changelog": "<h4>3.50.1</h4>\n<ul>\n<li>Tested and confirmed compatible with WordPress 7.1.</li>\n</ul>\n<h4>3.50.0</h4>\n<ul>\n<li>New: Gutenberg blocks for the poll, leaderboard and a Top 3 podium — choose the contest from a dropdown, no shortcode required.</li>\n<li>New: &#8220;Ogou — Top 3&#8221; sidebar widget.</li>\n<li>Social share buttons (WhatsApp, Facebook, X, Telegram, copy link) on every candidate card.</li>\n</ul>\n<h4>3.49.1</h4>\n<ul>\n<li>Free voting is fully self-contained: one vote per tap, with a per-contest allowance you choose.</li>\n<li>Two polished card designs (Liquid Glass and Flat Modern).</li>\n<li>Accessibility and layout fixes for candidate cards and country flags.</li>\n<li>Tested up to WordPress 7.0.</li>\n</ul>\n<h4>3.41.2</h4>\n<ul>\n<li>Country badges now show the actual flag emoji next to the ISO code (e.g. 🇨🇩 CD). Flags are derived from the country code — no image assets required, so any country with a valid two-letter code works automatically.</li>\n</ul>\n<h4>3.41.1</h4>\n<ul>\n<li>Critical fix: migrations 16 (candidate fields — category, country, tagline) and 17 (performance indexes) were being silently skipped by the migrator because they didn&#8217;t return their class name at the end of the file. Without those columns, saving a candidate failed at the database layer, the new fields never appeared, and the admin page appeared to redirect. All three symptoms trace to the same missing <code>return … ::class;</code> line.</li>\n</ul>\n<h4>3.41.0</h4>\n<ul>\n<li>Performance: eliminated MySQL transactions and FOR UPDATE row locks from the coin deduction path. Replaced with a single atomic UPDATE WHERE coins_balance &gt;= N — no lock is held during a vote, eliminating the main source of database queue build-up under concurrent voting.</li>\n<li>Performance: write-behind vote buffer (VoteBuffer). Under load, vote_count updates accumulate in the WordPress Object Cache (Redis-backed if available) and are flushed to the database in batch every 30 seconds — reducing DB writes from one-per-click to one-per-candidate-per-30s.</li>\n<li>Performance: rate-limit checks (per-user interval, hourly cap, per-IP cap) now served from Object Cache instead of COUNT(*) DB queries. The cache key expires at the end of the look-back window so the next vote always gets an accurate check.</li>\n<li>Performance: after a successful vote, in-memory rate-limit counters are incremented immediately so a second rapid vote is blocked without a DB query.</li>\n<li>Performance (migration 17): three new composite indexes on wp_ogou_votes — (ip_hash, contest_id, voted_at), (user_id, contest_id, voted_at) — and on wallet_ledger (user_id, created_at). Covers all hot-path COUNT(*) and range queries used during a live vote event.</li>\n</ul>\n<h4>3.41.0</h4>\n<ul>\n<li>Performance for large live events: the live board and candidate grid are now served from a short cache instead of being rebuilt on every vote, so heavy voting no longer hammers the database. Tune the refresh interval under Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Vote limits.</li>\n<li>Fewer database queries per vote.</li>\n</ul>\n<h4>3.40.1</h4>\n<ul>\n<li>Fix: the database upgrade for the new candidate fields (category, country, tagline) now runs on update, so those fields save and appear on the grid.</li>\n<li>Fix: the Details and Vote buttons now work in the List and Podium layouts (not only in the card grid).</li>\n</ul>\n<h4>3.40.0</h4>\n<ul>\n<li>New candidate fields: category (Model, Artist, Entrepreneur…), country with an ISO flag badge, and an optional tagline shown under the name.</li>\n<li>Candidate grids can now use five layouts — Cards, List, Podium, Compact and Showcase — set a site default under Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Design or per page with [ogou_poll layout=&#8221;list&#8221;].</li>\n<li>Seven new visual skins in addition to the originals: Aurora, Spotlight, Neon Arena, Editorial, Kente, Gala and Pop.</li>\n<li>Optional stats bar above the grid (candidates, total votes, current leader, voting status) via [ogou_poll show_stats=&#8221;1&#8243;].</li>\n</ul>\n<h4>3.39.0</h4>\n<ul>\n<li>Full separation of the free and paid editions. Every paid feature&#8217;s code path is now physically excluded from the free build — not only the standalone features (daily rewards, referrals, VIP, judge scoring) but also all paid logic that was woven into shared files: multi-round elimination, paid coin purchase and reconciliation, payment gateways, payouts, promo codes, the public API, fraud signals, revenue/VIP analytics, and their settings, migrations, REST routes, admin panels and emails. The free plugin ships only its free features.</li>\n</ul>\n<h4>3.38.0</h4>\n<ul>\n<li>The free edition now ships only its free features. All paid feature code — daily rewards, referrals, VIP passes, judge scoring, promo codes, payouts, public API, fraud signals and their repositories, migrations, admin pages and shortcodes — is removed from the free build rather than shipped and locked.</li>\n<li>Security: OTP request rate limiting is now keyed per recipient, so a site with IP capture turned off can no longer rate-limit every user at once.</li>\n</ul>\n<h4>3.37.4</h4>\n<ul>\n<li>Compliance: cleared all WordPress.org Plugin Check errors (escaped exception + output strings, added translator comments) and silenced the expected custom-table database + verified-nonce warnings. Plugin Check now reports 0 errors.</li>\n</ul>\n<h4>3.37.3</h4>\n<ul>\n<li>Frontend: the card Share button is now a clear labelled pill (icon + &#8220;Share&#8221;) instead of a tiny icon, so voters can see it is a button.</li>\n</ul>\n<h4>3.37.2</h4>\n<ul>\n<li>Free edition: removed Pro-only fields and sections that don&#8217;t work in the free build — Judge weight &amp; Currency (contest form) and Coin settings, CAPTCHA, Daily reward, Referral &amp; Voter notifications (Settings). They appear only in Pro.</li>\n</ul>\n<h4>3.37.1</h4>\n<ul>\n<li>Free edition: the Tools shortcode reference and page generator now list only the shortcodes that work in the free build (Pro shortcodes like [ogou_buy_coins] are hidden).</li>\n</ul>\n<h4>3.37.0</h4>\n<ul>\n<li>Free edition: Pro feature code is now physically removed from the build (not disabled), so the free plugin contains no always-false/always-true gating.</li>\n<li>Updated the bundled Chart.js library to 4.5.1.</li>\n<li>Admin menu styling now loads via wp_enqueue_style instead of inline output.</li>\n</ul>\n<h4>3.36.7</h4>\n<ul>\n<li>Exchange rates (multi-currency) is now correctly Pro-only; removed from the Lite edition.</li>\n</ul>\n<h4>3.36.6</h4>\n<ul>\n<li>Redesigned light theme: airy white cards with soft shadows, no clunky header bar; the sidebar is now always dark (no light mode).</li>\n</ul>\n<h4>3.36.5</h4>\n<ul>\n<li>Light theme: solid dark sidebar so the neon group labels and menu items are readable; logo now has a clear margin.</li>\n</ul>\n<h4>3.36.4</h4>\n<ul>\n<li>Admin readability fixes: light-theme titles and buttons, dark-on-dark sidebar text, and an even 20px inset on all panels.</li>\n</ul>\n<h4>3.36.3</h4>\n<ul>\n<li>Free per-contest voting: give each signed-in user a set number of votes.</li>\n<li>Contests, candidates, live leaderboard, results and countdown.</li>\n<li>Clean dark admin dashboard with a collapsible sidebar and weekly trend indicators.</li>\n<li>All assets bundled locally; no third-party CDN requests.</li>\n</ul>\n"
     },
     "short_description": "Run free voting contests and reality-show style competitions on WordPress: candidates, live leaderboard, countdowns, and card designs.",
     "description": "<p>Ogou Poll is a free, fully functional voting plugin for contests, talent shows, and reality-show style competitions. Create a contest, add candidates (photo or video), and let signed-in visitors vote. Each contest gives every user a set number of free votes that you choose.</p>\n<p>Features included and fully working in this free plugin:</p>\n<ul>\n<li>Unlimited contests with start/end dates and a live countdown</li>\n<li>Candidates with photo or video, bio, and drag-and-drop ordering</li>\n<li>Free voting: give each signed-in user a fixed number of votes per contest</li>\n<li>Live leaderboard with medal badges for the top three</li>\n<li>Results and countdown shortcodes</li>\n<li>Two polished card designs (Liquid Glass and Flat Modern)</li>\n<li>A clean, dark admin dashboard with vote and participation charts</li>\n<li>Editor blocks: Ogou Poll, Ogou Leaderboard and Ogou Top 3 — pick the contest from a menu, no shortcode or ID needed</li>\n<li>&#8220;Ogou — Top 3&#8221; sidebar widget for any widget area</li>\n<li>Social share buttons on every candidate (WhatsApp, Facebook, X, Telegram, copy link)</li>\n<li>Shortcodes: [ogou_poll], [ogou_leaderboard], [ogou_results], [ogou_countdown], [ogou_candidate_card]</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin does not connect to any external or third-party services. All voting, tallying, and data storage happen on your own WordPress site.</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/ogou-poll.3.50.0.zip",
+    "download_link": "https://downloads.wordpress.org/plugin/ogou-poll.3.50.1.zip",
     "upgrade_notice": {
         "3.36.7": "<ul>\n<li>Exchange rates (multi-currency) is now correctly Pro-only; removed from the Lite edition.</li>\n</ul>",
         "3.36.6": "<ul>\n<li>Redesigned light theme: airy white cards with soft shadows, no clunky header bar; the sidebar is now always dark (no light mode).</li>\n</ul>",
@@ -101,10 +101,11 @@
         "poll": "poll",
         "voting": "voting"
     },
-    "stable_tag": "3.50.0",
+    "stable_tag": "3.50.1",
     "versions": {
         "3.48.2": "https://downloads.wordpress.org/plugin/ogou-poll.3.48.2.zip",
         "3.50.0": "https://downloads.wordpress.org/plugin/ogou-poll.3.50.0.zip",
+        "3.50.1": "https://downloads.wordpress.org/plugin/ogou-poll.3.50.1.zip",
         "trunk": "https://downloads.wordpress.org/plugin/ogou-poll.zip"
     },
     "business_model": false,
@@ -120,38 +121,6 @@
         "2x": "https://ps.w.org/ogou-poll/assets/icon-256x256.png?rev=3620131"
     },
     "blocks": {
-        "ogou/top-three": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "ogou/top-three",
-            "version": "1.0.0",
-            "title": "Ogou Top 3",
-            "category": "widgets",
-            "icon": "awards",
-            "description": "A compact podium of a contest's three leading candidates.",
-            "keywords": [
-                "vote",
-                "contest",
-                "top",
-                "podium",
-                "ogou"
-            ],
-            "textdomain": "ogou-poll",
-            "editorScript": "ogou-blocks",
-            "attributes": {
-                "contestId": {
-                    "type": "number",
-                    "default": 0
-                },
-                "title": {
-                    "type": "string",
-                    "default": ""
-                }
-            },
-            "supports": {
-                "html": false
-            }
-        },
         "ogou/leaderboard": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
@@ -185,6 +154,38 @@
                 "align": [
                     "wide"
                 ]
+            }
+        },
+        "ogou/top-three": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "ogou/top-three",
+            "version": "1.0.0",
+            "title": "Ogou Top 3",
+            "category": "widgets",
+            "icon": "awards",
+            "description": "A compact podium of a contest's three leading candidates.",
+            "keywords": [
+                "vote",
+                "contest",
+                "top",
+                "podium",
+                "ogou"
+            ],
+            "textdomain": "ogou-poll",
+            "editorScript": "ogou-blocks",
+            "attributes": {
+                "contestId": {
+                    "type": "number",
+                    "default": 0
+                },
+                "title": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "supports": {
+                "html": false
             }
         },
         "ogou/poll": {
