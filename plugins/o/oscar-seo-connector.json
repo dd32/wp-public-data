@@ -1,0 +1,75 @@
+{
+    "name": "Oscar SEO Connector",
+    "slug": "oscar-seo-connector",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/badrlg/\">badrlg</a>",
+    "author_profile": "https://profiles.wordpress.org/badrlg/",
+    "contributors": {
+        "badrlg": {
+            "profile": "https://profiles.wordpress.org/badrlg/",
+            "avatar": "https://secure.gravatar.com/avatar/1019d393a43151bbcd662566df2d357a7d78032bf20dfbc4e079dfca54d7f7d6?s=96&d=monsterid&r=g",
+            "display_name": "badrlg"
+        }
+    },
+    "requires": "5.9",
+    "tested": "7.0.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/oscar-seo-connector/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-20 18:03:00",
+    "added": "2026-08-20",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Oscar SEO Connector replaces the Application Password flow that Oscar previously used to publish to self-hosted WordPress sites.</p>\n<p>Instead of a broad, account-wide Application Password, this plugin issues a single, narrow connection token that Oscar uses to call a small, dedicated REST API:</p>\n<ul>\n<li>Verify the connection (<code>ping</code>).</li>\n<li>Create or update a post, including title, content, excerpt, slug, status, categories, tags and a meta description (<code>publish</code>).</li>\n<li>Upload an image to the media library, from a URL or a direct file upload, for use as a featured or inline image (<code>media</code>).</li>\n<li>Optionally remove a post that Oscar created (<code>post/{id}</code>).</li>\n</ul>\n<p><strong>Security first</strong></p>\n<ul>\n<li>The connection token is generated with a cryptographically secure random source and only its hash is ever stored in the database. The plaintext is shown exactly once, right after it is generated.</li>\n<li>Every request is authenticated with a <code>Bearer</code> token compared using a constant-time (<code>hash_equals</code>) check — no valid token, no access.</li>\n<li>Every REST route has an explicit permission check; none are public.</li>\n<li>All admin actions are nonce-protected and require the <code>manage_options</code> capability.</li>\n</ul>\n<p><strong>SEO plugin compatibility</strong></p>\n<p>When present, the meta description Oscar sends is also written to the fields read by Yoast SEO and Rank Math, in addition to the plugin&#8217;s own field, so existing SEO plugins keep working without any extra configuration.</p>\n<h3>External services</h3>\n<p>This plugin connects your WordPress site to Oscar SEO (https://oscar-seo.ai), a third-party content platform that you must have an account with. The connection is initiated by you: you install this plugin, generate a connection token, and paste it into your Oscar account.</p>\n<p>What data is exchanged and when:</p>\n<ul>\n<li>Oscar calls this site&#8217;s REST API (the <code>oscar/v1</code> endpoints) using the connection token you provide, to verify the connection and to create or update posts (title, content, excerpt, slug, status, categories, tags, meta description).</li>\n<li>When a post includes images, the plugin downloads those images from the URLs Oscar provides and adds them to your Media Library.</li>\n<li>The plugin itself does not send your site&#8217;s data to Oscar and does not track your site or its visitors. All requests are initiated by Oscar using the token you authorized, and the connection can be revoked at any time by regenerating or removing the token.</li>\n</ul>\n<p>By connecting, you agree to Oscar SEO&#8217;s Terms of Service (https://oscar-seo.ai/cgv) and Privacy Policy (https://oscar-seo.ai/confidentialite).</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>oscar-seo-connector</code> folder to <code>/wp-content/plugins/</code>, or install the zip file through <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin</strong>.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> screen.</li>\n<li>Go to <strong>Oscar SEO</strong> in the admin menu.</li>\n<li>Copy the <strong>REST base URL</strong> and the <strong>connection token</strong> shown there (the token is only shown once).</li>\n<li>Paste both values into Oscar&#8217;s WordPress connection settings.</li>\n<li>Oscar calls <code>GET /oscar/v1/ping</code> to confirm the connection; the status on this page will switch to &#8220;Connected&#8221; after the first successful request.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"where%20is%20my%20connection%20token%20stored%3F\">\nWhere is my connection token stored?\n</h4>\n<p>\n<p>Only a SHA-256 hash of the token is stored in the WordPress options table. The plaintext token is never persisted; it is shown once, immediately after it is generated or regenerated, and cannot be retrieved afterwards. If you lose it, use <strong>Regenerate</strong>.</p>\n</p>\n<dt id=\"what%20happens%20if%20i%20regenerate%20the%20token%3F\">\nWhat happens if I regenerate the token?\n</h4>\n<p>\n<p>A brand-new token is generated and its hash replaces the old one. Any system still using the previous token will immediately get <code>401 Unauthorized</code> responses. Update Oscar with the new token right away.</p>\n</p>\n<dt id=\"does%20this%20work%20with%20yoast%20seo%20or%20rank%20math%3F\">\nDoes this work with Yoast SEO or Rank Math?\n</h4>\n<p>\n<p>Yes. If either plugin is active, the meta description sent by Oscar is also written to that plugin&#8217;s own meta key. If neither is active, nothing extra happens — there are no fatal errors either way.</p>\n</p>\n<dt id=\"does%20this%20plugin%20send%20any%20data%20anywhere%20on%20its%20own%3F\">\nDoes this plugin send any data anywhere on its own?\n</h4>\n<p>\n<p>No. It does not phone home, it does not track the site or its visitors, and it schedules no background outbound requests. It only responds to authenticated requests initiated by Oscar (or by anyone holding a valid token). The one outbound network request it can make is downloading an image into the media library, and only when an authenticated request explicitly supplies that image URL (<code>featured_image_url</code> on publish, or <code>source_url</code> on the media endpoint) — the standard WordPress media sideload. No site data is ever sent to Oscar or any third party by the plugin itself.</p>\n</p>\n<dt id=\"can%20i%20still%20use%20application%20passwords%20alongside%20this%20plugin%3F\">\nCan I still use Application Passwords alongside this plugin?\n</h4>\n<p>\n<p>Yes, they are independent. This plugin adds its own narrow, token-based API rather than replacing WordPress&#8217;s core REST authentication.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release: connection token management, <code>oscar/v1</code> REST API (ping, publish, media, delete), settings screen, Yoast/Rank Math meta description support.</li>\n</ul>\n"
+    },
+    "short_description": "Securely connect this site to the Oscar SEO platform for one-click authentication and reliable article publishing.",
+    "description": "<p>Oscar SEO Connector replaces the Application Password flow that Oscar previously used to publish to self-hosted WordPress sites.</p>\n<p>Instead of a broad, account-wide Application Password, this plugin issues a single, narrow connection token that Oscar uses to call a small, dedicated REST API:</p>\n<ul>\n<li>Verify the connection (<code>ping</code>).</li>\n<li>Create or update a post, including title, content, excerpt, slug, status, categories, tags and a meta description (<code>publish</code>).</li>\n<li>Upload an image to the media library, from a URL or a direct file upload, for use as a featured or inline image (<code>media</code>).</li>\n<li>Optionally remove a post that Oscar created (<code>post/{id}</code>).</li>\n</ul>\n<p><strong>Security first</strong></p>\n<ul>\n<li>The connection token is generated with a cryptographically secure random source and only its hash is ever stored in the database. The plaintext is shown exactly once, right after it is generated.</li>\n<li>Every request is authenticated with a <code>Bearer</code> token compared using a constant-time (<code>hash_equals</code>) check — no valid token, no access.</li>\n<li>Every REST route has an explicit permission check; none are public.</li>\n<li>All admin actions are nonce-protected and require the <code>manage_options</code> capability.</li>\n</ul>\n<p><strong>SEO plugin compatibility</strong></p>\n<p>When present, the meta description Oscar sends is also written to the fields read by Yoast SEO and Rank Math, in addition to the plugin&#8217;s own field, so existing SEO plugins keep working without any extra configuration.</p>\n<h3>External services</h3>\n<p>This plugin connects your WordPress site to Oscar SEO (https://oscar-seo.ai), a third-party content platform that you must have an account with. The connection is initiated by you: you install this plugin, generate a connection token, and paste it into your Oscar account.</p>\n<p>What data is exchanged and when:</p>\n<ul>\n<li>Oscar calls this site&#8217;s REST API (the <code>oscar/v1</code> endpoints) using the connection token you provide, to verify the connection and to create or update posts (title, content, excerpt, slug, status, categories, tags, meta description).</li>\n<li>When a post includes images, the plugin downloads those images from the URLs Oscar provides and adds them to your Media Library.</li>\n<li>The plugin itself does not send your site&#8217;s data to Oscar and does not track your site or its visitors. All requests are initiated by Oscar using the token you authorized, and the connection can be revoked at any time by regenerating or removing the token.</li>\n</ul>\n<p>By connecting, you agree to Oscar SEO&#8217;s Terms of Service (https://oscar-seo.ai/cgv) and Privacy Policy (https://oscar-seo.ai/confidentialite).</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/oscar-seo-connector.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "automation": "automation",
+        "content": "content",
+        "publishing": "publishing",
+        "rest-api": "rest-api",
+        "seo": "seo"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/oscar-seo-connector.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/oscar-seo-connector.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/oscar-seo-connector.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
