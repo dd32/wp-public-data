@@ -1,0 +1,76 @@
+{
+    "name": "Webxperthub Media Optimizer",
+    "slug": "webxperthub-media-optimizer",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/iftiarhossain/\">iftiarhossain</a>",
+    "author_profile": "https://profiles.wordpress.org/iftiarhossain/",
+    "contributors": {
+        "iftiarhossain": {
+            "profile": "https://profiles.wordpress.org/iftiarhossain/",
+            "avatar": "https://secure.gravatar.com/avatar/b103469327a3a36d314acaad2183ff4c3c26bbc2e522380f9f811361443c4b3b?s=96&d=monsterid&r=g",
+            "display_name": "iftiarhossain"
+        }
+    },
+    "requires": "6.3",
+    "tested": "7.0.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/webxperthub-media-optimizer/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-20 04:26:00",
+    "added": "2026-08-20",
+    "homepage": "https://wordpress.org/plugins/webxperthub-media-optimizer",
+    "sections": {
+        "description": "<p>Webxperthub Media Optimizer optimizes your WordPress media library without slowing down your site or your server. It automatically compresses new uploads and converts them to WebP, and lets you bulk-process your entire existing media library safely in the background.</p>\n<h4>Key Features</h4>\n<ul>\n<li>Automatic optimization on upload — no manual steps required</li>\n<li>Converts images to WebP (or PNG, or compress-only with original format kept)</li>\n<li>Typically reduces file size by 40-60% with no noticeable quality loss</li>\n<li>Background queue processing — bulk-optimize thousands of images without server timeouts</li>\n<li>Optional resizing of oversized uploads to a configurable maximum width/height</li>\n<li>Keeps a backup of your original files by default</li>\n<li>Fully multisite compatible</li>\n<li>Uses your server&#8217;s native Imagick or GD library — no external API, no data ever leaves your server</li>\n<li>Developer-friendly filter hooks for custom workflows</li>\n</ul>\n<h4>How It Works</h4>\n<p>When Webxperthub Media Optimizer is enabled, every new image uploaded to your Media Library is automatically queued for optimization. A background process (WP-Cron) picks up queued images in small batches, so your server is never overloaded even if hundreds of images are queued at once.</p>\n<p>Use the <strong>Bulk Optimize</strong> screen under Webxperthub Media Optimizer in your admin menu to queue your entire existing media library and watch a live progress bar as images are processed.</p>\n<h4>For Developers</h4>\n<p>Skip optimization for specific attachments:</p>\n<pre><code>add_filter( 'mopw_skip_optimization', function( $skip, $attachment_id ) {\n    if ( get_post_meta( $attachment_id, '_never_optimize', true ) ) {\n        return true;\n    }\n    return $skip;\n}, 10, 2 );\n</code></pre>\n<p>Override format/quality for specific attachments:</p>\n<pre><code>add_filter( 'mopw_before_optimize_args', function( $args, $attachment_id ) {\n    if ( has_term( 'print-quality', 'category', $attachment_id ) ) {\n        $args['quality'] = 95;\n    }\n    return $args;\n}, 10, 2 );\n</code></pre>\n<p>Run custom logic after an image is optimized:</p>\n<pre><code>add_action( 'mopw_after_optimize', function( $attachment_id, $original_size, $new_size ) {\n    error_log( \"Attachment {$attachment_id} shrank from {$original_size} to {$new_size} bytes.\" );\n}, 10, 3 );\n</code></pre>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to /wp-content/plugins/, or install directly through the Plugins screen in your WordPress admin.</li>\n<li>Activate the plugin.</li>\n<li>Go to Webxperthub Media Optimizer <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings to configure quality, output format, and resizing options.</li>\n<li>Optionally, go to Webxperthub Media Optimizer <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Bulk Optimize to process your existing media library.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"will%20this%20plugin%20send%20my%20images%20to%20an%20external%20server%3F\">\nWill this plugin send my images to an external server?\n</h4>\n<p>\n<p>No. Webxperthub Media Optimizer uses your server&#8217;s own Imagick or GD library to process images locally. Nothing is ever uploaded to a third-party service.</p>\n</p>\n<dt id=\"what%20happens%20to%20my%20original%20images%3F\">\nWhat happens to my original images?\n</h4>\n<p>\n<p>By default, Webxperthub Media Optimizer keeps a backup copy of your original file (with a <code>.mopw-bak</code> extension) alongside the optimized version. You can disable this in Settings if you don&#8217;t need it.</p>\n</p>\n<dt id=\"does%20deleting%20the%20plugin%20remove%20my%20backup%20files%3F\">\nDoes deleting the plugin remove my backup files?\n</h4>\n<p>\n<p>No. Uninstalling Webxperthub Media Optimizer removes its settings and internal processing queue, but does not scan your uploads folder for <code>.mopw-bak</code> files, to avoid a slow or timed-out uninstall on large media libraries. If you want to remove them, you can safely delete any file ending in <code>.mopw-bak</code> from your uploads folder.</p>\n</p>\n<dt id=\"will%20this%20slow%20down%20my%20server%20when%20bulk-optimizing%20thousands%20of%20images%3F\">\nWill this slow down my server when bulk-optimizing thousands of images?\n</h4>\n<p>\n<p>No. Bulk optimization uses a background queue processed in small batches (configurable under Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Performance), so your server only ever processes a few images at a time, never all at once.</p>\n</p>\n<dt id=\"is%20this%20compatible%20with%20multisite%3F\">\nIs this compatible with Multisite?\n</h4>\n<p>\n<p>Yes. Webxperthub Media Optimizer can be activated network-wide, and each site maintains its own independent settings and processing queue.</p>\n</p>\n<dt id=\"what%20image%20formats%20are%20supported%3F\">\nWhat image formats are supported?\n</h4>\n<p>\n<p>JPEG and PNG sources are supported. Output can be WebP, PNG, or the original format (compression only, no format change).</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
+    },
+    "short_description": "Automatically compress and convert your images to WebP on upload, with safe background bulk processing for your existing media library.",
+    "description": "<p>Webxperthub Media Optimizer optimizes your WordPress media library without slowing down your site or your server. It automatically compresses new uploads and converts them to WebP, and lets you bulk-process your entire existing media library safely in the background.</p>\n<h4>Key Features</h4>\n<ul>\n<li>Automatic optimization on upload — no manual steps required</li>\n<li>Converts images to WebP (or PNG, or compress-only with original format kept)</li>\n<li>Typically reduces file size by 40-60% with no noticeable quality loss</li>\n<li>Background queue processing — bulk-optimize thousands of images without server timeouts</li>\n<li>Optional resizing of oversized uploads to a configurable maximum width/height</li>\n<li>Keeps a backup of your original files by default</li>\n<li>Fully multisite compatible</li>\n<li>Uses your server&#8217;s native Imagick or GD library — no external API, no data ever leaves your server</li>\n<li>Developer-friendly filter hooks for custom workflows</li>\n</ul>\n<h4>How It Works</h4>\n<p>When Webxperthub Media Optimizer is enabled, every new image uploaded to your Media Library is automatically queued for optimization. A background process (WP-Cron) picks up queued images in small batches, so your server is never overloaded even if hundreds of images are queued at once.</p>\n<p>Use the <strong>Bulk Optimize</strong> screen under Webxperthub Media Optimizer in your admin menu to queue your entire existing media library and watch a live progress bar as images are processed.</p>\n<h4>For Developers</h4>\n<p>Skip optimization for specific attachments:</p>\n<pre><code>add_filter( 'mopw_skip_optimization', function( $skip, $attachment_id ) {\n    if ( get_post_meta( $attachment_id, '_never_optimize', true ) ) {\n        return true;\n    }\n    return $skip;\n}, 10, 2 );\n</code></pre>\n<p>Override format/quality for specific attachments:</p>\n<pre><code>add_filter( 'mopw_before_optimize_args', function( $args, $attachment_id ) {\n    if ( has_term( 'print-quality', 'category', $attachment_id ) ) {\n        $args['quality'] = 95;\n    }\n    return $args;\n}, 10, 2 );\n</code></pre>\n<p>Run custom logic after an image is optimized:</p>\n<pre><code>add_action( 'mopw_after_optimize', function( $attachment_id, $original_size, $new_size ) {\n    error_log( \"Attachment {$attachment_id} shrank from {$original_size} to {$new_size} bytes.\" );\n}, 10, 3 );\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/webxperthub-media-optimizer.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "compress": "compress",
+        "images": "images",
+        "optimize": "Optimize",
+        "performance": "performance",
+        "webp": "webp"
+    },
+    "stable_tag": "trunk",
+    "versions": [],
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/webxperthub-media-optimizer/assets/banner-772x250.png?rev=3655750",
+        "high": "https://ps.w.org/webxperthub-media-optimizer/assets/banner-1544x500.png?rev=3655750"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/webxperthub-media-optimizer/assets/icon-128x128.png?rev=3655750",
+        "2x": "https://ps.w.org/webxperthub-media-optimizer/assets/icon-256x256.png?rev=3655750"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
