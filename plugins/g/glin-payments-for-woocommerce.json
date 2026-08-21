@@ -1,0 +1,75 @@
+{
+    "name": "Glin Payments for WooCommerce",
+    "slug": "glin-payments-for-woocommerce",
+    "version": "0.1.1",
+    "author": "<a href=\"https://profiles.wordpress.org/lucianoglin/\">lucianoglin</a>",
+    "author_profile": "https://profiles.wordpress.org/lucianoglin/",
+    "contributors": {
+        "lucianoglin": {
+            "profile": "https://profiles.wordpress.org/lucianoglin/",
+            "avatar": "https://secure.gravatar.com/avatar/dfc23637e5cd33d6c8f6e5f6708cfc0b294aae2b6e85baf0daf59384ffb9ee4e?s=96&d=monsterid&r=g",
+            "display_name": "lucianoglin"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.0.4",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/glin-payments-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-21 15:08:00",
+    "added": "2026-08-21",
+    "homepage": "https://glin.com.br",
+    "sections": {
+        "description": "<p>Glin Payments for WooCommerce adds Glin as a WooCommerce payment gateway. It lets Brazilian shoppers pay in BRL using card or PIX while the WooCommerce order remains in the merchant settlement currency supported by Glin.</p>\n<p>The plugin loads the official Glin Checkout SDK automatically, sends tokenized payment data from WordPress to Glin with the merchant API key, and reconciles final order state through signed Glin webhooks. Merchants do not need to configure a custom SDK URL.</p>\n<p>Main capabilities:</p>\n<ul>\n<li>Card and PIX checkout support.</li>\n<li>Classic checkout and WooCommerce Checkout Blocks support.</li>\n<li>Automatic Glin remittance reservation during checkout.</li>\n<li>Automatic webhook registration when gateway settings are saved.</li>\n<li>Short card status polling so fast declines can keep shoppers on checkout.</li>\n<li>Order-received polling and bounded WordPress cron reconciliation as webhook fallbacks.</li>\n</ul>\n<p>Requirements:</p>\n<ul>\n<li>WooCommerce 7.8 or newer.</li>\n<li>A Glin merchant account.</li>\n<li>Glin API and public checkout keys for sandbox or live mode.</li>\n<li>A WooCommerce store currency supported by Glin.</li>\n<li>Public HTTPS store URL for automatic webhook registration.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to Glin services to process payments and keep WooCommerce orders synchronized with Glin payment status.</p>\n<p>Service provider: Glin Brasil Servicos Digitais LTDA and Glin, INC.</p>\n<p>Service endpoints used by the plugin:</p>\n<ul>\n<li><code>https://sdk.glin.com.br/v1/glin-checkout.js</code> loads the Glin Checkout SDK in the shopper browser when Glin is available at checkout.</li>\n<li><code>https://pay.glin.com.br</code> is used by the WordPress server in Live mode.</li>\n<li><code>https://pay.staging.glin.com.br</code> is used by the WordPress server in Sandbox mode.</li>\n</ul>\n<p>Data sent to Glin and when it is sent:</p>\n<ul>\n<li>When checkout is prepared, the plugin sends the WooCommerce cart amount, currency, generated checkout reference, success URL, and cancel URL so Glin can create or reuse a remittance.</li>\n<li>When the shopper submits payment, the plugin sends the Glin remittance ID, selected payment method, tokenized card data or PIX request data, installments when applicable, billing name, email, phone, CPF/CNPJ, and billing address so Glin can process the payment.</li>\n<li>When payment status is checked, the plugin sends the Glin remittance ID and public checkout key so Glin can return the current payment status.</li>\n<li>When gateway settings are saved and the store URL is public HTTPS, the plugin sends the WooCommerce webhook URL and subscribed event types so Glin can deliver payment status updates to the store.</li>\n<li>Glin sends signed webhook events back to the WooCommerce store webhook URL when a remittance is paid, canceled, expired, delivered, or disbursed.</li>\n</ul>\n<p>Terms of service: https://www.glin.com.br/legal/terms</p>\n<p>General platform terms: https://www.glin.com.br/legal/general-terms</p>\n<p>Privacy policy: https://www.glin.com.br/legal/privacy</p>\n",
+        "installation": "<ol>\n<li>Install and activate WooCommerce.</li>\n<li>Install this plugin from Plugins &gt; Add New, or upload the plugin ZIP from Plugins &gt; Add New &gt; Upload Plugin.</li>\n<li>Activate Glin Payments for WooCommerce.</li>\n<li>Open WooCommerce &gt; Settings &gt; Payments.</li>\n<li>Enable Glin.</li>\n<li>Choose Sandbox or Live mode.</li>\n<li>Enter the matching Glin API key and public checkout key.</li>\n<li>Choose the payment methods to expose, then save settings.</li>\n</ol>\n<p>After settings are saved, the plugin attempts to register the store webhook with Glin. Local HTTP stores can still test checkout flows, but webhook registration requires a public HTTPS URL.</p>\n",
+        "faq": "\n<dt id=\"can%20this%20plugin%20be%20used%20without%20woocommerce%3F\">\nCan this plugin be used without WooCommerce?\n</h4>\n<p>\n<p>No. This is a WooCommerce payment gateway. WordPress can install the plugin, but checkout functionality requires WooCommerce to be installed and active.</p>\n</p>\n<dt id=\"does%20the%20merchant%20need%20to%20configure%20an%20sdk%20url%3F\">\nDoes the merchant need to configure an SDK URL?\n</h4>\n<p>\n<p>No. The plugin uses Glin&#8217;s configured Checkout SDK URL internally.</p>\n</p>\n<dt id=\"does%20the%20plugin%20support%20sandbox%20testing%3F\">\nDoes the plugin support sandbox testing?\n</h4>\n<p>\n<p>Yes. Merchants can choose Sandbox mode and enter sandbox API/public checkout keys.</p>\n</p>\n<dt id=\"how%20do%20webhooks%20work%3F\">\nHow do webhooks work?\n</h4>\n<p>\n<p>When gateway settings are saved, the plugin attempts to register the WooCommerce store webhook URL with Glin. Glin sends signed payment/remittance events to that URL. The plugin verifies the signature, finds the WooCommerce order by stored Glin identifiers, and updates the order status idempotently.</p>\n</p>\n<dt id=\"what%20happens%20if%20a%20webhook%20is%20delayed%3F\">\nWhat happens if a webhook is delayed?\n</h4>\n<p>\n<p>The plugin also polls pending order-received pages and schedules bounded WordPress cron reconciliation for orders left waiting.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.1</h4>\n<ul>\n<li>Initial pilot release of the Glin WooCommerce gateway.</li>\n</ul>\n"
+    },
+    "short_description": "Accept Brazilian card and PIX payments through Glin in WooCommerce.",
+    "description": "<p>Glin Payments for WooCommerce adds Glin as a WooCommerce payment gateway. It lets Brazilian shoppers pay in BRL using card or PIX while the WooCommerce order remains in the merchant settlement currency supported by Glin.</p>\n<p>The plugin loads the official Glin Checkout SDK automatically, sends tokenized payment data from WordPress to Glin with the merchant API key, and reconciles final order state through signed Glin webhooks. Merchants do not need to configure a custom SDK URL.</p>\n<p>Main capabilities:</p>\n<ul>\n<li>Card and PIX checkout support.</li>\n<li>Classic checkout and WooCommerce Checkout Blocks support.</li>\n<li>Automatic Glin remittance reservation during checkout.</li>\n<li>Automatic webhook registration when gateway settings are saved.</li>\n<li>Short card status polling so fast declines can keep shoppers on checkout.</li>\n<li>Order-received polling and bounded WordPress cron reconciliation as webhook fallbacks.</li>\n</ul>\n<p>Requirements:</p>\n<ul>\n<li>WooCommerce 7.8 or newer.</li>\n<li>A Glin merchant account.</li>\n<li>Glin API and public checkout keys for sandbox or live mode.</li>\n<li>A WooCommerce store currency supported by Glin.</li>\n<li>Public HTTPS store URL for automatic webhook registration.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to Glin services to process payments and keep WooCommerce orders synchronized with Glin payment status.</p>\n<p>Service provider: Glin Brasil Servicos Digitais LTDA and Glin, INC.</p>\n<p>Service endpoints used by the plugin:</p>\n<ul>\n<li><code>https://sdk.glin.com.br/v1/glin-checkout.js</code> loads the Glin Checkout SDK in the shopper browser when Glin is available at checkout.</li>\n<li><code>https://pay.glin.com.br</code> is used by the WordPress server in Live mode.</li>\n<li><code>https://pay.staging.glin.com.br</code> is used by the WordPress server in Sandbox mode.</li>\n</ul>\n<p>Data sent to Glin and when it is sent:</p>\n<ul>\n<li>When checkout is prepared, the plugin sends the WooCommerce cart amount, currency, generated checkout reference, success URL, and cancel URL so Glin can create or reuse a remittance.</li>\n<li>When the shopper submits payment, the plugin sends the Glin remittance ID, selected payment method, tokenized card data or PIX request data, installments when applicable, billing name, email, phone, CPF/CNPJ, and billing address so Glin can process the payment.</li>\n<li>When payment status is checked, the plugin sends the Glin remittance ID and public checkout key so Glin can return the current payment status.</li>\n<li>When gateway settings are saved and the store URL is public HTTPS, the plugin sends the WooCommerce webhook URL and subscribed event types so Glin can deliver payment status updates to the store.</li>\n<li>Glin sends signed webhook events back to the WooCommerce store webhook URL when a remittance is paid, canceled, expired, delivered, or disbursed.</li>\n</ul>\n<p>Terms of service: https://www.glin.com.br/legal/terms</p>\n<p>General platform terms: https://www.glin.com.br/legal/general-terms</p>\n<p>Privacy policy: https://www.glin.com.br/legal/privacy</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/glin-payments-for-woocommerce.0.1.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "credit-card": "credit card",
+        "payment-gateway": "payment gateway",
+        "payments": "payments",
+        "pix": "pix",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "0.1.1",
+    "versions": {
+        "0.1.1": "https://downloads.wordpress.org/plugin/glin-payments-for-woocommerce.0.1.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/glin-payments-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/glin-payments-for-woocommerce.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
