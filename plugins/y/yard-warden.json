@@ -1,0 +1,76 @@
+{
+    "name": "Yard | Warden",
+    "slug": "yard-warden",
+    "version": "1.0.3",
+    "author": "<a href=\"https://profiles.wordpress.org/yarddigitalagency/\">Yard | Digital Agency</a>",
+    "author_profile": "https://profiles.wordpress.org/yarddigitalagency/",
+    "contributors": {
+        "yarddigitalagency": {
+            "profile": "https://profiles.wordpress.org/yarddigitalagency/",
+            "avatar": "https://secure.gravatar.com/avatar/cef3725df30520d9c272255b060d32faed4378c08a9830aadb129ba756c38c34?s=96&d=monsterid&r=g",
+            "display_name": "Yard | Digital Agency"
+        }
+    },
+    "requires": "6.3",
+    "tested": "7.0.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/yard-warden/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-21 05:34:00",
+    "added": "2026-08-21",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Yard Warden hardens core WordPress password and login flows:</p>\n<ul>\n<li><strong>Password strength</strong> via <a href=\"https://github.com/bjeavons/zxcvbn-php\" rel=\"nofollow ugc\">zxcvbn-php</a>. Scores passwords 0-4 (default 4) based on real guessability, not arbitrary character-class rules. User inputs (login, email, display name) are fed to zxcvbn so passwords containing them score lower.</li>\n<li><strong>Minimum length</strong> enforcement (default 16) on top of the zxcvbn score.</li>\n<li><strong>Generic login errors</strong> to prevent username enumeration on the wp-login form. Always on, no toggle. Only applies to authentication failures; password-reset and profile-update validation errors remain verbose so users can correct their input.</li>\n<li><strong>Safer multisite onboarding.</strong> Auto-activates new signups server-side so no activation link is emailed and the wp-activate.php landing page (which would print username + plaintext password) is never reached. The welcome email is rewritten to contain a one-time password-reset link instead of a generated password.</li>\n<li><strong>Login limiting</strong> via transient-based counters across three dimensions (IP+Username, IP, Username). Locks out brute-force attempts. Admin can clear all counters via Settings &gt; Yard Warden.</li>\n</ul>\n<h4>Filters</h4>\n<ul>\n<li><code>yard::warden/password/min-length</code> (default <code>16</code>) &#8211; Minimum character count.</li>\n<li><code>yard::warden/password/min-score</code> (default <code>4</code>) &#8211; Minimum zxcvbn score (0-4).</li>\n<li><code>yard::warden/login/generic-error</code> (default <code>Invalid credentials.</code>) &#8211; Replacement login error message.</li>\n<li><code>yard::warden/login/leaky-error-codes</code> (default <code>['invalid_username', 'invalid_email', 'incorrect_password']</code>) &#8211; WP_Error codes to rewrite.</li>\n<li><code>yard::warden/onboarding/welcome-subject</code> (default <code>Welcome to &lt;site&gt;!</code>) &#8211; Multisite welcome email subject.</li>\n<li><code>yard::warden/onboarding/welcome-body</code> (default reset-link body) &#8211; Full welcome email body. Receives <code>$user</code>, <code>$resetUrl</code>, original body.</li>\n<li><code>yard::warden/limit-login/enabled</code> (default <code>true</code>) &#8211; Set to <code>false</code> to disable login limiting entirely.</li>\n<li><code>yard::warden/limit-login/client-ip</code> (default <code>REMOTE_ADDR</code>) &#8211; Override IP detection (e.g. for reverse proxies).</li>\n<li><code>yard::warden/limit-login/error-message</code> (default <code>Too many failed login attempts...</code>) &#8211; Lockout error shown to the user.</li>\n<li><code>yard::warden/limit-login/skip-error-codes</code> (default <code>['expired_session']</code>) &#8211; WP_Error codes that do not count as failed attempts.</li>\n<li><code>yard::warden/limit-login/threshold/{dimension}</code> (default <code>5</code> / <code>50</code> / <code>3</code>) &#8211; Attempts before lockout per dimension (<code>ip_user</code> / <code>ip</code> / <code>username</code>).</li>\n<li><code>yard::warden/limit-login/window/{dimension}</code> (default <code>300</code> / <code>3600</code> / <code>1500</code>) &#8211; Counting window in seconds per dimension.</li>\n<li><code>yard::warden/limit-login/lockout/{dimension}</code> (default <code>300</code> / <code>3600</code> / <code>1500</code>) &#8211; Lockout duration in seconds per dimension.</li>\n</ul>\n<h4>Policy override example</h4>\n<pre><code>add_filter('yard::warden/password/min-score', function (int $score) {\n    return max($score, 4);\n});\n</code></pre>\n",
+        "installation": "<ol>\n<li>Upload the plugin files to <code>/wp-content/plugins/yard-warden</code>, or install through the Plugins screen directly.</li>\n<li>Activate the plugin through the &#8220;Plugins&#8221; screen in WordPress.</li>\n<li>Configure login-limit thresholds via Settings &gt; Yard Warden, or override any default via the filters above.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20add%20password%20expiry%20or%20forced%20rotation%3F\">\nDoes this add password expiry or forced rotation?\n</h4>\n<p>\n<p>No. Forced password rotation is not implemented; it pushes users toward weaker, predictable passwords rather than improving security.</p>\n</p>\n<dt id=\"can%20i%20disable%20login%20limiting%3F\">\nCan I disable login limiting?\n</h4>\n<p>\n<p>Yes, via the <code>yard::warden/limit-login/enabled</code> filter.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.3</h4>\n<ul>\n<li>Minimum WordPress version raised to 6.3.</li>\n<li>Bundled Dutch translations removed; translations are now served through translate.wordpress.org.</li>\n<li>WP_Error codes prefixed with yard_warden_ to avoid collisions with other plugins.</li>\n<li>Login-limit transient keys prefixed with yard_warden_ll_.</li>\n<li>Welcome-email opt-out query flag renamed to yard_warden_disable_welcome_email.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Text domain adjusted to yard-warden.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Enhanced password and login security for WordPress.",
+    "description": "<p>Yard Warden hardens core WordPress password and login flows:</p>\n<ul>\n<li><strong>Password strength</strong> via <a href=\"https://github.com/bjeavons/zxcvbn-php\" rel=\"nofollow ugc\">zxcvbn-php</a>. Scores passwords 0-4 (default 4) based on real guessability, not arbitrary character-class rules. User inputs (login, email, display name) are fed to zxcvbn so passwords containing them score lower.</li>\n<li><strong>Minimum length</strong> enforcement (default 16) on top of the zxcvbn score.</li>\n<li><strong>Generic login errors</strong> to prevent username enumeration on the wp-login form. Always on, no toggle. Only applies to authentication failures; password-reset and profile-update validation errors remain verbose so users can correct their input.</li>\n<li><strong>Safer multisite onboarding.</strong> Auto-activates new signups server-side so no activation link is emailed and the wp-activate.php landing page (which would print username + plaintext password) is never reached. The welcome email is rewritten to contain a one-time password-reset link instead of a generated password.</li>\n<li><strong>Login limiting</strong> via transient-based counters across three dimensions (IP+Username, IP, Username). Locks out brute-force attempts. Admin can clear all counters via Settings &gt; Yard Warden.</li>\n</ul>\n<h4>Filters</h4>\n<ul>\n<li><code>yard::warden/password/min-length</code> (default <code>16</code>) &#8211; Minimum character count.</li>\n<li><code>yard::warden/password/min-score</code> (default <code>4</code>) &#8211; Minimum zxcvbn score (0-4).</li>\n<li><code>yard::warden/login/generic-error</code> (default <code>Invalid credentials.</code>) &#8211; Replacement login error message.</li>\n<li><code>yard::warden/login/leaky-error-codes</code> (default <code>['invalid_username', 'invalid_email', 'incorrect_password']</code>) &#8211; WP_Error codes to rewrite.</li>\n<li><code>yard::warden/onboarding/welcome-subject</code> (default <code>Welcome to &lt;site&gt;!</code>) &#8211; Multisite welcome email subject.</li>\n<li><code>yard::warden/onboarding/welcome-body</code> (default reset-link body) &#8211; Full welcome email body. Receives <code>$user</code>, <code>$resetUrl</code>, original body.</li>\n<li><code>yard::warden/limit-login/enabled</code> (default <code>true</code>) &#8211; Set to <code>false</code> to disable login limiting entirely.</li>\n<li><code>yard::warden/limit-login/client-ip</code> (default <code>REMOTE_ADDR</code>) &#8211; Override IP detection (e.g. for reverse proxies).</li>\n<li><code>yard::warden/limit-login/error-message</code> (default <code>Too many failed login attempts...</code>) &#8211; Lockout error shown to the user.</li>\n<li><code>yard::warden/limit-login/skip-error-codes</code> (default <code>['expired_session']</code>) &#8211; WP_Error codes that do not count as failed attempts.</li>\n<li><code>yard::warden/limit-login/threshold/{dimension}</code> (default <code>5</code> / <code>50</code> / <code>3</code>) &#8211; Attempts before lockout per dimension (<code>ip_user</code> / <code>ip</code> / <code>username</code>).</li>\n<li><code>yard::warden/limit-login/window/{dimension}</code> (default <code>300</code> / <code>3600</code> / <code>1500</code>) &#8211; Counting window in seconds per dimension.</li>\n<li><code>yard::warden/limit-login/lockout/{dimension}</code> (default <code>300</code> / <code>3600</code> / <code>1500</code>) &#8211; Lockout duration in seconds per dimension.</li>\n</ul>\n<h4>Policy override example</h4>\n<pre><code>add_filter('yard::warden/password/min-score', function (int $score) {\n    return max($score, 4);\n});\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/yard-warden.1.0.3.zip",
+    "upgrade_notice": {
+        "1.0.3": "<p>Login attempt counters and active lockouts are reset on upgrade. If you use the disable_welcome_email query flag, rename it to yard_warden_disable_welcome_email.</p>",
+        "1.0.2": "<p>Text domain change only, no action required.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "brute-force": "Brute Force",
+        "login": "login",
+        "multisite": "multisite",
+        "password": "password",
+        "security": "security"
+    },
+    "stable_tag": "1.0.3",
+    "versions": {
+        "1.0.3": "https://downloads.wordpress.org/plugin/yard-warden.1.0.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/yard-warden.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/yard-warden.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
