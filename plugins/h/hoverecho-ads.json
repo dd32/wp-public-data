@@ -1,0 +1,111 @@
+{
+    "name": "HoverEcho Ads",
+    "slug": "hoverecho-ads",
+    "version": "2.0.2",
+    "author": "<a href=\"https://profiles.wordpress.org/hoverecho/\">hoverecho</a>",
+    "author_profile": "https://profiles.wordpress.org/hoverecho/",
+    "contributors": {
+        "hoverecho": {
+            "profile": "https://profiles.wordpress.org/hoverecho/",
+            "avatar": "https://secure.gravatar.com/avatar/9abe46fb54980de2952510bbafa5620df9d08fd4284d2bc0a8b511655982229f?s=96&d=monsterid&r=g",
+            "display_name": "hoverecho"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/hoverecho-ads/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-21 12:25:00",
+    "added": "2026-08-21",
+    "homepage": "https://hoverecho.com/wordpress-plugin",
+    "sections": {
+        "description": "<p>HoverEcho Ads is a free WordPress plugin that connects a WordPress site to the HoverEcho service at https://hoverecho.com.</p>\n<p>An administrator signs in from wp-admin with an existing HoverEcho account. After that, they can list campaigns, create a campaign, delete a campaign, and place a campaign on the site. Visitors see the campaign through a shortcode, a Gutenberg block, a widget, or an optional site-wide placement.</p>\n<p>A HoverEcho account is required. Account signup is on the HoverEcho website: https://hoverecho.com/signup</p>\n<p>This plugin does not sell or unlock extra local plugin code. Campaign audio and ads are created and delivered by the HoverEcho service. Any paid HoverEcho plans, trials, or billing happen on hoverecho.com, not inside this plugin.</p>\n<h4>What the plugin does (from the current code)</h4>\n<ul>\n<li>Adds a HoverEcho menu in wp-admin (Dashboard and Settings)</li>\n<li>Connect / Disconnect a HoverEcho account</li>\n<li>List, create, and delete campaigns through the HoverEcho API</li>\n<li>Place one global campaign (top or bottom of the page, all pages or selected pages)</li>\n<li>Shortcode: [hoverecho campaign_id=&#8221;123&#8243;]</li>\n<li>Gutenberg block: hoverecho/ad</li>\n<li>Widget: HoverEcho Ad</li>\n<li>Stores the API token encrypted in WordPress; the token is not exposed to browser JavaScript in the admin app (admin calls WordPress REST; WordPress calls HoverEcho)</li>\n</ul>\n<h4>Features (technical)</h4>\n<ul>\n<li>Account connection from wp-admin</li>\n<li>Campaign list, create, and delete</li>\n<li>One-click “Add to site” placement</li>\n<li>Gutenberg block, shortcode, and widget</li>\n<li>Encrypted token storage and WordPress REST proxy</li>\n</ul>\n<h3>Configuration</h3>\n<ul>\n<li>HoverEcho <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Dashboard: connect, disconnect, campaigns, create campaign, site placement</li>\n<li>HoverEcho <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings: explanation of the HoverEcho connection (no custom host settings)</li>\n</ul>\n<p>Disconnect removes the stored token and connected-account fields from this WordPress site.</p>\n<p>Deleting the plugin (uninstall) removes:</p>\n<ul>\n<li>hoverecho_settings</li>\n<li>hoverecho_auth</li>\n<li>hoverecho_placements</li>\n<li>hoverecho_campaign_cache</li>\n</ul>\n<h3>Privacy</h3>\n<p>This plugin stores data in WordPress only after an administrator connects a HoverEcho account.</p>\n<p>Stored in WordPress (<code>hoverecho_auth</code>):</p>\n<ul>\n<li>Encrypted HoverEcho API token</li>\n<li>HoverEcho user id</li>\n<li>Email</li>\n<li>First name (if provided by the login response)</li>\n<li>Last name (if provided)</li>\n<li>Subscription plan name (if provided)</li>\n<li>Connected-at timestamp</li>\n</ul>\n<p>Also stored:</p>\n<ul>\n<li>hoverecho_settings (plugin settings)</li>\n<li>hoverecho_placements (which campaign is shown and where)</li>\n<li>hoverecho_campaign_cache (transient campaign list for the block/widget, 5 minutes)</li>\n</ul>\n<p>What is sent to HoverEcho on Connect:</p>\n<ul>\n<li>Email</li>\n<li>Password</li>\n<li>rememberMe (boolean)</li>\n</ul>\n<p>What may be sent later from wp-admin (while connected), depending on the action:</p>\n<ul>\n<li>Campaign fields such as name, dates, text message, language, voice, translation flags, receiving site URL (defaults to this WordPress site’s home URL), and related create/update fields</li>\n<li>Requests to list campaigns, templates, TTS voices, and translation languages</li>\n</ul>\n<p>What may be sent from the public site after a campaign is placed:</p>\n<ul>\n<li>A request for public campaign data (campaign ID)</li>\n<li>Optional tracking POSTs that include the current page URL (<code>websiteUrl</code>) for hover/click-style events implemented by the widget</li>\n</ul>\n<p>The plugin registers WordPress privacy policy helper text, a personal data exporter, and a personal data eraser for the connected HoverEcho email. Disconnect or uninstall deletes the local token and connected-account option. That does not automatically delete the HoverEcho account on hoverecho.com.</p>\n<p>HoverEcho service Privacy Policy: https://hoverecho.com/privacy<br />\nHoverEcho service Terms of Service: https://hoverecho.com/terms</p>\n<h3>External Services</h3>\n<p>This plugin communicates with the HoverEcho service operated at https://hoverecho.com</p>\n<p>Base API: https://hoverecho.com/api<br />\nHTTP from WordPress uses the WordPress HTTP API (wp_remote_request).</p>\n<h4>1. Administrator Connect (required for Dashboard features)</h4>\n<p>POST https://hoverecho.com/api/auth/login</p>\n<p>JSON body sent:</p>\n<ul>\n<li>email</li>\n<li>password</li>\n<li>rememberMe</li>\n</ul>\n<p>Response used by the plugin: token and user object. The token is encrypted and stored in WordPress. The password is not stored.</p>\n<h4>2. Administrator Dashboard (only while connected)</h4>\n<p>Authenticated with header: Authorization: Bearer {token}</p>\n<ul>\n<li>GET https://hoverecho.com/api/auth/profile</li>\n<li>GET https://hoverecho.com/api/campaigns</li>\n<li>GET https://hoverecho.com/api/campaigns/{id}</li>\n<li>POST https://hoverecho.com/api/campaigns/create-enhanced</li>\n<li>PUT https://hoverecho.com/api/campaigns/{id}</li>\n<li>DELETE https://hoverecho.com/api/campaigns/{id}</li>\n<li>GET https://hoverecho.com/api/templates</li>\n<li>GET https://hoverecho.com/api/campaigns/tts/voices</li>\n<li>GET https://hoverecho.com/api/campaigns/translate/languages</li>\n</ul>\n<h4>3. Public pages (only if a campaign is rendered)</h4>\n<p>Script loaded:</p>\n<p>https://hoverecho.com/embed/hoverecho-widget.js</p>\n<p>The widget then calls:</p>\n<ul>\n<li>GET https://hoverecho.com/api/campaigns/public/{campaignId}</li>\n<li>POST https://hoverecho.com/api/campaigns/{campaignId}/track-{eventType}<br />\nJSON body: { &#8220;websiteUrl&#8221;: &#8220;&#8221; }</li>\n</ul>\n<h4>Service links</h4>\n<ul>\n<li>Service: https://hoverecho.com</li>\n<li>Privacy Policy: https://hoverecho.com/privacy</li>\n<li>Terms of Service: https://hoverecho.com/terms</li>\n<li>Sign up: https://hoverecho.com/signup</li>\n<li>Sign in: https://hoverecho.com/signin</li>\n<li>Plugin page: https://hoverecho.com/wordpress-plugin</li>\n<li>Pricing page (HoverEcho website, not this plugin): https://hoverecho.com/pricing</li>\n<li>Support email: Support@HoverEcho.com</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>hoverecho</code> folder to <code>/wp-content/plugins/</code> (or install the ZIP via Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin).</li>\n<li>Activate the plugin through the Plugins menu.</li>\n<li>In wp-admin, go to HoverEcho <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Dashboard.</li>\n<li>Click Connect Account and sign in with a HoverEcho email and password.<br />\nConnecting sends that email and password to https://hoverecho.com/api/auth/login. See External Services.</li>\n<li>After connecting, select or create a campaign and click Add to site, or insert the shortcode, block, or widget.</li>\n</ol>\n<p>No API URL field is required. The plugin is hardcoded to:</p>\n<ul>\n<li>https://hoverecho.com</li>\n<li>https://hoverecho.com/api</li>\n</ul>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20a%20hoverecho%20account%3F\">\nDo I need a HoverEcho account?\n</h4>\n<p>\n<p>Yes. Create one at https://hoverecho.com/signup or connect an existing account from HoverEcho <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Dashboard.</p>\n</p>\n<dt id=\"do%20i%20still%20paste%20embed%20code%3F\">\nDo I still paste embed code?\n</h4>\n<p>\n<p>No. Current versions place campaigns by campaign ID.</p>\n</p>\n<dt id=\"is%20my%20hoverecho%20password%20stored%20in%20wordpress%3F\">\nIs my HoverEcho password stored in WordPress?\n</h4>\n<p>\n<p>No. After a successful login, WordPress stores an encrypted API token (the token returned by HoverEcho login) plus a small user summary (id, email, first name, last name, subscription plan). The password is sent only to https://hoverecho.com/api/auth/login at connect time and is not saved in WordPress options.</p>\n</p>\n<dt id=\"how%20is%20the%20token%20stored%3F\">\nHow is the token stored?\n</h4>\n<p>\n<p>The token is encrypted with AES-256-CBC using a key derived from WordPress AUTH_KEY (or wp_salt(&#8216;auth&#8217;) if AUTH_KEY is the default placeholder). It is saved in the <code>hoverecho_auth</code> option. Admin screens talk to this site’s WordPress REST API (<code>hoverecho/v1</code>). Those routes require the <code>manage_options</code> capability and the WordPress REST nonce. WordPress then calls HoverEcho with the decrypted token as a Bearer token. The admin JavaScript does not receive the HoverEcho JWT.</p>\n</p>\n<dt id=\"when%20does%20the%20plugin%20contact%20hoverecho.com%3F\">\nWhen does the plugin contact hoverecho.com?\n</h4>\n<p>\n<p>Activating the plugin does not send data to HoverEcho.</p>\n<p>HoverEcho is contacted when:</p>\n<ul>\n<li>An administrator clicks Connect (login)</li>\n<li>An administrator uses Dashboard features that load or change campaigns (list, create, delete, templates, voices, languages)</li>\n<li>A campaign is output on a public page (widget script + public campaign request + optional event tracking)</li>\n</ul>\n</p>\n<dt id=\"who%20can%20use%20the%20dashboard%3F\">\nWho can use the Dashboard?\n</h4>\n<p>\n<p>WordPress users with the <code>manage_options</code> capability (typically administrators).</p>\n</p>\n<dt id=\"what%20shortcode%20is%20supported%3F\">\nWhat shortcode is supported?\n</h4>\n<p>\n<p>[hoverecho campaign_id=&#8221;123&#8243;]</p>\n<p>Optional attributes: align (left, center, right), width, height.</p>\n</p>\n<dt id=\"how%20do%20i%20get%20support%3F\">\nHow do I get support?\n</h4>\n<p>\n<p>Email Support@HoverEcho.com<br />\nWebsite: https://hoverecho.com<br />\nPlugin download page: https://hoverecho.com/wordpress-plugin</p>\n</p>\n\n",
+        "changelog": "<h4>2.0.2</h4>\n<ul>\n<li>Add Privacy Policy and Terms of Service links for HoverEcho external service disclosure</li>\n<li>Change text domain to hoverecho-ads to match the WordPress.org plugin slug</li>\n</ul>\n<h4>2.0.1</h4>\n<ul>\n<li>WordPress.org compliance pass on the current 2.x plugin</li>\n<li>Document external HoverEcho API and widget traffic</li>\n<li>Add WordPress privacy exporter, eraser, and policy helper text</li>\n<li>Remove affiliate/Reditus tracking from the plugin</li>\n<li>Lock API and site host to https://hoverecho.com (no custom API URL setting)</li>\n<li>Sanitize campaign REST payloads</li>\n<li>Load public widget CSS/JS only when a campaign is rendered</li>\n<li>Replace inline widget init script with wp_add_inline_script</li>\n<li>Fix widget fetch/audio on localhost publisher sites</li>\n<li>Improve wp-admin form layout</li>\n</ul>\n<h4>2.0.0</h4>\n<ul>\n<li>Connected-account dashboard inside WordPress</li>\n<li>Campaign list, create, delete, and one-click site placement</li>\n<li>Encrypted token storage and WordPress REST API proxy to HoverEcho</li>\n<li>Gutenberg block campaign picker</li>\n<li>Widget campaign dropdown from the connected account</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release using pasted embed code, shortcode, Gutenberg block, and widget</li>\n</ul>\n"
+    },
+    "short_description": "Connect a HoverEcho account and publish voice-powered interactive ads on WordPress without copying embed code.",
+    "description": "<p>HoverEcho Ads is a free WordPress plugin that connects a WordPress site to the HoverEcho service at https://hoverecho.com.</p>\n<p>An administrator signs in from wp-admin with an existing HoverEcho account. After that, they can list campaigns, create a campaign, delete a campaign, and place a campaign on the site. Visitors see the campaign through a shortcode, a Gutenberg block, a widget, or an optional site-wide placement.</p>\n<p>A HoverEcho account is required. Account signup is on the HoverEcho website: https://hoverecho.com/signup</p>\n<p>This plugin does not sell or unlock extra local plugin code. Campaign audio and ads are created and delivered by the HoverEcho service. Any paid HoverEcho plans, trials, or billing happen on hoverecho.com, not inside this plugin.</p>\n<h4>What the plugin does (from the current code)</h4>\n<ul>\n<li>Adds a HoverEcho menu in wp-admin (Dashboard and Settings)</li>\n<li>Connect / Disconnect a HoverEcho account</li>\n<li>List, create, and delete campaigns through the HoverEcho API</li>\n<li>Place one global campaign (top or bottom of the page, all pages or selected pages)</li>\n<li>Shortcode: [hoverecho campaign_id=&#8221;123&#8243;]</li>\n<li>Gutenberg block: hoverecho/ad</li>\n<li>Widget: HoverEcho Ad</li>\n<li>Stores the API token encrypted in WordPress; the token is not exposed to browser JavaScript in the admin app (admin calls WordPress REST; WordPress calls HoverEcho)</li>\n</ul>\n<h4>Features (technical)</h4>\n<ul>\n<li>Account connection from wp-admin</li>\n<li>Campaign list, create, and delete</li>\n<li>One-click “Add to site” placement</li>\n<li>Gutenberg block, shortcode, and widget</li>\n<li>Encrypted token storage and WordPress REST proxy</li>\n</ul>\n<h3>Configuration</h3>\n<ul>\n<li>HoverEcho <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Dashboard: connect, disconnect, campaigns, create campaign, site placement</li>\n<li>HoverEcho <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings: explanation of the HoverEcho connection (no custom host settings)</li>\n</ul>\n<p>Disconnect removes the stored token and connected-account fields from this WordPress site.</p>\n<p>Deleting the plugin (uninstall) removes:</p>\n<ul>\n<li>hoverecho_settings</li>\n<li>hoverecho_auth</li>\n<li>hoverecho_placements</li>\n<li>hoverecho_campaign_cache</li>\n</ul>\n<h3>Privacy</h3>\n<p>This plugin stores data in WordPress only after an administrator connects a HoverEcho account.</p>\n<p>Stored in WordPress (<code>hoverecho_auth</code>):</p>\n<ul>\n<li>Encrypted HoverEcho API token</li>\n<li>HoverEcho user id</li>\n<li>Email</li>\n<li>First name (if provided by the login response)</li>\n<li>Last name (if provided)</li>\n<li>Subscription plan name (if provided)</li>\n<li>Connected-at timestamp</li>\n</ul>\n<p>Also stored:</p>\n<ul>\n<li>hoverecho_settings (plugin settings)</li>\n<li>hoverecho_placements (which campaign is shown and where)</li>\n<li>hoverecho_campaign_cache (transient campaign list for the block/widget, 5 minutes)</li>\n</ul>\n<p>What is sent to HoverEcho on Connect:</p>\n<ul>\n<li>Email</li>\n<li>Password</li>\n<li>rememberMe (boolean)</li>\n</ul>\n<p>What may be sent later from wp-admin (while connected), depending on the action:</p>\n<ul>\n<li>Campaign fields such as name, dates, text message, language, voice, translation flags, receiving site URL (defaults to this WordPress site’s home URL), and related create/update fields</li>\n<li>Requests to list campaigns, templates, TTS voices, and translation languages</li>\n</ul>\n<p>What may be sent from the public site after a campaign is placed:</p>\n<ul>\n<li>A request for public campaign data (campaign ID)</li>\n<li>Optional tracking POSTs that include the current page URL (<code>websiteUrl</code>) for hover/click-style events implemented by the widget</li>\n</ul>\n<p>The plugin registers WordPress privacy policy helper text, a personal data exporter, and a personal data eraser for the connected HoverEcho email. Disconnect or uninstall deletes the local token and connected-account option. That does not automatically delete the HoverEcho account on hoverecho.com.</p>\n<p>HoverEcho service Privacy Policy: https://hoverecho.com/privacy<br />\nHoverEcho service Terms of Service: https://hoverecho.com/terms</p>\n<h3>External Services</h3>\n<p>This plugin communicates with the HoverEcho service operated at https://hoverecho.com</p>\n<p>Base API: https://hoverecho.com/api<br />\nHTTP from WordPress uses the WordPress HTTP API (wp_remote_request).</p>\n<h4>1. Administrator Connect (required for Dashboard features)</h4>\n<p>POST https://hoverecho.com/api/auth/login</p>\n<p>JSON body sent:</p>\n<ul>\n<li>email</li>\n<li>password</li>\n<li>rememberMe</li>\n</ul>\n<p>Response used by the plugin: token and user object. The token is encrypted and stored in WordPress. The password is not stored.</p>\n<h4>2. Administrator Dashboard (only while connected)</h4>\n<p>Authenticated with header: Authorization: Bearer {token}</p>\n<ul>\n<li>GET https://hoverecho.com/api/auth/profile</li>\n<li>GET https://hoverecho.com/api/campaigns</li>\n<li>GET https://hoverecho.com/api/campaigns/{id}</li>\n<li>POST https://hoverecho.com/api/campaigns/create-enhanced</li>\n<li>PUT https://hoverecho.com/api/campaigns/{id}</li>\n<li>DELETE https://hoverecho.com/api/campaigns/{id}</li>\n<li>GET https://hoverecho.com/api/templates</li>\n<li>GET https://hoverecho.com/api/campaigns/tts/voices</li>\n<li>GET https://hoverecho.com/api/campaigns/translate/languages</li>\n</ul>\n<h4>3. Public pages (only if a campaign is rendered)</h4>\n<p>Script loaded:</p>\n<p>https://hoverecho.com/embed/hoverecho-widget.js</p>\n<p>The widget then calls:</p>\n<ul>\n<li>GET https://hoverecho.com/api/campaigns/public/{campaignId}</li>\n<li>POST https://hoverecho.com/api/campaigns/{campaignId}/track-{eventType}<br />\nJSON body: { &#8220;websiteUrl&#8221;: &#8220;&#8221; }</li>\n</ul>\n<h4>Service links</h4>\n<ul>\n<li>Service: https://hoverecho.com</li>\n<li>Privacy Policy: https://hoverecho.com/privacy</li>\n<li>Terms of Service: https://hoverecho.com/terms</li>\n<li>Sign up: https://hoverecho.com/signup</li>\n<li>Sign in: https://hoverecho.com/signin</li>\n<li>Plugin page: https://hoverecho.com/wordpress-plugin</li>\n<li>Pricing page (HoverEcho website, not this plugin): https://hoverecho.com/pricing</li>\n<li>Support email: Support@HoverEcho.com</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/hoverecho-ads.2.0.2.zip",
+    "upgrade_notice": {
+        "2.0.2": "<p>Text domain is now hoverecho-ads. Reconnect is unchanged.</p>",
+        "2.0.1": "<p>Connect still uses hoverecho.com. Affiliate tracking is not included. Reconnect from HoverEcho → Dashboard if the stored token is missing after update.</p>",
+        "2.0.0": "<p>Replaces the embed-code paste workflow with account connection inside WordPress.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/hoverecho-ads/assets/screenshot-1.png?rev=3658976",
+            "caption": "HoverEcho Dashboard — Connect Account (wp-admin login to HoverEcho)"
+        },
+        {
+            "src": "https://ps.w.org/hoverecho-ads/assets/screenshot-2.png?rev=3658976",
+            "caption": "Campaign list after connecting, with Add to site"
+        },
+        {
+            "src": "https://ps.w.org/hoverecho-ads/assets/screenshot-3.png?rev=3658976",
+            "caption": "Create campaign form in wp-admin"
+        },
+        {
+            "src": "https://ps.w.org/hoverecho-ads/assets/screenshot-4.png?rev=3658976",
+            "caption": "Site placement settings (pages and position)"
+        },
+        {
+            "src": "https://ps.w.org/hoverecho-ads/assets/screenshot-5.png?rev=3658976",
+            "caption": "Gutenberg “HoverEcho Ad” block in the editor"
+        },
+        {
+            "src": "https://ps.w.org/hoverecho-ads/assets/screenshot-6.png?rev=3658976",
+            "caption": "Public page with a placed HoverEcho campaign / widget"
+        }
+    ],
+    "tags": {
+        "ads": "ads",
+        "advertising": "advertising",
+        "audio": "audio",
+        "gutenberg": "gutenberg",
+        "voice": "voice"
+    },
+    "stable_tag": "2.0.2",
+    "versions": {
+        "2.0.2": "https://downloads.wordpress.org/plugin/hoverecho-ads.2.0.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/hoverecho-ads.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/hoverecho-ads/assets/banner-772x250.png?rev=3658976",
+        "high": "https://ps.w.org/hoverecho-ads/assets/banner-1544x500.png?rev=3658976"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/hoverecho-ads/assets/icon-128x128.png?rev=3658976",
+        "2x": "https://ps.w.org/hoverecho-ads/assets/icon-256x256.png?rev=3658976"
+    },
+    "blocks": {
+        "hoverecho/ad": {
+            "name": "hoverecho/ad",
+            "title": "HoverEcho Ad"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
