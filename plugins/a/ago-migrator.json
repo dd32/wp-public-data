@@ -1,0 +1,92 @@
+{
+    "name": "aGo Migrator",
+    "slug": "ago-migrator",
+    "version": "1.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/agolab/\">Ago lab</a>",
+    "author_profile": "https://profiles.wordpress.org/agolab/",
+    "contributors": {
+        "agolab": {
+            "profile": "https://profiles.wordpress.org/agolab/",
+            "avatar": "https://secure.gravatar.com/avatar/5d7d9769130505d45c4fb55cd4ff3c66309167496024ce355599c6d59365a5b6?s=96&d=monsterid&r=g",
+            "display_name": "Ago lab"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/ago-migrator/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-21 01:54:00",
+    "added": "2026-08-20",
+    "homepage": "https://ago.cl/herramientas/",
+    "sections": {
+        "description": "<p>aGo Migrator packages WordPress content (database tables + uploads + plugin and theme listings) into a single archive to move a site between environments. Lightweight alternative to enterprise migration plugins.</p>\n<p><strong>Features</strong></p>\n<ul>\n<li>Export site to a single archive (database, uploads).</li>\n<li>Import archive on the destination site.</li>\n<li>Search-replace of URLs on import.</li>\n<li>No external services.</li>\n<li>Fully internationalized. Translations are contributed and delivered through translate.wordpress.org.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin does not connect to any external service. Nothing is sent anywhere: the archive is generated and read entirely on your own server, and the plugin makes no outbound requests of its own.</p>\n<p>The admin page does contain links that open in a new tab only when you click them. No script, style, font or image is ever loaded from any of these sites:</p>\n<ul>\n<li>ago.cl, plugin documentation and the aGo Lab site (https://ago.cl/).</li>\n<li>wordpress.org, the support forum for this plugin, the &#8220;Moving WordPress&#8221; guide and the &#8220;Changing the site URL&#8221; guide (https://wordpress.org/).</li>\n<li>PageSpeed Insights, offered as a way to compare your site before and after a move (https://pagespeed.web.dev/).</li>\n<li>PayPal, the voluntary donation links (https://paypal.me/).</li>\n</ul>\n<h3>Privacy</h3>\n<p>The plugin processes your own site data locally to build and restore the archive. It sends no data to third parties. It stores short-lived job transients and a temporary working directory in wp-content; on uninstall, those transients and the temporary directory are removed.</p>\n",
+        "installation": "<ol>\n<li>Upload <code>ago-migrator</code> to <code>/wp-content/plugins/</code>.</li>\n<li>Activate the plugin on both source and destination.</li>\n<li>Source: <strong>aGo Tools, Migrator</strong>, click Export.</li>\n<li>Destination: same screen, click Import and upload the archive.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"how%20large%20a%20site%20can%20it%20move%3F\">\nHow large a site can it move?\n</h4>\n<p>\n<p>The export and import run in steps and the upload is chunked, so it works on shared hosting. Very large uploads directories are still limited by your host disk space and execution time.</p>\n</p>\n<dt id=\"does%20it%20overwrite%20the%20destination%20site%3F\">\nDoes it overwrite the destination site?\n</h4>\n<p>\n<p>Yes. Importing replaces the destination database and files. Always import into a fresh or disposable site, never over production without a backup.</p>\n</p>\n<dt id=\"can%20i%20use%20wp-cli%3F\">\nCan I use WP-CLI?\n</h4>\n<p>\n<p>Yes. The plugin registers an <code>agomigrator</code> WP-CLI command for export and import.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.0</h4>\n<ul>\n<li>Exporting the files of a site is now done in batches instead of one directory per request, so a large uploads folder no longer runs past the time limit of the server and costs you the whole export.</li>\n<li>Each location is indexed before its files are archived, so progress is reported file by file against the real total.</li>\n<li>WP-CLI reports each step as it goes, with its own count.</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>A hosting or security layer that limits how many requests it accepts no longer stops an export or an import halfway: the step is repeated after a short wait and the rest of the job continues at a slower pace.</li>\n<li>When the server answers with an error, the log now names it, instead of showing the message of a failed attempt to read the answer as data.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Every file the plugin writes now lives in a folder named after the plugin inside the uploads directory, resolved at runtime, instead of a folder in wp-content.</li>\n<li>Each location the plugin reads or restores (plugins, must-use plugins, themes, uploads, languages) is resolved through its own WordPress accessor, so installs that moved any of them outside wp-content are exported and restored correctly.</li>\n<li>On import, the archive&#8217;s upload directory is rewritten to wherever uploads live on the destination, which fixes media paths when the two sites do not share the same layout.</li>\n<li>An export or a restore now requires the network capability on multisite, so a single site administrator can no longer act on the whole installation.</li>\n<li>Upgrading or uninstalling removes the working directory used by earlier versions, so no old database dump is left behind.</li>\n<li>Translations are no longer bundled: they come from translate.wordpress.org, where anyone can contribute them.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Security: the working directory is created on demand and always carries its server-level denial files, instead of relying on activation having run.</li>\n<li>Security: each backup is written inside a folder whose name is not guessable, so an archive cannot be located by trying URLs.</li>\n<li>Security: archives are deleted after download, by a scheduled cleanup, and whenever a new job starts. A database dump is no longer left on disk when a download is abandoned.</li>\n<li>Security: job identifiers are validated against a strict allow list before they are used to build a filesystem path.</li>\n<li>Security: a restore only runs schema and data statements from an allow list, so a tampered archive cannot reach other database commands.</li>\n<li>Security: archive entries with traversal segments, absolute paths, drive letters or backslashes are refused, and every write is confirmed to land inside its destination directory.</li>\n<li>Security: serialized objects are left untouched during search-replace rather than being unserialized.</li>\n<li>Security: table names are verified against the live schema and all values are escaped through the WordPress database API.</li>\n<li>Fixed: the activation routine never ran, which left the working directory without its protection files.</li>\n<li>Fixed: an SQL value containing a semicolon and a line break no longer splits a statement in two during import.</li>\n<li>Fixed: error messages no longer include server paths or dump contents.</li>\n<li>Added: Quick links and Other aGo Lab plugins cards in the sidebar, both fully translated.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>One-click full-site export (database and uploads) to a single archive.</li>\n<li>Drag and drop import with manifest preview and confirmation.</li>\n<li>Serialization-safe search-replace of URLs on import.</li>\n<li>WP-CLI export and import commands.</li>\n<li>Fully internationalized, with translations available through translate.wordpress.org.</li>\n</ul>\n"
+    },
+    "short_description": "Simple WordPress migrator: export site as a single archive (DB + uploads), import on the destination.",
+    "description": "<p>aGo Migrator packages WordPress content (database tables + uploads + plugin and theme listings) into a single archive to move a site between environments. Lightweight alternative to enterprise migration plugins.</p>\n<p><strong>Features</strong></p>\n<ul>\n<li>Export site to a single archive (database, uploads).</li>\n<li>Import archive on the destination site.</li>\n<li>Search-replace of URLs on import.</li>\n<li>No external services.</li>\n<li>Fully internationalized. Translations are contributed and delivered through translate.wordpress.org.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin does not connect to any external service. Nothing is sent anywhere: the archive is generated and read entirely on your own server, and the plugin makes no outbound requests of its own.</p>\n<p>The admin page does contain links that open in a new tab only when you click them. No script, style, font or image is ever loaded from any of these sites:</p>\n<ul>\n<li>ago.cl, plugin documentation and the aGo Lab site (https://ago.cl/).</li>\n<li>wordpress.org, the support forum for this plugin, the &#8220;Moving WordPress&#8221; guide and the &#8220;Changing the site URL&#8221; guide (https://wordpress.org/).</li>\n<li>PageSpeed Insights, offered as a way to compare your site before and after a move (https://pagespeed.web.dev/).</li>\n<li>PayPal, the voluntary donation links (https://paypal.me/).</li>\n</ul>\n<h3>Privacy</h3>\n<p>The plugin processes your own site data locally to build and restore the archive. It sends no data to third parties. It stores short-lived job transients and a temporary working directory in wp-content; on uninstall, those transients and the temporary directory are removed.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/ago-migrator.1.1.0.zip",
+    "upgrade_notice": {
+        "1.0.2": "<p>Recommended: backups are now written inside the uploads directory, every content location is resolved through its own WordPress function, and on multisite only a network administrator can export or restore.</p>",
+        "1.0.1": "<p>Recommended for every install: hardens where backups are stored, guarantees they are deleted, and restricts what a restore is allowed to execute.</p>",
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/ago-migrator/assets/screenshot-1.png?rev=3657936",
+            "caption": "Export and import on a single screen: one-click full-site backup and drag-and-drop restore."
+        },
+        {
+            "src": "https://ps.w.org/ago-migrator/assets/screenshot-2.png?rev=3657936",
+            "caption": "Step-by-step export progress with live table-by-table status."
+        }
+    ],
+    "tags": {
+        "backup": "backup",
+        "export": "export",
+        "import": "import",
+        "migration": "migration",
+        "transfer": "transfer"
+    },
+    "stable_tag": "1.1.0",
+    "versions": {
+        "1.0.2": "https://downloads.wordpress.org/plugin/ago-migrator.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/ago-migrator.1.0.3.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/ago-migrator.1.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/ago-migrator.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://paypal.me/sixtovaldes",
+    "banners": {
+        "low": "https://ps.w.org/ago-migrator/assets/banner-772x250.png?rev=3657936",
+        "high": "https://ps.w.org/ago-migrator/assets/banner-1544x500.png?rev=3657936"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/ago-migrator/assets/icon-128x128.png?rev=3657936",
+        "2x": "https://ps.w.org/ago-migrator/assets/icon-256x256.png?rev=3657936"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
