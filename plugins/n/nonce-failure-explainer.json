@@ -1,7 +1,7 @@
 {
     "name": "Nonce Failure Explainer",
     "slug": "nonce-failure-explainer",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "author": "<a href=\"https://profiles.wordpress.org/shahzaibhassan/\">Syed Shahzaib Hassan</a>",
     "author_profile": "https://profiles.wordpress.org/shahzaibhassan/",
     "contributors": {
@@ -29,23 +29,39 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2026-08-19 22:09:00",
+    "last_updated": "2026-08-21 18:37:00",
     "added": "2026-08-19",
     "homepage": "",
     "sections": {
         "description": "<p>&#8220;Security check failed&#8221; is an outcome, not a diagnosis. It does not tell you whether the nonce<br />\nfield was missing, the action string differed, the session ended, a cached page served a stale<br />\nvalue, or the nonce simply expired.</p>\n<p>Nonce Failure Explainer records every failed nonce check and states the most likely cause, along<br />\nwith the specific thing to check next.</p>\n<h4>What it records</h4>\n<p>For each failure:</p>\n<ul>\n<li>The most likely cause, with an explicit confidence level</li>\n<li>A concrete next check to run</li>\n<li>The nonce action string</li>\n<li>The request type (ajax, rest, admin, admin-post, cron, cli, frontend), method, and path</li>\n<li>A best-effort guess at which plugin or theme ran the check</li>\n<li>Whether the user was logged in</li>\n</ul>\n<h4>What it never records</h4>\n<ul>\n<li>The nonce value itself</li>\n<li>Authentication cookies or session tokens</li>\n<li>Passwords, API keys, or any request body</li>\n<li>Query strings, which routinely carry one-time tokens</li>\n</ul>\n<p>Function arguments are excluded from the stack trace capture, so sensitive values are never<br />\neven loaded into memory during attribution.</p>\n<h4>Causes it distinguishes</h4>\n<ul>\n<li><strong>No nonce was submitted</strong> — the field or query argument never reached the server. Confirmed,<br />\nnot inferred.</li>\n<li><strong>The session ended</strong> — an auth cookie arrived but no longer resolves to a user.</li>\n<li><strong>A cached page served a stale nonce</strong> — detected when an anonymous request fails while a known<br />\ncaching layer is active.</li>\n<li><strong>No session token</strong> — the user is logged in but has no session for the nonce to key against.</li>\n<li><strong>Expired or mismatched action</strong> — everything needed was present, so the value itself did not<br />\nmatch.</li>\n</ul>\n<h4>Design</h4>\n<p>Read-only. The plugin observes and explains; it never alters a request, extends a nonce lifetime,<br />\nor changes site behaviour in any way. Storage is a single non-autoloaded option capped at 200<br />\nevents with a seven-day expiry, so it cannot grow unbounded on a busy site.</p>\n<p>Nothing is sent anywhere. There is no external service, no telemetry, and no phone-home.</p>\n",
         "installation": "<ol>\n<li>Upload the plugin to <code>/wp-content/plugins/nonce-failure-explainer</code>, or install it through the<br />\nPlugins screen.</li>\n<li>Activate it.</li>\n<li>Reproduce the failing request.</li>\n<li>Visit <strong>Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Nonce Failures</strong>.</li>\n</ol>\n",
         "faq": "\n<dt id=\"does%20this%20fix%20nonce%20failures%3F\">\nDoes this fix nonce failures?\n</h4>\n<p>\n<p>No, and deliberately so. Version 1 is a diagnostic tool. Automatically extending nonce lifetimes<br />\nor bypassing checks would weaken the protection nonces exist to provide.</p>\n</p>\n<dt id=\"will%20it%20slow%20my%20site%20down%3F\">\nWill it slow my site down?\n</h4>\n<p>\n<p>The recorder only does work when a check actually fails, which on a healthy site is never. There<br />\nis no cost on successful requests.</p>\n</p>\n<dt id=\"why%20does%20it%20say%20%22possible%20cause%22%20rather%20than%20telling%20me%20exactly%20what%20happened%3F\">\nWhy does it say &#8220;possible cause&#8221; rather than telling me exactly what happened?\n</h4>\n<p>\n<p>Because WordPress does not distinguish an expired nonce from one generated for a different action<br />\n— both simply fail to match. Where the cause can be established as fact, the plugin says<br />\n&#8220;Confirmed&#8221;. Where it is inference, it says so.</p>\n</p>\n<dt id=\"is%20it%20safe%20on%20a%20production%20site%3F\">\nIs it safe on a production site?\n</h4>\n<p>\n<p>Yes. It is read-only, stores no secrets, and caps its own storage. The clearing action is<br />\ncapability-checked and nonce-protected.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20multisite%3F\">\nDoes it work with multisite?\n</h4>\n<p>\n<p>Yes. The log is per-site, and uninstalling clears it across every site in the network.</p>\n</p>\n\n",
-        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+        "changelog": "<h4>1.1.0</h4>\n<ul>\n<li>The screen is now its own top-level menu rather than an item under Tools, and is split into three tabs.</li>\n<li>New &#8220;Causes and fixes&#8221; tab explaining every diagnosis in full, with the concrete checks to run for each. The log links straight to the relevant entry.</li>\n<li>New &#8220;Environment&#8221; tab reporting the settings that decide whether a nonce verifies: nonce lifetime, any detected page cache, persistent object cache, and login session length. A nonce lifetime shortened by another plugin, or a session shorter than the nonce it carries, explains failures that otherwise look like bugs.</li>\n<li>Headline figures above the log: how many failures, the most common cause, how many distinct nonce actions are involved, and the time span they cover. More than one action string means the problem is not a single broken form.</li>\n<li>The empty state now says that an empty log is the expected result on a healthy site, and explains how to reproduce a failure so it gets captured.</li>\n<li>The screen has been rebuilt: the three sections are now real pages in the sidebar, each recorded failure folds down so a long log stays readable, and every cause is a section you can open rather than a wall of text.</li>\n<li>Assets are versioned by file rather than by plugin version, so a changed stylesheet can never be served from a stale browser cache.</li>\n<li>Tested up to WordPress 7.1.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
     },
     "short_description": "Explains why a WordPress security check failed, instead of just telling you that it did.",
     "description": "<p>&#8220;Security check failed&#8221; is an outcome, not a diagnosis. It does not tell you whether the nonce<br />\nfield was missing, the action string differed, the session ended, a cached page served a stale<br />\nvalue, or the nonce simply expired.</p>\n<p>Nonce Failure Explainer records every failed nonce check and states the most likely cause, along<br />\nwith the specific thing to check next.</p>\n<h4>What it records</h4>\n<p>For each failure:</p>\n<ul>\n<li>The most likely cause, with an explicit confidence level</li>\n<li>A concrete next check to run</li>\n<li>The nonce action string</li>\n<li>The request type (ajax, rest, admin, admin-post, cron, cli, frontend), method, and path</li>\n<li>A best-effort guess at which plugin or theme ran the check</li>\n<li>Whether the user was logged in</li>\n</ul>\n<h4>What it never records</h4>\n<ul>\n<li>The nonce value itself</li>\n<li>Authentication cookies or session tokens</li>\n<li>Passwords, API keys, or any request body</li>\n<li>Query strings, which routinely carry one-time tokens</li>\n</ul>\n<p>Function arguments are excluded from the stack trace capture, so sensitive values are never<br />\neven loaded into memory during attribution.</p>\n<h4>Causes it distinguishes</h4>\n<ul>\n<li><strong>No nonce was submitted</strong> — the field or query argument never reached the server. Confirmed,<br />\nnot inferred.</li>\n<li><strong>The session ended</strong> — an auth cookie arrived but no longer resolves to a user.</li>\n<li><strong>A cached page served a stale nonce</strong> — detected when an anonymous request fails while a known<br />\ncaching layer is active.</li>\n<li><strong>No session token</strong> — the user is logged in but has no session for the nonce to key against.</li>\n<li><strong>Expired or mismatched action</strong> — everything needed was present, so the value itself did not<br />\nmatch.</li>\n</ul>\n<h4>Design</h4>\n<p>Read-only. The plugin observes and explains; it never alters a request, extends a nonce lifetime,<br />\nor changes site behaviour in any way. Storage is a single non-autoloaded option capped at 200<br />\nevents with a seven-day expiry, so it cannot grow unbounded on a busy site.</p>\n<p>Nothing is sent anywhere. There is no external service, no telemetry, and no phone-home.</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/nonce-failure-explainer.1.0.0.zip",
+    "download_link": "https://downloads.wordpress.org/plugin/nonce-failure-explainer.1.1.0.zip",
     "upgrade_notice": [],
     "screenshots": [
         {
-            "src": "https://ps.w.org/nonce-failure-explainer/assets/screenshot-1.png?rev=3655357",
-            "caption": "Tools → Nonce Failures. Each failure carries a confidence level, the specific thing to check\nnext, the request context it came from, and where possible the plugin that ran the check."
+            "src": "https://ps.w.org/nonce-failure-explainer/assets/screenshot-1.png?rev=3659502",
+            "caption": "The log, with the headline figures above it and a ranking of what is failing most."
+        },
+        {
+            "src": "https://ps.w.org/nonce-failure-explainer/assets/screenshot-2.png?rev=3659502",
+            "caption": "One failure opened: the diagnosis, the specific thing to check next, and the request it came from."
+        },
+        {
+            "src": "https://ps.w.org/nonce-failure-explainer/assets/screenshot-3.png?rev=3659502",
+            "caption": "Causes and fixes. A failure links straight to its own entry, which arrives already open."
+        },
+        {
+            "src": "https://ps.w.org/nonce-failure-explainer/assets/screenshot-4.png?rev=3659502",
+            "caption": "The state a healthy site stays in, with how to reproduce the failure you are chasing."
+        },
+        {
+            "src": "https://ps.w.org/nonce-failure-explainer/assets/screenshot-5.png?rev=3659502",
+            "caption": "The settings on this installation that decide whether a nonce verifies at all."
         }
     ],
     "tags": {
@@ -55,9 +71,10 @@
         "nonce": "nonce",
         "security": "security"
     },
-    "stable_tag": "1.0.0",
+    "stable_tag": "1.1.0",
     "versions": {
         "1.0.0": "https://downloads.wordpress.org/plugin/nonce-failure-explainer.1.0.0.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/nonce-failure-explainer.1.1.0.zip",
         "trunk": "https://downloads.wordpress.org/plugin/nonce-failure-explainer.zip"
     },
     "business_model": false,
