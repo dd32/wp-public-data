@@ -1,0 +1,87 @@
+{
+    "name": "Crawlwise &#8211; AI Readiness Scanner and Fixer",
+    "slug": "crawlwise-ai-readiness",
+    "version": "0.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/binsaifullah/\">Binsaifullah</a>",
+    "author_profile": "https://profiles.wordpress.org/binsaifullah/",
+    "contributors": {
+        "binsaifullah": {
+            "profile": "https://profiles.wordpress.org/binsaifullah/",
+            "avatar": "https://secure.gravatar.com/avatar/1adfa1540ed63e4bc3de86181b4664511ac9d819f7f53978504788b5106fa264?s=96&d=monsterid&r=g",
+            "display_name": "Binsaifullah"
+        }
+    },
+    "requires": "6.7",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/crawlwise-ai-readiness/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-22 11:29:00",
+    "added": "2026-08-22",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Crawlwise AI Readiness measures how well your WordPress site holds up when the reader is an AI agent rather than a person, then fixes what doesn&#8217;t and verifies the change over a real HTTP request.</p>\n<p>Every check fetches the site the way an agent would instead of trusting internal plugin state, so a passing score reflects what a crawler actually sees — including when a CDN or a stray physical <code>robots.txt</code> is overriding WordPress.</p>\n<p><strong>What it grades</strong></p>\n<ul>\n<li><strong>Discoverability</strong> — robots.txt sanity, XML sitemap, discovery <code>Link</code> headers</li>\n<li><strong>Content</strong> — Markdown content negotiation, <code>/llms.txt</code>, structured HTML</li>\n<li><strong>Bot access</strong> — Content Signals, explicit AI-crawler rules, Web Bot Auth</li>\n<li><strong>Capabilities</strong> — API catalog, MCP card, agent skills, OAuth metadata</li>\n<li><strong>Commerce</strong> — UCP and x402 descriptors (WooCommerce only)</li>\n</ul>\n<p><strong>Fixes are reversible.</strong> Every fix writes plugin settings and nothing else — no theme edits, no rewritten posts — so &#8220;Turn off&#8221; genuinely restores the prior state.</p>\n<p><strong>Agent-callable.</strong> An optional MCP server exposes scan / fix / verify / revert as tools an agent can call directly. It is off by default and requires a bearer token you generate yourself.</p>\n<h3>Privacy</h3>\n<p>The plugin makes HTTP requests to your own site only. It sends nothing to any third party and has no telemetry.</p>\n<pre><code>/llms.txt, the Markdown output, and the JSON-LD graph are built exclusively from public content: password-protected, private, draft, and per-entity excluded posts are never included.&lt;h3&gt;Security&lt;/h3&gt;\n</code></pre>\n<p>* The MCP bearer token is stored as a SHA-256 hash. Its raw value is displayed exactly once, when generated, and cannot be recovered afterwards — regenerate it if lost.<br />\n* The token is never included in a settings export, and a settings import can never set or enable it.<br />\n* Failed MCP authentication attempts are rate-limited per IP, and cross-origin requests to the MCP endpoint are rejected.<br />\n* All dashboard REST routes require <code>manage_options</code>; per-entity routes require <code>edit_post</code> for that specific post.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>crawlwise-ai-readiness</code> folder to <code>/wp-content/plugins/</code>, or install the plugin through the <strong>Plugins &gt; Add New</strong> screen.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> screen.</li>\n<li>Go to <strong>Crawlwise AI Readiness</strong> in the admin menu and click <strong>Scan</strong> to grade the site.</li>\n<li>Apply a fix from any failing check, then click <strong>Verify</strong> to confirm the change over a real HTTP request.</li>\n</ol>\n<p>Activation creates one custom table (<code>{prefix}_crwl_scans</code>) for score history and flushes rewrite rules so <code>/llms.txt</code>, <code>*.md</code> and <code>.well-known/*</code> routes can resolve. Uninstalling removes the table, all options and transients, the scheduled re-scan, and any files the plugin exported.</p>\n<h4>Optional: the agent (MCP) server</h4>\n<ol>\n<li>Go to <strong>Crawlwise AI Readiness &gt; Settings</strong>, tick <strong>Enable the MCP server</strong>, and click <strong>Save Changes</strong>.</li>\n<li>Copy the bearer token shown. It is stored hashed and cannot be displayed again — regenerate it if you lose it.</li>\n<li>Add it to your agent, e.g. <code>claude mcp add --transport http crwl &lt;endpoint&gt; --header \"Authorization: Bearer &lt;token&gt;\"</code>.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20it%20conflict%20with%20yoast%2C%20rank%20math%2C%20or%20aioseo%3F\">\nDoes it conflict with Yoast, Rank Math, or AIOSEO?\n</h4>\n<p>\n<p>No. Crawlwise AI Readiness detects them and defers per feature, so you don&#8217;t get two sitemaps, two meta descriptions, or two JSON-LD graphs.</p>\n</p>\n<dt id=\"why%20does%20a%20check%20say%20%22couldn%27t%20verify%22%3F\">\nWhy does a check say &#8220;couldn&#8217;t verify&#8221;?\n</h4>\n<p>\n<p>Some hosts block a site from making HTTP requests to itself. When that happens Crawlwise AI Readiness reports an informational result rather than guessing, so a blocked loopback never becomes a misleading pass or fail.</p>\n</p>\n<dt id=\"i%20enabled%20static%20export%20and%20nothing%20happened.\">\nI enabled static export and nothing happened.\n</h4>\n<p>\n<p>Static export refuses to overwrite a <code>robots.txt</code> or <code>llms.txt</code> it did not create, so a hand-maintained file is never clobbered. Remove or rename the existing file if you want the plugin to manage it.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>Security: password-protected content is excluded from Markdown output, <code>/llms.txt</code>, and JSON-LD descriptions.</li>\n<li>Security: the MCP bearer token is stored hashed, shown once, excluded from settings export, and cannot be set by settings import.</li>\n<li>Security: MCP endpoint validates <code>Origin</code> and rate-limits failed authentication.</li>\n<li>Fixed: <code>*.md</code> and <code>.well-known/*</code> URLs return a real 404 instead of the front page when a feature is off or nothing matches.</li>\n<li>Fixed: applying the C3 fix no longer rewrites post excerpts — the meta description is derived at render time, keeping every fix reversible.</li>\n<li>Fixed: scan history is capped per scope instead of growing without bound.</li>\n</ul>\n"
+    },
+    "short_description": "Scores your site for AI/agent readiness, applies one-click fixes, and re-scans over real HTTP to prove the score changed.",
+    "description": "<p>Crawlwise AI Readiness measures how well your WordPress site holds up when the reader is an AI agent rather than a person, then fixes what doesn&#8217;t and verifies the change over a real HTTP request.</p>\n<p>Every check fetches the site the way an agent would instead of trusting internal plugin state, so a passing score reflects what a crawler actually sees — including when a CDN or a stray physical <code>robots.txt</code> is overriding WordPress.</p>\n<p><strong>What it grades</strong></p>\n<ul>\n<li><strong>Discoverability</strong> — robots.txt sanity, XML sitemap, discovery <code>Link</code> headers</li>\n<li><strong>Content</strong> — Markdown content negotiation, <code>/llms.txt</code>, structured HTML</li>\n<li><strong>Bot access</strong> — Content Signals, explicit AI-crawler rules, Web Bot Auth</li>\n<li><strong>Capabilities</strong> — API catalog, MCP card, agent skills, OAuth metadata</li>\n<li><strong>Commerce</strong> — UCP and x402 descriptors (WooCommerce only)</li>\n</ul>\n<p><strong>Fixes are reversible.</strong> Every fix writes plugin settings and nothing else — no theme edits, no rewritten posts — so &#8220;Turn off&#8221; genuinely restores the prior state.</p>\n<p><strong>Agent-callable.</strong> An optional MCP server exposes scan / fix / verify / revert as tools an agent can call directly. It is off by default and requires a bearer token you generate yourself.</p>\n<h3>Privacy</h3>\n<p>The plugin makes HTTP requests to your own site only. It sends nothing to any third party and has no telemetry.</p>\n<pre><code>/llms.txt, the Markdown output, and the JSON-LD graph are built exclusively from public content: password-protected, private, draft, and per-entity excluded posts are never included.&lt;h3&gt;Security&lt;/h3&gt;\n</code></pre>\n<p>* The MCP bearer token is stored as a SHA-256 hash. Its raw value is displayed exactly once, when generated, and cannot be recovered afterwards — regenerate it if lost.<br />\n* The token is never included in a settings export, and a settings import can never set or enable it.<br />\n* Failed MCP authentication attempts are rate-limited per IP, and cross-origin requests to the MCP endpoint are rejected.<br />\n* All dashboard REST routes require <code>manage_options</code>; per-entity routes require <code>edit_post</code> for that specific post.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/crawlwise-ai-readiness.0.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/crawlwise-ai-readiness/assets/screenshot-1.png?rev=3660478",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/crawlwise-ai-readiness/assets/screenshot-2.png?rev=3660478",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/crawlwise-ai-readiness/assets/screenshot-3.png?rev=3660478",
+            "caption": ""
+        }
+    ],
+    "tags": {
+        "agents": "Agents",
+        "ai": "AI",
+        "llms-txt": "llms.txt",
+        "seo": "seo",
+        "structured-data": "structured data"
+    },
+    "stable_tag": "0.1.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/crawlwise-ai-readiness.0.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/crawlwise-ai-readiness.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/crawlwise-ai-readiness/assets/icon-256x256.png?rev=3660478",
+        "2x": "https://ps.w.org/crawlwise-ai-readiness/assets/icon-256x256.png?rev=3660478"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
