@@ -12,7 +12,7 @@
         }
     },
     "requires": "5.9",
-    "tested": "7.0.4",
+    "tested": "7.1",
     "requires_php": "8.1",
     "requires_plugins": [],
     "compatibility": [],
@@ -29,7 +29,7 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2026-08-22 04:57:00",
+    "last_updated": "2026-08-22 06:48:00",
     "added": "2026-08-22",
     "homepage": "",
     "sections": {
@@ -42,7 +42,16 @@
     "description": "<p>Ozeki Database Backup for S3 is a security-focused WordPress database backup plugin for Amazon S3.</p>\n<p>The plugin is designed for environments where WordPress can obtain AWS credentials through the AWS SDK for PHP default credential provider chain, such as an EC2 instance using an IAM role.</p>\n<p>The plugin does not provide fields for storing an AWS Access Key ID or Secret Access Key in the WordPress database.</p>\n<p>Current features include:</p>\n<ul>\n<li>Manual database backups from WordPress administration.</li>\n<li>Automatic daily database backups using WP-Cron.</li>\n<li>WP-CLI database backup command.</li>\n<li>WP-CLI backup status command.</li>\n<li>Gzip-compressed SQL database backups.</li>\n<li>Amazon S3 upload using the AWS SDK for PHP.</li>\n<li>Native <code>mysqldump</code> or <code>mariadb-dump</code> when available.</li>\n<li>PHP-based database dump fallback when native database dump utilities or process execution are unavailable.</li>\n<li>Configurable retention using any positive integer keep count.</li>\n<li>Backup history stored locally in WordPress.</li>\n<li>S3 connection testing with temporary test objects.</li>\n<li>Automatic cleanup of plugin Cron events when the plugin is deactivated.</li>\n</ul>\n<h4>AWS authentication</h4>\n<p>Ozeki Database Backup for S3 uses the AWS SDK for PHP default credential provider chain.</p>\n<p>The plugin does not ask you to enter an AWS Access Key ID or Secret Access Key in the WordPress administration interface and does not intentionally store long-lived AWS credentials in the WordPress database.</p>\n<p>For WordPress hosted on Amazon EC2, using an IAM role attached to the EC2 instance is recommended.</p>\n<p>Other credential sources supported by the AWS SDK default credential provider chain may also work, depending on the hosting environment.</p>\n<p>The AWS identity used by WordPress must have appropriate permissions for the configured S3 bucket and prefix.</p>\n<h4>Database backup</h4>\n<p>Database backups are created as SQL dumps, compressed with gzip, and uploaded to the configured S3 bucket.</p>\n<p>Backup objects are stored below:</p>\n<pre><code>&lt;configured-prefix&gt;/backups/database/YYYY/MM/DD/\n</code></pre>\n<p>The plugin prefers a native MySQL-compatible dump utility such as <code>mysqldump</code> or <code>mariadb-dump</code> when available.</p>\n<p>When a suitable native dump utility or PHP process execution is unavailable, the plugin can use its PHP database dump backend instead.</p>\n<h4>Automatic backups and WP-Cron</h4>\n<p>Automatic backups use WordPress WP-Cron.</p>\n<p>WP-Cron is triggered by WordPress requests and is not a real-time operating system scheduler. A backup scheduled for a particular time may therefore run later if the site receives no requests around that time.</p>\n<p>For environments where predictable execution is important, use an operating system scheduler to run WordPress Cron periodically.</p>\n<p>For a standard WP-CLI installation, an example is:</p>\n<pre><code>*/5 * * * * cd /path/to/wordpress &amp;&amp; wp cron event run --due-now --quiet\n</code></pre>\n<p>For a Docker Compose installation with a WP-CLI service, an example is:</p>\n<pre><code>*/5 * * * * cd /path/to/docker-project &amp;&amp; docker compose run --rm wp-cli cron event run --due-now --quiet\n</code></pre>\n<p>These are examples only. Paths, users, container configuration, and execution permissions depend on your hosting environment.</p>\n<h4>Retention</h4>\n<p>Retention can be disabled or configured with any positive integer as the number of latest database backups to keep.</p>\n<p>Retention operates only on database backup objects matching the plugin&#8217;s expected backup naming structure below the configured S3 prefix.</p>\n<p>Manual backups do not automatically apply retention.</p>\n<p>Automatic backups and backups executed through the plugin&#8217;s WP-CLI backup command apply the configured retention policy after a successful backup.</p>\n<h4>Uninstall behavior</h4>\n<p>Deactivating the plugin removes its scheduled WordPress Cron event but keeps plugin settings and backup history.</p>\n<p>Uninstalling the plugin removes its local WordPress settings and backup history.</p>\n<p>Uninstalling Ozeki Database Backup for S3 does NOT delete database backups stored in Amazon S3.</p>\n<p>This is intentional. Remote backups should not disappear merely because the WordPress plugin is removed.</p>\n<h3>External Service</h3>\n<p>Ozeki Database Backup for S3 connects to Amazon Web Services (AWS), specifically Amazon Simple Storage Service (Amazon S3), in order to store and manage database backup objects.</p>\n<p>The plugin uses the AWS SDK for PHP to communicate with AWS.</p>\n<p>When the plugin performs a database backup, it sends the following to Amazon S3:</p>\n<ul>\n<li>The configured S3 bucket name.</li>\n<li>The configured S3 object prefix and generated backup object key.</li>\n<li>The gzip-compressed SQL database backup file.</li>\n</ul>\n<p>A database backup may contain any information stored in the WordPress database. Depending on the site, this may include personal or sensitive data such as user accounts, email addresses, post content, comments, plugin settings, and other database records.</p>\n<p>When the S3 connection test is run, the plugin:</p>\n<ul>\n<li>Checks access to the configured bucket.</li>\n<li>Creates a temporary test object containing a generated test string and timestamp.</li>\n<li>Reads the temporary object back to verify access.</li>\n<li>Deletes the temporary test object.</li>\n</ul>\n<p>Retention operations may list and delete database backup objects within the configured backup prefix according to the selected retention policy.</p>\n<p>Use of Amazon S3 is subject to Amazon Web Services terms and privacy policies:</p>\n<p>AWS Customer Agreement:<br />\nhttps://aws.amazon.com/agreement/</p>\n<p>AWS Privacy Notice:<br />\nhttps://aws.amazon.com/privacy/</p>\n<p>AWS Service Terms:<br />\nhttps://aws.amazon.com/service-terms/</p>\n<p>No telemetry, analytics, advertising, or unrelated tracking data is intentionally sent by Ozeki Database Backup for S3 to the plugin author.</p>\n<h3>WP-CLI</h3>\n<p>Create a database backup:</p>\n<pre><code>wp ozeki-database-backup-for-s3 backup\n</code></pre>\n<p>Display backup configuration and status:</p>\n<pre><code>wp ozeki-database-backup-for-s3 status\n</code></pre>\n",
     "download_link": "https://downloads.wordpress.org/plugin/ozeki-database-backup-for-s3.0.1.1.zip",
     "upgrade_notice": [],
-    "screenshots": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/ozeki-database-backup-for-s3/assets/screenshot-1.png?rev=3660066",
+            "caption": "Configure the AWS Region, S3 bucket and prefix, automatic backup schedule, and retention count."
+        },
+        {
+            "src": "https://ps.w.org/ozeki-database-backup-for-s3/assets/screenshot-2.png?rev=3660066",
+            "caption": "Verify S3 object access and create an on-demand compressed database backup from the WordPress administration screen."
+        }
+    ],
     "tags": {
         "amazon-s3": "amazon s3",
         "aws": "aws",
@@ -59,9 +68,13 @@
     "repository_url": "",
     "commercial_support_url": "",
     "donate_link": "",
-    "banners": [],
+    "banners": {
+        "low": "https://ps.w.org/ozeki-database-backup-for-s3/assets/banner-772x250.png?rev=3660066",
+        "high": "https://ps.w.org/ozeki-database-backup-for-s3/assets/banner-1544x500.png?rev=3660066"
+    },
     "icons": {
-        "default": "https://s.w.org/plugins/geopattern-icon/ozeki-database-backup-for-s3.svg"
+        "1x": "https://ps.w.org/ozeki-database-backup-for-s3/assets/icon-128x128.png?rev=3660066",
+        "2x": "https://ps.w.org/ozeki-database-backup-for-s3/assets/icon-256x256.png?rev=3660066"
     },
     "blocks": [],
     "block_assets": [],
