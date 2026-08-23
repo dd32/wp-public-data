@@ -1,0 +1,96 @@
+{
+    "name": "Lucid Search &amp; Replace &#8211; Safe Database Find and Replace with Preview and Undo",
+    "slug": "lucid-search-replace",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/ibrahimhajjaj/\">Ibrahim</a>",
+    "author_profile": "https://profiles.wordpress.org/ibrahimhajjaj/",
+    "contributors": {
+        "ibrahimhajjaj": {
+            "profile": "https://profiles.wordpress.org/ibrahimhajjaj/",
+            "avatar": "https://secure.gravatar.com/avatar/2d27cc7cc6472fdb8ae61e11804fd1a44b2972665e5acb580b4f967b4762c007?s=96&d=monsterid&r=g",
+            "display_name": "Ibrahim"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/lucid-search-replace/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-23 15:54:00",
+    "added": "2026-08-23",
+    "homepage": "https://wordpress.org/plugins/lucid-search-replace/",
+    "sections": {
+        "description": "<p>Changing a domain, moving off a staging URL, or switching to HTTPS means rewriting text all through your database. Most tools do it blind: you type into a box, press go, and hope. When the value is serialized (theme settings, Elementor layouts, WooCommerce data) a plain replace miscounts the length prefix and corrupts the row, and there is no way back.</p>\n<p>Lucid Search &amp; Replace is built the other way around. You preview representative matches before anything is written, can take a safety snapshot, and can undo unchanged cells while that snapshot is retained. Nothing about that is held behind an upgrade.</p>\n<h4>What makes it safe</h4>\n<ul>\n<li><strong>Visual preview, always free.</strong> Up to 20 representative matches per table, grouped by table and column, with the exact characters that change highlighted. Review them, then decide.</li>\n<li><strong>Serialized-data safe.</strong> The engine walks serialized arrays and objects, replaces inside them, and recalculates the <code>s:N</code> byte-length prefixes so the value stays valid.</li>\n<li><strong>Handles the case other tools miss.</strong> Page builders store URLs as JSON inside serialized data, with escaped slashes (<code>http:\\/\\/</code>). A search for <code>http://</code> never matches that, so the old link silently survives. This engine decodes the JSON, replaces, and re-encodes in the original style. Base64-wrapped values are handled the same way.</li>\n<li><strong>Optional snapshot and one-click undo.</strong> When enabled at confirmation, affected cells are copied before each write. Undo restores cells that still contain the applied value and reports later edits as conflicts.</li>\n<li><strong>Protected by default.</strong> Network-global, user, and login tables are excluded from site-level runs. Post GUIDs are left alone unless you ask, because changing them breaks feeds and comments.</li>\n</ul>\n<h4>Built for real sites</h4>\n<ul>\n<li><strong>Background batching for large databases.</strong> Work runs in bounded batches through Action Scheduler and resumes from durable progress after each completed batch.</li>\n<li><strong>Regex, case sensitivity, and exclusions</strong> for precise control, all optional behind an Advanced panel so a first-time user is never overwhelmed.</li>\n<li><strong>Target specific tables</strong> while safely discovering their text columns, or scan every eligible site table.</li>\n<li><strong>Automatic cache purge after a run.</strong> Regenerates Elementor CSS and clears WP Rocket, LiteSpeed Cache, and W3 Total Cache so the site does not keep serving old URLs.</li>\n<li><strong>Downloadable CSV of retained preview excerpts</strong>, streamed through an authorized admin route when change logs are enabled.</li>\n<li><strong>WP-CLI</strong> for scripted and staged migrations.</li>\n<li><strong>Multisite aware.</strong></li>\n</ul>\n<h4>A note on the paid product</h4>\n<p>The search and replace here is complete and free. If you are moving an entire site rather than rewriting text, SafeGuard handles full migrations with scheduled off-site backups. It is mentioned in the plugin&#8217;s own Pro Tools tab and nowhere else. You never need it to use everything on this page.</p>\n<h4>Source code and build process</h4>\n<p>The full, uncompiled source lives at https://github.com/ibrahimhajjaj/lucid-search-replace</p>\n<p>The admin screen is a TypeScript and React application under <code>src/</code>. The shipped <code>build/index.js</code> and <code>build/style-index.css</code> are generated from it with @wordpress/scripts (webpack). To reproduce them from a checkout:</p>\n<pre><code>composer install\nnpm install\nnpm run build\n\nnpm run package assembles the distributed zip. Translation templates are regenerated with `npm run make-pot`.\n</code></pre>\n<p>Bundled third-party library: Action Scheduler by Automattic (GPL-3.0-or-later), https://github.com/woocommerce/action-scheduler, installed under <code>vendor/</code> via Composer and used for background batch processing.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin to <code>wp-content/plugins/lucid-search-replace</code>, or install it from the Plugins screen.</li>\n<li>Activate it.</li>\n<li>Open Tools then Lucid Search &amp; Replace.</li>\n<li>Enter what to find and what to replace it with, press Preview changes, review the diff, then apply.</li>\n</ol>\n<p>Always run a preview first. It never writes anything.</p>\n",
+        "faq": "\n<dt id=\"will%20this%20corrupt%20my%20serialized%20data%3F\">\nWill this corrupt my serialized data?\n</h4>\n<p>\n<p>No. When a value is serialized the engine parses it, replaces inside the structure, and re-serializes so the byte-length prefixes are recalculated correctly. A value it cannot parse is skipped and reported rather than guessed at, so a broken row is never written.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20elementor%20and%20other%20page%20builders%3F\">\nDoes it work with Elementor and other page builders?\n</h4>\n<p>\n<p>Yes. Builders store URLs as JSON inside serialized data with escaped slashes. The engine detects that, decodes the JSON, replaces, and re-encodes in the original escaping style. The preview marks those rows so you can see it working.</p>\n</p>\n<dt id=\"is%20the%20preview%20really%20free%3F\">\nIs the preview really free?\n</h4>\n<p>\n<p>Yes. The visual diff is never restricted. It retains up to 20 representative matches per table, and apply is bound to the completed preview so new candidates are not silently added afterward.</p>\n</p>\n<dt id=\"can%20i%20undo%20a%20replace%3F\">\nCan I undo a replace?\n</h4>\n<p>\n<p>When you enable the safety snapshot at confirmation, the success screen offers Undo while the snapshot is retained. Undo restores a cell only if it still contains the value written by that run, so later edits are preserved and reported as conflicts. Snapshots are pruned after 30 days.</p>\n</p>\n<dt id=\"what%20is%20protected%20by%20default%3F\">\nWhat is protected by default?\n</h4>\n<p>\n<p>Network-global tables, including users and usermeta, are excluded from site-level runs so a site administrator cannot damage network data or logins. Post GUIDs are protected by default and can be included from the Advanced options.</p>\n</p>\n<dt id=\"how%20does%20it%20handle%20a%20large%20database%3F\">\nHow does it handle a large database?\n</h4>\n<p>\n<p>Processing runs in bounded background batches and persists progress after each batch. This reduces request-timeout risk and lets work continue after you leave the page.</p>\n</p>\n<dt id=\"can%20i%20use%20it%20from%20wp-cli%3F\">\nCan I use it from WP-CLI?\n</h4>\n<p>\n<p>Yes.</p>\n<pre><code>wp safesr replace 'http://staging.example.com' 'https://example.com' --dry-run\nwp safesr replace 'http://staging.example.com' 'https://example.com'\nwp safesr undo &lt;job-id&gt;\n\n--dry-run reports what would change without writing. Every apply creates the same snapshot the admin does.\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release: serialized and JSON-inside-serialized safe engine, free sampled visual diff preview, optional snapshot and guarded undo, background batched processing, regex and targeting options, cache purge integrations, WP-CLI, multisite support.</li>\n</ul>\n"
+    },
+    "short_description": "Find and replace across your database with a free sampled visual preview, a serialized and Elementor-safe engine, optional backup and one-click undo.",
+    "description": "<p>Changing a domain, moving off a staging URL, or switching to HTTPS means rewriting text all through your database. Most tools do it blind: you type into a box, press go, and hope. When the value is serialized (theme settings, Elementor layouts, WooCommerce data) a plain replace miscounts the length prefix and corrupts the row, and there is no way back.</p>\n<p>Lucid Search &amp; Replace is built the other way around. You preview representative matches before anything is written, can take a safety snapshot, and can undo unchanged cells while that snapshot is retained. Nothing about that is held behind an upgrade.</p>\n<h4>What makes it safe</h4>\n<ul>\n<li><strong>Visual preview, always free.</strong> Up to 20 representative matches per table, grouped by table and column, with the exact characters that change highlighted. Review them, then decide.</li>\n<li><strong>Serialized-data safe.</strong> The engine walks serialized arrays and objects, replaces inside them, and recalculates the <code>s:N</code> byte-length prefixes so the value stays valid.</li>\n<li><strong>Handles the case other tools miss.</strong> Page builders store URLs as JSON inside serialized data, with escaped slashes (<code>http:\\/\\/</code>). A search for <code>http://</code> never matches that, so the old link silently survives. This engine decodes the JSON, replaces, and re-encodes in the original style. Base64-wrapped values are handled the same way.</li>\n<li><strong>Optional snapshot and one-click undo.</strong> When enabled at confirmation, affected cells are copied before each write. Undo restores cells that still contain the applied value and reports later edits as conflicts.</li>\n<li><strong>Protected by default.</strong> Network-global, user, and login tables are excluded from site-level runs. Post GUIDs are left alone unless you ask, because changing them breaks feeds and comments.</li>\n</ul>\n<h4>Built for real sites</h4>\n<ul>\n<li><strong>Background batching for large databases.</strong> Work runs in bounded batches through Action Scheduler and resumes from durable progress after each completed batch.</li>\n<li><strong>Regex, case sensitivity, and exclusions</strong> for precise control, all optional behind an Advanced panel so a first-time user is never overwhelmed.</li>\n<li><strong>Target specific tables</strong> while safely discovering their text columns, or scan every eligible site table.</li>\n<li><strong>Automatic cache purge after a run.</strong> Regenerates Elementor CSS and clears WP Rocket, LiteSpeed Cache, and W3 Total Cache so the site does not keep serving old URLs.</li>\n<li><strong>Downloadable CSV of retained preview excerpts</strong>, streamed through an authorized admin route when change logs are enabled.</li>\n<li><strong>WP-CLI</strong> for scripted and staged migrations.</li>\n<li><strong>Multisite aware.</strong></li>\n</ul>\n<h4>A note on the paid product</h4>\n<p>The search and replace here is complete and free. If you are moving an entire site rather than rewriting text, SafeGuard handles full migrations with scheduled off-site backups. It is mentioned in the plugin&#8217;s own Pro Tools tab and nowhere else. You never need it to use everything on this page.</p>\n<h4>Source code and build process</h4>\n<p>The full, uncompiled source lives at https://github.com/ibrahimhajjaj/lucid-search-replace</p>\n<p>The admin screen is a TypeScript and React application under <code>src/</code>. The shipped <code>build/index.js</code> and <code>build/style-index.css</code> are generated from it with @wordpress/scripts (webpack). To reproduce them from a checkout:</p>\n<pre><code>composer install\nnpm install\nnpm run build\n\nnpm run package assembles the distributed zip. Translation templates are regenerated with `npm run make-pot`.\n</code></pre>\n<p>Bundled third-party library: Action Scheduler by Automattic (GPL-3.0-or-later), https://github.com/woocommerce/action-scheduler, installed under <code>vendor/</code> via Composer and used for background batch processing.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/lucid-search-replace.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/lucid-search-replace/assets/screenshot-1.png?rev=3662066",
+            "caption": "The search and replace form, with the safety steps alongside it."
+        },
+        {
+            "src": "https://ps.w.org/lucid-search-replace/assets/screenshot-2.png?rev=3662066",
+            "caption": "The visual diff preview, grouped by table, showing exactly what changes."
+        },
+        {
+            "src": "https://ps.w.org/lucid-search-replace/assets/screenshot-3.png?rev=3662066",
+            "caption": "The confirmation step, where you can enable a safety snapshot before applying."
+        },
+        {
+            "src": "https://ps.w.org/lucid-search-replace/assets/screenshot-4.png?rev=3662066",
+            "caption": "The result, with one-click undo when a retained snapshot is available."
+        }
+    ],
+    "tags": {
+        "database": "database",
+        "elementor": "elementor",
+        "migration": "migration",
+        "search-replace": "search replace",
+        "serialized": "serialized"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/lucid-search-replace.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/lucid-search-replace.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/lucid-search-replace/assets/banner-772x250.png?rev=3662066",
+        "high": "https://ps.w.org/lucid-search-replace/assets/banner-1544x500.png?rev=3662066"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/lucid-search-replace/assets/icon-128x128.png?rev=3662066",
+        "2x": "https://ps.w.org/lucid-search-replace/assets/icon-256x256.png?rev=3662066"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
