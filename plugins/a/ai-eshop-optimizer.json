@@ -29,7 +29,7 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 20,
-    "last_updated": "2026-08-23 10:26:00",
+    "last_updated": "2026-08-23 11:15:00",
     "added": "2024-04-24",
     "homepage": "https://rooster.systems/one/",
     "sections": {
@@ -292,81 +292,775 @@
         "svg": "https://ps.w.org/ai-eshop-optimizer/assets/icon.svg?rev=3616540"
     },
     "blocks": {
-        "aieo/google-reviews": {
+        "aieo/post-related-needs": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "aieo/google-reviews",
-            "title": "AIEO Google Reviews",
-            "category": "widgets",
-            "icon": "star-filled",
-            "description": "Live Google reviews pulled from the local cache. Single location, mixed feed, or cards grid.",
+            "name": "aieo/post-related-needs",
+            "version": "1.0.0",
+            "title": "AIEO Post Related Needs",
+            "editorScript": "file:./edit.js",
+            "category": "theme",
+            "icon": "tag",
+            "description": "Need-tag chips for the current blog post. Reads wp_aieo_dmm_term_relations for pa_need → post edges. Each chip links to the need archive.",
+            "keywords": [
+                "aieo",
+                "need",
+                "tags",
+                "blog",
+                "related"
+            ],
+            "supports": {
+                "html": false,
+                "align": [
+                    "wide"
+                ],
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true
+                },
+                "color": {
+                    "background": true,
+                    "text": true
+                }
+            },
+            "attributes": {
+                "heading": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "render": "file:./render.php",
+            "viewStyle": "file:./style.css",
+            "textdomain": "ai-eshop-optimizer"
+        },
+        "aieo/lowest-price-message": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/lowest-price-message",
+            "version": "1.0.1",
+            "title": "AIEO Lowest Price Message",
+            "editorScript": "file:./edit.js",
+            "category": "woocommerce",
+            "icon": "tag",
+            "description": "EU Omnibus: on on-sale products, shows the operator-configured message with the lowest price before the reduction. Auto-hides when the product is not on sale.",
+            "keywords": [
+                "aieo",
+                "product",
+                "price",
+                "omnibus",
+                "sale",
+                "lowest"
+            ],
+            "ancestor": [
+                "core/template",
+                "core/post-template",
+                "woocommerce/single-product"
+            ],
+            "supports": {
+                "html": false,
+                "align": false,
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                }
+            },
+            "attributes": [],
+            "render": "file:./render.php",
+            "style": "file:./style.css",
+            "textdomain": "ai-eshop-optimizer"
+        },
+        "aieo/recos": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/recos",
+            "version": "1.1.0",
+            "title": "AIEO Recommendations",
+            "category": "woocommerce",
+            "icon": "products",
+            "description": "Renders one AIEO recommendation surface (same_needs / crosssells / upsells / related / recently_viewed / semantic_related) as the placeholder div the lazy-recommendations.js bundle hydrator picks up on first user interaction. Same emitted markup as the legacy inline `<div id=\"aieo-X-placeholder\">` blocks so the existing JS hydrator works unchanged.",
+            "keywords": [
+                "aieo",
+                "recommendations",
+                "related",
+                "upsells",
+                "cross-sells",
+                "same-needs",
+                "recently-viewed",
+                "semantic"
+            ],
+            "supports": {
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true
+                },
+                "color": {
+                    "background": true,
+                    "text": true
+                }
+            },
+            "attributes": {
+                "surface": {
+                    "type": "string",
+                    "default": "related",
+                    "enum": [
+                        "related",
+                        "upsells",
+                        "crosssells",
+                        "recently_viewed",
+                        "same_needs",
+                        "semantic_related"
+                    ]
+                }
+            },
+            "render": "file:./render.php",
             "editorScript": "file:./edit.js",
             "textdomain": "ai-eshop-optimizer"
         },
-        "aieo/store-hero": {
+        "aieo/post-related-brands": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "aieo/store-hero",
-            "title": "AIEO Store Hero",
-            "category": "widgets",
-            "icon": "store",
-            "description": "Shop-page header hero in the category-hero style (centred image, title, horizontal line). Listing title, heading and description come from the bound location. Auto-resolves on a store page, or set a location slug.",
+            "name": "aieo/post-related-brands",
+            "version": "1.0.0",
+            "title": "AIEO Post Related Brands",
             "editorScript": "file:./edit.js",
+            "category": "theme",
+            "icon": "format-gallery",
+            "description": "Brand-logo slider for the current blog post. Reads wp_aieo_dmm_term_relations for product_brand → post edges.",
+            "keywords": [
+                "aieo",
+                "brand",
+                "slider",
+                "blog"
+            ],
+            "supports": {
+                "html": false,
+                "align": [
+                    "wide"
+                ],
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                }
+            },
+            "attributes": {
+                "autoRotate": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "rotateMs": {
+                    "type": "number",
+                    "default": 4000
+                },
+                "imageSize": {
+                    "type": "string",
+                    "default": "medium"
+                }
+            },
+            "render": "file:./render.php",
+            "viewStyle": "file:./style.css",
+            "viewScript": "file:./view.js",
             "textdomain": "ai-eshop-optimizer"
         },
-        "aieo/opening-hours": {
+        "aieo/popup-panel": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "aieo/opening-hours",
-            "title": "AIEO Opening Hours",
-            "category": "widgets",
-            "icon": "clock",
-            "description": "A store location's opening hours. Auto-resolves on a store page, or set a location slug.",
+            "name": "aieo/popup-panel",
+            "version": "1.0.0",
+            "title": "AIEO Popup Panel",
             "editorScript": "file:./edit.js",
+            "category": "design",
+            "icon": "external",
+            "description": "The split layout for a popup: a content pane you fill with any blocks, and a full-bleed image pane that sits beside it on desktop and moves above it on mobile — with a separate mobile image so a landscape photo never gets cropped to nothing on a phone. Built for the aieo_popup post type, but usable inline on any page.",
+            "keywords": [
+                "aieo",
+                "popup",
+                "modal",
+                "announcement",
+                "promotion",
+                "overlay"
+            ],
+            "supports": {
+                "html": false,
+                "align": false,
+                "anchor": true,
+                "spacing": {
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true
+                }
+            },
+            "attributes": {
+                "desktopImageId": {
+                    "type": "number",
+                    "default": 0
+                },
+                "mobileImageId": {
+                    "type": "number",
+                    "default": 0
+                },
+                "imageAlt": {
+                    "type": "string",
+                    "default": ""
+                },
+                "mediaSide": {
+                    "type": "string",
+                    "default": "right"
+                },
+                "mediaWidth": {
+                    "type": "string",
+                    "default": "360px"
+                },
+                "mobileMediaHeight": {
+                    "type": "string",
+                    "default": "200px"
+                },
+                "boxWidth": {
+                    "type": "string",
+                    "default": "940px"
+                },
+                "boxHeight": {
+                    "type": "string",
+                    "default": "470px"
+                },
+                "bgColor": {
+                    "type": "string",
+                    "default": "#232323"
+                },
+                "textColor": {
+                    "type": "string",
+                    "default": "#ffffff"
+                },
+                "accentColor": {
+                    "type": "string",
+                    "default": "#b7d21d"
+                }
+            },
+            "render": "file:./render.php",
+            "style": "file:./style.css",
             "textdomain": "ai-eshop-optimizer"
         },
-        "aieo/store-locator": {
+        "aieo/competition": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "aieo/store-locator",
-            "title": "AIEO Store Locator",
-            "category": "widgets",
-            "icon": "location-alt",
-            "description": "Grid or list of all your store locations — address, phone, opening hours and Google Maps / review links.",
+            "name": "aieo/competition",
+            "title": "Competition",
+            "category": "theme",
+            "icon": "awards",
+            "description": "Renders a competition — hero image, title, short description, the entry form and share buttons. Auto-binds to the competition page it's placed on, or pick a specific competition.",
+            "keywords": [
+                "competition",
+                "giveaway",
+                "contest",
+                "gravity form",
+                "diagonismos"
+            ],
+            "textdomain": "ai-eshop-optimizer",
+            "usesContext": [
+                "postId"
+            ],
+            "attributes": {
+                "competitionId": {
+                    "type": "number",
+                    "default": 0
+                }
+            },
+            "supports": {
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ]
+            },
             "editorScript": "file:./edit.js",
+            "style": "file:./style.css",
+            "render": "file:./render.php"
+        },
+        "aieo/product-needs": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/product-needs",
+            "version": "1.0.0",
+            "title": "AIEO Product Needs",
+            "editorScript": "file:./edit.js",
+            "category": "woocommerce",
+            "icon": "tag",
+            "description": "Renders the 'This product covers:' Επιθυμίες (needs) list for the current single-product page. Wraps the existing AIEO_DMM_Product_Needs renderer so non-block themes keep their PHP path; on a block-themed PDP this is the canonical entry. Reads from `wp_aieo_dmm_product_needs` and `pa_need` taxonomy.",
+            "keywords": [
+                "aieo",
+                "product",
+                "needs",
+                "επιθυμίες"
+            ],
+            "ancestor": [
+                "core/template",
+                "core/post-template",
+                "woocommerce/single-product"
+            ],
+            "supports": {
+                "html": false,
+                "align": false,
+                "spacing": {
+                    "margin": true
+                }
+            },
+            "render": "file:./render.php",
             "textdomain": "ai-eshop-optimizer"
         },
-        "aieo/store-info": {
+        "aieo/post-related-categories": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "aieo/store-info",
-            "title": "AIEO Store Info (address, phone, hours)",
-            "category": "widgets",
-            "icon": "store",
-            "description": "Structured store contact info — address, clickable phone, and per-day hours. Reads from post meta + the linked Google location row.",
+            "name": "aieo/post-related-categories",
+            "version": "1.0.0",
+            "title": "AIEO Post Related Product Categories",
             "editorScript": "file:./edit.js",
+            "category": "theme",
+            "icon": "list-view",
+            "description": "Dropdown of related product categories for the current blog post. Reads wp_aieo_dmm_term_relations for product_cat → post edges.",
+            "keywords": [
+                "aieo",
+                "category",
+                "blog",
+                "related"
+            ],
+            "supports": {
+                "html": false,
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true
+                },
+                "color": {
+                    "background": true,
+                    "text": true
+                }
+            },
+            "attributes": {
+                "label": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "render": "file:./render.php",
+            "viewStyle": "file:./style.css",
             "textdomain": "ai-eshop-optimizer"
         },
-        "aieo/store-map": {
+        "aieo/free-shipping-pdp": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "aieo/store-map",
-            "title": "AIEO Store Map",
-            "category": "widgets",
-            "icon": "location",
-            "description": "A single store's location map (keyless Google Maps embed) plus a directions link. Auto-resolves on a store page, or set a location slug.",
+            "name": "aieo/free-shipping-pdp",
+            "version": "1.0.0",
+            "title": "AIEO Free Shipping (PDP bar)",
             "editorScript": "file:./edit.js",
+            "category": "woocommerce",
+            "icon": "cart",
+            "description": "Per-product free-shipping progress bar. Reads threshold + messages + appearance from AIEO_DMM_Free_Shipping (admin: DMM → Free Shipping + COD) and the current cart subtotal from WC()->cart. Self-hides when the operator's `display_product` setting is off, when the threshold is 0, when the product is on the no-free-shipping exclusion list, or when the cart is empty AND the operator chose to suppress the empty-cart message. Updates client-side on every cart change via a tiny REST poll.",
+            "keywords": [
+                "aieo",
+                "free-shipping",
+                "pdp",
+                "progress-bar",
+                "upsell"
+            ],
+            "ancestor": [
+                "core/template",
+                "core/post-template",
+                "woocommerce/single-product"
+            ],
+            "supports": {
+                "html": false,
+                "align": false,
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                }
+            },
+            "render": "file:./render.php",
+            "viewScript": "file:./view.js",
+            "style": "file:./style.css",
             "textdomain": "ai-eshop-optimizer"
         },
-        "aieo/business-info": {
+        "aieo/post-meta": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "aieo/business-info",
-            "title": "AIEO Business Info",
-            "category": "widgets",
-            "icon": "store",
-            "description": "A store location's address, phone, opening hours and Google links — from your Locations & Reviews data.",
+            "name": "aieo/post-meta",
+            "version": "1.0.0",
+            "title": "AIEO Product Post Meta (SKU + Barcodes)",
             "editorScript": "file:./edit.js",
+            "category": "woocommerce",
+            "icon": "list-view",
+            "description": "Renders the SKU + per-variation barcode rows for the current product. Wraps AIEO_DMM_Product_Meta — the same module the `[om_ppe_product_meta]` shortcode uses (admin-configurable via DMM settings: show_sku, show_barcode, label customisation). On variable products the barcode row expands to one barcode per variation, hidden behind a `+ more` toggle.",
+            "keywords": [
+                "aieo",
+                "product",
+                "meta",
+                "sku",
+                "barcode",
+                "ean"
+            ],
+            "ancestor": [
+                "core/template",
+                "core/post-template",
+                "woocommerce/single-product"
+            ],
+            "supports": {
+                "html": false,
+                "align": false,
+                "spacing": {
+                    "margin": true
+                }
+            },
+            "attributes": {
+                "zone": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "render": "file:./render.php",
+            "textdomain": "ai-eshop-optimizer"
+        },
+        "aieo/product-variations-gallery": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/product-variations-gallery",
+            "version": "1.0.0",
+            "title": "AIEO Product Variations Gallery",
+            "category": "woocommerce",
+            "icon": "format-gallery",
+            "description": "Variation-aware product gallery: when a shopper selects a variation, the main product image and its gallery swap in place to that variation's own images. Reads each variation's existing image set, so there is no data migration.",
+            "keywords": [
+                "aieo",
+                "product",
+                "gallery",
+                "variations",
+                "pdp"
+            ],
+            "ancestor": [
+                "core/template",
+                "core/post-template",
+                "woocommerce/single-product"
+            ],
+            "usesContext": [
+                "postId"
+            ],
+            "supports": {
+                "html": false,
+                "align": false,
+                "spacing": {
+                    "margin": false,
+                    "padding": false
+                }
+            },
+            "render": "file:./render.php",
+            "editorScript": "file:./edit.js",
+            "viewScript": "file:./view.js",
+            "style": "file:./style.css",
+            "textdomain": "ai-eshop-optimizer"
+        },
+        "aieo/product-slider": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/product-slider",
+            "version": "1.0.0",
+            "title": "AIEO Product Slider",
+            "category": "woocommerce",
+            "icon": "slides",
+            "description": "A horizontal product slider with the SAME look as the product-page recommendations (thin uppercase title + line, then cards). Set the title manually and pick products by category, tag and/or specific product IDs.",
+            "keywords": [
+                "aieo",
+                "product",
+                "slider",
+                "carousel",
+                "recommendations",
+                "woocommerce",
+                "tag",
+                "category"
+            ],
+            "textdomain": "ai-eshop-optimizer",
+            "supports": {
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "spacing": {
+                    "margin": true
+                }
+            },
+            "attributes": {
+                "title": {
+                    "type": "string",
+                    "default": ""
+                },
+                "categories": {
+                    "type": "string",
+                    "default": ""
+                },
+                "tags": {
+                    "type": "string",
+                    "default": ""
+                },
+                "productIds": {
+                    "type": "string",
+                    "default": ""
+                },
+                "limit": {
+                    "type": "number",
+                    "default": 12
+                },
+                "orderby": {
+                    "type": "string",
+                    "default": "date",
+                    "enum": [
+                        "date",
+                        "popularity",
+                        "rating",
+                        "price",
+                        "price-desc",
+                        "rand",
+                        "menu_order"
+                    ]
+                },
+                "showRating": {
+                    "type": "boolean",
+                    "default": false
+                }
+            },
+            "render": "file:./render.php",
+            "editorScript": "file:./edit.js",
+            "style": "aieo-recommendations"
+        },
+        "aieo/brand-archive-hero": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/brand-archive-hero",
+            "version": "1.0.0",
+            "title": "AIEO Brand Archive Hero",
+            "editorScript": "file:./edit.js",
+            "category": "woocommerce",
+            "icon": "format-image",
+            "description": "Per-brand hero for the brand archive (taxonomy-product_brand). Reads queried brand term, joins core_brand_vitals + dmm_brand_extras. Renders hero image, logo overlay, headline, product count, wishlist heart, rating stars.",
+            "keywords": [
+                "aieo",
+                "brand",
+                "archive",
+                "hero"
+            ],
+            "supports": {
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                }
+            },
+            "attributes": {
+                "showCounts": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showWishlist": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showRating": {
+                    "type": "boolean",
+                    "default": true
+                }
+            },
+            "render": "file:./render.php",
+            "style": "file:./style.css",
+            "viewScript": "file:./view.js",
+            "textdomain": "ai-eshop-optimizer"
+        },
+        "aieo/custom-slots-region": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/custom-slots-region",
+            "version": "1.0.0",
+            "title": "AIEO Custom Slots Region",
+            "editorScript": "file:./edit.js",
+            "category": "woocommerce",
+            "icon": "screenoptions",
+            "description": "Placeholder block that, at render time, enumerates every enabled slot from the Custom Slots admin store and emits each as a sibling div. Designed to sit inside the .ff-recommendations-cluster flex container so each slot participates in the Recommendations Ordering CSS (`order:` / `display:none`) alongside the built-in aieo/recos rails. This block emits NO wrapper of its own — slot divs are direct flex children of the parent group.",
+            "keywords": [
+                "aieo",
+                "slots",
+                "recommendations",
+                "tolstoy"
+            ],
+            "supports": {
+                "html": false,
+                "align": false,
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true
+                },
+                "color": {
+                    "background": true,
+                    "text": true
+                }
+            },
+            "attributes": [],
+            "render": "file:./render.php",
+            "textdomain": "ai-eshop-optimizer"
+        },
+        "aieo/breadcrumb": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/breadcrumb",
+            "version": "1.0.0",
+            "title": "AIEO Breadcrumb",
+            "editorScript": "file:./edit.js",
+            "category": "theme",
+            "icon": "menu-alt",
+            "description": "SEO-consistent breadcrumb. Uses the SAME pinned canonical category as AIEO's canonical URL and JSON-LD BreadcrumbList, so the visible trail never disagrees with what Google reads.",
+            "keywords": [
+                "aieo",
+                "breadcrumb",
+                "seo",
+                "navigation"
+            ],
+            "supports": {
+                "html": false,
+                "align": [
+                    "wide"
+                ],
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true
+                },
+                "color": {
+                    "background": true,
+                    "text": true,
+                    "link": true
+                }
+            },
+            "attributes": {
+                "separator": {
+                    "type": "string",
+                    "default": "›"
+                }
+            },
+            "render": "file:./render.php",
+            "viewStyle": "file:./style.css",
+            "textdomain": "ai-eshop-optimizer"
+        },
+        "aieo/brand-slider": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/brand-slider",
+            "version": "1.0.0",
+            "title": "AIEO Brand Slider",
+            "category": "woocommerce",
+            "icon": "slides",
+            "description": "Lazy-hydrated brand carousel. Modes: top, new_brand, new_product, favourites (per-user affinity), manual. Server-renders the first N cards as a noscript fallback; client hydrates into a vanilla scroll-snap carousel with arrow nav.",
+            "keywords": [
+                "aieo",
+                "brands",
+                "slider",
+                "carousel"
+            ],
+            "supports": {
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                }
+            },
+            "attributes": {
+                "mode": {
+                    "type": "string",
+                    "default": "top",
+                    "enum": [
+                        "top",
+                        "new_brand",
+                        "new_product",
+                        "favourites",
+                        "manual"
+                    ]
+                },
+                "limit": {
+                    "type": "number",
+                    "default": 10
+                },
+                "slidesPerView": {
+                    "type": "number",
+                    "default": 5
+                },
+                "title": {
+                    "type": "string",
+                    "default": ""
+                },
+                "subtitle": {
+                    "type": "string",
+                    "default": ""
+                },
+                "headingFeature": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "ctaLabel": {
+                    "type": "string",
+                    "default": ""
+                },
+                "ctaUrl": {
+                    "type": "string",
+                    "default": ""
+                },
+                "manualBrandIds": {
+                    "type": "array",
+                    "default": []
+                },
+                "showCounts": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "cardStyle": {
+                    "type": "string",
+                    "default": "hero",
+                    "enum": [
+                        "hero",
+                        "logo"
+                    ]
+                }
+            },
+            "render": "file:./render.php",
+            "editorScript": "file:./edit.js",
+            "viewScript": "file:./view.js",
+            "style": "file:./style.css",
             "textdomain": "ai-eshop-optimizer"
         },
         "aieo/sale-eligibility-message": {
@@ -479,102 +1173,22 @@
             "style": "file:./style.css",
             "textdomain": "ai-eshop-optimizer"
         },
-        "aieo/popup-panel": {
+        "aieo/custom-slot": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "aieo/popup-panel",
+            "name": "aieo/custom-slot",
             "version": "1.0.0",
-            "title": "AIEO Popup Panel",
+            "title": "AIEO Custom Slot",
             "editorScript": "file:./edit.js",
-            "category": "design",
-            "icon": "external",
-            "description": "The split layout for a popup: a content pane you fill with any blocks, and a full-bleed image pane that sits beside it on desktop and moves above it on mobile — with a separate mobile image so a landscape photo never gets cropped to nothing on a phone. Built for the aieo_popup post type, but usable inline on any page.",
+            "category": "woocommerce",
+            "icon": "edit-page",
+            "description": "Renders one operator-defined slot (Tolstoy widget OR free-form HTML/code) from the Custom Slots admin store. Used inside the single-product recommendations cluster so each slot can be drag-positioned alongside the built-in reco rails. Resolve target via slotId.",
             "keywords": [
                 "aieo",
-                "popup",
-                "modal",
-                "announcement",
-                "promotion",
-                "overlay"
-            ],
-            "supports": {
-                "html": false,
-                "align": false,
-                "anchor": true,
-                "spacing": {
-                    "padding": true
-                },
-                "typography": {
-                    "fontSize": true,
-                    "lineHeight": true
-                }
-            },
-            "attributes": {
-                "desktopImageId": {
-                    "type": "number",
-                    "default": 0
-                },
-                "mobileImageId": {
-                    "type": "number",
-                    "default": 0
-                },
-                "imageAlt": {
-                    "type": "string",
-                    "default": ""
-                },
-                "mediaSide": {
-                    "type": "string",
-                    "default": "right"
-                },
-                "mediaWidth": {
-                    "type": "string",
-                    "default": "360px"
-                },
-                "mobileMediaHeight": {
-                    "type": "string",
-                    "default": "200px"
-                },
-                "boxWidth": {
-                    "type": "string",
-                    "default": "940px"
-                },
-                "boxHeight": {
-                    "type": "string",
-                    "default": "470px"
-                },
-                "bgColor": {
-                    "type": "string",
-                    "default": "#232323"
-                },
-                "textColor": {
-                    "type": "string",
-                    "default": "#ffffff"
-                },
-                "accentColor": {
-                    "type": "string",
-                    "default": "#b7d21d"
-                }
-            },
-            "render": "file:./render.php",
-            "style": "file:./style.css",
-            "textdomain": "ai-eshop-optimizer"
-        },
-        "aieo/post-related-needs": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/post-related-needs",
-            "version": "1.0.0",
-            "title": "AIEO Post Related Needs",
-            "editorScript": "file:./edit.js",
-            "category": "theme",
-            "icon": "tag",
-            "description": "Need-tag chips for the current blog post. Reads wp_aieo_dmm_term_relations for pa_need → post edges. Each chip links to the need archive.",
-            "keywords": [
-                "aieo",
-                "need",
-                "tags",
-                "blog",
-                "related"
+                "tolstoy",
+                "embed",
+                "recommendations",
+                "slot"
             ],
             "supports": {
                 "html": false,
@@ -584,464 +1198,15 @@
                 "spacing": {
                     "margin": true,
                     "padding": true
-                },
-                "typography": {
-                    "fontSize": true,
-                    "lineHeight": true
-                },
-                "color": {
-                    "background": true,
-                    "text": true
                 }
             },
             "attributes": {
-                "heading": {
+                "slotId": {
                     "type": "string",
                     "default": ""
                 }
             },
             "render": "file:./render.php",
-            "viewStyle": "file:./style.css",
-            "textdomain": "ai-eshop-optimizer"
-        },
-        "aieo/brand-slider": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/brand-slider",
-            "version": "1.0.0",
-            "title": "AIEO Brand Slider",
-            "category": "woocommerce",
-            "icon": "slides",
-            "description": "Lazy-hydrated brand carousel. Modes: top, new_brand, new_product, favourites (per-user affinity), manual. Server-renders the first N cards as a noscript fallback; client hydrates into a vanilla scroll-snap carousel with arrow nav.",
-            "keywords": [
-                "aieo",
-                "brands",
-                "slider",
-                "carousel"
-            ],
-            "supports": {
-                "html": false,
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                }
-            },
-            "attributes": {
-                "mode": {
-                    "type": "string",
-                    "default": "top",
-                    "enum": [
-                        "top",
-                        "new_brand",
-                        "new_product",
-                        "favourites",
-                        "manual"
-                    ]
-                },
-                "limit": {
-                    "type": "number",
-                    "default": 10
-                },
-                "slidesPerView": {
-                    "type": "number",
-                    "default": 5
-                },
-                "title": {
-                    "type": "string",
-                    "default": ""
-                },
-                "subtitle": {
-                    "type": "string",
-                    "default": ""
-                },
-                "headingFeature": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "ctaLabel": {
-                    "type": "string",
-                    "default": ""
-                },
-                "ctaUrl": {
-                    "type": "string",
-                    "default": ""
-                },
-                "manualBrandIds": {
-                    "type": "array",
-                    "default": []
-                },
-                "showCounts": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "cardStyle": {
-                    "type": "string",
-                    "default": "hero",
-                    "enum": [
-                        "hero",
-                        "logo"
-                    ]
-                }
-            },
-            "render": "file:./render.php",
-            "editorScript": "file:./edit.js",
-            "viewScript": "file:./view.js",
-            "style": "file:./style.css",
-            "textdomain": "ai-eshop-optimizer"
-        },
-        "aieo/product-card-swatches": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/product-card-swatches",
-            "version": "1.0.0",
-            "title": "AIEO Product Card Swatches",
-            "editorScript": "file:./edit.js",
-            "category": "woocommerce",
-            "icon": "art",
-            "description": "Variation swatch column for a product card inside any block-based product loop (wp:woocommerce/product-collection, query loop, recommendations, blog→taxonomy template). Reads block-context postId and renders the same cached swatch HTML the classic-loop path emits — so CSS/JS keep working unchanged.",
-            "keywords": [
-                "aieo",
-                "swatches",
-                "variation",
-                "product",
-                "archive"
-            ],
-            "ancestor": [
-                "woocommerce/product-template",
-                "woocommerce/product-query",
-                "core/post-template"
-            ],
-            "usesContext": [
-                "postId",
-                "postType",
-                "queryId"
-            ],
-            "supports": {
-                "html": false,
-                "align": false,
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                }
-            },
-            "attributes": {
-                "renderContext": {
-                    "type": "string",
-                    "enum": [
-                        "archive",
-                        "product"
-                    ],
-                    "default": "archive"
-                }
-            },
-            "render": "file:./render.php",
-            "textdomain": "ai-eshop-optimizer"
-        },
-        "aieo/product-variations-gallery": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/product-variations-gallery",
-            "version": "1.0.0",
-            "title": "AIEO Product Variations Gallery",
-            "category": "woocommerce",
-            "icon": "format-gallery",
-            "description": "Variation-aware product gallery: when a shopper selects a variation, the main product image and its gallery swap in place to that variation's own images. Reads each variation's existing image set, so there is no data migration.",
-            "keywords": [
-                "aieo",
-                "product",
-                "gallery",
-                "variations",
-                "pdp"
-            ],
-            "ancestor": [
-                "core/template",
-                "core/post-template",
-                "woocommerce/single-product"
-            ],
-            "usesContext": [
-                "postId"
-            ],
-            "supports": {
-                "html": false,
-                "align": false,
-                "spacing": {
-                    "margin": false,
-                    "padding": false
-                }
-            },
-            "render": "file:./render.php",
-            "editorScript": "file:./edit.js",
-            "viewScript": "file:./view.js",
-            "style": "file:./style.css",
-            "textdomain": "ai-eshop-optimizer"
-        },
-        "aieo/lowest-price-message": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/lowest-price-message",
-            "version": "1.0.1",
-            "title": "AIEO Lowest Price Message",
-            "editorScript": "file:./edit.js",
-            "category": "woocommerce",
-            "icon": "tag",
-            "description": "EU Omnibus: on on-sale products, shows the operator-configured message with the lowest price before the reduction. Auto-hides when the product is not on sale.",
-            "keywords": [
-                "aieo",
-                "product",
-                "price",
-                "omnibus",
-                "sale",
-                "lowest"
-            ],
-            "ancestor": [
-                "core/template",
-                "core/post-template",
-                "woocommerce/single-product"
-            ],
-            "supports": {
-                "html": false,
-                "align": false,
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                }
-            },
-            "attributes": [],
-            "render": "file:./render.php",
-            "style": "file:./style.css",
-            "textdomain": "ai-eshop-optimizer"
-        },
-        "aieo/brand-related": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/brand-related",
-            "version": "1.0.0",
-            "title": "AIEO Brand Related",
-            "editorScript": "file:./edit.js",
-            "category": "woocommerce",
-            "icon": "admin-links",
-            "description": "Cross-link strip for the brand archive: related product categories (chips), related blog articles (3-card row), and 'other brands you love' for logged-in viewers. Reads wp_aieo_dmm_term_relations + customer brand affinity.",
-            "keywords": [
-                "aieo",
-                "brand",
-                "related",
-                "cross-sell"
-            ],
-            "supports": {
-                "html": false,
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                },
-                "typography": {
-                    "fontSize": true,
-                    "lineHeight": true
-                },
-                "color": {
-                    "background": true,
-                    "text": true
-                }
-            },
-            "attributes": {
-                "showCategories": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showArticles": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showOtherBrands": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "articlesLimit": {
-                    "type": "number",
-                    "default": 3
-                },
-                "otherBrandsLimit": {
-                    "type": "number",
-                    "default": 6
-                },
-                "layout": {
-                    "type": "string",
-                    "default": "horizontal",
-                    "enum": [
-                        "horizontal",
-                        "vertical"
-                    ]
-                }
-            },
-            "render": "file:./render.php",
-            "viewStyle": [
-                "file:./style.css",
-                "aieo-article-cards"
-            ],
-            "textdomain": "ai-eshop-optimizer"
-        },
-        "aieo/brand-archive-hero": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/brand-archive-hero",
-            "version": "1.0.0",
-            "title": "AIEO Brand Archive Hero",
-            "editorScript": "file:./edit.js",
-            "category": "woocommerce",
-            "icon": "format-image",
-            "description": "Per-brand hero for the brand archive (taxonomy-product_brand). Reads queried brand term, joins core_brand_vitals + dmm_brand_extras. Renders hero image, logo overlay, headline, product count, wishlist heart, rating stars.",
-            "keywords": [
-                "aieo",
-                "brand",
-                "archive",
-                "hero"
-            ],
-            "supports": {
-                "html": false,
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                }
-            },
-            "attributes": {
-                "showCounts": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showWishlist": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showRating": {
-                    "type": "boolean",
-                    "default": true
-                }
-            },
-            "render": "file:./render.php",
-            "style": "file:./style.css",
-            "viewScript": "file:./view.js",
-            "textdomain": "ai-eshop-optimizer"
-        },
-        "aieo/taxonomy-related-articles": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/taxonomy-related-articles",
-            "version": "1.0.0",
-            "title": "AIEO Taxonomy Related Articles",
-            "editorScript": "file:./edit.js",
-            "category": "woocommerce",
-            "icon": "format-aside",
-            "description": "Renders 'From the Blog' article cards related to the queried term — works for any taxonomy (product_cat, pa_need, product_tag, supplier, custom). Reads bidirectional edges from wp_aieo_dmm_term_relations (the same source brand-related uses for product_brand). On the brand archive itself, prefer aieo/brand-related — this block is for the OTHER taxonomies.",
-            "keywords": [
-                "aieo",
-                "taxonomy",
-                "related",
-                "articles",
-                "blog"
-            ],
-            "supports": {
-                "html": false,
-                "align": false,
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                },
-                "typography": {
-                    "fontSize": true,
-                    "lineHeight": true
-                },
-                "color": {
-                    "background": true,
-                    "text": true
-                }
-            },
-            "attributes": {
-                "limit": {
-                    "type": "number",
-                    "default": 3
-                },
-                "layout": {
-                    "type": "string",
-                    "enum": [
-                        "vertical",
-                        "horizontal"
-                    ],
-                    "default": "vertical"
-                },
-                "heading": {
-                    "type": "string",
-                    "default": ""
-                }
-            },
-            "render": "file:./render.php",
-            "viewStyle": "aieo-article-cards",
-            "textdomain": "ai-eshop-optimizer"
-        },
-        "aieo/recos": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/recos",
-            "version": "1.1.0",
-            "title": "AIEO Recommendations",
-            "category": "woocommerce",
-            "icon": "products",
-            "description": "Renders one AIEO recommendation surface (same_needs / crosssells / upsells / related / recently_viewed / semantic_related) as the placeholder div the lazy-recommendations.js bundle hydrator picks up on first user interaction. Same emitted markup as the legacy inline `<div id=\"aieo-X-placeholder\">` blocks so the existing JS hydrator works unchanged.",
-            "keywords": [
-                "aieo",
-                "recommendations",
-                "related",
-                "upsells",
-                "cross-sells",
-                "same-needs",
-                "recently-viewed",
-                "semantic"
-            ],
-            "supports": {
-                "html": false,
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                },
-                "typography": {
-                    "fontSize": true,
-                    "lineHeight": true
-                },
-                "color": {
-                    "background": true,
-                    "text": true
-                }
-            },
-            "attributes": {
-                "surface": {
-                    "type": "string",
-                    "default": "related",
-                    "enum": [
-                        "related",
-                        "upsells",
-                        "crosssells",
-                        "recently_viewed",
-                        "same_needs",
-                        "semantic_related"
-                    ]
-                }
-            },
-            "render": "file:./render.php",
-            "editorScript": "file:./edit.js",
             "textdomain": "ai-eshop-optimizer"
         },
         "aieo/loyalty-connection": {
@@ -1072,6 +1237,37 @@
                 }
             },
             "render": "file:./render.php"
+        },
+        "aieo/taxonomy-archive-footer": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/taxonomy-archive-footer",
+            "version": "1.0.0",
+            "title": "AIEO Taxonomy Archive Footer",
+            "editorScript": "file:./edit.js",
+            "category": "woocommerce",
+            "icon": "editor-paragraph",
+            "description": "Per-term editorial / SEO footer copy. Reads the queried taxonomy's *_extras table footer column when present (need_extras.footer_text, brand_extras.footer_text, category_extras.footer_text). Emits nothing when no footer copy exists for the term.",
+            "keywords": [
+                "aieo",
+                "taxonomy",
+                "archive",
+                "footer",
+                "seo"
+            ],
+            "supports": {
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                }
+            },
+            "render": "file:./render.php",
+            "textdomain": "ai-eshop-optimizer"
         },
         "aieo/event-registration": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
@@ -1165,45 +1361,130 @@
             "style": "file:./style.css",
             "textdomain": "ai-eshop-optimizer"
         },
-        "aieo/semantic-related": {
+        "aieo/taxonomy-related-articles": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "aieo/semantic-related",
-            "title": "AIEO Related content",
-            "category": "widgets",
-            "icon": "admin-links",
-            "description": "Related articles, guides and products, chosen by the semantic engine.",
-            "keywords": [
-                "semantic",
-                "related",
-                "recommendations",
-                "aieo",
-                "rooster"
-            ],
+            "name": "aieo/taxonomy-related-articles",
+            "version": "1.0.0",
+            "title": "AIEO Taxonomy Related Articles",
             "editorScript": "file:./edit.js",
-            "style": "aieo-recommendations",
+            "category": "woocommerce",
+            "icon": "format-aside",
+            "description": "Renders 'From the Blog' article cards related to the queried term — works for any taxonomy (product_cat, pa_need, product_tag, supplier, custom). Reads bidirectional edges from wp_aieo_dmm_term_relations (the same source brand-related uses for product_brand). On the brand archive itself, prefer aieo/brand-related — this block is for the OTHER taxonomies.",
+            "keywords": [
+                "aieo",
+                "taxonomy",
+                "related",
+                "articles",
+                "blog"
+            ],
+            "supports": {
+                "html": false,
+                "align": false,
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true
+                },
+                "color": {
+                    "background": true,
+                    "text": true
+                }
+            },
+            "attributes": {
+                "limit": {
+                    "type": "number",
+                    "default": 3
+                },
+                "layout": {
+                    "type": "string",
+                    "enum": [
+                        "vertical",
+                        "horizontal"
+                    ],
+                    "default": "vertical"
+                },
+                "heading": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "render": "file:./render.php",
+            "viewStyle": "aieo-article-cards",
             "textdomain": "ai-eshop-optimizer"
         },
-        "aieo/breadcrumb": {
+        "aieo/product-card-swatches": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "aieo/breadcrumb",
+            "name": "aieo/product-card-swatches",
             "version": "1.0.0",
-            "title": "AIEO Breadcrumb",
+            "title": "AIEO Product Card Swatches",
             "editorScript": "file:./edit.js",
-            "category": "theme",
-            "icon": "menu-alt",
-            "description": "SEO-consistent breadcrumb. Uses the SAME pinned canonical category as AIEO's canonical URL and JSON-LD BreadcrumbList, so the visible trail never disagrees with what Google reads.",
+            "category": "woocommerce",
+            "icon": "art",
+            "description": "Variation swatch column for a product card inside any block-based product loop (wp:woocommerce/product-collection, query loop, recommendations, blog→taxonomy template). Reads block-context postId and renders the same cached swatch HTML the classic-loop path emits — so CSS/JS keep working unchanged.",
             "keywords": [
                 "aieo",
-                "breadcrumb",
-                "seo",
-                "navigation"
+                "swatches",
+                "variation",
+                "product",
+                "archive"
+            ],
+            "ancestor": [
+                "woocommerce/product-template",
+                "woocommerce/product-query",
+                "core/post-template"
+            ],
+            "usesContext": [
+                "postId",
+                "postType",
+                "queryId"
+            ],
+            "supports": {
+                "html": false,
+                "align": false,
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                }
+            },
+            "attributes": {
+                "renderContext": {
+                    "type": "string",
+                    "enum": [
+                        "archive",
+                        "product"
+                    ],
+                    "default": "archive"
+                }
+            },
+            "render": "file:./render.php",
+            "textdomain": "ai-eshop-optimizer"
+        },
+        "aieo/brand-related": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/brand-related",
+            "version": "1.0.0",
+            "title": "AIEO Brand Related",
+            "editorScript": "file:./edit.js",
+            "category": "woocommerce",
+            "icon": "admin-links",
+            "description": "Cross-link strip for the brand archive: related product categories (chips), related blog articles (3-card row), and 'other brands you love' for logged-in viewers. Reads wp_aieo_dmm_term_relations + customer brand affinity.",
+            "keywords": [
+                "aieo",
+                "brand",
+                "related",
+                "cross-sell"
             ],
             "supports": {
                 "html": false,
                 "align": [
-                    "wide"
+                    "wide",
+                    "full"
                 ],
                 "spacing": {
                     "margin": true,
@@ -1215,53 +1496,44 @@
                 },
                 "color": {
                     "background": true,
-                    "text": true,
-                    "link": true
+                    "text": true
                 }
             },
             "attributes": {
-                "separator": {
+                "showCategories": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showArticles": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showOtherBrands": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "articlesLimit": {
+                    "type": "number",
+                    "default": 3
+                },
+                "otherBrandsLimit": {
+                    "type": "number",
+                    "default": 6
+                },
+                "layout": {
                     "type": "string",
-                    "default": "›"
+                    "default": "horizontal",
+                    "enum": [
+                        "horizontal",
+                        "vertical"
+                    ]
                 }
             },
             "render": "file:./render.php",
-            "viewStyle": "file:./style.css",
-            "textdomain": "ai-eshop-optimizer"
-        },
-        "aieo/free-shipping-pdp": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/free-shipping-pdp",
-            "version": "1.0.0",
-            "title": "AIEO Free Shipping (PDP bar)",
-            "editorScript": "file:./edit.js",
-            "category": "woocommerce",
-            "icon": "cart",
-            "description": "Per-product free-shipping progress bar. Reads threshold + messages + appearance from AIEO_DMM_Free_Shipping (admin: DMM → Free Shipping + COD) and the current cart subtotal from WC()->cart. Self-hides when the operator's `display_product` setting is off, when the threshold is 0, when the product is on the no-free-shipping exclusion list, or when the cart is empty AND the operator chose to suppress the empty-cart message. Updates client-side on every cart change via a tiny REST poll.",
-            "keywords": [
-                "aieo",
-                "free-shipping",
-                "pdp",
-                "progress-bar",
-                "upsell"
+            "viewStyle": [
+                "file:./style.css",
+                "aieo-article-cards"
             ],
-            "ancestor": [
-                "core/template",
-                "core/post-template",
-                "woocommerce/single-product"
-            ],
-            "supports": {
-                "html": false,
-                "align": false,
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                }
-            },
-            "render": "file:./render.php",
-            "viewScript": "file:./view.js",
-            "style": "file:./style.css",
             "textdomain": "ai-eshop-optimizer"
         },
         "aieo/latest-posts-overlay": {
@@ -1336,393 +1608,6 @@
             "editorScript": "file:./edit.js",
             "viewStyle": "file:./style.css",
             "viewScript": "file:./view.js",
-            "textdomain": "ai-eshop-optimizer"
-        },
-        "aieo/taxonomy-archive-footer": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/taxonomy-archive-footer",
-            "version": "1.0.0",
-            "title": "AIEO Taxonomy Archive Footer",
-            "editorScript": "file:./edit.js",
-            "category": "woocommerce",
-            "icon": "editor-paragraph",
-            "description": "Per-term editorial / SEO footer copy. Reads the queried taxonomy's *_extras table footer column when present (need_extras.footer_text, brand_extras.footer_text, category_extras.footer_text). Emits nothing when no footer copy exists for the term.",
-            "keywords": [
-                "aieo",
-                "taxonomy",
-                "archive",
-                "footer",
-                "seo"
-            ],
-            "supports": {
-                "html": false,
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                }
-            },
-            "render": "file:./render.php",
-            "textdomain": "ai-eshop-optimizer"
-        },
-        "aieo/professional-signup": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/professional-signup",
-            "version": "1.0.0",
-            "title": "AIEO Professional Signup",
-            "editorScript": "file:./edit.js",
-            "category": "widgets",
-            "icon": "businessperson",
-            "description": "Professional / student registration via Gravity Forms (renders [membership_gf]).",
-            "textdomain": "ai-eshop-optimizer",
-            "supports": {
-                "html": false,
-                "align": true,
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                },
-                "typography": {
-                    "fontSize": true,
-                    "lineHeight": true
-                },
-                "color": {
-                    "background": true,
-                    "text": true
-                }
-            },
-            "render": "file:./render.php"
-        },
-        "aieo/custom-slots-region": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/custom-slots-region",
-            "version": "1.0.0",
-            "title": "AIEO Custom Slots Region",
-            "editorScript": "file:./edit.js",
-            "category": "woocommerce",
-            "icon": "screenoptions",
-            "description": "Placeholder block that, at render time, enumerates every enabled slot from the Custom Slots admin store and emits each as a sibling div. Designed to sit inside the .ff-recommendations-cluster flex container so each slot participates in the Recommendations Ordering CSS (`order:` / `display:none`) alongside the built-in aieo/recos rails. This block emits NO wrapper of its own — slot divs are direct flex children of the parent group.",
-            "keywords": [
-                "aieo",
-                "slots",
-                "recommendations",
-                "tolstoy"
-            ],
-            "supports": {
-                "html": false,
-                "align": false,
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                },
-                "typography": {
-                    "fontSize": true,
-                    "lineHeight": true
-                },
-                "color": {
-                    "background": true,
-                    "text": true
-                }
-            },
-            "attributes": [],
-            "render": "file:./render.php",
-            "textdomain": "ai-eshop-optimizer"
-        },
-        "aieo/product-slider": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/product-slider",
-            "version": "1.0.0",
-            "title": "AIEO Product Slider",
-            "category": "woocommerce",
-            "icon": "slides",
-            "description": "A horizontal product slider with the SAME look as the product-page recommendations (thin uppercase title + line, then cards). Set the title manually and pick products by category, tag and/or specific product IDs.",
-            "keywords": [
-                "aieo",
-                "product",
-                "slider",
-                "carousel",
-                "recommendations",
-                "woocommerce",
-                "tag",
-                "category"
-            ],
-            "textdomain": "ai-eshop-optimizer",
-            "supports": {
-                "html": false,
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "spacing": {
-                    "margin": true
-                }
-            },
-            "attributes": {
-                "title": {
-                    "type": "string",
-                    "default": ""
-                },
-                "categories": {
-                    "type": "string",
-                    "default": ""
-                },
-                "tags": {
-                    "type": "string",
-                    "default": ""
-                },
-                "productIds": {
-                    "type": "string",
-                    "default": ""
-                },
-                "limit": {
-                    "type": "number",
-                    "default": 12
-                },
-                "orderby": {
-                    "type": "string",
-                    "default": "date",
-                    "enum": [
-                        "date",
-                        "popularity",
-                        "rating",
-                        "price",
-                        "price-desc",
-                        "rand",
-                        "menu_order"
-                    ]
-                },
-                "showRating": {
-                    "type": "boolean",
-                    "default": false
-                }
-            },
-            "render": "file:./render.php",
-            "editorScript": "file:./edit.js",
-            "style": "aieo-recommendations"
-        },
-        "aieo/brand-azindex": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/brand-azindex",
-            "version": "1.0.1",
-            "title": "AIEO Brand A-Z Index",
-            "category": "woocommerce",
-            "icon": "list-view",
-            "description": "Server-rendered A-Z brand directory. Every letter A–Z (plus '#' for non-Latin brands) is always present; empty letters render disabled. Sticky letter bar + per-letter brand grid with product counts. Reads exclusively from wp_aieo_core_brand_vitals.",
-            "keywords": [
-                "aieo",
-                "brands",
-                "a-z",
-                "directory",
-                "catalogue"
-            ],
-            "supports": {
-                "html": false,
-                "align": [
-                    "wide",
-                    "full"
-                ],
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                }
-            },
-            "attributes": {
-                "showCounts": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "showLogos": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "stickyBar": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "headingLevel": {
-                    "type": "string",
-                    "default": "h2",
-                    "enum": [
-                        "h2",
-                        "h3",
-                        "h4"
-                    ]
-                },
-                "showHashBucket": {
-                    "type": "boolean",
-                    "default": true
-                }
-            },
-            "render": "file:./render.php",
-            "viewScript": "file:./view.js",
-            "editorScript": "file:./edit.js",
-            "style": "file:./style.css",
-            "textdomain": "ai-eshop-optimizer"
-        },
-        "aieo/post-related-brands": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/post-related-brands",
-            "version": "1.0.0",
-            "title": "AIEO Post Related Brands",
-            "editorScript": "file:./edit.js",
-            "category": "theme",
-            "icon": "format-gallery",
-            "description": "Brand-logo slider for the current blog post. Reads wp_aieo_dmm_term_relations for product_brand → post edges.",
-            "keywords": [
-                "aieo",
-                "brand",
-                "slider",
-                "blog"
-            ],
-            "supports": {
-                "html": false,
-                "align": [
-                    "wide"
-                ],
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                }
-            },
-            "attributes": {
-                "autoRotate": {
-                    "type": "boolean",
-                    "default": true
-                },
-                "rotateMs": {
-                    "type": "number",
-                    "default": 4000
-                },
-                "imageSize": {
-                    "type": "string",
-                    "default": "medium"
-                }
-            },
-            "render": "file:./render.php",
-            "viewStyle": "file:./style.css",
-            "viewScript": "file:./view.js",
-            "textdomain": "ai-eshop-optimizer"
-        },
-        "aieo/post-related-categories": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/post-related-categories",
-            "version": "1.0.0",
-            "title": "AIEO Post Related Product Categories",
-            "editorScript": "file:./edit.js",
-            "category": "theme",
-            "icon": "list-view",
-            "description": "Dropdown of related product categories for the current blog post. Reads wp_aieo_dmm_term_relations for product_cat → post edges.",
-            "keywords": [
-                "aieo",
-                "category",
-                "blog",
-                "related"
-            ],
-            "supports": {
-                "html": false,
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                },
-                "typography": {
-                    "fontSize": true,
-                    "lineHeight": true
-                },
-                "color": {
-                    "background": true,
-                    "text": true
-                }
-            },
-            "attributes": {
-                "label": {
-                    "type": "string",
-                    "default": ""
-                }
-            },
-            "render": "file:./render.php",
-            "viewStyle": "file:./style.css",
-            "textdomain": "ai-eshop-optimizer"
-        },
-        "aieo/competition": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/competition",
-            "title": "Competition",
-            "category": "theme",
-            "icon": "awards",
-            "description": "Renders a competition — hero image, title, short description, the entry form and share buttons. Auto-binds to the competition page it's placed on, or pick a specific competition.",
-            "keywords": [
-                "competition",
-                "giveaway",
-                "contest",
-                "gravity form",
-                "diagonismos"
-            ],
-            "textdomain": "ai-eshop-optimizer",
-            "usesContext": [
-                "postId"
-            ],
-            "attributes": {
-                "competitionId": {
-                    "type": "number",
-                    "default": 0
-                }
-            },
-            "supports": {
-                "html": false,
-                "align": [
-                    "wide",
-                    "full"
-                ]
-            },
-            "editorScript": "file:./edit.js",
-            "style": "file:./style.css",
-            "render": "file:./render.php"
-        },
-        "aieo/custom-slot": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/custom-slot",
-            "version": "1.0.0",
-            "title": "AIEO Custom Slot",
-            "editorScript": "file:./edit.js",
-            "category": "woocommerce",
-            "icon": "edit-page",
-            "description": "Renders one operator-defined slot (Tolstoy widget OR free-form HTML/code) from the Custom Slots admin store. Used inside the single-product recommendations cluster so each slot can be drag-positioned alongside the built-in reco rails. Resolve target via slotId.",
-            "keywords": [
-                "aieo",
-                "tolstoy",
-                "embed",
-                "recommendations",
-                "slot"
-            ],
-            "supports": {
-                "html": false,
-                "align": [
-                    "wide"
-                ],
-                "spacing": {
-                    "margin": true,
-                    "padding": true
-                }
-            },
-            "attributes": {
-                "slotId": {
-                    "type": "string",
-                    "default": ""
-                }
-            },
-            "render": "file:./render.php",
             "textdomain": "ai-eshop-optimizer"
         },
         "aieo/brand-rails": {
@@ -1822,128 +1707,188 @@
             "style": "file:./style.css",
             "textdomain": "ai-eshop-optimizer"
         },
-        "aieo/post-meta": {
+        "aieo/professional-signup": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "aieo/post-meta",
+            "name": "aieo/professional-signup",
             "version": "1.0.0",
-            "title": "AIEO Product Post Meta (SKU + Barcodes)",
+            "title": "AIEO Professional Signup",
             "editorScript": "file:./edit.js",
+            "category": "widgets",
+            "icon": "businessperson",
+            "description": "Professional / student registration via Gravity Forms (renders [membership_gf]).",
+            "textdomain": "ai-eshop-optimizer",
+            "supports": {
+                "html": false,
+                "align": true,
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true
+                },
+                "color": {
+                    "background": true,
+                    "text": true
+                }
+            },
+            "render": "file:./render.php"
+        },
+        "aieo/semantic-related": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/semantic-related",
+            "title": "AIEO Related content",
+            "category": "widgets",
+            "icon": "admin-links",
+            "description": "Related articles, guides and products, chosen by the semantic engine.",
+            "keywords": [
+                "semantic",
+                "related",
+                "recommendations",
+                "aieo",
+                "rooster"
+            ],
+            "editorScript": "file:./edit.js",
+            "style": "aieo-recommendations",
+            "textdomain": "ai-eshop-optimizer"
+        },
+        "aieo/brand-azindex": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/brand-azindex",
+            "version": "1.0.1",
+            "title": "AIEO Brand A-Z Index",
             "category": "woocommerce",
             "icon": "list-view",
-            "description": "Renders the SKU + per-variation barcode rows for the current product. Wraps AIEO_DMM_Product_Meta — the same module the `[om_ppe_product_meta]` shortcode uses (admin-configurable via DMM settings: show_sku, show_barcode, label customisation). On variable products the barcode row expands to one barcode per variation, hidden behind a `+ more` toggle.",
+            "description": "Server-rendered A-Z brand directory. Every letter A–Z (plus '#' for non-Latin brands) is always present; empty letters render disabled. Sticky letter bar + per-letter brand grid with product counts. Reads exclusively from wp_aieo_core_brand_vitals.",
             "keywords": [
                 "aieo",
-                "product",
-                "meta",
-                "sku",
-                "barcode",
-                "ean"
-            ],
-            "ancestor": [
-                "core/template",
-                "core/post-template",
-                "woocommerce/single-product"
+                "brands",
+                "a-z",
+                "directory",
+                "catalogue"
             ],
             "supports": {
                 "html": false,
-                "align": false,
+                "align": [
+                    "wide",
+                    "full"
+                ],
                 "spacing": {
-                    "margin": true
+                    "margin": true,
+                    "padding": true
                 }
             },
             "attributes": {
-                "zone": {
+                "showCounts": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showLogos": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "stickyBar": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "headingLevel": {
                     "type": "string",
-                    "default": ""
+                    "default": "h2",
+                    "enum": [
+                        "h2",
+                        "h3",
+                        "h4"
+                    ]
+                },
+                "showHashBucket": {
+                    "type": "boolean",
+                    "default": true
                 }
             },
             "render": "file:./render.php",
-            "textdomain": "ai-eshop-optimizer"
-        },
-        "aieo/product-needs": {
-            "$schema": "https://schemas.wp.org/trunk/block.json",
-            "apiVersion": 3,
-            "name": "aieo/product-needs",
-            "version": "1.0.0",
-            "title": "AIEO Product Needs",
+            "viewScript": "file:./view.js",
             "editorScript": "file:./edit.js",
-            "category": "woocommerce",
-            "icon": "tag",
-            "description": "Renders the 'This product covers:' Επιθυμίες (needs) list for the current single-product page. Wraps the existing AIEO_DMM_Product_Needs renderer so non-block themes keep their PHP path; on a block-themed PDP this is the canonical entry. Reads from `wp_aieo_dmm_product_needs` and `pa_need` taxonomy.",
-            "keywords": [
-                "aieo",
-                "product",
-                "needs",
-                "επιθυμίες"
-            ],
-            "ancestor": [
-                "core/template",
-                "core/post-template",
-                "woocommerce/single-product"
-            ],
-            "supports": {
-                "html": false,
-                "align": false,
-                "spacing": {
-                    "margin": true
-                }
-            },
-            "render": "file:./render.php",
+            "style": "file:./style.css",
             "textdomain": "ai-eshop-optimizer"
         },
-        "aieo/category-hero": {
+        "aieo/store-locator": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "aieo/category-hero",
-            "title": "AIEO Category Hero",
+            "name": "aieo/store-locator",
+            "title": "AIEO Store Locator",
             "category": "widgets",
-            "icon": "cover-image",
-            "description": "The queried category's hero — image, title and description — auto-filled from the term, for product or blog category archive headers.",
+            "icon": "location-alt",
+            "description": "Grid or list of all your store locations — address, phone, opening hours and Google Maps / review links.",
             "editorScript": "file:./edit.js",
             "textdomain": "ai-eshop-optimizer"
         },
-        "aieo/category-chips": {
+        "aieo/opening-hours": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "aieo/category-chips",
-            "title": "AIEO Category Chips",
+            "name": "aieo/opening-hours",
+            "title": "AIEO Opening Hours",
             "category": "widgets",
-            "icon": "tag",
-            "description": "A row of clickable category chips for the current archive — the term's child categories.",
+            "icon": "clock",
+            "description": "A store location's opening hours. Auto-resolves on a store page, or set a location slug.",
             "editorScript": "file:./edit.js",
             "textdomain": "ai-eshop-optimizer"
         },
-        "aieo/category-footer-hero": {
+        "aieo/store-map": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "aieo/category-footer-hero",
-            "title": "AIEO Category Footer Hero",
+            "name": "aieo/store-map",
+            "title": "AIEO Store Map",
             "category": "widgets",
-            "icon": "align-pull-left",
-            "description": "The category's SEO footer text beside the category image (image left, rich text right) with the hero divider line. Auto-fills from the queried product category.",
+            "icon": "location",
+            "description": "A single store's location map (keyless Google Maps embed) plus a directions link. Auto-resolves on a store page, or set a location slug.",
             "editorScript": "file:./edit.js",
             "textdomain": "ai-eshop-optimizer"
         },
-        "aieo/blog-hero": {
+        "aieo/business-info": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "aieo/blog-hero",
-            "title": "AIEO Blog Hero (Latest Post)",
-            "category": "theme",
-            "icon": "admin-post",
-            "description": "Featured latest-post hero with the category-hero look: a top title, the newest post's title as the headline, its excerpt as the description and its featured image — all clickable. On a blog category/tag archive it features that term's latest post.",
+            "name": "aieo/business-info",
+            "title": "AIEO Business Info",
+            "category": "widgets",
+            "icon": "store",
+            "description": "A store location's address, phone, opening hours and Google links — from your Locations & Reviews data.",
             "editorScript": "file:./edit.js",
             "textdomain": "ai-eshop-optimizer"
         },
-        "aieo/page-hero": {
+        "aieo/google-reviews": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
-            "name": "aieo/page-hero",
-            "title": "AIEO Page Hero",
-            "category": "theme",
-            "icon": "cover-image",
-            "description": "Manual hero — top title, left headline, right description and desktop/mobile images. Identical look to the category hero, usable on any page.",
+            "name": "aieo/google-reviews",
+            "title": "AIEO Google Reviews",
+            "category": "widgets",
+            "icon": "star-filled",
+            "description": "Live Google reviews pulled from the local cache. Single location, mixed feed, or cards grid.",
+            "editorScript": "file:./edit.js",
+            "textdomain": "ai-eshop-optimizer"
+        },
+        "aieo/store-hero": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/store-hero",
+            "title": "AIEO Store Hero",
+            "category": "widgets",
+            "icon": "store",
+            "description": "Shop-page header hero in the category-hero style (centred image, title, horizontal line). Listing title, heading and description come from the bound location. Auto-resolves on a store page, or set a location slug.",
+            "editorScript": "file:./edit.js",
+            "textdomain": "ai-eshop-optimizer"
+        },
+        "aieo/store-info": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/store-info",
+            "title": "AIEO Store Info (address, phone, hours)",
+            "category": "widgets",
+            "icon": "store",
+            "description": "Structured store contact info — address, clickable phone, and per-day hours. Reads from post meta + the linked Google location row.",
             "editorScript": "file:./edit.js",
             "textdomain": "ai-eshop-optimizer"
         },
@@ -1958,6 +1903,28 @@
             "editorScript": "file:./edit.js",
             "textdomain": "ai-eshop-optimizer"
         },
+        "aieo/blog-hero": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/blog-hero",
+            "title": "AIEO Blog Hero (Latest Post)",
+            "category": "theme",
+            "icon": "admin-post",
+            "description": "Featured latest-post hero with the category-hero look: a top title, the newest post's title as the headline, its excerpt as the description and its featured image — all clickable. On a blog category/tag archive it features that term's latest post.",
+            "editorScript": "file:./edit.js",
+            "textdomain": "ai-eshop-optimizer"
+        },
+        "aieo/category-hero": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/category-hero",
+            "title": "AIEO Category Hero",
+            "category": "widgets",
+            "icon": "cover-image",
+            "description": "The queried category's hero — image, title and description — auto-filled from the term, for product or blog category archive headers.",
+            "editorScript": "file:./edit.js",
+            "textdomain": "ai-eshop-optimizer"
+        },
         "aieo/blog-subcategories": {
             "$schema": "https://schemas.wp.org/trunk/block.json",
             "apiVersion": 3,
@@ -1968,6 +1935,39 @@
             "description": "A dropdown of the current blog category's subcategories, styled like the blog-post categories dropdown. Renders nothing when the category has none.",
             "editorScript": "file:./edit.js",
             "textdomain": "ai-eshop-optimizer"
+        },
+        "aieo/page-hero": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/page-hero",
+            "title": "AIEO Page Hero",
+            "category": "theme",
+            "icon": "cover-image",
+            "description": "Manual hero — top title, left headline, right description and desktop/mobile images. Identical look to the category hero, usable on any page.",
+            "editorScript": "file:./edit.js",
+            "textdomain": "ai-eshop-optimizer"
+        },
+        "aieo/category-footer-hero": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/category-footer-hero",
+            "title": "AIEO Category Footer Hero",
+            "category": "widgets",
+            "icon": "align-pull-left",
+            "description": "The category's SEO footer text beside the category image (image left, rich text right) with the hero divider line. Auto-fills from the queried product category.",
+            "editorScript": "file:./edit.js",
+            "textdomain": "ai-eshop-optimizer"
+        },
+        "aieo/category-chips": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "aieo/category-chips",
+            "title": "AIEO Category Chips",
+            "category": "widgets",
+            "icon": "tag",
+            "description": "A row of clickable category chips for the current archive — the term's child categories.",
+            "editorScript": "file:./edit.js",
+            "textdomain": "ai-eshop-optimizer"
         }
     },
     "block_assets": [],
@@ -1976,7 +1976,7 @@
     "blueprints": [
         {
             "filename": "blueprint.json",
-            "url": "https://wordpress.org/plugins/wp-json/plugins/v1/plugin/ai-eshop-optimizer/blueprint.json?rev=3661652"
+            "url": "https://wordpress.org/plugins/wp-json/plugins/v1/plugin/ai-eshop-optimizer/blueprint.json?rev=3661710"
         }
     ],
     "preview_link": "https://wordpress.org/plugins/ai-eshop-optimizer/?preview=1",
@@ -1985,9 +1985,9 @@
             "type": "plugin",
             "slug": "ai-eshop-optimizer",
             "language": "el",
-            "version": "11.1.1",
+            "version": "11.1.2",
             "updated": "2026-07-30 12:46:22",
-            "package": "https://downloads.wordpress.org/translation/plugin/ai-eshop-optimizer/11.1.1/el.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/ai-eshop-optimizer/11.1.2/el.zip"
         }
     ]
 }
