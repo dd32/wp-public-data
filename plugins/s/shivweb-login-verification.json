@@ -1,0 +1,73 @@
+{
+    "name": "ShivWeb Login Verification",
+    "slug": "shivweb-login-verification",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/shivweb/\">shivweb</a>",
+    "author_profile": "https://profiles.wordpress.org/shivweb/",
+    "contributors": {
+        "shivweb": {
+            "profile": "https://profiles.wordpress.org/shivweb/",
+            "avatar": "https://secure.gravatar.com/avatar/4ceaae9149321d0a2643c8251179afc85a982d455485e63a70de7e396cd7b866?s=96&d=monsterid&r=g",
+            "display_name": "shivweb"
+        }
+    },
+    "requires": "7.0",
+    "tested": "7.0.4",
+    "requires_php": "8.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/shivweb-login-verification/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-24 06:57:00",
+    "added": "2026-08-24",
+    "homepage": "",
+    "sections": {
+        "description": "<p>ShivWeb Login Verification adds a second step after a normal password login: the session is held until the user enters a code emailed to them. It is enforced server side across the front end, wp-admin, REST and AJAX, and it never touches wp-login.php or the WooCommerce login forms, so it works the same on wp-login.php, WooCommerce My Account, and both the classic and the block checkout.</p>\n<p>This is &#8220;password plus email verification&#8221;, a two-step login. Email codes prove ownership of the mailbox; they are not an independent second factor in the strict sense, and the plugin never claims to be bank-grade 2FA.</p>\n<h4>Highlights</h4>\n<ul>\n<li>Email OTP after login. The password is still required.</li>\n<li>Per-role enforcement, defaulting to the Customer role only.</li>\n<li>Enforcement is off until you enable it, and enabling requires a delivered and entered test code, so a broken mailer can never lock everyone out.</li>\n<li>Trusted devices: remember a browser for a number of days you choose.</li>\n<li>WooCommerce block checkout aware: the Store API is blocked for unverified sessions and the shopper is guided to the code screen.</li>\n<li>Optional email verification at registration, with daily cleanup of abandoned unverified accounts.</li>\n<li>Rate limiting on every layer: resend cooldown, per-session limits, lockout, and a per-account hourly send cap.</li>\n<li>No external services, no account, no tracking, no logs. Email goes through wp_mail(), so your SMTP plugin handles delivery.</li>\n</ul>\n<h4>Recovery</h4>\n<p>If you ever lock yourself out, add <code>define( 'SWLV_DISABLE_OTP', true );</code> to wp-config.php, or run <code>wp swlv disable</code> with WP-CLI. Both release every held session immediately. To unstick a single user (send limit reached, mailbox typo), run <code>wp swlv reset-user &lt;id|login|email&gt;</code>.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin. Nothing is enforced yet.</li>\n<li>Go to Settings, then Email Verification.</li>\n<li>Choose the roles that should verify, send yourself a test code, enter it, tick &#8220;Require a code at login&#8221;, and save.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20it%20work%20with%20the%20woocommerce%20block%20checkout%3F\">\nDoes it work with the WooCommerce block checkout?\n</h4>\n<p>\n<p>Yes. The block checkout logs customers in over the Store API, which the plugin refuses for unverified sessions, and a small script guides the shopper to the verification screen.</p>\n</p>\n<dt id=\"does%20it%20send%20email%20through%20its%20own%20service%3F\">\nDoes it send email through its own service?\n</h4>\n<p>\n<p>No. All email goes through wp_mail(). Use any SMTP plugin you like for reliable delivery.</p>\n</p>\n<dt id=\"what%20happens%20if%20email%20delivery%20breaks%20after%20i%20enable%20it%3F\">\nWhat happens if email delivery breaks after I enable it?\n</h4>\n<p>\n<p>Affected users cannot verify, but you can always recover with the wp-config.php constant or WP-CLI, both documented above. Administrators are not gated by default.</p>\n</p>\n<dt id=\"is%20this%20two-factor%20authentication%3F\">\nIs this two-factor authentication?\n</h4>\n<p>\n<p>Strictly speaking, no. An emailed code proves control of the mailbox, which is a second step, not a fully independent second factor. It still stops anyone who only has the password.</p>\n</p>\n<dt id=\"the%20code%20email%20is%20not%20arriving.%20what%20should%20i%20check%3F\">\nThe code email is not arriving. What should I check?\n</h4>\n<p>\n<p>Check the spam folder first. The screen lets you request a new code after a short cooldown. If nothing arrives at all, the site&#8217;s email delivery is the usual cause: the site owner can go to Settings, then Email Verification, and send themselves a test code. If that fails too, install an SMTP plugin and test again. A single stuck user can always be released with <code>wp swlv reset-user</code>.</p>\n</p>\n<dt id=\"i%20enabled%20it%2C%20but%20nobody%20is%20asked%20for%20a%20code\">\nI enabled it, but nobody is asked for a code\n</h4>\n<p>\n<p>Three things are expected behavior here. Sessions that were already logged in before you enabled enforcement are never challenged, only new logins are. A browser remembered through &#8220;Trust this device&#8221; skips the code until the trust expires. And only the roles you ticked are gated, so check the role of the account you are testing with, and note that administrators are not gated by default.</p>\n</p>\n<dt id=\"what%20data%20does%20the%20plugin%20store%3F\">\nWhat data does the plugin store?\n</h4>\n<p>\n<p>Codes are never stored, not even hashed alone: only keyed hashes live inside the WordPress session record, and they disappear when the session ends. Beyond that the plugin keeps one settings option, per-user send counters and trusted-device hashes in user meta, short-lived self-expiring transients for registration challenges and rate limits, and one cookie for &#8220;Trust this device&#8221;. There are no external services and nothing leaves your site. Uninstalling removes all of it. On shared computers, leave &#8220;Trust this device&#8221; unticked.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Require an email one time code after login, by user role, on WordPress and WooCommerce, including the block checkout.",
+    "description": "<p>ShivWeb Login Verification adds a second step after a normal password login: the session is held until the user enters a code emailed to them. It is enforced server side across the front end, wp-admin, REST and AJAX, and it never touches wp-login.php or the WooCommerce login forms, so it works the same on wp-login.php, WooCommerce My Account, and both the classic and the block checkout.</p>\n<p>This is &#8220;password plus email verification&#8221;, a two-step login. Email codes prove ownership of the mailbox; they are not an independent second factor in the strict sense, and the plugin never claims to be bank-grade 2FA.</p>\n<h4>Highlights</h4>\n<ul>\n<li>Email OTP after login. The password is still required.</li>\n<li>Per-role enforcement, defaulting to the Customer role only.</li>\n<li>Enforcement is off until you enable it, and enabling requires a delivered and entered test code, so a broken mailer can never lock everyone out.</li>\n<li>Trusted devices: remember a browser for a number of days you choose.</li>\n<li>WooCommerce block checkout aware: the Store API is blocked for unverified sessions and the shopper is guided to the code screen.</li>\n<li>Optional email verification at registration, with daily cleanup of abandoned unverified accounts.</li>\n<li>Rate limiting on every layer: resend cooldown, per-session limits, lockout, and a per-account hourly send cap.</li>\n<li>No external services, no account, no tracking, no logs. Email goes through wp_mail(), so your SMTP plugin handles delivery.</li>\n</ul>\n<h4>Recovery</h4>\n<p>If you ever lock yourself out, add <code>define( 'SWLV_DISABLE_OTP', true );</code> to wp-config.php, or run <code>wp swlv disable</code> with WP-CLI. Both release every held session immediately. To unstick a single user (send limit reached, mailbox typo), run <code>wp swlv reset-user &lt;id|login|email&gt;</code>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/shivweb-login-verification.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "email-verification": "email verification",
+        "otp": "otp",
+        "security": "security",
+        "two-step-login": "two-step login",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/shivweb-login-verification.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/shivweb-login-verification.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/shivweb-login-verification.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
