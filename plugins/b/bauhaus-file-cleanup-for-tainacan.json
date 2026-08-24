@@ -1,7 +1,7 @@
 {
     "name": "Bauhaus File Cleanup for Tainacan",
     "slug": "bauhaus-file-cleanup-for-tainacan",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "author": "<a href=\"https://profiles.wordpress.org/bauhaustech/\">bauhaustech</a>",
     "author_profile": "https://profiles.wordpress.org/bauhaustech/",
     "contributors": {
@@ -17,8 +17,8 @@
         }
     },
     "requires": "5.5",
-    "tested": "7.0",
-    "requires_php": "7.4",
+    "tested": "7.1",
+    "requires_php": "8.2",
     "requires_plugins": [
         "tainacan"
     ],
@@ -36,7 +36,7 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2026-07-08 12:45:00",
+    "last_updated": "2026-08-24 15:15:00",
     "added": "2026-07-07",
     "homepage": "https://github.com/Bauhaus-Tech/bauhaus-file-cleanup-for-tainacan",
     "sections": {
@@ -47,7 +47,7 @@
     },
     "short_description": "Removes a Tainacan item&#039;s documents, attachments and files from disk on permanent deletion, so deleted items stop leaving orphaned uploads behind.",
     "description": "<p>Tainacan does not reliably remove uploaded files from disk when items are permanently deleted. In particular, files of <strong>private items</strong> — which Tainacan stores in prefixed <code>_x_&lt;item_id&gt;</code> folders — are left orphaned in the uploads directory, slowly bloating disk usage. Tainacan&#8217;s own code documents this as an unresolved TODO (<code>Private_Files::rename_item_and_collection_folder_path</code> returns early on permanent deletion).</p>\n<p>This add-on fixes that. While it is active, permanently deleting an item always removes its files by default. You can disable this behaviour from <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Bauhaus File Cleanup for Tainacan</strong> if you need to temporarily keep files while the plugin stays active.</p>\n<p>This is an independent add-on developed by Bauhaus Tech. It is <strong>not affiliated with, endorsed by, or part of</strong> the Tainacan project.</p>\n<p>It works by hooking WordPress&#8217; <code>before_delete_post</code>, which fires on every permanent deletion regardless of where it was triggered:</p>\n<ul>\n<li>the Tainacan admin trash (REST API);</li>\n<li>the bulk-edit &#8220;delete&#8221; background process;</li>\n<li>the WordPress admin &#8220;Empty Trash&#8221;;</li>\n<li>WP-CLI (<code>wp tainacan ...</code> garbage collector);</li>\n<li>any other <code>wp_delete_post( $id, true )</code> call.</li>\n</ul>\n<p>For each deleted Tainacan item it:</p>\n<ol>\n<li>Deletes the remaining attachment posts (document, child attachments, thumbnail) forcing real file removal (bypassing the media trash).</li>\n<li>Removes the item&#8217;s dedicated upload folder recursively — covering WordPress-generated derivative image sizes and the private <code>_x_</code> folders — by reconstructing the path from the item and collection IDs instead of trusting the (often out-of-sync) attachment metadata.</li>\n</ol>\n<p>When a whole collection is permanently deleted, its entire <code>tainacan-items/&lt;collection_id&gt;</code> folder is removed too.</p>\n<h3>Important notes</h3>\n<ul>\n<li>This is <strong>destructive and irreversible</strong>: files are deleted from disk, not sent to a trash. This is intentional — it is what the plugin exists to do.</li>\n<li>Each Tainacan item owns an isolated upload folder, so deleting it does not affect other items. The plugin does <strong>not</strong> scan metadata for attachments shared across items; if you reuse a single attachment across multiple items, deleting one item may remove that shared file.</li>\n<li>Sending an item to the trash does nothing — cleanup only happens on <strong>permanent</strong> deletion.</li>\n<li>This plugin only cleans up <strong>files on disk</strong>. When a whole collection is permanently deleted, Tainacan does not delete the items that belonged to it — they remain as orphaned rows in the database, and this plugin does not delete them either (it is a file-cleanup tool, not a database tool). Removing those orphaned item/attachment posts is Tainacan&#8217;s own responsibility, and Tainacan already ships a tool for it: run <code>wp tainacan garbage-collector --run</code> after deleting a collection to fully clean the database.</li>\n</ul>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/bauhaus-file-cleanup-for-tainacan.1.0.0.zip",
+    "download_link": "https://downloads.wordpress.org/plugin/bauhaus-file-cleanup-for-tainacan.1.1.0.zip",
     "upgrade_notice": [],
     "screenshots": [],
     "tags": {
@@ -57,9 +57,10 @@
         "tainacan": "tainacan",
         "uploads": "uploads"
     },
-    "stable_tag": "1.0.0",
+    "stable_tag": "1.1.0",
     "versions": {
         "1.0.0": "https://downloads.wordpress.org/plugin/bauhaus-file-cleanup-for-tainacan.1.0.0.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/bauhaus-file-cleanup-for-tainacan.1.1.0.zip",
         "trunk": "https://downloads.wordpress.org/plugin/bauhaus-file-cleanup-for-tainacan.zip"
     },
     "business_model": false,
