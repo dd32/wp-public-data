@@ -1,7 +1,7 @@
 {
     "name": "Beitrag Steward — Mitgliedsbeiträge &amp; SEPA-Lastschrift für Vereine",
     "slug": "beitrag-steward",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "author": "<a href=\"https://profiles.wordpress.org/migkapa/\">migkapa</a>",
     "author_profile": "https://profiles.wordpress.org/migkapa/",
     "contributors": {
@@ -29,19 +29,32 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2026-08-21 22:32:00",
+    "last_updated": "2026-08-25 00:58:00",
     "added": "2026-08-21",
     "homepage": "https://store.lessbutmore.ai",
     "sections": {
         "description": "<p>From 15 November 2026, German banks stop accepting SEPA files in the old format versions (pain.008.002.02, .003.02 and .001.02, per DFÜ-Abkommen Anlage 3, v26.11), and structured addresses become mandatory. If your Verein collects its Mitgliedsbeiträge with an Excel converter, an old desktop tool or aging software, your next Beitragslauf may simply be refused, and the bank&#8217;s error message will not tell you why.</p>\n<p>Beitrag Steward does two things about that:</p>\n<ul>\n<li><strong>It checks any SEPA file.</strong> Upload a pain.008 file from whatever tool you use today and see, before your bank does, whether it will be accepted, whether it dies on 15 November 2026, and what exactly is wrong: a failed IBAN check digit, a control sum that does not add up, a missing mandate date, an address the new rules will not allow. The check runs entirely on your own server.</li>\n<li><strong>It runs your Beitragslauf.</strong> Keep the member list with mandate reference, signature date and fee, pick a collection date, and download a pain.008.001.08 file ready for your online banking. Every file is validated before you ever see it, first collections are marked FRST and switch to RCUR by themselves, and names like &#8220;Müller&#8221; arrive at the bank as &#8220;Mueller&#8221; instead of losing letters.</li>\n</ul>\n<p>Also included: a PDF Beitragsbescheinigung per member, on your Verein&#8217;s letterhead.</p>\n<p>A few decisions worth knowing about:</p>\n<ul>\n<li>Member IBANs are stored encrypted and displayed masked. Nothing is ever transmitted off your server — there is no external service behind this plugin.</li>\n<li>The plugin refuses to generate a broken file. If a member&#8217;s data is incomplete, you get a list of what to fix, not an XML file that bounces at the bank with a fee per returned debit.</li>\n<li>Deleting the plugin keeps your member and run records. They are business records for money you have already collected.</li>\n</ul>\n<h4>Für deutsche Vereine</h4>\n<p>Beitrag Steward verwaltet Mitglieder samt SEPA-Mandat (Mandatsreferenz, Unterschriftsdatum, FRST/RCUR), erzeugt die pain.008.001.08-Datei für das Online-Banking und prüft auch Dateien aus anderen Programmen: IBAN-Prüfziffern, Kontrollsummen, Mandatsangaben, strukturierte Adressen und die ab dem 15. November 2026 geltenden Formatversionen. Die Gläubiger-ID beantragt Ihr Verein kostenlos bei der Bundesbank; das Plugin selbst zieht kein Geld ein, es erstellt die Datei, die Sie bei Ihrer Bank einreichen.</p>\n<p>Bankdaten der Mitglieder werden verschlüsselt auf Ihrem eigenen Server gespeichert und verlassen Ihre Website nicht — relevant für die DSGVO und kirchliche Datenschutzvorgaben (DSG-EKD, KDG).</p>\n<p>Bitte prüfen Sie den ersten Beitragslauf mit einem kleinen Testbetrag, bevor Sie den gesamten Bestand einziehen.</p>\n",
         "faq": "\n<dt id=\"does%20the%20plugin%20collect%20the%20money%3F\">\nDoes the plugin collect the money?\n</h4>\n<p>\n<p>No. It produces the XML file your bank needs and checks it. You upload the file in your online banking, as before. The plugin never touches the payment itself, which also means there is no payment license involved and no third party in the flow.</p>\n</p>\n<dt id=\"which%20file%20version%20does%20it%20generate%3F\">\nWhich file version does it generate?\n</h4>\n<p>\n<p>pain.008.001.08 — the ISO 20022 2019 version that German banks require for submissions from 15 November 2026, and that they already accept today.</p>\n</p>\n<dt id=\"what%20happens%20to%20member%20ibans%3F\">\nWhat happens to member IBANs?\n</h4>\n<p>\n<p>They are encrypted with a key derived from this site&#8217;s authentication salts and shown masked (first four and last four characters) everywhere in the admin. One consequence to know: if you rotate your WordPress salts, stored IBANs become unreadable and must be entered again.</p>\n</p>\n<dt id=\"can%20it%20check%20files%20from%20other%20software%3F\">\nCan it check files from other software?\n</h4>\n<p>\n<p>Yes. The file check accepts any pain.008 file, whatever produced it. That is the recommended first step if you currently use another tool and want to know whether the November 2026 change affects you.</p>\n</p>\n<dt id=\"my%20bank%20rejected%20a%20file%20anyway.%20what%20now%3F\">\nMy bank rejected a file anyway. What now?\n</h4>\n<p>\n<p>The check covers the format rules and the common content mistakes, but a bank can also reject for account-side reasons the file cannot show: no direct-debit agreement (Inkassovereinbarung) on the account, a blocked mandate, or a collection date without enough lead time. The error list in the plugin tells you which side the problem is on.</p>\n</p>\n\n",
-        "changelog": "<h4>0.1.1</h4>\n<ul>\n<li>Review feedback: all functions, classes, constants, options, transients, tables and hooks now use the bstew_/BSTEW_ prefix; translation files removed from the package (handled by translate.wordpress.org).</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>First release: member and mandate registry with encrypted IBANs, pain.008.001.08 generation with built-in validation, SEPA file check for foreign files, PDF Beitragsbescheinigung.</li>\n</ul>\n"
+        "changelog": "<h4>0.1.2</h4>\n<ul>\n<li>Fix: collection runs were not saved on MySQL/MariaDB in strict mode (the run record&#8217;s message ID exceeded 35 characters), so the &#8220;Previous runs&#8221; list stayed empty and the generated file could not be downloaded. Runs now store the same MsgId that is written into the XML, and a failed save is reported instead of showing success.</li>\n<li>Fix: names with letters outside the umlaut map (e.g. Turkish ı, Polish ł, Spanish ñ) lost the letter in the SEPA file; they are now transliterated to the base letter.</li>\n<li>File check findings are listed by severity: rejections first, then 15 November 2026 issues, warnings, info.</li>\n</ul>\n<h4>0.1.1</h4>\n<ul>\n<li>Review feedback: all functions, classes, constants, options, transients, tables and hooks now use the bstew_/BSTEW_ prefix; translation files removed from the package (handled by translate.wordpress.org).</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>First release: member and mandate registry with encrypted IBANs, pain.008.001.08 generation with built-in validation, SEPA file check for foreign files, PDF Beitragsbescheinigung.</li>\n</ul>\n"
     },
     "short_description": "Membership dues for German Vereine: SEPA direct-debit files your bank accepts after 15 November 2026, a file checker, and PDF statements.",
     "description": "<p>From 15 November 2026, German banks stop accepting SEPA files in the old format versions (pain.008.002.02, .003.02 and .001.02, per DFÜ-Abkommen Anlage 3, v26.11), and structured addresses become mandatory. If your Verein collects its Mitgliedsbeiträge with an Excel converter, an old desktop tool or aging software, your next Beitragslauf may simply be refused, and the bank&#8217;s error message will not tell you why.</p>\n<p>Beitrag Steward does two things about that:</p>\n<ul>\n<li><strong>It checks any SEPA file.</strong> Upload a pain.008 file from whatever tool you use today and see, before your bank does, whether it will be accepted, whether it dies on 15 November 2026, and what exactly is wrong: a failed IBAN check digit, a control sum that does not add up, a missing mandate date, an address the new rules will not allow. The check runs entirely on your own server.</li>\n<li><strong>It runs your Beitragslauf.</strong> Keep the member list with mandate reference, signature date and fee, pick a collection date, and download a pain.008.001.08 file ready for your online banking. Every file is validated before you ever see it, first collections are marked FRST and switch to RCUR by themselves, and names like &#8220;Müller&#8221; arrive at the bank as &#8220;Mueller&#8221; instead of losing letters.</li>\n</ul>\n<p>Also included: a PDF Beitragsbescheinigung per member, on your Verein&#8217;s letterhead.</p>\n<p>A few decisions worth knowing about:</p>\n<ul>\n<li>Member IBANs are stored encrypted and displayed masked. Nothing is ever transmitted off your server — there is no external service behind this plugin.</li>\n<li>The plugin refuses to generate a broken file. If a member&#8217;s data is incomplete, you get a list of what to fix, not an XML file that bounces at the bank with a fee per returned debit.</li>\n<li>Deleting the plugin keeps your member and run records. They are business records for money you have already collected.</li>\n</ul>\n<h4>Für deutsche Vereine</h4>\n<p>Beitrag Steward verwaltet Mitglieder samt SEPA-Mandat (Mandatsreferenz, Unterschriftsdatum, FRST/RCUR), erzeugt die pain.008.001.08-Datei für das Online-Banking und prüft auch Dateien aus anderen Programmen: IBAN-Prüfziffern, Kontrollsummen, Mandatsangaben, strukturierte Adressen und die ab dem 15. November 2026 geltenden Formatversionen. Die Gläubiger-ID beantragt Ihr Verein kostenlos bei der Bundesbank; das Plugin selbst zieht kein Geld ein, es erstellt die Datei, die Sie bei Ihrer Bank einreichen.</p>\n<p>Bankdaten der Mitglieder werden verschlüsselt auf Ihrem eigenen Server gespeichert und verlassen Ihre Website nicht — relevant für die DSGVO und kirchliche Datenschutzvorgaben (DSG-EKD, KDG).</p>\n<p>Bitte prüfen Sie den ersten Beitragslauf mit einem kleinen Testbetrag, bevor Sie den gesamten Bestand einziehen.</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/beitrag-steward.0.1.1.zip",
+    "download_link": "https://downloads.wordpress.org/plugin/beitrag-steward.0.1.2.zip",
     "upgrade_notice": [],
-    "screenshots": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/beitrag-steward/assets/screenshot-1.png?rev=3664428",
+            "caption": "The member list with masked IBANs, mandate data and fees."
+        },
+        {
+            "src": "https://ps.w.org/beitrag-steward/assets/screenshot-2.png?rev=3664428",
+            "caption": "A collection run: pick the date, get a validated pain.008.001.08 file."
+        },
+        {
+            "src": "https://ps.w.org/beitrag-steward/assets/screenshot-3.png?rev=3664428",
+            "caption": "The SEPA file check, with findings sorted by severity — including what breaks on 15 November 2026."
+        }
+    ],
     "tags": {
         "lastschrift": "lastschrift",
         "mitgliedsbeitrag": "mitgliedsbeitrag",
@@ -49,9 +62,10 @@
         "sepa": "sepa",
         "verein": "verein"
     },
-    "stable_tag": "0.1.1",
+    "stable_tag": "0.1.2",
     "versions": {
         "0.1.1": "https://downloads.wordpress.org/plugin/beitrag-steward.0.1.1.zip",
+        "0.1.2": "https://downloads.wordpress.org/plugin/beitrag-steward.0.1.2.zip",
         "trunk": "https://downloads.wordpress.org/plugin/beitrag-steward.zip"
     },
     "business_model": false,
