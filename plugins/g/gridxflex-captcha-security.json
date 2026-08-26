@@ -1,0 +1,88 @@
+{
+    "name": "GridXFlex Captcha Security",
+    "slug": "gridxflex-captcha-security",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/gridxflex/\">Grid X Flex</a>",
+    "author_profile": "https://profiles.wordpress.org/gridxflex/",
+    "contributors": {
+        "gridxflex": {
+            "profile": "https://profiles.wordpress.org/gridxflex/",
+            "avatar": "https://secure.gravatar.com/avatar/3c8bbb638c6f3be853694a900b60b08fe2a04d9017e1d613437894a039244fda?s=96&d=monsterid&r=g",
+            "display_name": "Grid X Flex"
+        }
+    },
+    "requires": "5.7",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/gridxflex-captcha-security/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-26 17:55:00",
+    "added": "2026-08-26",
+    "homepage": "",
+    "sections": {
+        "description": "<p>GridXFlex Captcha Security adds a self-hosted image CAPTCHA, backed by a silent honeypot layer, to your site&#8217;s Login, Registration, Lost Password, and Comments forms.</p>\n<p>Everything is generated on your own server using PHP&#8217;s built-in GD library. No requests are ever sent to a third-party service, no API keys are required, and no personal data is stored beyond a short-lived, one-time-use security token.</p>\n<h4>Features</h4>\n<ul>\n<li>Self-hosted image CAPTCHA (GD-generated, delivered inline as a base64 image — no extra HTTP request)</li>\n<li>Silent honeypot field on every protected form, on by default</li>\n<li>Per-form protection toggles: Login, Registration, Lost Password, Comments</li>\n<li>Configurable character type (alphanumeric / letters / numbers), letter case, and length (3–6 characters)</li>\n<li>Option to hide the comment captcha for logged-in users</li>\n<li>One-time-use challenge tokens — each code can be attempted exactly once, then it&#8217;s gone</li>\n<li>No PHP sessions, no cookies set by this plugin, no external requests, no tracking</li>\n</ul>\n<h4>Why no PHP sessions?</h4>\n<p>Older captcha plugins commonly call <code>session_start()</code> on every front-end request, even on pages that never show a captcha. That has a real performance cost, breaks under object-cache or load-balanced PHP-FPM pools without sticky sessions, and is incompatible with full-page caching. GridXFlex Captcha Security stores each challenge as a short-lived WordPress transient, keyed by a random token embedded in the form. The token is just a lookup key — the actual secret (a hash of the code) stays server-side — so it remains safe even on a cached page, and each challenge is deleted the instant it&#8217;s checked, pass or fail.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>gridxflex-captcha-security</code> folder to <code>/wp-content/plugins/</code>.</li>\n<li>Activate the plugin through the &#8220;Plugins&#8221; screen in WordPress.</li>\n<li>Go to <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> GridXFlex Captcha</strong> to choose which forms are protected and adjust the captcha&#8217;s appearance.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20plugin%20transmit%20any%20data%20externally%3F\">\nDoes this plugin transmit any data externally?\n</h4>\n<p>\n<p>No. Code generation, image rendering, and verification all happen on your own server using PHP&#8217;s built-in GD library. Nothing is sent to any third-party API or service.</p>\n</p>\n<dt id=\"why%20doesn%27t%20this%20use%20php%20sessions%3F\">\nWhy doesn&#8217;t this use PHP sessions?\n</h4>\n<p>\n<p>For compatibility with page caching and load-balanced hosting. Instead of <code>$_SESSION</code>, each challenge is stored as a short-lived WordPress transient keyed by a random token embedded in the form. This works identically behind full-page cache and across load-balanced PHP-FPM pools without sticky sessions, and every challenge is automatically deleted after a single use.</p>\n</p>\n<dt id=\"what%20is%20the%20honeypot%20layer%3F\">\nWhat is the honeypot layer?\n</h4>\n<p>\n<p>A hidden form field that&#8217;s invisible to human visitors but often auto-filled by simple bots. If it&#8217;s filled in, the submission is rejected the same way a wrong CAPTCHA code would be — no separate &#8220;bot detected&#8221; message is ever shown, so automated scripts can&#8217;t learn which check they failed.</p>\n</p>\n<dt id=\"does%20this%20require%20an%20api%20key%3F\">\nDoes this require an API key?\n</h4>\n<p>\n<p>No. This version doesn&#8217;t use any third-party CAPTCHA provider.</p>\n</p>\n<dt id=\"does%20the%20plugin%20work%20if%20my%20host%20doesn%27t%20have%20the%20gd%20php%20extension%3F\">\nDoes the plugin work if my host doesn&#8217;t have the GD PHP extension?\n</h4>\n<p>\n<p>Yes. If GD isn&#8217;t available, the image challenge is automatically skipped — protected forms keep working normally, they just fall back to honeypot-only protection instead of erroring out. You&#8217;ll see an admin notice explaining this; it clears itself automatically as soon as GD is enabled, no need to reactivate the plugin.</p>\n</p>\n<dt id=\"does%20the%20captcha%20add%20any%20visible%20branding%20to%20my%20site%3F\">\nDoes the captcha add any visible branding to my site?\n</h4>\n<p>\n<p>An HTML comment — <code>&lt;!-- Powered By GridXFlex WordPress Plugins --&gt;</code> — is placed next to the captcha markup wherever it renders (login, registration, lost password, comments). It isn&#8217;t visible in the page as displayed, only in page source.</p>\n</p>\n<dt id=\"what%20happens%20if%20someone%20gets%20the%20comment%20captcha%20wrong%3F\">\nWhat happens if someone gets the comment captcha wrong?\n</h4>\n<p>\n<p>They&#8217;re redirected back to the same post with an inline error message, and their typed name, email, URL, and comment text are restored — nothing is lost and they don&#8217;t leave the page. Login, Registration, and Lost Password show their errors the same way, inline on the same page, using WordPress core&#8217;s own error-display mechanism for those forms.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release: image CAPTCHA + honeypot for Login, Registration, Lost Password, and Comments forms.</li>\n<li>Graceful fallback when the GD extension is unavailable: protected forms keep working via the honeypot layer alone instead of erroring; the admin notice re-checks live and clears itself once GD is enabled, no reactivation needed.</li>\n</ul>\n"
+    },
+    "short_description": "Self-hosted image CAPTCHA and silent honeypot for Login, Registration, Lost Password, and Comments forms. No API keys, no external services.",
+    "description": "<p>GridXFlex Captcha Security adds a self-hosted image CAPTCHA, backed by a silent honeypot layer, to your site&#8217;s Login, Registration, Lost Password, and Comments forms.</p>\n<p>Everything is generated on your own server using PHP&#8217;s built-in GD library. No requests are ever sent to a third-party service, no API keys are required, and no personal data is stored beyond a short-lived, one-time-use security token.</p>\n<h4>Features</h4>\n<ul>\n<li>Self-hosted image CAPTCHA (GD-generated, delivered inline as a base64 image — no extra HTTP request)</li>\n<li>Silent honeypot field on every protected form, on by default</li>\n<li>Per-form protection toggles: Login, Registration, Lost Password, Comments</li>\n<li>Configurable character type (alphanumeric / letters / numbers), letter case, and length (3–6 characters)</li>\n<li>Option to hide the comment captcha for logged-in users</li>\n<li>One-time-use challenge tokens — each code can be attempted exactly once, then it&#8217;s gone</li>\n<li>No PHP sessions, no cookies set by this plugin, no external requests, no tracking</li>\n</ul>\n<h4>Why no PHP sessions?</h4>\n<p>Older captcha plugins commonly call <code>session_start()</code> on every front-end request, even on pages that never show a captcha. That has a real performance cost, breaks under object-cache or load-balanced PHP-FPM pools without sticky sessions, and is incompatible with full-page caching. GridXFlex Captcha Security stores each challenge as a short-lived WordPress transient, keyed by a random token embedded in the form. The token is just a lookup key — the actual secret (a hash of the code) stays server-side — so it remains safe even on a cached page, and each challenge is deleted the instant it&#8217;s checked, pass or fail.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/gridxflex-captcha-security.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/gridxflex-captcha-security/assets/screenshot-1.png?rev=3667576",
+            "caption": "Settings screen under Settings → GridXFlex Captcha."
+        },
+        {
+            "src": "https://ps.w.org/gridxflex-captcha-security/assets/screenshot-2.png?rev=3667576",
+            "caption": "The image CAPTCHA as it appears on the login form."
+        }
+    ],
+    "tags": {
+        "captcha": "captcha",
+        "comments": "comments",
+        "login": "login",
+        "security": "security",
+        "spam": "spam"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/gridxflex-captcha-security.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/gridxflex-captcha-security.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/gridxflex-captcha-security/assets/banner-772x250.png?rev=3667576",
+        "high": "https://ps.w.org/gridxflex-captcha-security/assets/banner-1544x500.png?rev=3667576"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/gridxflex-captcha-security/assets/icon-128x128.png?rev=3667576",
+        "2x": "https://ps.w.org/gridxflex-captcha-security/assets/icon-256x256.png?rev=3667576"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

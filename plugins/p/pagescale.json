@@ -12,7 +12,7 @@
         }
     },
     "requires": "6.0",
-    "tested": "6.9.7",
+    "tested": "7.1",
     "requires_php": "7.4",
     "requires_plugins": [],
     "compatibility": [],
@@ -29,22 +29,39 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2026-08-26 16:15:00",
+    "last_updated": "2026-08-26 18:16:00",
     "added": "2026-08-26",
     "homepage": "https://github.com/Shahzeb2u/scalable-page-manager",
     "sections": {
-        "description": "<p>PageScale replaces the default WordPress Pages screen with an admin interface built to stay fast on sites that have tens of thousands — or millions — of pages. The stock list table slows down at that scale because it relies on OFFSET pagination and unindexed queries. PageScale takes a different approach at every layer.</p>\n<p><strong>How it stays fast</strong></p>\n<ul>\n<li>Keyset (cursor) pagination instead of OFFSET, so the cost of loading any page of results is constant whether you have 10,000 rows or 1,000,000.</li>\n<li>Lazy hierarchy — only the children of a node you actually expand are queried. The tree never loads the whole site at once.</li>\n<li>Tiered search — numeric input goes straight to the primary key, slugs use an indexed equality/prefix lookup, and title/content/custom-field search uses InnoDB FULLTEXT (MATCH &#8230; AGAINST) rather than a leading-wildcard LIKE. Content and custom-field search is optional via a UI toggle and runs entirely in MySQL, so post content is never loaded into PHP memory.</li>\n<li>Virtual scrolling keeps the DOM bounded (about 50 rows) at any dataset size.</li>\n<li>Cached aggregates — totals, the parents list and duplicate reports are cached with the Transients API.</li>\n</ul>\n<p><strong>Other features</strong></p>\n<ul>\n<li>Elementor-aware quick actions.</li>\n<li>Bulk actions, chunked client-side so large operations don&#8217;t time out.</li>\n<li>Duplicate finder for titles, exact slugs and similar slugs.</li>\n<li>CSV export of the current view or a selection.</li>\n<li>WP-CLI command to build the search indexes on demand.</li>\n</ul>\n<p><strong>Indexing is safe on large tables</strong></p>\n<p>PageScale never runs a long ALTER TABLE during activation. Instead it records that indexes are pending and builds them lazily, one at a time, on later admin loads (or immediately via WP-CLI). The plugin is fully usable while indexing is in progress — search simply runs in a basic mode until the FULLTEXT indexes exist.</p>\n",
+        "description": "<p>PageScale replaces the default WordPress Pages screen with an admin interface built to stay fast on sites that have tens of thousands (or millions) of pages. The stock list table slows down at that scale because it relies on OFFSET pagination and unindexed queries. PageScale takes a different approach at every layer.</p>\n<p><strong>How it stays fast</strong></p>\n<ul>\n<li>Keyset (cursor) pagination instead of OFFSET, so the cost of loading any page of results is constant whether you have 10,000 rows or 1,000,000.</li>\n<li>Lazy hierarchy: only the children of a node you actually expand are queried. The tree never loads the whole site at once.</li>\n<li>Tiered search: numeric input goes straight to the primary key, slugs use an indexed equality/prefix lookup, and title/content/custom-field search uses InnoDB FULLTEXT (MATCH &#8230; AGAINST) rather than a leading-wildcard LIKE. Content and custom-field search is optional via a UI toggle and runs entirely in MySQL, so post content is never loaded into PHP memory.</li>\n<li>Virtual scrolling keeps the DOM bounded (about 50 rows) at any dataset size.</li>\n<li>Cached aggregates: totals, the parents list and duplicate reports are cached with the Transients API.</li>\n</ul>\n<p><strong>Other features</strong></p>\n<ul>\n<li>Elementor-aware quick actions.</li>\n<li>Bulk actions, chunked client-side so large operations don&#8217;t time out.</li>\n<li>Duplicate finder for titles, exact slugs and similar slugs.</li>\n<li>CSV export of the current view or a selection.</li>\n<li>WP-CLI command to build the search indexes on demand.</li>\n</ul>\n<p><strong>Indexing is safe on large tables</strong></p>\n<p>PageScale never runs a long ALTER TABLE during activation. Instead it records that indexes are pending and builds them lazily, one at a time, on later admin loads (or immediately via WP-CLI). The plugin is fully usable while indexing is in progress, and search simply runs in a basic mode until the FULLTEXT indexes exist.</p>\n",
         "installation": "<ol>\n<li>Upload the <code>pagescale</code> folder to <code>/wp-content/plugins/</code>, or install the plugin through the Plugins screen in WordPress.</li>\n<li>Activate the plugin through the Plugins screen.</li>\n<li>Open <strong>Pages &gt; Scalable Manager</strong> in the admin menu.</li>\n<li>On large sites, optionally run <code>wp pgscl build-indexes</code> via WP-CLI to build the search indexes immediately instead of waiting for them to build in the background.</li>\n</ol>\n",
         "faq": "\n<dt id=\"does%20this%20add%20database%20indexes%20to%20my%20site%3F\">\nDoes this add database indexes to my site?\n</h4>\n<p>\n<p>Yes. It adds a small number of composite and FULLTEXT indexes to wp_posts and wp_postmeta to make search and sorting fast. They are created lazily, one per request, so activation is instant and no request runs long enough to time out.</p>\n</p>\n<dt id=\"does%20it%20work%20without%20the%20indexes%3F\">\nDoes it work without the indexes?\n</h4>\n<p>\n<p>Yes. Until the indexes finish building, search falls back to a bounded, basic mode. Everything else works normally.</p>\n</p>\n<dt id=\"which%20capability%20is%20required%3F\">\nWhich capability is required?\n</h4>\n<p>\n<p>Managing pages requires the edit_pages capability, checked on every REST route. Private pages are only shown to users who can read them, and per-page edit and delete actions are checked individually.</p>\n</p>\n<dt id=\"does%20it%20modify%20my%20content%3F\">\nDoes it modify my content?\n</h4>\n<p>\n<p>No. Read operations never load post content into PHP. Edit and bulk actions use standard WordPress functions and respect per-page capabilities.</p>\n</p>\n\n",
         "changelog": "<h4>1.5.1</h4>\n<ul>\n<li>Security: apply private-page readability filtering to the /parents, /export and /default-view REST endpoints so private pages a user cannot read are never exposed, including by direct ID.</li>\n<li>Cache the parents list per user to avoid serving one user&#8217;s readable set to another.</li>\n</ul>\n<h4>1.5.0</h4>\n<ul>\n<li>Initial public release: keyset pagination, lazy tree, tiered FULLTEXT search, virtual scrolling.</li>\n<li>Duplicate finder for titles, exact slugs and similar slugs.</li>\n<li>CSV export with formula-injection guarding.</li>\n<li>Lazy, timeout-safe index building with a WP-CLI command.</li>\n</ul>\n"
     },
     "short_description": "Fast Pages screen for sites with tens of thousands of pages: lazy tree, virtual scroll, keyset pagination, indexed FULLTEXT search.",
-    "description": "<p>PageScale replaces the default WordPress Pages screen with an admin interface built to stay fast on sites that have tens of thousands — or millions — of pages. The stock list table slows down at that scale because it relies on OFFSET pagination and unindexed queries. PageScale takes a different approach at every layer.</p>\n<p><strong>How it stays fast</strong></p>\n<ul>\n<li>Keyset (cursor) pagination instead of OFFSET, so the cost of loading any page of results is constant whether you have 10,000 rows or 1,000,000.</li>\n<li>Lazy hierarchy — only the children of a node you actually expand are queried. The tree never loads the whole site at once.</li>\n<li>Tiered search — numeric input goes straight to the primary key, slugs use an indexed equality/prefix lookup, and title/content/custom-field search uses InnoDB FULLTEXT (MATCH &#8230; AGAINST) rather than a leading-wildcard LIKE. Content and custom-field search is optional via a UI toggle and runs entirely in MySQL, so post content is never loaded into PHP memory.</li>\n<li>Virtual scrolling keeps the DOM bounded (about 50 rows) at any dataset size.</li>\n<li>Cached aggregates — totals, the parents list and duplicate reports are cached with the Transients API.</li>\n</ul>\n<p><strong>Other features</strong></p>\n<ul>\n<li>Elementor-aware quick actions.</li>\n<li>Bulk actions, chunked client-side so large operations don&#8217;t time out.</li>\n<li>Duplicate finder for titles, exact slugs and similar slugs.</li>\n<li>CSV export of the current view or a selection.</li>\n<li>WP-CLI command to build the search indexes on demand.</li>\n</ul>\n<p><strong>Indexing is safe on large tables</strong></p>\n<p>PageScale never runs a long ALTER TABLE during activation. Instead it records that indexes are pending and builds them lazily, one at a time, on later admin loads (or immediately via WP-CLI). The plugin is fully usable while indexing is in progress — search simply runs in a basic mode until the FULLTEXT indexes exist.</p>\n",
+    "description": "<p>PageScale replaces the default WordPress Pages screen with an admin interface built to stay fast on sites that have tens of thousands (or millions) of pages. The stock list table slows down at that scale because it relies on OFFSET pagination and unindexed queries. PageScale takes a different approach at every layer.</p>\n<p><strong>How it stays fast</strong></p>\n<ul>\n<li>Keyset (cursor) pagination instead of OFFSET, so the cost of loading any page of results is constant whether you have 10,000 rows or 1,000,000.</li>\n<li>Lazy hierarchy: only the children of a node you actually expand are queried. The tree never loads the whole site at once.</li>\n<li>Tiered search: numeric input goes straight to the primary key, slugs use an indexed equality/prefix lookup, and title/content/custom-field search uses InnoDB FULLTEXT (MATCH &#8230; AGAINST) rather than a leading-wildcard LIKE. Content and custom-field search is optional via a UI toggle and runs entirely in MySQL, so post content is never loaded into PHP memory.</li>\n<li>Virtual scrolling keeps the DOM bounded (about 50 rows) at any dataset size.</li>\n<li>Cached aggregates: totals, the parents list and duplicate reports are cached with the Transients API.</li>\n</ul>\n<p><strong>Other features</strong></p>\n<ul>\n<li>Elementor-aware quick actions.</li>\n<li>Bulk actions, chunked client-side so large operations don&#8217;t time out.</li>\n<li>Duplicate finder for titles, exact slugs and similar slugs.</li>\n<li>CSV export of the current view or a selection.</li>\n<li>WP-CLI command to build the search indexes on demand.</li>\n</ul>\n<p><strong>Indexing is safe on large tables</strong></p>\n<p>PageScale never runs a long ALTER TABLE during activation. Instead it records that indexes are pending and builds them lazily, one at a time, on later admin loads (or immediately via WP-CLI). The plugin is fully usable while indexing is in progress, and search simply runs in a basic mode until the FULLTEXT indexes exist.</p>\n",
     "download_link": "https://downloads.wordpress.org/plugin/pagescale.1.5.1.zip",
     "upgrade_notice": {
         "1.5.0": "<p>Initial public release.</p>"
     },
-    "screenshots": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/pagescale/assets/screenshot-1.png?rev=3667612",
+            "caption": "The scalable Pages screen: virtual-scrolled list, parent-page overview and quick actions, staying fast at 8,000+ pages."
+        },
+        {
+            "src": "https://ps.w.org/pagescale/assets/screenshot-2.png?rev=3667612",
+            "caption": "Lazy-loading hierarchy: drilling into a parent loads only that node's children, never the whole tree."
+        },
+        {
+            "src": "https://ps.w.org/pagescale/assets/screenshot-3.png?rev=3667612",
+            "caption": "Tiered search across titles, slugs, content and ACF custom fields, with live result counts."
+        },
+        {
+            "src": "https://ps.w.org/pagescale/assets/screenshot-4.png?rev=3667612",
+            "caption": "Duplicate finder scanning for same-title pages across the whole site."
+        }
+    ],
     "tags": {
         "admin": "admin",
         "page-management": "page management",
@@ -61,9 +78,13 @@
     "repository_url": "",
     "commercial_support_url": "",
     "donate_link": "",
-    "banners": [],
+    "banners": {
+        "low": "https://ps.w.org/pagescale/assets/banner-772x250.png?rev=3667612",
+        "high": "https://ps.w.org/pagescale/assets/banner-1544x500.png?rev=3667612"
+    },
     "icons": {
-        "default": "https://s.w.org/plugins/geopattern-icon/pagescale.svg"
+        "1x": "https://ps.w.org/pagescale/assets/icon-128x128.png?rev=3667612",
+        "2x": "https://ps.w.org/pagescale/assets/icon-256x256.png?rev=3667612"
     },
     "blocks": [],
     "block_assets": [],
