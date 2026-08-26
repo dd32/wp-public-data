@@ -1,0 +1,136 @@
+{
+    "name": "TK Paybill and Till Checkout for M-Pesa",
+    "slug": "tk-paybill-and-till-checkout-for-mpesa",
+    "version": "2.2.0",
+    "author": "<a href=\"https://profiles.wordpress.org/tkiguta/\">Tonie Kiguta</a>",
+    "author_profile": "https://profiles.wordpress.org/tkiguta/",
+    "contributors": {
+        "tkiguta": {
+            "profile": "https://profiles.wordpress.org/tkiguta/",
+            "avatar": "https://secure.gravatar.com/avatar/18b269215545edf70966c3b08a0c5a50f3f390093d2d26f2a8a7d67ee84d78a2?s=96&d=monsterid&r=g",
+            "display_name": "Tonie Kiguta"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/tk-paybill-and-till-checkout-for-mpesa/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-26 09:13:00",
+    "added": "2026-08-26",
+    "homepage": "https://github.com/kiguta/TK-Payment-Gateway-for-MPesa-Paybill-and-Till-for-WooCommerce",
+    "sections": {
+        "description": "<p>TK MPesa Payment Gateway allows your WooCommerce customers to pay directly from their mobile phone via MPesa STK Push (Lipa Na MPesa Online).</p>\n<p>This plugin is not affiliated with, endorsed by, or sponsored by Safaricom PLC. M-Pesa and Daraja are trademarks of Safaricom PLC, referenced here only to describe compatibility with their payment service.</p>\n<p><strong>How it works:</strong></p>\n<ol>\n<li>A customer checks out and selects MPesa Payments, entering the MPesa number the STK prompt should be sent to.</li>\n<li>The plugin authenticates with the Safaricom Daraja API and sends an STK Push (<code>stkpush/v1/processrequest</code>) request for the order total.</li>\n<li>The customer receives a &#8220;Lipa Na MPesa&#8221; prompt directly on their phone and enters their MPesa PIN to approve it.</li>\n<li>Safaricom sends a payment-result callback to this site&#8217;s dedicated REST endpoint, protected by a per-install secret token so only genuine Safaricom callbacks are accepted.</li>\n<li>On a successful callback, the order is marked paid automatically and the confirmation &#8211; including the MPesa number that was billed &#8211; is recorded on the order.</li>\n</ol>\n<p>If a customer doesn&#8217;t complete the prompt in time or the order is otherwise left unpaid, they can return to it later through WooCommerce&#8217;s standard &#8220;Pay for order&#8221; screen to retry.</p>\n<p><strong>Payment types:</strong></p>\n<ul>\n<li>Paybill (<code>CustomerPayBillOnline</code>) &#8211; pay into a Paybill number and account</li>\n<li>Buy Goods Till (<code>CustomerBuyGoodsOnline</code>) &#8211; pay into a Till number; the Till must be settling funds to a bank account</li>\n<li>Configurable <strong>Short Code</strong> (your Paybill/Till number) and <strong>Payment To</strong> number, independent of the payment type selected</li>\n</ul>\n<p><strong>Checkout compatibility:</strong></p>\n<ul>\n<li>Classic shortcode checkout</li>\n<li>WooCommerce Checkout Block, via a full <code>AbstractPaymentMethodType</code> integration</li>\n<li>HPOS (High-Performance Order Storage) compatible</li>\n</ul>\n<p><strong>Payment tracking &amp; admin tools:</strong></p>\n<ul>\n<li>A dedicated <strong>MPesa Payments</strong> admin menu, separate from WooCommerce Orders, listing every STK Push request with its date, Request ID, linked Order ID, requesting MPesa number, amount, and payment status</li>\n<li>A <strong>Logs</strong> submenu that jumps straight to this plugin&#8217;s entries under WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Status <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Logs (source <code>tk-mpesa</code>), useful when a payment doesn&#8217;t go through</li>\n<li>Paid orders show the MPesa confirmation and billed phone number directly on the WooCommerce order screen, alongside the standard order details</li>\n</ul>\n<p><strong>Sandbox / test mode:</strong></p>\n<ul>\n<li>A <strong>Test mode</strong> toggle switches the gateway to the Safaricom Daraja sandbox API for development, without touching your live credentials</li>\n</ul>\n<p><strong>Security:</strong></p>\n<ul>\n<li>The MPesa callback endpoint requires a per-install secret token (generated on activation) before it will process any callback, preventing forged requests from marking an order as paid</li>\n<li>Callback payment amounts are compared using a tolerant float comparison rather than a loose <code>==</code></li>\n<li>All checkout input is sanitised and all admin/checkout output is escaped</li>\n<li>Checkout requests are protected by WordPress nonces</li>\n</ul>\n<p><strong>Requirements:</strong></p>\n<ul>\n<li>A Safaricom MPesa Paybill or Buy Goods Till number</li>\n<li>A registered Safaricom Daraja application (Consumer Key, Consumer Secret, PassKey)</li>\n<li>An HTTPS-enabled WordPress site (required by the MPesa callback)</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the Safaricom Daraja API to process M-Pesa payments. This is required for the plugin&#8217;s core function &#8211; initiating an M-Pesa STK Push payment request to the customer&#8217;s phone and receiving confirmation that it was paid.</p>\n<p>Two Daraja endpoints are used:</p>\n<ul>\n<li><code>oauth/v1/generate</code> &#8211; authenticates the site with Safaricom using the Consumer Key and Consumer Secret you enter in the gateway settings. No customer data is sent to this endpoint.</li>\n<li><code>mpesa/stkpush/v1/processrequest</code> &#8211; initiates the STK Push. When a customer places an order and chooses this payment method at checkout, the following is sent: your configured Paybill/Till short code, the order amount, the customer&#8217;s phone number, a callback URL, and the WooCommerce order ID (as a reference). Safaricom then sends a payment-result callback to this site&#8217;s REST endpoint.</li>\n</ul>\n<p>This plugin is not affiliated with, endorsed by, or sponsored by Safaricom PLC. Learn more: <a href=\"https://developer.safaricom.co.ke/t&amp;c\" rel=\"nofollow ugc\">Daraja API Terms and Conditions</a>, <a href=\"https://www.safaricom.co.ke/dataprivacystatement/\" rel=\"nofollow ugc\">Safaricom Data Privacy Statement</a>.</p>\n",
+        "installation": "<p><strong>Uploading and activating</strong></p>\n<ol>\n<li>In your WordPress dashboard, go to <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin</strong> and choose the plugin zip file (or upload the <code>tk-paybill-and-till-checkout-for-mpesa</code> folder to <code>/wp-content/plugins/</code> via FTP/SFTP).</li>\n<li>Click <strong>Activate</strong>. WooCommerce must already be installed and active &#8211; if it isn&#8217;t, activation stops and tells you to install WooCommerce first.</li>\n</ol>\n<p><strong>Configuring the gateway</strong></p>\n<ol>\n<li>Go to <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Payments</strong>.</li>\n<li>Click <strong>Manage</strong> on the MPesa Gateway row.</li>\n<li>Check <strong>Enable MPesa Gateway</strong>.</li>\n<li>Enter your <strong>Pass Key</strong>, <strong>Consumer Key</strong>, and <strong>Consumer Secret</strong> from the Daraja portal.</li>\n<li>Select your <strong>Payment Type</strong> (Paybill or Buy Goods Till).</li>\n<li>Enter your <strong>Short Code</strong> and <strong>Payment To</strong> number.</li>\n<li>Enter a unique <strong>Callback URL</strong> name &#8211; a short slug only (e.g. <code>abc123xyz</code>), not your website&#8217;s URL. No spaces, and it must not contain the word &#8220;mpesa&#8221;. The plugin builds the full callback link for you automatically.</li>\n<li>Save changes.</li>\n</ol>\n<p><strong>Getting MPesa credentials</strong></p>\n<ol>\n<li>Register a Paybill or Buy Goods Till with Safaricom MPesa.</li>\n<li>If using a Buy Goods Till, it must be settling funds to a bank account.</li>\n<li>Register an Administrator for your Paybill/Till through Safaricom.</li>\n<li>Use those credentials to create an App on the MPesa Daraja Portal.</li>\n<li>Your Pass Key, Consumer Key, and Consumer Secret will be provided.</li>\n</ol>\n<p><strong>Managing your credentials later</strong></p>\n<p>Return to <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Payments <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> MPesa Gateway</strong> any time to update your credentials, for example after Safaricom issues new keys or when moving from sandbox to live. Existing orders and payment history are unaffected by a credentials change. The <strong>Test mode</strong> checkbox switches between the Safaricom sandbox and live production API &#8211; make sure the credentials you&#8217;ve entered match whichever mode is enabled, since sandbox keys will not work in live mode and vice versa.</p>\n<p><strong>Viewing logs</strong></p>\n<p>If a payment doesn&#8217;t go through, check <strong>MPesa Payments <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Logs</strong> in your WordPress admin menu (or <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Status <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Logs</strong>, source <code>tk-mpesa</code>) for the exact error Safaricom&#8217;s API returned.</p>\n",
+        "faq": "\n<dt id=\"does%20this%20work%20with%20the%20woocommerce%20checkout%20block%3F\">\nDoes this work with the WooCommerce Checkout Block?\n</h4>\n<p>\n<p>Yes. Version 2.0.0 and above fully supports the WooCommerce Checkout Block via the <code>AbstractPaymentMethodType</code> integration.</p>\n</p>\n<dt id=\"can%20i%20test%20without%20going%20live%3F\">\nCan I test without going live?\n</h4>\n<p>\n<p>Yes. Enable <strong>Test mode</strong> in the gateway settings to use the Safaricom Daraja sandbox API. Use sandbox credentials from the Daraja portal.</p>\n</p>\n<dt id=\"why%20must%20my%20callback%20url%20not%20contain%20%22mpesa%22%3F\">\nWhy must my callback URL not contain &#8220;mpesa&#8221;?\n</h4>\n<p>\n<p>Safaricom&#8217;s systems block callback URLs containing the word &#8220;mpesa&#8221; as a security measure.</p>\n</p>\n<dt id=\"is%20this%20plugin%20pci%20dss%20compliant%3F\">\nIs this plugin PCI DSS compliant?\n</h4>\n<p>\n<p>Yes. No card data is handled. All payment data flows directly between the customer&#8217;s phone and Safaricom&#8217;s servers. The plugin only initiates an STK Push request and receives a callback confirmation.</p>\n</p>\n\n",
+        "changelog": "<h4>2.2.0</h4>\n<ul>\n<li>Security: the M-Pesa callback endpoint now requires a per-install secret token (generated on activation) before processing any callback, preventing a forged request from marking an order as paid</li>\n<li>Security: callback amount comparison now uses a tolerant float comparison instead of loose <code>==</code></li>\n</ul>\n<h4>2.1.0</h4>\n<ul>\n<li>Added activation check that requires WooCommerce to be active</li>\n<li>Added <code>uninstall.php</code> to clean up gateway settings and payment-request records on deletion</li>\n<li>Fixed: invalid Author URI header, incorrect output-escaping order on the checkout description field, and removed the deprecated <code>load_plugin_textdomain()</code> call</li>\n<li>Improved error logging: token and STK Push failures now log the HTTP status code and full API response, at Error level, so failures are easy to diagnose from WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Status <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Logs</li>\n<li>Fixed: duplicate MPesa callbacks (Safaricom sometimes resends the same notification) are now recognised and logged quietly instead of as errors</li>\n<li>Added a &#8220;Logs&#8221; submenu under MPesa Payments, linking straight to this plugin&#8217;s WooCommerce log entries</li>\n</ul>\n<h4>2.0.0</h4>\n<ul>\n<li>Added WooCommerce Checkout Blocks support</li>\n<li>Added HPOS (High-Performance Order Storage) compatibility</li>\n<li>Added sandbox/test mode with Daraja sandbox API URLs</li>\n<li>Fixed security: nonce verification on payment form</li>\n<li>Fixed security: input sanitisation on phone number field</li>\n<li>Fixed security: output escaping on all admin displays</li>\n<li>Fixed: broken <code>permission_callback</code> on REST callback endpoint</li>\n<li>Fixed: nested function declarations promoted to class methods</li>\n<li>Fixed: <code>parse_tel()</code> phone normalisation using regex (replaced broken <code>ltrim()</code>)</li>\n<li>Fixed: <code>date()</code> replaced with <code>gmdate()</code> for timezone correctness</li>\n<li>Replaced file-based logging with WooCommerce logger (WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Status <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Logs)</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
+    },
+    "short_description": "WooCommerce payment gateway for MPesa payments via Safaricom&#039;s Daraja API. Supports Paybill, Buy Goods Till, and the WooCommerce Checkout Block.",
+    "description": "<p>TK MPesa Payment Gateway allows your WooCommerce customers to pay directly from their mobile phone via MPesa STK Push (Lipa Na MPesa Online).</p>\n<p>This plugin is not affiliated with, endorsed by, or sponsored by Safaricom PLC. M-Pesa and Daraja are trademarks of Safaricom PLC, referenced here only to describe compatibility with their payment service.</p>\n<p><strong>How it works:</strong></p>\n<ol>\n<li>A customer checks out and selects MPesa Payments, entering the MPesa number the STK prompt should be sent to.</li>\n<li>The plugin authenticates with the Safaricom Daraja API and sends an STK Push (<code>stkpush/v1/processrequest</code>) request for the order total.</li>\n<li>The customer receives a &#8220;Lipa Na MPesa&#8221; prompt directly on their phone and enters their MPesa PIN to approve it.</li>\n<li>Safaricom sends a payment-result callback to this site&#8217;s dedicated REST endpoint, protected by a per-install secret token so only genuine Safaricom callbacks are accepted.</li>\n<li>On a successful callback, the order is marked paid automatically and the confirmation &#8211; including the MPesa number that was billed &#8211; is recorded on the order.</li>\n</ol>\n<p>If a customer doesn&#8217;t complete the prompt in time or the order is otherwise left unpaid, they can return to it later through WooCommerce&#8217;s standard &#8220;Pay for order&#8221; screen to retry.</p>\n<p><strong>Payment types:</strong></p>\n<ul>\n<li>Paybill (<code>CustomerPayBillOnline</code>) &#8211; pay into a Paybill number and account</li>\n<li>Buy Goods Till (<code>CustomerBuyGoodsOnline</code>) &#8211; pay into a Till number; the Till must be settling funds to a bank account</li>\n<li>Configurable <strong>Short Code</strong> (your Paybill/Till number) and <strong>Payment To</strong> number, independent of the payment type selected</li>\n</ul>\n<p><strong>Checkout compatibility:</strong></p>\n<ul>\n<li>Classic shortcode checkout</li>\n<li>WooCommerce Checkout Block, via a full <code>AbstractPaymentMethodType</code> integration</li>\n<li>HPOS (High-Performance Order Storage) compatible</li>\n</ul>\n<p><strong>Payment tracking &amp; admin tools:</strong></p>\n<ul>\n<li>A dedicated <strong>MPesa Payments</strong> admin menu, separate from WooCommerce Orders, listing every STK Push request with its date, Request ID, linked Order ID, requesting MPesa number, amount, and payment status</li>\n<li>A <strong>Logs</strong> submenu that jumps straight to this plugin&#8217;s entries under WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Status <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Logs (source <code>tk-mpesa</code>), useful when a payment doesn&#8217;t go through</li>\n<li>Paid orders show the MPesa confirmation and billed phone number directly on the WooCommerce order screen, alongside the standard order details</li>\n</ul>\n<p><strong>Sandbox / test mode:</strong></p>\n<ul>\n<li>A <strong>Test mode</strong> toggle switches the gateway to the Safaricom Daraja sandbox API for development, without touching your live credentials</li>\n</ul>\n<p><strong>Security:</strong></p>\n<ul>\n<li>The MPesa callback endpoint requires a per-install secret token (generated on activation) before it will process any callback, preventing forged requests from marking an order as paid</li>\n<li>Callback payment amounts are compared using a tolerant float comparison rather than a loose <code>==</code></li>\n<li>All checkout input is sanitised and all admin/checkout output is escaped</li>\n<li>Checkout requests are protected by WordPress nonces</li>\n</ul>\n<p><strong>Requirements:</strong></p>\n<ul>\n<li>A Safaricom MPesa Paybill or Buy Goods Till number</li>\n<li>A registered Safaricom Daraja application (Consumer Key, Consumer Secret, PassKey)</li>\n<li>An HTTPS-enabled WordPress site (required by the MPesa callback)</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the Safaricom Daraja API to process M-Pesa payments. This is required for the plugin&#8217;s core function &#8211; initiating an M-Pesa STK Push payment request to the customer&#8217;s phone and receiving confirmation that it was paid.</p>\n<p>Two Daraja endpoints are used:</p>\n<ul>\n<li><code>oauth/v1/generate</code> &#8211; authenticates the site with Safaricom using the Consumer Key and Consumer Secret you enter in the gateway settings. No customer data is sent to this endpoint.</li>\n<li><code>mpesa/stkpush/v1/processrequest</code> &#8211; initiates the STK Push. When a customer places an order and chooses this payment method at checkout, the following is sent: your configured Paybill/Till short code, the order amount, the customer&#8217;s phone number, a callback URL, and the WooCommerce order ID (as a reference). Safaricom then sends a payment-result callback to this site&#8217;s REST endpoint.</li>\n</ul>\n<p>This plugin is not affiliated with, endorsed by, or sponsored by Safaricom PLC. Learn more: <a href=\"https://developer.safaricom.co.ke/t&amp;c\" rel=\"nofollow ugc\">Daraja API Terms and Conditions</a>, <a href=\"https://www.safaricom.co.ke/dataprivacystatement/\" rel=\"nofollow ugc\">Safaricom Data Privacy Statement</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/tk-paybill-and-till-checkout-for-mpesa.2.2.0.zip",
+    "upgrade_notice": {
+        "2.2.0": "<p>Plugin renamed for WordPress.org trademark compliance; internal identifiers were also namespaced, including the payment-request storage. Existing payment-request records from prior versions will no longer appear in the admin list after upgrading (the data is retained in the database, just under the old internal type). Your gateway settings, orders, and webhook URL are unaffected - only the underlying payment-request tracking records are affected.</p>",
+        "2.1.0": "<p>Plugin renamed to TK MPesa Payment Gateway (new slug). If upgrading from a manual install: activate this version first, confirm your settings and orders still show correctly, then remove the old copy. Don&#039;t delete either copy until migration is confirmed.</p>",
+        "2.0.0": "<p>Security and compatibility update. Adds WooCommerce Blocks support and HPOS compatibility. Fully backward compatible — existing settings, orders, and webhook URLs are unchanged.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/tk-paybill-and-till-checkout-for-mpesa/assets/screenshot-1.png?rev=3666617",
+            "caption": "The MPesa Gateway listed on the WooCommerce Payments settings screen"
+        },
+        {
+            "src": "https://ps.w.org/tk-paybill-and-till-checkout-for-mpesa/assets/screenshot-2.png?rev=3666617",
+            "caption": "The gateway configuration screen - credentials, Paybill/Till setup, and callback URL"
+        },
+        {
+            "src": "https://ps.w.org/tk-paybill-and-till-checkout-for-mpesa/assets/screenshot-3.png?rev=3666617",
+            "caption": "Selecting the payment type - Paybill or Buy Goods Till"
+        },
+        {
+            "src": "https://ps.w.org/tk-paybill-and-till-checkout-for-mpesa/assets/screenshot-4.png?rev=3666617",
+            "caption": "The gateway enabled and ready to accept payments"
+        },
+        {
+            "src": "https://ps.w.org/tk-paybill-and-till-checkout-for-mpesa/assets/screenshot-5.png?rev=3666617",
+            "caption": "What the customer sees at checkout - MPesa Payments selected, prompting for their phone number"
+        },
+        {
+            "src": "https://ps.w.org/tk-paybill-and-till-checkout-for-mpesa/assets/screenshot-6.png?rev=3666617",
+            "caption": "The customer-facing \"Pay for order\" screen for retrying or completing payment on an existing order"
+        },
+        {
+            "src": "https://ps.w.org/tk-paybill-and-till-checkout-for-mpesa/assets/screenshot-7.png?rev=3666617",
+            "caption": "A completed MPesa order in the WooCommerce Orders list"
+        },
+        {
+            "src": "https://ps.w.org/tk-paybill-and-till-checkout-for-mpesa/assets/screenshot-8.png?rev=3666617",
+            "caption": "Order detail showing the MPesa payment confirmation and the customer's billed MPesa number"
+        },
+        {
+            "src": "https://ps.w.org/tk-paybill-and-till-checkout-for-mpesa/assets/screenshot-9.png?rev=3666617",
+            "caption": "The plugin on the WordPress Plugins screen, ready to activate"
+        },
+        {
+            "src": "https://ps.w.org/tk-paybill-and-till-checkout-for-mpesa/assets/screenshot-10.png?rev=3666617",
+            "caption": "The plugin active, with donation links on the Plugins screen"
+        },
+        {
+            "src": "https://ps.w.org/tk-paybill-and-till-checkout-for-mpesa/assets/screenshot-11.png?rev=3666617",
+            "caption": "The MPesa Payments admin menu, with a dedicated Logs submenu"
+        },
+        {
+            "src": "https://ps.w.org/tk-paybill-and-till-checkout-for-mpesa/assets/screenshot-12.png?rev=3666617",
+            "caption": "Payment request tracking - every STK Push request logged with its status"
+        },
+        {
+            "src": "https://ps.w.org/tk-paybill-and-till-checkout-for-mpesa/assets/screenshot-13.png?rev=3666617",
+            "caption": "Diagnostic logs under WooCommerce → Status → Logs (source <code>tk-mpesa</code>)"
+        }
+    ],
+    "tags": {
+        "kenya": "Kenya",
+        "mpesa": "MPESA",
+        "payment": "payment",
+        "safaricom": "safaricom",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "2.2.0",
+    "versions": {
+        "2.2.0": "https://downloads.wordpress.org/plugin/tk-paybill-and-till-checkout-for-mpesa.2.2.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/tk-paybill-and-till-checkout-for-mpesa.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/tk-paybill-and-till-checkout-for-mpesa/assets/banner-772x250.png?rev=3666617",
+        "high": "https://ps.w.org/tk-paybill-and-till-checkout-for-mpesa/assets/banner-1544x500.png?rev=3666617"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/tk-paybill-and-till-checkout-for-mpesa/assets/icon-128x128.png?rev=3666617",
+        "2x": "https://ps.w.org/tk-paybill-and-till-checkout-for-mpesa/assets/icon-256x256.png?rev=3666617"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
