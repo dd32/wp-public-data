@@ -1,0 +1,73 @@
+{
+    "name": "Cosmo Block Edit Mode for ACF",
+    "slug": "cosmo-block-edit-mode-for-acf",
+    "version": "1.0.3",
+    "author": "<a href=\"https://profiles.wordpress.org/bakhods/\">bakhods</a>",
+    "author_profile": "https://profiles.wordpress.org/bakhods/",
+    "contributors": {
+        "bakhods": {
+            "profile": "https://profiles.wordpress.org/bakhods/",
+            "avatar": "https://secure.gravatar.com/avatar/27566c210eb3ac6aaad9b3530c31e367eedd2f6da6d147c0a6353818cffff8af?s=96&d=monsterid&r=g",
+            "display_name": "bakhods"
+        }
+    },
+    "requires": "6.8",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/cosmo-block-edit-mode-for-acf/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-29 15:32:00",
+    "added": "2026-08-29",
+    "homepage": "https://github.com/cosmoc0der/block-edit-mode-for-acf",
+    "sections": {
+        "description": "<p>Since the post editor canvas is always rendered inside an iframe, Advanced Custom Fields forces every ACF block into preview mode: the toolbar toggle disappears and the field form is pushed into the sidebar. There is no filter or setting to turn that behaviour off.</p>\n<p>This plugin restores the previous experience. The toolbar toggle comes back and the fields are edited in place, inside the block, exactly where the content is.</p>\n<p>Cosmo Block Edit Mode for ACF is an independent, unofficial plugin. &#8220;ACF&#8221; and &#8220;Advanced Custom Fields&#8221; are trademarks of WP Engine; this plugin is not affiliated with, endorsed by, or sponsored by WP Engine or the Advanced Custom Fields team, and the name refers to that plugin solely to describe what this one works with.</p>\n<h4>How it works</h4>\n<p>The plugin builds a patched copy of the ACF blocks script on the fly. The only change is one internal &#8220;is the editor iframed?&#8221; check, which is made to always return false. The copy is stored in <code>wp-content/uploads/cosmo-block-edit-mode-for-acf/</code> and its file name is derived from the ACF version and the source file, so it is rebuilt automatically after every ACF update.</p>\n<p>If a future ACF release rewrites that part of the code, the plugin silently serves the untouched original and shows a warning in the admin area. Your site never breaks &#8211; it simply falls back to the current ACF behaviour.</p>\n<p>Some extra styling and a small companion script are loaded inside the canvas iframe, because the iframe does not inherit the wp-admin stylesheets that ACF fields depend on. These also fix everything that breaks once a field lives in a different document than the scripts driving it: select2 dropdowns, tooltip placement, and the WYSIWYG field &#8211; TinyMCE, Quicktags, the Visual/Text tabs and the Add Media button.</p>\n<h4>Requirements</h4>\n<p>This plugin requires <strong>ACF PRO</strong>, a commercial plugin sold separately by WP Engine and not distributed through WordPress.org. Blocks are a PRO-only feature. With ACF PRO inactive, this plugin does nothing at all.</p>\n<p>This plugin is not affiliated with, endorsed by, or sponsored by WP Engine or the Advanced Custom Fields team.</p>\n<h4>Developers</h4>\n<p>Turn the patch off without deactivating the plugin:</p>\n<pre><code>add_filter( 'cosmo/block_edit_mode_for_acf/enabled', '__return_false' );\n</code></pre>\n",
+        "installation": "<ol>\n<li>Install and activate ACF PRO.</li>\n<li>Upload the plugin through <strong>Plugins &#8211; Add New &#8211; Upload Plugin</strong>, or install it from the plugin directory.</li>\n<li>Activate <strong>Cosmo Block Edit Mode for ACF</strong>.</li>\n<li>Open a post containing an ACF block &#8211; the mode toggle is back in the block toolbar.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20modify%20the%20acf%20plugin%20files%3F\">\nDoes this modify the ACF plugin files?\n</h4>\n<p>\n<p>No. The ACF installation is left untouched. A patched copy of one script is generated in the uploads folder and served instead of the original, only inside the admin area.</p>\n</p>\n<dt id=\"what%20happens%20when%20acf%20updates%3F\">\nWhat happens when ACF updates?\n</h4>\n<p>\n<p>The patched copy is keyed to the ACF version and rebuilt automatically. If the code it patches has changed too much to recognise, the original script is served and an admin notice asks you to update this plugin.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20the%20free%20version%20of%20acf%3F\">\nDoes it work with the free version of ACF?\n</h4>\n<p>\n<p>No. ACF blocks are a PRO-only feature, so there is nothing to patch in the free version.</p>\n</p>\n<dt id=\"what%20is%20left%20behind%20when%20i%20delete%20the%20plugin%3F\">\nWhat is left behind when I delete the plugin?\n</h4>\n<p>\n<p>Nothing. Deleting the plugin removes the generated cache folder in <code>wp-content/uploads/</code> and the internal flag it uses.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.2</h4>\n<ul>\n<li>Fixed post_object, taxonomy, user, page_link and select fields inside the canvas hanging on &#8220;Searching&#8230;&#8221; and never loading a single option. ACF focuses the search box of an open dropdown by looking it up in the parent document; for a dropdown that lives in the canvas the lookup comes back empty, and the exception it raises aborts Select2 before it gets to request the results.</li>\n<li>Added the Select2 stylesheet to the canvas, so such a field no longer renders as a bare drop-down list next to an unstyled search box.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Fixed the WYSIWYG field never initialising inside the canvas. TinyMCE and Quicktags look their textarea up by id in the parent document, where it no longer is: Quicktags threw &#8220;Cannot read properties of undefined (reading &#8216;buttons&#8217;)&#8221; and TinyMCE silently attached to nothing, leaving the field as a plain textarea.</li>\n<li>Fixed the Visual/Text tabs and the Add Media button of a WYSIWYG field doing nothing &#8211; WordPress delegates both from the parent document, which never sees a click made inside the canvas.</li>\n<li>Added the TinyMCE skin and the editor button styles to the canvas, so the editor toolbars are no longer unstyled.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Brings back the &quot;Switch to Edit / Switch to Preview&quot; toggle and the field form inside ACF blocks, instead of only in the sidebar.",
+    "description": "<p>Since the post editor canvas is always rendered inside an iframe, Advanced Custom Fields forces every ACF block into preview mode: the toolbar toggle disappears and the field form is pushed into the sidebar. There is no filter or setting to turn that behaviour off.</p>\n<p>This plugin restores the previous experience. The toolbar toggle comes back and the fields are edited in place, inside the block, exactly where the content is.</p>\n<p>Cosmo Block Edit Mode for ACF is an independent, unofficial plugin. &#8220;ACF&#8221; and &#8220;Advanced Custom Fields&#8221; are trademarks of WP Engine; this plugin is not affiliated with, endorsed by, or sponsored by WP Engine or the Advanced Custom Fields team, and the name refers to that plugin solely to describe what this one works with.</p>\n<h4>How it works</h4>\n<p>The plugin builds a patched copy of the ACF blocks script on the fly. The only change is one internal &#8220;is the editor iframed?&#8221; check, which is made to always return false. The copy is stored in <code>wp-content/uploads/cosmo-block-edit-mode-for-acf/</code> and its file name is derived from the ACF version and the source file, so it is rebuilt automatically after every ACF update.</p>\n<p>If a future ACF release rewrites that part of the code, the plugin silently serves the untouched original and shows a warning in the admin area. Your site never breaks &#8211; it simply falls back to the current ACF behaviour.</p>\n<p>Some extra styling and a small companion script are loaded inside the canvas iframe, because the iframe does not inherit the wp-admin stylesheets that ACF fields depend on. These also fix everything that breaks once a field lives in a different document than the scripts driving it: select2 dropdowns, tooltip placement, and the WYSIWYG field &#8211; TinyMCE, Quicktags, the Visual/Text tabs and the Add Media button.</p>\n<h4>Requirements</h4>\n<p>This plugin requires <strong>ACF PRO</strong>, a commercial plugin sold separately by WP Engine and not distributed through WordPress.org. Blocks are a PRO-only feature. With ACF PRO inactive, this plugin does nothing at all.</p>\n<p>This plugin is not affiliated with, endorsed by, or sponsored by WP Engine or the Advanced Custom Fields team.</p>\n<h4>Developers</h4>\n<p>Turn the patch off without deactivating the plugin:</p>\n<pre><code>add_filter( 'cosmo/block_edit_mode_for_acf/enabled', '__return_false' );\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/cosmo-block-edit-mode-for-acf.1.0.3.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "block-editor": "block-editor",
+        "blocks": "blocks",
+        "custom-fields": "custom fields",
+        "editor": "editor",
+        "inline-editing": "inline editing"
+    },
+    "stable_tag": "1.0.3",
+    "versions": {
+        "1.0.3": "https://downloads.wordpress.org/plugin/cosmo-block-edit-mode-for-acf.1.0.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/cosmo-block-edit-mode-for-acf.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/cosmo-block-edit-mode-for-acf.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
