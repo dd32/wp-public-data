@@ -1,0 +1,80 @@
+{
+    "name": "Morick Markdown Layer for AI",
+    "slug": "morick-markdown-layer-ai",
+    "version": "1.4.2",
+    "author": "<a href=\"https://profiles.wordpress.org/moricktokyo/\">moricktokyo</a>",
+    "author_profile": "https://profiles.wordpress.org/moricktokyo/",
+    "contributors": {
+        "moricktokyo": {
+            "profile": "https://profiles.wordpress.org/moricktokyo/",
+            "avatar": "https://secure.gravatar.com/avatar/984a80815e25854a6c1b9f37f9de7dfbe6bc190032d9ff199eecc8d14032b348?s=96&d=monsterid&r=g",
+            "display_name": "moricktokyo"
+        }
+    },
+    "requires": "5.3",
+    "tested": "7.1",
+    "requires_php": "7.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/morick-markdown-layer-ai/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-30 14:59:00",
+    "added": "2026-08-28",
+    "homepage": "https://morick.tokyo.jp/wp-plugins/morick-markdown-layer-ai/",
+    "sections": {
+        "description": "<p>AI assistants and crawlers (GPTBot, ClaudeBot, Perplexity, and others) increasingly read the web to answer users&#8217; questions. HTML pages built for humans are heavy and noisy for them: navigation, scripts, and styling bury the actual content.</p>\n<p>Morick Markdown Layer for AI adds a lightweight, machine-friendly <strong>Markdown layer</strong> on top of your existing site &#8211; without changing your theme, your URLs, or anything your human visitors see.</p>\n<h4>What it does</h4>\n<ul>\n<li><strong>Markdown version of every page.</strong> Append <code>?ai=1</code> to any post, page, or archive URL and the plugin returns clean Markdown (with YAML frontmatter: title, description, canonical URL, dates, categories) instead of HTML.</li>\n<li><strong>Content negotiation.</strong> Clients that send an <code>Accept: text/markdown</code> header receive Markdown at the normal URL &#8211; no query parameter needed.</li>\n<li><strong>/llms.txt generation.</strong> The plugin dynamically serves an <code>llms.txt</code> index: your site name, description, and a link list of all Markdown-enabled pages, so AI agents can discover your content in one request.</li>\n<li><strong>Alternate link tags.</strong> Each HTML page advertises its Markdown version via <code>&lt;link rel=\"alternate\" type=\"text/markdown\"&gt;</code> in the head, which is how AI crawlers actually discover and follow the Markdown layer.</li>\n<li><strong>Admin checklist.</strong> A dashboard screen lists every target page with its status (Auto / Manual / Excluded), body length, sortable columns, status filters, and title search.</li>\n<li><strong>Manual Markdown override.</strong> For template-driven landing pages whose HTML converts poorly, write Markdown by hand per page. Manual Markdown always wins over auto conversion.</li>\n<li><strong>Automatic exclusion.</strong> Pages whose converted body falls below a configurable length threshold are excluded automatically (thin content is worse than no content for AI consumption).</li>\n<li><strong>Blog home index.</strong> The posts index is served as Markdown too: a linked list of recent posts, so an agent can enter at the front door and walk the whole site.</li>\n<li><strong>No dependencies.</strong> The HTML-to-Markdown converter is a self-contained DOM walker. No Composer packages, no external services, no API calls, no data leaves your server.</li>\n</ul>\n<h4>How conversion is resolved</h4>\n<p>For each Markdown request the plugin resolves in this order:</p>\n<ol>\n<li>Manual Markdown exists for the page &#8211; serve it (threshold ignored).</li>\n<li>Otherwise, if the auto-converted body meets the length threshold &#8211; serve the auto conversion.</li>\n<li>Otherwise the page is excluded: no Markdown is served and no alternate link is printed.</li>\n</ol>\n<h4>SEO safety</h4>\n<p>The Markdown response sends a <code>Link: &lt;original-url&gt;; rel=\"canonical\"</code> HTTP header pointing back to the HTML page, plus <code>Cache-Control: no-store</code>, so the Markdown layer does not compete with your HTML pages in search engines.</p>\n<h4>Performance</h4>\n<p>Converted Markdown is cached per page in transients and invalidated automatically when the post is saved. The archive (<code>llms.txt</code>) and page lists are capped and filterable via the <code>mdlai_post_types</code> and <code>mdlai_list_limit</code> hooks.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>morick-markdown-layer-ai</code> folder to <code>/wp-content/plugins/</code>, or install through the WordPress Plugins screen.</li>\n<li>Activate the plugin.</li>\n<li>Open the <strong>Markdown Layer</strong> menu in your dashboard.</li>\n<li>Choose the target post types and taxonomies, set the body length threshold, and save.</li>\n<li>Verify: open any page with <code>?ai=1</code> appended, and open <code>/llms.txt</code>.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20change%20what%20human%20visitors%20see%3F\">\nDoes this change what human visitors see?\n</h4>\n<p>\n<p>No. Regular visitors receive your normal HTML. Markdown is only served when a client explicitly asks for it (<code>?ai=1</code> or an <code>Accept: text/markdown</code> header).</p>\n</p>\n<dt id=\"will%20the%20markdown%20pages%20hurt%20my%20seo%3F\">\nWill the Markdown pages hurt my SEO?\n</h4>\n<p>\n<p>The Markdown response carries a canonical HTTP header pointing to the original HTML URL and a no-store cache policy. Search engines are directed to treat the HTML page as the canonical version.</p>\n</p>\n<dt id=\"do%20ai%20crawlers%20actually%20use%20this%3F\">\nDo AI crawlers actually use this?\n</h4>\n<p>\n<p>In our production measurements, AI crawlers discovered the Markdown layer through the alternate link tags within days of release and began fetching Markdown versions directly &#8211; in some cases skipping the HTML entirely. Adoption varies by vendor and grows over time.</p>\n</p>\n<dt id=\"what%20happens%20to%20pages%20with%20very%20little%20content%3F\">\nWhat happens to pages with very little content?\n</h4>\n<p>\n<p>Pages whose converted body is shorter than the threshold (default 20 characters) are excluded: no Markdown version, no alternate link. You can still serve them by writing manual Markdown on the checklist screen.</p>\n</p>\n<dt id=\"where%20is%20manual%20markdown%20stored%3F\">\nWhere is manual Markdown stored?\n</h4>\n<p>\n<p>In post meta / term meta on your own database (<code>_mdlai_manual</code>). Uninstalling the plugin removes its settings and caches but intentionally preserves your manual Markdown, so you do not lose hand-written content if you reinstall. Delete the meta keys manually if you want a complete wipe.</p>\n</p>\n<dt id=\"does%20the%20plugin%20call%20any%20external%20service%3F\">\nDoes the plugin call any external service?\n</h4>\n<p>\n<p>No. Everything runs locally. Nothing is sent anywhere.</p>\n</p>\n\n",
+        "changelog": "<h4>1.4.2</h4>\n<ul>\n<li>Blog home is now served as Markdown: an index of recent posts, each linking to its Markdown version. Can be turned off in Settings.</li>\n<li>Fixed HTML entities (&amp; and friends) appearing literally in llms.txt and in page titles.</li>\n</ul>\n<h4>1.4.1</h4>\n<ul>\n<li>Renamed to &#8220;Morick Markdown Layer for AI&#8221; (distinctive branding). Text domain updated.</li>\n<li>Removed bundled translation files (translations will be served via translate.wordpress.org).</li>\n</ul>\n<h4>1.4.0</h4>\n<ul>\n<li>First public release on WordPress.org.</li>\n<li>Internationalization: all admin strings are translatable; Japanese translation bundled.</li>\n<li>Hardened input sanitization (<code>REQUEST_URI</code>, <code>HTTP_ACCEPT</code>, list table parameters).</li>\n<li>llms.txt intro line is now translatable.</li>\n</ul>\n<h4>1.3.0</h4>\n<ul>\n<li>Manual Markdown save date is reflected in the frontmatter <code>modified</code> field.</li>\n<li>Editor textarea now pre-fills with the auto-converted draft when no manual Markdown exists.</li>\n<li>Images are normalized to one per line.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Admin checklist rebuilt on WP_List_Table: sortable columns, status filter views, title search, pagination.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Accept header negotiation, llms.txt generation, alternate link output.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial internal release: ?ai=1 Markdown serving with automatic HTML-to-Markdown conversion.</li>\n</ul>\n"
+    },
+    "short_description": "Adds an AI-agent-friendly Markdown layer to your existing site: ?ai=1 URLs, Accept header negotiation, /llms.txt, and alternate links.",
+    "description": "<p>AI assistants and crawlers (GPTBot, ClaudeBot, Perplexity, and others) increasingly read the web to answer users&#8217; questions. HTML pages built for humans are heavy and noisy for them: navigation, scripts, and styling bury the actual content.</p>\n<p>Morick Markdown Layer for AI adds a lightweight, machine-friendly <strong>Markdown layer</strong> on top of your existing site &#8211; without changing your theme, your URLs, or anything your human visitors see.</p>\n<h4>What it does</h4>\n<ul>\n<li><strong>Markdown version of every page.</strong> Append <code>?ai=1</code> to any post, page, or archive URL and the plugin returns clean Markdown (with YAML frontmatter: title, description, canonical URL, dates, categories) instead of HTML.</li>\n<li><strong>Content negotiation.</strong> Clients that send an <code>Accept: text/markdown</code> header receive Markdown at the normal URL &#8211; no query parameter needed.</li>\n<li><strong>/llms.txt generation.</strong> The plugin dynamically serves an <code>llms.txt</code> index: your site name, description, and a link list of all Markdown-enabled pages, so AI agents can discover your content in one request.</li>\n<li><strong>Alternate link tags.</strong> Each HTML page advertises its Markdown version via <code>&lt;link rel=\"alternate\" type=\"text/markdown\"&gt;</code> in the head, which is how AI crawlers actually discover and follow the Markdown layer.</li>\n<li><strong>Admin checklist.</strong> A dashboard screen lists every target page with its status (Auto / Manual / Excluded), body length, sortable columns, status filters, and title search.</li>\n<li><strong>Manual Markdown override.</strong> For template-driven landing pages whose HTML converts poorly, write Markdown by hand per page. Manual Markdown always wins over auto conversion.</li>\n<li><strong>Automatic exclusion.</strong> Pages whose converted body falls below a configurable length threshold are excluded automatically (thin content is worse than no content for AI consumption).</li>\n<li><strong>Blog home index.</strong> The posts index is served as Markdown too: a linked list of recent posts, so an agent can enter at the front door and walk the whole site.</li>\n<li><strong>No dependencies.</strong> The HTML-to-Markdown converter is a self-contained DOM walker. No Composer packages, no external services, no API calls, no data leaves your server.</li>\n</ul>\n<h4>How conversion is resolved</h4>\n<p>For each Markdown request the plugin resolves in this order:</p>\n<ol>\n<li>Manual Markdown exists for the page &#8211; serve it (threshold ignored).</li>\n<li>Otherwise, if the auto-converted body meets the length threshold &#8211; serve the auto conversion.</li>\n<li>Otherwise the page is excluded: no Markdown is served and no alternate link is printed.</li>\n</ol>\n<h4>SEO safety</h4>\n<p>The Markdown response sends a <code>Link: &lt;original-url&gt;; rel=\"canonical\"</code> HTTP header pointing back to the HTML page, plus <code>Cache-Control: no-store</code>, so the Markdown layer does not compete with your HTML pages in search engines.</p>\n<h4>Performance</h4>\n<p>Converted Markdown is cached per page in transients and invalidated automatically when the post is saved. The archive (<code>llms.txt</code>) and page lists are capped and filterable via the <code>mdlai_post_types</code> and <code>mdlai_list_limit</code> hooks.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/morick-markdown-layer-ai.1.4.2.zip",
+    "upgrade_notice": {
+        "1.4.2": "<p>The blog home now has a Markdown version, and HTML entities no longer leak into llms.txt.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "agents": "Agents",
+        "ai": "AI",
+        "llm": "LLM",
+        "llms-txt": "llms.txt",
+        "markdown": "markdown"
+    },
+    "stable_tag": "1.4.2",
+    "versions": {
+        "1.4.1": "https://downloads.wordpress.org/plugin/morick-markdown-layer-ai.1.4.1.zip",
+        "1.4.2": "https://downloads.wordpress.org/plugin/morick-markdown-layer-ai.1.4.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/morick-markdown-layer-ai.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/morick-markdown-layer-ai/assets/banner-772x250.png?rev=3670841",
+        "high": "https://ps.w.org/morick-markdown-layer-ai/assets/banner-1544x500.png?rev=3670841"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/morick-markdown-layer-ai/assets/icon.svg?rev=3670841",
+        "svg": "https://ps.w.org/morick-markdown-layer-ai/assets/icon.svg?rev=3670841"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

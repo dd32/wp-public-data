@@ -1,0 +1,75 @@
+{
+    "name": "Dlit Easy Math Captcha",
+    "slug": "dlit-easy-math-captcha",
+    "version": "1.5.2",
+    "author": "<a href=\"https://profiles.wordpress.org/dlit/\">dlit</a>",
+    "author_profile": "https://profiles.wordpress.org/dlit/",
+    "contributors": {
+        "dlit": {
+            "profile": "https://profiles.wordpress.org/dlit/",
+            "avatar": "https://secure.gravatar.com/avatar/614f682bc7e157d3476d170e6aa9dc72d0d29aea5f823ecbd858d254084b9472?s=96&d=monsterid&r=g",
+            "display_name": "dlit"
+        }
+    },
+    "requires": "5.0",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/dlit-easy-math-captcha/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-30 15:41:00",
+    "added": "2026-08-30",
+    "homepage": "https://github.com/daileit/dlit-wp-math-captcha",
+    "sections": {
+        "description": "<p>Dlit Easy Math Captcha adds configurable math captcha protection to:</p>\n<ul>\n<li>WordPress comments</li>\n<li>Login form</li>\n<li>Registration form</li>\n<li>WooCommerce product reviews</li>\n<li>Contact Form 7 forms via [math_captcha]</li>\n</ul>\n<p>Features:</p>\n<ul>\n<li>Answer-digit based difficulty (1-3 digits)</li>\n<li>Configurable operations: addition, subtraction, multiplication</li>\n<li>Question style: digits, emoji (1️⃣3️⃣ ➕ 7️⃣), or mixed</li>\n<li>Per-integration simple one-line mode to minimize UI impact</li>\n<li>Stateless HMAC-signed single-use token verification (no database writes on page render)</li>\n<li>Nonce verification for submissions</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to /wp-content/plugins/.</li>\n<li>Activate the plugin in WordPress.</li>\n<li>Go to Settings &gt; Math Captcha.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"how%20do%20i%20use%20it%20with%20contact%20form%207%3F\">\nHow do I use it with Contact Form 7?\n</h4>\n<p>\n<p>Add this tag in your CF7 form (the name, e.g. <code>captcha-1</code>, lets CF7 show the validation error next to the field):</p>\n<p>[math_captcha captcha-1]</p>\n<p>Optional flags (no colons):</p>\n<p>[math_captcha captcha-1 simple]            &#8211; force compact one-line layout<br />\n[math_captcha captcha-1 full]              &#8211; force full layout with description<br />\n[math_captcha captcha-1 light]             &#8211; force light text mode<br />\n[math_captcha captcha-1 dark]              &#8211; force dark text mode<br />\n[math_captcha captcha-1 id:my-id]          &#8211; set a custom HTML id on the input<br />\n[math_captcha captcha-1 id:my-id simple]   &#8211; combine id + compact layout<br />\n[math_captcha captcha-1 simple light]      &#8211; combine compact + light text mode<br />\n[math_captcha captcha-1 id:my-id full dark] &#8211; combine id + full + dark text mode</p>\n</p>\n<dt id=\"does%20it%20support%20redis%20or%20memcached%3F\">\nDoes it support Redis or Memcached?\n</h4>\n<p>\n<p>Yes, automatically. Tokens are stored via the WordPress Transients API, so if your site uses a persistent object-cache drop-in (for example the &#8220;Redis Object Cache&#8221; plugin), tokens live in Redis/Memcached instead of the database with no configuration. The Settings &gt; Math Captcha page shows which storage is currently in use.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20page%20caching%3F\">\nDoes it work with page caching?\n</h4>\n<p>\n<p>Each captcha embeds a single-use token in the page HTML. If a full-page cache serves the same cached page to many visitors, only the first successful submission is accepted; later visitors must reload past the cache. Exclude pages with comment forms from full-page caching, or keep cache lifetimes short (under 30 minutes).</p>\n</p>\n\n",
+        "changelog": "<h4>1.5.1</h4>\n<ul>\n<li>Added: Question style option (Digits / Emoji / Mixed) — emoji questions like 1️⃣3️⃣ ➕ 7️⃣ break the simplest text-parsing spam bots. Display only; verification is unchanged.</li>\n<li>Fixed: Contact Form 7 no longer burns the captcha token when another field fails validation — the token is consumed only after the whole form passes, so corrected resubmits work without reloading.</li>\n<li>Improved: dead tokens (expired or already used) now show &#8220;please reload the page&#8221; instead of the misleading &#8220;incorrect answer&#8221;.</li>\n<li>Fixed: the answer input stays readable on dark themes and in the CF7 light text mode (it no longer inherits light text onto its white background).</li>\n<li>Fixed: valid HTML in the simple layout (the question is no longer a div inside a span).</li>\n<li>Improved accessibility: the answer input references the math question via aria-describedby, numeric keyboards are requested on mobile, and the info tooltip is keyboard-reachable.</li>\n<li>Improved: number-input spinner arrows are hidden and the tooltip wraps instead of overflowing on small screens.</li>\n<li>Improved: the stylesheet now loads only on pages where a captcha is rendered instead of site-wide.</li>\n</ul>\n<h4>1.5.0</h4>\n<ul>\n<li>Improved: redesigned settings screen — protect/layout toggles combined into one Protected Forms table with inline dependency status, corrected difficulty wording (the digit setting controls the answer; operands are auto-generated with up to one extra digit), and a live preview of both captcha layouts.</li>\n<li>Added: Settings link on the plugin row of the Plugins screen.</li>\n<li>Added: Token Storage status panel on the settings page — shows whether replay-protection tokens are stored in a persistent object cache (Redis/Memcached/APCu) or the database, and suggests enabling one when the server supports it.</li>\n<li>Improved: captcha tokens are now stateless HMAC-signed values — rendering no longer writes to the database; a single transient is written only on successful verification to prevent replay. Wrong answers no longer consume the token, so visitors can retry.</li>\n<li>Security: comment captcha can no longer be bypassed by spoofing review POST fields; product reviews are now detected from the target post type on the server.</li>\n<li>Security: WooCommerce review submissions now have their math answer verified (previously only the nonce was checked).</li>\n<li>Fixed: pingbacks and trackbacks are no longer blocked by comment captcha validation.</li>\n<li>Fixed: front-end login forms built with wp_login_form() now render the captcha instead of locking users out.</li>\n<li>Fixed: consolidated to a single plugin main file (dlit-easy-math-captcha.php).</li>\n<li>Improved: multiplication questions no longer degenerate to the trivial &#8220;N x 1&#8221; pattern.</li>\n<li>Improved: captcha is no longer rendered for logged-in users who can moderate comments.</li>\n</ul>\n<h4>1.4.5</h4>\n<ul>\n<li>Improved simple layout alignment and theming behavior.</li>\n<li>Updated text domain to match plugin slug.</li>\n</ul>\n<h4>1.4.4</h4>\n<ul>\n<li>Added CF7 text mode flags: <code>light</code> and <code>dark</code>.</li>\n<li>Removed external front-end link from captcha output.</li>\n</ul>\n<h4>1.4.3</h4>\n<ul>\n<li>Added CF7 shortcode layout flags: <code>simple</code> and <code>full</code>.</li>\n<li>Added one-line compact captcha display mode.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Added optional setting defaults for core integrations.</li>\n<li>Updated activation behavior and admin settings flow.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Added answer-digit based difficulty generation.</li>\n<li>Added per-integration simple one-line display mode.</li>\n<li>Improved comments and WooCommerce review validation flow.</li>\n</ul>\n"
+    },
+    "short_description": "A simple math captcha plugin for comments, login, registration, WooCommerce reviews, and Contact Form 7.",
+    "description": "<p>Dlit Easy Math Captcha adds configurable math captcha protection to:</p>\n<ul>\n<li>WordPress comments</li>\n<li>Login form</li>\n<li>Registration form</li>\n<li>WooCommerce product reviews</li>\n<li>Contact Form 7 forms via [math_captcha]</li>\n</ul>\n<p>Features:</p>\n<ul>\n<li>Answer-digit based difficulty (1-3 digits)</li>\n<li>Configurable operations: addition, subtraction, multiplication</li>\n<li>Question style: digits, emoji (1️⃣3️⃣ ➕ 7️⃣), or mixed</li>\n<li>Per-integration simple one-line mode to minimize UI impact</li>\n<li>Stateless HMAC-signed single-use token verification (no database writes on page render)</li>\n<li>Nonce verification for submissions</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/dlit-easy-math-captcha.1.5.2.zip",
+    "upgrade_notice": {
+        "1.5.0": "<p>Security release: fixes captcha bypasses on comments and WooCommerce reviews. Update recommended.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "captcha": "captcha",
+        "comments": "comments",
+        "math-captcha": "math captcha",
+        "spam-protection": "spam protection",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.5.2",
+    "versions": {
+        "1.5.2": "https://downloads.wordpress.org/plugin/dlit-easy-math-captcha.1.5.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/dlit-easy-math-captcha.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/dlit-easy-math-captcha.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
