@@ -1,0 +1,90 @@
+{
+    "name": "APSearch — Arabic &amp; Persian Search",
+    "slug": "apsearch-arabic-persian-search",
+    "version": "0.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/faizahmaddae/\">Faiz</a>",
+    "author_profile": "https://profiles.wordpress.org/faizahmaddae/",
+    "contributors": {
+        "faizahmaddae": {
+            "profile": "https://profiles.wordpress.org/faizahmaddae/",
+            "avatar": "https://secure.gravatar.com/avatar/182462837aef96801eeb82db0fe06897b96c94d87deea4efca6bda486d68d476?s=96&d=monsterid&r=g",
+            "display_name": "Faiz"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/apsearch-arabic-persian-search/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-31 13:31:00",
+    "added": "2026-08-31",
+    "homepage": "",
+    "sections": {
+        "description": "<p>WordPress search fails on Arabic-script languages, and it fails silently. A visitor searches <strong>کتابها</strong> and gets nothing, because the post says <strong>کتاب‌ها</strong> with a zero-width non-joiner. Someone types <strong>كتاب</strong> with an Arabic Kaf while the content uses the Persian <strong>ک</strong>. A product title carries diacritics; the query does not. Every one of these is a lost search, a lost reader, and in a shop, a lost sale.</p>\n<p>This plugin fixes it by keeping a normalized copy of your searchable text and matching queries against that copy.</p>\n<p><strong>What it normalizes</strong></p>\n<ul>\n<li>Yeh family: ي, ى, ئ, ے, ې <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> ی</li>\n<li>Kaf family: ك, ڪ <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> ک</li>\n<li>Alef family: أ, إ, آ, ٱ <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> ا</li>\n<li>Heh family: ة, ۀ, ہ, ھ <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> ه</li>\n<li>Diacritics (harakat), Quranic marks and kashida/tatweel are ignored</li>\n<li>Arabic-Indic (٠-٩) and Extended Arabic-Indic (۰-۹) digits become 0-9</li>\n<li>Zero-width non-joiner (ZWNJ / نیم‌فاصله) and other invisible marks are ignored</li>\n<li>Punctuation and repeated whitespace are ignored</li>\n</ul>\n<p><strong>Works with</strong></p>\n<ul>\n<li>The built-in search form and search results page</li>\n<li>Any theme or block that runs a WP_Query search</li>\n<li>WooCommerce product search (enable the <code>product</code> post type in settings)</li>\n<li>WP-CLI: <code>wp apsearch reindex</code>, <code>wp apsearch status</code>, <code>wp apsearch normalize \"متن\"</code></li>\n</ul>\n<p><strong>Privacy</strong></p>\n<p>The plugin sends nothing anywhere. It stores one normalized text field per post in your own database.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin.</li>\n<li>Go to <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> APSearch</strong>.</li>\n<li>Choose which post types to index and press <strong>Build / rebuild index</strong>.</li>\n<li>Search your site and compare.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20to%20rebuild%20the%20index%20after%20adding%20a%20post%3F\">\nDo I need to rebuild the index after adding a post?\n</h4>\n<p>\n<p>No. Posts are indexed automatically when saved. A full rebuild is only needed after you install the plugin or change the normalization rules.</p>\n</p>\n<dt id=\"does%20this%20slow%20down%20my%20site%3F\">\nDoes this slow down my site?\n</h4>\n<p>\n<p>Search adds one LEFT JOIN on a single meta row per post. Indexing happens on save, not on view.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20a%20search%20plugin%20like%20relevanssi%20or%20searchwp%3F\">\nDoes it work with a search plugin like Relevanssi or SearchWP?\n</h4>\n<p>\n<p>Those plugins replace WordPress search entirely rather than filtering it, so this plugin steps aside and your results come from them. If Relevanssi is active you will see a one-time notice in the admin saying so.</p>\n<p>You then have two choices: deactivate the other plugin and search with this one, or keep it and feed it this plugin&#8217;s normalization using the snippet in the next answer.</p>\n</p>\n<dt id=\"how%20do%20i%20make%20relevanssi%20understand%20arabic%20and%20persian%20spelling%3F\">\nHow do I make Relevanssi understand Arabic and Persian spelling?\n</h4>\n<p>\n<p>Relevanssi stores search terms exactly as they are written, so <code>کتاب‌ها</code> (with ZWNJ) and <code>کتابها</code> stay different words to it, as do <code>كتاب</code> and <code>کتاب</code>, and <code>۱۴۰۳</code> and <code>1403</code>.</p>\n<p>Add this to your theme&#8217;s <code>functions.php</code> or a small site plugin:</p>\n<pre><code>add_filter(\n    'relevanssi_remove_punctuation',\n    function ( $string ) {\n        if ( class_exists( 'APSearch_Normalizer' ) ) {\n            $string = APSearch_Normalizer::normalize( $string );\n        }\n        return $string;\n    },\n    20\n);\n</code></pre>\n<p>Relevanssi runs that filter inside its tokenizer, which it uses both when indexing your posts and when parsing what a visitor typed. Normalizing in one place therefore fixes both sides at once. Priority 20 makes it run after Relevanssi&#8217;s own punctuation handling.</p>\n<p><strong>Rebuild the Relevanssi index after adding this</strong> (Relevanssi&#8217;s own settings screen), or its stored terms will still be the unnormalized ones.</p>\n<p>This is a documented starting point, not a supported integration — the snippet touches Relevanssi&#8217;s filter, and Relevanssi&#8217;s own settings still decide what gets indexed.</p>\n</p>\n<dt id=\"does%20it%20support%20urdu%2C%20pashto%2C%20kurdish%20or%20hebrew%3F\">\nDoes it support Urdu, Pashto, Kurdish or Hebrew?\n</h4>\n<p>\n<p>Urdu, Pashto and Dari letter variants are covered. Hebrew needs no normalization of this kind and is unaffected.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "Arabic and Persian searches return nothing when the spelling differs by one invisible character. This makes them match.",
+    "description": "<p>WordPress search fails on Arabic-script languages, and it fails silently. A visitor searches <strong>کتابها</strong> and gets nothing, because the post says <strong>کتاب‌ها</strong> with a zero-width non-joiner. Someone types <strong>كتاب</strong> with an Arabic Kaf while the content uses the Persian <strong>ک</strong>. A product title carries diacritics; the query does not. Every one of these is a lost search, a lost reader, and in a shop, a lost sale.</p>\n<p>This plugin fixes it by keeping a normalized copy of your searchable text and matching queries against that copy.</p>\n<p><strong>What it normalizes</strong></p>\n<ul>\n<li>Yeh family: ي, ى, ئ, ے, ې <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> ی</li>\n<li>Kaf family: ك, ڪ <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> ک</li>\n<li>Alef family: أ, إ, آ, ٱ <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> ا</li>\n<li>Heh family: ة, ۀ, ہ, ھ <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> ه</li>\n<li>Diacritics (harakat), Quranic marks and kashida/tatweel are ignored</li>\n<li>Arabic-Indic (٠-٩) and Extended Arabic-Indic (۰-۹) digits become 0-9</li>\n<li>Zero-width non-joiner (ZWNJ / نیم‌فاصله) and other invisible marks are ignored</li>\n<li>Punctuation and repeated whitespace are ignored</li>\n</ul>\n<p><strong>Works with</strong></p>\n<ul>\n<li>The built-in search form and search results page</li>\n<li>Any theme or block that runs a WP_Query search</li>\n<li>WooCommerce product search (enable the <code>product</code> post type in settings)</li>\n<li>WP-CLI: <code>wp apsearch reindex</code>, <code>wp apsearch status</code>, <code>wp apsearch normalize \"متن\"</code></li>\n</ul>\n<p><strong>Privacy</strong></p>\n<p>The plugin sends nothing anywhere. It stores one normalized text field per post in your own database.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/apsearch-arabic-persian-search.0.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/apsearch-arabic-persian-search/trunk/screenshot-1.png?rev=3674336",
+            "caption": "Settings screen with index status."
+        },
+        {
+            "src": "https://ps.w.org/apsearch-arabic-persian-search/trunk/screenshot-2.png?rev=3674336",
+            "caption": "Normalization rules."
+        },
+        {
+            "src": "https://ps.w.org/apsearch-arabic-persian-search/trunk/screenshot-3.png?rev=3674336",
+            "caption": "The normalization test tool."
+        }
+    ],
+    "tags": {
+        "arabic": "arabic",
+        "farsi": "farsi",
+        "persian": "persian",
+        "search": "search",
+        "urdu": "Urdu"
+    },
+    "stable_tag": "0.1.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/apsearch-arabic-persian-search.0.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/apsearch-arabic-persian-search.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/apsearch-arabic-persian-search/assets/banner-772x250.png?rev=3674331",
+        "high": "https://ps.w.org/apsearch-arabic-persian-search/assets/banner-1544x500.png?rev=3674331"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/apsearch-arabic-persian-search/assets/icon-128x128.png?rev=3674331",
+        "2x": "https://ps.w.org/apsearch-arabic-persian-search/assets/icon-256x256.png?rev=3674331"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
