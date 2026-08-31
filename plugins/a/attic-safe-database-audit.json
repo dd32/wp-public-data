@@ -1,0 +1,78 @@
+{
+    "name": "Attic — Safe Database Audit",
+    "slug": "attic-safe-database-audit",
+    "version": "1.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/rainynewt/\">Bishal Shrestha</a>",
+    "author_profile": "https://profiles.wordpress.org/rainynewt/",
+    "contributors": {
+        "rainynewt": {
+            "profile": "https://profiles.wordpress.org/rainynewt/",
+            "avatar": "https://secure.gravatar.com/avatar/6453f9f745dfe85ac3241f8bac7398788a776267cdb7be3f07a53db7453233b8?s=96&d=monsterid&r=g",
+            "display_name": "Bishal Shrestha"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/attic-safe-database-audit/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-08-31 17:26:00",
+    "added": "2026-08-31",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Uninstalled and misbehaving plugins leave behind lingering database bloat — autoloaded options, ghost cron events, stranded transients, orphaned tables. Traditional cleanup tools reach for aggressive drop/delete queries that risk breaking your site.</p>\n<p>Attic audits your WordPress database for bloat, without any of that:</p>\n<ul>\n<li><strong>Autoloaded option bloat</strong> — oversized options that load on every page request, ranked by size against Site Health&#8217;s 800 KB line.</li>\n<li><strong>Ghost cron events</strong> — scheduled hooks with no registered callback, firing forever and doing nothing.</li>\n<li><strong>Orphaned tables</strong> — tables no installed plugin claims, with reclaimable megabytes up front.</li>\n<li><strong>Stranded transients</strong> — expired timeout pairs and orphaned rows.</li>\n<li><strong>Leftovers from deleted plugins</strong> — data whose owning plugin is absent from disk entirely.</li>\n</ul>\n<p>Two rules outrank every feature:</p>\n<ol>\n<li><strong>Quarantine, never delete.</strong> Options are stored before removal. Tables are renamed (<code>wp_attic_quarantined_*</code>), never dropped until a purge window passes.</li>\n<li><strong>Nothing is called orphaned until your code has been searched for it.</strong> Attic streams <code>wp-content</code> — plugins, mu-plugins, themes, <code>wp-config.php</code> — looking for every candidate name before promoting anything to high confidence.</li>\n</ol>\n<p>Every finding shows its full evidence inline: which rule fired, what it attributed to and whether that plugin exists on disk, how many code references were found, and the size. A finding you cannot audit is a finding you should not act on.</p>\n<h3>Filters</h3>\n<ul>\n<li><code>attic_protected_options</code> — additional never-flag option names</li>\n<li><code>attic_protected_cron_hooks</code> / <code>attic_protected_tables</code> — same, for cron and tables</li>\n<li><code>attic_finding_confidence</code> — last word on any single finding&#8217;s confidence</li>\n<li><code>attic_reference_scan_roots</code> — unusual layouts, custom content dirs</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>attic</code> folder to <code>/wp-content/plugins/</code>.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> menu in WordPress.</li>\n<li>Navigate to <strong>Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Attic</strong> to run your first audit.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"is%20this%20safe%3F\">\nIs this safe?\n</h4>\n<p>\n<p>The scan is read-only. Nothing changes until you take an explicit, confirmed action. Core options like <code>siteurl</code>, <code>active_plugins</code> and <code>cron</code> can never be flagged, and neither can anything on your own protected list or the <code>attic_protected_options</code> filter.</p>\n</p>\n<dt id=\"how%20do%20i%20undo%20something%3F\">\nHow do I undo something?\n</h4>\n<p>\n<p>Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Attic <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Quarantine. Every action creates a batch; restore a whole batch in one click. Batches auto-purge after 30 days (configurable).</p>\n</p>\n<dt id=\"why%20does%20my%20finding%20say%20%22review%22%20instead%20of%20%22high%22%3F\">\nWhy does my finding say &#8220;review&#8221; instead of &#8220;high&#8221;?\n</h4>\n<p>\n<p>High confidence requires: the owning plugin absent from disk (or size-flagged <em>and</em> unread), AND zero literal AND zero prefix references in your code. Dynamic option names never literal-match, so weak signals still demote findings. If your filesystem could not be read, everything is marked unverified rather than guessed at.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20external%20object%20caches%3F\">\nDoes it work with external object caches?\n</h4>\n<p>\n<p>Yes — when Redis/Memcached is active, transients never touch the options table, and Attic says so instead of showing a meaningless clean bill of health.</p>\n</p>\n<dt id=\"multisite%3F\">\nMultisite?\n</h4>\n<p>\n<p>Single-site and subdirectory multisite installs work. Network-wide fleet scanning is planned.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.1</h4>\n<ul>\n<li>Fix: Quarantine action now correctly updates finding state (broken by SQL syntax error).</li>\n<li>Fix: Orphan tables rule no longer flags Attic&#8217;s own tables on sites with nested table prefixes (e.g. wp_pc_attic_*).</li>\n<li>Add: Stop scan button to abort long-running scans mid-flight.</li>\n<li>Fix: Findings page defaults to latest completed scan instead of showing duplicates across all scans.</li>\n<li>Fix: Scan complete state now hides progress bar and stop button cleanly.</li>\n<li>Fix: Empty quarantine batches are cleaned up automatically.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial plugin release: read-only database audit with quarantine-based undo, five detection rules, budgeted scan engine, reference scanning, quarantine with batch restore, and attribution map.</li>\n</ul>\n"
+    },
+    "short_description": "A read-only database audit that quarantines instead of deleting, and searches your code before it calls anything orphaned.",
+    "description": "<p>Uninstalled and misbehaving plugins leave behind lingering database bloat — autoloaded options, ghost cron events, stranded transients, orphaned tables. Traditional cleanup tools reach for aggressive drop/delete queries that risk breaking your site.</p>\n<p>Attic audits your WordPress database for bloat, without any of that:</p>\n<ul>\n<li><strong>Autoloaded option bloat</strong> — oversized options that load on every page request, ranked by size against Site Health&#8217;s 800 KB line.</li>\n<li><strong>Ghost cron events</strong> — scheduled hooks with no registered callback, firing forever and doing nothing.</li>\n<li><strong>Orphaned tables</strong> — tables no installed plugin claims, with reclaimable megabytes up front.</li>\n<li><strong>Stranded transients</strong> — expired timeout pairs and orphaned rows.</li>\n<li><strong>Leftovers from deleted plugins</strong> — data whose owning plugin is absent from disk entirely.</li>\n</ul>\n<p>Two rules outrank every feature:</p>\n<ol>\n<li><strong>Quarantine, never delete.</strong> Options are stored before removal. Tables are renamed (<code>wp_attic_quarantined_*</code>), never dropped until a purge window passes.</li>\n<li><strong>Nothing is called orphaned until your code has been searched for it.</strong> Attic streams <code>wp-content</code> — plugins, mu-plugins, themes, <code>wp-config.php</code> — looking for every candidate name before promoting anything to high confidence.</li>\n</ol>\n<p>Every finding shows its full evidence inline: which rule fired, what it attributed to and whether that plugin exists on disk, how many code references were found, and the size. A finding you cannot audit is a finding you should not act on.</p>\n<h3>Filters</h3>\n<ul>\n<li><code>attic_protected_options</code> — additional never-flag option names</li>\n<li><code>attic_protected_cron_hooks</code> / <code>attic_protected_tables</code> — same, for cron and tables</li>\n<li><code>attic_finding_confidence</code> — last word on any single finding&#8217;s confidence</li>\n<li><code>attic_reference_scan_roots</code> — unusual layouts, custom content dirs</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/attic-safe-database-audit.1.0.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "audit": "audit",
+        "cleanup": "cleanup",
+        "database": "database",
+        "optimization": "optimization",
+        "performance": "performance"
+    },
+    "stable_tag": "1.0.1",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/attic-safe-database-audit.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/attic-safe-database-audit.1.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/attic-safe-database-audit.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/attic-safe-database-audit/assets/banner-772x250.png?rev=3673275",
+        "high": "https://ps.w.org/attic-safe-database-audit/assets/banner-1544x500.png?rev=3673275"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/attic-safe-database-audit/assets/icon-128x128.png?rev=3673275",
+        "2x": "https://ps.w.org/attic-safe-database-audit/assets/icon-256x256.png?rev=3673275"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
