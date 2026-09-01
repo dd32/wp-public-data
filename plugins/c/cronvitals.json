@@ -1,0 +1,100 @@
+{
+    "name": "CronVitals – WP-Cron Monitoring &amp; Failure Alerts",
+    "slug": "cronvitals",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/codynaut/\">codynaut</a>",
+    "author_profile": "https://profiles.wordpress.org/codynaut/",
+    "contributors": {
+        "codynaut": {
+            "profile": "https://profiles.wordpress.org/codynaut/",
+            "avatar": "https://secure.gravatar.com/avatar/2dabc35dddcb5b8a1261ba99833dc52edf11e125bfec05fd462d092f7d21fae7?s=96&d=monsterid&r=g",
+            "display_name": "codynaut"
+        }
+    },
+    "requires": "5.8",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/cronvitals/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-01 07:33:00",
+    "added": "2026-09-01",
+    "homepage": "https://cronvitals.com/",
+    "sections": {
+        "description": "<p>A scheduled post didn&#8217;t publish. A subscription didn&#8217;t renew. Stock didn&#8217;t sync. WordPress never told you — WP-Cron fails silently, and by the time someone notices, it&#8217;s a client email.</p>\n<p>CronVitals is a monitor for WP-Cron. It watches every scheduled job on your site, records every run, and tells you when one breaks.</p>\n<ul>\n<li><strong>See the actual error, not just &#8220;something failed.&#8221;</strong> When a cron job dies on a PHP fatal, CronVitals catches it during shutdown and logs the message, file, and line — the thing that&#8217;s normally lost because nobody was watching the request.</li>\n<li><strong>Catch jobs that never ran at all.</strong> A configurable threshold (default 15 minutes past schedule) marks a job as missed, so a job that quietly stopped rescheduling shows up as a problem instead of just disappearing.</li>\n<li><strong>Answer &#8220;how long has this been broken?&#8221;</strong> Every run is logged — job, scheduled time, actual run time, duration, pass/fail — with 30 days of history, a reliability score, and a per-job failure breakdown.</li>\n</ul>\n<h4>How it works</h4>\n<ol>\n<li>Activate. Every registered WP-Cron event is picked up automatically — no list to build, no jobs to register.</li>\n<li>Set the alert email and the missed-run threshold under <strong>Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> CronVitals</strong>. That&#8217;s the whole setup.</li>\n<li>You get an email (rate-limited, never a flood) and a dashboard notice when a job fails or runs late.</li>\n</ol>\n<h4>What it actually does under the hood</h4>\n<p>CronVitals attaches to each monitored hook at the outermost priorities to time the run, and registers a shutdown handler to catch fatals that kill the request mid-job. A separate five-minute scan compares each event&#8217;s schedule against the clock to find misses. Runs are written to one custom table, pruned to 30 days. It does not modify, reschedule, or remove your cron events — it reads and records.</p>\n<p>It works whether WP-Cron runs on page loads or a real system cron hits <code>wp-cron.php</code>, and it keeps working with <code>DISABLE_WP_CRON</code> set. Multisite-aware: each site gets its own table and settings, and sites created after network activation are set up automatically.</p>\n<h4>Free vs Pro</h4>\n<p>Everything above is free, on every site, with no caps — unlimited monitored jobs, full 30-day history, unlimited email alerts, and the reliability analytics.</p>\n<p>Pro adds the alerting and integrations that teams need:</p>\n<ul>\n<li><strong>WooCommerce / Action Scheduler monitoring</strong> — success and failure of Action Scheduler jobs, plus stalled-queue detection</li>\n<li><strong>Slack and generic webhooks</strong> — point them at Discord, Teams, Telegram, PagerDuty, Zapier, or your own endpoint</li>\n<li><strong>External heartbeat</strong> — your site pings an outside monitor (Healthchecks.io, Cronitor, BetterStack, or any URL) on an interval you set, so you&#8217;re alerted even when the whole site is down. Health-aware mode signals failure when jobs break, not only when the server does.</li>\n<li><strong>CSV export</strong> of the full run history</li>\n<li><strong>Weekly summary email</strong></li>\n</ul>\n<p>Pro is $49 a year for a single site, $99 for 5, $199 for 25, and $349 for unlimited sites — with a 14-day trial that doesn&#8217;t ask for a card.</p>\n<h4>Privacy and requirements</h4>\n<ul>\n<li>The free plugin sends nothing anywhere. It starts in anonymous mode — no signup prompt on activation, no data to Freemius unless you opt in.</li>\n<li>Pro contacts Freemius for license activation and updates, and sends the heartbeat ping only to the URL you enter. Both are described in Third-Party Services below.</li>\n<li>Requires WordPress 5.8+ and PHP 7.4+. Multisite supported. Translation-ready.</li>\n<li>Uninstall drops the log table and removes every option, transient, and scheduled event it created.</li>\n</ul>\n<h3>Third-Party Services</h3>\n<p>The free tier runs entirely on your server. The plugin connects to outside services only in the cases below.</p>\n<ol>\n<li>\n<p><strong>Freemius (licensing, updates &amp; opt-in).</strong> CronVitals uses Freemius, a third-party service, to handle Pro license activation, deliver Pro plugin updates, and process checkout. When you activate a Pro license or opt in, information such as your site URL, WordPress/PHP environment details, and (if you opt in) your admin email is sent to Freemius. Opt-in is optional and can be skipped; the free plugin functions without contacting Freemius until you choose to activate a license.</p>\n<ul>\n<li>Service: https://freemius.com/</li>\n<li>Terms of Service: https://freemius.com/terms/</li>\n<li>Privacy Policy: https://freemius.com/privacy/</li>\n</ul>\n</li>\n<li>\n<p><strong>External heartbeat (Pro, opt-in, off by default).</strong> If you enable the heartbeat and provide a monitor URL, the plugin sends a periodic HTTP request to that URL so an outside service can alert you if your site stops responding. You choose the provider and the URL; no data beyond the ping (and, in health-aware mode, a success/fail signal) is sent. Common providers and their terms:</p>\n<ul>\n<li>Healthchecks.io — https://healthchecks.io/ (terms: https://healthchecks.io/terms/, privacy: https://healthchecks.io/privacy/)</li>\n<li>Cronitor — https://cronitor.io/ (terms: https://cronitor.io/terms, privacy: https://cronitor.io/privacy)</li>\n<li>BetterStack — https://betterstack.com/ (terms: https://betterstack.com/terms, privacy: https://betterstack.com/privacy)</li>\n</ul>\n</li>\n</ol>\n",
+        "installation": "<ol>\n<li>Upload the <code>cronvitals</code> folder to <code>/wp-content/plugins/</code>, or install it through the Plugins screen in WordPress.</li>\n<li>Activate the plugin.</li>\n<li>Go to <strong>Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> CronVitals</strong> to review your scheduled jobs and configure alerts.</li>\n<li>(Optional) Activate a Pro license via the plugin&#8217;s &#8220;Activate License&#8221; link to unlock Pro features.</li>\n</ol>\n<p>For the most reliable monitoring, run WP-Cron from a real system cron: add <code>define( 'DISABLE_WP_CRON', true );</code> to <code>wp-config.php</code> and schedule a server cron to hit <code>wp-cron.php</code>. CronVitals works either way, but a system cron gives deterministic scheduling.</p>\n",
+        "faq": "\n<dt id=\"will%20it%20slow%20down%20my%20site%3F\">\nWill it slow down my site?\n</h4>\n<p>\n<p>No. Nothing runs on the front end. The monitoring adds two no-op hook callbacks per cron job during wp-cron.php requests, plus one scan every five minutes. Log writes are one row per cron run.</p>\n</p>\n<dt id=\"what%27s%20the%20difference%20between%20this%20and%20a%20cron%20manager%20like%20wp%20crontrol%3F\">\nWhat&#8217;s the difference between this and a cron manager like WP Crontrol?\n</h4>\n<p>\n<p>A cron manager lets you view, add, edit, and run events. CronVitals doesn&#8217;t manage your events — it watches them over time, records every run, catches the PHP errors that kill them, and alerts you. They solve different problems and many sites run both.</p>\n</p>\n<dt id=\"does%20it%20work%20if%20wp-cron%20is%20disabled%20or%20replaced%20by%20a%20system%20cron%3F\">\nDoes it work if WP-Cron is disabled or replaced by a system cron?\n</h4>\n<p>\n<p>Yes, and a real system cron gives you more accurate timing. CronVitals records runs however wp-cron.php is triggered, and the missed-job scan works either way.</p>\n</p>\n<dt id=\"what%20happens%20to%20my%20data%20if%20i%20deactivate%20it%3F\">\nWhat happens to my data if I deactivate it?\n</h4>\n<p>\n<p>Deactivating only unschedules the plugin&#8217;s own events — your log history and settings stay, so reactivating picks up where it left off. Uninstalling drops the log table and deletes every option and transient it created.</p>\n</p>\n<dt id=\"do%20i%20need%20an%20account%20or%20a%20license%20to%20use%20it%3F\">\nDo I need an account or a license to use it?\n</h4>\n<p>\n<p>No. The free plugin works fully on activation with no account, no API key, and no signup prompt — it runs in anonymous mode and contacts nothing. A license is only needed for the Pro features.</p>\n</p>\n<dt id=\"does%20it%20send%20my%20data%20anywhere%3F\">\nDoes it send my data anywhere?\n</h4>\n<p>\n<p>The free version sends nothing. Pro contacts Freemius to validate your license and deliver updates, and — only if you turn it on and supply a URL — sends a periodic ping to the external monitor you chose. Job names, logs, and error messages never leave your database.</p>\n</p>\n<dt id=\"can%20it%20alert%20me%20if%20my%20entire%20site%20goes%20down%3F\">\nCan it alert me if my entire site goes down?\n</h4>\n<p>\n<p>Yes, with the Pro external heartbeat. Because the alert comes from an outside monitor that expects a regular ping from your site, it fires even when WordPress itself can&#8217;t run.</p>\n</p>\n<dt id=\"does%20it%20monitor%20woocommerce%20jobs%3F\">\nDoes it monitor WooCommerce jobs?\n</h4>\n<p>\n<p>WooCommerce runs most background work through Action Scheduler, which is a separate queue from WP-Cron. Pro monitors that queue, including stalled-queue detection. Free monitors the WP-Cron events WooCommerce registers.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Know the moment a WP-Cron job fails, misses its run, or dies on a PHP fatal — with the error, a 30-day history, and an email alert.",
+    "description": "<p>A scheduled post didn&#8217;t publish. A subscription didn&#8217;t renew. Stock didn&#8217;t sync. WordPress never told you — WP-Cron fails silently, and by the time someone notices, it&#8217;s a client email.</p>\n<p>CronVitals is a monitor for WP-Cron. It watches every scheduled job on your site, records every run, and tells you when one breaks.</p>\n<ul>\n<li><strong>See the actual error, not just &#8220;something failed.&#8221;</strong> When a cron job dies on a PHP fatal, CronVitals catches it during shutdown and logs the message, file, and line — the thing that&#8217;s normally lost because nobody was watching the request.</li>\n<li><strong>Catch jobs that never ran at all.</strong> A configurable threshold (default 15 minutes past schedule) marks a job as missed, so a job that quietly stopped rescheduling shows up as a problem instead of just disappearing.</li>\n<li><strong>Answer &#8220;how long has this been broken?&#8221;</strong> Every run is logged — job, scheduled time, actual run time, duration, pass/fail — with 30 days of history, a reliability score, and a per-job failure breakdown.</li>\n</ul>\n<h4>How it works</h4>\n<ol>\n<li>Activate. Every registered WP-Cron event is picked up automatically — no list to build, no jobs to register.</li>\n<li>Set the alert email and the missed-run threshold under <strong>Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> CronVitals</strong>. That&#8217;s the whole setup.</li>\n<li>You get an email (rate-limited, never a flood) and a dashboard notice when a job fails or runs late.</li>\n</ol>\n<h4>What it actually does under the hood</h4>\n<p>CronVitals attaches to each monitored hook at the outermost priorities to time the run, and registers a shutdown handler to catch fatals that kill the request mid-job. A separate five-minute scan compares each event&#8217;s schedule against the clock to find misses. Runs are written to one custom table, pruned to 30 days. It does not modify, reschedule, or remove your cron events — it reads and records.</p>\n<p>It works whether WP-Cron runs on page loads or a real system cron hits <code>wp-cron.php</code>, and it keeps working with <code>DISABLE_WP_CRON</code> set. Multisite-aware: each site gets its own table and settings, and sites created after network activation are set up automatically.</p>\n<h4>Free vs Pro</h4>\n<p>Everything above is free, on every site, with no caps — unlimited monitored jobs, full 30-day history, unlimited email alerts, and the reliability analytics.</p>\n<p>Pro adds the alerting and integrations that teams need:</p>\n<ul>\n<li><strong>WooCommerce / Action Scheduler monitoring</strong> — success and failure of Action Scheduler jobs, plus stalled-queue detection</li>\n<li><strong>Slack and generic webhooks</strong> — point them at Discord, Teams, Telegram, PagerDuty, Zapier, or your own endpoint</li>\n<li><strong>External heartbeat</strong> — your site pings an outside monitor (Healthchecks.io, Cronitor, BetterStack, or any URL) on an interval you set, so you&#8217;re alerted even when the whole site is down. Health-aware mode signals failure when jobs break, not only when the server does.</li>\n<li><strong>CSV export</strong> of the full run history</li>\n<li><strong>Weekly summary email</strong></li>\n</ul>\n<p>Pro is $49 a year for a single site, $99 for 5, $199 for 25, and $349 for unlimited sites — with a 14-day trial that doesn&#8217;t ask for a card.</p>\n<h4>Privacy and requirements</h4>\n<ul>\n<li>The free plugin sends nothing anywhere. It starts in anonymous mode — no signup prompt on activation, no data to Freemius unless you opt in.</li>\n<li>Pro contacts Freemius for license activation and updates, and sends the heartbeat ping only to the URL you enter. Both are described in Third-Party Services below.</li>\n<li>Requires WordPress 5.8+ and PHP 7.4+. Multisite supported. Translation-ready.</li>\n<li>Uninstall drops the log table and removes every option, transient, and scheduled event it created.</li>\n</ul>\n<h3>Third-Party Services</h3>\n<p>The free tier runs entirely on your server. The plugin connects to outside services only in the cases below.</p>\n<ol>\n<li>\n<p><strong>Freemius (licensing, updates &amp; opt-in).</strong> CronVitals uses Freemius, a third-party service, to handle Pro license activation, deliver Pro plugin updates, and process checkout. When you activate a Pro license or opt in, information such as your site URL, WordPress/PHP environment details, and (if you opt in) your admin email is sent to Freemius. Opt-in is optional and can be skipped; the free plugin functions without contacting Freemius until you choose to activate a license.</p>\n<ul>\n<li>Service: https://freemius.com/</li>\n<li>Terms of Service: https://freemius.com/terms/</li>\n<li>Privacy Policy: https://freemius.com/privacy/</li>\n</ul>\n</li>\n<li>\n<p><strong>External heartbeat (Pro, opt-in, off by default).</strong> If you enable the heartbeat and provide a monitor URL, the plugin sends a periodic HTTP request to that URL so an outside service can alert you if your site stops responding. You choose the provider and the URL; no data beyond the ping (and, in health-aware mode, a success/fail signal) is sent. Common providers and their terms:</p>\n<ul>\n<li>Healthchecks.io — https://healthchecks.io/ (terms: https://healthchecks.io/terms/, privacy: https://healthchecks.io/privacy/)</li>\n<li>Cronitor — https://cronitor.io/ (terms: https://cronitor.io/terms, privacy: https://cronitor.io/privacy)</li>\n<li>BetterStack — https://betterstack.com/ (terms: https://betterstack.com/terms, privacy: https://betterstack.com/privacy)</li>\n</ul>\n</li>\n</ol>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/cronvitals.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release of CronVitals.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/cronvitals/assets/screenshot-1.png?rev=3675526",
+            "caption": "A failed job caught with the actual PHP fatal — message, file, and line — instead of silence."
+        },
+        {
+            "src": "https://ps.w.org/cronvitals/assets/screenshot-2.png?rev=3675526",
+            "caption": "Every scheduled job with its health status, next and last run, and a Run Now button."
+        },
+        {
+            "src": "https://ps.w.org/cronvitals/assets/screenshot-3.png?rev=3675526",
+            "caption": "Thirty days of run history, filterable by status, so you can see how long something's been broken."
+        },
+        {
+            "src": "https://ps.w.org/cronvitals/assets/screenshot-4.png?rev=3675526",
+            "caption": "Reliability score and per-job failure breakdown across the full log window."
+        },
+        {
+            "src": "https://ps.w.org/cronvitals/assets/screenshot-5.png?rev=3675526",
+            "caption": "The whole setup: where alerts go, and how long a job may run past schedule before it counts as missed."
+        }
+    ],
+    "tags": {
+        "action-scheduler": "action scheduler",
+        "cron": "cron",
+        "cron-jobs": "cron jobs",
+        "monitoring": "monitoring",
+        "wp-cron": "wp cron"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/cronvitals.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/cronvitals.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/cronvitals/assets/banner-772x250.png?rev=3675526",
+        "high": "https://ps.w.org/cronvitals/assets/banner-1544x500.png?rev=3675526"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/cronvitals/assets/icon.svg?rev=3675526",
+        "svg": "https://ps.w.org/cronvitals/assets/icon.svg?rev=3675526"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

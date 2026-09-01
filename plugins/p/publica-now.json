@@ -1,0 +1,317 @@
+{
+    "name": "Publica.now",
+    "slug": "publica-now",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/publicala/\">publicala</a>",
+    "author_profile": "https://profiles.wordpress.org/publicala/",
+    "contributors": {
+        "publicala": {
+            "profile": "https://profiles.wordpress.org/publicala/",
+            "avatar": "https://secure.gravatar.com/avatar/71a1c6b353ee0c2a07d03cb428525a07b31a9cceb1b72486b92cc4b45fe99aee?s=96&d=monsterid&r=g",
+            "display_name": "publicala"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/publica-now/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-01 08:21:00",
+    "added": "2026-09-01",
+    "homepage": "https://publica.now/wordpress",
+    "sections": {
+        "description": "<p>Publica.now is a publishing and selling service for independent creators. You upload a book, an audiobook, a course, a video or a design file, and the service hosts it, runs checkout and payment processing, delivers the file, runs the in-browser reader and player, prints and ships paperbacks on demand, handles refunds and buyer support, and pays you out. This plugin is the WordPress client for that service.</p>\n<p>Connecting is a real account link, not an embed code. When you click <strong>Connect</strong> the plugin registers its own read-only API client with publica.now (OAuth 2.0 client credentials, scope <code>catalog:read</code>), stores those credentials in your database and uses them for every later request. Your pages then read live data from the API: which works are published, the effective price right now including any running sale and the date it ends, whether a work is free, its formats, languages and rating, whether a print edition can be ordered, and the right hosted checkout, reader or print-order address. Change a price, start a sale or unpublish a title and your pages follow within the cache window, with nothing to edit here.</p>\n<p>Blocks and shortcodes render that data — cover, title, author, format badge, price with the sale price struck through, rating — with a <strong>Buy</strong>, <strong>Read free</strong> or <strong>Order paperback</strong> button. Those buttons hand the reader to publica.now, the store of record: your site never processes a payment, stores a file or holds buyer data. Every outbound link carries this site&#8217;s host name, so publica.now attributes the sale back to your website.</p>\n<p>Not on publica.now yet? An account is free and there is no monthly fee. Current service fees are published at <a href=\"https://publica.now/pricing\" rel=\"nofollow ugc\">publica.now/pricing</a>; create an account at <a href=\"https://publica.now/access/creator\" rel=\"nofollow ugc\">publica.now/access/creator</a>.</p>\n<p>No e-commerce runs on WordPress: no cart, checkout, downloads or buyer records, no WooCommerce, no tracking scripts, no advertising.</p>\n<p><strong>Blocks and shortcodes</strong></p>\n<p>Three dynamic blocks appear in the editor under <em>Publica.now</em>, each with a live preview: <strong>Catalog</strong> (a grid or list), <strong>Work</strong> (one work as a card or inline row) and <strong>Buy Button</strong>. The shortcodes take the same options:</p>\n<pre><code>[publicanow_works limit=\"12\" columns=\"3\" layout=\"grid\" order=\"newest\"]\n[publicanow_work id=\"your-work-slug\" layout=\"card\"]\n[publicanow_button work=\"your-work-slug\" format=\"auto\"]\n\n[publicanow_works] accepts `creator`, `content_type` (`literary`, `audiobook`, `music`, `video`, `course`, `zine`, `photography`, `design`, `print`), `free` (`yes|no|any`), `ids`, `exclude`, `order`, `limit` (`0` = all), `columns` (1-6), `layout` (`grid|list`), `show_excerpt`, `show_rating`, `show_author`, `show_type`, `button_text`, `class`. `[publicanow_work]` takes `id`, `layout` (`card|inline`), `show_excerpt`, `button_text`, `class`; `[publicanow_button]` takes `work`, `text`, `format`, `class`. `format` is a preference, not a filter: a work with no digital edition still shows **Order paperback**.\n</code></pre>\n<p><strong>Theming and hooks</strong></p>\n<p>The markup inherits your theme&#8217;s font and exposes CSS custom properties you can override:</p>\n<pre><code>--publicanow-accent\n--publicanow-ink\n--publicanow-muted\n--publicanow-radius\n</code></pre>\n<p>Any template in <code>templates/</code> can be overridden by copying it to <code>{your-theme}/publica-now/</code>. Filters: <code>publicanow_work</code>, <code>publicanow_creator</code>, <code>publicanow_link_args</code>, <code>publicanow_button_label</code>, <code>publicanow_template_vars</code>, <code>publicanow_jsonld</code>, <code>publicanow_cache_ttl</code>. Actions: <code>publicanow_connected</code>, <code>publicanow_disconnected</code>, <code>publicanow_cache_purged</code>. Each surface outputs one schema.org JSON-LD block with an <code>Offer</code> pointing at publica.now; <code>add_filter( 'publicanow_jsonld', '__return_empty_array' )</code> disables it. The plugin sets no cookies and loads no third-party scripts; see <em>External Services</em> below, and <em>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Privacy</em> for suggested policy text.</p>\n<h3>External Services</h3>\n<p>This plugin connects to <strong>publica.now</strong> (https://publica.now), a publishing and selling service for independent creators operated by Publica.la. It does not work without a publica.now account and makes no request until you connect one.</p>\n<p><strong>What is sent, and when</strong></p>\n<ul>\n<li><strong>When you click Connect</strong> on <em>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Publica.now</em>: the creator slug you entered and your site&#8217;s host name, naming the read-only API client the plugin registers. publica.now returns credentials, stored in your database and used for every later request. This is the only moment credentials are created, and it always takes an administrator.</li>\n<li><strong>When a page with a block or shortcode renders and the cache is empty or stale</strong>, and <strong>when an administrator clicks Refresh catalog</strong>: the plugin requests your public catalog (works, prices, availability, cover addresses) with those credentials. Only the creator slug and standard HTTP metadata (your server&#8217;s IP address, user agent) are sent; no visitor data.</li>\n<li><strong>When a visitor views a page</strong>: their browser loads cover images from publica.now, which therefore receives their IP address and browser details as with any image. Clicking Buy, Read free or Order paperback takes them to publica.now; the link carries your site&#8217;s host name as <code>utm_source</code>.</li>\n<li><strong>When you click Disconnect</strong>: the plugin asks publica.now to revoke this site&#8217;s access token, then deletes the stored API credentials, the cached catalog and your stored profile. Deleting the plugin removes all of that from your site too, but makes no request: deactivation has already discarded the access token, and an unused token expires at publica.now within the hour.</li>\n</ul>\n<p><strong>What is received:</strong> public catalog data (titles, authors, descriptions, prices, sale dates, formats, ratings, cover images) and your public profile (name, avatar, website, works count) — all already visible to anyone on publica.now. The plugin sets no cookies, loads no scripts or styles from publica.now, and sends analytics nowhere.</p>\n<ul>\n<li>Terms of service: https://publica.now/terms</li>\n<li>Privacy policy: https://publica.now/privacy</li>\n</ul>\n",
+        "installation": "<p>You need a publica.now creator account with at least one published work; accounts are free.</p>\n<ol>\n<li>In WordPress go to <em>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New</em>, search for &#8220;Publica.now&#8221;, install and activate.</li>\n<li>Open <em>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Publica.now</em>, paste your profile URL (for example <code>https://publica.now/creators/your-name</code>) or your creator slug, and click <strong>Connect</strong>. The plugin registers a read-only API client and shows your name, avatar and works count.</li>\n<li>Add the <strong>Publica.now Catalog</strong> block to a page, or put <code>[publicanow_works]</code> in your content, and publish.</li>\n</ol>\n<p>Nothing is sent to publica.now until you click <strong>Connect</strong>. <strong>Disconnect</strong>, on the same screen, asks publica.now to revoke this site&#8217;s access token, then deletes the API credentials and the cached catalog, keeping only your display settings.</p>\n",
+        "faq": "\n<dt id=\"does%20the%20plugin%20charge%20anything%3F\">\nDoes the plugin charge anything?\n</h4>\n<p>\n<p>No. The plugin is free and GPL. Publica.now has no monthly fee; current service fees are published at https://publica.now/pricing</p>\n</p>\n<dt id=\"where%20do%20readers%20pay%2C%20and%20who%20supports%20them%3F\">\nWhere do readers pay, and who supports them?\n</h4>\n<p>\n<p>On publica.now. The Buy button opens that work&#8217;s checkout page, where the reader signs in with an email code and pays by card; your site never sees card or account details. Refunds, downloads and print orders go to publica.now support under its terms of service.</p>\n</p>\n<dt id=\"can%20i%20sell%20printed%20books%2C%20and%20what%20about%20free%20works%3F\">\nCan I sell printed books, and what about free works?\n</h4>\n<p>\n<p>Works with a published print edition show an <strong>Order paperback</strong> button linking to the print order page; publica.now&#8217;s print-on-demand partner handles printing and shipping, and you set the price in your dashboard. Free works show a <strong>Read free</strong> button that opens the work in the publica.now reader or player, and a free work with a print edition shows both.</p>\n</p>\n<dt id=\"does%20it%20work%20without%20a%20publica.now%20account%3F\">\nDoes it work without a publica.now account?\n</h4>\n<p>\n<p>No. It only displays a publica.now catalog. Accounts are free: https://publica.now/access/creator</p>\n</p>\n<dt id=\"can%20i%20show%20another%20creator%27s%20catalog%3F\">\nCan I show another creator&#8217;s catalog?\n</h4>\n<p>\n<p>Yes, once your own account is connected. The <code>creator</code> attribute accepts any public creator slug, so a magazine can feature an author it publishes. The sale is attributed to your site, but the money goes to the work&#8217;s owner.</p>\n</p>\n<dt id=\"how%20often%20is%20the%20catalog%20refreshed%3F\">\nHow often is the catalog refreshed?\n</h4>\n<p>\n<p>Every 15 minutes by default (<strong>Cache duration</strong>, or the <code>publicanow_cache_ttl</code> filter). If publica.now cannot be reached the plugin keeps serving the last copy for up to seven days; with none at all it shows a quiet link to your profile, never a broken block. <strong>Refresh catalog</strong> re-reads your catalog and replaces the cache only if publica.now answers.</p>\n</p>\n<dt id=\"does%20it%20work%20on%20multisite%3F\">\nDoes it work on multisite?\n</h4>\n<p>\n<p>Yes. Each site connects its own account; settings, cache and credentials are per site. Network activation connects nothing.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release: connect a publica.now creator account; Catalog / Work / Buy Button blocks and shortcodes; attribution on every outbound link; cached catalog with a seven-day outage fallback; JSON-LD structured data; overridable templates; Site Health test; suggested privacy text; full uninstall.</li>\n</ul>\n"
+    },
+    "short_description": "Show your publica.now catalog on your WordPress site and sell ebooks, audiobooks, music, video, courses and printed books. Checkout on publica.now.",
+    "description": "<p>Publica.now is a publishing and selling service for independent creators. You upload a book, an audiobook, a course, a video or a design file, and the service hosts it, runs checkout and payment processing, delivers the file, runs the in-browser reader and player, prints and ships paperbacks on demand, handles refunds and buyer support, and pays you out. This plugin is the WordPress client for that service.</p>\n<p>Connecting is a real account link, not an embed code. When you click <strong>Connect</strong> the plugin registers its own read-only API client with publica.now (OAuth 2.0 client credentials, scope <code>catalog:read</code>), stores those credentials in your database and uses them for every later request. Your pages then read live data from the API: which works are published, the effective price right now including any running sale and the date it ends, whether a work is free, its formats, languages and rating, whether a print edition can be ordered, and the right hosted checkout, reader or print-order address. Change a price, start a sale or unpublish a title and your pages follow within the cache window, with nothing to edit here.</p>\n<p>Blocks and shortcodes render that data — cover, title, author, format badge, price with the sale price struck through, rating — with a <strong>Buy</strong>, <strong>Read free</strong> or <strong>Order paperback</strong> button. Those buttons hand the reader to publica.now, the store of record: your site never processes a payment, stores a file or holds buyer data. Every outbound link carries this site&#8217;s host name, so publica.now attributes the sale back to your website.</p>\n<p>Not on publica.now yet? An account is free and there is no monthly fee. Current service fees are published at <a href=\"https://publica.now/pricing\" rel=\"nofollow ugc\">publica.now/pricing</a>; create an account at <a href=\"https://publica.now/access/creator\" rel=\"nofollow ugc\">publica.now/access/creator</a>.</p>\n<p>No e-commerce runs on WordPress: no cart, checkout, downloads or buyer records, no WooCommerce, no tracking scripts, no advertising.</p>\n<p><strong>Blocks and shortcodes</strong></p>\n<p>Three dynamic blocks appear in the editor under <em>Publica.now</em>, each with a live preview: <strong>Catalog</strong> (a grid or list), <strong>Work</strong> (one work as a card or inline row) and <strong>Buy Button</strong>. The shortcodes take the same options:</p>\n<pre><code>[publicanow_works limit=\"12\" columns=\"3\" layout=\"grid\" order=\"newest\"]\n[publicanow_work id=\"your-work-slug\" layout=\"card\"]\n[publicanow_button work=\"your-work-slug\" format=\"auto\"]\n\n[publicanow_works] accepts `creator`, `content_type` (`literary`, `audiobook`, `music`, `video`, `course`, `zine`, `photography`, `design`, `print`), `free` (`yes|no|any`), `ids`, `exclude`, `order`, `limit` (`0` = all), `columns` (1-6), `layout` (`grid|list`), `show_excerpt`, `show_rating`, `show_author`, `show_type`, `button_text`, `class`. `[publicanow_work]` takes `id`, `layout` (`card|inline`), `show_excerpt`, `button_text`, `class`; `[publicanow_button]` takes `work`, `text`, `format`, `class`. `format` is a preference, not a filter: a work with no digital edition still shows **Order paperback**.\n</code></pre>\n<p><strong>Theming and hooks</strong></p>\n<p>The markup inherits your theme&#8217;s font and exposes CSS custom properties you can override:</p>\n<pre><code>--publicanow-accent\n--publicanow-ink\n--publicanow-muted\n--publicanow-radius\n</code></pre>\n<p>Any template in <code>templates/</code> can be overridden by copying it to <code>{your-theme}/publica-now/</code>. Filters: <code>publicanow_work</code>, <code>publicanow_creator</code>, <code>publicanow_link_args</code>, <code>publicanow_button_label</code>, <code>publicanow_template_vars</code>, <code>publicanow_jsonld</code>, <code>publicanow_cache_ttl</code>. Actions: <code>publicanow_connected</code>, <code>publicanow_disconnected</code>, <code>publicanow_cache_purged</code>. Each surface outputs one schema.org JSON-LD block with an <code>Offer</code> pointing at publica.now; <code>add_filter( 'publicanow_jsonld', '__return_empty_array' )</code> disables it. The plugin sets no cookies and loads no third-party scripts; see <em>External Services</em> below, and <em>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Privacy</em> for suggested policy text.</p>\n<h3>External Services</h3>\n<p>This plugin connects to <strong>publica.now</strong> (https://publica.now), a publishing and selling service for independent creators operated by Publica.la. It does not work without a publica.now account and makes no request until you connect one.</p>\n<p><strong>What is sent, and when</strong></p>\n<ul>\n<li><strong>When you click Connect</strong> on <em>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Publica.now</em>: the creator slug you entered and your site&#8217;s host name, naming the read-only API client the plugin registers. publica.now returns credentials, stored in your database and used for every later request. This is the only moment credentials are created, and it always takes an administrator.</li>\n<li><strong>When a page with a block or shortcode renders and the cache is empty or stale</strong>, and <strong>when an administrator clicks Refresh catalog</strong>: the plugin requests your public catalog (works, prices, availability, cover addresses) with those credentials. Only the creator slug and standard HTTP metadata (your server&#8217;s IP address, user agent) are sent; no visitor data.</li>\n<li><strong>When a visitor views a page</strong>: their browser loads cover images from publica.now, which therefore receives their IP address and browser details as with any image. Clicking Buy, Read free or Order paperback takes them to publica.now; the link carries your site&#8217;s host name as <code>utm_source</code>.</li>\n<li><strong>When you click Disconnect</strong>: the plugin asks publica.now to revoke this site&#8217;s access token, then deletes the stored API credentials, the cached catalog and your stored profile. Deleting the plugin removes all of that from your site too, but makes no request: deactivation has already discarded the access token, and an unused token expires at publica.now within the hour.</li>\n</ul>\n<p><strong>What is received:</strong> public catalog data (titles, authors, descriptions, prices, sale dates, formats, ratings, cover images) and your public profile (name, avatar, website, works count) — all already visible to anyone on publica.now. The plugin sets no cookies, loads no scripts or styles from publica.now, and sends analytics nowhere.</p>\n<ul>\n<li>Terms of service: https://publica.now/terms</li>\n<li>Privacy policy: https://publica.now/privacy</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/publica-now.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>First release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/publica-now/assets/screenshot-1.png?rev=3675629",
+            "caption": "Settings → Publica.now before connecting: paste your profile URL."
+        },
+        {
+            "src": "https://ps.w.org/publica-now/assets/screenshot-2.png?rev=3675629",
+            "caption": "Connected: your profile photo, name, works count, profile link and the Refresh catalog / Disconnect actions, plus the prompt to list this site as your publica.now website and earn the \"Verified website\" badge."
+        },
+        {
+            "src": "https://ps.w.org/publica-now/assets/screenshot-3.png?rev=3675629",
+            "caption": "The Catalog block in the editor, with its live preview and options."
+        },
+        {
+            "src": "https://ps.w.org/publica-now/assets/screenshot-4.png?rev=3675629",
+            "caption": "The catalog on the front end: covers, prices, badges and Buy buttons in a three-column grid."
+        },
+        {
+            "src": "https://ps.w.org/publica-now/assets/screenshot-5.png?rev=3675629",
+            "caption": "A single work placed on a page: cover, type badge, title, author, excerpt, the ebook price with the paperback price beside it, and Buy next to Order paperback."
+        },
+        {
+            "src": "https://ps.w.org/publica-now/assets/screenshot-6.png?rev=3675629",
+            "caption": "The shortcode cheat sheet on the settings screen."
+        }
+    ],
+    "tags": {
+        "audiobook": "audiobook",
+        "bookstore": "bookstore",
+        "ebook": "ebook",
+        "print-on-demand": "print-on-demand",
+        "sell-digital-products": "sell digital products"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/publica-now.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/publica-now.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/publica-now/assets/banner-772x250.png?rev=3675629",
+        "high": "https://ps.w.org/publica-now/assets/banner-1544x500.png?rev=3675629"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/publica-now/assets/icon.svg?rev=3675629",
+        "svg": "https://ps.w.org/publica-now/assets/icon.svg?rev=3675629"
+    },
+    "blocks": {
+        "publica-now/buy-button": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "publica-now/buy-button",
+            "title": "Publica.now Buy Button",
+            "category": "widgets",
+            "icon": "cart",
+            "description": "A single Buy / Read free / Order paperback button for one of your Publica.now works. Checkout happens on publica.now.",
+            "keywords": [
+                "publica",
+                "ebook",
+                "audiobook",
+                "sell",
+                "print",
+                "pdf",
+                "book",
+                "shop",
+                "store"
+            ],
+            "textdomain": "publica-now",
+            "attributes": {
+                "work": {
+                    "type": "string",
+                    "default": ""
+                },
+                "text": {
+                    "type": "string",
+                    "default": ""
+                },
+                "format": {
+                    "type": "string",
+                    "default": "auto"
+                },
+                "class": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "supports": {
+                "html": false,
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                }
+            },
+            "example": {
+                "attributes": {
+                    "format": "auto"
+                }
+            },
+            "style": "publica-now",
+            "editorScript": "file:./index.js",
+            "render": "file:./render.php"
+        },
+        "publica-now/work": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "publica-now/work",
+            "title": "Publica.now Work",
+            "category": "widgets",
+            "icon": "book",
+            "description": "Show one of your Publica.now works as a card or a compact row, with its cover, price and a button that sends readers to publica.now.",
+            "keywords": [
+                "publica",
+                "ebook",
+                "audiobook",
+                "sell",
+                "print",
+                "pdf",
+                "book",
+                "shop",
+                "store"
+            ],
+            "textdomain": "publica-now",
+            "attributes": {
+                "id": {
+                    "type": "string",
+                    "default": ""
+                },
+                "layout": {
+                    "type": "string",
+                    "default": "card"
+                },
+                "show_excerpt": {
+                    "type": "boolean"
+                },
+                "button_text": {
+                    "type": "string",
+                    "default": ""
+                },
+                "class": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "supports": {
+                "html": false,
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                }
+            },
+            "example": {
+                "attributes": {
+                    "layout": "card",
+                    "show_excerpt": false
+                }
+            },
+            "style": "publica-now",
+            "editorScript": "file:./index.js",
+            "render": "file:./render.php"
+        },
+        "publica-now/catalog": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "publica-now/catalog",
+            "title": "Publica.now Catalog",
+            "category": "widgets",
+            "icon": "book-alt",
+            "description": "Show your Publica.now works as a grid or list: covers, prices, badges and Buy / Read free / Order paperback buttons that send readers to publica.now.",
+            "keywords": [
+                "publica",
+                "ebook",
+                "audiobook",
+                "sell",
+                "print",
+                "pdf",
+                "book",
+                "shop",
+                "store"
+            ],
+            "textdomain": "publica-now",
+            "attributes": {
+                "creator": {
+                    "type": "string",
+                    "default": ""
+                },
+                "content_type": {
+                    "type": "string",
+                    "default": ""
+                },
+                "free": {
+                    "type": "string",
+                    "default": "any"
+                },
+                "ids": {
+                    "type": "string",
+                    "default": ""
+                },
+                "exclude": {
+                    "type": "string",
+                    "default": ""
+                },
+                "order": {
+                    "type": "string",
+                    "default": "newest"
+                },
+                "limit": {
+                    "type": "number",
+                    "default": 12
+                },
+                "columns": {
+                    "type": "number"
+                },
+                "layout": {
+                    "type": "string"
+                },
+                "show_excerpt": {
+                    "type": "boolean"
+                },
+                "show_rating": {
+                    "type": "boolean"
+                },
+                "show_author": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "show_type": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "button_text": {
+                    "type": "string",
+                    "default": ""
+                },
+                "class": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "supports": {
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                }
+            },
+            "example": {
+                "attributes": {
+                    "limit": 3,
+                    "columns": 3,
+                    "show_excerpt": false
+                }
+            },
+            "style": "publica-now",
+            "editorScript": "file:./index.js",
+            "render": "file:./render.php"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
