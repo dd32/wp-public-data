@@ -1,0 +1,79 @@
+{
+    "name": "Volanea Email Delivery",
+    "slug": "volanea-email-delivery",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/tmxsmoke/\">tmxsmoke</a>",
+    "author_profile": "https://profiles.wordpress.org/tmxsmoke/",
+    "contributors": {
+        "tmxsmoke": {
+            "profile": "https://profiles.wordpress.org/tmxsmoke/",
+            "avatar": "https://secure.gravatar.com/avatar/63a1e44eb83fd8a22d001a7db134622f757acd2e1af533bcbc892b4decbce49f?s=96&d=monsterid&r=g",
+            "display_name": "tmxsmoke"
+        }
+    },
+    "requires": "5.7",
+    "tested": "7.1",
+    "requires_php": "7.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/volanea-email-delivery/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-01 18:18:00",
+    "added": "2026-09-01",
+    "homepage": "https://volanea.com/docs/integrations/wordpress",
+    "sections": {
+        "description": "<p>Volanea Email Delivery hands every <code>wp_mail()</code> call to the Volanea HTTP API, so password<br />\nresets, order receipts, form notifications and everything else leave your site<br />\nover an authenticated API connection rather than the server&#8217;s local <code>mail()</code><br />\nbinary.</p>\n<p>The plugin does not speak SMTP. It uses Volanea&#8217;s HTTPS API, which means there<br />\nis no port to unblock and no SMTP password stored on the site.</p>\n<h4>Never silently dropped</h4>\n<p>The plugin only takes over a message it can send faithfully. If the API refuses<br />\nthe message, the key is wrong, the network fails, or the message uses something<br />\nthe API cannot express, the plugin steps aside and WordPress delivers it the way<br />\nit always did. A failed send is never a lost send.</p>\n<h4>What it handles</h4>\n<ul>\n<li>To, Cc, Bcc and Reply-To</li>\n<li>HTML and plain text bodies, including the <code>wp_mail_content_type</code> filter</li>\n<li>Attachments (up to 10 per message)</li>\n<li>Custom headers such as <code>X-</code> headers</li>\n<li>Headers passed as either a string or an array, in any combination</li>\n<li>Recipient lists longer than the API&#8217;s 50-address limit, split automatically</li>\n</ul>\n<h4>Known differences from the default mailer</h4>\n<p>These are worth reading before you switch a busy site over.</p>\n<ul>\n<li><strong>Cc and Bcc.</strong> The Volanea API has no Cc or Bcc field. The plugin gives each<br />\ncopied address its own message, which is exactly right for Bcc: the copy<br />\narrives and no one else can see it. A Cc recipient also receives the message,<br />\nbut no visible <code>Cc:</code> header is present on any copy. If you need a real Cc<br />\nheader, turn off &#8220;Deliver Cc and Bcc recipients as individual copies&#8221; and<br />\nthose messages will go through the default WordPress mailer instead.</li>\n<li><strong>One message per recipient.</strong> A message addressed to several people is sent<br />\nas a separate message to each, so recipients do not see one another.</li>\n<li><strong>Multiple Reply-To addresses.</strong> The API accepts one; the first is used.</li>\n<li><strong>Plain-text messages.</strong> The API renders a text-only body inside a <code>&lt;pre&gt;</code><br />\nblock, so plain-text email looks a little different from <code>mail()</code> output.</li>\n<li><strong>Hand-built multipart messages.</strong> A message that supplies its own MIME<br />\nboundary is passed to the default mailer untouched.</li>\n<li><strong>A 200 response is not delivery.</strong> The API accepts the message and delivers<br />\nit afterwards. The recipient may still be skipped for being suppressed,<br />\nunsubscribed or over quota. Skips are recorded in the log and, deliberately,<br />\nare not retried through <code>mail()</code>.</li>\n</ul>\n<h4>Storing the API key more safely</h4>\n<p>By default the key is stored in the options table. To keep it out of the<br />\ndatabase entirely, add this to <code>wp-config.php</code>:</p>\n<pre><code>define( 'VOLANEA_EMAIL_DELIVERY_API_KEY', 'your-secret-key' );\n</code></pre>\n<p>The constant wins over anything saved in the admin, and the settings page then<br />\nshows the key as read-only and masked.</p>\n<h4>Filters for developers</h4>\n<ul>\n<li><code>volanea_email_delivery_api_base</code> — change the API base URL, for staging.</li>\n<li><code>volanea_email_delivery_request_args</code> — adjust the <code>wp_remote_post()</code> arguments.</li>\n<li><code>volanea_email_delivery_payload</code> — modify the request body before it is sent.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin sends your site&#8217;s outgoing email to Volanea, a third-party email<br />\ndelivery service, so that it can be delivered.</p>\n<p>It contacts <code>https://api.volanea.com</code> only when you have saved an API key, and<br />\nonly at these moments:</p>\n<ul>\n<li>Every time WordPress sends an email while the plugin is configured.</li>\n<li>When you press &#8220;Send test email&#8221; on the settings screen.</li>\n</ul>\n<p>The data sent with each message is: the sender name and address, the recipient<br />\naddresses, the subject, the message body, any custom headers set by the code<br />\nthat sent the mail, and any attachments. No data is transmitted before you<br />\nenter an API key.</p>\n<p>Volanea&#8217;s terms of service: https://volanea.com/legal/terms<br />\nVolanea&#8217;s privacy policy: https://volanea.com/legal/privacy</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>volanea-email-delivery</code> folder to <code>/wp-content/plugins/</code>, or install the<br />\nplugin through the Plugins screen.</li>\n<li>Activate the plugin.</li>\n<li>Go to <strong>Settings &gt; Volanea Email Delivery</strong>.</li>\n<li>Paste your Volanea secret key and set the From address. The From address must<br />\nbe on a domain you have already verified in Volanea, or the API will refuse<br />\nthe message.</li>\n<li>Press <strong>Send test email</strong> to confirm the connection.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"what%20happens%20if%20volanea%20is%20unreachable%3F\">\nWhat happens if Volanea is unreachable?\n</h4>\n<p>\n<p>The message goes out through the default WordPress mailer instead, exactly as it<br />\nwould have if the plugin were not installed. Turn on the email log to see which<br />\nmessages took that path and why.</p>\n</p>\n<dt id=\"my%20test%20email%20says%20%22test%20mode%3A%20nothing%20was%20delivered%22.\">\nMy test email says &#8220;test mode: nothing was delivered&#8221;.\n</h4>\n<p>\n<p>You are using a test key. Test keys exercise the whole pipeline but never send<br />\nanything to a real inbox. Swap in a live key to send real email.</p>\n</p>\n<dt id=\"the%20api%20says%20my%20from%20domain%20is%20not%20verified.\">\nThe API says my From domain is not verified.\n</h4>\n<p>\n<p>Volanea only sends from domains you have verified. Add and verify the domain in<br />\nyour Volanea dashboard, then set the From address to an address on it.</p>\n</p>\n<dt id=\"does%20the%20log%20store%20the%20contents%20of%20my%20email%3F\">\nDoes the log store the contents of my email?\n</h4>\n<p>\n<p>No. It stores the recipient, the subject, the status and any error message for<br />\nthe last 50 sends. Message bodies and attachments are never written to the log,<br />\nand the log is off until you turn it on.</p>\n</p>\n<dt id=\"can%20i%20use%20this%20alongside%20an%20smtp%20plugin%3F\">\nCan I use this alongside an SMTP plugin?\n</h4>\n<p>\n<p>It is not a good idea, but the plugin will not fight for the message: if another<br />\nplugin has already claimed a message, Volanea Email Delivery leaves it alone.</p>\n</p>\n<dt id=\"will%20a%20failed%20send%20ever%20be%20delivered%20twice%3F\">\nWill a failed send ever be delivered twice?\n</h4>\n<p>\n<p>The one case where it can is a request that times out after the API has already<br />\naccepted the message. The plugin then treats the send as failed and lets<br />\nWordPress retry it, which can produce a duplicate. This is rare, and the<br />\nalternative — treating a timeout as a success — would risk losing mail instead.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "Send WordPress email through the Volanea API instead of PHP mail(), with an automatic fallback so no message is ever lost.",
+    "description": "<p>Volanea Email Delivery hands every <code>wp_mail()</code> call to the Volanea HTTP API, so password<br />\nresets, order receipts, form notifications and everything else leave your site<br />\nover an authenticated API connection rather than the server&#8217;s local <code>mail()</code><br />\nbinary.</p>\n<p>The plugin does not speak SMTP. It uses Volanea&#8217;s HTTPS API, which means there<br />\nis no port to unblock and no SMTP password stored on the site.</p>\n<h4>Never silently dropped</h4>\n<p>The plugin only takes over a message it can send faithfully. If the API refuses<br />\nthe message, the key is wrong, the network fails, or the message uses something<br />\nthe API cannot express, the plugin steps aside and WordPress delivers it the way<br />\nit always did. A failed send is never a lost send.</p>\n<h4>What it handles</h4>\n<ul>\n<li>To, Cc, Bcc and Reply-To</li>\n<li>HTML and plain text bodies, including the <code>wp_mail_content_type</code> filter</li>\n<li>Attachments (up to 10 per message)</li>\n<li>Custom headers such as <code>X-</code> headers</li>\n<li>Headers passed as either a string or an array, in any combination</li>\n<li>Recipient lists longer than the API&#8217;s 50-address limit, split automatically</li>\n</ul>\n<h4>Known differences from the default mailer</h4>\n<p>These are worth reading before you switch a busy site over.</p>\n<ul>\n<li><strong>Cc and Bcc.</strong> The Volanea API has no Cc or Bcc field. The plugin gives each<br />\ncopied address its own message, which is exactly right for Bcc: the copy<br />\narrives and no one else can see it. A Cc recipient also receives the message,<br />\nbut no visible <code>Cc:</code> header is present on any copy. If you need a real Cc<br />\nheader, turn off &#8220;Deliver Cc and Bcc recipients as individual copies&#8221; and<br />\nthose messages will go through the default WordPress mailer instead.</li>\n<li><strong>One message per recipient.</strong> A message addressed to several people is sent<br />\nas a separate message to each, so recipients do not see one another.</li>\n<li><strong>Multiple Reply-To addresses.</strong> The API accepts one; the first is used.</li>\n<li><strong>Plain-text messages.</strong> The API renders a text-only body inside a <code>&lt;pre&gt;</code><br />\nblock, so plain-text email looks a little different from <code>mail()</code> output.</li>\n<li><strong>Hand-built multipart messages.</strong> A message that supplies its own MIME<br />\nboundary is passed to the default mailer untouched.</li>\n<li><strong>A 200 response is not delivery.</strong> The API accepts the message and delivers<br />\nit afterwards. The recipient may still be skipped for being suppressed,<br />\nunsubscribed or over quota. Skips are recorded in the log and, deliberately,<br />\nare not retried through <code>mail()</code>.</li>\n</ul>\n<h4>Storing the API key more safely</h4>\n<p>By default the key is stored in the options table. To keep it out of the<br />\ndatabase entirely, add this to <code>wp-config.php</code>:</p>\n<pre><code>define( 'VOLANEA_EMAIL_DELIVERY_API_KEY', 'your-secret-key' );\n</code></pre>\n<p>The constant wins over anything saved in the admin, and the settings page then<br />\nshows the key as read-only and masked.</p>\n<h4>Filters for developers</h4>\n<ul>\n<li><code>volanea_email_delivery_api_base</code> — change the API base URL, for staging.</li>\n<li><code>volanea_email_delivery_request_args</code> — adjust the <code>wp_remote_post()</code> arguments.</li>\n<li><code>volanea_email_delivery_payload</code> — modify the request body before it is sent.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin sends your site&#8217;s outgoing email to Volanea, a third-party email<br />\ndelivery service, so that it can be delivered.</p>\n<p>It contacts <code>https://api.volanea.com</code> only when you have saved an API key, and<br />\nonly at these moments:</p>\n<ul>\n<li>Every time WordPress sends an email while the plugin is configured.</li>\n<li>When you press &#8220;Send test email&#8221; on the settings screen.</li>\n</ul>\n<p>The data sent with each message is: the sender name and address, the recipient<br />\naddresses, the subject, the message body, any custom headers set by the code<br />\nthat sent the mail, and any attachments. No data is transmitted before you<br />\nenter an API key.</p>\n<p>Volanea&#8217;s terms of service: https://volanea.com/legal/terms<br />\nVolanea&#8217;s privacy policy: https://volanea.com/legal/privacy</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/volanea-email-delivery.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>First release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "deliverability": "deliverability",
+        "email": "email",
+        "email-api": "Email API",
+        "transactional-email": "transactional email",
+        "wp_mail": "wp_mail"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/volanea-email-delivery.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/volanea-email-delivery.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/volanea-email-delivery/assets/banner-772x250.png?rev=3676625",
+        "high": "https://ps.w.org/volanea-email-delivery/assets/banner-1544x500.png?rev=3676625"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/volanea-email-delivery/assets/icon-128x128.png?rev=3676625",
+        "2x": "https://ps.w.org/volanea-email-delivery/assets/icon-256x256.png?rev=3676625"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

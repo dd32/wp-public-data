@@ -1,0 +1,80 @@
+{
+    "name": "OW Agenda",
+    "slug": "ow-agenda",
+    "version": "1.3.1",
+    "author": "<a href=\"https://profiles.wordpress.org/optionweb/\">OptionWeb</a>",
+    "author_profile": "https://profiles.wordpress.org/optionweb/",
+    "contributors": {
+        "optionweb": {
+            "profile": "https://profiles.wordpress.org/optionweb/",
+            "avatar": "https://secure.gravatar.com/avatar/d9c9c828469770dca52d3758299b935771092aa65cd64700a8dad6e8fe21a530?s=96&d=monsterid&r=g",
+            "display_name": "OptionWeb"
+        }
+    },
+    "requires": "6.3",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/ow-agenda/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-01 17:01:00",
+    "added": "2026-09-01",
+    "homepage": "https://optionweb.dev/plugins/ow-agenda",
+    "sections": {
+        "description": "<p>OW Agenda provides a complete appointment system for a care center or any service business:</p>\n<ul>\n<li><strong>Online booking</strong> — visitors book a consultation on a dedicated page (pick a day, pick a time, short form, GDPR consent checkbox).</li>\n<li><strong>Email double opt-in</strong> — a request only becomes real after the visitor clicks a validation link: bots and pranksters never reach the agenda.</li>\n<li><strong>Admin validation</strong> — manual (recommended) or automatic; Confirm / Refuse buttons right inside the notification email (HMAC-signed links, no login required).</li>\n<li><strong>Mobile-first management</strong> — a login-protected &#8220;Agenda&#8221; page: day view, pending requests, phone-call appointments added manually, slot blocking, rescheduling, done / no-show statuses.</li>\n<li><strong>Customer directory</strong> — search, manual creation, editing, deletion; automatically populated from validated appointments.</li>\n<li><strong>Session invitations</strong> — a private link lets an existing customer pick the date of their own session (service and duration predefined by the admin).</li>\n<li><strong>Polished HTML emails</strong> — validation, confirmation with an ICS attachment (one-tap add to the customer&#8217;s phone calendar), cancellation, day-before reminder, admin notifications.</li>\n<li><strong>GDPR</strong> — explicit consent, automatic anonymization of past appointments, deletion of never-validated requests.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>ow-agenda</code> folder to <code>/wp-content/plugins/</code>, or install the ZIP via Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New.</li>\n<li>Activate the plugin.</li>\n<li>The &#8220;Book an appointment&#8221; and &#8220;Agenda&#8221; pages are created automatically.</li>\n<li>Configure opening hours, durations and emails in the <strong>OW Agenda</strong> menu.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20online%20slots%20take%20phone%20appointments%20into%20account%3F\">\nDo online slots take phone appointments into account?\n</h4>\n<p>\n<p>Yes: every event in the agenda (web booking, manual appointment, blocked slot) makes its time range unavailable for online booking.</p>\n</p>\n<dt id=\"how%20do%20i%20manage%20the%20agenda%20from%20a%20phone%3F\">\nHow do I manage the agenda from a phone?\n</h4>\n<p>\n<p>Open the &#8220;Agenda&#8221; page on your phone, log in, then use &#8220;Add to Home Screen&#8221;: it then behaves like an app.</p>\n</p>\n<dt id=\"can%20customers%20cancel%20by%20themselves%3F\">\nCan customers cancel by themselves?\n</h4>\n<p>\n<p>Yes, through the link in their emails, up to the configured notice period (24 hours by default). Past that, the page invites them to call.</p>\n</p>\n\n",
+        "changelog": "<h4>1.3.1</h4>\n<ul>\n<li>Compliance: the standalone action, verification and cancellation pages no longer print their CSS and JavaScript inline. Both are now registered files served through the WordPress enqueue API, with the two variable button colours passed as CSS custom properties and the script configured through <code>wp_localize_script()</code>.</li>\n<li>Compliance: translation catalogues are no longer bundled. Only <code>languages/ow-agenda.pot</code> ships; French is delivered through the WordPress.org language packs fed by translate.wordpress.org.</li>\n<li>Compatibility: the minimum WordPress version returns to 6.3, as nothing in the package depends on the bundled-translation discovery introduced in 6.7 any more.</li>\n<li>REST: every administration route now declares its <code>permission_callback</code> explicitly instead of sharing it through <code>array_merge()</code>. The capability check was already enforced; it is now visible to static analysis as well.</li>\n</ul>\n<h4>1.3.0</h4>\n<ul>\n<li>Internationalization: the whole plugin is now translatable. Every user-facing string — admin settings, standalone booking and cancellation pages, REST messages, all e-mail templates and the JavaScript interface — uses the <code>ow-agenda</code> text domain with English as the source language. <code>Domain Path: /languages</code> is declared and <code>languages/ow-agenda.pot</code> ships for translators.</li>\n<li>Localization: a full French translation has been produced from the original interface wording and submitted to translate.wordpress.org, so French sites get it through the standard WordPress language packs.</li>\n<li>Security: appointment <code>uid</code> and invitation tokens are now generated with <code>random_bytes()</code> instead of <code>wp_generate_uuid4()</code>. These tokens are the sole authentication for public cancellation, e-mail verification and invitation booking, and the previous generator relied on a non-cryptographic PRNG.</li>\n<li>Security: the public booking endpoint no longer accepts a missing honeypot or a missing timestamp — both silently disabled the anti-spam checks. The hourly quota is now aggregated per IPv6 /64 instead of per address, and a per-day cap limits unverified requests so a single visitor can no longer hold every slot of a day.</li>\n<li>Security: the rate limit is applied after form validation, so a visitor who mistypes their e-mail is no longer locked out for an hour without any appointment being created.</li>\n<li>Fixed: concurrent bookings of the same slot are now serialised with a named MySQL lock. The previous transaction issued a plain <code>SELECT</code>, which takes no row lock under REPEATABLE READ, so two simultaneous visitors could both book the same time.</li>\n<li>Fixed: the day-before reminder used a fixed evening window and could be lost for good when no visitor triggered WP-Cron that evening. It now uses a sliding window (12 to 36 hours before the appointment) and catches up on the next cron run. Each reminder is claimed atomically before sending, so overlapping cron runs can no longer send it twice.</li>\n<li>Fixed: the hourly cron event is re-scheduled automatically if it disappears, so reminders, purge and GDPR anonymisation cannot stop silently.</li>\n<li>Fixed: rescheduling a confirmed appointment now updates the customer&#8217;s calendar. The ICS attachment carries a <code>SEQUENCE</code>, <code>METHOD:REQUEST</code>, organiser and attendee, and cancellations send a <code>METHOD:CANCEL</code> file that removes the event.</li>\n<li>Fixed: the booking widget built its dates in UTC, so visitors east of UTC opening the page shortly after midnight saw the list start on the previous day and lost a day of availability.</li>\n<li>Fixed: cancelling an appointment created from a private invitation now releases that invitation, which becomes usable and visible again instead of staying permanently dead.</li>\n<li>Fixed: cancelled appointments and expired unverified requests are no longer returned to the agenda view, removing needless personal data from the REST response and phantom appointments from the admin calendar.</li>\n<li>Removed: a leftover style rule from a client project that hid a third-party floating button on every page of the site.</li>\n</ul>\n<h4>1.2.1</h4>\n<ul>\n<li>Plugin Check compliance: output escaping, input sanitization, settings nonce, wp_delete_file(), readme.</li>\n<li>Uninstall: also removes the customers table and the HMAC secret.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>HTML emails (clean card layout, site accent color) for every notification.</li>\n<li>Confirm / Refuse buttons in the admin email (HMAC-signed links).</li>\n<li>Customer directory: search, create, edit, delete, shortcuts to new appointment and invitation.</li>\n<li>Footer layout fix on the agenda page.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Email double opt-in against bots (slot held 45 minutes, purge after 48 hours).</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release: online booking, mobile-first admin agenda, session invitations, ICS emails and day-before reminder.</li>\n</ul>\n"
+    },
+    "short_description": "Online appointment booking with a mobile-first agenda: visitor bookings, manual appointments, customer directory, HTML emails and reminders.",
+    "description": "<p>OW Agenda provides a complete appointment system for a care center or any service business:</p>\n<ul>\n<li><strong>Online booking</strong> — visitors book a consultation on a dedicated page (pick a day, pick a time, short form, GDPR consent checkbox).</li>\n<li><strong>Email double opt-in</strong> — a request only becomes real after the visitor clicks a validation link: bots and pranksters never reach the agenda.</li>\n<li><strong>Admin validation</strong> — manual (recommended) or automatic; Confirm / Refuse buttons right inside the notification email (HMAC-signed links, no login required).</li>\n<li><strong>Mobile-first management</strong> — a login-protected &#8220;Agenda&#8221; page: day view, pending requests, phone-call appointments added manually, slot blocking, rescheduling, done / no-show statuses.</li>\n<li><strong>Customer directory</strong> — search, manual creation, editing, deletion; automatically populated from validated appointments.</li>\n<li><strong>Session invitations</strong> — a private link lets an existing customer pick the date of their own session (service and duration predefined by the admin).</li>\n<li><strong>Polished HTML emails</strong> — validation, confirmation with an ICS attachment (one-tap add to the customer&#8217;s phone calendar), cancellation, day-before reminder, admin notifications.</li>\n<li><strong>GDPR</strong> — explicit consent, automatic anonymization of past appointments, deletion of never-validated requests.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/ow-agenda.1.3.1.zip",
+    "upgrade_notice": {
+        "1.3.1": "<p>Compliance release: inline CSS and JavaScript on the standalone pages are now enqueued, translation catalogues are delivered through WordPress.org language packs, and REST permission checks are declared explicitly. No behavioural changes.</p>",
+        "1.3.0": "<p>Security and reliability release. Cryptographic tokens, effective anti-spam, no more double-booking, reminders that cannot be lost, and calendar updates that actually reach the customer. The interface is now fully translatable (French included).</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "agenda": "agenda",
+        "appointments": "appointments",
+        "booking": "booking",
+        "calendar": "calendar",
+        "scheduling": "scheduling"
+    },
+    "stable_tag": "1.3.1",
+    "versions": {
+        "1.3.1": "https://downloads.wordpress.org/plugin/ow-agenda.1.3.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/ow-agenda.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/ow-agenda/assets/banner-772x250.png?rev=3676546",
+        "high": "https://ps.w.org/ow-agenda/assets/banner-1544x500.png?rev=3676546"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/ow-agenda/assets/icon-128x128.png?rev=3676546",
+        "2x": "https://ps.w.org/ow-agenda/assets/icon-256x256.png?rev=3676546"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
