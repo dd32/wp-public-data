@@ -1,0 +1,90 @@
+{
+    "name": "Bitcoin and Lightning Payments for FluentCart",
+    "slug": "bitcoin-payments-for-fluentcart",
+    "version": "0.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/btc2bgroup/\">btc2bgroup</a>",
+    "author_profile": "https://profiles.wordpress.org/btc2bgroup/",
+    "contributors": {
+        "btc2bgroup": {
+            "profile": "https://profiles.wordpress.org/btc2bgroup/",
+            "avatar": "https://secure.gravatar.com/avatar/99626a2d1e16675de9438e05962385cae980543057b251c157361f12f6101136?s=96&d=monsterid&r=g",
+            "display_name": "btc2bgroup"
+        }
+    },
+    "requires": "5.6",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/bitcoin-payments-for-fluentcart/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-02 07:00:00",
+    "added": "2026-09-02",
+    "homepage": "https://github.com/btc2bgroup/btcpay-fluentcart",
+    "sections": {
+        "description": "<p>This plugin adds BTCPay Server as a payment gateway inside FluentCart. At checkout the customer<br />\nis redirected to your BTCPay Server&#8217;s hosted invoice page, pays with Bitcoin on-chain or over<br />\nLightning, and is redirected back to your store. BTCPay notifies your store through a webhook<br />\nand the FluentCart order is marked paid.</p>\n<p>You run the payment infrastructure yourself. There is no account to open with us, no middleman<br />\nholding your funds, and no percentage fee &#8211; the plugin talks only to the BTCPay Server instance<br />\nwhose address you enter in the settings.</p>\n<p><strong>Features</strong></p>\n<ul>\n<li>One-time payments only (BTCPay has no native recurring crypto billing, so subscriptions are out of scope)</li>\n<li>Redirect checkout &#8211; BTCPay&#8217;s hosted page handles on-chain vs. Lightning and currency selection</li>\n<li>Webhook-based payment confirmation, verified with HMAC-SHA256 (<code>BTCPay-Sig</code>)</li>\n<li>No external dependencies &#8211; talks to the BTCPay Greenfield REST API directly</li>\n</ul>\n<p><strong>Requirements</strong></p>\n<ul>\n<li>FluentCart 1.2.5 or higher</li>\n<li>A BTCPay Server instance you control (self-hosted or on a third-party host), reachable over HTTPS</li>\n<li>PHP 7.4 or higher</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to one external service: <strong>the BTCPay Server instance that you configure<br />\nyourself</strong> in the plugin settings. No connection is made until you enter a host, Store ID and API<br />\nkey. The plugin does not contact BTCPay Server&#8217;s own servers, our servers, or any other<br />\nthird-party service.</p>\n<p><strong>What is sent, and when</strong></p>\n<ul>\n<li>When a customer places an order with the Bitcoin payment method, the plugin sends the order<br />\namount, the currency code, the order ID and reference, and the return/redirect URLs of your<br />\nstore to your BTCPay Server, in order to create an invoice. Your API key is sent as an<br />\nauthorization header on this request.</li>\n<li>When your store loads the payment settings screen or verifies an invoice, the plugin requests<br />\ninvoice and store details from your BTCPay Server.</li>\n<li>Your BTCPay Server sends webhook notifications back to your store when an invoice is settled,<br />\nexpires, or becomes invalid.</li>\n</ul>\n<p>No customer personal data (name, email, address) is sent to BTCPay Server by this plugin, and no<br />\ndata is sent anywhere else.</p>\n<p>Because the BTCPay Server instance is one you choose and operate, the applicable terms and<br />\nprivacy policy are those of that instance and its host. BTCPay Server is free and open-source<br />\nsoftware; its project terms and documentation are available at:</p>\n<ul>\n<li>Website: https://btcpayserver.org/</li>\n<li>Documentation: https://docs.btcpayserver.org/</li>\n<li>Source: https://github.com/btcpayserver/btcpayserver</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Install and activate FluentCart (1.2.5 or higher).</li>\n<li>Upload/activate this plugin.</li>\n<li>In BTCPay Server, create a Greenfield API key: Account -&gt; Manage Account -&gt; API Keys -&gt;<br />\nGenerate Key, with at least the &#8220;Create an invoice&#8221; (<code>btcpay.store.cancreateinvoice</code>) and<br />\n&#8220;View invoices&#8221; (<code>btcpay.store.canviewinvoices</code>) permissions for your store.</li>\n<li>In WordPress go to FluentCart -&gt; Settings -&gt; Payment Methods -&gt; BTCPay Server and fill in:\n<ul>\n<li><strong>BTCPay Server Host</strong> &#8211; e.g. <code>https://btcpay.example.com</code></li>\n<li><strong>Store ID</strong> &#8211; from BTCPay Store Settings -&gt; General</li>\n<li><strong>API Key</strong> &#8211; the key created in step 3</li>\n</ul>\n</li>\n<li>Set up the webhook (see below), then enable the payment method.</li>\n</ol>\n<h4>Webhook setup (required)</h4>\n<p>FluentCart is only told about completed payments through a BTCPay webhook. Without it, orders<br />\nwill stay pending even after the customer pays.</p>\n<ol>\n<li>In BTCPay Server open your Store -&gt; Settings -&gt; Webhooks and click <strong>Create Webhook</strong>.</li>\n<li>\n<p>Set the Payload URL to:</p>\n<p>https://YOUR-SITE.com/?fluent-cart=fct_payment_listener_ipn&#038;method=btcpay</p>\n<p>(The exact URL for your site is shown on the plugin&#8217;s settings screen.)</p>\n</li>\n<li>Reveal and copy the webhook <strong>Secret</strong> before saving.</li>\n<li>Leave &#8220;Send me everything&#8221; enabled (the plugin ignores event types it doesn&#8217;t need), save the webhook.</li>\n<li>Paste the secret into the <strong>Webhook Secret</strong> field in the FluentCart BTCPay settings and save.</li>\n</ol>\n<p>The plugin acts on <code>InvoiceSettled</code> (order marked paid) and <code>InvoiceExpired</code> / <code>InvoiceInvalid</code><br />\n(transaction marked failed if it wasn&#8217;t already paid). All other events are acknowledged and ignored.</p>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20an%20account%20with%20you%20to%20use%20this%3F\">\nDo I need an account with you to use this?\n</h4>\n<p>\n<p>No. The plugin connects only to the BTCPay Server instance you configure. There is no<br />\nregistration, no API of ours involved, and no fee taken from your payments.</p>\n</p>\n<dt id=\"do%20i%20need%20to%20run%20my%20own%20btcpay%20server%3F\">\nDo I need to run my own BTCPay Server?\n</h4>\n<p>\n<p>You need a BTCPay Server instance you control. That can be one you self-host or one on a<br />\nthird-party BTCPay host. The plugin does not provide one.</p>\n</p>\n<dt id=\"does%20this%20support%20subscriptions%3F\">\nDoes this support subscriptions?\n</h4>\n<p>\n<p>No. BTCPay Server does not support recurring crypto billing, so subscriptions are permanently<br />\nout of scope for this gateway.</p>\n</p>\n<dt id=\"does%20this%20support%20refunds%20from%20the%20fluentcart%20admin%3F\">\nDoes this support refunds from the FluentCart admin?\n</h4>\n<p>\n<p>Not yet. Note that BTCPay refunds work differently from card processors: they generate a claim<br />\nlink the customer uses to pull the funds, rather than pushing money back automatically. You can<br />\nissue refunds manually from the BTCPay Server invoice screen.</p>\n</p>\n<dt id=\"is%20there%20a%20test%20mode%3F\">\nIs there a test mode?\n</h4>\n<p>\n<p>No built-in sandbox toggle &#8211; test against a separate shop/BTCPay store (e.g. one on testnet or<br />\nregtest) instead.</p>\n</p>\n<dt id=\"why%20must%20the%20btcpay%20host%20be%20https%3F\">\nWhy must the BTCPay host be https?\n</h4>\n<p>\n<p>Your Greenfield API key is sent as an authorization header on every request. Over plain http it<br />\nwould travel in the clear, so the settings screen rejects non-https hosts.</p>\n</p>\n<dt id=\"my%20orders%20stay%20pending%20after%20the%20customer%20pays.%20what%27s%20wrong%3F\">\nMy orders stay pending after the customer pays. What&#8217;s wrong?\n</h4>\n<p>\n<p>Almost always a webhook problem. Check that the webhook exists in BTCPay, that its Payload URL<br />\nmatches the one shown on the plugin settings screen, and that the Webhook Secret saved in<br />\nWordPress matches the one BTCPay generated. BTCPay&#8217;s webhook screen shows recent delivery<br />\nattempts and their responses.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>First submitted version after approval.</li>\n<li>Added the full GPLv2 license text and copyright notice.</li>\n</ul>\n"
+    },
+    "short_description": "Accept Bitcoin and Lightning payments in FluentCart through your own self-hosted BTCPay Server.",
+    "description": "<p>This plugin adds BTCPay Server as a payment gateway inside FluentCart. At checkout the customer<br />\nis redirected to your BTCPay Server&#8217;s hosted invoice page, pays with Bitcoin on-chain or over<br />\nLightning, and is redirected back to your store. BTCPay notifies your store through a webhook<br />\nand the FluentCart order is marked paid.</p>\n<p>You run the payment infrastructure yourself. There is no account to open with us, no middleman<br />\nholding your funds, and no percentage fee &#8211; the plugin talks only to the BTCPay Server instance<br />\nwhose address you enter in the settings.</p>\n<p><strong>Features</strong></p>\n<ul>\n<li>One-time payments only (BTCPay has no native recurring crypto billing, so subscriptions are out of scope)</li>\n<li>Redirect checkout &#8211; BTCPay&#8217;s hosted page handles on-chain vs. Lightning and currency selection</li>\n<li>Webhook-based payment confirmation, verified with HMAC-SHA256 (<code>BTCPay-Sig</code>)</li>\n<li>No external dependencies &#8211; talks to the BTCPay Greenfield REST API directly</li>\n</ul>\n<p><strong>Requirements</strong></p>\n<ul>\n<li>FluentCart 1.2.5 or higher</li>\n<li>A BTCPay Server instance you control (self-hosted or on a third-party host), reachable over HTTPS</li>\n<li>PHP 7.4 or higher</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to one external service: <strong>the BTCPay Server instance that you configure<br />\nyourself</strong> in the plugin settings. No connection is made until you enter a host, Store ID and API<br />\nkey. The plugin does not contact BTCPay Server&#8217;s own servers, our servers, or any other<br />\nthird-party service.</p>\n<p><strong>What is sent, and when</strong></p>\n<ul>\n<li>When a customer places an order with the Bitcoin payment method, the plugin sends the order<br />\namount, the currency code, the order ID and reference, and the return/redirect URLs of your<br />\nstore to your BTCPay Server, in order to create an invoice. Your API key is sent as an<br />\nauthorization header on this request.</li>\n<li>When your store loads the payment settings screen or verifies an invoice, the plugin requests<br />\ninvoice and store details from your BTCPay Server.</li>\n<li>Your BTCPay Server sends webhook notifications back to your store when an invoice is settled,<br />\nexpires, or becomes invalid.</li>\n</ul>\n<p>No customer personal data (name, email, address) is sent to BTCPay Server by this plugin, and no<br />\ndata is sent anywhere else.</p>\n<p>Because the BTCPay Server instance is one you choose and operate, the applicable terms and<br />\nprivacy policy are those of that instance and its host. BTCPay Server is free and open-source<br />\nsoftware; its project terms and documentation are available at:</p>\n<ul>\n<li>Website: https://btcpayserver.org/</li>\n<li>Documentation: https://docs.btcpayserver.org/</li>\n<li>Source: https://github.com/btcpayserver/btcpayserver</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/bitcoin-payments-for-fluentcart.0.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/bitcoin-payments-for-fluentcart/assets/screenshot-1.png?rev=3677288",
+            "caption": "The BTCPay Server payment method settings in FluentCart."
+        },
+        {
+            "src": "https://ps.w.org/bitcoin-payments-for-fluentcart/assets/screenshot-2.png?rev=3677288",
+            "caption": "Bitcoin offered as a payment method at checkout."
+        },
+        {
+            "src": "https://ps.w.org/bitcoin-payments-for-fluentcart/assets/screenshot-3.png?rev=3677288",
+            "caption": "The BTCPay-hosted invoice page where the customer pays on-chain or over Lightning."
+        }
+    ],
+    "tags": {
+        "bitcoin": "bitcoin",
+        "btcpay": "btcpay",
+        "fluentcart": "fluentcart",
+        "lightning": "Lightning",
+        "payment-gateway": "payment gateway"
+    },
+    "stable_tag": "0.1.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/bitcoin-payments-for-fluentcart.0.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/bitcoin-payments-for-fluentcart.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/bitcoin-payments-for-fluentcart/assets/banner-772x250.jpg?rev=3677288",
+        "high": "https://ps.w.org/bitcoin-payments-for-fluentcart/assets/banner-1544x500.jpg?rev=3677288"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/bitcoin-payments-for-fluentcart/assets/icon-128x128.png?rev=3677288",
+        "2x": "https://ps.w.org/bitcoin-payments-for-fluentcart/assets/icon-256x256.png?rev=3677288"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
