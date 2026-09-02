@@ -1,0 +1,94 @@
+{
+    "name": "Absoluit User Hub",
+    "slug": "absoluit-user-hub",
+    "version": "1.1.1",
+    "author": "<a href=\"https://profiles.wordpress.org/absoluit/\">Absoluit</a>",
+    "author_profile": "https://profiles.wordpress.org/absoluit/",
+    "contributors": {
+        "absoluit": {
+            "profile": "https://profiles.wordpress.org/absoluit/",
+            "avatar": "https://secure.gravatar.com/avatar/1ac1507d3b2ff37c6c79b62869abaed6a947b7a91682a46c26be5aec834c5c34?s=96&d=monsterid&r=g",
+            "display_name": "Absoluit"
+        }
+    },
+    "requires": "5.6",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/absoluit-user-hub/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-02 12:05:00",
+    "added": "2026-09-02",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Absoluit User Hub is a powerful, secure, centralized user management system designed specifically for WordPress. It enables network administrators to manage user accounts (create, update, search, and delete) across multiple connected child sites from a single, centralized WordPress master dashboard.</p>\n<p>The system is distributed as a single unified plugin package that supports three active roles:<br />\n1. <strong>Master Dashboard Mode</strong>: Run on your central administration site. Exposes the main &#8220;User Hub&#8221; dashboard menus, connection diagnostics, AJAX controllers, and custom database mapping.<br />\n2. <strong>Client Agent Mode</strong>: Run on individual child nodes. Exposes custom REST API endpoints under a private namespace (<code>wp-user-hub/v1</code>) protected by a strict multi-layer verification middleware.<br />\n3. <strong>Both Mode</strong>: Runs both components simultaneously on a single WordPress installation (primarily used for local development and debugging).</p>\n<p>Upon first activation, the plugin resides in a safe, uninitialized state and prompts the administrator to select the site&#8217;s role before loading any features.</p>\n<h4>Architecture Overview</h4>\n<ul>\n<li><strong>Central Dashboard (Master)</strong>: The administrator interacts with the dashboard UI to trigger user operations. The Master component dispatches secure, signed REST requests to connected child sites using WordPress HTTP APIs.</li>\n<li><strong>Child Nodes (Client)</strong>: Expose custom REST API endpoints. An authentication middleware verifies credentials, allowed IP addresses, timestamp drift boundaries, and duplicate nonces before modifying the local WordPress user database.</li>\n</ul>\n<h3>Security</h3>\n<p>Absoluit User Hub implements several security controls to protect your user database:<br />\n* <strong>API Key Authentication</strong>: A high-entropy shared secret generated for each child site.<br />\n* <strong>IP Allowlisting</strong>: Strict enforcement restricting REST API requests to whitelisted Master IPs.<br />\n* <strong>Timestamp Drift Validation</strong>: Rejects requests where the server time difference exceeds 300 seconds to prevent outdated requests.<br />\n* <strong>Nonce Validation</strong>: Caches request nonces via transients to block replay attacks.<br />\n* <strong>HMAC-SHA256 Request Signing</strong>: Incoming request parameters are cryptographically signed using the shared secret API Key, ensuring payload integrity.<br />\n* <strong>Primary Admin Protection</strong>: Hardcoded checks explicitly block the deletion of user ID 1 (Primary Administrator).</p>\n<p>Best Practices:<br />\n* Always run WordPress over HTTPS.<br />\n* Restrict Allowed Master IPs on the Client settings.<br />\n* Keep WordPress and plugins updated.<br />\n* Protect and rotate API keys regularly.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>absoluit-user-hub</code> directory to the <code>/wp-content/plugins/</code> directory of your WordPress site.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>A notice will appear at the top of the admin dashboard asking you to select the plugin role:\n<ul>\n<li><strong>If configuring the central hub</strong>: Select <strong>Master Dashboard Mode</strong>. This will initialize the dashboard tables and show the <strong>User Hub</strong> sidebar menu.</li>\n<li><strong>If configuring a child node</strong>: Select <strong>Client Agent Mode</strong>. Go to <strong>Settings &gt; User Hub Client</strong> to copy the generated <strong>API Key</strong> and the <strong>REST API URL</strong>, and whitelist your Master server&#8217;s IP address.</li>\n<li><strong>To change modes</strong>: Go to <strong>Settings &gt; User Hub Settings</strong> at any time to switch roles. Mode switching is non-destructive; all existing settings and database records are preserved.</li>\n</ul>\n</li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20a%20wordpress%20multisite%20network%20to%20use%20this%3F\">\nDo I need a WordPress Multisite network to use this?\n</h4>\n<p>\n<p>No. Absoluit User Hub is built specifically for independent WordPress installations. It does not require Multisite, letting you manage users across entirely different domains and servers.</p>\n</p>\n<dt id=\"how%20do%20i%20configure%20a%20child%20site%3F\">\nHow do I configure a child site?\n</h4>\n<p>\n<p>Activate the plugin on the child site, select <strong>Client Agent Mode</strong>, navigate to <strong>Settings &gt; User Hub Client</strong>, and configure the Allowed Master IPs (your central server&#8217;s IP). Copy the API Key and REST API URL. Then log in to your central master site (configured in <strong>Master Dashboard Mode</strong>), go to <strong>User Hub &gt; Connected Sites</strong>, click <strong>Add Site</strong>, and paste the child site&#8217;s URL and API Key.</p>\n</p>\n<dt id=\"what%20is%20the%20difference%20between%20master%20and%20client%20modes%3F\">\nWhat is the difference between Master and Client modes?\n</h4>\n<p>\n<p>Master mode runs the administration controls, allowing you to view and manage users on other sites. Client mode is a passive agent that exposes endpoints allowing the Master Dashboard to read/write user profiles securely.</p>\n</p>\n<dt id=\"can%20i%20switch%20modes%20later%3F\">\nCan I switch modes later?\n</h4>\n<p>\n<p>Yes. Go to <strong>Settings &gt; User Hub Settings</strong> in your WordPress admin panel and choose a new active role. All database custom tables and client settings options are retained and preserved.</p>\n</p>\n<dt id=\"where%20do%20i%20find%20the%20client%20api%20key%3F\">\nWhere do I find the Client API Key?\n</h4>\n<p>\n<p>In Client Mode, go to <strong>Settings &gt; User Hub Client</strong> in your child site&#8217;s WordPress admin panel. The API key is displayed in a password field. Click the eye icon to toggle visibility and copy the key.</p>\n</p>\n<dt id=\"what%20are%20allowed%20master%20ips%3F\">\nWhat are Allowed Master IPs?\n</h4>\n<p>\n<p>Allowed Master IPs is a security setting on the Client agent. You specify the external IP address of your Master Dashboard server. Any request arriving from a different IP address will be immediately blocked.</p>\n</p>\n<dt id=\"how%20does%20authentication%20work%3F\">\nHow does authentication work?\n</h4>\n<p>\n<p>Authentication uses shared secret API keys and HMAC-SHA256 signature verification. Outgoing requests are signed with a hash generated using the API key, request body, nonce, and timestamp. The client re-calculates this hash to verify the integrity and origin of the request.</p>\n</p>\n<dt id=\"can%20i%20bulk%20import%20sites%3F\">\nCan I bulk import sites?\n</h4>\n<p>\n<p>Yes. In Master mode, the Connected Sites panel includes a bulk import feature where you can paste lists of sites with names, URLs, and API keys separated by commas or pipes.</p>\n</p>\n<dt id=\"what%20happens%20when%20deleting%20a%20user%20who%20owns%20posts%3F\">\nWhat happens when deleting a user who owns posts?\n</h4>\n<p>\n<p>When deleting a user from the dashboard, you can choose to assign their existing posts to a fallback administrator on the child site, preventing orphaned content.</p>\n</p>\n<dt id=\"what%20wordpress%20and%20php%20versions%20are%20supported%3F\">\nWhat WordPress and PHP versions are supported?\n</h4>\n<p>\n<p>This plugin requires WordPress 5.6 or later, and PHP 7.4 or later.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.1</h4>\n<ul>\n<li>Security: Enforced strict capability check (manage_options) on the Client settings page.</li>\n<li>Security: Sanitized user identifiers in REST API endpoints to block potential output injection.</li>\n<li>Fix: Adjusted client whitelisting so that leaving Allowed Master IPs blank disables IP checking instead of blocking connections.</li>\n<li>Fix: Prevented API Key from being overwritten to empty on Client settings saves by removing it from registration and using readonly display fields.</li>\n<li>Fix: Restructured Master sites database schema setup to be fully compliant with WordPress dbDelta formatting and self-healing initialization.</li>\n<li>Fix: Migrated dynamic inline stylesheets and JS styles to standard enqueued stylesheet files.</li>\n<li>Fix: Added robust support for HTTP_CF_CONNECTING_IP and HTTP_X_FORWARDED_FOR reverse proxy client IP detection.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Feature: Support for bulk importing child sites using CSV/pipe-delimited values.</li>\n<li>Feature: Added real-time connection status check badge.</li>\n<li>Security: Enforced IP Whitelisting checks by default.</li>\n<li>Security: Implemented transient-based nonce tracking to block replay attacks.</li>\n<li>Security: Added strict role validation checks and string bounds checking.</li>\n<li>Integration: Consolidated Master and Client plugins into a single package with a secure role setup flow.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial stable release.</li>\n</ul>\n"
+    },
+    "short_description": "Centralized dashboard and client system to manage WordPress users across all your connected sites. Powered by Absoluit.",
+    "description": "<p>Absoluit User Hub is a powerful, secure, centralized user management system designed specifically for WordPress. It enables network administrators to manage user accounts (create, update, search, and delete) across multiple connected child sites from a single, centralized WordPress master dashboard.</p>\n<p>The system is distributed as a single unified plugin package that supports three active roles:<br />\n1. <strong>Master Dashboard Mode</strong>: Run on your central administration site. Exposes the main &#8220;User Hub&#8221; dashboard menus, connection diagnostics, AJAX controllers, and custom database mapping.<br />\n2. <strong>Client Agent Mode</strong>: Run on individual child nodes. Exposes custom REST API endpoints under a private namespace (<code>wp-user-hub/v1</code>) protected by a strict multi-layer verification middleware.<br />\n3. <strong>Both Mode</strong>: Runs both components simultaneously on a single WordPress installation (primarily used for local development and debugging).</p>\n<p>Upon first activation, the plugin resides in a safe, uninitialized state and prompts the administrator to select the site&#8217;s role before loading any features.</p>\n<h4>Architecture Overview</h4>\n<ul>\n<li><strong>Central Dashboard (Master)</strong>: The administrator interacts with the dashboard UI to trigger user operations. The Master component dispatches secure, signed REST requests to connected child sites using WordPress HTTP APIs.</li>\n<li><strong>Child Nodes (Client)</strong>: Expose custom REST API endpoints. An authentication middleware verifies credentials, allowed IP addresses, timestamp drift boundaries, and duplicate nonces before modifying the local WordPress user database.</li>\n</ul>\n<h3>Security</h3>\n<p>Absoluit User Hub implements several security controls to protect your user database:<br />\n* <strong>API Key Authentication</strong>: A high-entropy shared secret generated for each child site.<br />\n* <strong>IP Allowlisting</strong>: Strict enforcement restricting REST API requests to whitelisted Master IPs.<br />\n* <strong>Timestamp Drift Validation</strong>: Rejects requests where the server time difference exceeds 300 seconds to prevent outdated requests.<br />\n* <strong>Nonce Validation</strong>: Caches request nonces via transients to block replay attacks.<br />\n* <strong>HMAC-SHA256 Request Signing</strong>: Incoming request parameters are cryptographically signed using the shared secret API Key, ensuring payload integrity.<br />\n* <strong>Primary Admin Protection</strong>: Hardcoded checks explicitly block the deletion of user ID 1 (Primary Administrator).</p>\n<p>Best Practices:<br />\n* Always run WordPress over HTTPS.<br />\n* Restrict Allowed Master IPs on the Client settings.<br />\n* Keep WordPress and plugins updated.<br />\n* Protect and rotate API keys regularly.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/absoluit-user-hub.1.1.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/absoluit-user-hub/assets/screenshot-1.png?rev=3678009",
+            "caption": "The central Master Dashboard displaying connection status, quick actions, and the list of connected child sites."
+        },
+        {
+            "src": "https://ps.w.org/absoluit-user-hub/assets/screenshot-2.png?rev=3678009",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/absoluit-user-hub/assets/screenshot-3.png?rev=3678009",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/absoluit-user-hub/assets/screenshot-4.png?rev=3678009",
+            "caption": ""
+        }
+    ],
+    "tags": {
+        "central-dashboard": "central dashboard",
+        "multi-site": "multi-site",
+        "user-management": "user management",
+        "user-control": "user-control",
+        "users": "users"
+    },
+    "stable_tag": "1.1.1",
+    "versions": {
+        "1.1.1": "https://downloads.wordpress.org/plugin/absoluit-user-hub.1.1.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/absoluit-user-hub.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/absoluit-user-hub/assets/banner-772x250.png?rev=3678009",
+        "high": "https://ps.w.org/absoluit-user-hub/assets/banner-1544x500.png?rev=3678009"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/absoluit-user-hub/assets/icon-128x128.png?rev=3678009",
+        "2x": "https://ps.w.org/absoluit-user-hub/assets/icon-256x256.png?rev=3678009"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

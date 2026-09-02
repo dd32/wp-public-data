@@ -1,0 +1,118 @@
+{
+    "name": "URBO Payment Initiation Service (PIS) for WooCommerce",
+    "slug": "urbo-mip-for-woocommerce",
+    "version": "1.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/urbobankas/\">Urbo bankas, UAB</a>",
+    "author_profile": "https://profiles.wordpress.org/urbobankas/",
+    "contributors": {
+        "urbobankas": {
+            "profile": "https://profiles.wordpress.org/urbobankas/",
+            "avatar": "https://secure.gravatar.com/avatar/f3f2938bb5c0c6235f744101854df1d4ee1fba5db4d57967aca97c9620e5464b?s=96&d=monsterid&r=g",
+            "display_name": "Urbo bankas, UAB"
+        }
+    },
+    "requires": "5.9",
+    "tested": "7.1",
+    "requires_php": "8.1",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/urbo-mip-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-02 11:36:00",
+    "added": "2026-06-22",
+    "homepage": "",
+    "sections": {
+        "description": "<p>URBO Payment Initiation Service (PIS) enables your WooCommerce store to accept direct bank payments.</p>\n<p><strong>Features:</strong></p>\n<ul>\n<li>Secure bank payments via PIS</li>\n<li>Sandbox and production environments</li>\n<li>Automatic order status updates via webhooks</li>\n<li>WooCommerce Blocks checkout support</li>\n<li>HPOS (High-Performance Order Storage) compatible</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the URBO Payment Initiation Service (PIS) API at mip.urbo.lt to initiate and track bank payments. The service is required for the plugin to function: it is what processes the customer&#8217;s payment.</p>\n<p>When a customer places an order using the URBO bank payment method, the plugin sends the following order data to the API to create the payment: order reference, order total, currency, country, locale, the return URL the customer is sent back to, an optional webhook URL, and the customer&#8217;s billing email. The plugin also sends the payment order ID when it queries payment status, and receives payment status notifications from the service via a webhook.</p>\n<p>When sandbox mode is enabled in the settings, the sandbox environment (mip.urbo.lt/api/v1/sandbox) is used instead and no real payments are processed.</p>\n<p>A URBO PIS merchant account and API credentials are required.</p>\n<ul>\n<li><a href=\"https://mip-docs.urbo.lt\" rel=\"nofollow ugc\">Service and API documentation / terms of use</a></li>\n<li><a href=\"https://urbo.lt/en/privacy-policy\" rel=\"nofollow ugc\">Privacy policy</a></li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>urbo-mip-for-woocommerce</code> folder to the <code>/wp-content/plugins/</code> directory.</li>\n<li>Activate the plugin through the &#8220;Plugins&#8221; menu in WordPress.</li>\n<li>Go to WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Payments and configure the URBO Payment Initiation Service (PIS) settings.</li>\n<li>Enter your API credentials and select the environment.</li>\n<li>Enable the Bank Payment method.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"what%20is%20urbo%20payment%20initiation%20service%3F\">\nWhat is URBO Payment Initiation Service?\n</h4>\n<p>\n<p>URBO Payment Initiation Service (PIS) allows customers to pay directly from their bank account.</p>\n</p>\n<dt id=\"do%20i%20need%20a%20merchant%20account%3F\">\nDo I need a merchant account?\n</h4>\n<p>\n<p>Yes, a URBO Payment Initiation Service (PIS) merchant account is required. Contact URBO at info@urbo.lt.</p>\n</p>\n<dt id=\"does%20this%20plugin%20support%20woocommerce%20blocks%3F\">\nDoes this plugin support WooCommerce Blocks?\n</h4>\n<p>\n<p>Yes, the plugin is fully compatible with the WooCommerce Blocks-based checkout.</p>\n</p>\n<dt id=\"where%20is%20the%20source%20code%20for%20the%20checkout%20block%20script%2C%20and%20how%20is%20it%20built%3F\">\nWhere is the source code for the checkout block script, and how is it built?\n</h4>\n<p>\n<p>The minified file assets/blocks/urbo-mip-bank/index.js is the compiled production output. The corresponding human-readable source is included in the plugin package at includes/blocks/urbo-mip-bank/index.js, so the uncompressed code ships alongside the compiled version.</p>\n<p>The build uses @wordpress/scripts. The build tooling (package.json and webpack.config.js) is not included in the distributed plugin package, so to regenerate the compiled file, create the two files below in the plugin directory, then run <code>npm install</code> followed by <code>npm run build</code>. No external repository is needed.</p>\n<p>package.json:</p>\n<pre><code>{\n  \"name\": \"urbo-mip-for-woocommerce\",\n  \"private\": true,\n  \"scripts\": {\n    \"build\": \"wp-scripts build\",\n    \"start\": \"wp-scripts start\"\n  },\n  \"devDependencies\": {\n    \"@woocommerce/dependency-extraction-webpack-plugin\": \"^2.2.0\",\n    \"@wordpress/scripts\": \"^30.0.0\"\n  }\n}\n</code></pre>\n<p>webpack.config.js:</p>\n<pre><code>const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );\nconst WooCommerceDependencyExtractionWebpackPlugin = require( '@woocommerce/dependency-extraction-webpack-plugin' );\nconst path = require( 'path' );\n\nmodule.exports = {\n  ...defaultConfig,\n  entry: {\n    'urbo-mip-bank/index': path.resolve( __dirname, 'includes/blocks/urbo-mip-bank/index.js' ),\n  },\n  output: {\n    path: path.resolve( __dirname, 'assets/blocks' ),\n    filename: '[name].js',\n  },\n  plugins: [\n    ...defaultConfig.plugins.filter(\n      ( plugin ) =&gt;\n        plugin.constructor.name !== 'DependencyExtractionWebpackPlugin'\n    ),\n    new WooCommerceDependencyExtractionWebpackPlugin(),\n  ],\n};\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>1.0.1</h4>\n<ul>\n<li>Declare compatibility with WordPress 7.1 and WooCommerce 11.0.</li>\n<li>Raise the minimum required WordPress version to 5.9.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>Initial support for direct bank payments via URBO Payment Initiation Service (PIS).</li>\n</ul>\n"
+    },
+    "short_description": "Accept direct bank payments in your WooCommerce store using URBO Payment Initiation Service (PIS).",
+    "description": "<p>URBO Payment Initiation Service (PIS) enables your WooCommerce store to accept direct bank payments.</p>\n<p><strong>Features:</strong></p>\n<ul>\n<li>Secure bank payments via PIS</li>\n<li>Sandbox and production environments</li>\n<li>Automatic order status updates via webhooks</li>\n<li>WooCommerce Blocks checkout support</li>\n<li>HPOS (High-Performance Order Storage) compatible</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the URBO Payment Initiation Service (PIS) API at mip.urbo.lt to initiate and track bank payments. The service is required for the plugin to function: it is what processes the customer&#8217;s payment.</p>\n<p>When a customer places an order using the URBO bank payment method, the plugin sends the following order data to the API to create the payment: order reference, order total, currency, country, locale, the return URL the customer is sent back to, an optional webhook URL, and the customer&#8217;s billing email. The plugin also sends the payment order ID when it queries payment status, and receives payment status notifications from the service via a webhook.</p>\n<p>When sandbox mode is enabled in the settings, the sandbox environment (mip.urbo.lt/api/v1/sandbox) is used instead and no real payments are processed.</p>\n<p>A URBO PIS merchant account and API credentials are required.</p>\n<ul>\n<li><a href=\"https://mip-docs.urbo.lt\" rel=\"nofollow ugc\">Service and API documentation / terms of use</a></li>\n<li><a href=\"https://urbo.lt/en/privacy-policy\" rel=\"nofollow ugc\">Privacy policy</a></li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/urbo-mip-for-woocommerce.1.0.1.zip",
+    "upgrade_notice": {
+        "1.0.1": "<p>Compatibility release for WordPress 7.1 and WooCommerce 11.0.</p>",
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/urbo-mip-for-woocommerce/assets/screenshot-1.png?rev=3581469",
+            "caption": "The Bank Payment method in the WooCommerce Blocks-based checkout."
+        },
+        {
+            "src": "https://ps.w.org/urbo-mip-for-woocommerce/assets/screenshot-2.png?rev=3581469",
+            "caption": "The URBO Payment Initiation Service (PIS) settings under WooCommerce / Settings / Payments."
+        },
+        {
+            "src": "https://ps.w.org/urbo-mip-for-woocommerce/assets/screenshot-3.png?rev=3581469",
+            "caption": "The URBO Payment Initiation Service (PIS) API credentials."
+        }
+    ],
+    "tags": {
+        "gateway": "gateway",
+        "payment": "payment",
+        "urbo": "urbo",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.1",
+    "versions": {
+        "1.0.1": "https://downloads.wordpress.org/plugin/urbo-mip-for-woocommerce.1.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/urbo-mip-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/urbo-mip-for-woocommerce/assets/banner-772-250.png?rev=3581469",
+        "high": "https://ps.w.org/urbo-mip-for-woocommerce/assets/banner-1544-500.png?rev=3581469"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/urbo-mip-for-woocommerce/assets/icon-128x128.png?rev=3581469",
+        "2x": "https://ps.w.org/urbo-mip-for-woocommerce/assets/icon-256x256.png?rev=3581469"
+    },
+    "blocks": {
+        "urbo-mip/bank-payment": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "urbo-mip/bank-payment",
+            "title": "URBO Payment Initiation Service (PIS)",
+            "category": "woocommerce",
+            "icon": "bank",
+            "description": "Bank payment via URBO Payment Initiation Service (PIS)",
+            "keywords": [
+                "checkout",
+                "payment",
+                "urbo",
+                "bank"
+            ],
+            "version": "1.0.1",
+            "textdomain": "urbo-mip-for-woocommerce",
+            "supports": {
+                "html": false,
+                "multiple": false
+            },
+            "editorScript": "file:./index.js",
+            "viewScript": "file:./index.js"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

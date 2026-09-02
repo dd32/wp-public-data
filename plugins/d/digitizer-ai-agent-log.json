@@ -1,0 +1,84 @@
+{
+    "name": "Digitizer AI Agent Log",
+    "slug": "digitizer-ai-agent-log",
+    "version": "1.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/benkalsky/\">Ben Kalsky</a>",
+    "author_profile": "https://profiles.wordpress.org/benkalsky/",
+    "contributors": {
+        "benkalsky": {
+            "profile": "https://profiles.wordpress.org/benkalsky/",
+            "avatar": "https://secure.gravatar.com/avatar/3e87307b8cd4531a02016a0f58980297dc7f54c58af05139fad43912cd15d9ec?s=96&d=monsterid&r=g",
+            "display_name": "Ben Kalsky"
+        }
+    },
+    "requires": "5.5",
+    "tested": "7.1",
+    "requires_php": "7.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/digitizer-ai-agent-log/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-02 12:47:00",
+    "added": "2026-09-02",
+    "homepage": "https://github.com/Digitizers/digitizer-ai-agent-log",
+    "sections": {
+        "description": "<p>An AI agent, a headless front end, a sync script and a cron job all reach WordPress the same way a person never does: over an API. When something on the site is not what you left it as, the question is not &#8220;who changed this&#8221; but &#8220;did a person change this, or did something else&#8221;.</p>\n<p>This plugin answers that question and only that question. It records changes that arrived over the REST API, WP-Cron, WP-CLI or XML-RPC. A change made by a person clicking in wp-admin is not recorded &#8211; not filtered out afterwards, not stored and hidden, simply never written.</p>\n<h4>Why not a general activity log</h4>\n<p>General activity logs record everything, which means the automated change you are looking for is one line in a thousand made by your own team. This one starts from the other end. If you already run an activity log, this sits beside it and answers a different question.</p>\n<h4>What it records</h4>\n<ul>\n<li><strong>The channel</strong> &#8211; <code>rest</code>, <code>cron</code>, <code>cli</code> or <code>xmlrpc</code>.</li>\n<li><strong>Which application password</strong> authenticated the request, by name, when there was one. Never a guess: when the name cannot be determined the field is empty rather than filled with a User-Agent or an IP that merely looks like an identity.</li>\n<li><strong>What changed</strong> &#8211; the object, and which fields were touched.</li>\n<li><strong>When</strong>, in UTC, shown in your site&#8217;s timezone.</li>\n</ul>\n<h4>What it does not record</h4>\n<ul>\n<li><strong>Not the values.</strong> The names of the fields that changed, never their contents. A log of what your site contains is a second copy of your site.</li>\n<li><strong>Not people.</strong> A block editor save is a cookie-authenticated REST request, and it is recognised as a person and skipped. This is the plugin&#8217;s central promise, and it is the case it was hardest to get right.</li>\n<li><strong>Not reads.</strong> Something polling the REST API would fill the table in a day and drown the writes that were the reason to look.</li>\n<li><strong>No IP addresses.</strong></li>\n</ul>\n<h4>Reading the log</h4>\n<p>On its own admin screen, filtered by channel, object type and date range. Or over the REST API at <code>digitizer-ai-agent-log/v1/activity</code>, which requires <code>manage_options</code>. There is deliberately no route that deletes: a log that can be erased through the API is a log an attacker erases on the way out.</p>\n<h4>Multisite</h4>\n<p>Each site keeps its own log, in its own table, and a run that switches between sites files each change under the site it happened on.</p>\n",
+        "installation": "<ol>\n<li>Install and activate. The log table is created the first time the plugin runs.</li>\n<li>Find the log under <strong>Agent Activity</strong> in the admin menu.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20it%20slow%20the%20site%20down%3F\">\nDoes it slow the site down?\n</h4>\n<p>\n<p>Changes are held in memory during the request and written once, at shutdown, and only when the request came in on a channel worth recording. A browser request writes nothing at all.</p>\n</p>\n<dt id=\"does%20it%20send%20anything%20anywhere%3F\">\nDoes it send anything anywhere?\n</h4>\n<p>\n<p>No. Nothing leaves the site.</p>\n</p>\n<dt id=\"how%20large%20does%20the%20table%20get%3F\">\nHow large does the table get?\n</h4>\n<p>\n<p>Old rows are pruned automatically, at most once an hour.</p>\n</p>\n<dt id=\"a%20plugin%20on%20my%20site%20rewrites%20its%20own%20settings%20and%20fills%20the%20log.%20can%20i%20silence%20it%3F\">\nA plugin on my site rewrites its own settings and fills the log. Can I silence it?\n</h4>\n<p>\n<p>Yes, with a filter. Nothing is filtered out by default, because what is absent from this log is supposed to mean it did not happen over an API:</p>\n<pre><code>add_filter( 'digitizer_ai_agent_log_record', function ( $record, $entry ) {\n    if ( 'elementor_library' === $entry['object_subtype'] ) {\n        return false;\n    }\n    return $record;\n}, 10, 2 );\n</code></pre>\n<p>The entry carries <code>object_type</code>, <code>object_subtype</code>, <code>object_id</code>, <code>object_name</code>, <code>action</code>, <code>fields</code>, <code>blog_id</code>, <code>channel</code>, <code>app</code> and <code>user_id</code>, so a rule can match on who made the change as well as what it touched. On a network the filter runs inside the site the change happened on, so a callback may read that site&#8217;s own options to decide.</p>\n<p>Note that such an entry is not a mistake: WordPress refuses an identical meta write before the plugin ever sees it, so a change that reaches the log did alter the row. It is simply a change you may not care about, and only your site can say which those are.</p>\n</p>\n<dt id=\"what%20happens%20when%20i%20uninstall%20it%3F\">\nWhat happens when I uninstall it?\n</h4>\n<p>\n<p>The table is dropped and both of its options are deleted, on every site of a network. Nothing is left behind.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.0</h4>\n<ul>\n<li>A <code>digitizer_ai_agent_log_record</code> filter, applied to every entry once the channel and the application name are known, so a site can silence a writer it does not care about. Nothing is filtered by default.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>The plugin page gets its screenshot. No functional change.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "Records what automations changed on your site - REST API, WP-Cron, WP-CLI, XML-RPC. Changes people make in wp-admin are not recorded at all.",
+    "description": "<p>An AI agent, a headless front end, a sync script and a cron job all reach WordPress the same way a person never does: over an API. When something on the site is not what you left it as, the question is not &#8220;who changed this&#8221; but &#8220;did a person change this, or did something else&#8221;.</p>\n<p>This plugin answers that question and only that question. It records changes that arrived over the REST API, WP-Cron, WP-CLI or XML-RPC. A change made by a person clicking in wp-admin is not recorded &#8211; not filtered out afterwards, not stored and hidden, simply never written.</p>\n<h4>Why not a general activity log</h4>\n<p>General activity logs record everything, which means the automated change you are looking for is one line in a thousand made by your own team. This one starts from the other end. If you already run an activity log, this sits beside it and answers a different question.</p>\n<h4>What it records</h4>\n<ul>\n<li><strong>The channel</strong> &#8211; <code>rest</code>, <code>cron</code>, <code>cli</code> or <code>xmlrpc</code>.</li>\n<li><strong>Which application password</strong> authenticated the request, by name, when there was one. Never a guess: when the name cannot be determined the field is empty rather than filled with a User-Agent or an IP that merely looks like an identity.</li>\n<li><strong>What changed</strong> &#8211; the object, and which fields were touched.</li>\n<li><strong>When</strong>, in UTC, shown in your site&#8217;s timezone.</li>\n</ul>\n<h4>What it does not record</h4>\n<ul>\n<li><strong>Not the values.</strong> The names of the fields that changed, never their contents. A log of what your site contains is a second copy of your site.</li>\n<li><strong>Not people.</strong> A block editor save is a cookie-authenticated REST request, and it is recognised as a person and skipped. This is the plugin&#8217;s central promise, and it is the case it was hardest to get right.</li>\n<li><strong>Not reads.</strong> Something polling the REST API would fill the table in a day and drown the writes that were the reason to look.</li>\n<li><strong>No IP addresses.</strong></li>\n</ul>\n<h4>Reading the log</h4>\n<p>On its own admin screen, filtered by channel, object type and date range. Or over the REST API at <code>digitizer-ai-agent-log/v1/activity</code>, which requires <code>manage_options</code>. There is deliberately no route that deletes: a log that can be erased through the API is a log an attacker erases on the way out.</p>\n<h4>Multisite</h4>\n<p>Each site keeps its own log, in its own table, and a run that switches between sites files each change under the site it happened on.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/digitizer-ai-agent-log.1.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/digitizer-ai-agent-log/assets/screenshot-1.png?rev=3677910",
+            "caption": "The log: what each change arrived on, which application password authenticated it, what it touched and which fields. The same entries are readable over the REST API."
+        }
+    ],
+    "tags": {
+        "activity-log": "Activity Log",
+        "ai": "AI",
+        "audit-log": "audit log",
+        "rest-api": "rest-api",
+        "wp-cli": "wp-cli"
+    },
+    "stable_tag": "1.1.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/digitizer-ai-agent-log.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/digitizer-ai-agent-log.1.0.1.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/digitizer-ai-agent-log.1.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/digitizer-ai-agent-log.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/digitizer-ai-agent-log/assets/banner-772x250.png?rev=3677679",
+        "high": "https://ps.w.org/digitizer-ai-agent-log/assets/banner-1544x500.png?rev=3677679"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/digitizer-ai-agent-log/assets/icon-128x128.png?rev=3677679",
+        "2x": "https://ps.w.org/digitizer-ai-agent-log/assets/icon-256x256.png?rev=3677679"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
