@@ -1,0 +1,104 @@
+{
+    "name": "Oddeven Lead Routing for Salesforce",
+    "slug": "oddeven-lead-routing-for-salesforce",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/oddeveninfotech/\">oddeveninfotech</a>",
+    "author_profile": "https://profiles.wordpress.org/oddeveninfotech/",
+    "contributors": {
+        "oddeveninfotech": {
+            "profile": "https://profiles.wordpress.org/oddeveninfotech/",
+            "avatar": "https://secure.gravatar.com/avatar/c47e1af35558c2c3d3afd3d353ffea77fba725462851f69ef0f6a3f82ed8e3ed?s=96&d=monsterid&r=g",
+            "display_name": "oddeveninfotech"
+        }
+    },
+    "requires": "6.8",
+    "tested": "7.1",
+    "requires_php": "8.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/oddeven-lead-routing-for-salesforce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-03 14:28:00",
+    "added": "2026-09-03",
+    "homepage": "https://oddeveninfotech.com/plugins/lead-routing-for-salesforce/",
+    "sections": {
+        "description": "<p>Oddeven Lead Routing connects your WordPress forms to Salesforce and keeps the connection<br />\nworking through the 2026 and 2027 authentication changes.</p>\n<p><strong>Built for the auth Salesforce actually supports.</strong> Salesforce restricted new<br />\nConnected App creation in Spring &#8217;26 and retires the OAuth username-password flow in<br />\nWinter &#8217;27. Oddeven Lead Routing is built on External Client Apps with the client credentials<br />\nflow, so a connection you set up today is still a supported configuration afterwards.<br />\nThe username-password flow is not implemented, and never will be.</p>\n<p><strong>A submission is saved before it is sent.</strong> Every submission is written to the<br />\ndatabase with a pending status before any outbound call, then delivered by a<br />\nbackground worker through Action Scheduler. A Salesforce outage, a slow API or a<br />\nvalidation error cannot break your form or lose the lead. Failed deliveries are<br />\nretried with backoff and, if they keep failing, land in a dead letter list you can<br />\ninspect and requeue.</p>\n<p><strong>Credentials are encrypted at rest.</strong> Client secrets and tokens are protected with<br />\nlibsodium authenticated encryption, keyed from a constant you define in<br />\nwp-config.php.</p>\n<p><strong>No phoning home.</strong> The plugin talks to your Salesforce org and nothing else. No<br />\ntelemetry, no analytics, no licensing service.</p>\n<h4>Features</h4>\n<ul>\n<li>Map form fields to any Salesforce object over the REST API</li>\n<li>Web-to-Lead and Web-to-Case as alternatives when you cannot use the API</li>\n<li>Per feed conditional logic</li>\n<li>Delivery log with retry, dead letter handling and manual requeue</li>\n<li>Ten granular capabilities, so watching the submission queue does not require the<br />\nright to edit Salesforce credentials</li>\n</ul>\n<h4>Supported forms</h4>\n<ul>\n<li>Contact Form 7</li>\n</ul>\n<h4>Requirements</h4>\n<ul>\n<li>WordPress 6.8 or newer</li>\n<li>PHP 8.0 or newer with the sodium extension</li>\n<li>The ability to add one line to <code>wp-config.php</code>, which holds the encryption key</li>\n<li>A Salesforce org where you can create an External Client App</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to Salesforce, and to nothing else. It contacts no service<br />\noperated by us, sends no telemetry, and transmits nothing at all until you have<br />\nconfigured a connection and connected a form to it. A visitor loading a page never<br />\ncauses an outbound request.</p>\n<h4>Your Salesforce org</h4>\n<p>The Salesforce org you connect, at the My Domain address you supply, for example<br />\nhttps://yourcompany.my.salesforce.com. It is used to obtain an OAuth access token, to<br />\nread the object and field list so you can map fields to it, and to create records from<br />\nform submissions.</p>\n<p>What is sent, and when:</p>\n<ul>\n<li>Your External Client App&#8217;s consumer key and secret, when an access token is requested<br />\n&#8212; when you connect, when you use &#8220;Test connection&#8221;, and when a token expires.</li>\n<li>The name of the Salesforce object you chose and a field list request, when you open<br />\nthe mapping editor.</li>\n<li>The form field values you have mapped, when a queued submission is dispatched. Only<br />\nthe fields named in your mapping are sent; nothing else from the submission is.</li>\n</ul>\n<h4>Salesforce Web-to-Lead and Web-to-Case</h4>\n<p>Used only if you choose that delivery method for a form, instead of the API.</p>\n<ul>\n<li>https://webto.salesforce.com/servlet/servlet.WebToLead for production orgs</li>\n<li>https://test.salesforce.com/servlet/servlet.WebToLead for sandboxes</li>\n</ul>\n<p>Your Salesforce organisation id and the mapped form field values are sent when a<br />\nqueued submission is dispatched.</p>\n<h4>Salesforce sign-in</h4>\n<p>Used only if you choose the browser sign-in method when creating a connection. Your<br />\nbrowser is sent to https://login.salesforce.com, https://test.salesforce.com or your<br />\nown My Domain address to authorise the plugin, and the resulting authorization code is<br />\nexchanged there for an access token.</p>\n<p>All three are provided by Salesforce, Inc. Terms of service:<br />\nhttps://www.salesforce.com/company/legal/agreements/ . Privacy policy:<br />\nhttps://www.salesforce.com/company/legal/privacy/ .</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin to <code>/wp-content/plugins/oddeven-lead-routing-for-salesforce</code> and activate<br />\nit.</li>\n<li>Add an encryption key to <code>wp-config.php</code>. This step is required: until it is done<br />\nthe plugin stores no Salesforce credential at all, and says so on screen. Generate<br />\none with <code>wp oddeven-lead-routing key:generate</code>, which prints a line to paste:<br />\n   define( &#8216;LBSF_ENCRYPTION_KEY&#8217;, &#8216;base64 of exactly 32 bytes&#8217; );</li>\n<li>In Salesforce, create an External Client App and enable the client credentials<br />\nflow for it.</li>\n<li>In WordPress, go to Oddeven Lead Routing, add a connection with your consumer key and<br />\nsecret, and test it.</li>\n<li>Create a feed that binds one of your forms to a Salesforce object.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"why%20do%20i%20need%20to%20define%20lbsf_encryption_key%3F\">\nWhy do I need to define LBSF_ENCRYPTION_KEY?\n</h4>\n<p>\n<p>It is the key your Salesforce credentials are encrypted with, and it is required.<br />\nUntil it is defined the plugin stores no credential at all and tells you so.</p>\n<p>It does not invent a key of its own, and it never borrows one from WordPress. A key<br />\ntaken from your site&#8217;s authentication salts would look convenient right up to the day<br />\nsomething rotated that salt &#8212; several security plugins do, on a schedule &#8212; at which<br />\npoint every stored Salesforce credential would become permanently unreadable, with no<br />\nway to recover it. Being asked for one line in wp-config.php is the cheaper end of<br />\nthat trade.</p>\n<p>Generate one with <code>wp oddeven-lead-routing key:generate</code>.</p>\n</p>\n<dt id=\"does%20this%20support%20the%20username-password%20oauth%20flow%3F\">\nDoes this support the username-password OAuth flow?\n</h4>\n<p>\n<p>No, deliberately. Salesforce retires it in Winter &#8217;27 and it requires storing a<br />\nuser&#8217;s password. Use the client credentials flow with an External Client App.</p>\n</p>\n<dt id=\"what%20happens%20if%20salesforce%20is%20down%20when%20someone%20submits%20a%20form%3F\">\nWhat happens if Salesforce is down when someone submits a form?\n</h4>\n<p>\n<p>Nothing visible to the visitor. The submission is already saved, and the delivery is<br />\nretried in the background.</p>\n</p>\n<dt id=\"does%20the%20plugin%20send%20any%20data%20anywhere%20else%3F\">\nDoes the plugin send any data anywhere else?\n</h4>\n<p>\n<p>No. There is no telemetry and no phone-home of any kind.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<p>First stable release.</p>\n<ul>\n<li>Salesforce connections through External Client Apps, using the OAuth client credentials flow or a browser sign-in. The username-password flow is not implemented and never will be.</li>\n<li>Contact Form 7 submissions delivered to any Salesforce object through the REST API, or to Web-to-Lead where no Salesforce administrator is available.</li>\n<li>Every submission is saved before it is sent, then delivered in the background by Action Scheduler, so a slow or failing Salesforce cannot break a form or lose a lead. Failed deliveries retry with backoff and end in a dead letter list you can inspect and requeue.</li>\n<li>Field mapping built from the object&#8217;s own describe, with validation that refuses a mapping Salesforce would reject on every submission.</li>\n<li>Test Mode records the exact payload that would have been sent without sending it.</li>\n<li>Credentials encrypted at rest with sodium, under a key you supply in wp-config.php.</li>\n<li>Ten capabilities, so the person who watches the queue need not be the person trusted with the client secret.</li>\n<li>Configuration export and import for moving a setup between sites, and WP-CLI commands for everything that does not need a browser.</li>\n<li>Registered with WordPress&#8217;s own privacy exporter and eraser, plus a configurable retention sweep.</li>\n<li>No telemetry, no upsells, and no admin notices except for something that is actually wrong.</li>\n</ul>\n"
+    },
+    "short_description": "Send WordPress form submissions to Salesforce using External Client Apps and the OAuth client credentials flow. Queued, retried, never lost.",
+    "description": "<p>Oddeven Lead Routing connects your WordPress forms to Salesforce and keeps the connection<br />\nworking through the 2026 and 2027 authentication changes.</p>\n<p><strong>Built for the auth Salesforce actually supports.</strong> Salesforce restricted new<br />\nConnected App creation in Spring &#8217;26 and retires the OAuth username-password flow in<br />\nWinter &#8217;27. Oddeven Lead Routing is built on External Client Apps with the client credentials<br />\nflow, so a connection you set up today is still a supported configuration afterwards.<br />\nThe username-password flow is not implemented, and never will be.</p>\n<p><strong>A submission is saved before it is sent.</strong> Every submission is written to the<br />\ndatabase with a pending status before any outbound call, then delivered by a<br />\nbackground worker through Action Scheduler. A Salesforce outage, a slow API or a<br />\nvalidation error cannot break your form or lose the lead. Failed deliveries are<br />\nretried with backoff and, if they keep failing, land in a dead letter list you can<br />\ninspect and requeue.</p>\n<p><strong>Credentials are encrypted at rest.</strong> Client secrets and tokens are protected with<br />\nlibsodium authenticated encryption, keyed from a constant you define in<br />\nwp-config.php.</p>\n<p><strong>No phoning home.</strong> The plugin talks to your Salesforce org and nothing else. No<br />\ntelemetry, no analytics, no licensing service.</p>\n<h4>Features</h4>\n<ul>\n<li>Map form fields to any Salesforce object over the REST API</li>\n<li>Web-to-Lead and Web-to-Case as alternatives when you cannot use the API</li>\n<li>Per feed conditional logic</li>\n<li>Delivery log with retry, dead letter handling and manual requeue</li>\n<li>Ten granular capabilities, so watching the submission queue does not require the<br />\nright to edit Salesforce credentials</li>\n</ul>\n<h4>Supported forms</h4>\n<ul>\n<li>Contact Form 7</li>\n</ul>\n<h4>Requirements</h4>\n<ul>\n<li>WordPress 6.8 or newer</li>\n<li>PHP 8.0 or newer with the sodium extension</li>\n<li>The ability to add one line to <code>wp-config.php</code>, which holds the encryption key</li>\n<li>A Salesforce org where you can create an External Client App</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to Salesforce, and to nothing else. It contacts no service<br />\noperated by us, sends no telemetry, and transmits nothing at all until you have<br />\nconfigured a connection and connected a form to it. A visitor loading a page never<br />\ncauses an outbound request.</p>\n<h4>Your Salesforce org</h4>\n<p>The Salesforce org you connect, at the My Domain address you supply, for example<br />\nhttps://yourcompany.my.salesforce.com. It is used to obtain an OAuth access token, to<br />\nread the object and field list so you can map fields to it, and to create records from<br />\nform submissions.</p>\n<p>What is sent, and when:</p>\n<ul>\n<li>Your External Client App&#8217;s consumer key and secret, when an access token is requested<br />\n&#8212; when you connect, when you use &#8220;Test connection&#8221;, and when a token expires.</li>\n<li>The name of the Salesforce object you chose and a field list request, when you open<br />\nthe mapping editor.</li>\n<li>The form field values you have mapped, when a queued submission is dispatched. Only<br />\nthe fields named in your mapping are sent; nothing else from the submission is.</li>\n</ul>\n<h4>Salesforce Web-to-Lead and Web-to-Case</h4>\n<p>Used only if you choose that delivery method for a form, instead of the API.</p>\n<ul>\n<li>https://webto.salesforce.com/servlet/servlet.WebToLead for production orgs</li>\n<li>https://test.salesforce.com/servlet/servlet.WebToLead for sandboxes</li>\n</ul>\n<p>Your Salesforce organisation id and the mapped form field values are sent when a<br />\nqueued submission is dispatched.</p>\n<h4>Salesforce sign-in</h4>\n<p>Used only if you choose the browser sign-in method when creating a connection. Your<br />\nbrowser is sent to https://login.salesforce.com, https://test.salesforce.com or your<br />\nown My Domain address to authorise the plugin, and the resulting authorization code is<br />\nexchanged there for an access token.</p>\n<p>All three are provided by Salesforce, Inc. Terms of service:<br />\nhttps://www.salesforce.com/company/legal/agreements/ . Privacy policy:<br />\nhttps://www.salesforce.com/company/legal/privacy/ .</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/oddeven-lead-routing-for-salesforce.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>First stable release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/oddeven-lead-routing-for-salesforce/assets/screenshot-1.png?rev=3679892",
+            "caption": "The dashboard answers \"is it working\" before it offers anything to configure: one plain sentence about the last seven days, then any problem with the fix beside it, then the latest submissions and what became of each."
+        },
+        {
+            "src": "https://ps.w.org/oddeven-lead-routing-for-salesforce/assets/screenshot-2.png?rev=3679892",
+            "caption": "Activity, with a status in words for every submission. A delivered lead carries the Salesforce record id it created; anything else says plainly what it is, and nothing is coloured without also being labelled."
+        },
+        {
+            "src": "https://ps.w.org/oddeven-lead-routing-for-salesforce/assets/screenshot-3.png?rev=3679892",
+            "caption": "A failure explains itself in terms you can act on. Salesforce's own validation message is quoted, the cause is attributed to the org rather than to the plugin, and the record can be sent again once the cause is fixed."
+        },
+        {
+            "src": "https://ps.w.org/oddeven-lead-routing-for-salesforce/assets/screenshot-4.png?rev=3679892",
+            "caption": "Field mapping built on your org. The destination list comes from the object itself, required fields come first and are flagged, and fields Salesforce would never accept on create are not offered at all."
+        },
+        {
+            "src": "https://ps.w.org/oddeven-lead-routing-for-salesforce/assets/screenshot-5.png?rev=3679892",
+            "caption": "Connection health, one row per thing that can be wrong. An expired token reads OK because it renews itself; an unrecorded app type reads Unknown rather than being guessed. The retirement panel links to this org's own schedule instead of printing a date it cannot know."
+        },
+        {
+            "src": "https://ps.w.org/oddeven-lead-routing-for-salesforce/assets/screenshot-6.png?rev=3679892",
+            "caption": "Choosing how to connect, framed by outcome rather than by protocol. The basic method says before you pick it that Salesforce will not confirm delivery."
+        }
+    ],
+    "tags": {
+        "contact-form-7": "contact form 7",
+        "crm": "crm",
+        "forms": "forms",
+        "leads": "leads",
+        "salesforce": "salesforce"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/oddeven-lead-routing-for-salesforce.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/oddeven-lead-routing-for-salesforce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/oddeven-lead-routing-for-salesforce/assets/banner-772x250.png?rev=3679892",
+        "high": "https://ps.w.org/oddeven-lead-routing-for-salesforce/assets/banner-1544x500.png?rev=3679892"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/oddeven-lead-routing-for-salesforce/assets/icon-128x128.png?rev=3679892",
+        "2x": "https://ps.w.org/oddeven-lead-routing-for-salesforce/assets/icon-256x256.png?rev=3679892"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
