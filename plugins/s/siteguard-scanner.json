@@ -1,0 +1,82 @@
+{
+    "name": "SiteGuard Scanner",
+    "slug": "siteguard-scanner",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/egsecuresolutions/\">EG Secure Solutions</a>",
+    "author_profile": "https://profiles.wordpress.org/egsecuresolutions/",
+    "contributors": {
+        "egsecuresolutions": {
+            "profile": "https://profiles.wordpress.org/egsecuresolutions/",
+            "avatar": "https://secure.gravatar.com/avatar/856e8df79a2fdadaece578bb2ed222314b76c633e73b9aa9a3403ddd2f49d1e9?s=96&d=monsterid&r=g",
+            "display_name": "EG Secure Solutions"
+        }
+    },
+    "requires": "5.0",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/siteguard-scanner/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-03 09:20:00",
+    "added": "2026-09-03",
+    "homepage": "",
+    "sections": {
+        "description": "<p>SiteGuard Scanner is a companion plugin for the vulnerability diagnostic service provided by EG Secure Solutions. Installing it on a site that is under a diagnostic contract enables the following two features.</p>\n<ol>\n<li><strong>Site ownership verification (authentication)</strong> — Lets the diagnostic service confirm that the target site is the one that is actually under a diagnostic contract.</li>\n<li><strong>Installation inventory</strong> — Provides the diagnostic service with a list of the plugins and themes installed on the target site (name, version, and activation status).</li>\n</ol>\n<h4>How it communicates</h4>\n<p>The plugin only <strong>responds to signed requests</strong> sent by the diagnostic service. It never sends data to any external server on its own (it does not &#8220;phone home&#8221;).</p>\n<ul>\n<li>Authentication uses an <strong>HMAC-SHA256 signature</strong> based on a shared token. Each request includes a timestamp and a nonce (a single-use random value) to prevent replay attacks.</li>\n<li>Requests are received through the WordPress REST API endpoints <code>/wp-json/siteguard-scanner/v1/verify</code> and <code>/wp-json/siteguard-scanner/v1/collect</code>.</li>\n<li>For environments where the REST API is disabled, a custom endpoint (<code>/?siteguard-scanner-request=verify</code> and <code>/?siteguard-scanner-request=collect</code>) is provided as a fallback.</li>\n</ul>\n<p>Every endpoint responds only to requests carrying a valid signature. When signature verification fails, the plugin returns HTTP 401 and no information at all.</p>\n<h4>Data provided</h4>\n<p>When responding to <code>collect</code>, the plugin returns the following information to the diagnostic service:</p>\n<ul>\n<li>Site URL</li>\n<li>WordPress core version</li>\n<li>List of installed plugins (slug, name, version, activation status, network-activation status)</li>\n<li>List of installed themes (slug, name, version, activation status, network-enabled status)</li>\n</ul>\n<p>No personal data, post content, or any other data beyond the above is collected or transmitted.</p>\n<h4>Multisite</h4>\n<p>On a multisite network, diagnostics are performed against the main (parent) site. Because plugin and theme files are shared across the entire network, <code>collect</code> returns the network-wide inventory of installed assets and correctly reports network-activated plugins via the <code>network_active</code> flag.</p>\n",
+        "installation": "<ol>\n<li>In the WordPress admin, go to &#8220;Plugins&#8221; &gt; &#8220;Add New&#8221;.</li>\n<li>Click &#8220;Upload Plugin&#8221; at the top of the screen and select the plugin ZIP to install it.</li>\n<li>After installation, activate the plugin.</li>\n<li>Open &#8220;Settings&#8221; &gt; &#8220;SiteGuard Scanner&#8221; in the admin menu.</li>\n<li>Enter the 64-character token provided by the diagnostic service and save.</li>\n</ol>\n<p>On a multisite network, set the token on the main site&#8217;s Settings screen.</p>\n",
+        "faq": "\n<dt id=\"does%20this%20plugin%20send%20data%20to%20an%20external%20service%3F\">\nDoes this plugin send data to an external service?\n</h4>\n<p>\n<p>It does not send anything on its own. It only responds to signed requests from the diagnostic service.</p>\n</p>\n<dt id=\"i%20cannot%20save%20the%20token.\">\nI cannot save the token.\n</h4>\n<p>\n<p>The token must be a 64-character lowercase hexadecimal string (0-9, a-f). Values that do not meet these conditions are rejected and not saved.</p>\n</p>\n<dt id=\"can%20i%20use%20it%20even%20with%20the%20rest%20api%20disabled%3F\">\nCan I use it even with the REST API disabled?\n</h4>\n<p>\n<p>Yes. In environments where the REST API is disabled, the custom endpoint (<code>/?siteguard-scanner-request=...</code>) is used automatically as a fallback.</p>\n</p>\n<dt id=\"does%20it%20work%20on%20multisite%3F\">\nDoes it work on multisite?\n</h4>\n<p>\n<p>Yes. On multisite, diagnostics are performed against the main site, and the plugin provides the network-wide plugin and theme inventory.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>First public release on the WordPress.org plugin directory.</li>\n<li>Renamed the plugin to SiteGuard Scanner (slug, endpoints, and identifiers).</li>\n<li>Added the WordPress core version to the collect response.</li>\n<li>Fixed multisite so that network-activated plugins and themes are reported correctly.</li>\n<li>Added network_active / network_enabled / is_multisite to the collect response.</li>\n<li>Internationalized the admin UI and bundled a Japanese translation.</li>\n<li>Prepared plugin headers and readme for the WordPress.org directory.</li>\n</ul>\n<h4>0.3.0</h4>\n<ul>\n<li>Added a custom endpoint (<code>/?siteguard-scanner-request=verify|collect</code>) as a fallback for environments where the REST API is disabled.</li>\n<li>Unified the signature verification logic across the REST API and the custom endpoint.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>Implemented request authentication using HMAC-SHA256 signatures.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial version.</li>\n</ul>\n"
+    },
+    "short_description": "Companion plugin for the EG Secure Solutions vulnerability diagnostic service: signed site-ownership verification and plugin/theme inventory.",
+    "description": "<p>SiteGuard Scanner is a companion plugin for the vulnerability diagnostic service provided by EG Secure Solutions. Installing it on a site that is under a diagnostic contract enables the following two features.</p>\n<ol>\n<li><strong>Site ownership verification (authentication)</strong> — Lets the diagnostic service confirm that the target site is the one that is actually under a diagnostic contract.</li>\n<li><strong>Installation inventory</strong> — Provides the diagnostic service with a list of the plugins and themes installed on the target site (name, version, and activation status).</li>\n</ol>\n<h4>How it communicates</h4>\n<p>The plugin only <strong>responds to signed requests</strong> sent by the diagnostic service. It never sends data to any external server on its own (it does not &#8220;phone home&#8221;).</p>\n<ul>\n<li>Authentication uses an <strong>HMAC-SHA256 signature</strong> based on a shared token. Each request includes a timestamp and a nonce (a single-use random value) to prevent replay attacks.</li>\n<li>Requests are received through the WordPress REST API endpoints <code>/wp-json/siteguard-scanner/v1/verify</code> and <code>/wp-json/siteguard-scanner/v1/collect</code>.</li>\n<li>For environments where the REST API is disabled, a custom endpoint (<code>/?siteguard-scanner-request=verify</code> and <code>/?siteguard-scanner-request=collect</code>) is provided as a fallback.</li>\n</ul>\n<p>Every endpoint responds only to requests carrying a valid signature. When signature verification fails, the plugin returns HTTP 401 and no information at all.</p>\n<h4>Data provided</h4>\n<p>When responding to <code>collect</code>, the plugin returns the following information to the diagnostic service:</p>\n<ul>\n<li>Site URL</li>\n<li>WordPress core version</li>\n<li>List of installed plugins (slug, name, version, activation status, network-activation status)</li>\n<li>List of installed themes (slug, name, version, activation status, network-enabled status)</li>\n</ul>\n<p>No personal data, post content, or any other data beyond the above is collected or transmitted.</p>\n<h4>Multisite</h4>\n<p>On a multisite network, diagnostics are performed against the main (parent) site. Because plugin and theme files are shared across the entire network, <code>collect</code> returns the network-wide inventory of installed assets and correctly reports network-activated plugins via the <code>network_active</code> flag.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/siteguard-scanner.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>First public release of SiteGuard Scanner.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/siteguard-scanner/assets/screenshot-1.png?rev=3679433",
+            "caption": "The settings screen (Settings &gt; SiteGuard Scanner), where you enter the token provided by the diagnostic service."
+        }
+    ],
+    "tags": {
+        "security": "security",
+        "verification": "verification",
+        "vulnerability": "vulnerability"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/siteguard-scanner.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/siteguard-scanner.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/siteguard-scanner/assets/banner-772x250.png?rev=3679433",
+        "high": "https://ps.w.org/siteguard-scanner/assets/banner-1544x500.png?rev=3679433"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/siteguard-scanner/assets/icon-128x128.png?rev=3679433",
+        "2x": "https://ps.w.org/siteguard-scanner/assets/icon-256x256.png?rev=3679433"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
