@@ -1,0 +1,88 @@
+{
+    "name": "Clashlens – Conflict Detector",
+    "slug": "clashlens",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/sungraizfaryad/\">sungraizfaryad</a>",
+    "author_profile": "https://profiles.wordpress.org/sungraizfaryad/",
+    "contributors": {
+        "sungraizfaryad": {
+            "profile": "https://profiles.wordpress.org/sungraizfaryad/",
+            "avatar": "https://secure.gravatar.com/avatar/68587bf76c7206ee2949a12583f6a52575cb7dd026258fe516901357e0e62c46?s=96&d=monsterid&r=g",
+            "display_name": "sungraizfaryad"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1",
+    "requires_php": "8.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/clashlens/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-04 17:46:00",
+    "added": "2026-09-04",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Something on your site breaks. The slider stops moving, the checkout button does nothing, a page turns white. The usual advice is to deactivate every plugin and switch them back on one at a time, which means taking your live site apart while visitors are on it.</p>\n<p>Clashlens reads the evidence instead. One click scans your active plugins and gives you a severity-rated report: green when things look fine, red when something needs attention, and a named plugin wherever the data supports one.</p>\n<h4>What Clashlens checks</h4>\n<p><strong>Known incompatible plugin pairs.</strong> Your active plugins are compared against a curated list of combinations known to clash: two SEO plugins competing over meta tags, two caching plugins writing conflicting output, duplicate SSL redirect handlers causing redirect loops, two page builders fighting over the editor. Each hit names both plugins and explains the problem in one sentence, so you know exactly which one to deactivate. Pairs that are merely redundant rather than harmful are marked as such and never inflate your overall status.</p>\n<p><strong>Dangerous overrides and jQuery conflicts.</strong> Every PHP file of every active plugin is scanned for calls that commonly break other plugins: <code>remove_all_actions</code>, <code>remove_all_filters</code>, deregistering jQuery, or dequeuing core styles. A plugin that deregisters jQuery is one of the most common reasons a slider, lightbox, or form suddenly stops working. Scanning is capped per plugin so it stays fast on large sites.</p>\n<p><strong>PHP errors grouped by plugin.</strong> Clashlens reads your debug.log and attributes fatal errors, warnings and notices to the plugin that produced them, over the last 7 days. A plugin generating 50 or more errors in a single day is flagged critical. Only the tail of the log is read, so even a multi-gigabyte debug.log will not exhaust memory.</p>\n<p><strong>Hook collisions.</strong> Hooks where three or more plugins registered callbacks at the same priority are listed as investigation starting points. Common core lifecycle hooks are excluded because crowding there is completely normal, and this check deliberately never rates your site critical on its own.</p>\n<h4>Who it is for</h4>\n<p>Site owners debugging a broken page, developers taking over an unfamiliar site, agencies auditing client installs before an update, and anyone who has ever lost an afternoon to plugin compatibility troubleshooting.</p>\n<h4>What it will not do</h4>\n<p>Clashlens never deactivates, modifies, or repairs anything. It reports what it finds and leaves every decision to you. It also cannot see JavaScript errors that happen in the visitor&#8217;s browser, and because the scan runs in the admin area, hooks that plugins register only on front-end requests are invisible to the hook collision check. Both are on the roadmap.</p>\n<h4>Privacy</h4>\n<p>Clashlens sends nothing anywhere. No external requests, no tracking, no analytics. Scan results are stored in your own database and removed when you uninstall the plugin.</p>\n",
+        "installation": "<ol>\n<li>Upload <code>clashlens</code> to <code>/wp-content/plugins/</code>, or install it from Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New.</li>\n<li>Activate the plugin through the Plugins screen.</li>\n<li>Go to Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Clashlens and click <strong>Run Scan</strong>.</li>\n</ol>\n<p>Results stay stored until you run the next scan, so you can close the page and come back to them.</p>\n",
+        "faq": "\n<dt id=\"does%20it%20deactivate%20or%20fix%20conflicts%20automatically%3F\">\nDoes it deactivate or fix conflicts automatically?\n</h4>\n<p>\n<p>No. It reports conflicts so you can investigate and decide. Automatic deactivation on a live site would be far too risky.</p>\n</p>\n<dt id=\"my%20slider%20stopped%20working%20after%20installing%20a%20plugin.%20will%20this%20find%20the%20cause%3F\">\nMy slider stopped working after installing a plugin. Will this find the cause?\n</h4>\n<p>\n<p>Often, yes. The most common cause is a plugin deregistering or dequeuing jQuery, which Clashlens reports by name under Dangerous Overrides. If the conflict also produces PHP errors, those get attributed to the responsible plugin too. What it cannot yet see is a JavaScript error occurring in the visitor&#8217;s browser, since that never reaches the server.</p>\n</p>\n<dt id=\"the%20hook%20collision%20section%20shows%20results.%20is%20my%20site%20broken%3F\">\nThe hook collision section shows results. Is my site broken?\n</h4>\n<p>\n<p>Not necessarily. Congested hooks are potential conflict points, not confirmed bugs. Use them as a starting point for investigation. This detector never rates your site critical on its own.</p>\n</p>\n<dt id=\"i%20get%20%22no%20debug.log%20found%22.%20what%20should%20i%20do%3F\">\nI get &#8220;No debug.log found&#8221;. What should I do?\n</h4>\n<p>\n<p>Enable <code>WP_DEBUG_LOG</code> in your wp-config.php, let the site run for a while, then scan again. Without a log there is nothing for the error detector to read.</p>\n</p>\n<dt id=\"are%20front-end%20hooks%20covered%3F\">\nAre front-end hooks covered?\n</h4>\n<p>\n<p>The scan runs in an admin context, so hooks that plugins register only on front-end requests are not visible to the hook collision detector. The other three checks are unaffected. Front-end analysis is planned for a future version.</p>\n</p>\n<dt id=\"can%20i%20add%20my%20own%20known%20conflict%20pairs%3F\">\nCan I add my own known conflict pairs?\n</h4>\n<p>\n<p>Yes. Use the <code>clashlens_known_conflicts</code> filter in a custom plugin or mu-plugin. Each entry is <code>[ 'slug-a', 'slug-b', 'Explanation', 'warning' ]</code> and the fourth element is optional, either <code>'warning'</code> or <code>'info'</code>, defaulting to <code>'warning'</code>.</p>\n</p>\n<dt id=\"does%20it%20slow%20down%20my%20site%3F\">\nDoes it slow down my site?\n</h4>\n<p>\n<p>No. Nothing runs on the front end and nothing runs on a schedule. Code executes only while you are on the Clashlens settings page and you press Run Scan.</p>\n</p>\n<dt id=\"what%20are%20the%20requirements%3F\">\nWhat are the requirements?\n</h4>\n<p>\n<p>WordPress 6.0 or newer and PHP 8.0 or newer.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Find which plugins are conflicting on your site. Scans for jQuery overrides, PHP errors, hook collisions and known incompatible plugin pairs.",
+    "description": "<p>Something on your site breaks. The slider stops moving, the checkout button does nothing, a page turns white. The usual advice is to deactivate every plugin and switch them back on one at a time, which means taking your live site apart while visitors are on it.</p>\n<p>Clashlens reads the evidence instead. One click scans your active plugins and gives you a severity-rated report: green when things look fine, red when something needs attention, and a named plugin wherever the data supports one.</p>\n<h4>What Clashlens checks</h4>\n<p><strong>Known incompatible plugin pairs.</strong> Your active plugins are compared against a curated list of combinations known to clash: two SEO plugins competing over meta tags, two caching plugins writing conflicting output, duplicate SSL redirect handlers causing redirect loops, two page builders fighting over the editor. Each hit names both plugins and explains the problem in one sentence, so you know exactly which one to deactivate. Pairs that are merely redundant rather than harmful are marked as such and never inflate your overall status.</p>\n<p><strong>Dangerous overrides and jQuery conflicts.</strong> Every PHP file of every active plugin is scanned for calls that commonly break other plugins: <code>remove_all_actions</code>, <code>remove_all_filters</code>, deregistering jQuery, or dequeuing core styles. A plugin that deregisters jQuery is one of the most common reasons a slider, lightbox, or form suddenly stops working. Scanning is capped per plugin so it stays fast on large sites.</p>\n<p><strong>PHP errors grouped by plugin.</strong> Clashlens reads your debug.log and attributes fatal errors, warnings and notices to the plugin that produced them, over the last 7 days. A plugin generating 50 or more errors in a single day is flagged critical. Only the tail of the log is read, so even a multi-gigabyte debug.log will not exhaust memory.</p>\n<p><strong>Hook collisions.</strong> Hooks where three or more plugins registered callbacks at the same priority are listed as investigation starting points. Common core lifecycle hooks are excluded because crowding there is completely normal, and this check deliberately never rates your site critical on its own.</p>\n<h4>Who it is for</h4>\n<p>Site owners debugging a broken page, developers taking over an unfamiliar site, agencies auditing client installs before an update, and anyone who has ever lost an afternoon to plugin compatibility troubleshooting.</p>\n<h4>What it will not do</h4>\n<p>Clashlens never deactivates, modifies, or repairs anything. It reports what it finds and leaves every decision to you. It also cannot see JavaScript errors that happen in the visitor&#8217;s browser, and because the scan runs in the admin area, hooks that plugins register only on front-end requests are invisible to the hook collision check. Both are on the roadmap.</p>\n<h4>Privacy</h4>\n<p>Clashlens sends nothing anywhere. No external requests, no tracking, no analytics. Scan results are stored in your own database and removed when you uninstall the plugin.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/clashlens.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/clashlens/assets/screenshot-1.png?rev=3681639",
+            "caption": "The scan report, showing overall severity and per-check findings with the responsible plugins named."
+        },
+        {
+            "src": "https://ps.w.org/clashlens/assets/screenshot-2.png?rev=3681639",
+            "caption": "The starting screen. One button runs the scan; nothing is checked until you ask for it."
+        }
+    ],
+    "tags": {
+        "compatibility": "compatibility",
+        "debug": "debug",
+        "plugin-conflict": "plugin conflict",
+        "site-health": "site health",
+        "troubleshooting": "troubleshooting"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/clashlens.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/clashlens.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/clashlens/assets/banner-772x250.png?rev=3681639",
+        "high": "https://ps.w.org/clashlens/assets/banner-1544x500.png?rev=3681639"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/clashlens/assets/icon-128x128.png?rev=3681639",
+        "2x": "https://ps.w.org/clashlens/assets/icon-256x256.png?rev=3681639"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
