@@ -1,0 +1,82 @@
+{
+    "name": "Cosmetic Wholesale Sync",
+    "slug": "cosmetic-wholesale-sync",
+    "version": "1.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/juniustech/\">JuniusTech</a>",
+    "author_profile": "https://profiles.wordpress.org/juniustech/",
+    "contributors": {
+        "juniustech": {
+            "profile": "https://profiles.wordpress.org/juniustech/",
+            "avatar": "https://secure.gravatar.com/avatar/10b0e3454eb400b2b2553dd4883272eb246ff0ef4744c5c8692a3f71ed6e1804?s=96&d=monsterid&r=g",
+            "display_name": "JuniusTech"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/cosmetic-wholesale-sync/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-04 19:12:00",
+    "added": "2026-09-04",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Cosmetic Wholesale Sync connects a WooCommerce shop to a Cosmetic Wholesale dropshipping account.</p>\n<p>This is the official integration for the Cosmetic Wholesale dropshipping service (https://cosmeticwholesale.eu), operated by Distraal B.V. in Rotterdam, Netherlands. It is published with their permission and developed by Juniustech. The plugin is free and fully functional; it does nothing until you paste the catalog feed URL and token issued to your approved Cosmetic Wholesale account, because it has no other service to talk to.</p>\n<p><strong>Catalog</strong></p>\n<ul>\n<li>First import creates missing products (SKU = EAN). Images are not imported.</li>\n<li>Hourly job updates stock and sale price for existing SKUs only. It never wipes the catalog on feed failure.</li>\n<li>Price formula: <code>regular_price = round(cost × (1 + margin%/100) + fixed, 2)</code>.</li>\n</ul>\n<p><strong>Orders</strong></p>\n<ul>\n<li>When a Woo order becomes <code>processing</code> (customer paid), the plugin queues a POST to Cosmetic Wholesale using the same catalog feed token (not during checkout HTML).</li>\n<li>Insufficient wallet <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Woo stays <code>processing</code>; the plugin retries. It does not cancel the customer order.</li>\n<li>Tracking from Cosmetic Wholesale is written back; the Woo order can then be completed.</li>\n</ul>\n<p>You need an approved Cosmetic Wholesale dropshipping account. Paste the catalog feed URL and token from your Account page. OMS / warehouse credentials are <strong>not</strong> stored in this plugin.</p>\n<h3>External services</h3>\n<p>This plugin connects to Cosmetic Wholesale (https://cosmeticwholesale.eu), the dropshipping service the merchant holds an account with. The host used is the one shown on the merchant’s Account page; no address is hard-coded in the plugin.</p>\n<ol>\n<li><strong>Catalog feed (GET)</strong> — the Feed URL the merchant pastes. Sends <code>Authorization: Bearer &lt;token&gt;</code>. Receives a CSV of EAN, title, stock, and cost. Used to create/update Woo products.</li>\n<li><strong>Dropshipping orders (POST/GET)</strong> — derived from the same host (<code>/api/v1/dropshipping/orders</code>). Sends the paid Woo shipping address (name, street, city, postcode, country, phone, email) and line EANs/quantities so Cosmetic Wholesale can fulfil the order. Returns order id and later tracking numbers.</li>\n</ol>\n<p>No OMS or WMS passwords are stored or sent. The token is the merchant’s Cosmetic Wholesale catalog token. Data is sent only after the merchant saves settings and a customer pays. Nothing is sent while the Feed URL and token fields are empty.</p>\n<p>The service is operated by Distraal B.V. (trading as Cosmetic Wholesale), Goudsesingel 103, 3031EE Rotterdam, Netherlands. KVK 95455078, VAT NL867137538B01.</p>\n<ul>\n<li>Terms and Conditions: https://cosmeticwholesale.eu/terms-and-conditions/</li>\n<li>Privacy Policy: https://cosmeticwholesale.eu/privacy-policy/</li>\n<li>Dropshipping policies: https://cosmeticwholesale.eu/dropshipping/policies-for-dropshipping/</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Install and activate WooCommerce.</li>\n<li>Upload the plugin zip (Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload) or install from WordPress.org.</li>\n<li>Open WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Cosmetic Wholesale.</li>\n<li>Paste Catalog feed URL (no token in the URL) and token from your Cosmetic Wholesale Account.</li>\n<li>Set <strong>Margin %</strong> and <strong>Margin fixed</strong> (the same two numbers as the old 360 plugin). 0 / 0 = sell at B2B cost.</li>\n<li>Save settings. Run First import (keep the tab open, or use <code>wp cw-sync import</code>).</li>\n<li>Run Dry run until <code>updated &gt; 0</code>. Leave hourly sync on.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20i%20put%20oms%20or%20wms%20passwords%20in%20the%20plugin%3F\">\nDo I put OMS or WMS passwords in the plugin?\n</h4>\n<p>\n<p>No. The plugin only talks to Cosmetic Wholesale. Warehouse dispatch is handled server-side.</p>\n</p>\n<dt id=\"why%20are%20there%20no%20product%20images%3F\">\nWhy are there no product images?\n</h4>\n<p>\n<p>First import and hourly sync do not download images. That is intentional (large catalogs). Images can be added later as a separate, infrequent job.</p>\n</p>\n<dt id=\"what%20happens%20if%20my%20cosmetic%20wholesale%20wallet%20is%20empty%3F\">\nWhat happens if my Cosmetic Wholesale wallet is empty?\n</h4>\n<p>\n<p>The Woo order stays <code>processing</code>. The plugin retries about every 10 minutes after you top up. The customer is not cancelled.</p>\n</p>\n<dt id=\"does%20this%20replace%20the%20old%20360%20plugin%3F\">\nDoes this replace the old 360 plugin?\n</h4>\n<p>\n<p>For catalog + order push to Cosmetic Wholesale, yes. Do not run 360 catalog cron and this plugin hourly job on the same SKUs without a cutover plan.</p>\n</p>\n<dt id=\"what%20is%20margin%20%25%20%2F%20margin%20fixed%3F\">\nWhat is Margin % / Margin fixed?\n</h4>\n<p>\n<p>They are your retail markup on the B2B feed cost (the same two numbers the 360 plugin used). 0 and 0 sells at cost.</p>\n</p>\n<dt id=\"paid%20orders%20never%20reach%20cosmetic%20wholesale\">\nPaid orders never reach Cosmetic Wholesale\n</h4>\n<p>\n<p>Order push and the 10-minute wallet retry use WP-Cron. If <code>DISABLE_WP_CRON</code> is true and no system cron hits <code>wp-cron.php</code>, orders stay queued with no error. Check <strong>Last order retry cron (UTC)</strong> on WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Cosmetic Wholesale.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.1</h4>\n<ul>\n<li>Stored meta keys use the full <code>_cw_sync_</code> prefix; keys written by pilot builds are still read.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First WordPress.org directory release (catalog sync, hourly stock/price, paid-order push).</li>\n<li>Plugin slug, main file and text domain are <code>cosmetic-wholesale-sync</code>.</li>\n<li>First-import progress uses an enqueued admin script.</li>\n</ul>\n<h4>0.3.3</h4>\n<ul>\n<li>Packaged for the WordPress.org directory: folder and main file renamed to <code>cosmetic-wholesale-sync</code>, text domain changed to <code>cosmetic-wholesale-sync</code> so language packs work.</li>\n<li>SKU lookup query documented and marked for the coding standards; behaviour unchanged.</li>\n<li>First-import progress uses an enqueued admin script (no inline JavaScript).</li>\n</ul>\n<h4>0.3.2</h4>\n<ul>\n<li>Tested up to WordPress 7.1 and WooCommerce 11.0.</li>\n<li>Admin shows last order-retry cron time (UTC); WP-Cron note when it never runs.</li>\n<li>Product titles collapse newlines/whitespace to a single space.</li>\n<li>LICENSE is the full GPL-2.0 text.</li>\n</ul>\n<h4>0.3.1</h4>\n<ul>\n<li>HPOS + cart/checkout blocks compatibility declared.</li>\n<li>Empty default feed URL (no staging host baked in).</li>\n<li>UTF-8-safe title clip; CSV parser uses fgetcsv (quoted newlines, PHP 8.4 escape).</li>\n<li>Order push queued off the checkout request; 401/403 not retried.</li>\n<li>Token field no longer echoes the secret into HTML.</li>\n<li>uninstall removes cw_sync_order_state.</li>\n</ul>\n<h4>0.3.0</h4>\n<ul>\n<li>Order push on Woo <code>processing</code>.</li>\n<li>402 wallet HOLD retry.</li>\n<li>Tracking poll <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Woo completed.</li>\n</ul>\n<h4>0.2.2</h4>\n<ul>\n<li>Catalog first import + hourly stock/price.</li>\n</ul>\n"
+    },
+    "short_description": "Pulls Cosmetic Wholesale catalog (stock/price) into WooCommerce and sends paid orders to your Cosmetic Wholesale account.",
+    "description": "<p>Cosmetic Wholesale Sync connects a WooCommerce shop to a Cosmetic Wholesale dropshipping account.</p>\n<p>This is the official integration for the Cosmetic Wholesale dropshipping service (https://cosmeticwholesale.eu), operated by Distraal B.V. in Rotterdam, Netherlands. It is published with their permission and developed by Juniustech. The plugin is free and fully functional; it does nothing until you paste the catalog feed URL and token issued to your approved Cosmetic Wholesale account, because it has no other service to talk to.</p>\n<p><strong>Catalog</strong></p>\n<ul>\n<li>First import creates missing products (SKU = EAN). Images are not imported.</li>\n<li>Hourly job updates stock and sale price for existing SKUs only. It never wipes the catalog on feed failure.</li>\n<li>Price formula: <code>regular_price = round(cost × (1 + margin%/100) + fixed, 2)</code>.</li>\n</ul>\n<p><strong>Orders</strong></p>\n<ul>\n<li>When a Woo order becomes <code>processing</code> (customer paid), the plugin queues a POST to Cosmetic Wholesale using the same catalog feed token (not during checkout HTML).</li>\n<li>Insufficient wallet <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Woo stays <code>processing</code>; the plugin retries. It does not cancel the customer order.</li>\n<li>Tracking from Cosmetic Wholesale is written back; the Woo order can then be completed.</li>\n</ul>\n<p>You need an approved Cosmetic Wholesale dropshipping account. Paste the catalog feed URL and token from your Account page. OMS / warehouse credentials are <strong>not</strong> stored in this plugin.</p>\n<h3>External services</h3>\n<p>This plugin connects to Cosmetic Wholesale (https://cosmeticwholesale.eu), the dropshipping service the merchant holds an account with. The host used is the one shown on the merchant’s Account page; no address is hard-coded in the plugin.</p>\n<ol>\n<li><strong>Catalog feed (GET)</strong> — the Feed URL the merchant pastes. Sends <code>Authorization: Bearer &lt;token&gt;</code>. Receives a CSV of EAN, title, stock, and cost. Used to create/update Woo products.</li>\n<li><strong>Dropshipping orders (POST/GET)</strong> — derived from the same host (<code>/api/v1/dropshipping/orders</code>). Sends the paid Woo shipping address (name, street, city, postcode, country, phone, email) and line EANs/quantities so Cosmetic Wholesale can fulfil the order. Returns order id and later tracking numbers.</li>\n</ol>\n<p>No OMS or WMS passwords are stored or sent. The token is the merchant’s Cosmetic Wholesale catalog token. Data is sent only after the merchant saves settings and a customer pays. Nothing is sent while the Feed URL and token fields are empty.</p>\n<p>The service is operated by Distraal B.V. (trading as Cosmetic Wholesale), Goudsesingel 103, 3031EE Rotterdam, Netherlands. KVK 95455078, VAT NL867137538B01.</p>\n<ul>\n<li>Terms and Conditions: https://cosmeticwholesale.eu/terms-and-conditions/</li>\n<li>Privacy Policy: https://cosmeticwholesale.eu/privacy-policy/</li>\n<li>Dropshipping policies: https://cosmeticwholesale.eu/dropshipping/policies-for-dropshipping/</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/cosmetic-wholesale-sync.1.0.1.zip",
+    "upgrade_notice": {
+        "1.0.1": "<p>Stored meta keys were renamed to a longer prefix. Existing orders keep working; no action needed.</p>",
+        "1.0.0": "<p>First directory release. If you installed an earlier zip as <code>cw-sync</code>, deactivate and delete it before installing this one; settings, products and orders are untouched.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "catalog": "catalog",
+        "cosmetics": "cosmetics",
+        "dropshipping": "dropshipping",
+        "wholesale": "wholesale",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.1",
+    "versions": {
+        "1.0.1": "https://downloads.wordpress.org/plugin/cosmetic-wholesale-sync.1.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/cosmetic-wholesale-sync.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://cosmeticwholesale.eu",
+    "banners": {
+        "low": "https://ps.w.org/cosmetic-wholesale-sync/assets/banner-772x250.png?rev=3681724",
+        "high": "https://ps.w.org/cosmetic-wholesale-sync/assets/banner-1544x500.png?rev=3681724"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/cosmetic-wholesale-sync/assets/icon-128x128.png?rev=3681724",
+        "2x": "https://ps.w.org/cosmetic-wholesale-sync/assets/icon-256x256.png?rev=3681724"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
