@@ -1,0 +1,91 @@
+{
+    "name": "BTFU — Back The Files Up",
+    "slug": "btfu-back-the-files-up",
+    "version": "0.9.1",
+    "author": "<a href=\"https://profiles.wordpress.org/jkirker/\">jkirker</a>",
+    "author_profile": "https://profiles.wordpress.org/jkirker/",
+    "contributors": {
+        "jkirker": {
+            "profile": "https://profiles.wordpress.org/jkirker/",
+            "avatar": "https://secure.gravatar.com/avatar/f0b751270efc2d35b384ed1a37fb43580ed674f177b2a7869333d28f7feb184e?s=96&d=monsterid&r=g",
+            "display_name": "jkirker"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1",
+    "requires_php": "8.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/btfu-back-the-files-up/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-05 15:56:00",
+    "added": "2026-09-05",
+    "homepage": "https://github.com/jkirker/btfu",
+    "sections": {
+        "description": "<p><strong>BTFU</strong> stands for <em>Back The Files Up</em>. Officially. Whatever else you think it might stand for says more about you than about us.</p>\n<p>BTFU gives you git-style checkpoints for a whole WordPress site — files and database together — from a single button in the admin bar.</p>\n<p>Take a snapshot, attach a note, break something, roll back. Hover the admin bar to see every snapshot with its note, timestamp, and size.</p>\n<p><strong>This is a development tool.</strong> It warns loudly if it thinks it is running in production.</p>\n<p><strong>It is also destructive by design.</strong> A restore overwrites your files and database; anything changed since the snapshot is lost unless you keep the automatic safety snapshot. BTFU&#8217;s snapshots live on the <em>same server</em> as the site — before you rely on it, have an independent, off-server backup from your normal backup tool.</p>\n<h4>Why another backup plugin?</h4>\n<p>Backup plugins protect you from disasters. This protects you from <em>yourself, five minutes ago</em>. It is built for the loop developers actually live in: snapshot, experiment, compare, roll back, repeat.</p>\n<ul>\n<li><strong>One click, one note.</strong> &#8220;before checkout refactor&#8221; — attached to the exact state it describes.</li>\n<li><strong>Hardlinked snapshots.</strong> The second snapshot costs only what changed. Twenty snapshots of a 2 GB site is nowhere near 40 GB.</li>\n<li><strong>Honest sizes.</strong> Every snapshot shows its <em>unique</em> size — the bytes you actually get back by deleting it — because with shared storage, apparent size is a lie.</li>\n<li><strong>Every restore is undoable.</strong> An automatic safety snapshot is taken before any restore. Rolling back can itself be rolled back.</li>\n<li><strong>A standalone rescue script.</strong> Restores the site from the command line — or, password-gated, the browser — even when WordPress is a white screen. It is the same code path as normal restores, so it can never quietly rot.</li>\n<li><strong>Exclude what you don&#8217;t need.</strong> File patterns (rsync-style, plus a <code>.btfuignore</code> file) and database tables (structure-only, with core tables locked out — see FAQ).</li>\n<li><strong>WP-CLI.</strong> <code>wp btfu snap \"note\"</code>, <code>list</code>, <code>restore</code>, <code>verify</code>, <code>prune</code>, <code>doctor</code>, <code>selftest</code>.</li>\n</ul>\n<p>Restores are resumable: files AND database are imported in time-budgeted<br />\nchunks, so even large sites restore without hitting a request timeout.</p>\n<h4>What it deliberately does NOT do</h4>\n<ul>\n<li>Multisite (refuses to activate — a half-captured network is worse than none)</li>\n<li>Move snapshots between sites/domains (serialized-data search-replace is out of scope)</li>\n<li>Scheduled backups, offsite storage — this is a checkpoint tool, not a backup product</li>\n</ul>\n<h3>Disclaimer</h3>\n<p>Copyright © 2026 John Kirker Inc. All rights reserved.</p>\n<p><strong>BTFU is destructive.</strong> It overwrites and deletes files and database tables,<br />\nand restoring a snapshot can irreversibly lose current data. It is provided<br />\n&#8220;AS IS&#8221;, with NO WARRANTY of any kind. Use with caution — at your own risk and<br />\nperil. It is not intended for production use. By installing or using it you<br />\naccept all risk and, to the maximum extent permitted by law, waive all claims<br />\nagainst John Kirker Inc. and the author. Keep independent backups. The full<br />\ndisclaimer and limitation of liability ship with the plugin as DISCLAIMER.txt.</p>\n<h3>Privacy</h3>\n<p>BTFU makes no external requests of any kind — no telemetry, no<br />\nupdate pings, no third-party services. The only HTTP request it ever performs<br />\nis a one-off fetch of this site&#8217;s own URL to verify the snapshot store is not<br />\nweb-readable. All snapshots stay on this server. Uninstalling preserves<br />\nsnapshots unless you explicitly opt in to deleting them; generated rescue<br />\nscripts are always removed on uninstall.</p>\n",
+        "installation": "<ol>\n<li><strong>First, make sure you have an independent, off-server backup.</strong> BTFU is destructive and its snapshots live on the same disk as the site.</li>\n<li>Upload the plugin and activate it.</li>\n<li>Click <strong>BTFU</strong> in the admin bar <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> <em>Back it up now…</em></li>\n<li>Optional but recommended: visit <strong>BTFU <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings</strong>, set a rescue password, and generate a rescue script. Save its URL somewhere <em>outside</em> this site.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"where%20do%20snapshots%20live%3F\">\nWhere do snapshots live?\n</h4>\n<p>\n<p>In a <code>.btfu-store-&lt;random&gt;</code> directory — outside the web root when possible, otherwise inside <code>wp-content</code> guarded by <code>.htaccess</code>/<code>web.config</code> and verified by an actual HTTP canary check (nginx ignores <code>.htaccess</code>, so we prove protection instead of assuming it).</p>\n</p>\n<dt id=\"why%20can%27t%20i%20exclude%20wp_posts%20from%20the%20database%3F\">\nWhy can&#8217;t I exclude wp_posts from the database?\n</h4>\n<p>\n<p>Core tables cross-reference each other by ID. Restoring posts without postmeta produces silent corruption, not a smaller backup. Non-core tables (analytics, logs, queues) can be excluded — they are stored structure-only, restore leaves their live data untouched, and strict-mode restores will never drop them.</p>\n</p>\n<dt id=\"what%20happens%20if%20a%20restore%20goes%20wrong%3F\">\nWhat happens if a restore goes wrong?\n</h4>\n<p>\n<p>A safety snapshot is taken automatically before every restore, so you can roll back the rollback. If WordPress itself won&#8217;t load, the rescue script restores from the CLI: <code>php btfu-rescue-xxxx.php --list</code> then <code>--restore &lt;id&gt;</code>.</p>\n</p>\n<dt id=\"does%20deleting%20a%20snapshot%20free%20its%20full%20size%3F\">\nDoes deleting a snapshot free its full size?\n</h4>\n<p>\n<p>No — and the UI never claims it does. Snapshots share unchanged files via hardlinks. Each snapshot&#8217;s listed &#8220;unique&#8221; size is what deleting it actually reclaims.</p>\n</p>\n<dt id=\"is%20it%20safe%20on%20a%20live%20site%3F\">\nIs it safe on a live site?\n</h4>\n<p>\n<p>It&#8217;s designed for development. It will run in production, but it warns you persistently, and you should listen to it.</p>\n</p>\n<dt id=\"do%20i%20still%20need%20real%20backups%3F\">\nDo I still need real backups?\n</h4>\n<p>\n<p>Yes. BTFU snapshots live on the same server as the site — they protect you from your own changes, not from disk failure, a compromised server, or a hosting disaster. Keep your normal off-server backups, and have one before your first restore.</p>\n</p>\n\n",
+        "changelog": "<h4>0.9.1</h4>\n<ul>\n<li>Now requires PHP 8.2+ (PHP 7.4–8.1 are end-of-life; BTFU will not support EOL PHP).</li>\n<li>Restore dialog: explicit overwrite warning, and a prominent alert when restoring without a safety snapshot.</li>\n<li>Clearer guidance everywhere to keep an independent, off-server backup.</li>\n<li>New: <code>wp btfu selftest</code> — one-command end-to-end health check (snapshot <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> verify <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> delete round-trip), exits non-zero on failure.</li>\n<li>Hardening: a single store-wide operation lock now prevents a snapshot, restore, prune, import, or delete from running while another is in progress (it self-heals if a process crashes). <code>wp btfu doctor</code> reports any operation in progress.</li>\n<li>Directory listing icon, banner, and screenshots.</li>\n</ul>\n<h4>0.9.0</h4>\n<ul>\n<li>Initial release: snapshots (rsync/PHP engines), restores (single shared engine with standalone rescue script), hardlinked storage, admin bar UI with notes and size pills, file + database excludes, retention/pruning with pinning, WP-CLI commands, production guards.</li>\n</ul>\n"
+    },
+    "short_description": "One-click file + database checkpoints for WordPress development. Snapshot, experiment, roll back. (The F stands for Files.)",
+    "description": "<p><strong>BTFU</strong> stands for <em>Back The Files Up</em>. Officially. Whatever else you think it might stand for says more about you than about us.</p>\n<p>BTFU gives you git-style checkpoints for a whole WordPress site — files and database together — from a single button in the admin bar.</p>\n<p>Take a snapshot, attach a note, break something, roll back. Hover the admin bar to see every snapshot with its note, timestamp, and size.</p>\n<p><strong>This is a development tool.</strong> It warns loudly if it thinks it is running in production.</p>\n<p><strong>It is also destructive by design.</strong> A restore overwrites your files and database; anything changed since the snapshot is lost unless you keep the automatic safety snapshot. BTFU&#8217;s snapshots live on the <em>same server</em> as the site — before you rely on it, have an independent, off-server backup from your normal backup tool.</p>\n<h4>Why another backup plugin?</h4>\n<p>Backup plugins protect you from disasters. This protects you from <em>yourself, five minutes ago</em>. It is built for the loop developers actually live in: snapshot, experiment, compare, roll back, repeat.</p>\n<ul>\n<li><strong>One click, one note.</strong> &#8220;before checkout refactor&#8221; — attached to the exact state it describes.</li>\n<li><strong>Hardlinked snapshots.</strong> The second snapshot costs only what changed. Twenty snapshots of a 2 GB site is nowhere near 40 GB.</li>\n<li><strong>Honest sizes.</strong> Every snapshot shows its <em>unique</em> size — the bytes you actually get back by deleting it — because with shared storage, apparent size is a lie.</li>\n<li><strong>Every restore is undoable.</strong> An automatic safety snapshot is taken before any restore. Rolling back can itself be rolled back.</li>\n<li><strong>A standalone rescue script.</strong> Restores the site from the command line — or, password-gated, the browser — even when WordPress is a white screen. It is the same code path as normal restores, so it can never quietly rot.</li>\n<li><strong>Exclude what you don&#8217;t need.</strong> File patterns (rsync-style, plus a <code>.btfuignore</code> file) and database tables (structure-only, with core tables locked out — see FAQ).</li>\n<li><strong>WP-CLI.</strong> <code>wp btfu snap \"note\"</code>, <code>list</code>, <code>restore</code>, <code>verify</code>, <code>prune</code>, <code>doctor</code>, <code>selftest</code>.</li>\n</ul>\n<p>Restores are resumable: files AND database are imported in time-budgeted<br />\nchunks, so even large sites restore without hitting a request timeout.</p>\n<h4>What it deliberately does NOT do</h4>\n<ul>\n<li>Multisite (refuses to activate — a half-captured network is worse than none)</li>\n<li>Move snapshots between sites/domains (serialized-data search-replace is out of scope)</li>\n<li>Scheduled backups, offsite storage — this is a checkpoint tool, not a backup product</li>\n</ul>\n<h3>Disclaimer</h3>\n<p>Copyright © 2026 John Kirker Inc. All rights reserved.</p>\n<p><strong>BTFU is destructive.</strong> It overwrites and deletes files and database tables,<br />\nand restoring a snapshot can irreversibly lose current data. It is provided<br />\n&#8220;AS IS&#8221;, with NO WARRANTY of any kind. Use with caution — at your own risk and<br />\nperil. It is not intended for production use. By installing or using it you<br />\naccept all risk and, to the maximum extent permitted by law, waive all claims<br />\nagainst John Kirker Inc. and the author. Keep independent backups. The full<br />\ndisclaimer and limitation of liability ship with the plugin as DISCLAIMER.txt.</p>\n<h3>Privacy</h3>\n<p>BTFU makes no external requests of any kind — no telemetry, no<br />\nupdate pings, no third-party services. The only HTTP request it ever performs<br />\nis a one-off fetch of this site&#8217;s own URL to verify the snapshot store is not<br />\nweb-readable. All snapshots stay on this server. Uninstalling preserves<br />\nsnapshots unless you explicitly opt in to deleting them; generated rescue<br />\nscripts are always removed on uninstall.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/btfu-back-the-files-up.0.9.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/btfu-back-the-files-up/assets/screenshot-1.png?rev=3682602",
+            "caption": "Snapshot from the admin bar on any screen — every checkpoint shows its note, age, unique size, and a free-space pill."
+        },
+        {
+            "src": "https://ps.w.org/btfu-back-the-files-up/assets/screenshot-2.png?rev=3682602",
+            "caption": "Restores are honest and undoable: type the id to confirm, and get a red warning the moment you skip the automatic safety snapshot."
+        },
+        {
+            "src": "https://ps.w.org/btfu-back-the-files-up/assets/screenshot-3.png?rev=3682602",
+            "caption": "The Snapshots dashboard — restore, download, pin, note, delete, or act on many at once."
+        }
+    ],
+    "tags": {
+        "backup": "backup",
+        "checkpoint": "checkpoint",
+        "development": "development",
+        "restore": "restore",
+        "snapshot": "snapshot"
+    },
+    "stable_tag": "0.9.1",
+    "versions": {
+        "0.9.0": "https://downloads.wordpress.org/plugin/btfu-back-the-files-up.0.9.0.zip",
+        "0.9.1": "https://downloads.wordpress.org/plugin/btfu-back-the-files-up.0.9.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/btfu-back-the-files-up.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/btfu-back-the-files-up/assets/banner-772x250.png?rev=3682602",
+        "high": "https://ps.w.org/btfu-back-the-files-up/assets/banner-1544x500.png?rev=3682602"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/btfu-back-the-files-up/assets/icon-128x128.png?rev=3682602",
+        "2x": "https://ps.w.org/btfu-back-the-files-up/assets/icon-256x256.png?rev=3682602"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
