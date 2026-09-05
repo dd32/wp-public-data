@@ -1,0 +1,91 @@
+{
+    "name": "itdatex Sync Gate",
+    "slug": "itdatex-sync-gate",
+    "version": "0.11.2",
+    "author": "<a href=\"https://profiles.wordpress.org/itdatex/\">itdatex</a>",
+    "author_profile": "https://profiles.wordpress.org/itdatex/",
+    "contributors": {
+        "itdatex": {
+            "profile": "https://profiles.wordpress.org/itdatex/",
+            "avatar": "https://secure.gravatar.com/avatar/e07a49840111dd9942a2117d4b730116c1fdd61cfa06a7dd3d938c700d94f148?s=96&d=monsterid&r=g",
+            "display_name": "itdatex"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.1",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/itdatex-sync-gate/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-05 20:28:00",
+    "added": "2026-09-05",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Sync Gate connects two WordPress installs through an HMAC-signed pair handshake (no cloud broker in between). After pairing, individual database tables can be pulled from or pushed to the other site, with:</p>\n<ul>\n<li>Automatic pre-backup (SQL dump inside the uploads/ directory, HTTP access blocked)</li>\n<li>Serialization-safe URL rewrite (unserialize -&gt; replace -&gt; serialize, so no broken serialized options escape)</li>\n<li>Sensible default exclusions (users, orders, sessions stay local)</li>\n<li>Full audit log (which table, when, how many rows, which backup)</li>\n</ul>\n<p><strong>Audience:</strong> Agencies and developers who need to selectively synchronize WooCommerce shops or content sites between staging and live.</p>\n<h3>Features (v0.11.2)</h3>\n<ul>\n<li>HMAC-signed REST endpoints (no cloud middleman)</li>\n<li>Pairing via pending secret + handshake (15 minute TTL)</li>\n<li><strong>Table sync</strong> &#8211; pull and push individual database tables between paired sites</li>\n<li><strong>File sync</strong> &#8211; pull and push wp-content/uploads/ with diff (size + mtime), backup, dry-run and optional &#8211;delete. <strong>Chunked up to 500 MB per file</strong> (5 MB per HTTP chunk, SHA256 integrity check, wp-cron cleanup of expired sessions). <strong>Parallel chunks via curl_multi in both directions</strong> (1..10 configurable, default 3) and <strong>auto-resume on push AND pull</strong> (push session as WP option, pull session as folder-backed store in <code>uploads/itdatex-sync-gate/pulls/</code>)</li>\n<li><strong>Central settings</strong> under Tools -&gt; Sync Gate -&gt; Settings and via WP-CLI <code>wp sync-gate config</code>. Configurable: chunk_concurrency (1..10), chunk_size (256 KB..20 MB), session_ttl_hours (1..168)</li>\n<li>Web UI under Tools -&gt; Sync Gate with tabs &#8220;Pairs&#8221;, &#8220;Tables&#8221;, &#8220;Files&#8221;, &#8220;Log&#8221; and direction radios</li>\n<li>WP-CLI: <code>list-tables</code>, <code>pair-init</code>, <code>pair-connect</code>, <code>pair-list</code>, <code>pull</code>, <code>push</code>, <code>files pull|push</code>, <code>files-resume-list</code>, <code>pull-resume-list</code>, <code>pull-resume-forget</code></li>\n<li>Default exclusions for WooCommerce orders, users, sync-gate&#8217;s own tables (enforced server-side and client-side)</li>\n<li>Serialized values are handled correctly (including nested)</li>\n<li>Nonce-based replay protection (10 minute TTL) and time window +/- 60s</li>\n<li>Path traversal protection, .php/.phar exclusion, symlink ignore</li>\n</ul>\n<h3>Security model</h3>\n<p>Every REST call between paired sites carries four headers:</p>\n<ul>\n<li><code>X-Itdatex-SG-Signature</code> = HMAC-SHA256(secret, method || path || sha256(body) || nonce || timestamp)</li>\n<li><code>X-Itdatex-SG-Nonce</code> (16 byte hex, valid once for 10 minutes)</li>\n<li><code>X-Itdatex-SG-Timestamp</code> (unix seconds, +/- 60s window)</li>\n<li><code>X-Itdatex-SG-Remote-URL</code> (sender URL for pair lookup)</li>\n</ul>\n<p>The secret itself is transmitted over HTTPS and stored in plain text in the pair table. Anyone with database access on either side effectively has access to the other; encryption at rest would not add real security here because the decryption key would live in the same WordPress install.</p>\n",
+        "installation": "<ol>\n<li>Extract the plugin into <code>/wp-content/plugins/itdatex-sync-gate/</code></li>\n<li>Activate it in WP Admin under Plugins</li>\n<li>Activate it on both sites that should be paired</li>\n<li>Open Tools -&gt; Sync Gate and run the pairing</li>\n</ol>\n",
+        "faq": "\n<dt id=\"what%20happens%20to%20my%20local%20table%20before%20a%20pull%3F\">\nWhat happens to my local table before a pull?\n</h4>\n<p>\n<p>It is written as an SQL dump to <code>wp-content/uploads/itdatex-sync-gate/backups/&lt;table&gt;-&lt;timestamp&gt;.sql</code>. Then DROP + CREATE + INSERT with the remote data.</p>\n</p>\n<dt id=\"what%20about%20the%20users%20%2F%20orders%20tables%3F\">\nWhat about the users / orders tables?\n</h4>\n<p>\n<p>They are on the default exclusion list. They are not synced unless you pass an explicit <code>--force</code> flag.</p>\n</p>\n<dt id=\"can%20i%20push%20%28local%20-%3E%20remote%29%20as%20well%3F\">\nCan I push (local -&gt; remote) as well?\n</h4>\n<p>\n<p>Yes, since v0.2.0. <code>wp sync-gate push posts --pair-id=1</code> or via the web UI (choose the &#8220;Push&#8221; radio).</p>\n</p>\n<dt id=\"are%20uploads%20%2F%20media%20synchronized%3F\">\nAre uploads / media synchronized?\n</h4>\n<p>\n<p>Yes, since v0.3.0. <code>wp sync-gate files pull --pair-id=1 --dry-run</code> shows the diff; without &#8211;dry-run the files are transferred. Themes and plugins are excluded (deploy them via Git/Composer). .php, .phar and .htaccess files are never synced for security reasons.</p>\n</p>\n<dt id=\"what%20happens%20if%20the%20connection%20drops%20during%20a%20pull%3F\">\nWhat happens if the connection drops during a pull?\n</h4>\n<p>\n<p>The backup has already been written. The sync log carries an &#8220;error&#8221; status. Manual recovery via <code>wp db import &lt;backup-file&gt;</code>.</p>\n</p>\n\n",
+        "changelog": "<h4>0.11.2</h4>\n<ul>\n<li>wp.org review pass: REST endpoints now expose a real permission_callback that performs the HMAC/pair verification (previously __return_true + in-handler check); admin tab-tables JS moved out of an inline <code>&lt;script&gt;</code> block and enqueued via wp_enqueue_script; load_plugin_textdomain() removed (wp.org auto-loads since WP 4.6); readme short description shortened and comparative wording dropped. No behavior change.</li>\n</ul>\n<h4>0.11.1</h4>\n<ul>\n<li>wp.org compliance pass: settings admin labels are English, plugin header language corrected, defensive wp_unslash+sanitize on all admin $_POST reads, REST permission_callback rationale documented inline. No functional change.</li>\n</ul>\n<h4>0.11.0</h4>\n<ul>\n<li>SECURITY: server-side table exclusion could be bypassed by client-side &#8211;force. From v0.11.0 the server exclusion is absolute, both for pull and push. A compromised pair partner can no longer override the exclusion via &#8220;force&#8221;: true in the body.</li>\n<li>FIX: ChunkStore::append_chunk had a race in load_meta at chunk_concurrency &gt; 1 &#8211; parallel chunk writers could read a truncated meta.json and throw &#8220;meta.json corrupt&#8221;. Read-modify-write now runs entirely under flock.</li>\n<li>NEW: tools/e2e/ with a complete cross-site test suite (setup.sh + 6 tests + teardown.sh).</li>\n</ul>\n<h4>0.10.0</h4>\n<ul>\n<li>Pull auto-resume: <code>PullSessionStore</code> persists chunk progress across sync runs (assembly.bin preallocated with ftruncate, received_offsets in meta.json). Aborted pulls resume at the incomplete offsets on the next sync. New wp-cron <code>itdatex_sg_pull_cleanup</code> and new WP-CLI commands <code>pull-resume-list</code> and <code>pull-resume-forget</code>. No server change, no migration.</li>\n</ul>\n<h4>0.9.0</h4>\n<ul>\n<li>Parallel pull: <code>FileSyncer::pull_one_chunked</code> fetches chunks the same way the push already did (<code>chunk_concurrency</code> batches over <code>ParallelHttp</code>, out-of-order via <code>fseek</code>+<code>fwrite</code> into a temp file preallocated with <code>ftruncate</code>). No server change, no migration.</li>\n</ul>\n<h4>0.8.0</h4>\n<ul>\n<li>Chunk threshold now follows the chunk_size setting. In v0.7 the threshold was hardcoded to 5 MB, so a 3 MB file was transferred single-shot even when chunk_size=1 MB. Now: file &gt; chunk_size -&gt; chunked. Fallback 5 MB only when the settings service is unreachable.</li>\n</ul>\n<h4>0.7.0</h4>\n<ul>\n<li>chunk_size (256 KB..20 MB) and session_ttl_hours (1..168) are settings now. chunk_size is pinned per session in meta.json, running uploads are protected against setting changes.</li>\n</ul>\n<h4>0.6.0</h4>\n<ul>\n<li>Configurable parallelism for chunked file push. New admin tab &#8220;Settings&#8221; and WP-CLI <code>wp sync-gate config list|get|set</code>. Currently only chunk_concurrency (1..10); more settings to follow.</li>\n</ul>\n<h4>0.5.0</h4>\n<ul>\n<li>Parallel upload (3 in-flight chunks via curl_multi) and auto-resume after connection drop. ChunkStore switched to out-of-order layout. New REST endpoint /files/put-status. WP-CLI files-resume-list + files-resume-forget.</li>\n</ul>\n<h4>0.4.0</h4>\n<ul>\n<li>Chunking for large files: file sync now supports up to 500 MB per file via 5 MB chunks with SHA256 verification. REST endpoints /files/{put,fetch}-{init,chunk,commit}. Daily wp-cron cleanup for aborted sessions.</li>\n</ul>\n<h4>0.3.0</h4>\n<ul>\n<li>File sync for wp-content/uploads/: REST /files/manifest + /files/fetch + /files/put, WP-CLI <code>files pull|push</code>, admin tab &#8220;Files&#8221; with dry-run + &#8211;delete.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>Push direction: <code>wp sync-gate push</code>, REST /push-target, admin UI pull/push radio, log <code>push</code> + <code>push-in</code>.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release. Pull direction (remote -&gt; local), pairing, backup, URL rewrite, exclusions.</li>\n</ul>\n"
+    },
+    "short_description": "Granular per-table sync between two paired WordPress sites. Copy individual tables (posts, options, terms) between staging and live.",
+    "description": "<p>Sync Gate connects two WordPress installs through an HMAC-signed pair handshake (no cloud broker in between). After pairing, individual database tables can be pulled from or pushed to the other site, with:</p>\n<ul>\n<li>Automatic pre-backup (SQL dump inside the uploads/ directory, HTTP access blocked)</li>\n<li>Serialization-safe URL rewrite (unserialize -&gt; replace -&gt; serialize, so no broken serialized options escape)</li>\n<li>Sensible default exclusions (users, orders, sessions stay local)</li>\n<li>Full audit log (which table, when, how many rows, which backup)</li>\n</ul>\n<p><strong>Audience:</strong> Agencies and developers who need to selectively synchronize WooCommerce shops or content sites between staging and live.</p>\n<h3>Features (v0.11.2)</h3>\n<ul>\n<li>HMAC-signed REST endpoints (no cloud middleman)</li>\n<li>Pairing via pending secret + handshake (15 minute TTL)</li>\n<li><strong>Table sync</strong> &#8211; pull and push individual database tables between paired sites</li>\n<li><strong>File sync</strong> &#8211; pull and push wp-content/uploads/ with diff (size + mtime), backup, dry-run and optional &#8211;delete. <strong>Chunked up to 500 MB per file</strong> (5 MB per HTTP chunk, SHA256 integrity check, wp-cron cleanup of expired sessions). <strong>Parallel chunks via curl_multi in both directions</strong> (1..10 configurable, default 3) and <strong>auto-resume on push AND pull</strong> (push session as WP option, pull session as folder-backed store in <code>uploads/itdatex-sync-gate/pulls/</code>)</li>\n<li><strong>Central settings</strong> under Tools -&gt; Sync Gate -&gt; Settings and via WP-CLI <code>wp sync-gate config</code>. Configurable: chunk_concurrency (1..10), chunk_size (256 KB..20 MB), session_ttl_hours (1..168)</li>\n<li>Web UI under Tools -&gt; Sync Gate with tabs &#8220;Pairs&#8221;, &#8220;Tables&#8221;, &#8220;Files&#8221;, &#8220;Log&#8221; and direction radios</li>\n<li>WP-CLI: <code>list-tables</code>, <code>pair-init</code>, <code>pair-connect</code>, <code>pair-list</code>, <code>pull</code>, <code>push</code>, <code>files pull|push</code>, <code>files-resume-list</code>, <code>pull-resume-list</code>, <code>pull-resume-forget</code></li>\n<li>Default exclusions for WooCommerce orders, users, sync-gate&#8217;s own tables (enforced server-side and client-side)</li>\n<li>Serialized values are handled correctly (including nested)</li>\n<li>Nonce-based replay protection (10 minute TTL) and time window +/- 60s</li>\n<li>Path traversal protection, .php/.phar exclusion, symlink ignore</li>\n</ul>\n<h3>Security model</h3>\n<p>Every REST call between paired sites carries four headers:</p>\n<ul>\n<li><code>X-Itdatex-SG-Signature</code> = HMAC-SHA256(secret, method || path || sha256(body) || nonce || timestamp)</li>\n<li><code>X-Itdatex-SG-Nonce</code> (16 byte hex, valid once for 10 minutes)</li>\n<li><code>X-Itdatex-SG-Timestamp</code> (unix seconds, +/- 60s window)</li>\n<li><code>X-Itdatex-SG-Remote-URL</code> (sender URL for pair lookup)</li>\n</ul>\n<p>The secret itself is transmitted over HTTPS and stored in plain text in the pair table. Anyone with database access on either side effectively has access to the other; encryption at rest would not add real security here because the decryption key would live in the same WordPress install.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/itdatex-sync-gate.0.11.2.zip",
+    "upgrade_notice": {
+        "0.11.2": "<p>wp.org review pass. Real REST permission_callback, enqueued admin JS, no functional change. Safe to update.</p>",
+        "0.11.1": "<p>Compliance and language pass, no behavior change. Safe to update.</p>",
+        "0.11.0": "<p>Contains two fixes for bugs that surfaced in the first real cross-site test: server-side exclusion was client-overridable (security), ChunkStore meta.json was not race-safe under parallel push (consistency). If you rely on server-side user/order exclusions, upgrade to v0.11.0. No DB schema change, no migration.</p>",
+        "0.10.0": "<p>Adds pull auto-resume. On first activation a new wp-cron hook <code>itdatex_sg_pull_cleanup</code> is registered and the folder <code>wp-content/uploads/itdatex-sync-gate/pulls/</code> is created. No DB schema change, no server endpoint change. Peak disk usage during a running pull equals the target file size.</p>",
+        "0.9.0": "<p>Adds parallel pull. Peak RAM during pull rises to chunk_concurrency * chunk_size * ~1.33 (default 3 * 5 MB ~= 20 MB). No DB schema change, no migration, no server endpoint change.</p>",
+        "0.8.0": "<p>Chunk threshold follows chunk_size setting. If you set chunk_size &lt; 5 MB, all files above that threshold switch to chunked. No DB schema change, no migration.</p>",
+        "0.7.0": "<p>Two new settings, no migration needed. Defaults match v0.6 behavior exactly (5 MB chunk_size, 24h session_ttl).</p>",
+        "0.6.0": "<p>New option <code>itdatex_sg_settings</code>, no migration needed. Existing behavior does not change (default remains concurrency 3).</p>",
+        "0.5.0": "<p>Parallel upload + resume. No DB schema change. Aborted v0.4 sessions must be discarded and restarted (session layout incompatible).</p>",
+        "0.4.0": "<p>Chunking up to 500 MB. No DB schema change, but a new wp-cron job is registered on activation.</p>",
+        "0.3.0": "<p>File sync added. No migration overhead, no DB schema change.</p>",
+        "0.2.0": "<p>Push direction added.</p>",
+        "0.1.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "database": "database",
+        "developer": "developer",
+        "migration": "migration",
+        "staging": "staging",
+        "sync": "sync"
+    },
+    "stable_tag": "0.11.2",
+    "versions": {
+        "0.11.2": "https://downloads.wordpress.org/plugin/itdatex-sync-gate.0.11.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/itdatex-sync-gate.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/itdatex-sync-gate/assets/banner-772x250.png?rev=3682797",
+        "high": "https://ps.w.org/itdatex-sync-gate/assets/banner-1544x500.png?rev=3682797"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/itdatex-sync-gate/assets/icon-128x128.png?rev=3682797",
+        "2x": "https://ps.w.org/itdatex-sync-gate/assets/icon-256x256.png?rev=3682797"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
