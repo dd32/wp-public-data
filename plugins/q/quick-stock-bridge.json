@@ -1,0 +1,127 @@
+{
+    "name": "Quick Stock Bridge",
+    "slug": "quick-stock-bridge",
+    "version": "0.2.3",
+    "author": "<a href=\"https://profiles.wordpress.org/neutropeinc/\">Neutrope Inc.</a>",
+    "author_profile": "https://profiles.wordpress.org/neutropeinc/",
+    "contributors": {
+        "neutropeinc": {
+            "profile": "https://profiles.wordpress.org/neutropeinc/",
+            "avatar": "https://secure.gravatar.com/avatar/b5f22187c28534ebaabe0b2f176198812ff64a84992bc6ff2ec8d26b2db6cd98?s=96&d=monsterid&r=g",
+            "display_name": "Neutrope Inc."
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.0.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/quick-stock-bridge/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-06 15:15:00",
+    "added": "2026-06-11",
+    "homepage": "https://neutrope.biz/quick-stock-bridge/",
+    "sections": {
+        "description": "<p>Quick Stock Bridge helps WooCommerce store operators prepare Amazon stock-update files from their existing WooCommerce inventory, safely and on their own terms.</p>\n<p>It is intentionally a <strong>manual, dry-run</strong> tool. It does not connect to the Amazon SP-API, it does not send any data to Amazon, and it never writes to WooCommerce product data. You stay in full control: review the preview, download a CSV or JSON file, and upload it to Amazon yourself.</p>\n<h4>What it does</h4>\n<ul>\n<li>Reads WooCommerce products and variations (simple and variable products).</li>\n<li>Lets you map each product/variation to an Amazon SKU and ASIN.</li>\n<li>Calculates the quantity to report to Amazon from your stock rules.</li>\n<li>Resolves the quantity from a configurable stock source: WooCommerce stock, or an external stock value you import, with an optional fallback.</li>\n<li>Previews every row with a clear OK / Warning / Error / Skipped status.</li>\n<li>Exports CSV or JSON with a stable column set (including external_stock_quantity and stock_source).</li>\n<li>Records an export log (summary plus a per-item snapshot).</li>\n</ul>\n<h4>New in 0.2.0</h4>\n<ul>\n<li><strong>External stock value</strong> (<code>external_stock_quantity</code>): keep an Amazon-facing quantity per mapping, independent of WooCommerce stock.</li>\n<li><strong>Stock source</strong> (<code>stock_source</code>): choose WooCommerce or external stock as the primary source, with an optional fallback to the other.</li>\n<li><strong>Mapping CSV export / import</strong>: download every product/variation merged with its mapping, edit it in a spreadsheet, and re-import it.</li>\n<li><strong>Dry-run preview -&gt; apply</strong> for imports: every import shows exactly what would change (create / update / unchanged / skip / warning / error) and writes nothing until you confirm.</li>\n<li><strong>ASIN auto-fill</strong>: extract ASINs from a product/variation custom field (an Amazon product URL or a bare ASIN) and fill blank ASINs, again with a preview before anything is written. Existing ASINs are never overwritten.</li>\n</ul>\n<p>Every write is opt-in and preview-gated, and the plugin still never contacts Amazon and never edits your WooCommerce products.</p>\n<h4>Stock calculation</h4>\n<p>For each mapping, the export quantity is resolved in this order:</p>\n<ol>\n<li>If sync is disabled for the item, it is excluded.</li>\n<li>The stock source is resolved (WooCommerce stock or the imported external value, per your settings, with optional fallback).</li>\n<li>If no stock source is available, the item is excluded or flagged with a warning (your choice).</li>\n<li>If the Amazon SKU is missing, the item is reported as an error.</li>\n<li>If a manual override is set, that value is used.</li>\n<li>Otherwise the quantity is the resolved source stock minus safety stock.</li>\n<li>A max-stock cap is applied if configured.</li>\n<li>Negative results are clamped to 0.</li>\n</ol>\n<p>With the default settings (primary source = WooCommerce, no external stock imported) the calculation behaves exactly as in 0.1.x.</p>\n<h4>Not included in 0.2.0</h4>\n<ul>\n<li>Sending data to the Amazon SP-API.</li>\n<li>Importing Amazon orders or FBA stock.</li>\n<li>Automatic / scheduled synchronization.</li>\n<li>Writing to WooCommerce product or stock data.</li>\n<li>Rakuten, Yahoo!, or Shopify integration.</li>\n</ul>\n<p>This plugin is a generic WooCommerce tool. It is not tied to any specific store, product naming scheme, or SKU format.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>quick-stock-bridge</code> folder to <code>/wp-content/plugins/</code>, or install the ZIP from Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New.</li>\n<li>Activate the plugin through the Plugins screen.</li>\n<li>Make sure WooCommerce is installed and active.</li>\n<li>Open <strong>Stock Bridge</strong> in the admin menu and start with Product Mappings.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20send%20stock%20to%20amazon%20automatically%3F\">\nDoes this send stock to Amazon automatically?\n</h4>\n<p>\n<p>No. Version 0.1 only builds files for you to download and upload manually. Nothing is sent to Amazon.</p>\n</p>\n<dt id=\"does%20it%20change%20my%20woocommerce%20stock%3F\">\nDoes it change my WooCommerce stock?\n</h4>\n<p>\n<p>No. The plugin only reads WooCommerce stock. It never writes to it.</p>\n</p>\n<dt id=\"what%20happens%20if%20woocommerce%20is%20not%20active%3F\">\nWhat happens if WooCommerce is not active?\n</h4>\n<p>\n<p>The plugin runs in a limited, read-only state and shows a warning. Product reading and exports are disabled until WooCommerce is active.</p>\n</p>\n<dt id=\"where%20is%20my%20data%20stored%3F\">\nWhere is my data stored?\n</h4>\n<p>\n<p>Mappings and export logs are stored in custom database tables. You can opt in (Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> On uninstall) to delete all plugin data when the plugin is removed.</p>\n</p>\n<dt id=\"what%20is%20%22external%20stock%22%20and%20how%20is%20it%20different%20from%20woocommerce%20stock%3F\">\nWhat is &#8220;external stock&#8221; and how is it different from WooCommerce stock?\n</h4>\n<p>\n<p>External stock is an optional quantity you store per mapping (for example an Amazon-facing figure that differs from your WooCommerce shop stock). You import it via the mapping CSV. In Stock Rules you choose which source is primary (WooCommerce or external) and whether to fall back to the other when the primary is unavailable. By default WooCommerce stock is used, so nothing changes unless you opt in.</p>\n</p>\n<dt id=\"will%20importing%20a%20csv%20change%20my%20products%3F\">\nWill importing a CSV change my products?\n</h4>\n<p>\n<p>No. The mapping CSV import only updates the plugin&#8217;s own mapping table, and only after you review the dry-run preview and press Apply. It never edits WooCommerce products, prices, or stock.</p>\n</p>\n<dt id=\"how%20does%20asin%20auto-fill%20work%3F\">\nHow does ASIN auto-fill work?\n</h4>\n<p>\n<p>You point it at a product/variation custom field (post meta) that holds an Amazon product URL or a bare ASIN — for example product_amazon_url. The plugin extracts the ASIN, previews the candidates, and on apply fills only blank ASINs. Existing ASINs are never overwritten, variations fall back to the parent product&#8217;s field, and no data is sent to Amazon.</p>\n</p>\n\n",
+        "changelog": "<h4>0.2.3</h4>\n<ul>\n<li>Add: show a contextual Upgrade to Pro link on the Plugins screen when the Pro add-on is not active. The link points to the live purchase page and includes product-specific campaign attribution. No data, settings, or front-end behavior changes.</li>\n</ul>\n<h4>0.2.2</h4>\n<ul>\n<li>Internal: renamed the plugin&#8217;s global prefix to a longer, more unique prefix (QSTBR_ / qstbr_) to follow WordPress.org guidelines. This affects constants, class names, option names, hooks, transients, nonces, custom database table names, and asset handles.</li>\n<li>No user-facing feature changes. The text domain and plugin slug remain &#8220;quick-stock-bridge&#8221;.</li>\n<li>Note: internal option and table names changed and are not migrated from earlier 0.2.x development builds; the plugin starts with fresh data on this version.</li>\n</ul>\n<h4>0.2.1</h4>\n<ul>\n<li>Pre-submission cleanup: corrected the plugin header description (it no longer references &#8220;v0.1&#8221;); it now states that the plugin never sends data to Amazon and never changes WooCommerce product data.</li>\n<li>No functional changes; behavior is identical to 0.2.0.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>Stock source: choose WooCommerce or an external stock value as the primary source, with an optional fallback (Settings -&gt; Stock Rules). Default is WooCommerce, so existing behavior is unchanged.</li>\n<li>External stock value (external_stock_quantity) stored per mapping and usable as the Amazon-facing quantity.</li>\n<li>Amazon Export: added external_stock_quantity and stock_source columns to the CSV/JSON output and the preview.</li>\n<li>Mapping CSV export/import: download all products/variations merged with their mapping, edit in a spreadsheet, and re-import.</li>\n<li>Import is dry-run first: a preview shows create / update / unchanged / skip / warning / error per row and writes nothing until you apply.</li>\n<li>ASIN auto-fill: extract ASINs from a configurable product/variation custom field (Amazon URL or bare ASIN) and fill blank ASINs after a preview. Existing ASINs are never overwritten; variations fall back to the parent product&#8217;s field.</li>\n<li>Still manual and dry-run: no Amazon SP-API calls, and WooCommerce product/stock data is never modified.</li>\n</ul>\n<h4>0.1.1</h4>\n<ul>\n<li>Dashboard: added a &#8220;Not stock-managed&#8221; product count and a notice explaining that those items are excluded from the export by default.</li>\n<li>Amazon Export: the preview now shows how many items were skipped because WooCommerce stock management is off, with guidance on how to include them.</li>\n<li>Product Mappings: clarified that ASIN is optional, that only the current page is saved, and what a &#8220;not managed&#8221; stock value means.</li>\n<li>No changes to the stock-calculation logic or the CSV/JSON output format.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release: product mappings, stock rules, preview, CSV/JSON export, and export logs. Manual / dry-run only — no Amazon API.</li>\n</ul>\n"
+    },
+    "short_description": "Build Amazon stock-update CSV/JSON files from WooCommerce inventory. Manual and dry-run focused: it never sends anything to Amazon.",
+    "description": "<p>Quick Stock Bridge helps WooCommerce store operators prepare Amazon stock-update files from their existing WooCommerce inventory, safely and on their own terms.</p>\n<p>It is intentionally a <strong>manual, dry-run</strong> tool. It does not connect to the Amazon SP-API, it does not send any data to Amazon, and it never writes to WooCommerce product data. You stay in full control: review the preview, download a CSV or JSON file, and upload it to Amazon yourself.</p>\n<h4>What it does</h4>\n<ul>\n<li>Reads WooCommerce products and variations (simple and variable products).</li>\n<li>Lets you map each product/variation to an Amazon SKU and ASIN.</li>\n<li>Calculates the quantity to report to Amazon from your stock rules.</li>\n<li>Resolves the quantity from a configurable stock source: WooCommerce stock, or an external stock value you import, with an optional fallback.</li>\n<li>Previews every row with a clear OK / Warning / Error / Skipped status.</li>\n<li>Exports CSV or JSON with a stable column set (including external_stock_quantity and stock_source).</li>\n<li>Records an export log (summary plus a per-item snapshot).</li>\n</ul>\n<h4>New in 0.2.0</h4>\n<ul>\n<li><strong>External stock value</strong> (<code>external_stock_quantity</code>): keep an Amazon-facing quantity per mapping, independent of WooCommerce stock.</li>\n<li><strong>Stock source</strong> (<code>stock_source</code>): choose WooCommerce or external stock as the primary source, with an optional fallback to the other.</li>\n<li><strong>Mapping CSV export / import</strong>: download every product/variation merged with its mapping, edit it in a spreadsheet, and re-import it.</li>\n<li><strong>Dry-run preview -&gt; apply</strong> for imports: every import shows exactly what would change (create / update / unchanged / skip / warning / error) and writes nothing until you confirm.</li>\n<li><strong>ASIN auto-fill</strong>: extract ASINs from a product/variation custom field (an Amazon product URL or a bare ASIN) and fill blank ASINs, again with a preview before anything is written. Existing ASINs are never overwritten.</li>\n</ul>\n<p>Every write is opt-in and preview-gated, and the plugin still never contacts Amazon and never edits your WooCommerce products.</p>\n<h4>Stock calculation</h4>\n<p>For each mapping, the export quantity is resolved in this order:</p>\n<ol>\n<li>If sync is disabled for the item, it is excluded.</li>\n<li>The stock source is resolved (WooCommerce stock or the imported external value, per your settings, with optional fallback).</li>\n<li>If no stock source is available, the item is excluded or flagged with a warning (your choice).</li>\n<li>If the Amazon SKU is missing, the item is reported as an error.</li>\n<li>If a manual override is set, that value is used.</li>\n<li>Otherwise the quantity is the resolved source stock minus safety stock.</li>\n<li>A max-stock cap is applied if configured.</li>\n<li>Negative results are clamped to 0.</li>\n</ol>\n<p>With the default settings (primary source = WooCommerce, no external stock imported) the calculation behaves exactly as in 0.1.x.</p>\n<h4>Not included in 0.2.0</h4>\n<ul>\n<li>Sending data to the Amazon SP-API.</li>\n<li>Importing Amazon orders or FBA stock.</li>\n<li>Automatic / scheduled synchronization.</li>\n<li>Writing to WooCommerce product or stock data.</li>\n<li>Rakuten, Yahoo!, or Shopify integration.</li>\n</ul>\n<p>This plugin is a generic WooCommerce tool. It is not tied to any specific store, product naming scheme, or SKU format.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/quick-stock-bridge.0.2.3.zip",
+    "upgrade_notice": {
+        "0.2.3": "<p>Adds a contextual Upgrade to Pro link on the Plugins screen when the Pro add-on is not active. No data, settings, or front-end behavior changes.</p>",
+        "0.2.2": "<p>Internal global-prefix change for WordPress.org compliance (QSTBR_ / qstbr_). No feature changes. Internal option and table names changed and are not migrated from earlier 0.2.x development builds.</p>",
+        "0.2.1": "<p>Documentation/metadata cleanup before WordPress.org submission (plugin header description fix). No functional changes from 0.2.0.</p>",
+        "0.2.0": "<p>Adds external stock values, a configurable stock source, mapping CSV import/export with dry-run preview, and ASIN auto-fill. The database is upgraded automatically (new columns only; existing data is preserved). Defaults keep the 0.1.x behavior. Still no Amazon API and no writes to WooCommerce data.</p>",
+        "0.1.1": "<p>UI clarity improvements for stores that do not use WooCommerce stock management. No data or output format changes.</p>",
+        "0.1.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/quick-stock-bridge/assets/screenshot-1.png?rev=3568990",
+            "caption": "Dashboard: WooCommerce status, mapping and sync counts, and recent exports."
+        },
+        {
+            "src": "https://ps.w.org/quick-stock-bridge/assets/screenshot-2.png?rev=3568990",
+            "caption": "Product Mappings: map each product/variation to an Amazon SKU and ASIN, with per-item safety stock, max stock, manual override, and sync."
+        },
+        {
+            "src": "https://ps.w.org/quick-stock-bridge/assets/screenshot-3.png?rev=3568990",
+            "caption": "Stock Rules: default safety and max stock, plus the stock source (WooCommerce or external) with an optional fallback."
+        },
+        {
+            "src": "https://ps.w.org/quick-stock-bridge/assets/screenshot-4.png?rev=3568990",
+            "caption": "Settings: CSV/JSON format options and the ASIN auto-fill source meta key."
+        },
+        {
+            "src": "https://ps.w.org/quick-stock-bridge/assets/screenshot-5.png?rev=3568990",
+            "caption": "Import / Export: mapping CSV export and a dry-run import preview (create / update / unchanged / skip / warning / error) that writes nothing until you apply."
+        },
+        {
+            "src": "https://ps.w.org/quick-stock-bridge/assets/screenshot-6.png?rev=3568990",
+            "caption": "ASIN Auto Fill: preview of ASINs extracted from a product custom field; only blank ASINs are filled and existing ones are never overwritten."
+        },
+        {
+            "src": "https://ps.w.org/quick-stock-bridge/assets/screenshot-7.png?rev=3568990",
+            "caption": "Amazon Export preview: per-row OK / Warning / Error / Skipped with calculated stock, stock source, and external stock, plus CSV / JSON download."
+        },
+        {
+            "src": "https://ps.w.org/quick-stock-bridge/assets/screenshot-8.png?rev=3568990",
+            "caption": "Logs: export history with per-item snapshots."
+        }
+    ],
+    "tags": {
+        "amazon": "amazon",
+        "csv": "csv",
+        "inventory": "inventory",
+        "stock": "stock",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "0.2.3",
+    "versions": {
+        "0.2.2": "https://downloads.wordpress.org/plugin/quick-stock-bridge.0.2.2.zip",
+        "0.2.3": "https://downloads.wordpress.org/plugin/quick-stock-bridge.0.2.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/quick-stock-bridge.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/quick-stock-bridge/assets/banner-772x250.png?rev=3568990",
+        "high": "https://ps.w.org/quick-stock-bridge/assets/banner-1544x500.png?rev=3568990"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/quick-stock-bridge/assets/icon-128x128.png?rev=3568990",
+        "2x": "https://ps.w.org/quick-stock-bridge/assets/icon-256x256.png?rev=3568990"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "quick-stock-bridge",
+            "language": "ja",
+            "version": "0.2.2",
+            "updated": "2026-08-31 05:18:14",
+            "package": "https://downloads.wordpress.org/translation/plugin/quick-stock-bridge/0.2.2/ja.zip"
+        }
+    ]
+}
