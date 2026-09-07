@@ -1,0 +1,98 @@
+{
+    "name": "Ballitech Checkout Fields for WooCommerce",
+    "slug": "ballitech-checkout-fields-for-woocommerce",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/ballitech/\">Ballitech</a>",
+    "author_profile": "https://profiles.wordpress.org/ballitech/",
+    "contributors": {
+        "ballitech": {
+            "profile": "https://profiles.wordpress.org/ballitech/",
+            "avatar": "https://secure.gravatar.com/avatar/da28e56a0be01e7653f8adf3f5c0b41d261f54ab249100cf842f84c1d346f777?s=96&d=monsterid&r=g",
+            "display_name": "Ballitech"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/ballitech-checkout-fields-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-07 21:01:00",
+    "added": "2026-09-07",
+    "homepage": "",
+    "sections": {
+        "description": "<p>This plugin adds the fields a Brazilian store needs at checkout and that<br />\nWooCommerce does not ship with: person type, CPF, CNPJ, state registration<br />\n(inscricao estadual), street number and district.</p>\n<p>Three things set it apart from the plugins that came before it.</p>\n<p><strong>1. It works in the block checkout.</strong></p>\n<p>WooCommerce replaced its checkout with one built on blocks. Plugins written for<br />\nthe old checkout simply draw nothing there: the customer reaches the payment<br />\nstep and there is no CPF field at all. This plugin uses the official additional<br />\ncheckout fields API, the same one WooCommerce itself uses, so the fields show up<br />\nin both checkouts without workarounds.</p>\n<p><strong>2. It accepts the alphanumeric CNPJ.</strong></p>\n<p>Since 31 July 2026 the Brazilian federal tax authority issues CNPJ numbers that<br />\ncontain letters (Normative Instruction RFB 2.229/2024). The identifier still has<br />\n14 positions, but the first 12 may include letters; only the 2 final check<br />\ndigits remain numeric. A validator that accepts digits only will reject a<br />\nlegitimate company at checkout, and the sale is lost without anyone finding out<br />\nwhy.</p>\n<p>The validation rule here was checked during development against 200,000 random<br />\nnumeric CNPJ numbers plus six real, publicly known ones: the new algorithm<br />\naccepts everything the old one accepted, with no divergence. The plugin also<br />\nships a diagnostics page that runs a short validator battery inside your own<br />\nstore, so you can see the rule working on your installation.</p>\n<p><strong>3. You can move off the old plugin without losing data.</strong></p>\n<p>Stores already running <em>Brazilian Market on WooCommerce</em> have the CPF stored in<br />\n    _billing_cpf, and the whole ecosystem reads it from there: invoicing software,<br />\npayment gateways, themes, export spreadsheets. This plugin <strong>writes to the same<br />\nkeys</strong>, in addition to the new ones. Nothing that used to work stops working<br />\nwhen you switch.</p>\n<p>Existing customer records are imported automatically, in batches, without<br />\nlocking up the admin.</p>\n<h4>Address autofill from the CEP</h4>\n<p>Type the Brazilian postal code and the street, district and city fill<br />\nthemselves, in the block checkout and in the classic one alike. The lookup uses<br />\nViaCEP, needs no key and no account.</p>\n<p>It only writes into fields that are still empty, so it never erases something<br />\nthe customer typed. If the CEP is unknown, or ViaCEP is unreachable, nothing<br />\nhappens and the person fills the address by hand: the checkout is never blocked<br />\nby a lookup. Stores that prefer to turn it off can return false from the<br />\n    ballitech_cf_buscar_cep filter.</p>\n<h4>Included fields</h4>\n<ul>\n<li>Person type (individual or company), which shows either CPF or CNPJ</li>\n<li>CPF, with check digit validation</li>\n<li>CNPJ, numeric and alphanumeric, with validation</li>\n<li>State registration (inscricao estadual)</li>\n<li>Street number and district, on both billing <strong>and</strong> shipping, so the shipping<br />\nlabel comes out right</li>\n<li>Input masks for CPF, CNPJ, postal code and phone</li>\n<li>Address lookup from the Brazilian postal code (CEP)</li>\n</ul>\n<h4>Compatibility</h4>\n<ul>\n<li>Block checkout and classic checkout</li>\n<li>HPOS (High-Performance Order Storage), declared and tested</li>\n<li>WooCommerce 8.9 or newer</li>\n</ul>\n<h3>Is there a paid version?</h3>\n<p>Yes, and this plugin is complete without it. Everything described above is free<br />\nand stays free: the fields, the validation, the alphanumeric CNPJ, the migration<br />\nand the postal code lookup.</p>\n<p><strong>Ballitech Checkout Fields Pro</strong> adds one thing only: it looks the CNPJ up at the federal<br />\ntax authority and fills in company name, address, district and postal code by<br />\nitself, warning you when the company is no longer active. It is a separate<br />\nplugin, distributed outside this directory, and nothing here depends on it.</p>\n<h3>External services</h3>\n<p>This plugin uses <strong>ViaCEP</strong> (https://viacep.com.br) to fill in street, district<br />\nand city from the postal code typed by the customer.</p>\n<ul>\n<li><strong>What is sent:</strong> the postal code typed by the customer, and nothing else.</li>\n<li><strong>When:</strong> at the moment the customer finishes typing the 8 digits, from their<br />\nown browser. The store server does not take part in the request.</li>\n<li><strong>Terms of use and privacy policy:</strong> https://viacep.com.br</li>\n</ul>\n<p>To turn the lookup off, use this filter:</p>\n<pre><code>add_filter( 'ballitech_cf_buscar_cep', '__return_false' );\n</code></pre>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin.</li>\n<li>That is all. There is no settings screen; the fields appear at checkout.</li>\n<li>If you were using <em>Brazilian Market on WooCommerce</em>, <strong>deactivate it</strong>. Your<br />\ndata has already been imported.</li>\n<li>Open <strong>WooCommerce &gt; Ballitech Checkout</strong> to confirm everything is green.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"the%20fields%20show%20up%20twice.%20what%20happened%3F\">\nThe fields show up twice. What happened?\n</h4>\n<p>\n<p>Either the old plugin is still active, or your WooCommerce already draws the<br />\nfields on its own and compatibility mode is switched on for nothing. Open<br />\n<strong>WooCommerce &gt; Ballitech Checkout</strong>: the page tells you which of the two it is, in<br />\none line.</p>\n</p>\n<dt id=\"will%20my%20invoicing%20software%20keep%20working%3F\">\nWill my invoicing software keep working?\n</h4>\n<p>\n<p>Yes. The plugin writes to the same keys <em>Brazilian Market on WooCommerce</em> used<br />\n(<code>_billing_cpf</code>, <code>_billing_cnpj</code>, <code>_billing_number</code>, <code>_billing_neighborhood</code>),<br />\nwhich is where invoicing tools read from.</p>\n</p>\n<dt id=\"what%20is%20an%20alphanumeric%20cnpj%3F\">\nWhat is an alphanumeric CNPJ?\n</h4>\n<p>\n<p>A CNPJ with letters in the first 12 positions, issued by the Brazilian federal<br />\ntax authority since 31 July 2026. Older CNPJ numbers, made of digits only, stay<br />\nvalid forever: there is no migration and no renumbering.</p>\n</p>\n<dt id=\"do%20i%20need%20to%20configure%20anything%3F\">\nDo I need to configure anything?\n</h4>\n<p>\n<p>No. If you need to change the behaviour, the code documents the available<br />\nfilters.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20the%20classic%20%28shortcode%29%20checkout%3F\">\nDoes it work with the classic (shortcode) checkout?\n</h4>\n<p>\n<p>Yes. The plugin detects which of the two the store uses and adapts.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>First release.</li>\n<li>Fields: person type, CPF, CNPJ, state registration, street number, district.</li>\n<li>CPF validation and CNPJ validation, numeric and alphanumeric (IN RFB<br />\n2.229/2024).</li>\n<li>Block checkout support through the official additional fields API.</li>\n<li>HPOS compatibility declared.</li>\n<li>Import and mirroring of the Brazilian Market on WooCommerce meta keys.</li>\n<li>Diagnostics page with a validator battery.</li>\n</ul>\n"
+    },
+    "short_description": "Brazilian checkout fields for WooCommerce: CPF, CNPJ (alphanumeric included), state registration, and address autofill from the CEP.",
+    "description": "<p>This plugin adds the fields a Brazilian store needs at checkout and that<br />\nWooCommerce does not ship with: person type, CPF, CNPJ, state registration<br />\n(inscricao estadual), street number and district.</p>\n<p>Three things set it apart from the plugins that came before it.</p>\n<p><strong>1. It works in the block checkout.</strong></p>\n<p>WooCommerce replaced its checkout with one built on blocks. Plugins written for<br />\nthe old checkout simply draw nothing there: the customer reaches the payment<br />\nstep and there is no CPF field at all. This plugin uses the official additional<br />\ncheckout fields API, the same one WooCommerce itself uses, so the fields show up<br />\nin both checkouts without workarounds.</p>\n<p><strong>2. It accepts the alphanumeric CNPJ.</strong></p>\n<p>Since 31 July 2026 the Brazilian federal tax authority issues CNPJ numbers that<br />\ncontain letters (Normative Instruction RFB 2.229/2024). The identifier still has<br />\n14 positions, but the first 12 may include letters; only the 2 final check<br />\ndigits remain numeric. A validator that accepts digits only will reject a<br />\nlegitimate company at checkout, and the sale is lost without anyone finding out<br />\nwhy.</p>\n<p>The validation rule here was checked during development against 200,000 random<br />\nnumeric CNPJ numbers plus six real, publicly known ones: the new algorithm<br />\naccepts everything the old one accepted, with no divergence. The plugin also<br />\nships a diagnostics page that runs a short validator battery inside your own<br />\nstore, so you can see the rule working on your installation.</p>\n<p><strong>3. You can move off the old plugin without losing data.</strong></p>\n<p>Stores already running <em>Brazilian Market on WooCommerce</em> have the CPF stored in<br />\n    _billing_cpf, and the whole ecosystem reads it from there: invoicing software,<br />\npayment gateways, themes, export spreadsheets. This plugin <strong>writes to the same<br />\nkeys</strong>, in addition to the new ones. Nothing that used to work stops working<br />\nwhen you switch.</p>\n<p>Existing customer records are imported automatically, in batches, without<br />\nlocking up the admin.</p>\n<h4>Address autofill from the CEP</h4>\n<p>Type the Brazilian postal code and the street, district and city fill<br />\nthemselves, in the block checkout and in the classic one alike. The lookup uses<br />\nViaCEP, needs no key and no account.</p>\n<p>It only writes into fields that are still empty, so it never erases something<br />\nthe customer typed. If the CEP is unknown, or ViaCEP is unreachable, nothing<br />\nhappens and the person fills the address by hand: the checkout is never blocked<br />\nby a lookup. Stores that prefer to turn it off can return false from the<br />\n    ballitech_cf_buscar_cep filter.</p>\n<h4>Included fields</h4>\n<ul>\n<li>Person type (individual or company), which shows either CPF or CNPJ</li>\n<li>CPF, with check digit validation</li>\n<li>CNPJ, numeric and alphanumeric, with validation</li>\n<li>State registration (inscricao estadual)</li>\n<li>Street number and district, on both billing <strong>and</strong> shipping, so the shipping<br />\nlabel comes out right</li>\n<li>Input masks for CPF, CNPJ, postal code and phone</li>\n<li>Address lookup from the Brazilian postal code (CEP)</li>\n</ul>\n<h4>Compatibility</h4>\n<ul>\n<li>Block checkout and classic checkout</li>\n<li>HPOS (High-Performance Order Storage), declared and tested</li>\n<li>WooCommerce 8.9 or newer</li>\n</ul>\n<h3>Is there a paid version?</h3>\n<p>Yes, and this plugin is complete without it. Everything described above is free<br />\nand stays free: the fields, the validation, the alphanumeric CNPJ, the migration<br />\nand the postal code lookup.</p>\n<p><strong>Ballitech Checkout Fields Pro</strong> adds one thing only: it looks the CNPJ up at the federal<br />\ntax authority and fills in company name, address, district and postal code by<br />\nitself, warning you when the company is no longer active. It is a separate<br />\nplugin, distributed outside this directory, and nothing here depends on it.</p>\n<h3>External services</h3>\n<p>This plugin uses <strong>ViaCEP</strong> (https://viacep.com.br) to fill in street, district<br />\nand city from the postal code typed by the customer.</p>\n<ul>\n<li><strong>What is sent:</strong> the postal code typed by the customer, and nothing else.</li>\n<li><strong>When:</strong> at the moment the customer finishes typing the 8 digits, from their<br />\nown browser. The store server does not take part in the request.</li>\n<li><strong>Terms of use and privacy policy:</strong> https://viacep.com.br</li>\n</ul>\n<p>To turn the lookup off, use this filter:</p>\n<pre><code>add_filter( 'ballitech_cf_buscar_cep', '__return_false' );\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/ballitech-checkout-fields-for-woocommerce.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>First release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/ballitech-checkout-fields-for-woocommerce/assets/screenshot-1.png?rev=3685545",
+            "caption": "The fields in the block checkout."
+        },
+        {
+            "src": "https://ps.w.org/ballitech-checkout-fields-for-woocommerce/assets/screenshot-2.png?rev=3685545",
+            "caption": "Switching between individual and company."
+        },
+        {
+            "src": "https://ps.w.org/ballitech-checkout-fields-for-woocommerce/assets/screenshot-3.png?rev=3685545",
+            "caption": "The Brazilian data on the order screen in the admin."
+        },
+        {
+            "src": "https://ps.w.org/ballitech-checkout-fields-for-woocommerce/assets/screenshot-4.png?rev=3685545",
+            "caption": "The diagnostics page, with the validator battery."
+        }
+    ],
+    "tags": {
+        "brasil": "brasil",
+        "cep": "cep",
+        "checkout": "checkout",
+        "cnpj": "cnpj",
+        "cpf": "cpf"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/ballitech-checkout-fields-for-woocommerce.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/ballitech-checkout-fields-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/ballitech-checkout-fields-for-woocommerce/assets/banner-772x250.png?rev=3685545",
+        "high": "https://ps.w.org/ballitech-checkout-fields-for-woocommerce/assets/banner-1544x500.png?rev=3685545"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/ballitech-checkout-fields-for-woocommerce/assets/icon-128x128.png?rev=3685545",
+        "2x": "https://ps.w.org/ballitech-checkout-fields-for-woocommerce/assets/icon-256x256.png?rev=3685545"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
