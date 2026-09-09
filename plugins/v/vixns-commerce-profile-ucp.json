@@ -1,0 +1,75 @@
+{
+    "name": "Vixns Commerce Profile for Universal Commerce Protocol",
+    "slug": "vixns-commerce-profile-ucp",
+    "version": "0.4.0",
+    "author": "<a href=\"https://profiles.wordpress.org/vixns/\">vixns</a>",
+    "author_profile": "https://profiles.wordpress.org/vixns/",
+    "contributors": {
+        "vixns": {
+            "profile": "https://profiles.wordpress.org/vixns/",
+            "avatar": "https://secure.gravatar.com/avatar/75e71d44093f22b8f5cbeea72071c8e15d7ef0f164add6a8aa41dace5b08f7bc?s=96&d=monsterid&r=g",
+            "display_name": "vixns"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/vixns-commerce-profile-ucp/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-09 08:50:00",
+    "added": "2026-09-09",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Vixns Commerce Profile for Universal Commerce Protocol writes an honest business profile JSON to a static file at <code>/.well-known/ucp</code>, can expose UCP catalog REST (search / lookup / product), and can publish <code>keys[]</code> (JWK Set) with rotation for Web Bot Auth <code>type=jwks_uri</code> interop.</p>\n<p>This is a third-party WooCommerce integration by Vixns. It is not an official Universal Commerce Protocol product.</p>\n<ul>\n<li>Spec target: 2026-08-25</li>\n<li>Never advertises checkout, cart, or payment handlers</li>\n<li>Private keys stored under <code>uploads/vixns-commerce-profile-ucp/private/</code> (Apache/IIS deny files are written automatically; block the path on nginx)</li>\n<li>Optional product feed (JSONL), not linked from the profile</li>\n<li>Catalog REST is intentionally open to agents that send a valid <code>UCP-Agent</code> header (same visibility as a public product catalog)</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Install and activate WooCommerce.</li>\n<li>Upload the <code>vixns-commerce-profile-ucp</code> folder to <code>/wp-content/plugins/</code> (or install the ZIP via Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New).</li>\n<li>Activate <strong>Vixns Commerce Profile for Universal Commerce Protocol</strong>.</li>\n<li>Configure your web server to serve <code>/.well-known/ucp</code> as static JSON with <code>Cache-Control: public, max-age≥60</code> and <strong>no redirects</strong>.</li>\n<li>Open WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> <strong>Vixns UCP</strong>, set the canonical HTTPS host if needed, then <strong>Generate now</strong>.</li>\n</ol>\n<p>Example nginx location (adjust <code>root</code>):</p>\n<pre><code>location = /.well-known/ucp {\n    default_type application/json;\n    add_header Cache-Control \"public, max-age=300\" always;\n    add_header Access-Control-Allow-Origin \"*\" always;\n    add_header Access-Control-Allow-Methods \"GET, HEAD\" always;\n    try_files /.well-known/ucp =404;\n}\n\n# Deny private key material (nginx ignores .htaccess):\nlocation ^~ /wp-content/uploads/vixns-commerce-profile-ucp/private/ {\n    deny all;\n    return 403;\n}\n</code></pre>\n",
+        "faq": "\n<dt id=\"how%20do%20i%20serve%20%2F.well-known%2Fucp%3F\">\nHow do I serve /.well-known/ucp?\n</h4>\n<p>\n<p>See the nginx example under Installation. Do not apply www<span aria-hidden=\"true\" class=\"wp-exclude-emoji\">↔</span>apex redirects to this URI — UCP platforms do not follow 3xx on the profile URL.</p>\n</p>\n<dt id=\"web%20bot%20auth\">\nWeb Bot Auth\n</h4>\n<p>\n<p>Use: <code>Signature-Agent: sig1=\"https://yoursite/.well-known/ucp\";type=jwks_uri</code></p>\n<p>Omitting <code>type</code> defaults to <code>directory</code>, which does not read this static profile.</p>\n</p>\n<dt id=\"catalog%20rest\">\nCatalog REST\n</h4>\n<p>\n<p>Base: <code>/wp-json/ucp/v1</code> — POST <code>/catalog/search</code>, <code>/catalog/lookup</code>, <code>/catalog/product</code>.<br />\nRequires header: <code>UCP-Agent: profile=\"https://yoursite/.well-known/ucp\"</code>.<br />\nThere is no WordPress cookie auth on these routes (agent discovery). Disable Catalog REST in settings if you do not want them.</p>\n</p>\n<dt id=\"where%20are%20private%20keys%20stored%3F\">\nWhere are private keys stored?\n</h4>\n<p>\n<p>Default: <code>wp-content/uploads/vixns-commerce-profile-ucp/private/</code>. Prefer a path outside the document root via the <code>vixns_ucp_private_key_dir</code> filter. On nginx, always deny the default directory explicitly.</p>\n</p>\n<dt id=\"is%20this%20an%20official%20universal%20commerce%20protocol%20plugin%3F\">\nIs this an official Universal Commerce Protocol plugin?\n</h4>\n<p>\n<p>No. It is developed by Vixns as a third-party WooCommerce integration.</p>\n</p>\n\n",
+        "changelog": "<h4>0.4.0</h4>\n<ul>\n<li>Renamed for WordPress.org trademark clarity (slug vixns-commerce-profile-ucp).</li>\n<li>Private keys and feed default under uploads/{slug}/; tightened write allowlist to .well-known + uploads plugin dir.</li>\n</ul>\n<h4>0.3.0</h4>\n<ul>\n<li>Signing keys[] (EdDSA/ES256), rotate/revoke, WBA jwks_uri documentation.</li>\n<li>Path allowlist for profile/feed writes; HTTPS-only canonical host / probe.</li>\n<li>Test-only failure filters gated behind VIXNS_UCP_TESTING.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>Catalog REST: search, lookup, product; profile advertises services + catalog capabilities.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release: profile generation, dual scheduler, WP-CLI, admin status/probe, optional JSONL feed.</li>\n</ul>\n"
+    },
+    "short_description": "Static Universal Commerce Protocol business profile, optional catalog REST, and signing keys[] for WooCommerce. Not affiliated with the UCP project.",
+    "description": "<p>Vixns Commerce Profile for Universal Commerce Protocol writes an honest business profile JSON to a static file at <code>/.well-known/ucp</code>, can expose UCP catalog REST (search / lookup / product), and can publish <code>keys[]</code> (JWK Set) with rotation for Web Bot Auth <code>type=jwks_uri</code> interop.</p>\n<p>This is a third-party WooCommerce integration by Vixns. It is not an official Universal Commerce Protocol product.</p>\n<ul>\n<li>Spec target: 2026-08-25</li>\n<li>Never advertises checkout, cart, or payment handlers</li>\n<li>Private keys stored under <code>uploads/vixns-commerce-profile-ucp/private/</code> (Apache/IIS deny files are written automatically; block the path on nginx)</li>\n<li>Optional product feed (JSONL), not linked from the profile</li>\n<li>Catalog REST is intentionally open to agents that send a valid <code>UCP-Agent</code> header (same visibility as a public product catalog)</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/vixns-commerce-profile-ucp.0.4.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "ai-agents": "ai agents",
+        "discovery": "discovery",
+        "ucp": "ucp",
+        "well-known": "well-known",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "0.4.0",
+    "versions": {
+        "0.4.0": "https://downloads.wordpress.org/plugin/vixns-commerce-profile-ucp.0.4.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/vixns-commerce-profile-ucp.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/vixns-commerce-profile-ucp.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

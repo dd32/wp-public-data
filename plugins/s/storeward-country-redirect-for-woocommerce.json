@@ -1,0 +1,94 @@
+{
+    "name": "Storeward Country Redirect for WooCommerce",
+    "slug": "storeward-country-redirect-for-woocommerce",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/markusegonkuhn/\">markusegonkuhn</a>",
+    "author_profile": "https://profiles.wordpress.org/markusegonkuhn/",
+    "contributors": {
+        "markusegonkuhn": {
+            "profile": "https://profiles.wordpress.org/markusegonkuhn/",
+            "avatar": "https://secure.gravatar.com/avatar/76d95ba755dc2a93018c6ff9e4813f5d4077b98d31a598ef8066da10a25eae04?s=96&d=monsterid&r=g",
+            "display_name": "markusegonkuhn"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/storeward-country-redirect-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-09 08:42:00",
+    "added": "2026-09-09",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Some products cannot be sold everywhere. In one country you sell them yourself, in another an<br />\nAmazon listing or a local distributor takes over. This plugin sends visitors of a product page to<br />\nthe right place instead of showing them a product they cannot order.</p>\n<p>You add rules directly on the product: one country, one URL. Visitors from a country without a rule<br />\nsee the product page exactly as before.</p>\n<p><strong>Example</strong></p>\n<ul>\n<li>Visitor from the United States: redirected to your Amazon US listing.</li>\n<li>Visitor from Australia: redirected to your Australian distributor.</li>\n<li>Visitor from Germany: sees your own product page. No rule, no redirect.</li>\n</ul>\n<p><strong>How it works</strong></p>\n<p>The country comes from the geolocation WooCommerce already includes, so there is no extra service,<br />\nno account, and no external API. The plugin adds a &#8220;Country redirect&#8221; tab to the product data box<br />\nand stores one list of rules per product. That is all it does.</p>\n<p><strong>Details that matter in practice</strong></p>\n<ul>\n<li>Search engine crawlers are never redirected, so your product stays indexed.</li>\n<li>Logged-in shop managers are never redirected, so you can still open your own products. Add<br />\n  ?crwc_country=US to a product URL to see what a visitor from that country would get.</li>\n<li>Redirects use HTTP 302, because the target depends on the visitor and must not be cached as a<br />\npermanent move.</li>\n<li>Product pages that have rules are excluded from full page caches. Pages without rules are not<br />\ntouched, so your cache hit rate stays where it is.</li>\n<li>Rules that point back at the product itself are ignored, so a typo cannot create a redirect loop.</li>\n<li>Only <code>http://</code> and <code>https://</code> URLs are accepted.</li>\n<li>Uninstalling removes every value the plugin stored.</li>\n</ul>\n<p><strong>What it deliberately does not do</strong></p>\n<p>No analytics, no states or regions, no category or store-wide rules, no import/export, no licence<br />\nkey, no telemetry, no external service.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin. WooCommerce must be active.</li>\n<li>Go to WooCommerce &rsaquo; Settings &rsaquo; General and set &#8220;Default customer location&#8221; to<br />\n&#8220;Geolocate&#8221; or &#8220;Geolocate (with page caching support)&#8221;. WooCommerce then downloads the MaxMind<br />\ndatabase it uses to detect countries. A free MaxMind licence key is entered on the same screen.</li>\n<li>Edit a product, open the &#8220;Country redirect&#8221; tab in the Product data box.</li>\n<li>Choose a country, enter the full target URL, and add more rules as needed.</li>\n<li>Update the product.</li>\n</ol>\n<p>If geolocation is not returning a country, the plugin shows a notice in the admin area and no<br />\nredirect happens.</p>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20an%20account%20or%20an%20api%20key%20for%20this%20plugin%3F\">\nDo I need an account or an API key for this plugin?\n</h4>\n<p>\n<p>No. The plugin uses the geolocation that ships with WooCommerce. WooCommerce itself needs a free<br />\nMaxMind licence key to download its country database; that is configured in WooCommerce, not here.</p>\n</p>\n<dt id=\"i%20use%20cloudflare.%20do%20i%20still%20need%20the%20maxmind%20database%3F\">\nI use Cloudflare. Do I still need the MaxMind database?\n</h4>\n<p>\n<p>No. WooCommerce also reads the country header that CDNs such as Cloudflare send, and this plugin<br />\nuses whatever WooCommerce resolves. If your CDN sends that header, geolocation works without the<br />\nMaxMind database.</p>\n</p>\n<dt id=\"nothing%20is%20redirected.%20what%20is%20wrong%3F\">\nNothing is redirected. What is wrong?\n</h4>\n<p>\n<p>Check three things. First, &#8220;Default customer location&#8221; in WooCommerce must be set to a geolocate<br />\noption and the MaxMind database must have been downloaded. Second, you are probably logged in as a<br />\nshop manager, and shop managers are never redirected. Third, the country you are testing needs a<br />\nrule on that specific product.</p>\n</p>\n<dt id=\"how%20do%20i%20test%20a%20rule%20without%20a%20vpn%3F\">\nHow do I test a rule without a VPN?\n</h4>\n<p>\n<p>While logged in as a shop manager, add <code>?crwc_country=US</code> to the product URL. The rule for that<br />\ncountry is applied to your own request. Visitors cannot use this parameter.</p>\n</p>\n<dt id=\"does%20this%20break%20my%20page%20cache%3F\">\nDoes this break my page cache?\n</h4>\n<p>\n<p>Only for product pages that actually have rules. Those pages set <code>DONOTCACHEPAGE</code> and send no-cache<br />\nheaders, which the common caching plugins respect. Every other page, including products without<br />\nrules, stays cached as before.</p>\n</p>\n<dt id=\"will%20this%20hurt%20my%20seo%3F\">\nWill this hurt my SEO?\n</h4>\n<p>\n<p>Crawlers are excluded from the redirect, so search engines still see and index the product page.<br />\nThe redirect itself is a 302, not a 301, so nothing is recorded as a permanent move.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20variable%20products%3F\">\nDoes it work with variable products?\n</h4>\n<p>\n<p>Yes. Rules belong to the product, so they apply to the product page including all of its variations.</p>\n</p>\n<dt id=\"can%20i%20redirect%20a%20whole%20category%20or%20the%20entire%20store%3F\">\nCan I redirect a whole category or the entire store?\n</h4>\n<p>\n<p>No. Rules are set per product. That is intentional for this version.</p>\n</p>\n<dt id=\"how%20do%20i%20stop%20a%20redirect%20temporarily%20to%20look%20at%20the%20page%3F\">\nHow do I stop a redirect temporarily to look at the page?\n</h4>\n<p>\n<p>Add <code>?crwc_no_redirect=1</code> to the product URL.</p>\n</p>\n<dt id=\"what%20happens%20when%20i%20delete%20the%20plugin%3F\">\nWhat happens when I delete the plugin?\n</h4>\n<p>\n<p>All rules, the dismissed-notice flag and the cached geolocation check are removed from the database.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "Send visitors of a WooCommerce product to a different URL depending on the country they are browsing from.",
+    "description": "<p>Some products cannot be sold everywhere. In one country you sell them yourself, in another an<br />\nAmazon listing or a local distributor takes over. This plugin sends visitors of a product page to<br />\nthe right place instead of showing them a product they cannot order.</p>\n<p>You add rules directly on the product: one country, one URL. Visitors from a country without a rule<br />\nsee the product page exactly as before.</p>\n<p><strong>Example</strong></p>\n<ul>\n<li>Visitor from the United States: redirected to your Amazon US listing.</li>\n<li>Visitor from Australia: redirected to your Australian distributor.</li>\n<li>Visitor from Germany: sees your own product page. No rule, no redirect.</li>\n</ul>\n<p><strong>How it works</strong></p>\n<p>The country comes from the geolocation WooCommerce already includes, so there is no extra service,<br />\nno account, and no external API. The plugin adds a &#8220;Country redirect&#8221; tab to the product data box<br />\nand stores one list of rules per product. That is all it does.</p>\n<p><strong>Details that matter in practice</strong></p>\n<ul>\n<li>Search engine crawlers are never redirected, so your product stays indexed.</li>\n<li>Logged-in shop managers are never redirected, so you can still open your own products. Add<br />\n  ?crwc_country=US to a product URL to see what a visitor from that country would get.</li>\n<li>Redirects use HTTP 302, because the target depends on the visitor and must not be cached as a<br />\npermanent move.</li>\n<li>Product pages that have rules are excluded from full page caches. Pages without rules are not<br />\ntouched, so your cache hit rate stays where it is.</li>\n<li>Rules that point back at the product itself are ignored, so a typo cannot create a redirect loop.</li>\n<li>Only <code>http://</code> and <code>https://</code> URLs are accepted.</li>\n<li>Uninstalling removes every value the plugin stored.</li>\n</ul>\n<p><strong>What it deliberately does not do</strong></p>\n<p>No analytics, no states or regions, no category or store-wide rules, no import/export, no licence<br />\nkey, no telemetry, no external service.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/storeward-country-redirect-for-woocommerce.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>First release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/storeward-country-redirect-for-woocommerce/assets/screenshot-1.png?rev=3687921",
+            "caption": "The \"Country redirect\" tab in the product data box, with one rule per country."
+        },
+        {
+            "src": "https://ps.w.org/storeward-country-redirect-for-woocommerce/assets/screenshot-2.png?rev=3687921",
+            "caption": "Adding a rule: pick a country and enter the full target URL."
+        },
+        {
+            "src": "https://ps.w.org/storeward-country-redirect-for-woocommerce/assets/screenshot-3.png?rev=3687921",
+            "caption": "The admin notice shown when WooCommerce geolocation is not returning a country yet."
+        }
+    ],
+    "tags": {
+        "country": "country",
+        "geolocation": "geolocation",
+        "marketplace": "Marketplace",
+        "redirect": "redirect",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/storeward-country-redirect-for-woocommerce.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/storeward-country-redirect-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/storeward-country-redirect-for-woocommerce/assets/banner-772x250.png?rev=3687921",
+        "high": "https://ps.w.org/storeward-country-redirect-for-woocommerce/assets/banner-1544x500.png?rev=3687921"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/storeward-country-redirect-for-woocommerce/assets/icon-128x128.png?rev=3687921",
+        "2x": "https://ps.w.org/storeward-country-redirect-for-woocommerce/assets/icon-256x256.png?rev=3687921"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
