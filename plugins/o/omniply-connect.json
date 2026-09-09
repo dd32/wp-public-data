@@ -1,0 +1,73 @@
+{
+    "name": "Omniply Connect",
+    "slug": "omniply-connect",
+    "version": "1.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/veitmehler/\">VeitMehler</a>",
+    "author_profile": "https://profiles.wordpress.org/veitmehler/",
+    "contributors": {
+        "veitmehler": {
+            "profile": "https://profiles.wordpress.org/veitmehler/",
+            "avatar": "https://secure.gravatar.com/avatar/0428268d061ed7d81b9047416965d4bf092e275974913306eea57c6f39bbf6bb?s=96&d=monsterid&r=g",
+            "display_name": "VeitMehler"
+        }
+    },
+    "requires": "5.5",
+    "tested": "7.0.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/omniply-connect/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-09 17:41:00",
+    "added": "2026-09-09",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Omniply Connect is a deliberately minimal companion plugin for clinics using the<br />\nOmniply marketing platform. It does two things, each off by default:</p>\n<ol>\n<li>It prints a validated JSON-LD structured-data block (your clinic&#8217;s name,<br />\naddress, opening hours, booking link and FAQ) in your site&#8217;s head, where<br />\nsearch engines and AI answer surfaces read it.</li>\n<li>It embeds your clinic&#8217;s Omniply chat widget in the site footer — but only<br />\nafter a widget token has been configured (see below).</li>\n</ol>\n<ul>\n<li>The JSON-LD path is print-only: it never executes remote code and phones<br />\nhome to nothing. The entire state is a single validated JSON string.</li>\n<li>The chat widget, when enabled, loads exactly one script from the fixed<br />\nOmniply platform domain (<code>svc.omniply.io</code>). The script URL is a constant in<br />\nthe plugin source — the stored token selects WHICH clinic&#8217;s widget loads,<br />\nnever WHERE the script comes from. With no token stored, nothing is loaded<br />\nat all. Conversations typed into the widget are processed by the Omniply<br />\nplatform on behalf of your clinic (see your Omniply agreement for details).</li>\n<li>Updated by your platform: both options are written through the WordPress<br />\nREST API using the same Application Password connection you created for<br />\npublishing — administrator capability (<code>manage_options</code>) is required.</li>\n<li>No settings screen, no dashboard widgets, no notices. Deactivate or uninstall<br />\nat any time; uninstalling removes the stored options.</li>\n</ul>\n<p>This plugin is intended for Omniply customers, but the stored state is plain:<br />\nyou can inspect the schema block under the <code>omniply_head_jsonld</code> option (or<br />\n    GET /wp-json/omniply/v1/head as an administrator) and the widget token under<br />\n    omniply_widget_token (or <code>GET /wp-json/omniply/v1/widget</code>).</p>\n",
+        "installation": "<ol>\n<li>Install the plugin through Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New (or upload the ZIP via<br />\nPlugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin) and activate it.</li>\n<li>No further setup is needed on the site itself: the plugin has no settings<br />\nscreen and stores no data on activation.</li>\n<li>IMPORTANT — the plugin prints nothing until a structured-data block has<br />\nbeen written to it. On a fresh activation the stored option is empty, and<br />\nan empty option produces NO output in the page source. This is by design<br />\n(print-only, empty state = silent).</li>\n</ol>\n<p>The block is written in one of two ways:</p>\n<ul>\n<li>Automatically, by the Omniply platform: when you connect your site in<br />\nOmniply using a WordPress Application Password for an administrator<br />\naccount, the platform posts your clinic&#8217;s JSON-LD to<br />\n  POST /wp-json/omniply/v1/head. From then on the block appears in your<br />\nsite head and is kept up to date whenever your details change.</li>\n<li>\n<p>Manually, by any administrator — useful for testing that the plugin works<br />\nwithout an Omniply account. For example, with WP-CLI:</p>\n<p>wp option update omniply_head_jsonld &#8216;[{&#8220;@context&#8221;:&#8221;https://schema.org&#8221;,&#8221;@type&#8221;:&#8221;MedicalClinic&#8221;,&#8221;name&#8221;:&#8221;Test Clinic&#8221;}]&#8217;</p>\n<p>or over REST with an Application Password:</p>\n<p>curl -X POST &#8216;https://YOURSITE/?rest_route=/omniply/v1/head&#8217; -u &#8216;admin:APP_PASSWORD&#8217; -H &#8216;Content-Type: application/json&#8217; -d &#8216;{&#8220;jsonld&#8221;:[{&#8220;@context&#8221;:&#8221;https://schema.org&#8221;,&#8221;@type&#8221;:&#8221;MedicalClinic&#8221;,&#8221;name&#8221;:&#8221;Test Clinic&#8221;}]}&#8217;</p>\n</li>\n</ul>\n<p>After either of these, reload any front-end page and view the source: the<br />\nblock appears in the head between <code>&lt;!-- Omniply Connect --&gt;</code> markers. Sending<br />\nan empty <code>jsonld</code> value (or deleting the option) removes the output again.</p>\n<p>The chat widget works the same way: it renders nothing until a widget token<br />\nhas been written, normally by the Omniply platform when your site is<br />\nconnected. To set one manually as an administrator:</p>\n<pre><code>  curl -X POST 'https://YOURSITE/?rest_route=/omniply/v1/widget' -u 'admin:APP_PASSWORD' -H 'Content-Type: application/json' -d '{\"token\":\"YOUR_WIDGET_TOKEN\"}'\n</code></pre>\n<p>The token (shown in your Omniply dashboard under Chat Assistant) must match<br />\n    [A-Za-z0-9_-]{16,64}; anything else is rejected. Sending an empty <code>token</code><br />\nremoves the widget again.</p>\n",
+        "faq": "\n<dt id=\"i%20activated%20the%20plugin%20but%20there%20is%20no%20json-ld%20in%20my%20page%20source\">\nI activated the plugin but there is no JSON-LD in my page source\n</h4>\n<p>\n<p>That is the expected state of a fresh install. The plugin only prints the<br />\nblock after one has been written to it — either by the connected Omniply<br />\nplatform or manually by an administrator (see Installation). While the<br />\nstored option is empty, the plugin outputs nothing at all.</p>\n</p>\n<dt id=\"does%20this%20plugin%20collect%20any%20data%3F\">\nDoes this plugin collect any data?\n</h4>\n<p>\n<p>The plugin itself collects nothing: it stores two options locally and prints<br />\nthem. If (and only if) a chat-widget token has been configured, the embedded<br />\nOmniply widget behaves like any live-chat product: messages a visitor types<br />\ninto it are sent to the Omniply platform to generate replies for your clinic.<br />\nWith no token stored, no external request of any kind is made.</p>\n</p>\n<dt id=\"does%20it%20load%20external%20scripts%3F\">\nDoes it load external scripts?\n</h4>\n<p>\n<p>Only one, and only when the chat widget has been enabled by storing a widget<br />\ntoken: the widget loader from the fixed Omniply platform domain<br />\n(<code>svc.omniply.io</code>). That URL is a constant in the plugin source and cannot be<br />\nchanged by any stored option. A fresh install loads nothing.</p>\n</p>\n<dt id=\"can%20it%20run%20arbitrary%20code%3F\">\nCan it run arbitrary code?\n</h4>\n<p>\n<p>No. The JSON-LD input is parsed as JSON and re-encoded on output; anything<br />\nthat is not valid JSON is rejected and never printed. The widget token is<br />\nvalidated against a strict character whitelist before it is stored or printed,<br />\nand it only ever appears as a data attribute on the fixed-URL script tag.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.0</h4>\n<ul>\n<li>New: optional Omniply chat-widget embed (fixed-domain loader script,<br />\nenabled only by storing a validated widget token; REST route<br />\n  /omniply/v1/widget for the connected platform to configure it).</li>\n<li>Uninstall now removes the widget token option as well.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release: head JSON-LD printing + authenticated REST write route.</li>\n</ul>\n"
+    },
+    "short_description": "Prints the structured-data (JSON-LD) block managed by your Omniply marketing platform in the site head, and optionally embeds your Omniply chat widget &hellip;",
+    "description": "<p>Omniply Connect is a deliberately minimal companion plugin for clinics using the<br />\nOmniply marketing platform. It does two things, each off by default:</p>\n<ol>\n<li>It prints a validated JSON-LD structured-data block (your clinic&#8217;s name,<br />\naddress, opening hours, booking link and FAQ) in your site&#8217;s head, where<br />\nsearch engines and AI answer surfaces read it.</li>\n<li>It embeds your clinic&#8217;s Omniply chat widget in the site footer — but only<br />\nafter a widget token has been configured (see below).</li>\n</ol>\n<ul>\n<li>The JSON-LD path is print-only: it never executes remote code and phones<br />\nhome to nothing. The entire state is a single validated JSON string.</li>\n<li>The chat widget, when enabled, loads exactly one script from the fixed<br />\nOmniply platform domain (<code>svc.omniply.io</code>). The script URL is a constant in<br />\nthe plugin source — the stored token selects WHICH clinic&#8217;s widget loads,<br />\nnever WHERE the script comes from. With no token stored, nothing is loaded<br />\nat all. Conversations typed into the widget are processed by the Omniply<br />\nplatform on behalf of your clinic (see your Omniply agreement for details).</li>\n<li>Updated by your platform: both options are written through the WordPress<br />\nREST API using the same Application Password connection you created for<br />\npublishing — administrator capability (<code>manage_options</code>) is required.</li>\n<li>No settings screen, no dashboard widgets, no notices. Deactivate or uninstall<br />\nat any time; uninstalling removes the stored options.</li>\n</ul>\n<p>This plugin is intended for Omniply customers, but the stored state is plain:<br />\nyou can inspect the schema block under the <code>omniply_head_jsonld</code> option (or<br />\n    GET /wp-json/omniply/v1/head as an administrator) and the widget token under<br />\n    omniply_widget_token (or <code>GET /wp-json/omniply/v1/widget</code>).</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/omniply-connect.1.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "chat-widget": "chat widget",
+        "json-ld": "JSON-LD",
+        "schema": "schema",
+        "seo": "seo",
+        "structured-data": "structured data"
+    },
+    "stable_tag": "1.1.0",
+    "versions": {
+        "1.1.0": "https://downloads.wordpress.org/plugin/omniply-connect.1.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/omniply-connect.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/omniply-connect.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
