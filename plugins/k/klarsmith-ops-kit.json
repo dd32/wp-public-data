@@ -1,0 +1,79 @@
+{
+    "name": "Klarsmith Ops Kit",
+    "slug": "klarsmith-ops-kit",
+    "version": "0.1.7",
+    "author": "<a href=\"https://profiles.wordpress.org/klarsmith/\">klarsmith</a>",
+    "author_profile": "https://profiles.wordpress.org/klarsmith/",
+    "contributors": {
+        "klarsmith": {
+            "profile": "https://profiles.wordpress.org/klarsmith/",
+            "avatar": "https://secure.gravatar.com/avatar/3726ced426c7c97d4dafa6745710d925c30d69e9d7eb0d106b5d6d75e3c5f9d0?s=96&d=monsterid&r=g",
+            "display_name": "klarsmith"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.1",
+    "requires_php": "8.3",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/klarsmith-ops-kit/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-10 08:36:00",
+    "added": "2026-09-10",
+    "homepage": "https://github.com/klarsmith/wp-ops-kit",
+    "sections": {
+        "description": "<p>WordPress has no honest health endpoint. The front page, <code>admin-ajax.php</code> and the usual<br />\n    health.php stubs all return 200 while the database is down, the object cache is gone, or<br />\nWordPress is serving its &#8220;database update required&#8221; interstitial. Every probe in common<br />\nuse calls that pod ready.</p>\n<p>Klarsmith Ops Kit gives a containerised WordPress site three things operators actually need:</p>\n<ul>\n<li><strong>Honest readiness</strong> — <code>GET /wp-json/ops/v1/readyz</code> returns 200 only when the database<br />\nanswers, the schema matches the running core version, the object cache round-trips, and<br />\nthe uploads directory is writable. Anything else is a 503 with the failing check names.<br />\nLiveness is deliberately left alone: a database outage must drain pods, never restart<br />\nthem.</li>\n<li><strong>Prometheus metrics</strong> — <code>GET /wp-json/ops/v1/metrics</code> serves the text exposition<br />\nformat from a snapshot that <code>wp ops collect</code> writes to the object cache on a schedule.<br />\nNothing expensive runs on scrape. <code>wp_ops_snapshot_age_seconds</code> tells you when the<br />\ncollector has stopped. Pod-level series (<code>wp_ops_pod_*</code>) and site-level series<br />\n(<code>wp_ops_site_*</code>) are split so replicas do not duplicate site numbers.</li>\n<li><strong>Structured JSON logs</strong> — with <code>WP_OPS_LOG_JSON=true</code>, PHP errors and fatals go to<br />\nstderr as one JSON object per line, ready for a log pipeline.</li>\n</ul>\n<p>The plugin fails closed. <code>/metrics</code> is disabled until a token is configured, and the<br />\nanonymous readiness response names failing checks without leaking detail.</p>\n<p>Configuration is by environment variable, which is how containers are configured:</p>\n<ul>\n<li><code>WP_OPS_TOKEN</code> — bearer token for <code>/metrics</code> (<code>Authorization: Bearer</code> or<br />\n  X-Ops-Token). Unset disables the endpoint.</li>\n<li><code>WP_OPS_SITE_NAME</code> — <code>site</code> label on JSON log records (metrics carry no site<br />\nlabel; the scraper&#8217;s own labels identify the site).</li>\n<li><code>WP_OPS_EXPECT_OBJECT_CACHE</code> — fail readiness when no external object cache is active.</li>\n<li><code>WP_OPS_REQUIRED_PLUGINS</code> — comma-separated plugin files (<code>dir/plugin.php</code>) that<br />\nmust be active for readiness.</li>\n<li><code>WP_OPS_REST_BYPASS_AUTH</code> — set to <code>false</code> to stop the plugin allowing anonymous<br />\naccess to its own REST namespace.</li>\n<li><code>WP_OPS_LOG_JSON</code> — set to <code>true</code> to emit JSON log lines on stderr.</li>\n</ul>\n<p>WP-CLI commands: <code>wp ops check</code> (exit 1 on any failing check), <code>wp ops collect</code><br />\n(refresh the snapshot), <code>wp ops metrics</code> (print the exposition locally).</p>\n<p>Source, issue tracker and Kubernetes manifests for probes, the collector CronJob and<br />\nscraping live at https://github.com/klarsmith/wp-ops-kit.</p>\n",
+        "installation": "<ol>\n<li>Install from the WordPress plugin directory, or with Composer<br />\n(<code>composer require klarsmith/wp-ops-kit</code>; the Composer package installs as<br />\n   wp-content/plugins/wp-ops-kit).</li>\n<li>Activate the plugin.</li>\n<li>Point your readiness probe at <code>/wp-json/ops/v1/readyz</code>.</li>\n<li>Run <code>wp ops collect</code> on a schedule (a five-minute CronJob is the reference setup).</li>\n<li>Set <code>WP_OPS_TOKEN</code> and scrape <code>/wp-json/ops/v1/metrics</code> with that bearer token.</li>\n</ol>\n<p>If a security plugin blocks anonymous REST requests, the plugin allows its own <code>ops/v1</code><br />\nnamespace through at priority 1 unless <code>WP_OPS_REST_BYPASS_AUTH=false</code>. Add <code>ops</code> to the<br />\nsecurity plugin&#8217;s allowlist as well where it has one.</p>\n",
+        "faq": "\n<dt id=\"why%20not%20use%20the%20front%20page%20as%20the%20readiness%20probe%3F\">\nWhy not use the front page as the readiness probe?\n</h4>\n<p>\n<p>Because it returns 200 while the site is broken. The database-upgrade interstitial, a<br />\nmissing object cache and a read-only uploads volume all serve a 200 front page.</p>\n</p>\n<dt id=\"why%20does%20readiness%20not%20cover%20liveness%20too%3F\">\nWhy does readiness not cover liveness too?\n</h4>\n<p>\n<p>If liveness consulted the database, one database blip would fail liveness on every pod<br />\nof every site at once and restart-storm the fleet. Readiness drains; liveness restarts.<br />\nOnly readiness should depend on WordPress.</p>\n</p>\n<dt id=\"why%20is%20%2Fmetrics%20computed%20from%20a%20snapshot%3F\">\nWhy is /metrics computed from a snapshot?\n</h4>\n<p>\n<p>Walking the cron array and summing autoloaded option sizes on every scrape would load a<br />\nshared database for no benefit. The collector does the work once; scrapes read the<br />\nresult. If the collector dies the snapshot age climbs, which is alertable.</p>\n</p>\n<dt id=\"does%20it%20work%20behind%20wpml%20or%20a%20language%20prefix%3F\">\nDoes it work behind WPML or a language prefix?\n</h4>\n<p>\n<p>Yes. Route detection uses the REST route query variable with a request-URI fallback, so<br />\n    /en/wp-json/ops/v1/readyz works the same as <code>/wp-json/ops/v1/readyz</code>.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.7</h4>\n<ul>\n<li>Directory listing name is &#8220;Klarsmith Ops Kit&#8221; (slug <code>klarsmith-ops-kit</code>);<br />\nComposer/GitHub name unchanged.</li>\n</ul>\n<h4>0.1.6</h4>\n<ul>\n<li>Earlier directory listing name &#8220;Ops Kit&#8221; (superseded by 0.1.7).<br />\nTested up to WordPress 7.1.</li>\n</ul>\n<h4>0.1.3</h4>\n<ul>\n<li>Code conforms to the WordPress Coding Standards; PHPStan level 6 clean. No<br />\nbehaviour change beyond sanitising two request inputs used for route detection.</li>\n<li>Copy-paste manifests in <code>examples/</code> for Kubernetes, stock Prometheus,<br />\nVictoriaMetrics and a Grafana dashboard.</li>\n</ul>\n<h4>0.1.2</h4>\n<ul>\n<li><code>/metrics</code> no longer appends its exposition to a response another handler has already<br />\nserved.</li>\n<li>Zero-valued post statuses are dropped at collection time; <code>publish</code> is always exported<br />\nso a drop to zero stays alertable.</li>\n</ul>\n<h4>0.1.1</h4>\n<ul>\n<li>Allow the plugin&#8217;s own <code>ops/v1</code> REST namespace through site-level anonymous-REST<br />\nlockdowns (hooked at priority 1, never overriding an earlier decision).<br />\nEscape hatch: <code>WP_OPS_REST_BYPASS_AUTH=false</code>.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release: readiness endpoint, snapshot-backed Prometheus metrics, JSON logging,<br />\n  wp ops check|collect|metrics commands.</li>\n</ul>\n"
+    },
+    "short_description": "Makes WordPress legible to Kubernetes and Prometheus: honest readiness, snapshot-backed metrics, structured JSON logs.",
+    "description": "<p>WordPress has no honest health endpoint. The front page, <code>admin-ajax.php</code> and the usual<br />\n    health.php stubs all return 200 while the database is down, the object cache is gone, or<br />\nWordPress is serving its &#8220;database update required&#8221; interstitial. Every probe in common<br />\nuse calls that pod ready.</p>\n<p>Klarsmith Ops Kit gives a containerised WordPress site three things operators actually need:</p>\n<ul>\n<li><strong>Honest readiness</strong> — <code>GET /wp-json/ops/v1/readyz</code> returns 200 only when the database<br />\nanswers, the schema matches the running core version, the object cache round-trips, and<br />\nthe uploads directory is writable. Anything else is a 503 with the failing check names.<br />\nLiveness is deliberately left alone: a database outage must drain pods, never restart<br />\nthem.</li>\n<li><strong>Prometheus metrics</strong> — <code>GET /wp-json/ops/v1/metrics</code> serves the text exposition<br />\nformat from a snapshot that <code>wp ops collect</code> writes to the object cache on a schedule.<br />\nNothing expensive runs on scrape. <code>wp_ops_snapshot_age_seconds</code> tells you when the<br />\ncollector has stopped. Pod-level series (<code>wp_ops_pod_*</code>) and site-level series<br />\n(<code>wp_ops_site_*</code>) are split so replicas do not duplicate site numbers.</li>\n<li><strong>Structured JSON logs</strong> — with <code>WP_OPS_LOG_JSON=true</code>, PHP errors and fatals go to<br />\nstderr as one JSON object per line, ready for a log pipeline.</li>\n</ul>\n<p>The plugin fails closed. <code>/metrics</code> is disabled until a token is configured, and the<br />\nanonymous readiness response names failing checks without leaking detail.</p>\n<p>Configuration is by environment variable, which is how containers are configured:</p>\n<ul>\n<li><code>WP_OPS_TOKEN</code> — bearer token for <code>/metrics</code> (<code>Authorization: Bearer</code> or<br />\n  X-Ops-Token). Unset disables the endpoint.</li>\n<li><code>WP_OPS_SITE_NAME</code> — <code>site</code> label on JSON log records (metrics carry no site<br />\nlabel; the scraper&#8217;s own labels identify the site).</li>\n<li><code>WP_OPS_EXPECT_OBJECT_CACHE</code> — fail readiness when no external object cache is active.</li>\n<li><code>WP_OPS_REQUIRED_PLUGINS</code> — comma-separated plugin files (<code>dir/plugin.php</code>) that<br />\nmust be active for readiness.</li>\n<li><code>WP_OPS_REST_BYPASS_AUTH</code> — set to <code>false</code> to stop the plugin allowing anonymous<br />\naccess to its own REST namespace.</li>\n<li><code>WP_OPS_LOG_JSON</code> — set to <code>true</code> to emit JSON log lines on stderr.</li>\n</ul>\n<p>WP-CLI commands: <code>wp ops check</code> (exit 1 on any failing check), <code>wp ops collect</code><br />\n(refresh the snapshot), <code>wp ops metrics</code> (print the exposition locally).</p>\n<p>Source, issue tracker and Kubernetes manifests for probes, the collector CronJob and<br />\nscraping live at https://github.com/klarsmith/wp-ops-kit.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/klarsmith-ops-kit.0.1.7.zip",
+    "upgrade_notice": {
+        "0.1.7": "<p>Name change only; no configuration changes.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "health-check": "health check",
+        "kubernetes": "kubernetes",
+        "logging": "logging",
+        "monitoring": "monitoring",
+        "prometheus": "prometheus"
+    },
+    "stable_tag": "0.1.7",
+    "versions": {
+        "0.1.7": "https://downloads.wordpress.org/plugin/klarsmith-ops-kit.0.1.7.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/klarsmith-ops-kit.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/klarsmith-ops-kit/assets/banner-772x250.png?rev=3689566",
+        "high": "https://ps.w.org/klarsmith-ops-kit/assets/banner-1544x500.png?rev=3689566"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/klarsmith-ops-kit/assets/icon-128x128.png?rev=3689566",
+        "2x": "https://ps.w.org/klarsmith-ops-kit/assets/icon-256x256.png?rev=3689566"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

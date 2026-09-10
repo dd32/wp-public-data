@@ -1,0 +1,91 @@
+{
+    "name": "Camouflage Security &#8211; Static WordPress Firewall and PHP Isolation",
+    "slug": "camouflage",
+    "version": "1.0.2",
+    "author": "<a href=\"https://profiles.wordpress.org/thevisionofhamza/\">Hamza Mairaj</a>",
+    "author_profile": "https://profiles.wordpress.org/thevisionofhamza/",
+    "contributors": {
+        "thevisionofhamza": {
+            "profile": "https://profiles.wordpress.org/thevisionofhamza/",
+            "avatar": "https://secure.gravatar.com/avatar/dfba36c3c7dc1162f77812d0dd5fa64b30209138d3317a48280eca08fa41c794?s=96&d=monsterid&r=g",
+            "display_name": "Hamza Mairaj"
+        }
+    },
+    "requires": "5.2",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/camouflage/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-10 08:01:00",
+    "added": "2026-08-28",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Every WordPress vulnerability is a PHP vulnerability. Vulnerabilities in core, themes, and plugins are all PHP code. Attackers cannot exploit code that never runs.</p>\n<p>Camouflage Security disables PHP for public visitors entirely. It crawls your site, saves a static HTML snapshot of every page, and serves those files directly via <code>.htaccess</code>. When a public request arrives, WordPress never boots. No plugin runs. No theme code executes. There is nothing for an attacker to exploit.</p>\n<p>Most security plugins try to block or filter the attacks that reach PHP. Camouflage takes a different position: if PHP never runs for public visitors, there is nothing to block.</p>\n<p>Most attacks are bots. They scan for known WordPress URLs, probe the login page, fingerprint installed plugins and themes from URL patterns, and test for known vulnerabilities in specific versions. A site serving static HTML gives them nothing to work with. The login page returns 404. Plugin paths are absent from the page source. WordPress-specific endpoints are hidden or do not respond. Automated scanners pass by without identifying the site as a WordPress installation at all.</p>\n<p>Static HTML also means every public page load is faster. Apache serves files directly from disk. No PHP boots. No database query runs. No plugin or theme code executes. Server resources that would otherwise be spent on PHP are freed up entirely, so the site handles more concurrent traffic on the same hardware.</p>\n<h4>How it works</h4>\n<ul>\n<li>A built-in crawler saves a static HTML snapshot of every page on the site.</li>\n<li><code>.htaccess</code> serves those files directly. PHP never runs for public visitors.</li>\n<li>Anything that cannot be served statically, such as a form submission, an AJAX call, or an unrecognized path, is blocked with a 404 until an administrator explicitly reviews and allows it.</li>\n</ul>\n<h4>Who this is for</h4>\n<p>Camouflage Security is built for developers who want the strongest achievable WordPress security. It requires Apache with <code>mod_rewrite</code> and an initial setup session to allow the dynamic requests your site legitimately needs.</p>\n<h3>Features</h3>\n<h4>Static HTML serving</h4>\n<p>Pages are crawled and saved as plain HTML, then served by <code>.htaccess</code> with no PHP execution. No WordPress boot. No database query. No plugin or theme code runs for any cached page. Content updates automatically invalidate the relevant cached file.</p>\n<h4>Login and core file lockdown</h4>\n<p>The login page and every other WordPress core entry point return 404 to anyone without the admin bypass cookie or a one-time login unlock link. Brute-force attacks against the login page cannot proceed when the login page does not exist for the attacker.</p>\n<h4>AJAX endpoint disguising</h4>\n<p>The AJAX endpoint is assigned a configurable decoy path (<code>/assets/sync</code> by default) that the server internally rewrites to the real endpoint. Cached pages reference the decoy path. No WordPress-specific URL is ever visible in the page source or server logs for public visitors.</p>\n<h4>Optional asset and URL rewriting</h4>\n<p>When enabled, theme, plugin, and core script, style, and image URLs are mirrored into the static cache under hashed filenames. Cached pages reference those hashed copies. Automated WordPress detection tools like WPScan and Wappalyzer find no identifying information in the page source.</p>\n<h4>Dynamic request tracking and allow-listing</h4>\n<p>Every blocked request can be reviewed in the admin and explicitly allowed. Rules match on path, HTTP method, and the set of field names, not exact field values, so a contact form keeps working regardless of what a visitor types. The model is an explicit-permit allowlist, not a blocklist, which means unknown requests are denied by default.</p>\n<h4>Admin access tools</h4>\n<p>A signed bypass cookie is issued automatically on login so administrators always see the live, editable site. A one-time login unlock link and a downloadable backup file ensure an administrator can always recover access even if their bypass cookie is lost.</p>\n<h3>Open Source</h3>\n<p>Camouflage Security is open source and contributions are welcome. Visit the <a href=\"https://github.com/hamza-mairaj/camouflage\" rel=\"nofollow ugc\">GitHub repository</a> to report issues, suggest features, or submit a pull request.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin to <code>wp-content/plugins/camouflage</code>, or clone this repository directly into that directory.</li>\n<li>Activate it from the Plugins screen in wp-admin.</li>\n<li>The plugin requires Apache with <code>mod_rewrite</code> enabled. It writes its own rules directly into <code>.htaccess</code>. It does not support nginx, since nginx does not read <code>.htaccess</code> files.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"what%20happens%20to%20normal%20content%20pages%3F\">\nWhat happens to normal content pages?\n</h4>\n<p>\n<p>Regular content pages are never blocked, only cached. Blocking only ever applies to requests WordPress itself could not resolve, AJAX calls, and POST submissions such as forms and comments.</p>\n</p>\n<dt id=\"will%20it%20work%20on%20nginx%3F\">\nWill it work on nginx?\n</h4>\n<p>\n<p>No. The plugin relies on Apache&#8217;s <code>.htaccess</code> files, which nginx does not read. An equivalent server block would need to be configured manually.</p>\n</p>\n<dt id=\"does%20disabling%20tracking%20stop%20requests%20from%20being%20blocked%3F\">\nDoes disabling tracking stop requests from being blocked?\n</h4>\n<p>\n<p>No. Blocking is never affected by the tracking setting. Tracking only controls whether blocked requests are also logged to the Tracked Requests tab.</p>\n</p>\n<dt id=\"does%20this%20replace%20a%20waf%20or%20a%20security%20plugin%20like%20wordfence%3F\">\nDoes this replace a WAF or a security plugin like Wordfence?\n</h4>\n<p>\n<p>It addresses a different layer. A WAF filters requests that reach PHP. Camouflage ensures most public requests never reach PHP at all. The two can coexist, but for many sites Camouflage makes a WAF redundant for the public-facing surface.</p>\n</p>\n<dt id=\"what%20is%20the%20performance%20impact%3F\">\nWhat is the performance impact?\n</h4>\n<p>\n<p>Cache hits are served entirely by Apache from disk, with no PHP or database involved. Response times are typically faster than even a cached WordPress response. The only overhead is the initial cache build, which runs once and rebuilds automatically when content changes.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.2</h4>\n<ul>\n<li>Show an admin notice when mod_rewrite is not available, so administrators know the .htaccess security rules are not active.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Resolve the AJAX endpoint and cache directory dynamically (admin_url() and wp_upload_dir()) so the plugin works in non-standard WordPress setups.</li>\n<li>Store the static cache in a plugin-slug folder inside the uploads directory.</li>\n<li>Renamed the plugin display name to Camouflage Security.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Every WordPress exploit targets PHP. Camouflage disables PHP for public visitors and serves static HTML instead, making your site unexploitable from t &hellip;",
+    "description": "<p>Every WordPress vulnerability is a PHP vulnerability. Vulnerabilities in core, themes, and plugins are all PHP code. Attackers cannot exploit code that never runs.</p>\n<p>Camouflage Security disables PHP for public visitors entirely. It crawls your site, saves a static HTML snapshot of every page, and serves those files directly via <code>.htaccess</code>. When a public request arrives, WordPress never boots. No plugin runs. No theme code executes. There is nothing for an attacker to exploit.</p>\n<p>Most security plugins try to block or filter the attacks that reach PHP. Camouflage takes a different position: if PHP never runs for public visitors, there is nothing to block.</p>\n<p>Most attacks are bots. They scan for known WordPress URLs, probe the login page, fingerprint installed plugins and themes from URL patterns, and test for known vulnerabilities in specific versions. A site serving static HTML gives them nothing to work with. The login page returns 404. Plugin paths are absent from the page source. WordPress-specific endpoints are hidden or do not respond. Automated scanners pass by without identifying the site as a WordPress installation at all.</p>\n<p>Static HTML also means every public page load is faster. Apache serves files directly from disk. No PHP boots. No database query runs. No plugin or theme code executes. Server resources that would otherwise be spent on PHP are freed up entirely, so the site handles more concurrent traffic on the same hardware.</p>\n<h4>How it works</h4>\n<ul>\n<li>A built-in crawler saves a static HTML snapshot of every page on the site.</li>\n<li><code>.htaccess</code> serves those files directly. PHP never runs for public visitors.</li>\n<li>Anything that cannot be served statically, such as a form submission, an AJAX call, or an unrecognized path, is blocked with a 404 until an administrator explicitly reviews and allows it.</li>\n</ul>\n<h4>Who this is for</h4>\n<p>Camouflage Security is built for developers who want the strongest achievable WordPress security. It requires Apache with <code>mod_rewrite</code> and an initial setup session to allow the dynamic requests your site legitimately needs.</p>\n<h3>Features</h3>\n<h4>Static HTML serving</h4>\n<p>Pages are crawled and saved as plain HTML, then served by <code>.htaccess</code> with no PHP execution. No WordPress boot. No database query. No plugin or theme code runs for any cached page. Content updates automatically invalidate the relevant cached file.</p>\n<h4>Login and core file lockdown</h4>\n<p>The login page and every other WordPress core entry point return 404 to anyone without the admin bypass cookie or a one-time login unlock link. Brute-force attacks against the login page cannot proceed when the login page does not exist for the attacker.</p>\n<h4>AJAX endpoint disguising</h4>\n<p>The AJAX endpoint is assigned a configurable decoy path (<code>/assets/sync</code> by default) that the server internally rewrites to the real endpoint. Cached pages reference the decoy path. No WordPress-specific URL is ever visible in the page source or server logs for public visitors.</p>\n<h4>Optional asset and URL rewriting</h4>\n<p>When enabled, theme, plugin, and core script, style, and image URLs are mirrored into the static cache under hashed filenames. Cached pages reference those hashed copies. Automated WordPress detection tools like WPScan and Wappalyzer find no identifying information in the page source.</p>\n<h4>Dynamic request tracking and allow-listing</h4>\n<p>Every blocked request can be reviewed in the admin and explicitly allowed. Rules match on path, HTTP method, and the set of field names, not exact field values, so a contact form keeps working regardless of what a visitor types. The model is an explicit-permit allowlist, not a blocklist, which means unknown requests are denied by default.</p>\n<h4>Admin access tools</h4>\n<p>A signed bypass cookie is issued automatically on login so administrators always see the live, editable site. A one-time login unlock link and a downloadable backup file ensure an administrator can always recover access even if their bypass cookie is lost.</p>\n<h3>Open Source</h3>\n<p>Camouflage Security is open source and contributions are welcome. Visit the <a href=\"https://github.com/hamza-mairaj/camouflage\" rel=\"nofollow ugc\">GitHub repository</a> to report issues, suggest features, or submit a pull request.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/camouflage.1.0.2.zip",
+    "upgrade_notice": {
+        "1.0.2": "<ul>\n<li>Adds a compatibility notice when mod_rewrite is unavailable.</li>\n</ul>",
+        "1.0.1": "<ul>\n<li>Improves compatibility with non-standard WordPress setups and renames the plugin to Camouflage Security.</li>\n</ul>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/camouflage/assets/screenshot-1.png?rev=3689515",
+            "caption": "General settings tab"
+        },
+        {
+            "src": "https://ps.w.org/camouflage/assets/screenshot-2.png?rev=3689515",
+            "caption": "Cache tab"
+        },
+        {
+            "src": "https://ps.w.org/camouflage/assets/screenshot-3.png?rev=3689515",
+            "caption": "Admin access tab"
+        }
+    ],
+    "tags": {
+        "brute-force": "Brute Force",
+        "firewall": "firewall",
+        "hardening": "hardening",
+        "login-protection": "login protection",
+        "security": "security"
+    },
+    "stable_tag": "1.0.2",
+    "versions": {
+        "1.0.1": "https://downloads.wordpress.org/plugin/camouflage.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/camouflage.1.0.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/camouflage.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/camouflage/assets/icon-128x128.png?rev=3671259",
+        "2x": "https://ps.w.org/camouflage/assets/icon-256x256.png?rev=3671259"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
