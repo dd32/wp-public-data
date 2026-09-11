@@ -1,0 +1,90 @@
+{
+    "name": "XUmbrella Page Maintenance Controller",
+    "slug": "xumbrella-page-maintenance-controller",
+    "version": "1.5.0",
+    "author": "<a href=\"https://profiles.wordpress.org/miyagen/\">Genki Miyagawa</a>",
+    "author_profile": "https://profiles.wordpress.org/miyagen/",
+    "contributors": {
+        "miyagen": {
+            "profile": "https://profiles.wordpress.org/miyagen/",
+            "avatar": "https://secure.gravatar.com/avatar/ab7f65d3c759de4cf4e0b3619b58d403dcfcbca1584344b5cb7f82dcfd957600?s=96&d=monsterid&r=g",
+            "display_name": "Genki Miyagawa"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/xumbrella-page-maintenance-controller/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-11 03:41:00",
+    "added": "2026-09-11",
+    "homepage": "",
+    "sections": {
+        "description": "<p>This plugin is built for renewing <strong>part</strong> of a live site: you pick the individual pages that are being reworked, and only those pages go into maintenance. The rest of the site stays online and fully indexable.</p>\n<p>Most maintenance plugins cover the whole site and stop at the HTML front end. That leaves the pages you are hiding reachable through other public surfaces — the REST API, the sitemap, RSS feeds, oEmbed, and the site&#8217;s own search results and archive listings. This plugin closes those surfaces for the targeted pages as well, so a page under maintenance does not resurface somewhere else on the same site.</p>\n<p>The second half of the plugin is the review loop. While a page is under maintenance, you can issue a secret preview link that lets a client open the real page without a WordPress account, then revoke it when the review is done.</p>\n<h4>Features</h4>\n<ul>\n<li><strong>Per-page or site-wide scope</strong> — apply maintenance mode to selected pages or posts of any public post type, or to the entire site.</li>\n<li><strong>Correct 503 responses</strong> — sends <code>503 Service Unavailable</code> in place (no redirect) with <code>Retry-After</code> and noindex headers, so search engines understand the downtime is temporary.</li>\n<li><strong>Content-leak protection</strong> — helps prevent exposure of targeted pages through the public REST API, search endpoint, WordPress&#8217;s built-in sitemap, feeds, oEmbed, and the site&#8217;s own front-end search results and archive listings (see FAQ for SEO-plugin sitemaps). This also covers the places WordPress builds without a normal post query: the site-wide comment feed, recent-comment listings, previous/next post navigation, and title-based archive lists.</li>\n<li><strong>Navigation menu exclusion</strong> — menu entries that point at a targeted page are removed from the front end while maintenance is active, together with any sub-items nested under them. This covers classic menus and the Navigation block; editors who can manage menus still see everything (see FAQ for hand-written links).</li>\n<li><strong>Secret preview links</strong> — issue a token-protected link that lets clients view the targeted pages during maintenance without logging in. Tokens are stored hashed, verified in constant time, and can be regenerated or revoked at any time.</li>\n<li><strong>Lockout prevention</strong> — administrators always bypass the maintenance screen. Additional roles can be allowed to bypass it too.</li>\n<li><strong>Two screen modes</strong> — a customizable built-in template (heading, body, logo) or an existing page reused as the maintenance screen.</li>\n<li><strong>Cache-aware</strong> — maintenance and preview responses send no-cache headers and <code>DONOTCACHEPAGE</code>, which helps prevent caching in compatible cache plugins.</li>\n<li><strong>No tracking, no external services</strong> — the plugin makes no outbound requests and collects no data.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin.</li>\n<li>Go to Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Maintenance Mode.</li>\n<li>Choose a scope (specific pages or the entire site) and, for specific pages, select the pages or posts to target.</li>\n<li>Choose a maintenance screen (the built-in template or an existing page) and enable maintenance mode.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"can%20i%20lock%20myself%20out%3F\">\nCan I lock myself out?\n</h4>\n<p>\n<p>No. Users with the <code>manage_options</code> capability (administrators) always bypass the maintenance screen, regardless of the role settings.</p>\n</p>\n<dt id=\"what%20does%20%22public%20api%20blocking%22%20actually%20turn%20off%3F\">\nWhat does &#8220;Public API Blocking&#8221; actually turn off?\n</h4>\n<p>\n<p>Only the 503 response for public REST API requests that reach a targeted page. Turn it off when a headless front end or an integration has to keep talking to the REST API while a page is under maintenance.</p>\n<p>Excluding targeted pages from REST collections, the search endpoint, sitemaps, feeds, and front-end listings is not tied to that checkbox — those stay on for as long as maintenance is active, so turning the block off never puts a targeted page back into a listing. What it does allow is a request that already knows the exact post ID reading the targeted content directly, which is why the setting is marked as recommended.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20cache%20plugins%3F\">\nDoes it work with cache plugins?\n</h4>\n<p>\n<p>Maintenance responses are sent with no-cache headers and the <code>DONOTCACHEPAGE</code> constant. For best results, also exclude targeted pages from your cache plugin while maintenance is active.</p>\n</p>\n<dt id=\"what%20is%20the%20secret%20preview%20link%3F\">\nWhat is the secret preview link?\n</h4>\n<p>\n<p>A URL containing a random token. Anyone who opens it can view the maintenance-targeted pages without logging in, until you regenerate or revoke the link. The token is stored as a hash and removed from the address bar immediately after access.</p>\n</p>\n<dt id=\"why%20doesn%27t%20the%20page%20list%20show%20all%20of%20my%20pages%3F\">\nWhy doesn&#8217;t the page list show all of my pages?\n</h4>\n<p>\n<p>The list shows up to 500 items to keep the settings screen fast (adjustable via the <code>pmctl_page_list_limit</code> filter). Use the search box to find any page beyond that limit.</p>\n</p>\n<dt id=\"the%20page%20title%20still%20appears%20somewhere%20on%20my%20site.%20why%3F\">\nThe page title still appears somewhere on my site. Why?\n</h4>\n<p>\n<p>The plugin removes a targeted page from the places WordPress generates automatically: query results, listings, search, feeds, the built-in sitemap, the REST API, and menu entries that reference the page as a post.</p>\n<p>It does not rewrite content you wrote yourself. A hand-typed link, a custom-link menu item, a button or heading in a template part, or the page title written into another page&#8217;s body are all authored content, and editing them is your decision, not the plugin&#8217;s. Visitors who follow such a link still get the 503 maintenance screen and never see the page, but the wording and the URL remain visible until you edit them. If hiding every mention matters for a particular page, search your site for links to it before you enable maintenance.</p>\n<p>One structural case is worth knowing about: child pages keep their parent&#8217;s slug in their own address, so a published child of a page under maintenance still carries the parent slug in its URL, and most themes name the parent in the breadcrumb trail. Select the child pages as targets too if that matters.</p>\n</p>\n<dt id=\"does%20maintenance%20mode%20hurt%20seo%3F\">\nDoes maintenance mode hurt SEO?\n</h4>\n<p>\n<p>Targeted pages return HTTP 503 with a <code>Retry-After</code> header, which tells search engines the outage is temporary. They are also excluded from WordPress&#8217;s built-in sitemap, feeds, and the site&#8217;s own front-end search results and archive listings while maintenance is active. If an SEO plugin (Yoast SEO, Rank Math, All in One SEO, etc.) generates its own sitemap, it replaces WordPress&#8217;s built-in one and is not covered by this exclusion — exclude the targeted pages there separately if you use one.</p>\n</p>\n<dt id=\"does%20it%20support%20multisite%3F\">\nDoes it support multisite?\n</h4>\n<p>\n<p>The plugin works on a per-site basis (each site has its own settings), and settings are migrated per site as each one loads the updated version. Network activation and network-wide uninstall are not officially tested; use it on individual sites within a network.</p>\n</p>\n<dt id=\"is%20the%20plugin%20available%20in%20my%20language%3F\">\nIs the plugin available in my language?\n</h4>\n<p>\n<p>The plugin is fully internationalized and its translations are managed on translate.wordpress.org, so any locale the community translates is delivered automatically. Contributions are welcome.</p>\n</p>\n\n",
+        "changelog": "<h4>1.5.0</h4>\n<ul>\n<li>First release on WordPress.org. Earlier versions were developed privately and were never distributed here.</li>\n</ul>\n"
+    },
+    "short_description": "Put individual pages, not just the whole site, into maintenance mode with REST API, sitemap, feed and search leak protection.",
+    "description": "<p>This plugin is built for renewing <strong>part</strong> of a live site: you pick the individual pages that are being reworked, and only those pages go into maintenance. The rest of the site stays online and fully indexable.</p>\n<p>Most maintenance plugins cover the whole site and stop at the HTML front end. That leaves the pages you are hiding reachable through other public surfaces — the REST API, the sitemap, RSS feeds, oEmbed, and the site&#8217;s own search results and archive listings. This plugin closes those surfaces for the targeted pages as well, so a page under maintenance does not resurface somewhere else on the same site.</p>\n<p>The second half of the plugin is the review loop. While a page is under maintenance, you can issue a secret preview link that lets a client open the real page without a WordPress account, then revoke it when the review is done.</p>\n<h4>Features</h4>\n<ul>\n<li><strong>Per-page or site-wide scope</strong> — apply maintenance mode to selected pages or posts of any public post type, or to the entire site.</li>\n<li><strong>Correct 503 responses</strong> — sends <code>503 Service Unavailable</code> in place (no redirect) with <code>Retry-After</code> and noindex headers, so search engines understand the downtime is temporary.</li>\n<li><strong>Content-leak protection</strong> — helps prevent exposure of targeted pages through the public REST API, search endpoint, WordPress&#8217;s built-in sitemap, feeds, oEmbed, and the site&#8217;s own front-end search results and archive listings (see FAQ for SEO-plugin sitemaps). This also covers the places WordPress builds without a normal post query: the site-wide comment feed, recent-comment listings, previous/next post navigation, and title-based archive lists.</li>\n<li><strong>Navigation menu exclusion</strong> — menu entries that point at a targeted page are removed from the front end while maintenance is active, together with any sub-items nested under them. This covers classic menus and the Navigation block; editors who can manage menus still see everything (see FAQ for hand-written links).</li>\n<li><strong>Secret preview links</strong> — issue a token-protected link that lets clients view the targeted pages during maintenance without logging in. Tokens are stored hashed, verified in constant time, and can be regenerated or revoked at any time.</li>\n<li><strong>Lockout prevention</strong> — administrators always bypass the maintenance screen. Additional roles can be allowed to bypass it too.</li>\n<li><strong>Two screen modes</strong> — a customizable built-in template (heading, body, logo) or an existing page reused as the maintenance screen.</li>\n<li><strong>Cache-aware</strong> — maintenance and preview responses send no-cache headers and <code>DONOTCACHEPAGE</code>, which helps prevent caching in compatible cache plugins.</li>\n<li><strong>No tracking, no external services</strong> — the plugin makes no outbound requests and collects no data.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/xumbrella-page-maintenance-controller.1.5.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/xumbrella-page-maintenance-controller/assets/screenshot-1.png?rev=3690664",
+            "caption": "Settings screen: scope, target pages, and bypass roles."
+        },
+        {
+            "src": "https://ps.w.org/xumbrella-page-maintenance-controller/assets/screenshot-2.png?rev=3690664",
+            "caption": "Built-in maintenance screen shown to visitors."
+        },
+        {
+            "src": "https://ps.w.org/xumbrella-page-maintenance-controller/assets/screenshot-3.png?rev=3690664",
+            "caption": "Secret preview link management."
+        }
+    ],
+    "tags": {
+        "503": "503",
+        "coming-soon": "coming soon",
+        "maintenance-mode": "maintenance mode",
+        "maintenance-page": "maintenance page",
+        "under-construction": "under construction"
+    },
+    "stable_tag": "1.5.0",
+    "versions": {
+        "1.5.0": "https://downloads.wordpress.org/plugin/xumbrella-page-maintenance-controller.1.5.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/xumbrella-page-maintenance-controller.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/xumbrella-page-maintenance-controller/assets/banner-772x250.png?rev=3690664",
+        "high": "https://ps.w.org/xumbrella-page-maintenance-controller/assets/banner-1544x500.png?rev=3690664"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/xumbrella-page-maintenance-controller/assets/icon-128x128.png?rev=3690664",
+        "2x": "https://ps.w.org/xumbrella-page-maintenance-controller/assets/icon-256x256.png?rev=3690664"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
