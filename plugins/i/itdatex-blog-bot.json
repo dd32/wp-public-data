@@ -1,0 +1,97 @@
+{
+    "name": "itdatex Blog-Bot",
+    "slug": "itdatex-blog-bot",
+    "version": "0.2.2",
+    "author": "<a href=\"https://profiles.wordpress.org/itdatex/\">itdatex</a>",
+    "author_profile": "https://profiles.wordpress.org/itdatex/",
+    "contributors": {
+        "itdatex": {
+            "profile": "https://profiles.wordpress.org/itdatex/",
+            "avatar": "https://secure.gravatar.com/avatar/e07a49840111dd9942a2117d4b730116c1fdd61cfa06a7dd3d938c700d94f148?s=96&d=monsterid&r=g",
+            "display_name": "itdatex"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.1",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/itdatex-blog-bot/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-11 13:22:00",
+    "added": "2026-09-11",
+    "homepage": "",
+    "sections": {
+        "description": "<p><strong>itdatex Blog-Bot</strong> is an editorial helper, not an auto-publisher. A cron job fetches items from a configurable list of RSS feeds, scores them for topical relevance, and asks an LLM endpoint to rewrite matching items into a draft post. You pick the endpoint: a <strong>local Ollama server</strong> (default, nothing leaves your host), the <strong>itdatex Cloud</strong> hosted service (opt-in, requires API key + consent), or a <strong>custom</strong> Ollama-compatible URL. The result is a WordPress draft with the source link, score and the exact prompt attached as post meta so an editor can review, adjust and publish.</p>\n<h4>What the plugin does</h4>\n<ul>\n<li><strong>Feed fetcher</strong> — configurable RSS/Atom sources, deduplication by feed item GUID.</li>\n<li><strong>Scorer</strong> — rule-based scoring (keywords, recency, source weight) filters candidates.</li>\n<li><strong>Generator</strong> — calls the LLM endpoint you selected: local Ollama (default), itdatex Cloud (opt-in, hosted by the plugin author, requires API key + consent), or any custom Ollama-compatible URL. The source link is always included in the prompt so the model can reference it.</li>\n<li><strong>Publisher</strong> — inserts the result as <code>draft</code>, sets category and tags, records the source URL, score and the full prompt in post meta.</li>\n<li><strong>WP-CLI</strong> — <code>wp itdatex-blog-bot run</code> for manual runs.</li>\n</ul>\n<h4>Privacy and traceability</h4>\n<ul>\n<li>No auto-publish. Every draft goes through the WordPress editorial workflow.</li>\n<li>The LLM provider is a plugin setting. Default is <strong>Local Ollama</strong> on <code>127.0.0.1</code> — nothing leaves the server. <strong>itdatex Cloud</strong> is strictly opt-in and cannot be saved without an explicit privacy-consent tick.</li>\n<li>Post meta stores the full prompt and source URL so the rewrite is auditable.</li>\n</ul>\n<h3>External Services</h3>\n<p>This plugin talks to three kinds of external services. Only the RSS feed fetch is enabled by default; the two LLM options both require explicit configuration.</p>\n<p><strong>1. RSS/Atom feed URLs (configurable list)</strong></p>\n<p>The plugin fetches RSS/Atom feeds you configure under Tools -&gt; Blog-Bot. Default feed list on activation includes a handful of German business/tax publications (Bundesministerium der Finanzen, KoSIT, FeRD, IHK, DATEV Magazin, Lexoffice Blog, Sage.com, Smartsteuer Blog). You can add, remove or replace any of them. Each fetched item is compared against the local <code>posts</code> meta by GUID before being processed.</p>\n<ul>\n<li>When: on cron (<code>itdatex_blog_bot_run_daily</code>) or on manual <code>wp itdatex-blog-bot run</code>.</li>\n<li>What is sent: nothing (plain GET request for the feed).</li>\n<li>What is received: the feed XML, only the item title, link, publish date and content are stored in memory during the run.</li>\n</ul>\n<p>Each feed URL is a service run by a third party. Please consult that publisher&#8217;s terms of service and privacy policy before adding a source.</p>\n<p><strong>2. Local or custom LLM endpoint (default: local Ollama)</strong></p>\n<p>If provider is set to &#8220;Local Ollama&#8221; or &#8220;Custom URL&#8221;, the plugin sends the item&#8217;s title and content to the URL you configure (default <code>http://127.0.0.1:11434/api/chat</code>). The local default keeps everything on your host; a custom URL transmits the item text to whatever service you pointed it at.</p>\n<ul>\n<li>When: after a matching RSS item is scored above the threshold and picked for rewriting.</li>\n<li>What is sent: the plugin&#8217;s rewrite prompt, the item title, item link and the raw feed content of the item.</li>\n<li>What is received: JSON with the rewritten text, which is stored as a WordPress draft.</li>\n</ul>\n<p>If you set a custom URL, please consult that provider&#8217;s terms and privacy policy.</p>\n<p><strong>3. itdatex Cloud (opt-in, hosted by the plugin author)</strong></p>\n<p>If provider is set to &#8220;itdatex Cloud&#8221;, the plugin sends the same payload as above to the hosted endpoint <code>https://api.itdatex.support/api/chat</code>, authenticated with an API key you obtain from itdatex. This provider <strong>cannot be saved</strong> without explicitly ticking the privacy-consent checkbox in the settings screen.</p>\n<ul>\n<li>When: after a matching RSS item is scored above the threshold and picked for rewriting.</li>\n<li>What is sent: the plugin&#8217;s rewrite prompt, the item title, the source link, the item content excerpt, and the <code>Authorization: Bearer &lt;your-api-key&gt;</code> header.</li>\n<li>What is received: JSON with the rewritten text, which is stored as a WordPress draft.</li>\n<li>Service provider: itdatex (author of this plugin).</li>\n<li>Endpoint URL: <code>https://api.itdatex.support/api/chat</code></li>\n<li>Sign-up / API key: <code>https://wp.itdatex.support/blog-bot-api-key/</code></li>\n<li>Privacy Policy: <code>https://wp.itdatex.support/blog-bot-privacy/</code></li>\n<li>Terms of Service: <code>https://wp.itdatex.support/blog-bot-tos/</code></li>\n</ul>\n",
+        "installation": "<ol>\n<li>Extract the plugin to <code>/wp-content/plugins/itdatex-blog-bot/</code>.</li>\n<li>Activate — activation registers the daily cron <code>itdatex_blog_bot_run_daily</code>.</li>\n<li>Under <strong>Tools -&gt; Blog-Bot</strong>, pick an LLM provider (Local Ollama, itdatex Cloud, or Custom URL). If you pick itdatex Cloud, tick the privacy consent and paste your API key.</li>\n<li>Configure the feed list, the scoring threshold and the default category.</li>\n<li>First manual run via <strong>Blog-Bot -&gt; Run now</strong> or <code>wp itdatex-blog-bot run</code>.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20the%20plugin%20send%20anything%20to%20a%20hosted%20ai%20service%20by%20default%3F\">\nDoes the plugin send anything to a hosted AI service by default?\n</h4>\n<p>\n<p>No. The default provider is <strong>Local Ollama</strong> at <code>http://127.0.0.1:11434/api/chat</code>, which points at a local Ollama server on the same host. If you leave the default and do not run Ollama locally, generation simply fails and no draft is created.</p>\n</p>\n<dt id=\"what%20is%20itdatex%20cloud%20and%20do%20i%20have%20to%20use%20it%3F\">\nWhat is itdatex Cloud and do I have to use it?\n</h4>\n<p>\n<p>itdatex Cloud is a hosted LLM endpoint operated by the plugin author (<code>https://api.itdatex.support/api/chat</code>). It is currently in <strong>private beta</strong> and keys are handed out on request at <code>https://wp.itdatex.support/blog-bot-api-key/</code>. It is a convenience for users who do not want to run Ollama themselves. It is <strong>opt-in</strong>: you must actively pick the provider in the settings, tick the privacy-consent checkbox, and paste an API key. The plugin refuses to save the itdatex Cloud selection without the consent tick. If you do not have a beta key, keep the default Local Ollama provider — everything works without any account or contact with us. See the &#8220;External Services&#8221; section for the exact payload and the policy links.</p>\n</p>\n<dt id=\"can%20i%20point%20it%20at%20openai%20or%20another%20cloud%20llm%3F\">\nCan I point it at OpenAI or another cloud LLM?\n</h4>\n<p>\n<p>Only if the target speaks the Ollama chat API. Set provider to <strong>Custom URL</strong> and enter your endpoint. If you do that, add the endpoint URL to the &#8220;External Services&#8221; disclosure your site&#8217;s privacy policy shows to visitors.</p>\n</p>\n<dt id=\"does%20it%20publish%20automatically%3F\">\nDoes it publish automatically?\n</h4>\n<p>\n<p>No. Everything ends up as a <code>draft</code> (or <code>pending</code>, configurable). A human editor reviews before publish.</p>\n</p>\n\n",
+        "changelog": "<h4>0.2.2</h4>\n<ul>\n<li>Topic presets: the settings screen now ships with a small table of curated topic buckets (WordPress Core, WordPress Security, SEO). One click adds a preset — name, keyword list, and vetted RSS feeds — to the topic-buckets JSON. Buckets you already have are preserved; you can still edit the JSON manually. All preset data is bundled in the plugin ZIP; no external service is contacted to load presets.</li>\n</ul>\n<h4>0.2.1</h4>\n<ul>\n<li>itdatex Cloud endpoint hostname changed from <code>ai.itdatex.support</code> to <code>api.itdatex.support</code> to align with the other itdatex service subdomains. No behaviour change for Local Ollama or Custom URL providers. If you had the itdatex Cloud provider configured, your API key is preserved; the plugin will start talking to the new hostname automatically after the update.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>LLM provider setting: pick Local Ollama (default, unchanged behaviour), itdatex Cloud (hosted, opt-in with API key + explicit consent), or Custom URL. itdatex Cloud endpoint documented under &#8220;External Services&#8221; with Privacy Policy and Terms of Service links. Consent checkbox is mandatory: the settings screen refuses to save itdatex Cloud selection without it. Bearer-token authentication for the hosted endpoint. DB schema unchanged (config only), safe upgrade path — existing installs keep provider=local.</li>\n</ul>\n<h4>0.1.1</h4>\n<ul>\n<li>wp.org compliance pass: plugin header and readme translated to English, External Services section added, defensive $_POST sanitize in the settings handler, error_log gated behind WP_DEBUG. No functional change.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release: feed fetcher, scorer, LLM generator, draft publisher, WP-CLI command, daily cron.</li>\n</ul>\n"
+    },
+    "short_description": "Fetches RSS items and rewrites them into draft posts via an LLM endpoint you pick (local Ollama, itdatex Cloud opt-in, or custom URL).",
+    "description": "<p><strong>itdatex Blog-Bot</strong> is an editorial helper, not an auto-publisher. A cron job fetches items from a configurable list of RSS feeds, scores them for topical relevance, and asks an LLM endpoint to rewrite matching items into a draft post. You pick the endpoint: a <strong>local Ollama server</strong> (default, nothing leaves your host), the <strong>itdatex Cloud</strong> hosted service (opt-in, requires API key + consent), or a <strong>custom</strong> Ollama-compatible URL. The result is a WordPress draft with the source link, score and the exact prompt attached as post meta so an editor can review, adjust and publish.</p>\n<h4>What the plugin does</h4>\n<ul>\n<li><strong>Feed fetcher</strong> — configurable RSS/Atom sources, deduplication by feed item GUID.</li>\n<li><strong>Scorer</strong> — rule-based scoring (keywords, recency, source weight) filters candidates.</li>\n<li><strong>Generator</strong> — calls the LLM endpoint you selected: local Ollama (default), itdatex Cloud (opt-in, hosted by the plugin author, requires API key + consent), or any custom Ollama-compatible URL. The source link is always included in the prompt so the model can reference it.</li>\n<li><strong>Publisher</strong> — inserts the result as <code>draft</code>, sets category and tags, records the source URL, score and the full prompt in post meta.</li>\n<li><strong>WP-CLI</strong> — <code>wp itdatex-blog-bot run</code> for manual runs.</li>\n</ul>\n<h4>Privacy and traceability</h4>\n<ul>\n<li>No auto-publish. Every draft goes through the WordPress editorial workflow.</li>\n<li>The LLM provider is a plugin setting. Default is <strong>Local Ollama</strong> on <code>127.0.0.1</code> — nothing leaves the server. <strong>itdatex Cloud</strong> is strictly opt-in and cannot be saved without an explicit privacy-consent tick.</li>\n<li>Post meta stores the full prompt and source URL so the rewrite is auditable.</li>\n</ul>\n<h3>External Services</h3>\n<p>This plugin talks to three kinds of external services. Only the RSS feed fetch is enabled by default; the two LLM options both require explicit configuration.</p>\n<p><strong>1. RSS/Atom feed URLs (configurable list)</strong></p>\n<p>The plugin fetches RSS/Atom feeds you configure under Tools -&gt; Blog-Bot. Default feed list on activation includes a handful of German business/tax publications (Bundesministerium der Finanzen, KoSIT, FeRD, IHK, DATEV Magazin, Lexoffice Blog, Sage.com, Smartsteuer Blog). You can add, remove or replace any of them. Each fetched item is compared against the local <code>posts</code> meta by GUID before being processed.</p>\n<ul>\n<li>When: on cron (<code>itdatex_blog_bot_run_daily</code>) or on manual <code>wp itdatex-blog-bot run</code>.</li>\n<li>What is sent: nothing (plain GET request for the feed).</li>\n<li>What is received: the feed XML, only the item title, link, publish date and content are stored in memory during the run.</li>\n</ul>\n<p>Each feed URL is a service run by a third party. Please consult that publisher&#8217;s terms of service and privacy policy before adding a source.</p>\n<p><strong>2. Local or custom LLM endpoint (default: local Ollama)</strong></p>\n<p>If provider is set to &#8220;Local Ollama&#8221; or &#8220;Custom URL&#8221;, the plugin sends the item&#8217;s title and content to the URL you configure (default <code>http://127.0.0.1:11434/api/chat</code>). The local default keeps everything on your host; a custom URL transmits the item text to whatever service you pointed it at.</p>\n<ul>\n<li>When: after a matching RSS item is scored above the threshold and picked for rewriting.</li>\n<li>What is sent: the plugin&#8217;s rewrite prompt, the item title, item link and the raw feed content of the item.</li>\n<li>What is received: JSON with the rewritten text, which is stored as a WordPress draft.</li>\n</ul>\n<p>If you set a custom URL, please consult that provider&#8217;s terms and privacy policy.</p>\n<p><strong>3. itdatex Cloud (opt-in, hosted by the plugin author)</strong></p>\n<p>If provider is set to &#8220;itdatex Cloud&#8221;, the plugin sends the same payload as above to the hosted endpoint <code>https://api.itdatex.support/api/chat</code>, authenticated with an API key you obtain from itdatex. This provider <strong>cannot be saved</strong> without explicitly ticking the privacy-consent checkbox in the settings screen.</p>\n<ul>\n<li>When: after a matching RSS item is scored above the threshold and picked for rewriting.</li>\n<li>What is sent: the plugin&#8217;s rewrite prompt, the item title, the source link, the item content excerpt, and the <code>Authorization: Bearer &lt;your-api-key&gt;</code> header.</li>\n<li>What is received: JSON with the rewritten text, which is stored as a WordPress draft.</li>\n<li>Service provider: itdatex (author of this plugin).</li>\n<li>Endpoint URL: <code>https://api.itdatex.support/api/chat</code></li>\n<li>Sign-up / API key: <code>https://wp.itdatex.support/blog-bot-api-key/</code></li>\n<li>Privacy Policy: <code>https://wp.itdatex.support/blog-bot-privacy/</code></li>\n<li>Terms of Service: <code>https://wp.itdatex.support/blog-bot-tos/</code></li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/itdatex-blog-bot.0.2.2.zip",
+    "upgrade_notice": {
+        "0.2.2": "<p>Adds one-click topic presets (WordPress Core, Security, SEO) to help new users get started with topic buckets. Existing buckets are unaffected. Safe to update.</p>",
+        "0.2.1": "<p>Hosted itdatex Cloud endpoint moved from <code>ai.itdatex.support</code> to <code>api.itdatex.support</code>. Safe to update; local-Ollama users are unaffected.</p>",
+        "0.2.0": "<p>Adds the option to use a hosted LLM (itdatex Cloud). Default provider stays Local Ollama, so existing setups keep working. To switch to itdatex Cloud you must accept the linked Privacy Policy and enter an API key.</p>",
+        "0.1.1": "<p>Compliance and language pass, no behavior change. Safe to update.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/itdatex-blog-bot/assets/screenshot-1.png?rev=3691532",
+            "caption": "Settings screen with the default LLM provider (Local Ollama). Endpoint URL points at <code>127.0.0.1:11434</code>; nothing leaves the server. The itdatex Cloud block is hidden."
+        },
+        {
+            "src": "https://ps.w.org/itdatex-blog-bot/assets/screenshot-2.png?rev=3691532",
+            "caption": "Settings screen with the itdatex Cloud provider selected. Reveals the hosted endpoint URL, the mandatory Privacy Policy + Terms of Service consent checkbox, and the API-key input. Selection cannot be saved without ticking consent."
+        },
+        {
+            "src": "https://ps.w.org/itdatex-blog-bot/assets/screenshot-3.png?rev=3691532",
+            "caption": ""
+        }
+    ],
+    "tags": {
+        "ai": "AI",
+        "automation": "automation",
+        "blog": "blog",
+        "drafts": "drafts",
+        "rss": "rss"
+    },
+    "stable_tag": "0.2.2",
+    "versions": {
+        "0.2.0": "https://downloads.wordpress.org/plugin/itdatex-blog-bot.0.2.0.zip",
+        "0.2.1": "https://downloads.wordpress.org/plugin/itdatex-blog-bot.0.2.1.zip",
+        "0.2.2": "https://downloads.wordpress.org/plugin/itdatex-blog-bot.0.2.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/itdatex-blog-bot.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/itdatex-blog-bot/assets/banner-772x250.png?rev=3691259",
+        "high": "https://ps.w.org/itdatex-blog-bot/assets/banner-1544x500.png?rev=3691259"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/itdatex-blog-bot/assets/icon-128x128.png?rev=3691259",
+        "2x": "https://ps.w.org/itdatex-blog-bot/assets/icon-256x256.png?rev=3691259"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
