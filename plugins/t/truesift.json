@@ -1,0 +1,102 @@
+{
+    "name": "TrueSift",
+    "slug": "truesift",
+    "version": "1.0.18",
+    "author": "<a href=\"https://profiles.wordpress.org/webdigitech/\">webdigitech</a>",
+    "author_profile": "https://profiles.wordpress.org/webdigitech/",
+    "contributors": {
+        "webdigitech": {
+            "profile": "https://profiles.wordpress.org/webdigitech/",
+            "avatar": "https://secure.gravatar.com/avatar/213d26bff68dc1ba39b9e4fb7d674af1352d4ca7b5551ea0be299f2776bf8b08?s=96&d=monsterid&r=g",
+            "display_name": "webdigitech"
+        }
+    },
+    "requires": "6.6",
+    "tested": "7.1",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/truesift/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-12 12:07:00",
+    "added": "2026-09-12",
+    "homepage": "https://truesift.de/",
+    "sections": {
+        "description": "<p>TrueSift connects WordPress forms to the TrueSift verification service. It starts an automated browser challenge when a protected form is displayed, keeps the form submit action unavailable until an authoritative verification token is issued, and validates and atomically consumes that single-use token on the WordPress server before the protected action continues.</p>\n<p>The plugin does not implement a separate CAPTCHA protocol. Its browser runtime tracks the public <code>@truesift/next</code> 0.3.0 client contract, and its PHP bridge uses the official TrueSift challenge, verify, and business-proof API contracts.</p>\n<h4>Included integrations</h4>\n<ul>\n<li>WordPress login</li>\n<li>WordPress registration</li>\n<li>WordPress password reset request</li>\n<li>WordPress comments</li>\n<li>WooCommerce customer login</li>\n<li>WooCommerce customer registration</li>\n<li>WooCommerce checkout (classic and Checkout Block)</li>\n<li>WooCommerce product reviews</li>\n<li>Contact Form 7</li>\n<li>WPForms</li>\n<li>Fluent Forms</li>\n<li>Elementor Pro Forms</li>\n<li>Manual shortcode and PHP helper integration</li>\n</ul>\n<p>The WooCommerce checkout integration supports both the classic shortcode checkout and the Checkout Block. Checkout Block proofs are carried through Store API extension data and validated before checkout processing.</p>\n<h4>Security model</h4>\n<p>The browser sends only an opaque <code>verificationToken</code> as security proof. Client-provided values such as <code>allowed</code>, <code>decision</code>, <code>score</code>, <code>status</code>, <code>failOpen</code>, <code>challengeId</code>, <code>action</code>, <code>path</code>, and <code>origin</code> are never trusted by the protected PHP action.</p>\n<p>The plugin sends the token together with a signed WordPress form context to the server. The PHP verifier calls TrueSift&#8217;s proof endpoint with server-owned credentials and expected action, path, and origin. A normal success is accepted only when TrueSift confirms <code>allowed: true</code>, <code>decision: allow</code>, and atomic consumption through either <code>consumed: true</code> or a non-empty <code>consumedAt</code> timestamp. Replayed, expired, invalid, mismatched, reviewed, or blocked proofs are rejected.</p>\n<p>The bundled SDK 0.3.0 adapter may send only aggregate in-memory interaction counters for the current verification window, such as pointer, keyboard, focus, and blur counts. It does not send pointer coordinates, pressed keys, form contents, device fingerprints, or persistent visitor identifiers. Missing or insufficient behavioral telemetry remains neutral.</p>\n<h4>Visual modes</h4>\n<p>The admin page shows live, non-networked previews of all official layouts:</p>\n<ul>\n<li>Checkbox</li>\n<li>Banner</li>\n<li>Inline</li>\n<li>Badge</li>\n</ul>\n<p>Theme, language, size, and appearance can be configured globally.</p>\n<h4>Manual integration</h4>\n<p>Place the shortcode inside a form:</p>\n<pre><code>[truesift]\n</code></pre>\n<p>When used outside a form, the same shortcode renders a standalone visual verification status. Standalone mode does not protect a business action until it is associated with a form and server-side verification.</p>\n<p>For a form located elsewhere in the DOM:</p>\n<pre><code>[truesift form_selector=\"#contact-form\" button_selector=\"button[type=submit]\"]\n</code></pre>\n<p>A custom PHP handler must also validate the proof before performing its protected action:</p>\n<pre><code>$proof = truesift_verify_request();\n</code></pre>\n<p>Continue only when the returned value is not a <code>WP_Error</code> and its <code>allowed</code> value is <code>true</code>.</p>\n<h3>External services</h3>\n<p>This plugin connects to the external TrueSift service operated by WebDigiTech.</p>\n<p>The following requests are made only when TrueSift is configured and a protected form or connection test is used:</p>\n<ul>\n<li>Browser challenge through the local WordPress route, forwarded server-to-server to <code>https://api.truesift.de/api/v1/botguard/challenge</code></li>\n<li>Browser verification through the local WordPress route, forwarded server-to-server to <code>https://api.truesift.de/api/v1/botguard/verify</code></li>\n<li>Authoritative single-use proof verification directly from the protected WordPress server action to <code>https://api.truesift.de/api/v1/botguard/proof/verify</code></li>\n</ul>\n<p>Data sent can include the site key, requested action, page path, website origin, browser language, languages, time zone, screen and viewport dimensions, platform information, cookie availability, referrer, current page URL, challenge identifiers, short-lived challenge tokens, verification timing, aggregate interaction counters for the active verification window, and the single-use verification token. The behavioral counters contain counts only and do not contain pointer coordinates, actual pressed keys, form contents, fingerprints, or persistent visitor identifiers. The secret key is sent only server-to-server and is never exposed to the browser.</p>\n<p>TrueSift service information: https://truesift.de/<br />\nRequest access and obtain a Site Key / Secret Key: https://truesift.de/#zugang<br />\nPrivacy policy: https://webdigitech.de/datenschutz<br />\nTerms of service: https://webdigitech.de/agb</p>\n<h3>Privacy</h3>\n<p>The plugin adds suggested text to WordPress&#8217; Privacy Policy Guide. It does not store visitor verification tokens, browser metadata, or visitor profiles in the WordPress database. Site credentials are stored encrypted when supported by the server, or may be supplied through <code>wp-config.php</code> constants.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>truesift</code> folder to <code>/wp-content/plugins/</code>, or install the ZIP through Plugins &gt; Add New &gt; Upload Plugin.</li>\n<li>Activate TrueSift.</li>\n<li>Open Settings &gt; TrueSift.</li>\n<li>Enter the site key and secret key issued for the site in TrueSift.</li>\n<li>Save the connection settings, then run the connection test.</li>\n<li>Choose the visual mode and enable the desired integrations.</li>\n</ol>\n<p>Credentials may also be defined in <code>wp-config.php</code>:</p>\n<pre><code>define( 'TRUESIFT_SITE_KEY', 'bg_site_...' );\n\ndefine( 'TRUESIFT_SECRET_KEY', '...' );\n</code></pre>\n<p>Optional server constants:</p>\n<pre><code>TRUESIFT_API_BASE_URL, `TRUESIFT_DEFAULT_ACTION`, `TRUESIFT_FAIL_OPEN`, and `TRUESIFT_TIMEOUT_MS`.\n</code></pre>\n",
+        "faq": "\n<dt id=\"does%20the%20plugin%20trust%20the%20browser%20result%3F\">\nDoes the plugin trust the browser result?\n</h4>\n<p>\n<p>No. The browser result controls only the user interface. The protected WordPress action validates and consumes the opaque verification token server-to-server.</p>\n</p>\n<dt id=\"is%20disabling%20the%20submit%20button%20the%20complete%20protection%3F\">\nIs disabling the submit button the complete protection?\n</h4>\n<p>\n<p>No. The button lock improves the form flow and prevents ordinary unverified submissions. The PHP proof verifier is the security boundary.</p>\n</p>\n<dt id=\"are%20tokens%20stored%20in%20wordpress%3F\">\nAre tokens stored in WordPress?\n</h4>\n<p>\n<p>No. Verification tokens are kept only for the current browser form request and are consumed by TrueSift during server-side proof validation.</p>\n</p>\n<dt id=\"what%20happens%20if%20a%20token%20is%20reused%3F\">\nWhat happens if a token is reused?\n</h4>\n<p>\n<p>TrueSift rejects the replay and the protected action does not continue.</p>\n</p>\n<dt id=\"does%20the%20plugin%20collect%20local%20analytics%3F\">\nDoes the plugin collect local analytics?\n</h4>\n<p>\n<p>No. Version 1.0.18 does not create a local analytics database or visitor profile. Debug mode stores only administrator troubleshooting events and is disabled by default.</p>\n</p>\n<dt id=\"can%20i%20use%20the%20shortcode%20with%20any%20form%3F\">\nCan I use the shortcode with any form?\n</h4>\n<p>\n<p>The shortcode can mount and control TrueSift on a custom HTML form. The form&#8217;s PHP handler must still call <code>truesift_verify_request()</code> before performing the protected operation.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.18</h4>\n<ul>\n<li>Fixed a WooCommerce Checkout Blocks conflict where account creation during Store API checkout could trigger a second registration verification and incorrectly return <code>truesift_verification_required</code>.</li>\n<li>Keeps WooCommerce My Account registration protected by <code>woo_register</code> while excluding account creation performed inside an already protected Store API checkout.</li>\n<li>Preserves the dedicated Checkout Block proof lifecycle and prevents the same checkout operation from requiring or consuming a second proof through <code>woocommerce_registration_errors</code>.</li>\n<li>Keeps the official SDK at <code>@truesift/next@0.3.0</code> and advances the WordPress SDK asset revision to <code>1.0.18-0.3.0</code>.</li>\n</ul>\n<p>Older release history is included in <code>CHANGELOG.md</code> in the plugin package.</p>\n"
+    },
+    "short_description": "Privacy-first automated human verification for WordPress forms, WooCommerce, and popular form plugins.",
+    "description": "<p>TrueSift connects WordPress forms to the TrueSift verification service. It starts an automated browser challenge when a protected form is displayed, keeps the form submit action unavailable until an authoritative verification token is issued, and validates and atomically consumes that single-use token on the WordPress server before the protected action continues.</p>\n<p>The plugin does not implement a separate CAPTCHA protocol. Its browser runtime tracks the public <code>@truesift/next</code> 0.3.0 client contract, and its PHP bridge uses the official TrueSift challenge, verify, and business-proof API contracts.</p>\n<h4>Included integrations</h4>\n<ul>\n<li>WordPress login</li>\n<li>WordPress registration</li>\n<li>WordPress password reset request</li>\n<li>WordPress comments</li>\n<li>WooCommerce customer login</li>\n<li>WooCommerce customer registration</li>\n<li>WooCommerce checkout (classic and Checkout Block)</li>\n<li>WooCommerce product reviews</li>\n<li>Contact Form 7</li>\n<li>WPForms</li>\n<li>Fluent Forms</li>\n<li>Elementor Pro Forms</li>\n<li>Manual shortcode and PHP helper integration</li>\n</ul>\n<p>The WooCommerce checkout integration supports both the classic shortcode checkout and the Checkout Block. Checkout Block proofs are carried through Store API extension data and validated before checkout processing.</p>\n<h4>Security model</h4>\n<p>The browser sends only an opaque <code>verificationToken</code> as security proof. Client-provided values such as <code>allowed</code>, <code>decision</code>, <code>score</code>, <code>status</code>, <code>failOpen</code>, <code>challengeId</code>, <code>action</code>, <code>path</code>, and <code>origin</code> are never trusted by the protected PHP action.</p>\n<p>The plugin sends the token together with a signed WordPress form context to the server. The PHP verifier calls TrueSift&#8217;s proof endpoint with server-owned credentials and expected action, path, and origin. A normal success is accepted only when TrueSift confirms <code>allowed: true</code>, <code>decision: allow</code>, and atomic consumption through either <code>consumed: true</code> or a non-empty <code>consumedAt</code> timestamp. Replayed, expired, invalid, mismatched, reviewed, or blocked proofs are rejected.</p>\n<p>The bundled SDK 0.3.0 adapter may send only aggregate in-memory interaction counters for the current verification window, such as pointer, keyboard, focus, and blur counts. It does not send pointer coordinates, pressed keys, form contents, device fingerprints, or persistent visitor identifiers. Missing or insufficient behavioral telemetry remains neutral.</p>\n<h4>Visual modes</h4>\n<p>The admin page shows live, non-networked previews of all official layouts:</p>\n<ul>\n<li>Checkbox</li>\n<li>Banner</li>\n<li>Inline</li>\n<li>Badge</li>\n</ul>\n<p>Theme, language, size, and appearance can be configured globally.</p>\n<h4>Manual integration</h4>\n<p>Place the shortcode inside a form:</p>\n<pre><code>[truesift]\n</code></pre>\n<p>When used outside a form, the same shortcode renders a standalone visual verification status. Standalone mode does not protect a business action until it is associated with a form and server-side verification.</p>\n<p>For a form located elsewhere in the DOM:</p>\n<pre><code>[truesift form_selector=\"#contact-form\" button_selector=\"button[type=submit]\"]\n</code></pre>\n<p>A custom PHP handler must also validate the proof before performing its protected action:</p>\n<pre><code>$proof = truesift_verify_request();\n</code></pre>\n<p>Continue only when the returned value is not a <code>WP_Error</code> and its <code>allowed</code> value is <code>true</code>.</p>\n<h3>External services</h3>\n<p>This plugin connects to the external TrueSift service operated by WebDigiTech.</p>\n<p>The following requests are made only when TrueSift is configured and a protected form or connection test is used:</p>\n<ul>\n<li>Browser challenge through the local WordPress route, forwarded server-to-server to <code>https://api.truesift.de/api/v1/botguard/challenge</code></li>\n<li>Browser verification through the local WordPress route, forwarded server-to-server to <code>https://api.truesift.de/api/v1/botguard/verify</code></li>\n<li>Authoritative single-use proof verification directly from the protected WordPress server action to <code>https://api.truesift.de/api/v1/botguard/proof/verify</code></li>\n</ul>\n<p>Data sent can include the site key, requested action, page path, website origin, browser language, languages, time zone, screen and viewport dimensions, platform information, cookie availability, referrer, current page URL, challenge identifiers, short-lived challenge tokens, verification timing, aggregate interaction counters for the active verification window, and the single-use verification token. The behavioral counters contain counts only and do not contain pointer coordinates, actual pressed keys, form contents, fingerprints, or persistent visitor identifiers. The secret key is sent only server-to-server and is never exposed to the browser.</p>\n<p>TrueSift service information: https://truesift.de/<br />\nRequest access and obtain a Site Key / Secret Key: https://truesift.de/#zugang<br />\nPrivacy policy: https://webdigitech.de/datenschutz<br />\nTerms of service: https://webdigitech.de/agb</p>\n<h3>Privacy</h3>\n<p>The plugin adds suggested text to WordPress&#8217; Privacy Policy Guide. It does not store visitor verification tokens, browser metadata, or visitor profiles in the WordPress database. Site credentials are stored encrypted when supported by the server, or may be supplied through <code>wp-config.php</code> constants.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/truesift.1.0.18.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/truesift/assets/screenshot-1.png?rev=3692660",
+            "caption": "Connect WordPress to TrueSift with securely stored site credentials and the official TrueSift API service."
+        },
+        {
+            "src": "https://ps.w.org/truesift/assets/screenshot-2.png?rev=3692660",
+            "caption": "Choose between Checkbox, Banner, Inline, and Badge layouts and configure theme, language, size, and appearance."
+        },
+        {
+            "src": "https://ps.w.org/truesift/assets/screenshot-3.png?rev=3692660",
+            "caption": "Enable TrueSift protection for WordPress login, registration, password reset, comments, and WooCommerce forms."
+        },
+        {
+            "src": "https://ps.w.org/truesift/assets/screenshot-4.png?rev=3692660",
+            "caption": "Protect WooCommerce customer actions, classic and block checkout, product reviews, and supported form plugins."
+        },
+        {
+            "src": "https://ps.w.org/truesift/assets/screenshot-5.png?rev=3692660",
+            "caption": "Built-in diagnostics for the TrueSift plugin, SDK, security contract, and WordPress runtime environment."
+        },
+        {
+            "src": "https://ps.w.org/truesift/assets/screenshot-6.png?rev=3692660",
+            "caption": "Privacy-conscious debugging, settings import and export, and administrator maintenance tools."
+        }
+    ],
+    "tags": {
+        "anti-spam": "anti-spam",
+        "bot-protection": "bot protection",
+        "captcha": "captcha",
+        "human-verification": "human verification",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.18",
+    "versions": {
+        "1.0.18": "https://downloads.wordpress.org/plugin/truesift.1.0.18.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/truesift.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/truesift/assets/banner-772x250.png?rev=3692660",
+        "high": "https://ps.w.org/truesift/assets/banner-1544x500.png?rev=3692660"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/truesift/assets/icon-128x128.png?rev=3692660",
+        "2x": "https://ps.w.org/truesift/assets/icon-256x256.png?rev=3692660"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
