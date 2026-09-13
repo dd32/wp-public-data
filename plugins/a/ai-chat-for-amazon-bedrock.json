@@ -1,0 +1,82 @@
+{
+    "name": "AI Chat for Amazon Bedrock",
+    "slug": "ai-chat-for-amazon-bedrock",
+    "version": "1.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/glayguo/\">glayguo</a>",
+    "author_profile": "https://profiles.wordpress.org/glayguo/",
+    "contributors": {
+        "glay": {
+            "profile": "https://profiles.wordpress.org/glay/",
+            "avatar": "https://secure.gravatar.com/avatar/1880970e806e72eb969d8a5c912dbf1e05b80aee17eab39bdf9722389d59588b?s=96&d=monsterid&r=g",
+            "display_name": "glay"
+        },
+        "glayguo": {
+            "profile": "https://profiles.wordpress.org/glayguo/",
+            "avatar": "https://secure.gravatar.com/avatar/d9e828443e633f4f28d0d584498e34cb4176b8f271cf6f3e1b18a7d1b3d1a054?s=96&d=monsterid&r=g",
+            "display_name": "glayguo"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 1,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/ai-chat-for-amazon-bedrock/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-13 09:29:00",
+    "added": "2025-05-10",
+    "homepage": "https://github.com/noteflow-ai/ai-chat-for-amazon-bedrock",
+    "sections": {
+        "description": "<p>AI Chat for Amazon Bedrock connects a WordPress chat interface to selected Amazon Bedrock foundation models. Version 1.1.0 focuses on safe production defaults, predictable requests, least-privilege administration, and a hardened MCP integration.</p>\n<h4>Features</h4>\n<ul>\n<li>Shortcode: <code>[ai_chat_bedrock]</code></li>\n<li>Claude, Amazon Titan and Nova, Meta Llama, Mistral, and DeepSeek model formats</li>\n<li>System prompt, model, token, temperature, title, and welcome-message settings</li>\n<li>Guest access disabled by default</li>\n<li>Per-visitor request limiting to reduce accidental AWS spend</li>\n<li>Encrypted database credential storage with optional <code>wp-config.php</code> constants</li>\n<li>Temporary AWS credential/session-token support</li>\n<li>MCP client restricted to public HTTPS destinations and WordPress safe HTTP requests</li>\n<li>Read-only WordPress MCP server, authenticated by default</li>\n<li>Server-side MCP tool execution; browsers cannot forge tool results</li>\n<li>Admin test interface</li>\n</ul>\n<h4>Security defaults</h4>\n<ul>\n<li>Only signed-in users can chat until an administrator explicitly enables guest access.</li>\n<li>External MCP tools are never exposed to anonymous chat visitors by default.</li>\n<li>WordPress MCP REST routes require authentication unless public read-only access is explicitly enabled.</li>\n<li>Stored AWS credentials are encrypted using the site&#8217;s WordPress authentication salts and are never rendered back into settings forms.</li>\n<li>Debug mode records only redacted request metadata, not prompts, responses, credentials, or authorization headers.</li>\n</ul>\n<p>For the strongest credential isolation, define these constants in <code>wp-config.php</code> instead of saving credentials in WordPress:</p>\n<pre><code>AI_CHAT_BEDROCK_AWS_ACCESS_KEY\nAI_CHAT_BEDROCK_AWS_SECRET_KEY\nAI_CHAT_BEDROCK_AWS_SESSION_TOKEN (optional)\n</code></pre>\n<p>Use an IAM identity restricted to <code>bedrock:InvokeModel</code> for only the models the site needs.</p>\n<h3>Privacy Policy</h3>\n<p>Chat messages and the configured system prompt are sent to Amazon Bedrock. When MCP tools are enabled for authenticated users, relevant tool parameters are sent to the selected external MCP server and tool output is sent to Amazon Bedrock to complete the answer. Review AWS and each MCP provider&#8217;s privacy terms before use.</p>\n<p>The plugin does not create permanent chat-history records. It stores a salted hash-derived transient counter for each visitor for up to one minute to enforce request limits. Debug logging is optional and records only redacted operational metadata. Administrators are responsible for disclosing these data flows and obtaining any consent required in their jurisdiction.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin directory to <code>/wp-content/plugins/</code>, or install it through WordPress.</li>\n<li>Activate <strong>AI Chat for Amazon Bedrock</strong>.</li>\n<li>Open <strong>AI Chat Bedrock &gt; Settings</strong>.</li>\n<li>Configure an AWS region, credentials, and a model.</li>\n<li>Test while signed in.</li>\n<li>Add <code>[ai_chat_bedrock]</code> to a page or post.</li>\n<li>Enable guest chat only after reviewing AWS Budgets, model pricing, and the request limit.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"why%20can%20guests%20not%20use%20the%20chat%20after%20upgrading%3F\">\nWhy can guests not use the chat after upgrading?\n</h4>\n<p>\n<p>Version 1.1.0 defaults to signed-in users to prevent anonymous scripts from generating unbounded AWS charges. An administrator can explicitly enable guest access in the settings.</p>\n</p>\n<dt id=\"are%20aws%20credentials%20stored%20in%20plaintext%3F\">\nAre AWS credentials stored in plaintext?\n</h4>\n<p>\n<p>Newly saved credentials are encrypted with authenticated encryption derived from WordPress salts. Existing plaintext credentials are migrated when an administrator opens the dashboard. <code>wp-config.php</code> constants remain the preferred production option.</p>\n</p>\n<dt id=\"does%20this%20version%20stream%20responses%3F\">\nDoes this version stream responses?\n</h4>\n<p>\n<p>No. The previous EventSource implementation issued duplicate Bedrock requests and placed conversations in URLs. Version 1.1.0 uses one stable POST request per model invocation. Streaming can return in a future version after a transport-safe implementation is available.</p>\n</p>\n<dt id=\"can%20i%20use%20temporary%20aws%20credentials%3F\">\nCan I use temporary AWS credentials?\n</h4>\n<p>\n<p>Yes. Configure the access key, secret key, and session token together, or define all three constants in <code>wp-config.php</code>.</p>\n</p>\n<dt id=\"why%20must%20external%20mcp%20servers%20use%20https%3F\">\nWhy must external MCP servers use HTTPS?\n</h4>\n<p>\n<p>The restriction, combined with WordPress safe HTTP validation, reduces server-side request forgery and protects tool inputs in transit. Private, loopback, link-local, credential-bearing, and unsafe redirect targets are rejected.</p>\n</p>\n<dt id=\"how%20is%20the%20built-in%20wordpress%20mcp%20server%20protected%3F\">\nHow is the built-in WordPress MCP server protected?\n</h4>\n<p>\n<p>It is read-only and returns published content only. WordPress authentication is required by default. Administrators may explicitly expose it publicly; public requests are then rate limited.</p>\n</p>\n<dt id=\"does%20mcp%20support%20multi-step%20tool%20chains%3F\">\nDoes MCP support multi-step tool chains?\n</h4>\n<p>\n<p>Version 1.1.0 executes up to five tool calls from one model response and then asks the model for a final answer. It does not recursively execute a second round of tool requests.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.0</h4>\n<ul>\n<li>Added encrypted AWS credential storage and <code>wp-config.php</code> credential constants.</li>\n<li>Added AWS session-token support for temporary credentials.</li>\n<li>Disabled guest chat by default and added configurable per-visitor rate limits.</li>\n<li>Removed duplicate and arbitrary-option AJAX handlers.</li>\n<li>Removed the duplicate-request EventSource implementation and conversation data in URLs.</li>\n<li>Moved MCP tool-result processing entirely to the server.</li>\n<li>Added HTTPS-only, SSRF-resistant MCP requests with response-size and redirect limits.</li>\n<li>Made WordPress MCP routes authenticated by default and restricted them to published, non-sensitive content.</li>\n<li>Removed unconditional prompt/tool logging and ensured debug logs contain metadata only.</li>\n<li>Fixed AI-response and admin-notice XSS paths.</li>\n<li>Removed PHP sessions and the unused chat-history table.</li>\n<li>Added strict settings, message, history, model, and REST input limits.</li>\n<li>Unified the <code>ai-chat-for-amazon-bedrock</code> text domain.</li>\n<li>Completed uninstall cleanup and added automated security regression checks.</li>\n</ul>\n<h4>1.0.7</h4>\n<ul>\n<li>Added Model Context Protocol client, server, management, and tool integration.</li>\n</ul>\n<h4>1.0.6</h4>\n<ul>\n<li>Improved escaping, internationalization, and direct-file-access protection.</li>\n</ul>\n<h4>1.0.5</h4>\n<ul>\n<li>Added additional Bedrock models and chat customization.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Add a secured, rate-limited Amazon Bedrock chat to WordPress with optional Model Context Protocol tools.",
+    "description": "<p>AI Chat for Amazon Bedrock connects a WordPress chat interface to selected Amazon Bedrock foundation models. Version 1.1.0 focuses on safe production defaults, predictable requests, least-privilege administration, and a hardened MCP integration.</p>\n<h4>Features</h4>\n<ul>\n<li>Shortcode: <code>[ai_chat_bedrock]</code></li>\n<li>Claude, Amazon Titan and Nova, Meta Llama, Mistral, and DeepSeek model formats</li>\n<li>System prompt, model, token, temperature, title, and welcome-message settings</li>\n<li>Guest access disabled by default</li>\n<li>Per-visitor request limiting to reduce accidental AWS spend</li>\n<li>Encrypted database credential storage with optional <code>wp-config.php</code> constants</li>\n<li>Temporary AWS credential/session-token support</li>\n<li>MCP client restricted to public HTTPS destinations and WordPress safe HTTP requests</li>\n<li>Read-only WordPress MCP server, authenticated by default</li>\n<li>Server-side MCP tool execution; browsers cannot forge tool results</li>\n<li>Admin test interface</li>\n</ul>\n<h4>Security defaults</h4>\n<ul>\n<li>Only signed-in users can chat until an administrator explicitly enables guest access.</li>\n<li>External MCP tools are never exposed to anonymous chat visitors by default.</li>\n<li>WordPress MCP REST routes require authentication unless public read-only access is explicitly enabled.</li>\n<li>Stored AWS credentials are encrypted using the site&#8217;s WordPress authentication salts and are never rendered back into settings forms.</li>\n<li>Debug mode records only redacted request metadata, not prompts, responses, credentials, or authorization headers.</li>\n</ul>\n<p>For the strongest credential isolation, define these constants in <code>wp-config.php</code> instead of saving credentials in WordPress:</p>\n<pre><code>AI_CHAT_BEDROCK_AWS_ACCESS_KEY\nAI_CHAT_BEDROCK_AWS_SECRET_KEY\nAI_CHAT_BEDROCK_AWS_SESSION_TOKEN (optional)\n</code></pre>\n<p>Use an IAM identity restricted to <code>bedrock:InvokeModel</code> for only the models the site needs.</p>\n<h3>Privacy Policy</h3>\n<p>Chat messages and the configured system prompt are sent to Amazon Bedrock. When MCP tools are enabled for authenticated users, relevant tool parameters are sent to the selected external MCP server and tool output is sent to Amazon Bedrock to complete the answer. Review AWS and each MCP provider&#8217;s privacy terms before use.</p>\n<p>The plugin does not create permanent chat-history records. It stores a salted hash-derived transient counter for each visitor for up to one minute to enforce request limits. Debug logging is optional and records only redacted operational metadata. Administrators are responsible for disclosing these data flows and obtaining any consent required in their jurisdiction.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/ai-chat-for-amazon-bedrock.1.1.0.zip",
+    "upgrade_notice": {
+        "1.1.0": "<p>Security release. Guest chat is disabled until explicitly enabled, stored AWS credentials are migrated to encrypted values, external MCP servers must use public HTTPS URLs, and the unsafe legacy streaming mode has been removed. Back up the database and test model/MCP access before enabling guest traffic.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "ai": "AI",
+        "amazon-bedrock": "amazon bedrock",
+        "chatbot": "chatbot",
+        "claude": "Claude",
+        "mcp": "mcp"
+    },
+    "stable_tag": "1.1.0",
+    "versions": {
+        "1.0.5": "https://downloads.wordpress.org/plugin/ai-chat-for-amazon-bedrock.1.0.5.zip",
+        "1.0.7": "https://downloads.wordpress.org/plugin/ai-chat-for-amazon-bedrock.1.0.7.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/ai-chat-for-amazon-bedrock.1.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/ai-chat-for-amazon-bedrock.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/ai-chat-for-amazon-bedrock.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
