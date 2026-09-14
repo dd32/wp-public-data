@@ -1,0 +1,104 @@
+{
+    "name": "Feathersweep Database Cleanup",
+    "slug": "feathersweep-database-cleanup",
+    "version": "1.0.7",
+    "author": "<a href=\"https://profiles.wordpress.org/lightningbyrd/\">lightningbyrd</a>",
+    "author_profile": "https://profiles.wordpress.org/lightningbyrd/",
+    "contributors": {
+        "lightningbyrd": {
+            "profile": "https://profiles.wordpress.org/lightningbyrd/",
+            "avatar": "https://secure.gravatar.com/avatar/65743ec220fce0c13dd4a6295ab8807dd0cc9a1591716b0e85d56393ac8033af?s=96&d=monsterid&r=g",
+            "display_name": "lightningbyrd"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/feathersweep-database-cleanup/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-14 18:16:00",
+    "added": "2026-09-14",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Feathersweep scans and safely cleans the bloat generic optimizers miss, then shows you exactly what it found before it removes anything.</p>\n<p><strong>Dry run is the default.</strong> Every run only reports what it <em>would</em> delete until you switch dry run off.</p>\n<h4>What it cleans</h4>\n<ul>\n<li><strong>Background queue (Action Scheduler)</strong>: complete and canceled actions past retention, and the failed actions core never purges, each with their log rows. On busy sites these two tables are the single biggest bloat source, growing into gigabytes.</li>\n<li><strong>Expired transients</strong>: all of them, site and network scope. The ones nothing ever collects.</li>\n<li><strong>Trash, spam and old revisions</strong>, older than retention. Revisions are off by default.</li>\n<li><strong>Expired sessions</strong>, including legacy <code>_wc_session_</code> leftovers, when WooCommerce is present.</li>\n<li><strong>Autoload advisor</strong>: the options loaded into memory on every single page view, sorted by weight and identified by plugin where possible, with a functionally-safe &#8220;stop autoloading&#8221; action that is one-click reversible. Core-critical options are never offered.</li>\n</ul>\n<h4>Hard safety rules, regardless of settings</h4>\n<ul>\n<li>Nothing younger than its retention window is touched.</li>\n<li>Pending and in-process background jobs are never touched. The live queue is sacred.</li>\n<li><strong>Orders, products, customers and users are never touched by any cleaner.</strong></li>\n<li>Deletes run in bounded batches with a time budget and schedule their own continuation, so no long-running query ever hangs your site.</li>\n<li>Feathersweep adds no tables of its own, autoloads nothing, and caps its own history.</li>\n</ul>\n<h4>Works on any WordPress site</h4>\n<p>WooCommerce is recommended but not required. The background-queue, transient, trash and autoload cleaners help any WordPress site. The commerce-specific cleaners stand down when WooCommerce is absent.</p>\n<h4>Set and forget</h4>\n<p>A weekly schedule, an optional &#8220;reclaimed X MB this week&#8221; email summary, a full run history with per-cleaner breakdown, and an optional OPTIMIZE TABLE pass for maintenance windows.</p>\n<h4>No account, no service</h4>\n<p>No external service, no API key, no telemetry. Feathersweep makes no outbound requests of any kind.</p>\n",
+        "installation": "<ol>\n<li>Upload and activate, then open <strong>Tools &gt; Feathersweep</strong>.</li>\n<li>The Scan tab shows where the weight is and what is reclaimable.</li>\n<li>Run a dry-run report, which is the default, and read it.</li>\n<li><strong>Back up your database.</strong> Any deletion tool deserves a fresh backup first.</li>\n<li>Disable dry run in Settings, run once manually, and verify the site.</li>\n<li>Re-enable the weekly schedule and forget about it.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"what%20is%20actually%20taking%20up%20the%20space%3F\">\nWhat is actually taking up the space?\n</h4>\n<p>\n<p>Every site running a background queue logs everything it does, and those tables grow because completed work is kept for weeks and failed work is kept forever. Add expired sessions, expired transients that never get collected, trash, spam, and a handful of plugins autoloading megabytes of options into memory on every page view, and the site gets slower every month while backups balloon.</p>\n</p>\n<dt id=\"will%20it%20delete%20anything%20i%20need%3F\">\nWill it delete anything I need?\n</h4>\n<p>\n<p>Dry run is on by default, so the first thing you get is a report rather than a deletion. Beyond that, the hard rules above hold regardless of settings: nothing inside its retention window, nothing pending or in-process, and no commerce data, ever.</p>\n</p>\n<dt id=\"what%20does%20the%20autoload%20advisor%20actually%20change%3F\">\nWhat does the autoload advisor actually change?\n</h4>\n<p>\n<p>Autoloaded options are read into memory on every request, so a few megabytes there taxes every page view for every visitor. The advisor lists options over 50 KB and lets you stop autoloading them. This is functionally safe: the option still exists and <code>get_option()</code> still returns it. WordPress simply stops preloading it. Every change is recorded with its original value and is one-click reversible, and core-critical options are never offered.</p>\n</p>\n<dt id=\"why%20is%20my%20database%20file%20the%20same%20size%20after%20a%20clean%3F\">\nWhy is my database file the same size after a clean?\n</h4>\n<p>\n<p>Deleting rows does not shrink the file on disk until OPTIMIZE TABLE runs. InnoDB reuses the freed space internally either way, and queries get faster immediately. Enable the OPTIMIZE TABLE pass only if you have a low-traffic window, because it briefly locks tables while reclaiming disk.</p>\n</p>\n<dt id=\"does%20it%20need%20woocommerce%3F\">\nDoes it need WooCommerce?\n</h4>\n<p>\n<p>No. It is sharper on a store, because that is where the background queue works hardest, but the queue, transient, trash and autoload cleaners are useful on any WordPress site.</p>\n</p>\n<dt id=\"does%20it%20phone%20home%3F\">\nDoes it phone home?\n</h4>\n<p>\n<p>No. There are no outbound HTTP requests anywhere in the plugin.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.7</h4>\n<ul>\n<li>Renamed from &#8220;Featherweight Database Cleanup&#8221; to &#8220;Feathersweep Database Cleanup&#8221;. An established WordPress.org optimization plugin is already called Featherweight, and two plugins in the same category sharing a name helps nobody.</li>\n<li>The rename goes all the way down: text domain, option names, cron hooks, the admin page address and the WooCommerce log source. An upgrade migrates your settings, run history, autoload undo list and last-run time across automatically, and reschedules the weekly job, so nothing is lost and nothing needs re-configuring.</li>\n<li>One thing you do have to change by hand: if you defined <code>LB_FWEIGHT_REMOVE_ALL_DATA</code> in wp-config.php, it is now <code>LB_FSWEEP_REMOVE_ALL_DATA</code>.</li>\n</ul>\n"
+    },
+    "short_description": "The database janitor that knows what it is looking at. Cleans background-queue bloat, expired transients, trash and spam. Dry run first, always.",
+    "description": "<p>Feathersweep scans and safely cleans the bloat generic optimizers miss, then shows you exactly what it found before it removes anything.</p>\n<p><strong>Dry run is the default.</strong> Every run only reports what it <em>would</em> delete until you switch dry run off.</p>\n<h4>What it cleans</h4>\n<ul>\n<li><strong>Background queue (Action Scheduler)</strong>: complete and canceled actions past retention, and the failed actions core never purges, each with their log rows. On busy sites these two tables are the single biggest bloat source, growing into gigabytes.</li>\n<li><strong>Expired transients</strong>: all of them, site and network scope. The ones nothing ever collects.</li>\n<li><strong>Trash, spam and old revisions</strong>, older than retention. Revisions are off by default.</li>\n<li><strong>Expired sessions</strong>, including legacy <code>_wc_session_</code> leftovers, when WooCommerce is present.</li>\n<li><strong>Autoload advisor</strong>: the options loaded into memory on every single page view, sorted by weight and identified by plugin where possible, with a functionally-safe &#8220;stop autoloading&#8221; action that is one-click reversible. Core-critical options are never offered.</li>\n</ul>\n<h4>Hard safety rules, regardless of settings</h4>\n<ul>\n<li>Nothing younger than its retention window is touched.</li>\n<li>Pending and in-process background jobs are never touched. The live queue is sacred.</li>\n<li><strong>Orders, products, customers and users are never touched by any cleaner.</strong></li>\n<li>Deletes run in bounded batches with a time budget and schedule their own continuation, so no long-running query ever hangs your site.</li>\n<li>Feathersweep adds no tables of its own, autoloads nothing, and caps its own history.</li>\n</ul>\n<h4>Works on any WordPress site</h4>\n<p>WooCommerce is recommended but not required. The background-queue, transient, trash and autoload cleaners help any WordPress site. The commerce-specific cleaners stand down when WooCommerce is absent.</p>\n<h4>Set and forget</h4>\n<p>A weekly schedule, an optional &#8220;reclaimed X MB this week&#8221; email summary, a full run history with per-cleaner breakdown, and an optional OPTIMIZE TABLE pass for maintenance windows.</p>\n<h4>No account, no service</h4>\n<p>No external service, no API key, no telemetry. Feathersweep makes no outbound requests of any kind.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/feathersweep-database-cleanup.1.0.7.zip",
+    "upgrade_notice": {
+        "1.0.7": "<p>Renamed to Feathersweep. Settings and history migrate automatically. If you set LB_FWEIGHT_REMOVE_ALL_DATA in wp-config.php, rename it to LB_FSWEEP_REMOVE_ALL_DATA.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/feathersweep-database-cleanup/assets/screenshot-1.png?rev=3695733",
+            "caption": "Scan: table weights, queue status counts, cleanable-now previews, and the estimated reclaimable total."
+        },
+        {
+            "src": "https://ps.w.org/feathersweep-database-cleanup/assets/screenshot-2.png?rev=3695733",
+            "caption": "Autoload advisor: the heaviest always-loaded options, identified, with reversible stop-autoloading."
+        },
+        {
+            "src": "https://ps.w.org/feathersweep-database-cleanup/assets/screenshot-3.png?rev=3695733",
+            "caption": "History: every run, dry or real, with a per-cleaner breakdown."
+        },
+        {
+            "src": "https://ps.w.org/feathersweep-database-cleanup/assets/screenshot-4.png?rev=3695733",
+            "caption": "Settings: the dry-run switch, the weekly schedule, and per-cleaner retention windows."
+        },
+        {
+            "src": "https://ps.w.org/feathersweep-database-cleanup/assets/screenshot-5.png?rev=3695733",
+            "caption": "The weekly email summary: what was reclaimed, per cleaner."
+        },
+        {
+            "src": "https://ps.w.org/feathersweep-database-cleanup/assets/screenshot-6.png?rev=3695733",
+            "caption": "Help: what is touched, what never is, and the recommended rollout."
+        }
+    ],
+    "tags": {
+        "cleanup": "cleanup",
+        "database": "database",
+        "optimization": "optimization",
+        "performance": "performance",
+        "transients": "transients"
+    },
+    "stable_tag": "1.0.7",
+    "versions": {
+        "1.0.7": "https://downloads.wordpress.org/plugin/feathersweep-database-cleanup.1.0.7.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/feathersweep-database-cleanup.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/feathersweep-database-cleanup/assets/banner-772x250.png?rev=3695733",
+        "high": "https://ps.w.org/feathersweep-database-cleanup/assets/banner-1544x500.png?rev=3695733"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/feathersweep-database-cleanup/assets/icon.svg?rev=3695733",
+        "svg": "https://ps.w.org/feathersweep-database-cleanup/assets/icon.svg?rev=3695733"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

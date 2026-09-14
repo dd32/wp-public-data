@@ -1,0 +1,95 @@
+{
+    "name": "T2F Two-Screen Login Form",
+    "slug": "t2f-two-screen-login",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/t2ftech/\">T2F Development &amp; Consulting</a>",
+    "author_profile": "https://profiles.wordpress.org/t2ftech/",
+    "contributors": {
+        "t2ftech": {
+            "profile": "https://profiles.wordpress.org/t2ftech/",
+            "avatar": "https://secure.gravatar.com/avatar/a626d3c7045a19c1ca04d0125ff67f01c61d43427f61e1a69b7368e408495fdd?s=96&d=monsterid&r=g",
+            "display_name": "T2F Development &amp; Consulting"
+        },
+        "thaissamendes": {
+            "profile": "https://profiles.wordpress.org/thaissamendes/",
+            "avatar": "https://secure.gravatar.com/avatar/4fcd08e6a6dd16dbb16c61bad56c14aa1d20387398318938a898dea3a1fbf1ec?s=96&d=monsterid&r=g",
+            "display_name": "tmendes"
+        }
+    },
+    "requires": "5.6",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/t2f-two-screen-login/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-14 17:55:00",
+    "added": "2026-09-14",
+    "homepage": "https://t2f.tech",
+    "sections": {
+        "description": "<p>Most front-end login forms put the email and password on one screen. Big consumer<br />\nsites (Amazon, Google, PayPal&#8230;) split it in two: you type your email, press<br />\n<strong>Continue</strong>, and only then are you asked for your password.</p>\n<p><strong>T2F Two-Screen Login Form</strong> brings that flow to WordPress as a shortcode you can drop on<br />\nany page:</p>\n<pre><code>[two_step_login]\n</code></pre>\n<h4>How it works</h4>\n<ol>\n<li><strong>Step 1 — identifier.</strong> The visitor enters their email (optionally username too)<br />\nand presses <strong>Continue</strong>. By default this transition happens entirely in the<br />\nbrowser — no server request — so the endpoint only ever sees the final submit.</li>\n<li><strong>Step 2 — password.</strong> The email is shown with a <strong>Change</strong> link back to step 1.<br />\nThe visitor enters their password, optionally ticks <strong>Remember me</strong>, and signs in.</li>\n<li>On success the browser is redirected (to <code>?redirect_to=</code> if present and on-site,<br />\notherwise to the page you configure — the WooCommerce account page by default,<br />\nor the site home).</li>\n</ol>\n<p>Everything happens without a full page reload until the final redirect.</p>\n<h4>Keeping the load down</h4>\n<p>Because step 1 is resolved client-side, a normal sign-in makes exactly one<br />\n    admin-ajax.php call. Failed password attempts are rate-limited per IP address<br />\nand per email in a short rolling window <em>before</em> WordPress authentication runs,<br />\nand an off-screen honeypot field plus a minimum fill-time check drop obvious bot<br />\nsubmissions without the (CPU-heavy) password hash. Together these keep<br />\ncredential-stuffing traffic from turning the login page into a load problem.</p>\n<p>(When <strong>Unknown accounts</strong> is set to reveal missing accounts, step 1 still needs a<br />\nserver round trip, since that answer can only come from the database.)</p>\n<h4>Privacy</h4>\n<p>By default the two possible step-1 responses are identical whether or not an account<br />\nexists, and failed logins return a single generic message — so the form cannot be<br />\nused to discover which email addresses have accounts. A setting lets you turn on<br />\nexplicit &#8220;no account found&#8221; messages if you prefer Amazon&#8217;s behaviour.</p>\n<h4>Settings (Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Two-Screen Login)</h4>\n<ul>\n<li><strong>First step accepts</strong> — email only, or email <em>or</em> username.</li>\n<li><strong>Unknown accounts</strong> — stay silent (default) or say when no account matches.</li>\n<li><strong>Rate limiting</strong> — throttle repeated failed logins per IP / email (on by default).</li>\n<li><strong>Redirect after login</strong> — a URL, or blank for the account page / home.</li>\n<li><strong>Lost-password URL</strong> — a URL, or blank for the default WordPress reset page.</li>\n</ul>\n<h4>For developers</h4>\n<pre><code>add_filter( 'tslf_redirect_url', function ( $url ) { return home_url( '/dashboard/' ); } );\nadd_filter( 'tslf_lostpassword_url', function ( $url ) { return '/forgot/'; } );\nadd_filter( 'tslf_template', function ( $path, $name, $args ) { return $path; }, 10, 3 );\nadd_filter( 'tslf_logged_in_notice', function ( $html, $user ) { return $html; }, 10, 2 );\nadd_action( 'tslf_logged_in', function ( $user ) { /* ... */ } );\n\n// Abuse mitigation.\nadd_filter( 'tslf_throttle', function ( $c ) { $c['id_max'] = 5; return $c; } ); // window, ip_max, id_max\nadd_filter( 'tslf_min_fill_ms', function () { return 2000; } );\nadd_filter( 'tslf_client_ip', function ( $ip ) { return $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $ip; } );\n</code></pre>\n<p>The two step templates (<code>templates/step-identifier.php</code>, <code>templates/step-password.php</code>)<br />\ncan be swapped with the <code>tslf_template</code> filter. Style hooks are plain classes<br />\n(<code>.tslf</code>, <code>.tslf-form</code>, <code>.tslf-step</code>, <code>.tslf-error</code>, <code>.tslf-submit</code>) and CSS custom<br />\nproperties (<code>--tslf-accent</code>, <code>--tslf-border</code>, …).</p>\n<h4>Notes &amp; limitations</h4>\n<ul>\n<li>This is a <strong>front-end</strong> form for a page of your choosing. It does not replace<br />\n  wp-login.php or change wp-admin.</li>\n<li>No social login, no 2FA — those are separate concerns handled by other plugins.</li>\n<li>If you serve the login page from a full-page cache, exclude it (or its nonce may<br />\nage out for logged-out visitors after ~12 hours).</li>\n<li>Translations (including Brazilian Portuguese) are managed on<br />\ntranslate.wordpress.org, not bundled with the plugin. The text domain is<br />\n  t2f-two-screen-login.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin.</li>\n<li>Create a page (e.g. &#8220;Sign in&#8221;) and add the shortcode <code>[two_step_login]</code>.</li>\n<li>Optionally review <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Two-Screen Login</strong>.</li>\n<li>Point your theme&#8217;s &#8220;Log in&#8221; links at that page.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20it%20work%20with%20woocommerce%3F\">\nDoes it work with WooCommerce?\n</h4>\n<p>\n<p>Yes. If WooCommerce is active and no redirect is configured, users land on the<br />\nMy Account page after logging in. It does not otherwise depend on WooCommerce.</p>\n</p>\n<dt id=\"can%20visitors%20log%20in%20with%20their%20username%20instead%20of%20email%3F\">\nCan visitors log in with their username instead of email?\n</h4>\n<p>\n<p>Yes — set <strong>First step accepts</strong> to &#8220;Email address or username&#8221;.</p>\n</p>\n<dt id=\"javascript%20is%20required%3F\">\nJavaScript is required?\n</h4>\n<p>\n<p>The stepped experience is JavaScript-driven. With JS disabled the form still posts,<br />\nbut without the progressive two-screen transition. The bot timing check is skipped<br />\nfor no-JS submissions (the honeypot and rate limiting still apply).</p>\n</p>\n<dt id=\"does%20it%20support%20%22remember%20me%22%3F\">\nDoes it support &#8220;Remember me&#8221;?\n</h4>\n<p>\n<p>Yes, via a checkbox on the password step.</p>\n</p>\n<dt id=\"is%20the%20password%20ever%20exposed%3F\">\nIs the password ever exposed?\n</h4>\n<p>\n<p>No. It is sent once, over your site&#8217;s normal (HTTPS) connection, to WordPress&#8217;s<br />\nstandard <code>wp_signon()</code> authentication — the same function core uses.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "An Amazon-style two-screen login: enter your email first, then your password on a second screen. Added to any page with a shortcode.",
+    "description": "<p>Most front-end login forms put the email and password on one screen. Big consumer<br />\nsites (Amazon, Google, PayPal&#8230;) split it in two: you type your email, press<br />\n<strong>Continue</strong>, and only then are you asked for your password.</p>\n<p><strong>T2F Two-Screen Login Form</strong> brings that flow to WordPress as a shortcode you can drop on<br />\nany page:</p>\n<pre><code>[two_step_login]\n</code></pre>\n<h4>How it works</h4>\n<ol>\n<li><strong>Step 1 — identifier.</strong> The visitor enters their email (optionally username too)<br />\nand presses <strong>Continue</strong>. By default this transition happens entirely in the<br />\nbrowser — no server request — so the endpoint only ever sees the final submit.</li>\n<li><strong>Step 2 — password.</strong> The email is shown with a <strong>Change</strong> link back to step 1.<br />\nThe visitor enters their password, optionally ticks <strong>Remember me</strong>, and signs in.</li>\n<li>On success the browser is redirected (to <code>?redirect_to=</code> if present and on-site,<br />\notherwise to the page you configure — the WooCommerce account page by default,<br />\nor the site home).</li>\n</ol>\n<p>Everything happens without a full page reload until the final redirect.</p>\n<h4>Keeping the load down</h4>\n<p>Because step 1 is resolved client-side, a normal sign-in makes exactly one<br />\n    admin-ajax.php call. Failed password attempts are rate-limited per IP address<br />\nand per email in a short rolling window <em>before</em> WordPress authentication runs,<br />\nand an off-screen honeypot field plus a minimum fill-time check drop obvious bot<br />\nsubmissions without the (CPU-heavy) password hash. Together these keep<br />\ncredential-stuffing traffic from turning the login page into a load problem.</p>\n<p>(When <strong>Unknown accounts</strong> is set to reveal missing accounts, step 1 still needs a<br />\nserver round trip, since that answer can only come from the database.)</p>\n<h4>Privacy</h4>\n<p>By default the two possible step-1 responses are identical whether or not an account<br />\nexists, and failed logins return a single generic message — so the form cannot be<br />\nused to discover which email addresses have accounts. A setting lets you turn on<br />\nexplicit &#8220;no account found&#8221; messages if you prefer Amazon&#8217;s behaviour.</p>\n<h4>Settings (Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Two-Screen Login)</h4>\n<ul>\n<li><strong>First step accepts</strong> — email only, or email <em>or</em> username.</li>\n<li><strong>Unknown accounts</strong> — stay silent (default) or say when no account matches.</li>\n<li><strong>Rate limiting</strong> — throttle repeated failed logins per IP / email (on by default).</li>\n<li><strong>Redirect after login</strong> — a URL, or blank for the account page / home.</li>\n<li><strong>Lost-password URL</strong> — a URL, or blank for the default WordPress reset page.</li>\n</ul>\n<h4>For developers</h4>\n<pre><code>add_filter( 'tslf_redirect_url', function ( $url ) { return home_url( '/dashboard/' ); } );\nadd_filter( 'tslf_lostpassword_url', function ( $url ) { return '/forgot/'; } );\nadd_filter( 'tslf_template', function ( $path, $name, $args ) { return $path; }, 10, 3 );\nadd_filter( 'tslf_logged_in_notice', function ( $html, $user ) { return $html; }, 10, 2 );\nadd_action( 'tslf_logged_in', function ( $user ) { /* ... */ } );\n\n// Abuse mitigation.\nadd_filter( 'tslf_throttle', function ( $c ) { $c['id_max'] = 5; return $c; } ); // window, ip_max, id_max\nadd_filter( 'tslf_min_fill_ms', function () { return 2000; } );\nadd_filter( 'tslf_client_ip', function ( $ip ) { return $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $ip; } );\n</code></pre>\n<p>The two step templates (<code>templates/step-identifier.php</code>, <code>templates/step-password.php</code>)<br />\ncan be swapped with the <code>tslf_template</code> filter. Style hooks are plain classes<br />\n(<code>.tslf</code>, <code>.tslf-form</code>, <code>.tslf-step</code>, <code>.tslf-error</code>, <code>.tslf-submit</code>) and CSS custom<br />\nproperties (<code>--tslf-accent</code>, <code>--tslf-border</code>, …).</p>\n<h4>Notes &amp; limitations</h4>\n<ul>\n<li>This is a <strong>front-end</strong> form for a page of your choosing. It does not replace<br />\n  wp-login.php or change wp-admin.</li>\n<li>No social login, no 2FA — those are separate concerns handled by other plugins.</li>\n<li>If you serve the login page from a full-page cache, exclude it (or its nonce may<br />\nage out for logged-out visitors after ~12 hours).</li>\n<li>Translations (including Brazilian Portuguese) are managed on<br />\ntranslate.wordpress.org, not bundled with the plugin. The text domain is<br />\n  t2f-two-screen-login.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/t2f-two-screen-login.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/t2f-two-screen-login/assets/screenshot-1.png?rev=3695701",
+            "caption": "Step 1 — the visitor enters their email address."
+        },
+        {
+            "src": "https://ps.w.org/t2f-two-screen-login/assets/screenshot-2.png?rev=3695701",
+            "caption": "Step 2 — the password screen, with a \"Change\" link back to the email step."
+        },
+        {
+            "src": "https://ps.w.org/t2f-two-screen-login/assets/screenshot-3.png?rev=3695701",
+            "caption": "Settings -&gt; Two-Screen Login."
+        }
+    ],
+    "tags": {
+        "authentication": "authentication",
+        "front-end-login": "Front end login",
+        "login": "login",
+        "login-form": "login form",
+        "shortcode": "shortcode"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/t2f-two-screen-login.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/t2f-two-screen-login.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/t2f-two-screen-login/assets/banner-772x250.png?rev=3695701",
+        "high": "https://ps.w.org/t2f-two-screen-login/assets/banner-1544x500.png?rev=3695701"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/t2f-two-screen-login/assets/icon.svg?rev=3695701",
+        "svg": "https://ps.w.org/t2f-two-screen-login/assets/icon.svg?rev=3695701"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
