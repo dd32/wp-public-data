@@ -1,0 +1,99 @@
+{
+    "name": "Imedes Preflight",
+    "slug": "imedes-preflight",
+    "version": "1.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/imedes/\">imedes</a>",
+    "author_profile": "https://profiles.wordpress.org/imedes/",
+    "contributors": {
+        "imedes": {
+            "profile": "https://profiles.wordpress.org/imedes/",
+            "avatar": "https://secure.gravatar.com/avatar/b54f1d6ab1e694e8bdaf17f22f7f48e18cd18bd17440663d2f622ad7eddf2d98?s=96&d=monsterid&r=g",
+            "display_name": "imedes"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.1",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/imedes-preflight/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-15 12:26:00",
+    "added": "2026-09-15",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Imedes Preflight combines a more resilient public URL structure with early request qualification for WordPress.</p>\n<p>A normal WordPress 404 can require WordPress, plugins, the theme and database queries to run before the request is finally known to be invalid. Preflight can move that decision much earlier. In Final Mode, invalid public GET/HEAD requests can be rejected from the MU runtime before normal plugin and theme processing, reducing unnecessary PHP, database, CPU and memory work.</p>\n<p>Preflight also gives public resources a stable identity while preserving a human-readable semantic URL. It appends a resource-specific delimiter and numeric ID to public Post, Term and Author URLs. For example, a Post URL can end in:</p>\n<pre><code>/example-title/:-:123/\n</code></pre>\n<p>Terms and Authors use their own delimiters and IDs. The semantic part remains readable, while the numeric identity gives Preflight a stable way to identify the intended resource.</p>\n<p>This has an important practical advantage: if the semantic part of a valid Preflight URL is misspelled, stale or has changed, the stable resource ID can still identify the intended resource. Preflight can then redirect the request to the current canonical URL instead of automatically losing the visit to a 404. This can reduce traffic loss caused by damaged, outdated or incorrectly reproduced semantic URL paths.</p>\n<p>A simple example shows the difference. Assume the current canonical resource is:</p>\n<pre><code>/example-title/\n</code></pre>\n<p>Without Preflight, a damaged link such as:</p>\n<pre><code>/exampl-title/\n</code></pre>\n<p>contains only the semantic path. If WordPress cannot infer which resource was intended, the request ends in a 404 and the visit is lost.</p>\n<p>With Preflight, the equivalent public URL contains a stable resource identity:</p>\n<pre><code>/example-title/:-:123/\n</code></pre>\n<p>If an external link damages only the semantic part but keeps the identity:</p>\n<pre><code>/exampl-title/:-:123/\n</code></pre>\n<p>Preflight can still identify resource <code>123</code>, compare the requested path with the stored canonical path and issue a 301 redirect to:</p>\n<pre><code>/example-title/:-:123/\n</code></pre>\n<p>The readable part can therefore be wrong while the resource itself remains deterministically recoverable. The same principle also helps when a semantic path becomes stale after a URL change: the stable identity does not depend on the wording of that path.</p>\n<p>The underlying URL principle is not experimental. Combining a human-readable semantic component with a stable numeric resource identity has been used successfully in production systems for decades. Preflight applies that proven principle to WordPress so URLs can remain readable while also becoming deterministically identifiable. That stable identity is what makes both canonical recovery and early request qualification possible.</p>\n<p>Static files such as images, CSS, JavaScript and fonts are outside Preflight&#8217;s resource-identity model. Preflight keeps missing requests for these file types out of its Observation statistics and, on compatible rewrite-based servers, lets the web server finish them without sending them through the normal WordPress front controller. This matters because a missing static file can otherwise fall through the normal WordPress rewrite path and trigger a complete WordPress request just to end in a 404. Sites with stale image references, removed media or crawlers requesting old asset URLs can therefore avoid a surprising amount of unnecessary PHP, plugin, theme and database work.</p>\n<p>Preflight does not switch this behavior on immediately. It uses a staged lifecycle:</p>\n<ol>\n<li><strong>Observation</strong> &#8211; no public URL change. Preflight measures the real cost of WordPress 404 handling.</li>\n<li><strong>Migration</strong> &#8211; stable Preflight resource identities are added to generated public URLs while native URLs remain reachable and are redirected forward.</li>\n<li><strong>Final</strong> &#8211; the Resource Index becomes authoritative for non-excluded public GET/HEAD requests, enabling early 404/410 decisions and canonical redirects before normal plugin and theme processing.</li>\n</ol>\n<p>WordPress attachment pages are outside Preflight&#8217;s resource-identity model. If public attachment pages are enabled when Final Mode starts, Preflight disables that WordPress setting automatically and remembers the previous state. The original setting is restored when Re-Migration returns the site to native WordPress behavior.</p>\n<p>Preflight currently requires an Apache or LiteSpeed/OpenLiteSpeed web-server environment with working <code>.htaccess</code> rewrite support. NGINX-only environments are not supported. The Migration and Final requirement tests verify the detected web server before productive Preflight modes can be enabled.</p>\n<p>Because Migration changes the public URL contract of a site, Preflight includes a protected Re-Migration path for returning to native WordPress URLs. A verified standalone legacy redirect can remain after Preflight is removed so previously published Preflight URLs continue to reach their native counterparts.</p>\n",
+        "installation": "<ol>\n<li>Upload and activate Imedes Preflight.</li>\n<li>Open Imedes Preflight in the WordPress admin.</li>\n<li>Read the introduction and the staged lifecycle explanation.</li>\n<li>Continue with Observation Mode before deciding whether to start Migration.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20preflight%20change%20my%20urls%20immediately%20after%20activation%3F\">\nDoes Preflight change my URLs immediately after activation?\n</h4>\n<p>\n<p>No. A fresh installation first presents the introduction and lifecycle information. Observation Mode does not change public URLs. URL changes begin only when Migration is explicitly started after its requirement checks pass.</p>\n</p>\n<dt id=\"why%20does%20preflight%20add%20an%20id%20to%20a%20readable%20url%3F\">\nWhy does Preflight add an ID to a readable URL?\n</h4>\n<p>\n<p>The semantic part remains useful to people and search systems, while the numeric ID gives Preflight a stable resource identity. This allows the intended resource to remain identifiable even when the semantic path is stale or incorrect and enables deterministic early request handling.</p>\n</p>\n<dt id=\"what%20happens%20to%20invalid%20requests%20in%20final%20mode%3F\">\nWhat happens to invalid requests in Final Mode?\n</h4>\n<p>\n<p>Outside configured Excludes, public GET/HEAD requests without a valid Preflight resource identity can be rejected from the early MU runtime before normal plugin and theme processing.</p>\n</p>\n<dt id=\"does%20preflight%20work%20with%20yoast%20seo%3F\">\nDoes Preflight work with Yoast SEO?\n</h4>\n<p>\n<p>Yes. When Yoast SEO is active, Preflight verifies changed public Post indexables again at the end of the save request and asks Yoast to rebuild an indexable if its stored permalink does not match the current Preflight permalink.</p>\n<p>When Migration is enabled on a site that already has Yoast SEO indexables, rebuild the existing Yoast index once after Migration starts so previously stored permalinks are regenerated with the new Preflight URL structure. With WP-CLI this can be done with <code>wp yoast index --reindex</code>.</p>\n</p>\n<dt id=\"does%20preflight%20work%20with%20nginx%3F\">\nDoes Preflight work with NGINX?\n</h4>\n<p>\n<p>Not in the current version. Preflight requires Apache or LiteSpeed/OpenLiteSpeed with working <code>.htaccess</code> rewrite support. NGINX-only environments are blocked by the productive-mode requirement test.</p>\n</p>\n<dt id=\"can%20preflight%20be%20removed%20after%20migration%3F\">\nCan Preflight be removed after Migration?\n</h4>\n<p>\n<p>Yes, but the protected Re-Migration process must be completed first. It restores native WordPress link generation and installs and verifies a standalone legacy redirect for previously published Preflight URLs.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Faster invalid-request handling and resilient WordPress URLs with stable public resource identities.",
+    "description": "<p>Imedes Preflight combines a more resilient public URL structure with early request qualification for WordPress.</p>\n<p>A normal WordPress 404 can require WordPress, plugins, the theme and database queries to run before the request is finally known to be invalid. Preflight can move that decision much earlier. In Final Mode, invalid public GET/HEAD requests can be rejected from the MU runtime before normal plugin and theme processing, reducing unnecessary PHP, database, CPU and memory work.</p>\n<p>Preflight also gives public resources a stable identity while preserving a human-readable semantic URL. It appends a resource-specific delimiter and numeric ID to public Post, Term and Author URLs. For example, a Post URL can end in:</p>\n<pre><code>/example-title/:-:123/\n</code></pre>\n<p>Terms and Authors use their own delimiters and IDs. The semantic part remains readable, while the numeric identity gives Preflight a stable way to identify the intended resource.</p>\n<p>This has an important practical advantage: if the semantic part of a valid Preflight URL is misspelled, stale or has changed, the stable resource ID can still identify the intended resource. Preflight can then redirect the request to the current canonical URL instead of automatically losing the visit to a 404. This can reduce traffic loss caused by damaged, outdated or incorrectly reproduced semantic URL paths.</p>\n<p>A simple example shows the difference. Assume the current canonical resource is:</p>\n<pre><code>/example-title/\n</code></pre>\n<p>Without Preflight, a damaged link such as:</p>\n<pre><code>/exampl-title/\n</code></pre>\n<p>contains only the semantic path. If WordPress cannot infer which resource was intended, the request ends in a 404 and the visit is lost.</p>\n<p>With Preflight, the equivalent public URL contains a stable resource identity:</p>\n<pre><code>/example-title/:-:123/\n</code></pre>\n<p>If an external link damages only the semantic part but keeps the identity:</p>\n<pre><code>/exampl-title/:-:123/\n</code></pre>\n<p>Preflight can still identify resource <code>123</code>, compare the requested path with the stored canonical path and issue a 301 redirect to:</p>\n<pre><code>/example-title/:-:123/\n</code></pre>\n<p>The readable part can therefore be wrong while the resource itself remains deterministically recoverable. The same principle also helps when a semantic path becomes stale after a URL change: the stable identity does not depend on the wording of that path.</p>\n<p>The underlying URL principle is not experimental. Combining a human-readable semantic component with a stable numeric resource identity has been used successfully in production systems for decades. Preflight applies that proven principle to WordPress so URLs can remain readable while also becoming deterministically identifiable. That stable identity is what makes both canonical recovery and early request qualification possible.</p>\n<p>Static files such as images, CSS, JavaScript and fonts are outside Preflight&#8217;s resource-identity model. Preflight keeps missing requests for these file types out of its Observation statistics and, on compatible rewrite-based servers, lets the web server finish them without sending them through the normal WordPress front controller. This matters because a missing static file can otherwise fall through the normal WordPress rewrite path and trigger a complete WordPress request just to end in a 404. Sites with stale image references, removed media or crawlers requesting old asset URLs can therefore avoid a surprising amount of unnecessary PHP, plugin, theme and database work.</p>\n<p>Preflight does not switch this behavior on immediately. It uses a staged lifecycle:</p>\n<ol>\n<li><strong>Observation</strong> &#8211; no public URL change. Preflight measures the real cost of WordPress 404 handling.</li>\n<li><strong>Migration</strong> &#8211; stable Preflight resource identities are added to generated public URLs while native URLs remain reachable and are redirected forward.</li>\n<li><strong>Final</strong> &#8211; the Resource Index becomes authoritative for non-excluded public GET/HEAD requests, enabling early 404/410 decisions and canonical redirects before normal plugin and theme processing.</li>\n</ol>\n<p>WordPress attachment pages are outside Preflight&#8217;s resource-identity model. If public attachment pages are enabled when Final Mode starts, Preflight disables that WordPress setting automatically and remembers the previous state. The original setting is restored when Re-Migration returns the site to native WordPress behavior.</p>\n<p>Preflight currently requires an Apache or LiteSpeed/OpenLiteSpeed web-server environment with working <code>.htaccess</code> rewrite support. NGINX-only environments are not supported. The Migration and Final requirement tests verify the detected web server before productive Preflight modes can be enabled.</p>\n<p>Because Migration changes the public URL contract of a site, Preflight includes a protected Re-Migration path for returning to native WordPress URLs. A verified standalone legacy redirect can remain after Preflight is removed so previously published Preflight URLs continue to reach their native counterparts.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/imedes-preflight.1.0.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/imedes-preflight/assets/screenshot-1.png?rev=3696561",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/imedes-preflight/assets/screenshot-2.png?rev=3696561",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/imedes-preflight/assets/screenshot-3.png?rev=3696561",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/imedes-preflight/assets/screenshot-4.png?rev=3696561",
+            "caption": ""
+        },
+        {
+            "src": "https://ps.w.org/imedes-preflight/assets/screenshot-5.png?rev=3696960",
+            "caption": ""
+        }
+    ],
+    "tags": {
+        "404": "404",
+        "performance": "performance",
+        "permalink": "permalink",
+        "redirect": "redirect",
+        "url": "url"
+    },
+    "stable_tag": "1.0.1",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/imedes-preflight.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/imedes-preflight.1.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/imedes-preflight.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/imedes-preflight/assets/banner-772x250.png?rev=3696561",
+        "high": "https://ps.w.org/imedes-preflight/assets/banner-1544x500.png?rev=3696561"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/imedes-preflight/assets/icon-256x256.png?rev=3696561",
+        "2x": "https://ps.w.org/imedes-preflight/assets/icon-256x256.png?rev=3696561"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
