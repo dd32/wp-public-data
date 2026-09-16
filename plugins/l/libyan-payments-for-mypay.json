@@ -1,0 +1,93 @@
+{
+    "name": "Libyan Payments for MyPay",
+    "slug": "libyan-payments-for-mypay",
+    "version": "1.0.7",
+    "author": "<a href=\"https://profiles.wordpress.org/mypayly/\">mypay</a>",
+    "author_profile": "https://profiles.wordpress.org/mypayly/",
+    "contributors": {
+        "mypayly": {
+            "profile": "https://profiles.wordpress.org/mypayly/",
+            "avatar": "https://secure.gravatar.com/avatar/d57b89e01696be008235bd4e589df767650d6987fa7b054d4843268dd2af2f77?s=96&d=monsterid&r=g",
+            "display_name": "mypay"
+        },
+        "mypay": {
+            "profile": "https://profiles.wordpress.org/mypay/",
+            "avatar": "https://secure.gravatar.com/avatar/5861b252748e42bb3f292af3524e6d2511d1aefa2ec703ef42b0d356e1824755?s=96&d=monsterid&r=g",
+            "display_name": "mypay"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/libyan-payments-for-mypay/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-16 16:12:00",
+    "added": "2026-09-16",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Libyan Payments for MyPay connects your store to the MyPay payment platform (<a href=\"https://mypay.ly\" rel=\"nofollow ugc\">mypay.ly</a>) so you can accept secure local payments across Libya.</p>\n<p>This plugin allows merchants to accept payments directly on their WooCommerce store using Libya&#8217;s local payment methods, including bank cards, Edfali, Sadad, Mobicash, Yaser Pay, Sahara Pay, Masrafi Pay, and optional prepaid card when enabled for your merchant in MyPay. Orders are confirmed using a signed webhook, not by relying on the customer&#8217;s browser return alone.</p>\n<h4>Key features</h4>\n<ul>\n<li>Seamless integration with WooCommerce and WooCommerce Blocks checkout</li>\n<li>Secure payment processing through MyPay hosted checkout</li>\n<li>Customizable payment gateway title and description</li>\n<li>Signed webhook verification using <code>X-MyPay-Signature</code></li>\n<li>Alias gateways for supported MyPay payment methods</li>\n<li>Logging for troubleshooting</li>\n</ul>\n<h4>Requirements</h4>\n<ul>\n<li>WordPress 6.5 or newer</li>\n<li>WooCommerce (from WordPress.org)</li>\n<li>PHP 7.4 or newer</li>\n<li>A MyPay merchant account with API credentials</li>\n</ul>\n<h3>Configuration</h3>\n<ol>\n<li>Go to WooCommerce -&gt; Settings -&gt; Payments.</li>\n<li>Click on &#8220;MyPay&#8221; to configure the gateway.</li>\n<li>Enable the gateway by checking the &#8220;Enable MyPay Gateway&#8221; box.</li>\n<li>Enter your MyPay Client ID and Secret ID from your MyPay merchant dashboard.</li>\n<li>Use the environment switch:\n<ul>\n<li>Production = unchecked, which targets <code>/pay/api/v1</code></li>\n<li>Sandbox = checked, which targets <code>/pay/sandbox/api/v1</code></li>\n</ul>\n</li>\n<li>Paste the Webhook Secret from your MyPay merchant dashboard.</li>\n<li>Keep the generated Webhook URL configured in your MyPay merchant API settings.</li>\n<li>Customize the title and description if desired.</li>\n<li>Save changes.</li>\n</ol>\n<h3>External services</h3>\n<p>This plugin connects to MyPay (https://mypay.ly) to process payments and synchronize merchant connection status when API credentials are configured. MyPay is required for checkout and order confirmation.</p>\n<p><strong>What is sent and when</strong></p>\n<ul>\n<li><strong>Payment API</strong> (<code>/authentication/token</code>, <code>/payment/create</code>): order amount, currency, billing name, email, phone, order ID, return/cancel/webhook URLs, and selected gateway alias when a customer pays.</li>\n<li><strong>Webhook</strong> (incoming to your site): signed payment status payload from MyPay to finalize WooCommerce orders.</li>\n<li><strong>Connection sync</strong> (<code>/plugin/connect</code>, <code>/plugin/disconnect</code>, <code>/plugin/heartbeat</code>): site URL, plugin/WP/WC versions, environment (production/sandbox), enabled gateway flags, and plugin active state when you save MyPay credentials or change gateway settings. This supports merchant setup verification on MyPay.</li>\n<li><strong>Optional health telemetry</strong> (<code>/plugin/telemetry-consent</code>): only when you explicitly enable &#8220;Share optional plugin health data with MyPay&#8221; in gateway settings (disabled by default). No customer, order checkout payload, or admin personal data is included.</li>\n</ul>\n<p>This service is provided by MyPay:</p>\n<ul>\n<li>Terms of Service: https://mypay.ly/page/terms-and-conditions</li>\n<li>Privacy Policy: https://mypay.ly/page/privacy-policy</li>\n</ul>\n<h3>Production notes</h3>\n<ul>\n<li>The plugin uses an embedded MyPay host and only needs the environment switch.</li>\n<li>The webhook secret in WooCommerce must match the webhook secret configured for the merchant key in MyPay.</li>\n<li>Alias gateways such as <code>yasr-pay</code>, <code>masrafi-pay</code>, <code>sahary-pay</code> (shown in the store as <strong>Sahara Pay</strong>), <code>moamalat</code> (shown as <strong>Banking Card</strong>), <code>edfali</code>, <code>sadad</code>, and <code>mobicash</code> must also exist and be enabled in the merchant gateway settings on MyPay.</li>\n<li>The <code>prepaid-card</code> alias requires prepaid card payments to be enabled for your merchant in MyPay.</li>\n<li>A customer returning from MyPay does not complete the WooCommerce order by itself; the signed webhook is the source of truth for final order completion.</li>\n</ul>\n<h3>Privacy &amp; tracking</h3>\n<ul>\n<li>Payment processing requires MyPay API calls once credentials are saved (Software as a Service).</li>\n<li>Operational connection sync is sent when credentials are configured to support merchant setup on MyPay.</li>\n<li>Optional plugin health telemetry is <strong>disabled by default</strong> and can be enabled in WooCommerce -&gt; Settings -&gt; Payments -&gt; MyPay.</li>\n<li>No customer checkout payload or admin personal data is sent as part of optional plugin health metadata.</li>\n</ul>\n<h3>Credits</h3>\n<p>Developed by MyPay &#8211; https://mypay.ly</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/libyan-payments-for-mypay</code> directory, or install the plugin through the WordPress plugins screen directly.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; screen in WordPress.</li>\n<li>Use the WooCommerce -&gt; Settings -&gt; Payments screen to configure the plugin.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"where%20do%20i%20get%20api%20credentials%3F\">\nWhere do I get API credentials?\n</h4>\n<p>\n<p>From your MyPay merchant dashboard at <a href=\"https://mypay.ly\" rel=\"nofollow ugc\">mypay.ly</a>.</p>\n</p>\n<dt id=\"does%20this%20plugin%20work%20with%20woocommerce%20blocks%20checkout%3F\">\nDoes this plugin work with WooCommerce Blocks checkout?\n</h4>\n<p>\n<p>Yes. MyPay and its alias gateways register WooCommerce Blocks payment method support.</p>\n</p>\n<dt id=\"how%20does%20the%20plugin%20communicate%20with%20mypay%3F\">\nHow does the plugin communicate with MyPay?\n</h4>\n<p>\n<p>Outbound API calls use the WordPress HTTP API (<code>wp_remote_post</code>).</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.7</h4>\n<ul>\n<li>Restored production mypay.ly Author URI, API host, and Terms/Privacy links (removed local mypay.test URLs).</li>\n</ul>\n<h4>1.0.6</h4>\n<ul>\n<li>Removed bundled Guzzle; all MyPay API calls now use the WordPress HTTP API.</li>\n</ul>\n<h4>1.0.5</h4>\n<ul>\n<li>WordPress.org review updates: Tested up to only in readme; documented MyPay Terms and Privacy links.</li>\n</ul>\n<h4>1.0.4</h4>\n<ul>\n<li>Renamed plugin to Libyan Payments for MyPay for WordPress.org trademark compliance.</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>Verified webhooks before logging; WordPress.org directory compliance updates.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Added alias gateways for Sadad (<code>sadad</code>) and Mobicash (<code>mobicash</code>), including Blocks checkout support and merchant documentation.</li>\n<li>Added optional plugin health telemetry opt-in (disabled by default) for WordPress.org compliance.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Added optional alias gateway for prepaid card (<code>prepaid-card</code>), including Blocks checkout support and merchant documentation.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Added operational plugin tracking for MyPay support and compliance workflows</li>\n<li>Documented server-side tracking and privacy expectations in the readme</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
+    },
+    "short_description": "WooCommerce payment gateway for MyPay local payments in Libya.",
+    "description": "<p>Libyan Payments for MyPay connects your store to the MyPay payment platform (<a href=\"https://mypay.ly\" rel=\"nofollow ugc\">mypay.ly</a>) so you can accept secure local payments across Libya.</p>\n<p>This plugin allows merchants to accept payments directly on their WooCommerce store using Libya&#8217;s local payment methods, including bank cards, Edfali, Sadad, Mobicash, Yaser Pay, Sahara Pay, Masrafi Pay, and optional prepaid card when enabled for your merchant in MyPay. Orders are confirmed using a signed webhook, not by relying on the customer&#8217;s browser return alone.</p>\n<h4>Key features</h4>\n<ul>\n<li>Seamless integration with WooCommerce and WooCommerce Blocks checkout</li>\n<li>Secure payment processing through MyPay hosted checkout</li>\n<li>Customizable payment gateway title and description</li>\n<li>Signed webhook verification using <code>X-MyPay-Signature</code></li>\n<li>Alias gateways for supported MyPay payment methods</li>\n<li>Logging for troubleshooting</li>\n</ul>\n<h4>Requirements</h4>\n<ul>\n<li>WordPress 6.5 or newer</li>\n<li>WooCommerce (from WordPress.org)</li>\n<li>PHP 7.4 or newer</li>\n<li>A MyPay merchant account with API credentials</li>\n</ul>\n<h3>Configuration</h3>\n<ol>\n<li>Go to WooCommerce -&gt; Settings -&gt; Payments.</li>\n<li>Click on &#8220;MyPay&#8221; to configure the gateway.</li>\n<li>Enable the gateway by checking the &#8220;Enable MyPay Gateway&#8221; box.</li>\n<li>Enter your MyPay Client ID and Secret ID from your MyPay merchant dashboard.</li>\n<li>Use the environment switch:\n<ul>\n<li>Production = unchecked, which targets <code>/pay/api/v1</code></li>\n<li>Sandbox = checked, which targets <code>/pay/sandbox/api/v1</code></li>\n</ul>\n</li>\n<li>Paste the Webhook Secret from your MyPay merchant dashboard.</li>\n<li>Keep the generated Webhook URL configured in your MyPay merchant API settings.</li>\n<li>Customize the title and description if desired.</li>\n<li>Save changes.</li>\n</ol>\n<h3>External services</h3>\n<p>This plugin connects to MyPay (https://mypay.ly) to process payments and synchronize merchant connection status when API credentials are configured. MyPay is required for checkout and order confirmation.</p>\n<p><strong>What is sent and when</strong></p>\n<ul>\n<li><strong>Payment API</strong> (<code>/authentication/token</code>, <code>/payment/create</code>): order amount, currency, billing name, email, phone, order ID, return/cancel/webhook URLs, and selected gateway alias when a customer pays.</li>\n<li><strong>Webhook</strong> (incoming to your site): signed payment status payload from MyPay to finalize WooCommerce orders.</li>\n<li><strong>Connection sync</strong> (<code>/plugin/connect</code>, <code>/plugin/disconnect</code>, <code>/plugin/heartbeat</code>): site URL, plugin/WP/WC versions, environment (production/sandbox), enabled gateway flags, and plugin active state when you save MyPay credentials or change gateway settings. This supports merchant setup verification on MyPay.</li>\n<li><strong>Optional health telemetry</strong> (<code>/plugin/telemetry-consent</code>): only when you explicitly enable &#8220;Share optional plugin health data with MyPay&#8221; in gateway settings (disabled by default). No customer, order checkout payload, or admin personal data is included.</li>\n</ul>\n<p>This service is provided by MyPay:</p>\n<ul>\n<li>Terms of Service: https://mypay.ly/page/terms-and-conditions</li>\n<li>Privacy Policy: https://mypay.ly/page/privacy-policy</li>\n</ul>\n<h3>Production notes</h3>\n<ul>\n<li>The plugin uses an embedded MyPay host and only needs the environment switch.</li>\n<li>The webhook secret in WooCommerce must match the webhook secret configured for the merchant key in MyPay.</li>\n<li>Alias gateways such as <code>yasr-pay</code>, <code>masrafi-pay</code>, <code>sahary-pay</code> (shown in the store as <strong>Sahara Pay</strong>), <code>moamalat</code> (shown as <strong>Banking Card</strong>), <code>edfali</code>, <code>sadad</code>, and <code>mobicash</code> must also exist and be enabled in the merchant gateway settings on MyPay.</li>\n<li>The <code>prepaid-card</code> alias requires prepaid card payments to be enabled for your merchant in MyPay.</li>\n<li>A customer returning from MyPay does not complete the WooCommerce order by itself; the signed webhook is the source of truth for final order completion.</li>\n</ul>\n<h3>Privacy &amp; tracking</h3>\n<ul>\n<li>Payment processing requires MyPay API calls once credentials are saved (Software as a Service).</li>\n<li>Operational connection sync is sent when credentials are configured to support merchant setup on MyPay.</li>\n<li>Optional plugin health telemetry is <strong>disabled by default</strong> and can be enabled in WooCommerce -&gt; Settings -&gt; Payments -&gt; MyPay.</li>\n<li>No customer checkout payload or admin personal data is sent as part of optional plugin health metadata.</li>\n</ul>\n<h3>Credits</h3>\n<p>Developed by MyPay &#8211; https://mypay.ly</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/libyan-payments-for-mypay.1.0.7.zip",
+    "upgrade_notice": {
+        "1.0.7": "<p>Uses production mypay.ly URLs for Author URI, Terms, and Privacy links.</p>",
+        "1.0.6": "<p>Removes bundled Guzzle and uses the WordPress HTTP API for all MyPay API calls.</p>",
+        "1.0.5": "<p>Documentation and WordPress.org review compliance updates.</p>",
+        "1.0.4": "<p>Plugin renamed to Libyan Payments for MyPay (permalink: libyan-payments-for-mypay).</p>",
+        "1.0.3": "<p>Security and WordPress.org review updates for webhook handling.</p>",
+        "1.0.2": "<p>Adds Sadad and Mobicash alias gateways. Optional telemetry is now opt-in and disabled by default.</p>",
+        "1.0.1": "<p>Adds optional prepaid card alias gateway support.</p>",
+        "1.0.0": "<p>Maintenance and documentation updates.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "gateway": "gateway",
+        "libya": "libya",
+        "mypay": "mypay",
+        "payments": "payments",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.7",
+    "versions": {
+        "1.0.7": "https://downloads.wordpress.org/plugin/libyan-payments-for-mypay.1.0.7.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/libyan-payments-for-mypay.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/libyan-payments-for-mypay/assets/banner-772x250.png?rev=3698970",
+        "high": "https://ps.w.org/libyan-payments-for-mypay/assets/banner-1544x500.png?rev=3698970"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/libyan-payments-for-mypay/assets/icon-128x128.png?rev=3698970",
+        "2x": "https://ps.w.org/libyan-payments-for-mypay/assets/icon-256x256.png?rev=3698970"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
