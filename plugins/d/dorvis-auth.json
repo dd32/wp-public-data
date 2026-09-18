@@ -1,7 +1,7 @@
 {
     "name": "Dorvis Auth",
     "slug": "dorvis-auth",
-    "version": "0.1.0",
+    "version": "0.1.2",
     "author": "<a href=\"https://profiles.wordpress.org/dorvis/\">dorvis</a>",
     "author_profile": "https://profiles.wordpress.org/dorvis/",
     "contributors": {
@@ -11,8 +11,8 @@
             "display_name": "dorvis"
         }
     },
-    "requires": "5.0",
-    "tested": "7.1",
+    "requires": "5.5",
+    "tested": "7.1.1",
     "requires_php": "8.0",
     "requires_plugins": [],
     "compatibility": [],
@@ -29,18 +29,18 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2026-08-26 13:23:00",
+    "last_updated": "2026-09-18 12:20:00",
     "added": "2026-08-26",
     "homepage": "",
     "sections": {
-        "description": "<p>Dorvis Auth allows your WordPress users to log in using the Dorvis OIDC provider. It supports the Authorization Code Flow for secure authentication.</p>\n<p><strong>Features:</strong><br />\n*   &#8220;Authenticate with Dorvis&#8221; button on the login form.<br />\n*   Automatic user creation based on Personal Code.<br />\n*   Maps First Name and Last Name from OIDC claims.<br />\n*   Configurable Client ID, Secret, Issuer URI and Redirect URI via Settings.</p>\n<h3>Privacy</h3>\n<p><a href=\"https://dorvis.eu/en/privacy\" rel=\"nofollow ugc\">Dorvis Privacy and Cookie Policy</a></p>\n",
-        "installation": "<ol>\n<li>Upload the <code>dorvis_auth</code> folder to the <code>/wp-content/plugins/</code> directory.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>Go to <strong>Settings &gt; Dorvis Auth</strong>.</li>\n<li>Enter your <strong>Client ID</strong> and <strong>Client Secret</strong>.</li>\n<li>Set the <strong>Redirect URI</strong> (must match your Dorvis OIDC configuration).</li>\n<li>Save changes.</li>\n</ol>\n",
-        "faq": "\n<dt id=\"where%20do%20i%20get%20my%20client%20id%3F\">\nWhere do I get my Client ID?\n</h4>\n<p>\n<p>You must contact Dorvis support or use the demo credentials provided in the documentation.</p>\n</p>\n<dt id=\"what%20claims%20are%20mapped%3F\">\nWhat claims are mapped?\n</h4>\n<p>\n<p>The plugin maps <code>person_code</code> to the username, and <code>given_name</code>/<code>family_name</code> to the user&#8217;s name fields.</p>\n</p>\n\n",
-        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>Added PKCE, state and nonce protection to the authorization request.</li>\n<li>Added callback handling with state verification.</li>\n<li>Added ID token validation, discovery caching and logout.</li>\n</ul>\n<h4>0.0.2</h4>\n<ul>\n<li>Added settings page.</li>\n<li>Improved user mapping logic.</li>\n</ul>\n<h4>0.0.1</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+        "description": "<p>Dorvis Auth allows your WordPress users to log in using the Dorvis OIDC provider. It supports the Authorization Code Flow with PKCE for secure authentication.</p>\n<p><strong>Features:</strong><br />\n*   &#8220;Authenticate with Dorvis&#8221; button on the login form.<br />\n*   Automatic account creation on first sign-in, or link-only mode where users attach a Dorvis identity to an account they already have.<br />\n*   Maps First Name and Last Name from OIDC claims.<br />\n*   Optionally rejects username and password sign-in once everyone has linked.<br />\n*   Configurable Client ID, Secret, Issuer URI and Redirect URI via Settings.</p>\n<h3>Privacy</h3>\n<p><a href=\"https://dorvis.eu/en/privacy\" rel=\"nofollow ugc\">Dorvis Privacy and Cookie Policy</a></p>\n",
+        "installation": "<ol>\n<li>Upload the <code>dorvis_auth</code> folder to the <code>/wp-content/plugins/</code> directory.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>Go to <strong>Settings &gt; Dorvis Auth</strong>.</li>\n<li>Enter your <strong>Client ID</strong> and <strong>Client Secret</strong>.</li>\n<li>Set the <strong>Issuer URI</strong> and the <strong>Redirect URI</strong> (must match your Dorvis OIDC configuration).</li>\n<li>Save changes.</li>\n</ol>\n<p>The Redirect URI path must be routed to WordPress, so the site needs a permalink structure other than Plain.</p>\n",
+        "faq": "\n<dt id=\"where%20do%20i%20get%20my%20client%20id%3F\">\nWhere do I get my Client ID?\n</h4>\n<p>\n<p>You must contact Dorvis support or use the demo credentials provided in the documentation.</p>\n</p>\n<dt id=\"how%20do%20i%20move%20an%20existing%20site%20to%20dorvis%20sign-in%3F\">\nHow do I move an existing site to Dorvis sign-in?\n</h4>\n<p>\n<p>Turn off <strong>Create accounts automatically</strong>. Existing users sign in with their password, open their profile and click <strong>Link Dorvis identity</strong>. The Users list shows who has linked. Once everyone has, turn on <strong>Disable password sign-in</strong>.</p>\n</p>\n<dt id=\"can%20i%20link%20accounts%20in%20bulk%20instead%20of%20asking%20everyone%20to%20click%3F\">\nCan I link accounts in bulk instead of asking everyone to click?\n</h4>\n<p>\n<p>Turn on <strong>Match accounts by personal code</strong>, then set the <code>dorvis_personal_code</code> user meta field on each account to that person&#8217;s code, digits only with no dashes or spaces. Those users can sign in with Dorvis straight away. The Users list shows them as Pending until they first sign in, so a mistyped code is visible before anyone is locked out.</p>\n<p>Accounts that were already linked before the setting was turned on keep working, and their personal code is filled in the next time they sign in.</p>\n<pre><code>dorvis_personal_code is the only user meta field meant to be written by hand. Setting `dorvis_sub` directly also links an account, but the plugin then treats it as one it created and overwrites its name and public URL slug from Dorvis on the next sign-in.\n</code></pre>\n</p>\n<dt id=\"what%20if%20dorvis%20is%20unreachable%20and%20password%20sign-in%20is%20disabled%3F\">\nWhat if Dorvis is unreachable and password sign-in is disabled?\n</h4>\n<p>\n<p>Define <code>DORVIS_AUTH_ALLOW_PASSWORD_LOGIN</code> as true in <code>wp-config.php</code>.</p>\n</p>\n<dt id=\"does%20this%20work%20alongside%20a%20two-factor%20authentication%20plugin%3F\">\nDoes this work alongside a two-factor authentication plugin?\n</h4>\n<p>\n<p>No. Signing in with Dorvis establishes the WordPress session directly, so plugins that add a second factor to the username and password form are not part of that path. The second factor is whatever the Dorvis identity provider asks for.</p>\n</p>\n<dt id=\"what%20claims%20are%20mapped%3F\">\nWhat claims are mapped?\n</h4>\n<p>\n<p>given_name and <code>family_name</code> become the user&#8217;s name fields and display name, and the name also becomes the public URL slug. <code>person_code</code> is stored as the <code>dorvis_personal_code</code> user meta field; it is never used as the username.</p>\n<p>This mapping is applied on every sign-in to accounts the plugin created. An account that already existed on the site when it was linked keeps the name and public URL slug the site gave it.</p>\n</p>\n\n",
+        "changelog": "<h4>0.3.0</h4>\n<ul>\n<li>Added link-only mode and a link/unlink control on the user profile screen. Unlinking your own identity requires a password sign-in, so it cannot lock you out; an administrator can unlink another account either way.</li>\n<li>Added an option to reject password and application password sign-in, with a <code>wp-config.php</code> escape hatch.</li>\n<li>Added a &#8220;Dorvis&#8221; column to the Users list.</li>\n<li>Added an option to identify accounts by personal code, which allows linking them in bulk. Off by default; while it is off the personal code is neither stored nor matched on.</li>\n<li>The ID token is validated and discarded rather than kept in user meta. Signing out clears the WordPress session, which is all there is to clear.</li>\n<li>The <code>personal_code</code> user meta field written by 0.2.0 is renamed to <code>dorvis_personal_code</code> on upgrade, so it is read again and removed on uninstall rather than left behind.</li>\n<li>Deleting the plugin now removes its settings, the user meta it wrote and its cached discovery data.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>Account usernames and profile URL slugs are now derived from the OIDC subject and the name claims.</li>\n<li>Discovery documents are cached per issuer, signing keys are cached and refreshed when validation fails, and token endpoint errors are surfaced to the user.</li>\n<li>The Issuer URI must now use https.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Added PKCE, state and nonce protection to the authorization request.</li>\n<li>Added callback handling with state verification.</li>\n<li>Added ID token validation, discovery caching and logout.</li>\n</ul>\n<h4>0.0.2</h4>\n<ul>\n<li>Added settings page.</li>\n<li>Improved user mapping logic.</li>\n</ul>\n<h4>0.0.1</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
     },
     "short_description": "Authentication with Dorvis OIDC service using Authorization Code Flow.",
-    "description": "<p>Dorvis Auth allows your WordPress users to log in using the Dorvis OIDC provider. It supports the Authorization Code Flow for secure authentication.</p>\n<p><strong>Features:</strong><br />\n*   &#8220;Authenticate with Dorvis&#8221; button on the login form.<br />\n*   Automatic user creation based on Personal Code.<br />\n*   Maps First Name and Last Name from OIDC claims.<br />\n*   Configurable Client ID, Secret, Issuer URI and Redirect URI via Settings.</p>\n<h3>Privacy</h3>\n<p><a href=\"https://dorvis.eu/en/privacy\" rel=\"nofollow ugc\">Dorvis Privacy and Cookie Policy</a></p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/dorvis-auth.0.1.0.zip",
+    "description": "<p>Dorvis Auth allows your WordPress users to log in using the Dorvis OIDC provider. It supports the Authorization Code Flow with PKCE for secure authentication.</p>\n<p><strong>Features:</strong><br />\n*   &#8220;Authenticate with Dorvis&#8221; button on the login form.<br />\n*   Automatic account creation on first sign-in, or link-only mode where users attach a Dorvis identity to an account they already have.<br />\n*   Maps First Name and Last Name from OIDC claims.<br />\n*   Optionally rejects username and password sign-in once everyone has linked.<br />\n*   Configurable Client ID, Secret, Issuer URI and Redirect URI via Settings.</p>\n<h3>Privacy</h3>\n<p><a href=\"https://dorvis.eu/en/privacy\" rel=\"nofollow ugc\">Dorvis Privacy and Cookie Policy</a></p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/dorvis-auth.0.1.2.zip",
     "upgrade_notice": [],
     "screenshots": [],
     "tags": {
@@ -50,9 +50,11 @@
         "openid-connect": "openid connect",
         "sso": "sso"
     },
-    "stable_tag": "0.1.0",
+    "stable_tag": "0.1.2",
     "versions": {
         "0.1.0": "https://downloads.wordpress.org/plugin/dorvis-auth.0.1.0.zip",
+        "0.1.1": "https://downloads.wordpress.org/plugin/dorvis-auth.0.1.1.zip",
+        "0.1.2": "https://downloads.wordpress.org/plugin/dorvis-auth.0.1.2.zip",
         "trunk": "https://downloads.wordpress.org/plugin/dorvis-auth.zip"
     },
     "business_model": false,
@@ -61,7 +63,8 @@
     "donate_link": "",
     "banners": [],
     "icons": {
-        "default": "https://s.w.org/plugins/geopattern-icon/dorvis-auth.svg"
+        "1x": "https://ps.w.org/dorvis-auth/assets/icon-256x256.png?rev=3668402",
+        "2x": "https://ps.w.org/dorvis-auth/assets/icon-256x256.png?rev=3668402"
     },
     "blocks": [],
     "block_assets": [],
