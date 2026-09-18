@@ -1,0 +1,481 @@
+{
+    "name": "Kukuriya",
+    "slug": "kukuriya",
+    "version": "0.13.5",
+    "author": "<a href=\"https://profiles.wordpress.org/piftoworks/\">piftoworks</a>",
+    "author_profile": "https://profiles.wordpress.org/piftoworks/",
+    "contributors": {
+        "piftoworks": {
+            "profile": "https://profiles.wordpress.org/piftoworks/",
+            "avatar": "https://secure.gravatar.com/avatar/d7d14b299d073862145be3b51e7869327b0da7faf5d7490bb6d15b711d2e1111?s=96&d=monsterid&r=g",
+            "display_name": "piftoworks"
+        }
+    },
+    "requires": "6.6",
+    "tested": "7.1.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/kukuriya/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-18 04:29:00",
+    "added": "2026-09-14",
+    "homepage": "",
+    "sections": {
+        "description": "<p><strong>Kukuriya</strong> is a WordPress plugin that bundles product links from multiple affiliate service providers (ASPs) into a single &#8220;product&#8221; and manages them in one place. It is fully integrated with the Block Editor, covering everything from product search to card rendering, comparison tables, and automatic price updates.</p>\n<p>It is aimed at people migrating from Pochipp, affiliate marketers struggling with the Amazon API entry barrier, and anyone who wants to manage multiple ASPs across one site.</p>\n<h4>Key features</h4>\n<ul>\n<li><strong>Universal Link</strong>: one product = a set of offers from multiple ASPs. A data model that lets you serve the best link depending on user, stock, and price</li>\n<li><strong>Connector architecture</strong>: every ASP integration is an isolated connector module. Five official connectors ship built in and can be toggled per site, and third-party connectors can be added as separate plugins via a public hook</li>\n<li><strong>Modern Block Editor</strong>: product search modal, block insertion, and attribute editing UI built with TypeScript + React 18 + <code>@wordpress/scripts</code></li>\n<li><strong>One-action registration by URL paste</strong>: paste a Rakuten or Amazon product page URL into the Block Editor to identify, fetch, and register the product CPT automatically. SiteStripe short URLs (<code>amzn.to</code> / <code>amzn.asia</code>) are expanded automatically. Also useful as a rescue path for products that do not appear in search results</li>\n<li><strong>5 built-in card templates</strong>: Simple / Card / Compact / Pochipp compatible (visual parity for migrating users), plus a comparison table block for up to 10 products</li>\n<li><strong>Comparison tables you can actually shape</strong>: reorder the rows, add your own from custom fields or free text, mark cells with ◎ ○ △ ×, turn a cell into a bullet list, highlight the one that decides it, put the products down the side instead of across the top, give each column its own button text and colour, and add a heading above the table</li>\n<li><strong>Design controls</strong>: 4 visual presets (Neo / Outline / Glass / Bold), custom card frames (width / color), button styles (solid / outlined / gradient / raised), an optional &#8220;See reviews&#8221; link, and animated frame and button effects (glow, pulse, shine, aurora) that pause automatically for visitors who prefer reduced motion — configurable site-wide or per block</li>\n<li><strong>Custom fields</strong>: add per-product spec fields in 5 types (text / number / select / boolean / date) with editing and CSV round-trip support</li>\n<li><strong>CSV import / export</strong>: full CSV round-trip including custom fields, with dry-run validation</li>\n<li><strong>Pochipp migration</strong>: import products and affiliate URLs from an existing Pochipp install (CPT <code>pochipps</code>). Amazon ASIN / Rakuten item code / Yahoo seller_id + itemcode are mapped automatically</li>\n<li><strong>Automatic price refresh cron</strong>: re-fetches Amazon / Rakuten / Yahoo prices every 6 hours. Failed items are retried with interval protection for stable operation</li>\n<li><strong>Click tracking on your own site (anonymized)</strong>: a small script reports purchase-button clicks to your site&#8217;s own REST API and the dashboard shows which products, stores and posts get clicked. IP / UA are hashed with HMAC-SHA256, referrers keep the host only, no cookies. Can be switched off under &#8220;Measurement&#8221;</li>\n<li><strong>Automatic product description generation (external API)</strong>: a Composer Service that can call a vendor-neutral Messages-style API. Users configure their own API key</li>\n<li><strong>Optional credit</strong>: off by default. If you want to show where the cards come from, a switch under Design adds a small mark and the name &#8220;Kukuriya&#8221; at the bottom right of cards and comparison tables. It is never a link, and nothing about the plugin depends on it</li>\n<li><strong>Internationalization</strong>: every string is translatable (text domain: <code>kukuriya</code>). Translation contributions via translate.wordpress.org are welcome</li>\n</ul>\n<h4>Supported ASPs (all built in — enable the ones you use)</h4>\n<ul>\n<li><strong>Amazon</strong> (Creators API, 15 marketplaces)</li>\n<li><strong>Rakuten Ichiba</strong> (Rakuten IchibaItem Search API v2)</li>\n<li><strong>Yahoo! Shopping</strong> (Shopping Web Service V3 + ValueCommerce affiliate URL support)</li>\n<li><strong>Moshimo Affiliate</strong> (link conversion; an alternative route without Amazon keys)</li>\n<li><strong>Mercari</strong> (Mercari Ambassador: your afid is appended to Mercari links — search links and per-product links)</li>\n<li><strong>Manual entry (A8.net / afb / ValueCommerce, etc.)</strong> (a generic connector for ASPs without a product API)</li>\n</ul>\n<h4>Usage notes</h4>\n<ul>\n<li>The Amazon Creators API requires per-account credentials (a central proxy model is not permitted under its licence)</li>\n<li>Amazon grants API access only to accounts with at least 10 qualifying sales in the trailing 30 days. The Moshimo Affiliate route can be used as an alternative</li>\n<li>Please follow the terms of service of each ASP</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin talks to the shopping services whose connectors you turn on, using API keys that you supply. Nothing is sent anywhere until you enter credentials and enable a connector, and no data is ever sent to the plugin author.</p>\n<h4>Amazon Product Advertising / Creators API (Login with Amazon)</h4>\n<p>This plugin connects to Amazon&#8217;s product API to search Amazon&#8217;s catalogue and to obtain a product&#8217;s title, image, price and availability. It is needed to show the product cards you place in your posts and to keep their prices current. It is used only if you turn on the Amazon connector and enter your own credentials.</p>\n<p>It sends your Client ID and Client Secret to obtain an access token (<code>api.amazon.com</code>, <code>api.amazon.co.jp</code> or <code>api.amazon.co.uk</code>, depending on the marketplace you choose), and then, on each product search, scheduled price refresh and card render that misses the cache, it sends the search keyword or product ASIN together with that token and your Associates tag. The scheduled refresh runs every 6 hours for products you have registered. If you paste a SiteStripe short URL (<code>amzn.to</code> or <code>amzn.asia</code>) into the editor, your site also makes one request to that address to find out which product it points to.</p>\n<p>This service is provided by &#8220;Amazon.com, Inc.&#8221;: <a href=\"https://affiliate.amazon.co.jp/help/operating/agreement\" rel=\"nofollow ugc\">terms of use</a>, <a href=\"https://www.amazon.co.jp/gp/help/customer/display.html?nodeId=GX7NJQ4ZB8MHFRNJ\" rel=\"nofollow ugc\">privacy policy</a>.</p>\n<h4>Rakuten Web Service (Rakuten Ichiba Item Search API)</h4>\n<p>This plugin connects to the Rakuten Ichiba Item Search API at <code>openapi.rakuten.co.jp</code> to search Rakuten Ichiba and to obtain a product&#8217;s title, image, price and availability. It is needed to show the product cards you place in your posts and to keep their prices current. It is used only if you turn on the Rakuten connector and enter your own Application ID and Affiliate ID.</p>\n<p>It sends your Application ID and Affiliate ID together with the search keyword or item code, on each product search, scheduled price refresh and card render that misses the cache. The scheduled refresh runs every 6 hours for products you have registered.</p>\n<p>This service is provided by &#8220;Rakuten Group, Inc.&#8221;: <a href=\"https://webservice.rakuten.co.jp/guide/rule\" rel=\"nofollow ugc\">terms of use</a>, <a href=\"https://privacy.rakuten.co.jp/\" rel=\"nofollow ugc\">privacy policy</a>.</p>\n<h4>Yahoo! Shopping Web Service</h4>\n<p>This plugin connects to the Yahoo! Shopping Web Service at <code>shopping.yahooapis.jp</code> to search Yahoo! Shopping and to obtain a product&#8217;s title, image, price and availability. It is needed to show the product cards you place in your posts and to keep their prices current. It is used only if you turn on the Yahoo connector and enter your own Client ID.</p>\n<p>It sends your Client ID together with the search keyword or item code, on each product search, scheduled price refresh and card render that misses the cache. The scheduled refresh runs every 6 hours for products you have registered.</p>\n<p>This service is provided by &#8220;LY Corporation&#8221;: <a href=\"https://www.lycorp.co.jp/ja/company/terms/\" rel=\"nofollow ugc\">terms of use</a>, <a href=\"https://www.lycorp.co.jp/ja/company/privacypolicy/\" rel=\"nofollow ugc\">privacy policy</a>, <a href=\"https://developer.yahoo.co.jp/guideline/\" rel=\"nofollow ugc\">developer guidelines</a>.</p>\n<h4>A text generation API of your choosing (optional, off by default)</h4>\n<p>The optional &#8220;generate a product description&#8221; button sends a prompt to an API endpoint that <strong>you</strong> enter in the settings. The plugin does not pick a provider for you and ships no endpoint, no key and no default address of its own. If you leave the setting empty, nothing is ever sent and the button does nothing.</p>\n<p>It sends, only when you press that button, a prompt containing the product&#8217;s title, price and categories, plus the API key you entered, to the endpoint you entered.</p>\n<p>This service is provided by whichever company you configure. Its terms of use and privacy policy are that company&#8217;s own. Please read them before entering an endpoint and a key.</p>\n<h4>Your analytics service (optional, off by default)</h4>\n<p>If you turn on click measurement under &#8220;Measurement&#8221;, clicks on purchase buttons are reported to the analytics service whose tag is already installed on your site by you or your theme. This plugin bundles no analytics tag and adds none; your server sends nothing. The reader&#8217;s browser reports the click through that existing tag.</p>\n<p>It sends, on a click — the product ID, the product name (first 60 characters), which store was clicked, whether the link went to a product page or to search results, and which card in the article it was. The affiliate URL, IP addresses, user agents and post content are never included.</p>\n<p>This service is provided by whichever analytics company you already use. Its terms of use and privacy policy are that company&#8217;s own.</p>\n<h4>Services this plugin does NOT contact</h4>\n<p>Moshimo Affiliate, A8.net, afb, ValueCommerce and Mercari are supported by building the correct affiliate URL on your own server, from the IDs you enter. The plugin makes no request to any of them, and sends them no data. Their addresses appear in the source code only as the destination your visitors&#8217; own browsers go to when they click a link.</p>\n<h3>Source code and build</h3>\n<p>The admin screens and editor blocks are written in TypeScript and SCSS and compiled with <code>@wordpress/scripts</code> (webpack). The uncompiled sources are included in this plugin under <code>assets/src/</code>, next to the compiled output in <code>build/</code>, together with <code>package.json</code>, <code>webpack.config.js</code> and <code>tsconfig.json</code>.</p>\n<p>To reproduce the compiled files, with Node.js 20 or later:</p>\n<pre><code>npm install\nnpm run build\n</code></pre>\n<p>No third-party JavaScript libraries are bundled. Everything the scripts use at runtime (<code>@wordpress/element</code>, <code>@wordpress/components</code>, and so on) is provided by WordPress itself.</p>\n<h3>Privacy Policy</h3>\n<p>Kukuriya stores the following anonymized data for click tracking (in the <code>wp_bcore_clicks</code> table):</p>\n<ul>\n<li>HMAC-SHA256 hash of the IP address (64 hex chars)</li>\n<li>HMAC-SHA256 hash of the User-Agent (64 hex chars)</li>\n<li>Referrer host name only (no path / query)</li>\n<li>An opaque per-tab session ID generated client-side in <code>sessionStorage</code> (optional)</li>\n<li>Product ID / post ID / which store button / product page or search / card position / timestamp</li>\n</ul>\n<p>Raw IPs, raw User-Agents, and full URLs are never stored. No cookies are used. Rows are deleted after 90 days. Recording can be switched off under &#8220;Measurement&#8221;.</p>\n<p>By default, external communication happens only with the ASPs you configured, using your own API keys. No data is sent to the plugin developer (Pifto Works) unless you explicitly enable it.</p>\n<p>If you enable the automatic product description feature, prompts containing product information (title / price / categories, etc.) are sent to the external generation API endpoint you configured. You choose and configure both the destination endpoint and the API key.</p>\n<p>If you enable the opt-in click measurement feature (Kukuriya &gt; Measurement, disabled by default), purchase button clicks are reported to the analytics service whose tag is installed on your site. What is sent: the product ID stored on your site, the product name (truncated to 60 characters), which store button was clicked, whether it linked to a product page or to search results, and which card in the article it was. What is never sent: the affiliate URL itself, IP addresses, user agents, product descriptions, post content, or any user-entered free text. Nothing is transmitted from your server; the reader&#8217;s browser reports the click through the analytics tag that is already loaded on the page. Turning the setting off stops the transmission immediately.</p>\n",
+        "installation": "<h4>Basic setup</h4>\n<ol>\n<li>Search for <code>Kukuriya</code> under &#8220;Add New&#8221; in the Plugins screen, install, and activate</li>\n<li>Open the &#8220;Kukuriya&#8221; admin menu, and in the &#8220;Connectors&#8221; tab turn on the ASPs you use and enter each connector&#8217;s API keys (for example, Rakuten needs an Application ID and an Affiliate ID)</li>\n<li>Add the &#8220;Kukuriya Product&#8221; block in the post / page editor, then search and insert</li>\n</ol>\n<h4>Admin tabs</h4>\n<ul>\n<li><strong>Dashboard</strong>: price refresh cron status and recent click summaries</li>\n<li><strong>Custom fields</strong>: CRUD for your own spec fields</li>\n<li><strong>CSV import / export</strong>: bulk migration of existing product data</li>\n<li><strong>Migration</strong>: import from Pochipp</li>\n</ul>\n<h4>Using the manual-entry connector route</h4>\n<p>ASPs that do not provide a product API, such as A8.net and afb, can be handled with the built-in manual-entry (Generic) connector by registering a URL template manually.</p>\n",
+        "faq": "\n<dt id=\"is%20it%20free%3F\">\nIs it free?\n</h4>\n<p>\n<p>Yes. Everything in this plugin is free and fully functional GPL v2+ open source, including all five official connectors. Nothing here is locked behind a licence.</p>\n<p>A separate paid add-on plugin (Kukuriya Pro, distributed from piftoworks.com) adds sale campaigns and bulk editing. It is not required, and none of its code is part of this plugin.</p>\n</p>\n<dt id=\"are%20api%20keys%20stored%20securely%3F\">\nAre API keys stored securely?\n</h4>\n<p>\n<p>Yes. All API keys are encrypted with AES-256-GCM, protected by a key derived from <code>AUTH_KEY</code> in <code>wp-config.php</code>. Keys are separated per connector ID, so API keys cannot be decrypted even with direct database access.</p>\n</p>\n<dt id=\"can%20i%20migrate%20from%20pochipp%3F\">\nCan I migrate from Pochipp?\n</h4>\n<p>\n<p>Yes. You can import Pochipp data (CPT <code>pochipps</code>) from the &#8220;Migration&#8221; tab in the admin screen. The primary ASP is determined automatically in the order of Amazon ASIN / Rakuten item code / Yahoo <code>seller_id + itemcode</code>, and each post is converted into a Kukuriya product with Universal Link offers. A dry-run mode lets you check counts and errors before committing.</p>\n<p>Generic CSV import is also supported, so migrating from tools other than Pochipp is flexible as well.</p>\n</p>\n<dt id=\"does%20the%20plugin%20send%20data%20to%20third%20parties%3F\">\nDoes the plugin send data to third parties?\n</h4>\n<p>\n<p>No data is ever sent to the plugin developer (Pifto Works). Product API calls go directly to each ASP, using the API keys that you configure yourself. See the &#8220;External services&#8221; section above for exactly what is sent, to whom, and when.</p>\n</p>\n<dt id=\"does%20click%20tracking%20protect%20visitor%20privacy%3F\">\nDoes click tracking protect visitor privacy?\n</h4>\n<p>\n<p>Clicks are recorded in your own database only (the <code>wp_bcore_clicks</code> table); nothing is sent to the plugin developer. IP addresses and User-Agents are stored as HMAC-SHA256 hashes (salted from <code>AUTH_KEY</code>) and the original values cannot be recovered. Referrers keep the host name only (path / query are discarded). No cookies are used — a per-tab session ID lives in <code>sessionStorage</code> and disappears when the tab closes — so cookie consent management is not required. Rows are deleted after 90 days. Recording is on by default and can be switched off under &#8220;Measurement&#8221;.</p>\n</p>\n<dt id=\"what%20happens%20to%20my%20data%20when%20i%20uninstall%3F\">\nWhat happens to my data when I uninstall?\n</h4>\n<p>\n<p>By default, the 5 <code>wp_bcore_*</code> tables (<code>credentials</code> / <code>offers</code> / <code>clicks</code> / <code>custom_fields_def</code> / <code>custom_fields_value</code>) and related options / cron events are deleted. To keep the data, set the option <code>bcore_keep_data_on_uninstall</code> to <code>true</code> before deleting the plugin.</p>\n<p>The products and the self-made links you registered are ordinary posts (custom post types <code>bcore_product</code> / <code>bcore_link</code>) and are left in place, the same way WordPress leaves posts when a plugin is removed. Delete them from the database if you want a clean slate.</p>\n</p>\n<dt id=\"does%20it%20work%20on%20multisite%3F\">\nDoes it work on Multisite?\n</h4>\n<p>\n<p>It works technically, but this version targets per-site operation. Network-wide aggregation and cross-site management are not implemented.</p>\n</p>\n<dt id=\"is%20there%20product%20caching%3F\">\nIs there product caching?\n</h4>\n<p>\n<p>Yes. Each connector&#8217;s API responses are cached short-term via the WP Transient API. The price refresh cron persists into the <code>wp_bcore_offers</code> table independently of the cache, so front-end rendering stays fast at all times.</p>\n</p>\n<dt id=\"can%20i%20write%20a%20connector%20for%20a%20new%20asp%20myself%3F\">\nCan I write a connector for a new ASP myself?\n</h4>\n<p>\n<p>Yes. You can distribute an independent WP plugin that implements <code>PiftoWorks\\Kukuriya\\Contracts\\ConnectorInterface</code>. Register it with the core via the <code>kukuriya_register_connectors</code> hook, and it can use the core&#8217;s search UI, price refresh cron, click tracking, and other infrastructure as-is.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20the%20classic%20editor%3F\">\nDoes it work with the Classic Editor?\n</h4>\n<p>\n<p>The <code>[bcore_product]</code> / <code>[bcore_comparison]</code> shortcodes render products and comparison tables in the Classic Editor as well. The Block Editor search UI is not available there, so the workflow is to import product data via CSV and then reference it by post_id.</p>\n</p>\n\n",
+        "changelog": "<h4>0.13.5</h4>\n<ul>\n<li>Changed: the Amazon button is a brighter orange out of the box. The old one read as brown next to the other stores. Sites that picked their own Amazon colour under Design are unaffected.</li>\n</ul>\n<h4>0.13.4</h4>\n<ul>\n<li>Fixed: the store buttons in a comparison table ran together into one solid bar. Each button was overflowing its column by the width of its own padding on themes that do not set border-box sizing for you, Twenty Twenty-Five among them. Most themes do set it, and those were never affected.</li>\n<li>Fixed: a column label such as &#8220;Top pick&#8221; covered the product name next to it once a table had several columns. A table that uses a label now keeps room for it above every heading, so the names still line up with each other.</li>\n</ul>\n<h4>0.13.3</h4>\n<ul>\n<li>Fixed: the sample card on the Design screen carried a real manufacturer&#8217;s name as its brand line. It is a made-up name now. Nothing on your site changes — the name only ever appeared in that preview, before you pick a product.</li>\n</ul>\n<h4>0.13.2</h4>\n<ul>\n<li>Changed: cards and buttons have much squarer corners out of the box. The 14px radius made every card look like a pill, which fought with most themes. Sites that set their own radius under Design are unaffected.</li>\n<li>Changed: a one-line (compact) card is now one link the whole way across. The row used to be dead except for the round arrow on the right, and nothing said so.</li>\n<li>Changed: the column headings in a comparison table are the same size as the product names below them. They were smaller, which read as though the headings mattered less than the rows.</li>\n<li>Fixed: the store buttons in a comparison table disappeared. The link that rewrites inline product mentions was also rewriting the buttons the table had already drawn, and stripped the class that made them look like buttons.</li>\n<li>Fixed: a product name in a comparison table was drawn in your theme’s link colour and weight, so it looked like body text that happened to be linked instead of the name of the thing in that row.</li>\n<li>Fixed: on a phone, the store name inside a button (Amazon, Rakuten, and so on) was set thin and narrow while the button around it stayed large.</li>\n</ul>\n<h4>0.13.1</h4>\n<ul>\n<li>Fixed: cards no longer turn dark on their own. Following dark mode was on by default, but the browser setting it follows has nothing to do with your theme, so a card could go black in the middle of a light page. It is off by default now, and the setting says what it actually follows. Sites that already saved a choice keep it; turn it back on under Design if your theme follows the browser too.</li>\n</ul>\n<h4>0.13.0</h4>\n<ul>\n<li>Changed: every on/off control in the admin screens is now a two-part &#8220;Off | On&#8221; switch, with the chosen side filled in. The round sliding knob did not say which side was on, and the pale colour made it worse.</li>\n<li>Changed: a product opens in a window of its own instead of unfolding underneath the list. With a full page of products the editor used to sit far below the fold, so editing meant scrolling past fifty rows first.</li>\n<li>Changed: that window is now divided into sections you open one at a time — card overrides, micro-copy, link URLs, custom buttons, sale, posts using it, and store buttons — all closed to begin with. Roughly forty fields used to stand in one flat column. Sections that can be counted show how many things are set in them.</li>\n<li>Changed: the store section was rebuilt. It now lists every store a product can be fetched from, one row each, and says where that store’s button goes: straight to the product page, or to a search for the product name. Only the stores that had been registered were shown before, which made a card with four buttons look as though it had one.</li>\n<li>Changed: the comparison table list is one card per table, with the post title on a line of its own. As a seven-column table the product column swallowed the width and the rest collapsed into single letters stacked vertically.</li>\n<li>Changed: product lists take a page number, and have First and Last buttons, so a site with thousands of products is not paged through one screen at a time.</li>\n<li>Changed: sliders are thicker, with a grab handle you can actually hit — a 3px line with a 14px dot was hard to hold with a mouse and worse on a touch screen.</li>\n<li>Fixed: the product image on a card sat above the middle of the row, so it crowded any label above it and left a gap below. It is centred now.</li>\n<li>Fixed: the icon beside &#8220;See reviews&#8221; was an empty outline. It has the three dots inside it that make it read as a speech bubble.</li>\n<li>Fixed: the card preview on a product’s screen ignored the site-wide design settings, so button colours there did not match the front end.</li>\n<li>Fixed: rows that put a text field next to a button had the two at different heights, and the URL field was too narrow to work in.</li>\n<li>Fixed: pasting a product URL and pressing the button appeared to do nothing when the address was not from a supported store. The answer now appears next to the field — which store was added, or why it was refused — instead of at the top of the page where it went unseen.</li>\n<li>Fixed: Japanese. Everything in the admin screens is translated, including the messages the REST API sends back. A handful of strings had been left in English.</li>\n</ul>\n<h4>0.12.0</h4>\n<ul>\n<li>New: a price now has a shelf life. A price older than 24 hours is no longer shown as current, and the card falls back to another store whose price is still fresh. Amazon drops API access whenever a site falls under ten qualifying sales in the trailing 30 days, and until now the last price fetched stayed on the page for good.</li>\n<li>New: products whose link has gone are marked in the product list and can be filtered out of it. A dead button becomes a search link for the same product rather than disappearing, so the card keeps its shape.</li>\n<li>New: a product can be tied to the same item at another store by searching for it, instead of pasting the URL by hand. Amazon, Rakuten and Yahoo! Shopping.</li>\n<li>New: a product can be repointed at a different code at the same store, keeping the same product. Posts that already reference it follow along; nothing has to be edited article by article.</li>\n<li>New: the product list shows how many posts use each product, and a product’s own screen lists those posts with a link to each editor.</li>\n<li>New: a Refresh button on a product fetches its price and every one of its offers again, without waiting for the scheduled run.</li>\n<li>New: product categories. Filter the product list by one, see them beside the product name, and add or remove them from the product’s own screen.</li>\n<li>New: a card’s image can be replaced with one from the media library. Remove it and the store’s own image comes back.</li>\n<li>Changed: the card preview on a product’s screen is now clickable, the same as the front end. Affiliate conversion is deliberately not applied — clicking your own links from your own admin screen is not something the ASPs welcome.</li>\n</ul>\n<h4>0.11.0</h4>\n<ul>\n<li>Fixed: cards that Pochipp kept inside the block itself, rather than in its product list, were left behind when posts were rewritten — and would have vanished the moment Pochipp was switched off. They are now turned into products as the posts are rewritten. The same product used in several posts becomes one product, and a product you have already imported is reused rather than overwritten.</li>\n<li>Added: a card with no product in it is now left in the post untouched, with a line saying why, instead of being passed over in silence.</li>\n<li>Added: the rewrite step can be told to leave those cards alone (the toggle under Step 3).</li>\n</ul>\n<h4>0.10.0</h4>\n<ul>\n<li>Added: an inline product link can now be aimed at one store (Amazon, Rakuten, and so on) instead of the product&#8217;s own. The destination is still worked out when the page is drawn, and falls back to the product&#8217;s own link if that store cannot be reached.</li>\n<li>Added: add-ons can place their own inline product links through the new <code>kukuriya_inline_link_content</code> filter. The destination, the affiliate conversion and the click attributes are handled here, so an add-on only marks the text.</li>\n<li>New: a Comparison tables screen lists every comparison table on the site — the post, the products in it, the layout and the heading — and takes you to the post that holds it.</li>\n<li>New: the dashboard lists every post that carries a card, a comparison table, a custom link or an inline product link, with a count of each. Revisions are not counted.</li>\n<li>New: a product&#8217;s edit screen shows the posts that use it, so you can see what a change will touch.</li>\n<li>Fixed: the card preview on a product&#8217;s edit screen now draws custom buttons (an official site, for example) with their own label and colour, as the published card does.</li>\n<li>New: change every inline link to one product at once, under Links. Point them at another product, send them to a different store, or take the links off and leave the words. It rewrites the posts, so it runs as a dry run until you say otherwise, and you can try it on one post first.</li>\n</ul>\n<h4>0.9.0</h4>\n<ul>\n<li>New: comparison tables are now built from a list of rows you control. Reorder the built-in rows (image, name, price, rating, button), add your own from a custom field or by typing the values, and drop a row you do not need.</li>\n<li>New: mark a cell with ◎ ○ △ ×. The symbol is drawn large and pale; when the cell also has a value, the value sits on top of the symbol. Screen readers hear a word, not the symbol.</li>\n<li>New: write one item per line and the cell becomes a list. Start a line with <code>+</code>, <code>-</code> or <code>~</code> to prefix it with ○, × or △.</li>\n<li>New: put the products down the side instead of across the top, for tables with two or three products and many rows.</li>\n<li>New: a heading above the table, read before the table by screen readers.</li>\n<li>New: each column can have its own button text, button colour and label colour.</li>\n<li>New: a short line of copy can sit above a comparison table, the same way it can above a card.</li>\n<li>Changed: ratings now draw five stars and fill them by the share of the maximum, so 4.5 out of 5 reads at a glance.</li>\n<li>Changed: comparison buttons are larger (about 41px tall) and fill the column, in line with Apple&#8217;s and Google&#8217;s touch target guidance. The default store colours are a step brighter while keeping white text readable.</li>\n<li>Changed: the product photo in a comparison table is now a link, like the photo on a card.</li>\n<li>Changed: drag the table sideways with the mouse to scroll it. Shift and the wheel still work, and the hint now says so.</li>\n<li>Changed: adding products to a comparison table no longer closes the picker each time. Products already in the table are marked as added.</li>\n<li>Changed: public hook names are now all <code>kukuriya_*</code>. If you used one of the old <code>bcore_*</code> or <code>bcore/*</code> names, rename it; the old names no longer fire.</li>\n<li>Changed: DTOs can be built from an array with <code>from_array()</code>. Positional constructors are internal and may gain arguments.</li>\n<li>Changed: the custom fields REST route is now <code>/kukuriya/v1/custom-fields</code>.</li>\n<li>Removed: the short link redirect and its post type, and two post types that were registered but never used.</li>\n<li>Added: click measurement now records to your own site as well, with the store, link type and position of the button. Addresses and user agents are hashed, no cookie is set, and rows are pruned after 90 days. It can be turned off under Measurement.</li>\n<li>New: select some text in the editor and turn it into a product link from the toolbar. The selected words become the search term. Only the product is saved in the post — the destination is worked out each time the page is drawn, so changing where your links point does not mean editing posts.</li>\n</ul>\n<h4>0.8.0</h4>\n<ul>\n<li>Fixed: the animated frame and button effects (glow, pulse, shine, aurora, and the Shine sweep / Glow pulse button styles) could be selected but had no visible result. Their styles were still packaged with the paid add-on. The styles now ship here, which is what 0.7.0 already described.</li>\n<li>Changed: tabs added by add-ons now render their own screen. Previously an add-on could add a tab, but opening it showed the dashboard.</li>\n<li>Added: daily click totals can now be read per day, per store and per post. Nothing is sent anywhere; add-ons and reports use it locally.</li>\n<li>Changed: affiliate code pasted into a custom link is now filtered through an allow list of tags and attributes when it is printed, in addition to the existing permission check when it is saved. Link and banner code from Moshimo, A8.net, afb, ValueCommerce, Rakuten and Amazon is unaffected, including protocol-relative addresses and 1&#215;1 impression images. Code that relies on a script tag is refused when you save it, with the tag named, rather than being dropped silently at display time. A site that needs such code can extend the allow list with the <code>kukuriya_link_allowed_html</code> filter.</li>\n<li>Changed: the visitor&#8217;s address, user agent and referrer are now sanitized as they are read, rather than only being hashed before storage.</li>\n<li>Changed: the compatibility version is declared in this readme only. It was previously repeated in the plugin header, where a different value could have taken precedence.</li>\n<li>Fixed: a product registered from the block editor, by search or by pasting a URL, had no store buttons on its card. The product was saved but its offer was not, and the buttons are built from the offer. Products imported from Pochipp and products added from the admin screen were not affected.</li>\n<li>Added: the product block now previews the finished card in the editor instead of a grey box. Use the toolbar to swap the product or return to the search form.</li>\n<li>Added: the product picker now opens on the products you have already saved, so a product can be reused in another post without searching for it again. The old search is still there on the second tab.</li>\n<li>Changed: the Simple card template now shows the store buttons, like the other templates. It is the default for the block, and a card with nothing to click on is not much use. Its layout is unchanged otherwise: still no brand or rating.</li>\n</ul>\n<h4>0.7.0</h4>\n<ul>\n<li>Renamed from the previous working title to <strong>Kukuriya</strong>. The text domain and REST namespace changed accordingly.</li>\n<li>Changed: frame and button animation effects (glow, pulse, shine, aurora) are now part of this plugin and work for everyone. They were previously reserved for the paid add-on.</li>\n<li>Removed: the &#8220;Cloud integration&#8221; tab and its code. The service it talked to is not in operation, so the plugin no longer ships an endpoint it cannot reach.</li>\n<li>Added: the TypeScript / SCSS sources for the bundled admin and block scripts, plus the build configuration, are now included in the plugin so the compiled files can be reproduced.</li>\n<li>Added: an &#8220;External services&#8221; section in this readme describing every outbound request, what triggers it, and the terms and privacy policy of each service.</li>\n</ul>\n<h4>0.6.0</h4>\n<ul>\n<li>New: Links. Register text links, banners and ASP-issued code once, place them in articles with a stable key, and change them later from one screen. Articles only hold the key, so changing a link updates every article at once.</li>\n<li>New: Import links already written in articles (scan, dry run, then rewrite). ASP tracking pixels are kept together with their link.</li>\n<li>New: Convert every link reference back to plain HTML before uninstalling, leaving no trace of the plugin in your content.</li>\n<li>New: Links CSV export and import, for moving links between sites by key.</li>\n<li>New (Pro add-on): end dates with automatic pausing, replacement links, and bulk find-and-replace inside links.</li>\n<li>Changed: translations are no longer bundled. Japanese is delivered through translate.wordpress.org.</li>\n</ul>\n<h4>0.5.0</h4>\n<p>First public release on WordPress.org.</p>\n<ul>\n<li>Price refresh now updates the price shown on product cards (not only the Universal Link offers), limits itself to stores that can actually refresh, waits on the local rate gate instead of failing, and backs off on repeated failures</li>\n<li>Database schema is applied on plugin update as well as on activation</li>\n<li>Rakuten / Yahoo! links that are already affiliate links are no longer wrapped twice; the connection test and the route settings now warn when an affiliate ID is missing</li>\n<li>CSV: <code>offers</code> column for Universal Link round-trips, partial updates that keep ratings / extra images, unknown <code>source_id</code> is rejected, duplicate rows and unreadable prices are reported, Shift_JIS files are detected before upload</li>\n<li>Pochipp migration: rewrites <code>wp:pochipp/linkbox</code> blocks and <code>[pochipp id]</code> shortcodes in posts, copies API keys / affiliate IDs, runs in batches, keeps your edits on re-run, carries custom buttons over, ignores trashed posts</li>\n<li>Measurement tab shows whether the Analytics CORE tag is detected on the site</li>\n<li>Accessibility: button text colour is chosen by WCAG contrast, product images get a meaningful alt, ratings are announced to screen readers, outline buttons stay readable in dark mode</li>\n<li>Comparison table shows the &#8220;as of&#8221; note next to prices and respects the hidden-price setting</li>\n<li>Block editor warns when the referenced product has been deleted; wide / full alignment now works</li>\n<li>Click log is pruned after 90 days (filterable); description generation is rate-limited per user</li>\n</ul>\n<h4>0.5.0-beta.7</h4>\n<ul>\n<li>Fix: the admin stylesheet is now cache-busted by its own file time, so CSS-only updates (like the form spacing fix) reliably reach the browser without a hard refresh</li>\n</ul>\n<h4>0.5.0-beta.6</h4>\n<ul>\n<li>Admin UI: consistent form spacing across all tabs so each field&#8217;s help text clearly belongs to its own control (help hugs the control above, larger gap between controls)</li>\n</ul>\n<h4>0.5.0-beta.5</h4>\n<ul>\n<li>New &#8220;move the on-sale store to the front&#8221; option (Pro, off by default): while a sale is showing, that store’s button is placed first to boost clicks. Campaigns get a &#8220;target store&#8221; field; the automatic Amazon badge targets Amazon</li>\n</ul>\n<h4>0.5.0-beta.4</h4>\n<ul>\n<li>Sale campaigns can now recur on days of the month (e.g. Rakuten &#8220;5 &amp; 0 days&#8221;, Yahoo! &#8220;5 days&#8221;) — one-click built-in presets included. The sale shows automatically on those days every month with no date entry, and works on cached pages</li>\n</ul>\n<h4>0.5.0-beta.3</h4>\n<ul>\n<li>New automatic sale badge (Pro): shows a sale badge when a store&#8217;s API reports a discount off its list price (Amazon, via the reference price it provides). Only the ASP-provided list price is used, shown live with the &#8220;as of&#8221; timestamp — no price history is stored, so it stays within each store&#8217;s API terms</li>\n</ul>\n<h4>0.5.0-beta.2</h4>\n<ul>\n<li>The product editor preview now shows the sale (ribbon / badge / countdown / coupon) as it will appear on the card</li>\n<li>Apply a sale campaign to many products at once from the Products list (select rows, pick a campaign, apply — or remove the sale from the selection)</li>\n</ul>\n<h4>0.5.0-beta.1</h4>\n<ul>\n<li>New Sale display (Pro): show a sale badge or corner ribbon, a live countdown, and a tap-to-copy coupon on product cards, with a start/end schedule that switches automatically — even on cached pages</li>\n<li>New Sale tab: define reusable sale campaigns (label, schedule, badge, coupon) once and apply them to products from the Products tab; products can also override any field or run a one-off sale</li>\n<li>The automatic strike-through list price and %OFF badge stay free; the sale campaign layer is Pro</li>\n</ul>\n<h4>0.4.0-beta.5</h4>\n<ul>\n<li>\n<p>The product editor preview is now sticky and scales to fit while you scroll through the settings, matching the Design tab</p>\n</li>\n<li>\n<p>New Products admin tab: browse and search saved products, rename their display name, and manage per-product card overrides (template / price emphasis / review links). Overrides sit between the site-wide design settings and block-level overrides</p>\n</li>\n<li>Add offers from other stores by pasting a product page URL — the store’s button switches from a search link to a direct product link</li>\n<li>Remove offers per product</li>\n<li>Full per-product design overrides — every design setting (preset, colors, button style, frame &amp; effects, layout) can now be overridden per product, with a live preview using the product&#8217;s real data</li>\n<li>Per-store link URL overrides and up to 5 custom buttons (label / URL / color) per product, output without affiliate conversion</li>\n<li>Editable offer product-page URLs</li>\n<li>The design form is now a single shared component, so future design options appear in both the Design tab and the product editor automatically</li>\n</ul>\n<h4>0.3.0-beta.7</h4>\n<ul>\n<li>New &#8220;Frame &amp; effects&#8221; design settings: give cards a custom frame (width 0-8px, any color) on the Neo / Outline / Glass presets. Bold keeps its signature thick frame</li>\n<li>New frame effects (Pro): Glow (soft breathing light), Pulse (slow blink), Shine (light sweep) and Aurora (rotating gradient frame). All effects pause for visitors who prefer reduced motion</li>\n<li>New button styles: Solid fill / Outlined / Glossy gradient / Raised (3D press) for everyone, plus animated Shine sweep and Glow pulse in Pro. Set site-wide or per block</li>\n<li>One-tap recommended frame recipes in the Design tab</li>\n<li>Review link: an optional &#8220;See reviews&#8221; link with a speech-bubble icon between the price and the purchase buttons (Amazon via its review page URL, Yahoo! Shopping when the API provides one) — free for everyone</li>\n<li>Click measurement now sends a fixed event name with structured properties (Phase B of the analytics integration); the temporary encoded event names are gone</li>\n</ul>\n<h4>0.2.0-beta.1</h4>\n<ul>\n<li>All 5 official connectors (Amazon / Rakuten Ichiba / Yahoo! Shopping / Moshimo / manual entry) are now built into the core plugin — no separate connector plugins to install. Each connector can be toggled on or off in the Connectors tab</li>\n<li>New Connectors admin tab: enter and test each ASP&#8217;s API credentials from an auto-generated settings form</li>\n<li>New monetization routes: choose which connector generates the affiliate link for each source (for example, route Rakuten product links through Moshimo Affiliate)</li>\n<li>Moshimo Affiliate settings now hold a separate set of IDs per merchant (Rakuten Ichiba / Yahoo! Shopping / Amazon), because Moshimo issues different IDs for each partnership — a Rakuten set would not track conversions on Amazon. Paste one ad link per merchant to fill each set, and each source only offers Moshimo as a route once its own set is filled in</li>\n<li>Affiliate URLs are now generated at render time, so changing a route updates existing cards without re-registering products</li>\n<li>Third-party / add-on connectors can still be installed as separate plugins via the <code>kukuriya_register_connectors</code> hook</li>\n</ul>\n<h4>0.1.0-beta.1</h4>\n<ul>\n<li>First beta release</li>\n<li>5 MVP connectors: Amazon (Creators API) / Rakuten Ichiba / Yahoo! Shopping / Moshimo / manual entry (Generic)</li>\n<li>Block Editor product block + comparison table block</li>\n<li>One-action product registration by URL paste (Rakuten / Amazon / Yahoo product page URLs, plus Amazon SiteStripe short URLs)</li>\n<li>4 built-in card templates (Simple / Card / Compact / Pochipp compatible)</li>\n<li>Universal Link foundation (<code>wp_bcore_offers</code> table)</li>\n<li>WP-Cron automatic price refresh (every 6 hours, with manual trigger)</li>\n<li>Click tracking (anonymized, short URLs, Beacon)</li>\n<li>Automatic product description service (vendor-neutral Messages API)</li>\n<li>Custom fields (text / number / select / boolean / date)</li>\n<li>CSV import / export (custom fields supported, dry-run)</li>\n<li>Pochipp migration (CPT <code>pochipps</code> <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> products + offers)</li>\n<li>Admin dashboard (cron status / click summary / custom field CRUD)</li>\n<li>Cloud integration (Phase 2) skeleton (UI only; backend not yet live)</li>\n<li>Internationalization (all strings translatable via i18n functions)</li>\n</ul>\n<h4>0.1.0-alpha</h4>\n<ul>\n<li>Initial alpha (internal testing)</li>\n</ul>\n"
+    },
+    "short_description": "Manage affiliate links from multiple ASPs as one product. Search and insert in the Block Editor, register by URL paste, auto-update prices.",
+    "description": "<p><strong>Kukuriya</strong> is a WordPress plugin that bundles product links from multiple affiliate service providers (ASPs) into a single &#8220;product&#8221; and manages them in one place. It is fully integrated with the Block Editor, covering everything from product search to card rendering, comparison tables, and automatic price updates.</p>\n<p>It is aimed at people migrating from Pochipp, affiliate marketers struggling with the Amazon API entry barrier, and anyone who wants to manage multiple ASPs across one site.</p>\n<h4>Key features</h4>\n<ul>\n<li><strong>Universal Link</strong>: one product = a set of offers from multiple ASPs. A data model that lets you serve the best link depending on user, stock, and price</li>\n<li><strong>Connector architecture</strong>: every ASP integration is an isolated connector module. Five official connectors ship built in and can be toggled per site, and third-party connectors can be added as separate plugins via a public hook</li>\n<li><strong>Modern Block Editor</strong>: product search modal, block insertion, and attribute editing UI built with TypeScript + React 18 + <code>@wordpress/scripts</code></li>\n<li><strong>One-action registration by URL paste</strong>: paste a Rakuten or Amazon product page URL into the Block Editor to identify, fetch, and register the product CPT automatically. SiteStripe short URLs (<code>amzn.to</code> / <code>amzn.asia</code>) are expanded automatically. Also useful as a rescue path for products that do not appear in search results</li>\n<li><strong>5 built-in card templates</strong>: Simple / Card / Compact / Pochipp compatible (visual parity for migrating users), plus a comparison table block for up to 10 products</li>\n<li><strong>Comparison tables you can actually shape</strong>: reorder the rows, add your own from custom fields or free text, mark cells with ◎ ○ △ ×, turn a cell into a bullet list, highlight the one that decides it, put the products down the side instead of across the top, give each column its own button text and colour, and add a heading above the table</li>\n<li><strong>Design controls</strong>: 4 visual presets (Neo / Outline / Glass / Bold), custom card frames (width / color), button styles (solid / outlined / gradient / raised), an optional &#8220;See reviews&#8221; link, and animated frame and button effects (glow, pulse, shine, aurora) that pause automatically for visitors who prefer reduced motion — configurable site-wide or per block</li>\n<li><strong>Custom fields</strong>: add per-product spec fields in 5 types (text / number / select / boolean / date) with editing and CSV round-trip support</li>\n<li><strong>CSV import / export</strong>: full CSV round-trip including custom fields, with dry-run validation</li>\n<li><strong>Pochipp migration</strong>: import products and affiliate URLs from an existing Pochipp install (CPT <code>pochipps</code>). Amazon ASIN / Rakuten item code / Yahoo seller_id + itemcode are mapped automatically</li>\n<li><strong>Automatic price refresh cron</strong>: re-fetches Amazon / Rakuten / Yahoo prices every 6 hours. Failed items are retried with interval protection for stable operation</li>\n<li><strong>Click tracking on your own site (anonymized)</strong>: a small script reports purchase-button clicks to your site&#8217;s own REST API and the dashboard shows which products, stores and posts get clicked. IP / UA are hashed with HMAC-SHA256, referrers keep the host only, no cookies. Can be switched off under &#8220;Measurement&#8221;</li>\n<li><strong>Automatic product description generation (external API)</strong>: a Composer Service that can call a vendor-neutral Messages-style API. Users configure their own API key</li>\n<li><strong>Optional credit</strong>: off by default. If you want to show where the cards come from, a switch under Design adds a small mark and the name &#8220;Kukuriya&#8221; at the bottom right of cards and comparison tables. It is never a link, and nothing about the plugin depends on it</li>\n<li><strong>Internationalization</strong>: every string is translatable (text domain: <code>kukuriya</code>). Translation contributions via translate.wordpress.org are welcome</li>\n</ul>\n<h4>Supported ASPs (all built in — enable the ones you use)</h4>\n<ul>\n<li><strong>Amazon</strong> (Creators API, 15 marketplaces)</li>\n<li><strong>Rakuten Ichiba</strong> (Rakuten IchibaItem Search API v2)</li>\n<li><strong>Yahoo! Shopping</strong> (Shopping Web Service V3 + ValueCommerce affiliate URL support)</li>\n<li><strong>Moshimo Affiliate</strong> (link conversion; an alternative route without Amazon keys)</li>\n<li><strong>Mercari</strong> (Mercari Ambassador: your afid is appended to Mercari links — search links and per-product links)</li>\n<li><strong>Manual entry (A8.net / afb / ValueCommerce, etc.)</strong> (a generic connector for ASPs without a product API)</li>\n</ul>\n<h4>Usage notes</h4>\n<ul>\n<li>The Amazon Creators API requires per-account credentials (a central proxy model is not permitted under its licence)</li>\n<li>Amazon grants API access only to accounts with at least 10 qualifying sales in the trailing 30 days. The Moshimo Affiliate route can be used as an alternative</li>\n<li>Please follow the terms of service of each ASP</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin talks to the shopping services whose connectors you turn on, using API keys that you supply. Nothing is sent anywhere until you enter credentials and enable a connector, and no data is ever sent to the plugin author.</p>\n<h4>Amazon Product Advertising / Creators API (Login with Amazon)</h4>\n<p>This plugin connects to Amazon&#8217;s product API to search Amazon&#8217;s catalogue and to obtain a product&#8217;s title, image, price and availability. It is needed to show the product cards you place in your posts and to keep their prices current. It is used only if you turn on the Amazon connector and enter your own credentials.</p>\n<p>It sends your Client ID and Client Secret to obtain an access token (<code>api.amazon.com</code>, <code>api.amazon.co.jp</code> or <code>api.amazon.co.uk</code>, depending on the marketplace you choose), and then, on each product search, scheduled price refresh and card render that misses the cache, it sends the search keyword or product ASIN together with that token and your Associates tag. The scheduled refresh runs every 6 hours for products you have registered. If you paste a SiteStripe short URL (<code>amzn.to</code> or <code>amzn.asia</code>) into the editor, your site also makes one request to that address to find out which product it points to.</p>\n<p>This service is provided by &#8220;Amazon.com, Inc.&#8221;: <a href=\"https://affiliate.amazon.co.jp/help/operating/agreement\" rel=\"nofollow ugc\">terms of use</a>, <a href=\"https://www.amazon.co.jp/gp/help/customer/display.html?nodeId=GX7NJQ4ZB8MHFRNJ\" rel=\"nofollow ugc\">privacy policy</a>.</p>\n<h4>Rakuten Web Service (Rakuten Ichiba Item Search API)</h4>\n<p>This plugin connects to the Rakuten Ichiba Item Search API at <code>openapi.rakuten.co.jp</code> to search Rakuten Ichiba and to obtain a product&#8217;s title, image, price and availability. It is needed to show the product cards you place in your posts and to keep their prices current. It is used only if you turn on the Rakuten connector and enter your own Application ID and Affiliate ID.</p>\n<p>It sends your Application ID and Affiliate ID together with the search keyword or item code, on each product search, scheduled price refresh and card render that misses the cache. The scheduled refresh runs every 6 hours for products you have registered.</p>\n<p>This service is provided by &#8220;Rakuten Group, Inc.&#8221;: <a href=\"https://webservice.rakuten.co.jp/guide/rule\" rel=\"nofollow ugc\">terms of use</a>, <a href=\"https://privacy.rakuten.co.jp/\" rel=\"nofollow ugc\">privacy policy</a>.</p>\n<h4>Yahoo! Shopping Web Service</h4>\n<p>This plugin connects to the Yahoo! Shopping Web Service at <code>shopping.yahooapis.jp</code> to search Yahoo! Shopping and to obtain a product&#8217;s title, image, price and availability. It is needed to show the product cards you place in your posts and to keep their prices current. It is used only if you turn on the Yahoo connector and enter your own Client ID.</p>\n<p>It sends your Client ID together with the search keyword or item code, on each product search, scheduled price refresh and card render that misses the cache. The scheduled refresh runs every 6 hours for products you have registered.</p>\n<p>This service is provided by &#8220;LY Corporation&#8221;: <a href=\"https://www.lycorp.co.jp/ja/company/terms/\" rel=\"nofollow ugc\">terms of use</a>, <a href=\"https://www.lycorp.co.jp/ja/company/privacypolicy/\" rel=\"nofollow ugc\">privacy policy</a>, <a href=\"https://developer.yahoo.co.jp/guideline/\" rel=\"nofollow ugc\">developer guidelines</a>.</p>\n<h4>A text generation API of your choosing (optional, off by default)</h4>\n<p>The optional &#8220;generate a product description&#8221; button sends a prompt to an API endpoint that <strong>you</strong> enter in the settings. The plugin does not pick a provider for you and ships no endpoint, no key and no default address of its own. If you leave the setting empty, nothing is ever sent and the button does nothing.</p>\n<p>It sends, only when you press that button, a prompt containing the product&#8217;s title, price and categories, plus the API key you entered, to the endpoint you entered.</p>\n<p>This service is provided by whichever company you configure. Its terms of use and privacy policy are that company&#8217;s own. Please read them before entering an endpoint and a key.</p>\n<h4>Your analytics service (optional, off by default)</h4>\n<p>If you turn on click measurement under &#8220;Measurement&#8221;, clicks on purchase buttons are reported to the analytics service whose tag is already installed on your site by you or your theme. This plugin bundles no analytics tag and adds none; your server sends nothing. The reader&#8217;s browser reports the click through that existing tag.</p>\n<p>It sends, on a click — the product ID, the product name (first 60 characters), which store was clicked, whether the link went to a product page or to search results, and which card in the article it was. The affiliate URL, IP addresses, user agents and post content are never included.</p>\n<p>This service is provided by whichever analytics company you already use. Its terms of use and privacy policy are that company&#8217;s own.</p>\n<h4>Services this plugin does NOT contact</h4>\n<p>Moshimo Affiliate, A8.net, afb, ValueCommerce and Mercari are supported by building the correct affiliate URL on your own server, from the IDs you enter. The plugin makes no request to any of them, and sends them no data. Their addresses appear in the source code only as the destination your visitors&#8217; own browsers go to when they click a link.</p>\n<h3>Source code and build</h3>\n<p>The admin screens and editor blocks are written in TypeScript and SCSS and compiled with <code>@wordpress/scripts</code> (webpack). The uncompiled sources are included in this plugin under <code>assets/src/</code>, next to the compiled output in <code>build/</code>, together with <code>package.json</code>, <code>webpack.config.js</code> and <code>tsconfig.json</code>.</p>\n<p>To reproduce the compiled files, with Node.js 20 or later:</p>\n<pre><code>npm install\nnpm run build\n</code></pre>\n<p>No third-party JavaScript libraries are bundled. Everything the scripts use at runtime (<code>@wordpress/element</code>, <code>@wordpress/components</code>, and so on) is provided by WordPress itself.</p>\n<h3>Privacy Policy</h3>\n<p>Kukuriya stores the following anonymized data for click tracking (in the <code>wp_bcore_clicks</code> table):</p>\n<ul>\n<li>HMAC-SHA256 hash of the IP address (64 hex chars)</li>\n<li>HMAC-SHA256 hash of the User-Agent (64 hex chars)</li>\n<li>Referrer host name only (no path / query)</li>\n<li>An opaque per-tab session ID generated client-side in <code>sessionStorage</code> (optional)</li>\n<li>Product ID / post ID / which store button / product page or search / card position / timestamp</li>\n</ul>\n<p>Raw IPs, raw User-Agents, and full URLs are never stored. No cookies are used. Rows are deleted after 90 days. Recording can be switched off under &#8220;Measurement&#8221;.</p>\n<p>By default, external communication happens only with the ASPs you configured, using your own API keys. No data is sent to the plugin developer (Pifto Works) unless you explicitly enable it.</p>\n<p>If you enable the automatic product description feature, prompts containing product information (title / price / categories, etc.) are sent to the external generation API endpoint you configured. You choose and configure both the destination endpoint and the API key.</p>\n<p>If you enable the opt-in click measurement feature (Kukuriya &gt; Measurement, disabled by default), purchase button clicks are reported to the analytics service whose tag is installed on your site. What is sent: the product ID stored on your site, the product name (truncated to 60 characters), which store button was clicked, whether it linked to a product page or to search results, and which card in the article it was. What is never sent: the affiliate URL itself, IP addresses, user agents, product descriptions, post content, or any user-entered free text. Nothing is transmitted from your server; the reader&#8217;s browser reports the click through the analytics tag that is already loaded on the page. Turning the setting off stops the transmission immediately.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/kukuriya.0.13.5.zip",
+    "upgrade_notice": {
+        "0.13.5": "<p>Display only. The default Amazon button is a brighter orange. A colour you chose yourself is kept.</p>",
+        "0.13.4": "<p>Display only, comparison tables. The store buttons no longer run together into one bar on themes that leave box sizing alone, and a column label no longer sits on top of the product name in a table with several columns.</p>",
+        "0.13.3": "<p>The sample card on the Design screen no longer shows a real manufacturer&#039;s name. Display only; nothing you have set up changes.</p>",
+        "0.13.2": "<p>Display only. Cards and buttons have squarer corners by default, a one-line card is clickable across its whole width, and three faults in the comparison table are fixed — missing store buttons, a product name that looked like a plain link, and headings set smaller than the rows. Nothing you have set up changes; a radius you chose yourself is kept.</p>",
+        "0.13.1": "<p>Cards followed the browser&#039;s dark mode by default, which made them go black inside light pages. That is off by default now. Sites that already chose a setting are not affected.</p>",
+        "0.13.0": "<p>Admin screens only. A product now opens in its own window, its settings are grouped into sections you open one at a time, and on/off controls read &quot;Off | On&quot;. Nothing you have set up changes, and the front end is unchanged apart from the product image sitting in the middle of the card and the review icon having dots in it.</p>",
+        "0.12.0": "<p>Prices older than 24 hours are no longer shown as current; the card uses another store’s fresh price instead. If you would rather keep the old behaviour, the <code>kukuriya_price_max_age</code> filter sets the limit (0 for no limit). Nothing you have set up changes.</p>",
+        "0.11.0": "<p>If you are moving from Pochipp, run the post rewrite again: cards Pochipp held inside the block instead of its product list are now brought over too. Nothing you have already migrated changes.</p>",
+        "0.10.0": "<p>Inline product links can now be aimed at a particular store, and can be changed in bulk from the Links screen. Nothing you have set up changes.</p>",
+        "0.9.0": "<p>Comparison tables are rebuilt: rows you choose, ◎ ○ △ × marks, bullet cells, a horizontal layout and bigger buttons. Public hook names are now all <code>kukuriya_*</code> — rename any you used, the old ones no longer fire.</p>",
+        "0.8.0": "<p>Housekeeping release. Required if you use the paid add-on, which needs this version for its own tabs.</p>",
+        "0.7.0": "<p>The plugin is now called Kukuriya. Animated frame and button effects are available to everyone. The unused Cloud integration tab has been removed.</p>",
+        "0.6.0": "<p>Adds the Links feature. Translations are no longer bundled: if you need the Japanese admin UI before the language pack is available, place the .mo file in wp-content/languages/plugins/.</p>",
+        "0.5.0": "<p>First public release. Existing beta users: prices on cards start refreshing automatically after update; no settings changes needed.</p>",
+        "0.5.0-beta.1": "<p>Adds a Pro sale-display layer (badge / countdown / coupon / schedule). No breaking changes.</p>",
+        "0.3.0-beta.7": "<p>Adds custom frames, button styles and review links. No breaking changes; existing design settings are kept.</p>",
+        "0.2.0-beta.1": "<p>Connectors are now built in. After updating, deactivate and delete the old standalone connector plugins (kukuriya-connector-*); your saved API keys and products are kept.</p>",
+        "0.1.0-beta.1": "<p>First beta release. Test thoroughly before applying to a production site.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/kukuriya/assets/screenshot-1.png?rev=3699842",
+            "caption": "A product card in a post. Price, discount, sale label and every store button in one block."
+        },
+        {
+            "src": "https://ps.w.org/kukuriya/assets/screenshot-2.png?rev=3699842",
+            "caption": "Several cards in one article. Three card templates, chosen per block."
+        },
+        {
+            "src": "https://ps.w.org/kukuriya/assets/screenshot-3.png?rev=3699842",
+            "caption": "A comparison table built from saved products."
+        },
+        {
+            "src": "https://ps.w.org/kukuriya/assets/screenshot-4.png?rev=3699842",
+            "caption": "Picking a product in the Block Editor. Search what you already saved, or query Amazon, Rakuten and Yahoo! Shopping."
+        },
+        {
+            "src": "https://ps.w.org/kukuriya/assets/screenshot-5.png?rev=3699842",
+            "caption": "Block settings. Template, store buttons and the look of the card, per block."
+        },
+        {
+            "src": "https://ps.w.org/kukuriya/assets/screenshot-6.png?rev=3699842",
+            "caption": "The product list. Search, link health, where each product is used, and how many extra stores it has."
+        },
+        {
+            "src": "https://ps.w.org/kukuriya/assets/screenshot-7.png?rev=3699842",
+            "caption": "Editing one product, with a live preview of the card."
+        },
+        {
+            "src": "https://ps.w.org/kukuriya/assets/screenshot-8.png?rev=3699842",
+            "caption": "Design settings. Presets and tokens that apply across the site."
+        },
+        {
+            "src": "https://ps.w.org/kukuriya/assets/screenshot-9.png?rev=3699842",
+            "caption": "The dashboard. Price refresh status and the last seven days of clicks."
+        },
+        {
+            "src": "https://ps.w.org/kukuriya/assets/screenshot-10.png?rev=3699842",
+            "caption": "Migrating from Pochipp. Products, then article content, in numbered steps."
+        }
+    ],
+    "tags": {
+        "affiliate": "affiliate",
+        "amazon": "amazon",
+        "rakuten": "rakuten",
+        "yahoo": "yahoo"
+    },
+    "stable_tag": "0.13.5",
+    "versions": {
+        "0.12.0": "https://downloads.wordpress.org/plugin/kukuriya.0.12.0.zip",
+        "0.13.0": "https://downloads.wordpress.org/plugin/kukuriya.0.13.0.zip",
+        "0.13.1": "https://downloads.wordpress.org/plugin/kukuriya.0.13.1.zip",
+        "0.13.2": "https://downloads.wordpress.org/plugin/kukuriya.0.13.2.zip",
+        "0.13.3": "https://downloads.wordpress.org/plugin/kukuriya.0.13.3.zip",
+        "0.13.4": "https://downloads.wordpress.org/plugin/kukuriya.0.13.4.zip",
+        "0.13.5": "https://downloads.wordpress.org/plugin/kukuriya.0.13.5.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/kukuriya.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/kukuriya/assets/banner-772x250.png?rev=3694852",
+        "high": "https://ps.w.org/kukuriya/assets/banner-1544x500.png?rev=3694852"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/kukuriya/assets/icon-128x128.png?rev=3694852",
+        "2x": "https://ps.w.org/kukuriya/assets/icon-256x256.png?rev=3694852"
+    },
+    "blocks": {
+        "kukuriya/link": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "kukuriya/link",
+            "version": "0.1.0-alpha",
+            "title": "Kukuriya Link",
+            "category": "embed",
+            "icon": "admin-links",
+            "description": "Place a link you registered in Kukuriya. Articles only hold the key, so changing the link later updates every article.",
+            "keywords": [
+                "kukuriya",
+                "affiliate",
+                "link",
+                "banner"
+            ],
+            "textdomain": "kukuriya",
+            "supports": {
+                "html": false,
+                "anchor": true
+            },
+            "attributes": {
+                "linkKey": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "editorScript": "file:./index.ts",
+            "style": "kukuriya-frontend"
+        },
+        "kukuriya/comparison": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "kukuriya/comparison",
+            "version": "0.1.0-alpha",
+            "title": "Kukuriya Comparison",
+            "category": "embed",
+            "icon": "editor-table",
+            "description": "Insert a comparison table of up to 10 Kukuriya products.",
+            "keywords": [
+                "kukuriya",
+                "affiliate",
+                "comparison",
+                "table"
+            ],
+            "textdomain": "kukuriya",
+            "supports": {
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "anchor": true
+            },
+            "attributes": {
+                "productIds": {
+                    "type": "array",
+                    "default": [],
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "titles": {
+                    "type": "object",
+                    "default": []
+                },
+                "labels": {
+                    "type": "object",
+                    "default": []
+                },
+                "labelColors": {
+                    "type": "object",
+                    "default": []
+                },
+                "colors": {
+                    "type": "object",
+                    "default": []
+                },
+                "buttonTexts": {
+                    "type": "object",
+                    "default": []
+                },
+                "buttonColors": {
+                    "type": "object",
+                    "default": []
+                },
+                "rows": {
+                    "type": "array",
+                    "default": []
+                },
+                "layout": {
+                    "type": "string",
+                    "default": ""
+                },
+                "caption": {
+                    "type": "string",
+                    "default": ""
+                },
+                "titleLines": {
+                    "type": "string",
+                    "default": ""
+                },
+                "buttonText": {
+                    "type": "string",
+                    "default": ""
+                },
+                "tableStyle": {
+                    "type": "string",
+                    "default": ""
+                },
+                "preset": {
+                    "type": "string",
+                    "default": ""
+                },
+                "accent": {
+                    "type": "string",
+                    "default": ""
+                },
+                "buttonColor": {
+                    "type": "string",
+                    "default": ""
+                },
+                "radius": {
+                    "type": "string",
+                    "default": ""
+                },
+                "shadow": {
+                    "type": "string",
+                    "default": ""
+                },
+                "imagePosition": {
+                    "type": "string",
+                    "default": ""
+                },
+                "cardWidth": {
+                    "type": "string",
+                    "default": ""
+                },
+                "linkTarget": {
+                    "type": "string",
+                    "default": ""
+                },
+                "microcopy": {
+                    "type": "string",
+                    "default": ""
+                },
+                "microcopySize": {
+                    "type": "string",
+                    "default": ""
+                },
+                "microcopyWeight": {
+                    "type": "string",
+                    "default": ""
+                },
+                "microcopyColor": {
+                    "type": "string",
+                    "default": ""
+                },
+                "microcopyAlign": {
+                    "type": "string",
+                    "default": ""
+                },
+                "microcopyStart": {
+                    "type": "string",
+                    "default": ""
+                },
+                "microcopyEnd": {
+                    "type": "string",
+                    "default": ""
+                },
+                "microcopyCountdown": {
+                    "type": "string",
+                    "default": ""
+                },
+                "microcopyCountdownLabel": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "editorScript": "file:./index.ts",
+            "style": "kukuriya-frontend"
+        },
+        "kukuriya/product": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "kukuriya/product",
+            "version": "0.1.0-alpha",
+            "title": "Kukuriya Product",
+            "category": "embed",
+            "icon": "products",
+            "description": "Insert a product card managed by Kukuriya.",
+            "keywords": [
+                "kukuriya",
+                "affiliate",
+                "product"
+            ],
+            "textdomain": "kukuriya",
+            "supports": {
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "anchor": true
+            },
+            "attributes": {
+                "productId": {
+                    "type": "number",
+                    "default": 0
+                },
+                "source": {
+                    "type": "string",
+                    "default": ""
+                },
+                "code": {
+                    "type": "string",
+                    "default": ""
+                },
+                "template": {
+                    "type": "string",
+                    "default": "minimal"
+                },
+                "stores": {
+                    "type": "string",
+                    "default": ""
+                },
+                "preset": {
+                    "type": "string",
+                    "default": ""
+                },
+                "accent": {
+                    "type": "string",
+                    "default": ""
+                },
+                "buttonColor": {
+                    "type": "string",
+                    "default": ""
+                },
+                "radius": {
+                    "type": "string",
+                    "default": ""
+                },
+                "shadow": {
+                    "type": "string",
+                    "default": ""
+                },
+                "imagePosition": {
+                    "type": "string",
+                    "default": ""
+                },
+                "cardWidth": {
+                    "type": "string",
+                    "default": ""
+                },
+                "linkTarget": {
+                    "type": "string",
+                    "default": ""
+                },
+                "buttonStyle": {
+                    "type": "string",
+                    "default": ""
+                },
+                "buttonColumnsSp": {
+                    "type": "string",
+                    "default": ""
+                },
+                "titleLines": {
+                    "type": "string",
+                    "default": ""
+                },
+                "buttonText": {
+                    "type": "string",
+                    "default": ""
+                },
+                "borderWidth": {
+                    "type": "string",
+                    "default": ""
+                },
+                "borderColor": {
+                    "type": "string",
+                    "default": ""
+                },
+                "borderEffect": {
+                    "type": "string",
+                    "default": ""
+                },
+                "priceStyle": {
+                    "type": "string",
+                    "default": ""
+                },
+                "microcopy": {
+                    "type": "string",
+                    "default": ""
+                },
+                "microcopySize": {
+                    "type": "string",
+                    "default": ""
+                },
+                "microcopyWeight": {
+                    "type": "string",
+                    "default": ""
+                },
+                "microcopyColor": {
+                    "type": "string",
+                    "default": ""
+                },
+                "microcopyAlign": {
+                    "type": "string",
+                    "default": ""
+                },
+                "microcopyStart": {
+                    "type": "string",
+                    "default": ""
+                },
+                "microcopyEnd": {
+                    "type": "string",
+                    "default": ""
+                },
+                "microcopyCountdown": {
+                    "type": "string",
+                    "default": ""
+                },
+                "microcopyCountdownLabel": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "editorScript": "file:./index.ts",
+            "style": "kukuriya-frontend"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "kukuriya",
+            "language": "ja",
+            "version": "0.13.4",
+            "updated": "2026-09-18 02:24:18",
+            "package": "https://downloads.wordpress.org/translation/plugin/kukuriya/0.13.4/ja.zip"
+        }
+    ]
+}

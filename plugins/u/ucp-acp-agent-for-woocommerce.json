@@ -1,0 +1,95 @@
+{
+    "name": "UCP/ACP Agent for WooCommerce",
+    "slug": "ucp-acp-agent-for-woocommerce",
+    "version": "0.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/sunh11373/\">sunh11373</a>",
+    "author_profile": "https://profiles.wordpress.org/sunh11373/",
+    "contributors": {
+        "sunh11373": {
+            "profile": "https://profiles.wordpress.org/sunh11373/",
+            "avatar": "https://secure.gravatar.com/avatar/a313af231a0bbd7e152304ada2571feddc83fbe3f6d246104356a1162445f65a?s=96&d=monsterid&r=g",
+            "display_name": "sunh11373"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1.1",
+    "requires_php": "8.1",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/ucp-acp-agent-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-18 02:33:00",
+    "added": "2026-09-18",
+    "homepage": "https://wordpress.org/plugins/ucp-acp-agent-for-woocommerce/",
+    "sections": {
+        "description": "<p>UCP/ACP Agent for WooCommerce turns your store into a spec-compliant merchant for the two agentic-commerce standards:</p>\n<ul>\n<li><strong>UCP (Universal Commerce Protocol)</strong> — the open standard by Google and Shopify used by Gemini and Google AI Mode. This plugin passes the official UCP conformance suite (75/75 tests, protocol version 2026-04-08).</li>\n<li><strong>ACP (Agentic Commerce Protocol)</strong> — the OpenAI/Stripe standard used by ChatGPT (checkout currently limited to OpenAI-approved merchants; protocol version 2026-04-17).</li>\n</ul>\n<p>What it implements:</p>\n<ul>\n<li>Discovery profiles at <code>/.well-known/ucp</code> and <code>/.well-known/acp.json</code> with published ES256 signing keys (JWK)</li>\n<li>Full checkout-session lifecycle mapped onto your real WooCommerce products, stock, coupons, and shipping zones — completed agent checkouts become normal WooCommerce orders</li>\n<li>RFC 9421 HTTP Message Signatures: signed webhooks, optional strict verification of inbound requests, key rotation with a grace period</li>\n<li>Idempotency, capability/version negotiation, and structured protocol errors on both rails</li>\n<li>Payments: Google Pay via Stripe (UCP) and Stripe Shared Payment Token (ACP), with declines surfaced to the agent; plus a mock handler for testing</li>\n<li>Signed order webhooks (RFC 9421 for UCP platforms, HMAC-SHA256 for ACP)</li>\n<li>Admin screen under WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> UCP: keys, rotation, strict mode, ACP provisioning, Stripe configuration</li>\n</ul>\n<p><strong>Security model:</strong> agent-facing checkout endpoints are public by design — that is how the UCP open standard works (any agent may discover and transact; authenticity is provided by HTTP Message Signatures, which you can enforce with strict mode). Orders are only created after payment succeeds, prices and stock are always server-authoritative, the ACP API requires a Bearer key, payment credentials are never stored or echoed, and the shipping-simulation test endpoint is disabled unless you configure a secret.</p>\n<h3>External services</h3>\n<p>This plugin communicates with external services only in the following cases:</p>\n<ol>\n<li><strong>Stripe (api.stripe.com)</strong> — only when you configure a Stripe key (directly or via the WooCommerce Stripe gateway). When an AI agent completes a checkout with a Google Pay or Shared Payment Token instrument, the plugin sends the payment token, amount, and currency to Stripe to process the charge, and fetches your Stripe account id once for handler configuration. Subject to the <a href=\"https://stripe.com/legal/ssa\" rel=\"nofollow ugc\">Stripe Services Agreement</a> and <a href=\"https://stripe.com/privacy\" rel=\"nofollow ugc\">Privacy Policy</a>.</li>\n<li><strong>Google Pay</strong> — only when Stripe is configured. The plugin publishes your Google Pay merchant configuration (store name, site host, Stripe merchant id, accepted card networks) in the UCP discovery document and checkout responses so that AI agents can obtain a Google Pay card token for the shopper. The plugin itself never contacts Google; the resulting token is charged through Stripe as described above. Subject to the <a href=\"https://payments.developers.google.com/terms/sellertos\" rel=\"nofollow ugc\">Google Pay API Terms of Service</a> and <a href=\"https://policies.google.com/privacy\" rel=\"nofollow ugc\">Google Privacy Policy</a>.</li>\n<li><strong>The AI platform contacting your store</strong> — when an agent request carries a <code>UCP-Agent</code> header, the plugin fetches that platform&#8217;s public profile URL to discover its webhook endpoint and signature keys, and sends order status webhooks (order contents, totals, shipping address) to the webhook URL the platform published or that you configured for ACP. This only happens for platforms that initiate contact with your store or that you configure explicitly. Terms and privacy policy are those of the platform in question.</li>\n<li><strong>ACP Feed API push</strong> — only when you enter a Feed API base URL, feed id, and API token on the settings screen. The plugin then sends your published product catalog (product id or SKU, title, description, URL, image URL, price, availability, GTIN, variant options, categories, and store name) to that URL, once when you click &#8220;Push now&#8221; and thereafter once a day via WP-Cron. No customer data is included. Terms and privacy policy are those of the platform whose Feed API you configure.</li>\n</ol>\n<p>URLs under ucp.dev, acp.dev, pay.google.com, and developers.google.com appear in the plugin&#8217;s discovery documents and payment handler declarations as protocol version identifiers, specification links, and JSON Schema references. They are never requested by the plugin.</p>\n<p>No data is sent to the plugin author. No analytics or tracking of any kind.</p>\n",
+        "faq": "\n<dt id=\"does%20this%20make%20my%20products%20appear%20in%20gemini%20or%20chatgpt%3F\">\nDoes this make my products appear in Gemini or ChatGPT?\n</h4>\n<p>\n<p>It makes your store protocol-ready. Receiving Google surface traffic additionally requires a Google Merchant Center account; ChatGPT checkout additionally requires OpenAI merchant approval. Any UCP-speaking agent can transact with your store immediately.</p>\n</p>\n<dt id=\"do%20agents%20pay%20real%20money%3F\">\nDo agents pay real money?\n</h4>\n<p>\n<p>Yes, when Stripe is configured: tokens supplied by the platform are charged through your Stripe account. Without Stripe, only the mock test handler is available, and only while a simulation secret is set.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20hpos%20%28high-performance%20order%20storage%29%3F\">\nDoes it work with HPOS (High-Performance Order Storage)?\n</h4>\n<p>\n<p>Yes, compatibility is declared and order access uses HPOS-safe APIs.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>Initial release: UCP 2026-04-08 (official conformance suite: 75 passed), ACP 2026-04-17, RFC 9421 signatures, Stripe payment handlers, admin screen.</li>\n</ul>\n"
+    },
+    "short_description": "Make your store buyable by AI agents: Universal Commerce Protocol (UCP) and OpenAI&#039;s Agentic Commerce Protocol (ACP) in one plugin.",
+    "description": "<p>UCP/ACP Agent for WooCommerce turns your store into a spec-compliant merchant for the two agentic-commerce standards:</p>\n<ul>\n<li><strong>UCP (Universal Commerce Protocol)</strong> — the open standard by Google and Shopify used by Gemini and Google AI Mode. This plugin passes the official UCP conformance suite (75/75 tests, protocol version 2026-04-08).</li>\n<li><strong>ACP (Agentic Commerce Protocol)</strong> — the OpenAI/Stripe standard used by ChatGPT (checkout currently limited to OpenAI-approved merchants; protocol version 2026-04-17).</li>\n</ul>\n<p>What it implements:</p>\n<ul>\n<li>Discovery profiles at <code>/.well-known/ucp</code> and <code>/.well-known/acp.json</code> with published ES256 signing keys (JWK)</li>\n<li>Full checkout-session lifecycle mapped onto your real WooCommerce products, stock, coupons, and shipping zones — completed agent checkouts become normal WooCommerce orders</li>\n<li>RFC 9421 HTTP Message Signatures: signed webhooks, optional strict verification of inbound requests, key rotation with a grace period</li>\n<li>Idempotency, capability/version negotiation, and structured protocol errors on both rails</li>\n<li>Payments: Google Pay via Stripe (UCP) and Stripe Shared Payment Token (ACP), with declines surfaced to the agent; plus a mock handler for testing</li>\n<li>Signed order webhooks (RFC 9421 for UCP platforms, HMAC-SHA256 for ACP)</li>\n<li>Admin screen under WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> UCP: keys, rotation, strict mode, ACP provisioning, Stripe configuration</li>\n</ul>\n<p><strong>Security model:</strong> agent-facing checkout endpoints are public by design — that is how the UCP open standard works (any agent may discover and transact; authenticity is provided by HTTP Message Signatures, which you can enforce with strict mode). Orders are only created after payment succeeds, prices and stock are always server-authoritative, the ACP API requires a Bearer key, payment credentials are never stored or echoed, and the shipping-simulation test endpoint is disabled unless you configure a secret.</p>\n<h3>External services</h3>\n<p>This plugin communicates with external services only in the following cases:</p>\n<ol>\n<li><strong>Stripe (api.stripe.com)</strong> — only when you configure a Stripe key (directly or via the WooCommerce Stripe gateway). When an AI agent completes a checkout with a Google Pay or Shared Payment Token instrument, the plugin sends the payment token, amount, and currency to Stripe to process the charge, and fetches your Stripe account id once for handler configuration. Subject to the <a href=\"https://stripe.com/legal/ssa\" rel=\"nofollow ugc\">Stripe Services Agreement</a> and <a href=\"https://stripe.com/privacy\" rel=\"nofollow ugc\">Privacy Policy</a>.</li>\n<li><strong>Google Pay</strong> — only when Stripe is configured. The plugin publishes your Google Pay merchant configuration (store name, site host, Stripe merchant id, accepted card networks) in the UCP discovery document and checkout responses so that AI agents can obtain a Google Pay card token for the shopper. The plugin itself never contacts Google; the resulting token is charged through Stripe as described above. Subject to the <a href=\"https://payments.developers.google.com/terms/sellertos\" rel=\"nofollow ugc\">Google Pay API Terms of Service</a> and <a href=\"https://policies.google.com/privacy\" rel=\"nofollow ugc\">Google Privacy Policy</a>.</li>\n<li><strong>The AI platform contacting your store</strong> — when an agent request carries a <code>UCP-Agent</code> header, the plugin fetches that platform&#8217;s public profile URL to discover its webhook endpoint and signature keys, and sends order status webhooks (order contents, totals, shipping address) to the webhook URL the platform published or that you configured for ACP. This only happens for platforms that initiate contact with your store or that you configure explicitly. Terms and privacy policy are those of the platform in question.</li>\n<li><strong>ACP Feed API push</strong> — only when you enter a Feed API base URL, feed id, and API token on the settings screen. The plugin then sends your published product catalog (product id or SKU, title, description, URL, image URL, price, availability, GTIN, variant options, categories, and store name) to that URL, once when you click &#8220;Push now&#8221; and thereafter once a day via WP-Cron. No customer data is included. Terms and privacy policy are those of the platform whose Feed API you configure.</li>\n</ol>\n<p>URLs under ucp.dev, acp.dev, pay.google.com, and developers.google.com appear in the plugin&#8217;s discovery documents and payment handler declarations as protocol version identifiers, specification links, and JSON Schema references. They are never requested by the plugin.</p>\n<p>No data is sent to the plugin author. No analytics or tracking of any kind.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/ucp-acp-agent-for-woocommerce.0.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/ucp-acp-agent-for-woocommerce/assets/screenshot-1.png?rev=3701223",
+            "caption": "Settings screen (WooCommerce → UCP): discovery status, signing-key rotation, ACP provisioning, Stripe payments, product feeds."
+        },
+        {
+            "src": "https://ps.w.org/ucp-acp-agent-for-woocommerce/assets/screenshot-2.png?rev=3701223",
+            "caption": "Agent-placed purchases arrive as normal WooCommerce orders."
+        },
+        {
+            "src": "https://ps.w.org/ucp-acp-agent-for-woocommerce/assets/screenshot-3.png?rev=3701223",
+            "caption": "Order detail with the Stripe PaymentIntent recorded as the transaction ID."
+        },
+        {
+            "src": "https://ps.w.org/ucp-acp-agent-for-woocommerce/assets/screenshot-4.png?rev=3701223",
+            "caption": "An AI shopping agent buying from the store over UCP: discovery, checkout, payment, signed webhooks."
+        }
+    ],
+    "tags": {
+        "acp": "acp",
+        "agentic-commerce": "agentic-commerce",
+        "ai-agents": "ai agents",
+        "checkout": "checkout",
+        "ucp": "ucp"
+    },
+    "stable_tag": "0.1.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/ucp-acp-agent-for-woocommerce.0.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/ucp-acp-agent-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/ucp-acp-agent-for-woocommerce/assets/banner-772x250.png?rev=3701223",
+        "high": "https://ps.w.org/ucp-acp-agent-for-woocommerce/assets/banner-1544x500.png?rev=3701223"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/ucp-acp-agent-for-woocommerce/assets/icon-128x128.png?rev=3701223",
+        "2x": "https://ps.w.org/ucp-acp-agent-for-woocommerce/assets/icon-256x256.png?rev=3701223"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
