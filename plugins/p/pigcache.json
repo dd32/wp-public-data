@@ -1,0 +1,75 @@
+{
+    "name": "PigCache",
+    "slug": "pigcache",
+    "version": "1.0.29",
+    "author": "<a href=\"https://profiles.wordpress.org/aixeiger/\">aixeiger</a>",
+    "author_profile": "https://profiles.wordpress.org/aixeiger/",
+    "contributors": {
+        "aixeiger": {
+            "profile": "https://profiles.wordpress.org/aixeiger/",
+            "avatar": "https://secure.gravatar.com/avatar/2ef6e3c2dc78657a2aa0fc228a51b7c39fb94916ff64cf3491a1dce1bfffcce5?s=96&d=monsterid&r=g",
+            "display_name": "aixeiger"
+        }
+    },
+    "requires": "5.8",
+    "tested": "7.1.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/pigcache/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-20 16:40:00",
+    "added": "2026-09-20",
+    "homepage": "",
+    "sections": {
+        "description": "<p>PigCache replaces WordPress’s default object cache with <strong>Redis</strong> (official drop-in pattern), using PhpRedis when available or the bundled <strong>Predis</strong>. Configure the connection with <code>PIGCACHE_REDIS_*</code> constants in wp-config.php.</p>\n<p>Features:</p>\n<ul>\n<li><strong>Redis object cache</strong> drop-in (PhpRedis or bundled Predis)</li>\n<li><strong>SQL query cache</strong> (optional <code>db.php</code> drop-in) with per-table invalidation, so writing to one table does not discard results that never read it</li>\n<li><strong>Full-page HTML cache</strong> for anonymous visitors with tag-based selective invalidation on content changes</li>\n<li><strong>Fragment caching</strong> helpers backed by Redis</li>\n<li><strong>Tag-based selective invalidation</strong> — only affected pages are purged when a post, term, or comment changes</li>\n</ul>\n<p>Every feature listed above is included and fully enabled. The plugin has no license check, no trial period and no usage limit, and it does not contact any external service.</p>\n<p>The object cache drop-in is derived from <a href=\"https://github.com/rhubarbgroup/redis-cache\" rel=\"nofollow ugc\">Redis Object Cache</a> (GPLv3, Till Krüss / Rhubarb Group).</p>\n<h3>External services</h3>\n<p>This plugin does not connect to any external service. All caching, invalidation and metrics happen on your own server and your own Redis instance.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin files to <code>wp-content/plugins/pigcache</code>, or install through the WordPress plugins screen.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> screen.</li>\n<li>Go to <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> PigCache</strong> and use <strong>Enable object cache (copy drop-in)</strong> when you are ready.</li>\n<li>Optionally install the <strong>SQL cache</strong> drop-in from the same screen.</li>\n<li>For the full-page HTML cache, install the <code>advanced-cache.php</code> drop-in from the same screen and add <code>define( 'WP_CACHE', true );</code> to your <code>wp-config.php</code>. The plugin never edits <code>wp-config.php</code> for you.</li>\n</ol>\n<p>Do not run another full Redis object-cache plugin at the same time; PigCache replaces that role.</p>\n",
+        "faq": "\n<dt id=\"does%20this%20work%20without%20redis%3F\">\nDoes this work without Redis?\n</h4>\n<p>\n<p>No. A reachable Redis server is required for the object cache (and for HTML/fragment features that use Redis).</p>\n</p>\n<dt id=\"is%20this%20the%20same%20as%20%E2%80%9Credis%20object%20cache%E2%80%9D%3F\">\nIs this the same as “Redis Object Cache”?\n</h4>\n<p>\n<p>PigCache includes its own drop-in and must not be used together with the separate “Redis Object Cache” plugin.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.25</h4>\n<ul>\n<li>Fixed: activating the plugin on a fresh site — or deactivating and reactivating it — could break the request outright. The constructor scheduled the plugin&#8217;s WP-Cron events on <code>plugins_loaded</code>, before <code>init</code>, and building the cron label touched a translation function that early. WordPress logs that as a notice, but because it is the very first byte of output in the entire request, every later <code>header()</code> call in that request then fails with &#8220;headers already sent&#8221; — which shows up as WordPress reporting unexpected output during activation, or the plugin being silently left deactivated. Cron registration now waits for <code>init</code>, like it always should have.</li>\n<li>Fixed: with a cold object cache, a query could return another query&#8217;s rows. Caching a result or invalidating one reaches the database itself, and those internal lookups overwrote the result the caller was about to read. It affected the first query of each kind in a request after a cache flush, a Redis restart or a fresh install, and the wrong rows were then cached for the full TTL. Writes were affected too: a lost <code>insert_id</code> could attach new rows to the wrong record.</li>\n<li>Fixed: the first write to a table did not invalidate SELECTs cached before it, because a freshly bumped per-table epoch was indistinguishable from a missing one. The global epoch had the same flaw.</li>\n<li>Fixed: <code>wp_cache_decr()</code> could return negative values instead of clamping at zero as WordPress core does.</li>\n<li>Fixed: the query-stats table was never created, because MySQL rejects a <code>DEFAULT</code> on a <code>TEXT</code> column.</li>\n<li>Fixed: <code>INSERT</code>/<code>REPLACE</code> statements written without the optional <code>INTO</code> keyword were not attributed to their table.</li>\n<li>The URL firewall now learns from 404s WordPress actually returned instead of matching against a list of known permalinks. It no longer needs to be seeded or rebuilt, and it cannot 404 real content.</li>\n<li>Hardened: the URL firewall&#8217;s <code>wp pigcache-fw report</code> command now strips control/escape bytes before printing request data (IP, User-Agent) to the terminal, and the recorded IP is validated as a well-formed address instead of trusted verbatim from the <code>CF-Connecting-IP</code> header.</li>\n<li>Hardened: request headers used by the URL firewall for instrumentation (User-Agent, Referer) are explicitly sanitized before being stored.</li>\n<li>Fixed: the tag-index table used <code>DATETIME ... DEFAULT CURRENT_TIMESTAMP</code>, which MySQL only allows on <code>DATETIME</code> columns since 5.6.5 (older versions only allowed it on <code>TIMESTAMP</code>). On an older server the table silently failed to create, and worse, the very next activation queried a column on a table that didn&#8217;t exist, which WordPress reported as unexpected output during activation on any install with <code>WP_DEBUG</code> on. The two Pro-only tables with the same pattern are fixed the same way. None of the three columns had a default anyway — the code that writes to them was already setting the value itself.</li>\n<li>Fixed: an inline SQL comment left inside a <code>CREATE TABLE</code> string was silently turned into a bogus column by <code>dbDelta()</code>, producing a broken <code>ALTER TABLE ADD COLUMN</code> on every activation after the first. Explanatory comments about column definitions now live outside the SQL string.</li>\n<li>Tested against WordPress 7.1.</li>\n</ul>\n<h4>1.0.24</h4>\n<ul>\n<li>Tag-based selective invalidation and per-table SQL invalidation are now part of the plugin for everyone, with no license check of any kind.</li>\n<li>The plugin no longer writes to <code>wp-config.php</code>; the <code>WP_CACHE</code> snippet is shown in the admin screen instead.</li>\n<li>The Redis circuit breaker keeps its state in shared memory instead of a file in the system temp directory.</li>\n<li>Drop-ins resolve the plugin directory through <code>WP_PLUGIN_DIR</code> / <code>WPMU_PLUGIN_DIR</code> when those constants are available.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Security: sanitize $_SERVER inputs in early-boot path and admin handlers.</li>\n<li>Security: escape all outputs in object cache stats view.</li>\n<li>HTML and fragment caches use tag-based selective invalidation when available, with global flush fallback.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release on WordPress.org.</li>\n</ul>\n"
+    },
+    "short_description": "Redis object-cache drop-in with optional SQL, HTML page, and fragment caching.",
+    "description": "<p>PigCache replaces WordPress’s default object cache with <strong>Redis</strong> (official drop-in pattern), using PhpRedis when available or the bundled <strong>Predis</strong>. Configure the connection with <code>PIGCACHE_REDIS_*</code> constants in wp-config.php.</p>\n<p>Features:</p>\n<ul>\n<li><strong>Redis object cache</strong> drop-in (PhpRedis or bundled Predis)</li>\n<li><strong>SQL query cache</strong> (optional <code>db.php</code> drop-in) with per-table invalidation, so writing to one table does not discard results that never read it</li>\n<li><strong>Full-page HTML cache</strong> for anonymous visitors with tag-based selective invalidation on content changes</li>\n<li><strong>Fragment caching</strong> helpers backed by Redis</li>\n<li><strong>Tag-based selective invalidation</strong> — only affected pages are purged when a post, term, or comment changes</li>\n</ul>\n<p>Every feature listed above is included and fully enabled. The plugin has no license check, no trial period and no usage limit, and it does not contact any external service.</p>\n<p>The object cache drop-in is derived from <a href=\"https://github.com/rhubarbgroup/redis-cache\" rel=\"nofollow ugc\">Redis Object Cache</a> (GPLv3, Till Krüss / Rhubarb Group).</p>\n<h3>External services</h3>\n<p>This plugin does not connect to any external service. All caching, invalidation and metrics happen on your own server and your own Redis instance.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/pigcache.1.0.29.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "cache": "cache",
+        "html-cache": "html cache",
+        "object-cache": "object cache",
+        "performance": "performance",
+        "redis": "redis"
+    },
+    "stable_tag": "1.0.29",
+    "versions": {
+        "1.0.29": "https://downloads.wordpress.org/plugin/pigcache.1.0.29.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/pigcache.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/pigcache.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

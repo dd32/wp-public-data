@@ -1,0 +1,77 @@
+{
+    "name": "USDPAY for MemberPress",
+    "slug": "usdpay-for-memberpress",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/probizi91/\">USDPAY</a>",
+    "author_profile": "https://profiles.wordpress.org/probizi91/",
+    "contributors": {
+        "probizi91": {
+            "profile": "https://profiles.wordpress.org/probizi91/",
+            "avatar": "https://secure.gravatar.com/avatar/c1d596e69eed99b5ae7848e404281bc51f45a249a1a360a5c68068282b7b8fc9?s=96&d=monsterid&r=g",
+            "display_name": "USDPAY"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1.1",
+    "requires_php": "8.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/usdpay-for-memberpress/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-20 16:42:00",
+    "added": "2026-09-20",
+    "homepage": "https://usdpay.me/integrations/memberpress",
+    "sections": {
+        "description": "<p>USDPAY for MemberPress adds a USDT payment method for MemberPress. Payments are sent directly to the merchant&#8217;s wallet. The plugin supports one-time, lifetime and fixed-duration memberships through hosted USDPAY checkout on TRC20, TON or BEP20.</p>\n<p>The plugin forwards the original MemberPress transaction amount and currency to USDPAY. Currency conversion happens on the USDPAY server; the plugin does not calculate exchange rates. A membership transaction becomes complete only after a valid signed <code>invoice.paid</code> webhook is verified and matched to its saved invoice, order reference, amount and currency.</p>\n<p>Features:</p>\n<ul>\n<li>Separate MemberPress gateway installed through the official <code>mepr-gateway-paths</code> extension point.</li>\n<li>Stable invoice idempotency keys and durable payment-attempt history.</li>\n<li>Customer or merchant network selection: TRC20, TON and BEP20.</li>\n<li>HMAC-SHA256 verification over the exact raw webhook body.</li>\n<li>Atomic webhook replay and transaction-level fulfillment protection.</li>\n<li>Safe handling of paid, simultaneously paid, duplicate and expired invoice events.</li>\n<li>API and webhook secrets remain server-side and are never rendered back into HTML.</li>\n</ul>\n<p>Recurring automatic wallet charges are not supported.</p>\n<h4>External service</h4>\n<p>This plugin connects to <a href=\"https://usdpay.me/\" rel=\"nofollow ugc\">USDPAY</a> to create an invoice and redirect the customer to hosted checkout. It sends the transaction amount and ISO currency, a non-sensitive internal MemberPress transaction reference, invoice lifetime, webhook callback URL, return URL and the selected network when one is fixed by the merchant. It does not send wallet private keys, seed phrases or payment-card data.</p>\n<p>USDPAY sends signed payment-status webhooks back to the WordPress REST endpoint created by the plugin.</p>\n<ul>\n<li>Terms: https://usdpay.me/legal/terms</li>\n<li>Privacy policy: https://usdpay.me/legal/privacy</li>\n</ul>\n<h3>Requirements</h3>\n<ul>\n<li>WordPress 6.5 or newer.</li>\n<li>PHP 8.0 or newer.</li>\n<li>MemberPress 1.14.x.</li>\n<li>A public HTTPS WordPress site.</li>\n<li>A USDPAY merchant store with receiving wallets, a secret API key and webhook signing secret.</li>\n</ul>\n<p>MemberPress Cart is not declared supported in version 1.0.0.</p>\n<h3>Security</h3>\n<p>The webhook endpoint reads the exact raw body, verifies <code>X-USDPAY-Signature</code> with timing-safe comparison, checks event headers against the body and claims the event idempotency key atomically before changing MemberPress. Invalid, unknown or mismatched events cannot activate access.</p>\n<p>Protect WordPress administrator accounts, the database and backups as you would for any payment integration. The plugin never needs a wallet seed phrase or private key.</p>\n<h3>Troubleshooting</h3>\n<ul>\n<li>Gateway missing: confirm MemberPress is active and that the membership is not automatic recurring.</li>\n<li>Unable to start payment: confirm the API key, site domain approval, receiving wallets and supported currency.</li>\n<li>Webhook rejected: confirm the webhook secret belongs to the same USDPAY store as the API key.</li>\n<li>Access still pending: check that the site is publicly reachable by HTTPS and inspect debug logs after enabling both <code>WP_DEBUG</code> and gateway debug mode.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Install and activate MemberPress.</li>\n<li>Upload <code>usdpay-for-memberpress-1.0.0.zip</code> under Plugins &gt; Add New &gt; Upload Plugin and activate it.</li>\n<li>In USDPAY, create or select the store for this WordPress website and configure receiving wallets.</li>\n<li>Create a secret API key and copy the store webhook signing secret.</li>\n<li>Open MemberPress &gt; Settings &gt; Payments and add <code>USDPAY — USDT</code>.</li>\n<li>Enter both secrets, choose invoice expiration and network behavior, then save.</li>\n<li>Confirm that the displayed webhook URL uses public HTTPS.</li>\n<li>Buy a small one-time membership and verify that access activates only after on-chain confirmation.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20the%20plugin%20support%20automatic%20recurring%20memberships%3F\">\nDoes the plugin support automatic recurring memberships?\n</h4>\n<p>\n<p>No. A blockchain wallet cannot be charged automatically like a stored payment card. Version 1 supports one-time, lifetime and fixed-duration memberships only.</p>\n</p>\n<dt id=\"does%20returning%20from%20checkout%20activate%20access%3F\">\nDoes returning from checkout activate access?\n</h4>\n<p>\n<p>No. The return page is informational. Only a verified signed <code>invoice.paid</code> webhook can complete the MemberPress transaction.</p>\n</p>\n<dt id=\"where%20are%20secrets%20stored%3F\">\nWhere are secrets stored?\n</h4>\n<p>\n<p>The API key and webhook secret are stored in private WordPress options and used only by server-side PHP. Saved values are masked in the MemberPress settings screen and never returned in HTML or JavaScript.</p>\n</p>\n<dt id=\"can%20memberpress%20use%20eur%2C%20gbp%20or%20another%20currency%3F\">\nCan MemberPress use EUR, GBP or another currency?\n</h4>\n<p>\n<p>Yes, when the currency is supported by USDPAY. The original decimal amount and ISO currency are sent to USDPAY, which calculates the required USDT amount.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial MemberPress gateway.</li>\n<li>Added multi-currency invoice creation, hosted checkout and optional fixed network.</li>\n<li>Added signed, idempotent paid and expired webhook handling with compact production payload correlation.</li>\n<li>Added transaction-level fulfillment protection and duplicate-payment retention for manual review.</li>\n<li>Added server-side secret storage and safe return-status page.</li>\n<li>Added executable webhook, API idempotency and MemberPress lifecycle tests to the plugin package.</li>\n<li>Full uninstall removes credentials while preserving payment history.</li>\n<li>Resolved Plugin Check findings for the public package.</li>\n</ul>\n"
+    },
+    "short_description": "Accept USDT payments in MemberPress with hosted USDPAY checkout and signed webhook confirmation.",
+    "description": "<p>USDPAY for MemberPress adds a USDT payment method for MemberPress. Payments are sent directly to the merchant&#8217;s wallet. The plugin supports one-time, lifetime and fixed-duration memberships through hosted USDPAY checkout on TRC20, TON or BEP20.</p>\n<p>The plugin forwards the original MemberPress transaction amount and currency to USDPAY. Currency conversion happens on the USDPAY server; the plugin does not calculate exchange rates. A membership transaction becomes complete only after a valid signed <code>invoice.paid</code> webhook is verified and matched to its saved invoice, order reference, amount and currency.</p>\n<p>Features:</p>\n<ul>\n<li>Separate MemberPress gateway installed through the official <code>mepr-gateway-paths</code> extension point.</li>\n<li>Stable invoice idempotency keys and durable payment-attempt history.</li>\n<li>Customer or merchant network selection: TRC20, TON and BEP20.</li>\n<li>HMAC-SHA256 verification over the exact raw webhook body.</li>\n<li>Atomic webhook replay and transaction-level fulfillment protection.</li>\n<li>Safe handling of paid, simultaneously paid, duplicate and expired invoice events.</li>\n<li>API and webhook secrets remain server-side and are never rendered back into HTML.</li>\n</ul>\n<p>Recurring automatic wallet charges are not supported.</p>\n<h4>External service</h4>\n<p>This plugin connects to <a href=\"https://usdpay.me/\" rel=\"nofollow ugc\">USDPAY</a> to create an invoice and redirect the customer to hosted checkout. It sends the transaction amount and ISO currency, a non-sensitive internal MemberPress transaction reference, invoice lifetime, webhook callback URL, return URL and the selected network when one is fixed by the merchant. It does not send wallet private keys, seed phrases or payment-card data.</p>\n<p>USDPAY sends signed payment-status webhooks back to the WordPress REST endpoint created by the plugin.</p>\n<ul>\n<li>Terms: https://usdpay.me/legal/terms</li>\n<li>Privacy policy: https://usdpay.me/legal/privacy</li>\n</ul>\n<h3>Requirements</h3>\n<ul>\n<li>WordPress 6.5 or newer.</li>\n<li>PHP 8.0 or newer.</li>\n<li>MemberPress 1.14.x.</li>\n<li>A public HTTPS WordPress site.</li>\n<li>A USDPAY merchant store with receiving wallets, a secret API key and webhook signing secret.</li>\n</ul>\n<p>MemberPress Cart is not declared supported in version 1.0.0.</p>\n<h3>Security</h3>\n<p>The webhook endpoint reads the exact raw body, verifies <code>X-USDPAY-Signature</code> with timing-safe comparison, checks event headers against the body and claims the event idempotency key atomically before changing MemberPress. Invalid, unknown or mismatched events cannot activate access.</p>\n<p>Protect WordPress administrator accounts, the database and backups as you would for any payment integration. The plugin never needs a wallet seed phrase or private key.</p>\n<h3>Troubleshooting</h3>\n<ul>\n<li>Gateway missing: confirm MemberPress is active and that the membership is not automatic recurring.</li>\n<li>Unable to start payment: confirm the API key, site domain approval, receiving wallets and supported currency.</li>\n<li>Webhook rejected: confirm the webhook secret belongs to the same USDPAY store as the API key.</li>\n<li>Access still pending: check that the site is publicly reachable by HTTPS and inspect debug logs after enabling both <code>WP_DEBUG</code> and gateway debug mode.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/usdpay-for-memberpress.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "cryptocurrency": "cryptocurrency",
+        "memberpress": "memberpress",
+        "memberships": "memberships",
+        "payment-gateway": "payment gateway",
+        "usdt": "USDT"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/usdpay-for-memberpress.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/usdpay-for-memberpress.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/usdpay-for-memberpress/assets/banner-772x250.png?rev=3704454",
+        "high": "https://ps.w.org/usdpay-for-memberpress/assets/banner-1544x500.png?rev=3704454"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/usdpay-for-memberpress/assets/icon.svg?rev=3704454",
+        "svg": "https://ps.w.org/usdpay-for-memberpress/assets/icon.svg?rev=3704454"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
