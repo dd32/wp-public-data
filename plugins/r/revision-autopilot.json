@@ -1,0 +1,91 @@
+{
+    "name": "Revision Autopilot",
+    "slug": "revision-autopilot",
+    "version": "0.2.0",
+    "author": "<a href=\"https://profiles.wordpress.org/takahironishii/\">Takahiro Nishii</a>",
+    "author_profile": "https://profiles.wordpress.org/takahironishii/",
+    "contributors": {
+        "takahironishii": {
+            "profile": "https://profiles.wordpress.org/takahironishii/",
+            "avatar": "https://secure.gravatar.com/avatar/6c9b8152ee68fddf7706abf2cfd35bc740a4b3ae218534e691260139b6232ffd?s=96&d=monsterid&r=g",
+            "display_name": "Takahiro Nishii"
+        }
+    },
+    "requires": "6.9",
+    "tested": "7.1.1",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/revision-autopilot/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-21 07:55:00",
+    "added": "2026-09-21",
+    "homepage": "",
+    "sections": {
+        "description": "<p>WordPress keeps a full copy of a post every time you update it. Over a few years those copies quietly become the largest thing in your database. Plenty of plugins will show you a button to delete them.</p>\n<p>This one does not have a button.</p>\n<p>Revision Autopilot publishes revision cleanup as <strong>abilities</strong> — named operations with input and output schemas, permission callbacks and behavioural annotations — using the Abilities API introduced in WordPress 6.9. Anything that can discover abilities can find these, understand what they take and return, check whether it is allowed to run them, and read back a structured result. The same operations are available as WP-CLI commands for scripts and cron.</p>\n<p>It is built for sites where cleanup should happen without a person watching: agent-driven maintenance, scheduled scripts, fleets of sites managed from one place.</p>\n<h4>What it exposes</h4>\n<p>Four abilities, all under the <code>revision-autopilot/</code> namespace:</p>\n<ul>\n<li><code>count-revisions</code> — how many revisions exist, their estimated content size, and the same broken down by parent post type. Read-only.</li>\n<li><code>list-revisions</code> — one page of individual revisions with their parent post and timestamps. Read-only.</li>\n<li><code>delete-revisions</code> — deletes one bounded batch for a scope and reports how many remain. Destructive.</li>\n<li><code>optimize-tables</code> — runs OPTIMIZE TABLE on the posts and postmeta tables. Destructive.</li>\n</ul>\n<p>And three WP-CLI commands over the same code:</p>\n<pre><code>wp revision-autopilot count\nwp revision-autopilot delete --scope=post --limit=100\nwp revision-autopilot optimize\n</code></pre>\n<h4>How it stays safe</h4>\n<p>Handing destructive operations to a script deserves more care than putting them behind a button, not less.</p>\n<ul>\n<li><strong>Every ability checks permission itself.</strong> There is no admin form and no nonce in this path, so authorisation is never inherited from the surrounding request. Reading needs <code>edit_posts</code>; deleting or optimizing needs <code>manage_options</code>. Both are filterable.</li>\n<li><strong>Deletion is always bounded.</strong> One call never removes more than 1000 revisions however large the scope. The result says how many remain, so a caller loops deliberately rather than firing one unbounded request.</li>\n<li><strong>Only revisions are deleted.</strong> Every candidate is checked against <code>wp_is_post_revision()</code> before removal, and deletion goes through <code>wp_delete_post_revision()</code> so related metadata is cleaned up with it. Published content is never touched.</li>\n<li><strong>Only two tables are ever optimized</strong>, from a fixed allowlist: posts and postmeta.</li>\n<li><strong>Refusals explain themselves.</strong> A caller without permission gets a <code>WP_Error</code> saying which capability is missing, not a bare false.</li>\n</ul>\n<h4>Relationship to Takahiro Revision Cleanup</h4>\n<p>The same author publishes <a href=\"https://wordpress.org/plugins/takahiro-revision-cleanup/\" rel=\"ugc\">Takahiro Revision Cleanup</a>, which does revision cleanup through a screen under Tools. The two are for different situations and do not overlap in how they are used:</p>\n<ul>\n<li>Takahiro Revision Cleanup is for a person who wants to look at their revisions and click delete.</li>\n<li>Revision Autopilot has no screen at all. It is for scripts, CLI and agents.</li>\n</ul>\n<p>Install whichever matches how the work gets done on your site. Running both is harmless.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin to <code>/wp-content/plugins/revision-autopilot/</code>, or install it through the plugins screen.</li>\n<li>Activate it.</li>\n<li>There is no settings page, by design. Verify it with <code>wp revision-autopilot count</code>, or list the registered abilities from your client of choice.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"where%20is%20the%20settings%20page%3F\">\nWhere is the settings page?\n</h4>\n<p>\n<p>There isn&#8217;t one. This plugin exists to be called by something other than a human. If you want a screen, use Takahiro Revision Cleanup instead.</p>\n</p>\n<dt id=\"is%20deleting%20revisions%20reversible%3F\">\nIs deleting revisions reversible?\n</h4>\n<p>\n<p>No. Revisions are deleted permanently. Take a backup first, and use <code>--dry-run</code> or <code>count-revisions</code> to see what would go before it goes.</p>\n</p>\n<dt id=\"why%20does%20one%20call%20not%20delete%20everything%3F\">\nWhy does one call not delete everything?\n</h4>\n<p>\n<p>Because an unbounded delete on a large site is a request that runs until something kills it, leaving you with no idea how far it got. Each call removes a bounded batch and tells you how many remain, so the caller stays in control. <code>wp revision-autopilot delete --all</code> loops for you.</p>\n</p>\n<dt id=\"deleting%20revisions%20did%20not%20shrink%20my%20database.\">\nDeleting revisions did not shrink my database.\n</h4>\n<p>\n<p>Deleting rows does not shrink the table file; only OPTIMIZE does. Run <code>optimize-tables</code> after deleting.</p>\n</p>\n<dt id=\"does%20it%20work%20without%20the%20abilities%20api%3F\">\nDoes it work without the Abilities API?\n</h4>\n<p>\n<p>The abilities need WordPress 6.9 or newer. On an older site the WP-CLI commands still work, and the plugin does not error.</p>\n</p>\n\n",
+        "changelog": "<h4>0.2.0</h4>\n<ul>\n<li>Added a Japanese translation, bundled in languages/ as a fallback until language packs exist on translate.wordpress.org.</li>\n<li>Registered the plugin text domain on init, so bundled translations are actually loaded. The Domain Path header alone does not do this.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release: four abilities and three WP-CLI commands.</li>\n</ul>\n"
+    },
+    "short_description": "Post revision cleanup for scripts and agents: machine-readable abilities and WP-CLI commands, with no admin screen.",
+    "description": "<p>WordPress keeps a full copy of a post every time you update it. Over a few years those copies quietly become the largest thing in your database. Plenty of plugins will show you a button to delete them.</p>\n<p>This one does not have a button.</p>\n<p>Revision Autopilot publishes revision cleanup as <strong>abilities</strong> — named operations with input and output schemas, permission callbacks and behavioural annotations — using the Abilities API introduced in WordPress 6.9. Anything that can discover abilities can find these, understand what they take and return, check whether it is allowed to run them, and read back a structured result. The same operations are available as WP-CLI commands for scripts and cron.</p>\n<p>It is built for sites where cleanup should happen without a person watching: agent-driven maintenance, scheduled scripts, fleets of sites managed from one place.</p>\n<h4>What it exposes</h4>\n<p>Four abilities, all under the <code>revision-autopilot/</code> namespace:</p>\n<ul>\n<li><code>count-revisions</code> — how many revisions exist, their estimated content size, and the same broken down by parent post type. Read-only.</li>\n<li><code>list-revisions</code> — one page of individual revisions with their parent post and timestamps. Read-only.</li>\n<li><code>delete-revisions</code> — deletes one bounded batch for a scope and reports how many remain. Destructive.</li>\n<li><code>optimize-tables</code> — runs OPTIMIZE TABLE on the posts and postmeta tables. Destructive.</li>\n</ul>\n<p>And three WP-CLI commands over the same code:</p>\n<pre><code>wp revision-autopilot count\nwp revision-autopilot delete --scope=post --limit=100\nwp revision-autopilot optimize\n</code></pre>\n<h4>How it stays safe</h4>\n<p>Handing destructive operations to a script deserves more care than putting them behind a button, not less.</p>\n<ul>\n<li><strong>Every ability checks permission itself.</strong> There is no admin form and no nonce in this path, so authorisation is never inherited from the surrounding request. Reading needs <code>edit_posts</code>; deleting or optimizing needs <code>manage_options</code>. Both are filterable.</li>\n<li><strong>Deletion is always bounded.</strong> One call never removes more than 1000 revisions however large the scope. The result says how many remain, so a caller loops deliberately rather than firing one unbounded request.</li>\n<li><strong>Only revisions are deleted.</strong> Every candidate is checked against <code>wp_is_post_revision()</code> before removal, and deletion goes through <code>wp_delete_post_revision()</code> so related metadata is cleaned up with it. Published content is never touched.</li>\n<li><strong>Only two tables are ever optimized</strong>, from a fixed allowlist: posts and postmeta.</li>\n<li><strong>Refusals explain themselves.</strong> A caller without permission gets a <code>WP_Error</code> saying which capability is missing, not a bare false.</li>\n</ul>\n<h4>Relationship to Takahiro Revision Cleanup</h4>\n<p>The same author publishes <a href=\"https://wordpress.org/plugins/takahiro-revision-cleanup/\" rel=\"ugc\">Takahiro Revision Cleanup</a>, which does revision cleanup through a screen under Tools. The two are for different situations and do not overlap in how they are used:</p>\n<ul>\n<li>Takahiro Revision Cleanup is for a person who wants to look at their revisions and click delete.</li>\n<li>Revision Autopilot has no screen at all. It is for scripts, CLI and agents.</li>\n</ul>\n<p>Install whichever matches how the work gets done on your site. Running both is harmless.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/revision-autopilot.0.2.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/revision-autopilot/assets/screenshot-1.png?rev=3705036",
+            "caption": "<code>wp revision-autopilot count</code> reports the total, the estimated content size, and a breakdown by parent post type."
+        },
+        {
+            "src": "https://ps.w.org/revision-autopilot/assets/screenshot-2.png?rev=3705036",
+            "caption": "Deletion is bounded. <code>--dry-run</code> reports a scope without touching it, and <code>--all</code> repeats one batch at a time, saying what remains after each."
+        },
+        {
+            "src": "https://ps.w.org/revision-autopilot/assets/screenshot-3.png?rev=3705036",
+            "caption": "<code>wp revision-autopilot optimize</code> runs OPTIMIZE TABLE on the two allowlisted tables, and a second count confirms what is left."
+        }
+    ],
+    "tags": {
+        "abilities": "abilities",
+        "automation": "automation",
+        "cleanup": "cleanup",
+        "revision": "revision",
+        "wp-cli": "wp-cli"
+    },
+    "stable_tag": "0.2.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/revision-autopilot.0.1.0.zip",
+        "0.2.0": "https://downloads.wordpress.org/plugin/revision-autopilot.0.2.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/revision-autopilot.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/revision-autopilot/assets/banner-772x250.png?rev=3705036",
+        "high": "https://ps.w.org/revision-autopilot/assets/banner-1544x500.png?rev=3705036"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/revision-autopilot/assets/icon-128x128.png?rev=3705036",
+        "2x": "https://ps.w.org/revision-autopilot/assets/icon-256x256.png?rev=3705036"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
