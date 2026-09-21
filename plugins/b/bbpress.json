@@ -1,7 +1,7 @@
 {
     "name": "bbPress",
     "slug": "bbpress",
-    "version": "2.6.17",
+    "version": "2.6.18",
     "author": "<a href=\"https://profiles.wordpress.org/johnjamesjacoby/\">John James Jacoby</a>",
     "author_profile": "https://profiles.wordpress.org/johnjamesjacoby/",
     "contributors": {
@@ -32,8 +32,8 @@
         }
     },
     "requires": "6.0",
-    "tested": "7.1",
-    "requires_php": "5.6.20",
+    "tested": "7.1.1",
+    "requires_php": "7.2",
     "requires_plugins": [],
     "compatibility": [],
     "rating": 78,
@@ -49,7 +49,7 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 100000,
-    "last_updated": "2026-09-16 07:00:00",
+    "last_updated": "2026-09-21 14:24:00",
     "added": "2010-01-13",
     "homepage": "https://bbpress.org",
     "sections": {
@@ -59,8 +59,9 @@
     },
     "short_description": "bbPress is forum software for WordPress.",
     "description": "<p>Are you looking for a timeless, elegant, and streamlined discussion board? bbPress is easy to integrate, easy to use, and is built to scale with your growing community.</p>\n<p>bbPress is intentionally simple yet infinitely powerful forum software, built by contributors to WordPress.</p>\n<h3>Developer Notes</h3>\n<h4>Count updates in 2.6.17</h4>\n<p>bbPress now synchronizes its built-in public and hidden topic and reply counts, aggregate forum counts, and user contribution counts on <code>bbp_transition_post_status</code> at priority 10, after WordPress persists the new post status. When a topic crosses the public status boundary, its stored public reply count is applied to the forum aggregate instead of recounting every reply. The action receives the new status, old status, and <code>WP_Post</code> object. The <code>bbp_pre_update_counts_on_transition_post_status</code> filter can short-circuit the complete topic or reply count operation for custom status lifecycles or count storage.</p>\n<p>The existing <code>bbp_new_*</code>, <code>bbp_insert_*</code>, <code>bbp_trash_*</code>, <code>bbp_untrash_*</code>, <code>bbp_spam_*</code>, <code>bbp_unspam_*</code>, <code>bbp_approve_*</code>, and <code>bbp_unapprove_*</code> topic and reply actions continue to fire with their existing arguments and timing. Their corresponding completed actions, such as <code>bbp_trashed_*</code>, also remain available. The public count helper functions also remain callable.</p>\n<p>For topic and reply creation, the status transition occurs inside <code>wp_insert_post()</code>. The later <code>bbp_new_*</code> and <code>bbp_insert_*</code> actions therefore continue to run after status counts are updated and after bbPress stores its relationship metadata. Creation-specific integrations can remain on those actions.</p>\n<p>For moderation, status-count synchronization occurs between the existing pre-transition action, such as <code>bbp_spam_reply</code>, and its completed action, such as <code>bbp_spammed_reply</code>. Extensions that need every persisted topic, reply, forum, and user status-count change should use <code>bbp_transition_post_status</code> at priority 11 or later. Completed moderation actions begin after those counts are finalized.</p>\n<p>bbPress no longer attaches its built-in topic, reply, forum, and user status-count callbacks to the creation and moderation actions. Manually firing one of those actions without changing the post status therefore no longer updates those counts. Topic voice counts and engagements remain attached to the creation and completed moderation actions, so manually firing one of those actions can still recalculate voices and engagements without a status change. The priority-11 transition hook does not observe those later updates. Extensions that need both recalculations to finish can use priority 31 or later on the legacy action; bbPress runs engagement callbacks before voice-count callbacks. Count membership comes from the filtered public and non-public status arrays. Extensions that already maintain counts for custom statuses should remove duplicate count callbacks and keep the public and non-public arrays disjoint. The public increase and decrease convenience functions now validate the current topic or reply status; use the lower-level bump functions for an intentional numeric difference. Do not manually fire <code>bbp_transition_post_status</code> to simulate a write because its count callback trusts the supplied statuses as a completed database transition.</p>\n<p>Permanent deletion does not produce a post-status transition. Its count maintenance continues through the existing <code>bbp_deleted_topic</code> and <code>bbp_deleted_reply</code> actions.</p>\n<p>Count bump functions now use conditional metadata writes and bounded retries so simultaneous requests do not overwrite each other&#8217;s existing count changes. Existing bbPress count filters and the standard WordPress metadata filters and actions continue to run. A before-update metadata action may run more than once when a request loses a comparison and retries; its matching after-update action runs only for the successful write. The update-metadata short-circuit filter runs once for the bump call using its first sanitized candidate value. A user-count filter that changes the absolute result retains the previous absolute-update behavior and opts that call out of the atomic difference path.</p>\n<p>WordPress metadata tables do not enforce unique object-and-key pairs, so simultaneous first-time inserts retain the same limitation as the core metadata API. A request can also exhaust the bounded retries under unusually high contention. An atomic bump applies a difference to its supplied stored or default value and is not a recount. The <code>bbp_pre_bump_count_meta</code> filter can short-circuit an update, the <code>bbp_bump_count_meta_max_attempts</code> filter controls the default limit of five write attempts, and the <code>bbp_bump_count_meta_types</code> filter controls the post, user, term, and comment metadata types supported by default. <code>bbp_update_user_topic_count()</code> and <code>bbp_update_user_reply_count()</code> accept an optional third <code>$difference</code> argument for this internal bump lifecycle; existing calls remain compatible.</p>\n<p>Post-author changes and user deletion with post reassignment now reconcile affected user contribution, topic engagement, and voice counts. Moderator move, merge, and split operations also reconcile source, destination, and ancestor forum counts. Forum count updater functions accept an optional final argument for propagating a recount&#8217;s difference through ancestor totals; existing calls remain compatible. Forum reply recounts include public replies only when their parent topics are also public. A public reply beneath a non-public topic is excluded from the public forum total without being included in the pending, spammed, and trashed reply count. Topic engagement recounts honor filtered public topic and reply statuses, and preserve other term-backed relationships.</p>\n<h4>Subforum counts in 2.6.17</h4>\n<p>bbPress now maintains subforum counts when forums are trashed, restored, permanently deleted, or moved between parents. Recursive forum counts include public, private, and hidden subforums while excluding subforums with uncountable statuses. <code>bbp_forum_query_subforum_ids()</code> no longer inherits the broader <code>bbp_get_all_child_ids</code> result; extensions that customized subforum count membership through that lower-level filter should use <code>bbp_forum_query_subforum_ids</code>, <code>bbp_get_countable_forum_statuses</code>, or the forum-status filters. The new <code>bbp_post_updated</code> action receives the post ID, the updated <code>WP_Post</code> object, and the previous <code>WP_Post</code> object after any bbPress post type is updated.</p>\n<p>The upgrade does not synchronously recount every forum. Sites with known stale metadata can selectively run the applicable count and engagement tools under Tools &gt; Forums &gt; Repair Forums. These tools can be expensive on large sites.</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/bbpress.2.6.17.zip",
+    "download_link": "https://downloads.wordpress.org/plugin/bbpress.2.6.18.zip",
     "upgrade_notice": {
+        "2.6.18": "<p>Requires PHP 7.2. Improves first-login password upgrades for imported users, including sites where the source forum database is no longer available. Corrects PHPWind topic counts and restores Super Moderator edit links on front-end user screens.</p>",
         "2.6.17": "<p>Count maintenance now uses the bbPress post-status transition action and conditional metadata writes. Extensions that attach count callbacks to creation or moderation actions, add custom statuses, filter count values, or customize subforum queries should review the Developer Notes. Sites with known stale counts can selectively run the repair tools after upgrading.</p>"
     },
     "screenshots": [
@@ -99,7 +100,7 @@
         "forums": "forums",
         "support": "support"
     },
-    "stable_tag": "2.6.17",
+    "stable_tag": "2.6.18",
     "versions": {
         "2.0": "https://downloads.wordpress.org/plugin/bbpress.2.0.zip",
         "2.0-beta-1": "https://downloads.wordpress.org/plugin/bbpress.2.0-beta-1.zip",
@@ -164,6 +165,7 @@
         "2.6.14": "https://downloads.wordpress.org/plugin/bbpress.2.6.14.zip",
         "2.6.15": "https://downloads.wordpress.org/plugin/bbpress.2.6.15.zip",
         "2.6.17": "https://downloads.wordpress.org/plugin/bbpress.2.6.17.zip",
+        "2.6.18": "https://downloads.wordpress.org/plugin/bbpress.2.6.18.zip",
         "2.6.2": "https://downloads.wordpress.org/plugin/bbpress.2.6.2.zip",
         "2.6.3": "https://downloads.wordpress.org/plugin/bbpress.2.6.3.zip",
         "2.6.4": "https://downloads.wordpress.org/plugin/bbpress.2.6.4.zip",
@@ -193,7 +195,7 @@
     "blueprints": [
         {
             "filename": "blueprint.json",
-            "url": "https://wordpress.org/plugins/wp-json/plugins/v1/plugin/bbpress/blueprint.json?rev=3698143"
+            "url": "https://wordpress.org/plugins/wp-json/plugins/v1/plugin/bbpress/blueprint.json?rev=3705768"
         }
     ],
     "preview_link": "",
@@ -235,7 +237,7 @@
             "slug": "bbpress",
             "language": "cs_CZ",
             "version": "2.6.17",
-            "updated": "2026-09-16 07:17:22",
+            "updated": "2026-09-16 16:44:57",
             "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/cs_CZ.zip"
         },
         {
@@ -259,7 +261,7 @@
             "slug": "bbpress",
             "language": "de_DE",
             "version": "2.6.17",
-            "updated": "2026-09-16 07:17:53",
+            "updated": "2026-09-20 12:47:39",
             "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/de_DE.zip"
         },
         {
@@ -267,7 +269,7 @@
             "slug": "bbpress",
             "language": "de_DE_formal",
             "version": "2.6.17",
-            "updated": "2026-09-16 07:17:54",
+            "updated": "2026-09-20 12:48:04",
             "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/de_DE_formal.zip"
         },
         {
@@ -285,6 +287,14 @@
             "version": "2.6.17",
             "updated": "2026-09-16 07:17:31",
             "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/en_AU.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "bbpress",
+            "language": "en_GB",
+            "version": "2.6.17",
+            "updated": "2026-09-16 08:30:46",
+            "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/en_GB.zip"
         },
         {
             "type": "plugin",
@@ -313,14 +323,6 @@
         {
             "type": "plugin",
             "slug": "bbpress",
-            "language": "en_GB",
-            "version": "2.6.17",
-            "updated": "2026-09-16 07:17:38",
-            "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/en_GB.zip"
-        },
-        {
-            "type": "plugin",
-            "slug": "bbpress",
             "language": "eo",
             "version": "2.6.17",
             "updated": "2019-11-14 23:42:10",
@@ -333,6 +335,22 @@
             "version": "2.6.17",
             "updated": "2024-12-18 22:12:17",
             "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/es_CL.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "bbpress",
+            "language": "es_CR",
+            "version": "2.6.17",
+            "updated": "2026-09-16 07:19:28",
+            "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/es_CR.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "bbpress",
+            "language": "es_EC",
+            "version": "2.6.17",
+            "updated": "2026-09-16 07:19:30",
+            "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/es_EC.zip"
         },
         {
             "type": "plugin",
@@ -365,22 +383,6 @@
             "version": "2.6.17",
             "updated": "2026-09-16 07:19:27",
             "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/es_CO.zip"
-        },
-        {
-            "type": "plugin",
-            "slug": "bbpress",
-            "language": "es_CR",
-            "version": "2.6.17",
-            "updated": "2026-09-16 07:19:28",
-            "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/es_CR.zip"
-        },
-        {
-            "type": "plugin",
-            "slug": "bbpress",
-            "language": "es_EC",
-            "version": "2.6.17",
-            "updated": "2026-09-16 07:19:30",
-            "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/es_EC.zip"
         },
         {
             "type": "plugin",
@@ -467,7 +469,7 @@
             "slug": "bbpress",
             "language": "ko_KR",
             "version": "2.6.17",
-            "updated": "2026-09-16 07:18:18",
+            "updated": "2026-09-17 01:57:16",
             "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/ko_KR.zip"
         },
         {
@@ -497,25 +499,25 @@
         {
             "type": "plugin",
             "slug": "bbpress",
-            "language": "nl_NL",
+            "language": "nl_BE",
             "version": "2.6.17",
-            "updated": "2026-09-16 07:19:01",
-            "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/nl_NL.zip"
+            "updated": "2026-09-16 08:58:01",
+            "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/nl_BE.zip"
         },
         {
             "type": "plugin",
             "slug": "bbpress",
-            "language": "nl_BE",
+            "language": "nl_NL",
             "version": "2.6.17",
-            "updated": "2026-09-16 07:17:28",
-            "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/nl_BE.zip"
+            "updated": "2026-09-16 10:35:03",
+            "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/nl_NL.zip"
         },
         {
             "type": "plugin",
             "slug": "bbpress",
             "language": "nl_NL_formal",
             "version": "2.6.17",
-            "updated": "2025-07-05 16:13:47",
+            "updated": "2026-09-16 10:39:08",
             "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/nl_NL_formal.zip"
         },
         {
@@ -555,7 +557,7 @@
             "slug": "bbpress",
             "language": "ro_RO",
             "version": "2.6.17",
-            "updated": "2026-09-16 07:19:05",
+            "updated": "2026-09-19 08:30:28",
             "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/ro_RO.zip"
         },
         {
@@ -563,7 +565,7 @@
             "slug": "bbpress",
             "language": "ru_RU",
             "version": "2.6.17",
-            "updated": "2026-09-16 07:19:06",
+            "updated": "2026-09-16 09:44:42",
             "package": "https://downloads.wordpress.org/translation/plugin/bbpress/2.6.17/ru_RU.zip"
         },
         {
