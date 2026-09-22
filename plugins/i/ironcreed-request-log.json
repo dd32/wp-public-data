@@ -1,0 +1,73 @@
+{
+    "name": "IRONCREED Request Log",
+    "slug": "ironcreed-request-log",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/ironcreed/\">ironcreed</a>",
+    "author_profile": "https://profiles.wordpress.org/ironcreed/",
+    "contributors": {
+        "ironcreed": {
+            "profile": "https://profiles.wordpress.org/ironcreed/",
+            "avatar": "https://secure.gravatar.com/avatar/ae82cfa17e8f58f0460f96bb52917af8ba9fa496af7694e0ba104a15abc0b719?s=96&d=monsterid&r=g",
+            "display_name": "ironcreed"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1.1",
+    "requires_php": "8.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/ironcreed-request-log/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-22 03:49:00",
+    "added": "2026-09-22",
+    "homepage": "https://github.com/IRONCREED/SECURITY/tree/main/plugins/ironcreed-request-log",
+    "sections": {
+        "description": "<p>IRONCREED Request Log offers two opt-in, clearly separated sources.</p>\n<ul>\n<li><strong>WordPress Runtime</strong> records requests that load WordPress. It cannot see traffic completed by a CDN, WAF, web server, full-page cache, static handler, or any layer before WordPress.</li>\n<li><strong>Hosting Ukraine API</strong> retrieves today&#8217;s nginx access-log archive manually or on an explicitly enabled schedule. It shows only records and coverage returned by the provider API.</li>\n</ul>\n<p>This is intentionally a visibility-boundary diagnostic rather than a generic arbitrary-file log viewer. It keeps application-observed WordPress requests separate from provider-supplied nginx records, so operators can see what each layer can and cannot observe without a local-file reader, telemetry, or a general analytics stack.</p>\n<p>Both sources start disabled. Records use bounded retention and count limits. Sensitive query values are redacted. Runtime records omit IP addresses, User-Agent, Referer, bodies, cookies, and authorization data. Hosting Ukraine records may include IP addresses, URI identifiers, User-Agent, and Referer and must be covered by the site&#8217;s privacy notice and lawful basis.</p>\n<p>The plugin has no telemetry, advertising, export, live tail, public endpoint, alternate updater, or local-file reader. It never sends fetched logs to IRONCREED or another service.</p>\n<p>Development source, tests, build tooling, and release documentation are maintained at <a href=\"https://github.com/IRONCREED/SECURITY/tree/main/plugins/ironcreed-request-log\" rel=\"nofollow ugc\">IRONCREED/SECURITY</a>.</p>\n<h3>External services</h3>\n<p>The optional Hosting Ukraine integration calls <code>https://adm.tools/action/hosting/log/web/nginx/</code> when an authorized administrator explicitly tests/fetches or separately enables scheduled imports. The read-only site lookup calls <code>https://adm.tools/action/get_services/</code> with <code>type=host</code> and the Bearer token. It receives the host services available to that token, matches the entered domain locally, and uses the matching service <code>id</code> as <code>host_id</code>; <code>account_id</code> and <code>virtual_domain_id</code> are not used as substitutes. The discovery list is not stored. Test/import requests send the saved Bearer token in the Authorization header and the matched Hosting Ukraine host ID in the request body. The log response is a gzip nginx access-log archive that may contain timestamps, IP addresses, methods, URIs, statuses, response sizes, User-Agent values, and Referer values. Imported records are retained in the local WordPress database. Disconnect deletes credentials, cancels future scheduled imports, and leaves imported records until retention expiry or manual clearing.</p>\n<p>Review the <a href=\"https://adm.tools/user/api/#/tab-sandbox/hosting/log/web/nginx\" rel=\"nofollow ugc\">API method</a>, <a href=\"https://www.ukraine.com.ua/wiki/account/api/\" rel=\"nofollow ugc\">general API guide</a>, <a href=\"https://www.ukraine.com.ua/wiki/hosting/sites/my-sites/access-log/\" rel=\"nofollow ugc\">access-log documentation</a>, <a href=\"https://www.ukraine.com.ua/legal/tos/\" rel=\"nofollow ugc\">Terms of Service</a>, <a href=\"https://www.ukraine.com.ua/legal/publicoffer/\" rel=\"nofollow ugc\">public offer</a>, and <a href=\"https://www.ukraine.com.ua/legal/privacypolicy/\" rel=\"nofollow ugc\">Privacy Policy</a> before connecting.</p>\n<h3>Privacy</h3>\n<p>Administrators control enablement, access, retention, clearing, disconnect, and uninstall. Default retention is 24 hours with a 10,000-record cap; retention ranges from one hour to 30 days and the cap from 100 to 100,000. The plugin supplies suggested Privacy Policy Guide text. Site owners determine their lawful basis and privacy notice; the plugin does not promise legal compliance.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the distribution ZIP in WordPress. For a source checkout, use tools/build.sh as described in the repository README; do not ZIP the development directory with its tests and tools.</li>\n<li>Open Tools &gt; Request Log. Logging remains disabled until an administrator enables WordPress Runtime.</li>\n<li>Open Settings, choose Hosting Ukraine API, and enter a token. Resolve the hosting site ID by domain or enter it manually. Test uses the form values; saving a manual ID makes no network request.</li>\n<li>Use Fetch today&#8217;s logs, or separately allow Scheduled imports and choose an interval. Refresh saved records only reloads the local table.</li>\n<li>Open Help or a question-mark link for instructions. The plugin is internationalized; WordPress.org directory installs receive translations through WordPress.org language packs when available.</li>\n</ol>\n<p>On Multisite, each site stores and displays its own records. Uninstall removes records, settings, credentials, all scheduled jobs, and capabilities from every site. Deactivation preserves data and credentials but cancels scheduled jobs until reactivation.</p>\n",
+        "faq": "\n<dt id=\"is%20wordpress%20runtime%20a%20complete%20server%20access%20log%3F\">\nIs WordPress Runtime a complete server access log?\n</h4>\n<p>\n<p>No. It records requests only after WordPress loads.</p>\n</p>\n<dt id=\"how%20is%20this%20different%20from%20a%20generic%20log%20viewer%3F\">\nHow is this different from a generic log viewer?\n</h4>\n<p>\n<p>It does not open arbitrary server files or present one source as complete. It records only requests WordPress actually sees and can optionally retrieve the hosting provider&#8217;s current-day nginx archive through a read-only API. The two sources remain separate, with explicit visibility and privacy boundaries.</p>\n</p>\n<dt id=\"does%20hosting%20ukraine%20change%20my%20server%3F\">\nDoes Hosting Ukraine change my server?\n</h4>\n<p>\n<p>No. The provider adapter downloads the current day&#8217;s nginx log and remains read-only with respect to hosting configuration.</p>\n</p>\n<dt id=\"when%20does%20the%20plugin%20make%20network%20requests%3F\">\nWhen does the plugin make network requests?\n</h4>\n<p>\n<p>On an explicit domain lookup, connection test or log fetch, and periodically after separate opt-in. Installing, activating, opening a screen or saving a manual connection does not contact the provider. A token entered for a test is used but not saved.</p>\n</p>\n<dt id=\"why%20is%20automatic%20import%20late%3F\">\nWhy is automatic import late?\n</h4>\n<p>\n<p>WP-Cron needs site traffic or an operator-configured system scheduler. Low traffic, disabled cron or failed loopbacks can delay execution. The UI shows the last and next attempt. Errors back off; Retry-After is honored for rate-limited imports. Each download covers today&#8217;s archive only.</p>\n</p>\n<dt id=\"which%20id%20should%20multisite%20use%3F\">\nWhich ID should Multisite use?\n</h4>\n<p>\n<p>For a shared hosting virtual host, start with the main network site domain. Separately hosted mapped domains may need different IDs. IDs from the user header, hosting account or WordPress blog are different objects. Connections remain local to the configured site.</p>\n</p>\n<dt id=\"does%20the%20wordpress%20personal-data%20exporter%20identify%20records%20by%20email%3F\">\nDoes the WordPress personal-data exporter identify records by email?\n</h4>\n<p>\n<p>The plugin does not register an exporter or eraser because records have no reliable WordPress-user identity and an email-keyed lookup cannot correctly identify all related URI, IP, User-Agent, or Referer values. Administrators can filter and clear records by source, and uninstall removes all plugin data.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial public release with WordPress Runtime and Hosting Ukraine API sources.</li>\n</ul>\n"
+    },
+    "short_description": "Inspect bounded WordPress requests and optionally scheduled Hosting Ukraine nginx access logs with privacy controls.",
+    "description": "<p>IRONCREED Request Log offers two opt-in, clearly separated sources.</p>\n<ul>\n<li><strong>WordPress Runtime</strong> records requests that load WordPress. It cannot see traffic completed by a CDN, WAF, web server, full-page cache, static handler, or any layer before WordPress.</li>\n<li><strong>Hosting Ukraine API</strong> retrieves today&#8217;s nginx access-log archive manually or on an explicitly enabled schedule. It shows only records and coverage returned by the provider API.</li>\n</ul>\n<p>This is intentionally a visibility-boundary diagnostic rather than a generic arbitrary-file log viewer. It keeps application-observed WordPress requests separate from provider-supplied nginx records, so operators can see what each layer can and cannot observe without a local-file reader, telemetry, or a general analytics stack.</p>\n<p>Both sources start disabled. Records use bounded retention and count limits. Sensitive query values are redacted. Runtime records omit IP addresses, User-Agent, Referer, bodies, cookies, and authorization data. Hosting Ukraine records may include IP addresses, URI identifiers, User-Agent, and Referer and must be covered by the site&#8217;s privacy notice and lawful basis.</p>\n<p>The plugin has no telemetry, advertising, export, live tail, public endpoint, alternate updater, or local-file reader. It never sends fetched logs to IRONCREED or another service.</p>\n<p>Development source, tests, build tooling, and release documentation are maintained at <a href=\"https://github.com/IRONCREED/SECURITY/tree/main/plugins/ironcreed-request-log\" rel=\"nofollow ugc\">IRONCREED/SECURITY</a>.</p>\n<h3>External services</h3>\n<p>The optional Hosting Ukraine integration calls <code>https://adm.tools/action/hosting/log/web/nginx/</code> when an authorized administrator explicitly tests/fetches or separately enables scheduled imports. The read-only site lookup calls <code>https://adm.tools/action/get_services/</code> with <code>type=host</code> and the Bearer token. It receives the host services available to that token, matches the entered domain locally, and uses the matching service <code>id</code> as <code>host_id</code>; <code>account_id</code> and <code>virtual_domain_id</code> are not used as substitutes. The discovery list is not stored. Test/import requests send the saved Bearer token in the Authorization header and the matched Hosting Ukraine host ID in the request body. The log response is a gzip nginx access-log archive that may contain timestamps, IP addresses, methods, URIs, statuses, response sizes, User-Agent values, and Referer values. Imported records are retained in the local WordPress database. Disconnect deletes credentials, cancels future scheduled imports, and leaves imported records until retention expiry or manual clearing.</p>\n<p>Review the <a href=\"https://adm.tools/user/api/#/tab-sandbox/hosting/log/web/nginx\" rel=\"nofollow ugc\">API method</a>, <a href=\"https://www.ukraine.com.ua/wiki/account/api/\" rel=\"nofollow ugc\">general API guide</a>, <a href=\"https://www.ukraine.com.ua/wiki/hosting/sites/my-sites/access-log/\" rel=\"nofollow ugc\">access-log documentation</a>, <a href=\"https://www.ukraine.com.ua/legal/tos/\" rel=\"nofollow ugc\">Terms of Service</a>, <a href=\"https://www.ukraine.com.ua/legal/publicoffer/\" rel=\"nofollow ugc\">public offer</a>, and <a href=\"https://www.ukraine.com.ua/legal/privacypolicy/\" rel=\"nofollow ugc\">Privacy Policy</a> before connecting.</p>\n<h3>Privacy</h3>\n<p>Administrators control enablement, access, retention, clearing, disconnect, and uninstall. Default retention is 24 hours with a 10,000-record cap; retention ranges from one hour to 30 days and the cap from 100 to 100,000. The plugin supplies suggested Privacy Policy Guide text. Site owners determine their lawful basis and privacy notice; the plugin does not promise legal compliance.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/ironcreed-request-log.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "debugging": "debugging",
+        "privacy": "privacy",
+        "request-log": "request log",
+        "security": "security"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/ironcreed-request-log.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/ironcreed-request-log.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/ironcreed-request-log/assets/icon-128x128.png?rev=3706571",
+        "2x": "https://ps.w.org/ironcreed-request-log/assets/icon-256x256.png?rev=3706571"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

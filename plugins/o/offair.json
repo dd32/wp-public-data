@@ -1,0 +1,98 @@
+{
+    "name": "Offair &#8211; Branded Error Pages",
+    "slug": "offair",
+    "version": "1.0.3",
+    "author": "<a href=\"https://profiles.wordpress.org/nolidev/\">nolidev</a>",
+    "author_profile": "https://profiles.wordpress.org/nolidev/",
+    "contributors": {
+        "nolidev": {
+            "profile": "https://profiles.wordpress.org/nolidev/",
+            "avatar": "https://secure.gravatar.com/avatar/7a1f12afbeb6eab6c54ad51b659c87f86c031b76416b5b909fdfc94f7bfab8be?s=96&d=monsterid&r=g",
+            "display_name": "nolidev"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.1",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/offair/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "last_updated": "2026-09-22 02:37:00",
+    "added": "2026-09-21",
+    "homepage": "https://github.com/nolidev-fr/offair",
+    "sections": {
+        "description": "<p>When WordPress breaks, it shows screens of its own that no theme and no plugin can style, because they appear before any of them is loaded:</p>\n<ul>\n<li><strong>Error establishing a database connection</strong>, when the database is unreachable.</li>\n<li><strong>Briefly unavailable for scheduled maintenance</strong>, while WordPress installs updates.</li>\n<li><strong>There has been a critical error on this website</strong>, after a fatal PHP error.</li>\n</ul>\n<p>Offair replaces these three screens with a calm page in your colors, with your logo and your words, and makes them answer with the right HTTP status so that search engines and caches treat the outage as temporary.</p>\n<p>This is not a maintenance mode or coming soon plugin. It does not take your site offline and it does not add a page you switch on. It only covers the moments when WordPress itself cannot serve your site.</p>\n<h4>How it works</h4>\n<p>WordPress looks for three special files in <code>wp-content</code>, called drop-ins: <code>db-error.php</code>, <code>maintenance.php</code> and <code>php-error.php</code>. It loads them itself, before any plugin, which is the only way to show something when the database is down.</p>\n<p>The plugin copies one static file shipped in its own folder (<code>dropins/drop-in.php</code>) under these three names. No code is generated. The content of the pages (texts, colors, logo) is saved as a JSON file in <code>wp-content/uploads/offair/</code>, and the drop-in reads it when a page has to be shown.</p>\n<h4>What you get</h4>\n<ul>\n<li>One design for the three screens: centered card, logo, site name, title, message, retry button and an incident line with the local time.</li>\n<li>Your logo and colors, detected from the theme, the site icon and Elementor global colors when available, editable at any time.</li>\n<li>Texts in the language of the site until you customize them. French translation included.</li>\n<li>Correct HTTP answers: 503 with a Retry-After header for the database and update pages, 503 or 500 for PHP errors (your choice), plus no-cache headers so no cache ever keeps an error page.</li>\n<li>No external dependency: system fonts, logo embedded in the content file, nothing loaded from the network.</li>\n<li>A live preview of each page, rendered by the drop-in itself, exactly as visitors will see it.</li>\n<li>A status box, a Site Health test and WP-CLI commands.</li>\n<li>Clean removal: the drop-ins are removed when the plugin is deactivated, and everything is removed when it is uninstalled.</li>\n</ul>\n<p>The plugin never replaces a <code>db-error.php</code>, <code>maintenance.php</code> or <code>php-error.php</code> it did not add itself. If one already exists, it tells you and waits for your decision.</p>\n<h4>Developers</h4>\n<ul>\n<li><code>offair_settings</code> filters the settings before the page content is built.</li>\n<li><code>offair_data</code> filters the page content before it is saved for the drop-in.</li>\n<li>WP-CLI: <code>wp offair status</code>, <code>generate [--force]</code>, <code>remove [--force]</code>, <code>preview &lt;db|maintenance|php&gt;</code>.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin from Plugins, Add New.</li>\n<li>Open Settings, Offair. The logo and primary color of your site are pre-filled when they can be detected.</li>\n<li>Adjust the texts and colors, save. The preview shows the result.</li>\n</ol>\n<p>On activation the plugin copies its drop-in to <code>wp-content</code> under the three names WordPress expects, and saves the page content in <code>wp-content/uploads/offair/</code>. If <code>wp-content</code> is not writable, download the drop-ins from the settings page and upload them yourself, once.</p>\n",
+        "faq": "\n<dt id=\"is%20this%20a%20maintenance%20mode%20plugin%3F\">\nIs this a maintenance mode plugin?\n</h4>\n<p>\n<p>No. It does not let you put your site offline. It styles the screens WordPress shows on its own when the database is down, while updates are installed and after a fatal error. It works alongside any maintenance mode or coming soon plugin.</p>\n</p>\n<dt id=\"why%20does%20the%20plugin%20add%20files%20to%20wp-content%3F\">\nWhy does the plugin add files to wp-content?\n</h4>\n<p>\n<p>Because WordPress only looks for these drop-ins there, and loads them before any plugin. That is the only way to show a page when the database is down. The three files are identical copies of <code>dropins/drop-in.php</code> from the plugin folder. They are removed when the plugin is deactivated or uninstalled.</p>\n</p>\n<dt id=\"why%20is%20the%20content%20saved%20as%20a%20file%20and%20not%20in%20the%20database%3F\">\nWhy is the content saved as a file and not in the database?\n</h4>\n<p>\n<p>The database is precisely what may be unreachable when the page is shown. The content is saved in the uploads folder, in <code>offair/pages.json</code>, and contains only what the visitors see on the page.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20page%20caching%20%28litespeed%20cache%2C%20wp%20rocket%2C%20cloudflare%29%3F\">\nDoes it work with page caching (LiteSpeed Cache, WP Rocket, Cloudflare)?\n</h4>\n<p>\n<p>Yes. Pages already in the cache keep being served normally during an outage, which is what you want. Only requests that reach PHP see the outage page, and that page is sent with headers that prevent it from being cached.</p>\n</p>\n<dt id=\"does%20it%20cover%20a%20web%20server%20or%20php%20outage%3F\">\nDoes it cover a web server or PHP outage?\n</h4>\n<p>\n<p>No. If the web server or PHP itself is down, nothing on the site can run. Only your host can show a page in that case.</p>\n</p>\n<dt id=\"the%20status%20box%20says%20a%20file%20was%20not%20added%20by%20the%20plugin.\">\nThe status box says a file was not added by the plugin.\n</h4>\n<p>\n<p>Another plugin or a person placed a file with the same name in <code>wp-content</code>. The plugin leaves it untouched. Open the Advanced tab to replace it if you want to.</p>\n</p>\n<dt id=\"does%20the%20plugin%20need%20output%20buffering%20in%20php%3F\">\nDoes the plugin need output buffering in PHP?\n</h4>\n<p>\n<p>No. The database and update pages never depend on it, and the PHP error page works without it as long as PHP does not print errors on screen, which is the normal configuration of a live site.</p>\n<p>There is one combination WordPress cannot handle: errors printed on screen (usually because WP_DEBUG and WP_DEBUG_DISPLAY are enabled) together with output buffering off. PHP then sends the raw error and the headers before WordPress runs its handler, so no error page, branded or not, can be shown. The settings page and Site Health detect this combination and explain the two fixes: disable WP_DEBUG_DISPLAY on a live site, or set output_buffering to 4096 in the PHP configuration.</p>\n</p>\n<dt id=\"does%20the%20plugin%20send%20emails%20or%20contact%20any%20service%3F\">\nDoes the plugin send emails or contact any service?\n</h4>\n<p>\n<p>No. Nothing leaves your server. There is no tracking, no update check and no external asset.</p>\n</p>\n<dt id=\"does%20it%20work%20on%20multisite%3F\">\nDoes it work on multisite?\n</h4>\n<p>\n<p>Yes. The drop-ins are shared by every site of the network, so the settings live in the network admin under Settings, Offair.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.3</h4>\n<ul>\n<li>Fix: a logo in a format the pages cannot show, such as AVIF, was left out without any warning. It is now embedded as PNG.</li>\n<li>The PHP error page no longer reloads itself every minute by default: a fatal error rarely clears on its own, and each reload runs into it again. Sites that kept the former default switch to no reload, a delay set by hand is kept.</li>\n<li>When the automatic refresh is turned off, the page no longer says that it refreshes on its own.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>After an update, the pages are brought up to date on the first request, without waiting for someone to open the admin.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Fix: an SVG logo over 150 KB that only wraps one image, as design tools export them, was left out of the pages. The image is now taken out and resized like any other logo.</li>\n<li>New: optional button text color. Left empty, the choice stays automatic.</li>\n<li>The automatic button text is now white on mid-tone colors, with the button slightly darkened when needed, instead of dark text that was hard to read. The label always reaches a 4.5:1 contrast.</li>\n<li>The settings page warns when the chosen logo cannot be embedded.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release: branded pages for database connection errors, the update notice and fatal PHP errors.</li>\n<li>Settings page with status box, live preview, manual download and per-page options.</li>\n<li>Logo and color detection, texts in the language of the site, French translation.</li>\n<li>Site Health test and WP-CLI commands.</li>\n</ul>\n"
+    },
+    "short_description": "Branded pages for the screens WordPress shows when it breaks: database connection errors, fatal PHP errors and the update notice.",
+    "description": "<p>When WordPress breaks, it shows screens of its own that no theme and no plugin can style, because they appear before any of them is loaded:</p>\n<ul>\n<li><strong>Error establishing a database connection</strong>, when the database is unreachable.</li>\n<li><strong>Briefly unavailable for scheduled maintenance</strong>, while WordPress installs updates.</li>\n<li><strong>There has been a critical error on this website</strong>, after a fatal PHP error.</li>\n</ul>\n<p>Offair replaces these three screens with a calm page in your colors, with your logo and your words, and makes them answer with the right HTTP status so that search engines and caches treat the outage as temporary.</p>\n<p>This is not a maintenance mode or coming soon plugin. It does not take your site offline and it does not add a page you switch on. It only covers the moments when WordPress itself cannot serve your site.</p>\n<h4>How it works</h4>\n<p>WordPress looks for three special files in <code>wp-content</code>, called drop-ins: <code>db-error.php</code>, <code>maintenance.php</code> and <code>php-error.php</code>. It loads them itself, before any plugin, which is the only way to show something when the database is down.</p>\n<p>The plugin copies one static file shipped in its own folder (<code>dropins/drop-in.php</code>) under these three names. No code is generated. The content of the pages (texts, colors, logo) is saved as a JSON file in <code>wp-content/uploads/offair/</code>, and the drop-in reads it when a page has to be shown.</p>\n<h4>What you get</h4>\n<ul>\n<li>One design for the three screens: centered card, logo, site name, title, message, retry button and an incident line with the local time.</li>\n<li>Your logo and colors, detected from the theme, the site icon and Elementor global colors when available, editable at any time.</li>\n<li>Texts in the language of the site until you customize them. French translation included.</li>\n<li>Correct HTTP answers: 503 with a Retry-After header for the database and update pages, 503 or 500 for PHP errors (your choice), plus no-cache headers so no cache ever keeps an error page.</li>\n<li>No external dependency: system fonts, logo embedded in the content file, nothing loaded from the network.</li>\n<li>A live preview of each page, rendered by the drop-in itself, exactly as visitors will see it.</li>\n<li>A status box, a Site Health test and WP-CLI commands.</li>\n<li>Clean removal: the drop-ins are removed when the plugin is deactivated, and everything is removed when it is uninstalled.</li>\n</ul>\n<p>The plugin never replaces a <code>db-error.php</code>, <code>maintenance.php</code> or <code>php-error.php</code> it did not add itself. If one already exists, it tells you and waits for your decision.</p>\n<h4>Developers</h4>\n<ul>\n<li><code>offair_settings</code> filters the settings before the page content is built.</li>\n<li><code>offair_data</code> filters the page content before it is saved for the drop-in.</li>\n<li>WP-CLI: <code>wp offair status</code>, <code>generate [--force]</code>, <code>remove [--force]</code>, <code>preview &lt;db|maintenance|php&gt;</code>.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/offair.1.0.3.zip",
+    "upgrade_notice": {
+        "1.0.3": "<p>Fixes AVIF logos missing from the pages and stops the PHP error page from reloading itself every minute.</p>",
+        "1.0.2": "<p>The pages are brought up to date right after an update, even when nobody opens the admin.</p>",
+        "1.0.1": "<p>Fixes heavy SVG logos missing from the pages, makes the button easier to read on mid-tone colors and adds a button text color setting.</p>",
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/offair/assets/screenshot-1.png?rev=3705560",
+            "caption": "The database error page as visitors see it: logo, message, retry button and incident line."
+        },
+        {
+            "src": "https://ps.w.org/offair/assets/screenshot-2.png?rev=3705560",
+            "caption": "The settings page: state of the three pages, logo, colors and fonts."
+        },
+        {
+            "src": "https://ps.w.org/offair/assets/screenshot-3.png?rev=3705560",
+            "caption": "One tab per page, with the live preview rendered exactly as visitors will see it."
+        }
+    ],
+    "tags": {
+        "503": "503",
+        "database": "database",
+        "downtime": "downtime",
+        "error-page": "error page",
+        "fatal-error": "fatal error"
+    },
+    "stable_tag": "1.0.3",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/offair.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/offair.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/offair.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/offair.1.0.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/offair.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/offair/assets/banner-772x250.png?rev=3705560",
+        "high": "https://ps.w.org/offair/assets/banner-1544x500.png?rev=3705560"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/offair/assets/icon.svg?rev=3705560",
+        "svg": "https://ps.w.org/offair/assets/icon.svg?rev=3705560"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
