@@ -1,0 +1,81 @@
+{
+    "name": "Yozigo GEO",
+    "slug": "yozigo-geo",
+    "version": "1.1.4",
+    "author": "<a href=\"https://profiles.wordpress.org/yozigo/\">yozigo</a>",
+    "author_profile": "https://profiles.wordpress.org/yozigo/",
+    "contributors": {
+        "yozigo": {
+            "profile": "https://profiles.wordpress.org/yozigo/",
+            "avatar": "https://secure.gravatar.com/avatar/59fd13b8b4a701e420b844d0001101746823eaf6697e1af24140c34efbcbd924?s=96&d=monsterid&r=g",
+            "display_name": "yozigo"
+        }
+    },
+    "requires": "5.0",
+    "tested": "7.1.2",
+    "requires_php": "7.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/yozigo-geo/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-23 19:39:00",
+    "added": "2026-09-23",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Yozigo GEO is a lightweight plugin that reports front-end page visits on your WordPress site to the Yozigo GEO collector service, which classifies each one (bot vs. human, and which AI crawler) using its own regularly-updated bot registry.</p>\n<p>This plugin requires a Yozigo GEO account. It sends nothing until you enter your API key on its settings page; without a key it does not run at all.</p>\n<p>Features include:<br />\n&#8211; <strong>Bot &amp; AI Crawler Tracking</strong>: Every page visit is reported to the collector, which classifies it against a centrally maintained bot registry (Googlebot, Bingbot, GPTBot, ClaudeBot, and more) — kept current without a plugin update.<br />\n&#8211; <strong>Accurate AI Traffic Share</strong>: Because human visits are reported too, the dashboard can compute real AI-traffic-share percentages, not just raw bot counts.<br />\n&#8211; <strong>Performance</strong>: The tracking call is non-blocking so it never slows down a real visitor&#8217;s page load.</p>\n<h3>External services</h3>\n<p>This plugin connects to the Yozigo GEO collector, an API operated by Yozigo (https://www.yozigo.ai), to report your site&#8217;s front-end page visits so that your Yozigo GEO dashboard can identify AI crawlers, AI-referred visits and your AI traffic share. The plugin cannot do this locally: the crawler registry lives in the service and is updated centrally.</p>\n<p>What is sent and when: on every front-end page view (never admin, AJAX, cron or REST requests) the plugin sends one HTTPS POST to https://yozigo-geo-backend-service.fly.dev/api/v1/crawl/track containing the visitor&#8217;s IP address, user agent, referer, request path and query parameters, a timestamp, and your API key, organisation ID and brand ID. Human visits are reported as well as bot visits, because the AI-traffic-share figure needs both. Nothing is sent until you enter your API key on the settings page; without a key the plugin does nothing. The request is non-blocking, so it never delays the visitor&#8217;s page.</p>\n<p>This service is provided by Yozigo: <a href=\"https://www.yozigo.ai/terms\" rel=\"nofollow ugc\">terms of service</a>, <a href=\"https://www.yozigo.ai/privacy\" rel=\"nofollow ugc\">privacy policy</a>.</p>\n<p>Because visitor IP addresses are transmitted, you are responsible for disclosing this plugin&#8217;s data collection in your own site&#8217;s privacy policy where your local law requires it.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to <code>/wp-content/plugins/</code> or install via Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New.</li>\n<li>Activate the plugin from the Plugins page.</li>\n<li>Go to &#8220;Yozigo GEO&#8221; under Settings.</li>\n<li>Enter the <strong>API Key</strong>, <strong>Org ID</strong>, and <strong>Brand ID</strong> shown on the Plugins page of your Yozigo GEO dashboard.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20an%20api%20key%3F\">\nDo I need an API key?\n</h4>\n<p>\n<p>Yes, you need a valid API Key, Org ID, and Brand ID from your Yozigo GEO dashboard to send tracking data.</p>\n</p>\n<dt id=\"does%20this%20slow%20down%20my%20site%3F\">\nDoes this slow down my site?\n</h4>\n<p>\n<p>No. The tracking API call is performed asynchronously (non-blocking).</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.4</h4>\n<ul>\n<li>Plugin review compliance: every $_SERVER read is sanitized, the page path and query string are both read from the request URI via esc_url_raw (which keeps percent-encoded and non-ASCII paths intact), hooks use named functions, and &#8220;Tested up to&#8221; is WordPress 7.1.</li>\n<li>Removed the function_exists() guards added in 1.1.3. WordPress already refuses to activate a second copy of a plugin that would redeclare its functions, so the guards protected nothing, and the plugin review guidelines discourage them.</li>\n<li>Adds suggested wording to the site&#8217;s Privacy Policy Guide (Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Privacy) describing what the tracker sends.</li>\n<li>Reports each visitor IP together with its provenance (&#8220;client&#8221;), the same way the Vercel and Cloudflare collectors do.</li>\n</ul>\n<h4>1.1.3</h4>\n<ul>\n<li>Guarded every plugin function against &#8220;Cannot redeclare&#8221; fatal errors if a stale second copy of the plugin (e.g. left over from an incomplete manual upgrade, installed under a different folder name) ever ends up active alongside this one. Previously this white-screened the entire site; now the duplicate copy just silently no-ops.</li>\n</ul>\n<h4>1.1.2</h4>\n<ul>\n<li>Fixed the settings page showing a contradicting &#8220;Settings saved&#8221; success message at the same time as an &#8220;API Key is required&#8221; error on a failed save. Now uses WordPress&#8217;s own settings-errors mechanism, which also removes a harmless but confusing double &#8220;Settings saved&#8221; message on a real successful save.</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>Added uninstall cleanup — deleting the plugin now removes its saved settings (including the API key) from the database instead of leaving them behind.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Send every page visit (not just bot-matched ones) and let the backend classify bot vs. human — the old local user-agent regex was missing many current AI crawlers (ClaudeBot, Google-Extended, and others) and couldn&#8217;t support AI-traffic-share reporting.</li>\n<li>Send visitor IP address for accurate classification and geolocation.</li>\n<li>Removed the WP-Cron retry queue (and its &#8220;Enable Retry Queue&#8221; setting) — matches the no-retry model used by our other integrations; a failed send is now logged via the <code>yozigo_geo_send_failed</code> action instead of queued.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release — bot/crawler tracking with an opt-in WP-Cron retry queue.</li>\n</ul>\n"
+    },
+    "short_description": "Tracks visits and sends them to your Yozigo GEO dashboard for bot/AI-crawler and traffic-share analytics.",
+    "description": "<p>Yozigo GEO is a lightweight plugin that reports front-end page visits on your WordPress site to the Yozigo GEO collector service, which classifies each one (bot vs. human, and which AI crawler) using its own regularly-updated bot registry.</p>\n<p>This plugin requires a Yozigo GEO account. It sends nothing until you enter your API key on its settings page; without a key it does not run at all.</p>\n<p>Features include:<br />\n&#8211; <strong>Bot &amp; AI Crawler Tracking</strong>: Every page visit is reported to the collector, which classifies it against a centrally maintained bot registry (Googlebot, Bingbot, GPTBot, ClaudeBot, and more) — kept current without a plugin update.<br />\n&#8211; <strong>Accurate AI Traffic Share</strong>: Because human visits are reported too, the dashboard can compute real AI-traffic-share percentages, not just raw bot counts.<br />\n&#8211; <strong>Performance</strong>: The tracking call is non-blocking so it never slows down a real visitor&#8217;s page load.</p>\n<h3>External services</h3>\n<p>This plugin connects to the Yozigo GEO collector, an API operated by Yozigo (https://www.yozigo.ai), to report your site&#8217;s front-end page visits so that your Yozigo GEO dashboard can identify AI crawlers, AI-referred visits and your AI traffic share. The plugin cannot do this locally: the crawler registry lives in the service and is updated centrally.</p>\n<p>What is sent and when: on every front-end page view (never admin, AJAX, cron or REST requests) the plugin sends one HTTPS POST to https://yozigo-geo-backend-service.fly.dev/api/v1/crawl/track containing the visitor&#8217;s IP address, user agent, referer, request path and query parameters, a timestamp, and your API key, organisation ID and brand ID. Human visits are reported as well as bot visits, because the AI-traffic-share figure needs both. Nothing is sent until you enter your API key on the settings page; without a key the plugin does nothing. The request is non-blocking, so it never delays the visitor&#8217;s page.</p>\n<p>This service is provided by Yozigo: <a href=\"https://www.yozigo.ai/terms\" rel=\"nofollow ugc\">terms of service</a>, <a href=\"https://www.yozigo.ai/privacy\" rel=\"nofollow ugc\">privacy policy</a>.</p>\n<p>Because visitor IP addresses are transmitted, you are responsible for disclosing this plugin&#8217;s data collection in your own site&#8217;s privacy policy where your local law requires it.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/yozigo-geo.1.1.4.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/yozigo-geo/assets/screenshot-1.png?rev=3710066",
+            "caption": "Settings → Yozigo GEO: paste the API Key, Org ID and Brand ID from your Yozigo GEO dashboard. Nothing is sent until the API key is saved."
+        }
+    ],
+    "tags": {
+        "ai-search": "ai search",
+        "analytics": "analytics",
+        "bot-tracking": "bot tracking",
+        "crawlers": "crawlers"
+    },
+    "stable_tag": "1.1.4",
+    "versions": {
+        "1.1.4": "https://downloads.wordpress.org/plugin/yozigo-geo.1.1.4.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/yozigo-geo.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/yozigo-geo/assets/banner-772x250.png?rev=3710059",
+        "high": "https://ps.w.org/yozigo-geo/assets/banner-1544x500.png?rev=3710059"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/yozigo-geo/assets/icon.svg?rev=3710059",
+        "svg": "https://ps.w.org/yozigo-geo/assets/icon.svg?rev=3710059"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
