@@ -1,0 +1,77 @@
+{
+    "name": "Assist Security",
+    "slug": "assist-security",
+    "version": "0.1.3",
+    "author": "<a href=\"https://profiles.wordpress.org/assistpress/\">AssistPress</a>",
+    "author_profile": "https://profiles.wordpress.org/assistpress/",
+    "contributors": {
+        "assistpress": {
+            "profile": "https://profiles.wordpress.org/assistpress/",
+            "avatar": "https://secure.gravatar.com/avatar/b876e19febd639169924043c94d23490be76d6281ae1d9a574f029400cbcf128?s=96&d=monsterid&r=g",
+            "display_name": "AssistPress"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/assist-security/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-23 15:22:00",
+    "added": "2026-08-06",
+    "homepage": "https://wordpress.org/plugins/assist-security/",
+    "sections": {
+        "description": "<p>WordPress signs every login cookie and nonce with eight secret keys and salts stored in <code>wp-config.php</code> (<code>AUTH_KEY</code> through <code>NONCE_SALT</code>). If those secrets leak — through an old backup, a stolen config file, or a contractor who still has access — an attacker can forge valid authentication cookies for as long as the keys stay unchanged. Rotating them invalidates every existing session immediately.</p>\n<p>Assist Security makes that rotation safe, automatic, and auditable.</p>\n<h4>🔑 Rotate Security Keys</h4>\n<ul>\n<li><strong>One-click rotation</strong> from a clean, colorful settings screen</li>\n<li><strong>Locally generated keys</strong> using PHP&#8217;s cryptographically secure random number generator. No calls to any external API, no network dependency</li>\n<li><strong>Verified atomic writes.</strong> The new configuration is built in memory, written to a temporary file with restricted permissions, verified, atomically swapped in, then verified again — with automatic rollback if any step fails. The writer refuses to touch your file unless all eight keys are found, so a partial rotation is impossible</li>\n<li><strong>Key health checks</strong> for missing, weak, duplicated, or placeholder keys. Only the verdict is ever shown; your key values never leave the server</li>\n<li><strong>Audit log</strong> recording every attempt: timestamp, result, trigger, user, optional IP, duration, and how many sessions were signed out — with filtering, pagination, and CSV export</li>\n<li><strong>Failure alerts</strong> emailed to the site administrator if a rotation ever fails</li>\n<li><strong>Site Health test</strong> that flags key problems and keys older than 180 days</li>\n<li><strong>WP-CLI commands</strong> — <code>wp assist-security rotate</code> and <code>wp assist-security status</code></li>\n<li><strong>Custom config locations</strong> supported: <code>wp-salt.php</code>, a <code>wp-config.php</code> above the web root, or any path you choose with a filter</li>\n</ul>\n<h4>Built the right way</h4>\n<ul>\n<li>Beautiful, responsive settings screen with no page reloads and no build step</li>\n<li>REST API under <code>assist-security/v1</code>; no admin-ajax</li>\n<li>No bundled SDKs, no Composer dependencies, no external HTTP requests, no telemetry</li>\n<li>Every input sanitized, every output escaped, every query prepared</li>\n<li>Multisite aware: management is restricted to network administrators</li>\n<li>Privacy-conscious: IP logging is optional and data removal on uninstall is opt-in</li>\n<li>Settings import and export as JSON</li>\n<li>Fully translatable, with a bundled POT file</li>\n</ul>\n<p>Assist Security is built on a module architecture, so further protections can be added as self-contained modules in future releases.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>assist-security</code> folder to <code>/wp-content/plugins/</code>, or install it through <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New</strong>.</li>\n<li>Activate <strong>Assist Security</strong> from the Plugins screen.</li>\n<li>Open the new <strong>Assist Security</strong> menu in your admin sidebar.</li>\n<li>Check your key health on the Security Keys tab and rotate whenever you need to.</li>\n</ol>\n<p><strong>Note:</strong> rotating the keys signs out every user, including you. The plugin warns you first and sends you to the login screen afterwards.</p>\n<p>For rotation to work, <code>wp-config.php</code> (or your custom salt file) must be writable by PHP. The Security Keys tab and Site Health both report this.</p>\n",
+        "faq": "\n<dt id=\"will%20rotating%20the%20keys%20break%20my%20site%3F\">\nWill rotating the keys break my site?\n</h4>\n<p>\n<p>No. The writer refuses to modify your configuration file unless all eight keys are found, verifies the result before and after an atomic swap, and rolls back automatically if anything is wrong. If a rotation cannot complete safely, your original file is left untouched.</p>\n</p>\n<dt id=\"why%20is%20everyone%20logged%20out%20afterwards%3F\">\nWhy is everyone logged out afterwards?\n</h4>\n<p>\n<p>That is the point. Invalidating existing cookies is what makes rotation a security measure. Session tokens are cleared as well.</p>\n</p>\n<dt id=\"where%20do%20the%20new%20keys%20come%20from%3F\">\nWhere do the new keys come from?\n</h4>\n<p>\n<p>They are generated on your own server with PHP&#8217;s cryptographically secure random number generator. The plugin makes no external requests.</p>\n</p>\n<dt id=\"does%20the%20plugin%20ever%20show%20or%20send%20my%20keys%3F\">\nDoes the plugin ever show or send my keys?\n</h4>\n<p>\n<p>No. Key values are never displayed, logged, exported, or transmitted. The health check reads each constant only long enough to decide whether it is missing, weak, or duplicated, and reports that verdict alone.</p>\n</p>\n<dt id=\"my%20wp-config.php%20is%20outside%20the%20web%20root%2C%20or%20i%20use%20wp-salt.php.%20is%20that%20supported%3F\">\nMy wp-config.php is outside the web root, or I use wp-salt.php. Is that supported?\n</h4>\n<p>\n<p>Yes. The plugin checks <code>wp-salt.php</code>, <code>wp-config.php</code>, and the parent directory automatically. You can also point it anywhere:</p>\n<pre><code>add_filter( 'assist_security_config_file', function () { return '/path/to/wp-salt.php'; } );\n</code></pre>\n</p>\n<dt id=\"is%20it%20multisite%20compatible%3F\">\nIs it multisite compatible?\n</h4>\n<p>\n<p>Yes. On multisite, only network administrators (<code>manage_network_options</code>) can manage the plugin.</p>\n</p>\n<dt id=\"how%20often%20should%20i%20rotate%3F\">\nHow often should I rotate?\n</h4>\n<p>\n<p>Every one to three months suits most sites. Rotate immediately if you suspect a leak, after removing an administrator, or after restoring from a backup of unknown origin. The Site Health test reminds you once your keys pass 180 days.</p>\n</p>\n<dt id=\"what%20data%20does%20the%20plugin%20store%3F\">\nWhat data does the plugin store?\n</h4>\n<p>\n<p>Settings in a single option, and rotation records in its own database table. IP addresses are recorded only if you enable that option. Everything is removed on uninstall only if you opt in first, on the Tools tab.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Rotate your WordPress security keys and salts safely, with verified atomic writes, key health checks, and a full audit trail.",
+    "description": "<p>WordPress signs every login cookie and nonce with eight secret keys and salts stored in <code>wp-config.php</code> (<code>AUTH_KEY</code> through <code>NONCE_SALT</code>). If those secrets leak — through an old backup, a stolen config file, or a contractor who still has access — an attacker can forge valid authentication cookies for as long as the keys stay unchanged. Rotating them invalidates every existing session immediately.</p>\n<p>Assist Security makes that rotation safe, automatic, and auditable.</p>\n<h4>🔑 Rotate Security Keys</h4>\n<ul>\n<li><strong>One-click rotation</strong> from a clean, colorful settings screen</li>\n<li><strong>Locally generated keys</strong> using PHP&#8217;s cryptographically secure random number generator. No calls to any external API, no network dependency</li>\n<li><strong>Verified atomic writes.</strong> The new configuration is built in memory, written to a temporary file with restricted permissions, verified, atomically swapped in, then verified again — with automatic rollback if any step fails. The writer refuses to touch your file unless all eight keys are found, so a partial rotation is impossible</li>\n<li><strong>Key health checks</strong> for missing, weak, duplicated, or placeholder keys. Only the verdict is ever shown; your key values never leave the server</li>\n<li><strong>Audit log</strong> recording every attempt: timestamp, result, trigger, user, optional IP, duration, and how many sessions were signed out — with filtering, pagination, and CSV export</li>\n<li><strong>Failure alerts</strong> emailed to the site administrator if a rotation ever fails</li>\n<li><strong>Site Health test</strong> that flags key problems and keys older than 180 days</li>\n<li><strong>WP-CLI commands</strong> — <code>wp assist-security rotate</code> and <code>wp assist-security status</code></li>\n<li><strong>Custom config locations</strong> supported: <code>wp-salt.php</code>, a <code>wp-config.php</code> above the web root, or any path you choose with a filter</li>\n</ul>\n<h4>Built the right way</h4>\n<ul>\n<li>Beautiful, responsive settings screen with no page reloads and no build step</li>\n<li>REST API under <code>assist-security/v1</code>; no admin-ajax</li>\n<li>No bundled SDKs, no Composer dependencies, no external HTTP requests, no telemetry</li>\n<li>Every input sanitized, every output escaped, every query prepared</li>\n<li>Multisite aware: management is restricted to network administrators</li>\n<li>Privacy-conscious: IP logging is optional and data removal on uninstall is opt-in</li>\n<li>Settings import and export as JSON</li>\n<li>Fully translatable, with a bundled POT file</li>\n</ul>\n<p>Assist Security is built on a module architecture, so further protections can be added as self-contained modules in future releases.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/assist-security.0.1.3.zip",
+    "upgrade_notice": {
+        "0.1": "<ul>\n<li>Initial release.</li>\n</ul>"
+    },
+    "screenshots": [],
+    "tags": {
+        "salts": "salts",
+        "security": "security",
+        "security-keys": "security keys",
+        "session": "session",
+        "wp-config": "wp-config"
+    },
+    "stable_tag": "0.1.3",
+    "versions": {
+        "0.1.2": "https://downloads.wordpress.org/plugin/assist-security.0.1.2.zip",
+        "0.1.3": "https://downloads.wordpress.org/plugin/assist-security.0.1.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/assist-security.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/assist-security/assets/icon-256x256.png?rev=3709574",
+        "2x": "https://ps.w.org/assist-security/assets/icon-256x256.png?rev=3709574"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
