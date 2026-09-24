@@ -1,0 +1,87 @@
+{
+    "name": "Acato Readable List Tables",
+    "slug": "acato-readable-list-tables",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/acato/\">Acato</a>",
+    "author_profile": "https://profiles.wordpress.org/acato/",
+    "contributors": {
+        "acato": {
+            "profile": "https://profiles.wordpress.org/acato/",
+            "avatar": "https://secure.gravatar.com/avatar/608c475971421ac29f3aa3ae6da892be06c0d826cc7464ccbc4c141034c4fb0f?s=96&d=monsterid&r=g",
+            "display_name": "Acato"
+        },
+        "frankabeekman": {
+            "profile": "https://profiles.wordpress.org/frankabeekman/",
+            "avatar": "https://secure.gravatar.com/avatar/04ca8f3b296d7169f6fcdf45affc8397e04c4d26770da31b1d2bf183c25fc13b?s=96&d=monsterid&r=g",
+            "display_name": "Franka"
+        }
+    },
+    "requires": "5.6",
+    "tested": "7.1.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/acato-readable-list-tables/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-24 07:41:00",
+    "added": "2026-09-24",
+    "homepage": "https://github.com/acato-plugins/readable-list-tables",
+    "sections": {
+        "description": "<p>WordPress renders the post overviews with <code>table-layout: fixed</code>. Core gives author, categories, tags and date percentage widths, and plugins such as Yoast SEO, Post Expirator and Duplicate Post give their columns fixed em widths. The title column is the only one with no width of its own, so it gets whatever is left over.</p>\n<p>With enough columns installed that is close to nothing. Measured with Yoast SEO Premium, Post Expirator and Duplicate Post active, 18 columns in total, the title column is 59px wide at a 1920px viewport, 22px at 1440px and 10px at 1280px. At that point the title is invisible and the column headers wrap one letter per line. A large monitor has enough width to spare, which is why this tends to be reported as &#8220;it only happens on my laptop&#8221;.</p>\n<p>This plugin:</p>\n<ul>\n<li>Gives every column an explicit width, including columns it does not recognise, so none of them can collapse. <code>min-width</code> cannot do this job, because <code>table-layout: fixed</code> ignores it on table cells.</li>\n<li>Wraps the table in a horizontal scroll container, so a wide table scrolls on its own instead of squashing the title or scrolling the whole page.</li>\n<li>Adds a scrollbar that stays pinned to the bottom of the window, so a long table can be scrolled sideways from any row.</li>\n<li>Pins the checkbox and title columns, so you can still see which post a row is when scrolled to the right.</li>\n<li>Fades in a shadow at the right edge, and a divider beside the pinned title, to show that there is more to see.</li>\n<li>Keeps the Quick Edit and Bulk Edit forms in view, at the width of the visible area, wherever the table is scrolled to.</li>\n</ul>\n<p>The scroll container is exposed as a labelled region and becomes a tab stop only while it actually scrolls, so keyboard users can reach the off-screen columns without picking up a tab stop that does nothing.</p>\n<h4>Good to know</h4>\n<ul>\n<li>Development happens at <a href=\"https://github.com/acato-plugins/readable-list-tables\" rel=\"nofollow ugc\">github.com/acato-plugins/readable-list-tables</a>.</li>\n<li>Nothing is written to the database and no columns are hidden: editors keep whatever they had, and can still hide columns per screen through Screen Options. Deactivating the plugin leaves no trace.</li>\n<li>The plugin acts on the post overviews (edit.php) for every post type. The users, media and taxonomy screens are not touched.</li>\n<li>No front end code, and no settings screen. The behaviour can be adjusted with the filters below.</li>\n</ul>\n<h3>Filters</h3>\n<pre><code>acato_readable_list_tables_column_widths (array) column slug =&gt; width in pixels.\n\nacato_readable_list_tables_default_width (int) width for columns with no explicit width, default 130.\n\nacato_readable_list_tables_narrow_columns (array) CSS class names of columns that keep the width their own stylesheet gives them, such as the checkbox, the comment bubble and the Yoast score icons.\n\nacato_readable_list_tables_sticky_columns (bool) whether to pin the checkbox and title columns, default true.\n\nacato_readable_list_tables_enabled (bool, WP_Screen) whether to act on the current screen.\n</code></pre>\n<p>Example, widening the title column and sizing a column of your own:</p>\n<pre><code>add_filter( 'acato_readable_list_tables_column_widths', function ( $widths ) {\n    $widths['title']            = 320;\n    $widths['my_plugin_column'] = 200;\n\n    return $widths;\n} );\n</code></pre>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to <code>/wp-content/plugins/</code>, or install it through <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New</strong>.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> screen. On multisite you can network activate it.</li>\n</ol>\n<p>There are no settings. The behaviour can be adjusted with the filters below.</p>\n",
+        "faq": "\n<dt id=\"does%20this%20hide%20any%20of%20my%20columns%3F\">\nDoes this hide any of my columns?\n</h4>\n<p>\n<p>No. Every column you had stays visible. If you would rather not scroll sideways, hide the columns you do not need through Screen Options at the top of the post overview.</p>\n</p>\n<dt id=\"why%20does%20the%20table%20scroll%20sideways%20now%3F\">\nWhy does the table scroll sideways now?\n</h4>\n<p>\n<p>Because the columns no longer collapse. With every column at a readable width the table can be wider than the window, so it scrolls instead of squeezing the title down to a few pixels. Hiding a few columns through Screen Options makes it fit again.</p>\n</p>\n<dt id=\"can%20i%20change%20the%20column%20widths%3F\">\nCan I change the column widths?\n</h4>\n<p>\n<p>Yes, with the <code>acato_readable_list_tables_column_widths</code> filter. See the section below.</p>\n</p>\n<dt id=\"does%20it%20work%20on%20the%20users%20or%20media%20screens%3F\">\nDoes it work on the users or media screens?\n</h4>\n<p>\n<p>Not yet. Those list tables use different markup and column sets.</p>\n</p>\n<dt id=\"where%20are%20the%20translations%3F\">\nWhere are the translations?\n</h4>\n<p>\n<p>Translations are managed on <a href=\"https://translate.wordpress.org/projects/wp-plugins/acato-readable-list-tables/\" rel=\"nofollow ugc\">translate.wordpress.org</a> and are downloaded by WordPress automatically.</p>\n</p>\n<dt id=\"how%20can%20i%20report%20security%20bugs%3F\">\nHow can I report security bugs?\n</h4>\n<p>\n<p>You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team help validate, triage and handle any security vulnerabilities. <a href=\"https://patchstack.com/database/vdp/c0a4068d-1475-4ec9-8550-85984214d223\" rel=\"nofollow ugc\">Report a security vulnerability.</a></p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Stops the title column collapsing when plugins add a lot of columns to the post overviews.",
+    "description": "<p>WordPress renders the post overviews with <code>table-layout: fixed</code>. Core gives author, categories, tags and date percentage widths, and plugins such as Yoast SEO, Post Expirator and Duplicate Post give their columns fixed em widths. The title column is the only one with no width of its own, so it gets whatever is left over.</p>\n<p>With enough columns installed that is close to nothing. Measured with Yoast SEO Premium, Post Expirator and Duplicate Post active, 18 columns in total, the title column is 59px wide at a 1920px viewport, 22px at 1440px and 10px at 1280px. At that point the title is invisible and the column headers wrap one letter per line. A large monitor has enough width to spare, which is why this tends to be reported as &#8220;it only happens on my laptop&#8221;.</p>\n<p>This plugin:</p>\n<ul>\n<li>Gives every column an explicit width, including columns it does not recognise, so none of them can collapse. <code>min-width</code> cannot do this job, because <code>table-layout: fixed</code> ignores it on table cells.</li>\n<li>Wraps the table in a horizontal scroll container, so a wide table scrolls on its own instead of squashing the title or scrolling the whole page.</li>\n<li>Adds a scrollbar that stays pinned to the bottom of the window, so a long table can be scrolled sideways from any row.</li>\n<li>Pins the checkbox and title columns, so you can still see which post a row is when scrolled to the right.</li>\n<li>Fades in a shadow at the right edge, and a divider beside the pinned title, to show that there is more to see.</li>\n<li>Keeps the Quick Edit and Bulk Edit forms in view, at the width of the visible area, wherever the table is scrolled to.</li>\n</ul>\n<p>The scroll container is exposed as a labelled region and becomes a tab stop only while it actually scrolls, so keyboard users can reach the off-screen columns without picking up a tab stop that does nothing.</p>\n<h4>Good to know</h4>\n<ul>\n<li>Development happens at <a href=\"https://github.com/acato-plugins/readable-list-tables\" rel=\"nofollow ugc\">github.com/acato-plugins/readable-list-tables</a>.</li>\n<li>Nothing is written to the database and no columns are hidden: editors keep whatever they had, and can still hide columns per screen through Screen Options. Deactivating the plugin leaves no trace.</li>\n<li>The plugin acts on the post overviews (edit.php) for every post type. The users, media and taxonomy screens are not touched.</li>\n<li>No front end code, and no settings screen. The behaviour can be adjusted with the filters below.</li>\n</ul>\n<h3>Filters</h3>\n<pre><code>acato_readable_list_tables_column_widths (array) column slug =&gt; width in pixels.\n\nacato_readable_list_tables_default_width (int) width for columns with no explicit width, default 130.\n\nacato_readable_list_tables_narrow_columns (array) CSS class names of columns that keep the width their own stylesheet gives them, such as the checkbox, the comment bubble and the Yoast score icons.\n\nacato_readable_list_tables_sticky_columns (bool) whether to pin the checkbox and title columns, default true.\n\nacato_readable_list_tables_enabled (bool, WP_Screen) whether to act on the current screen.\n</code></pre>\n<p>Example, widening the title column and sizing a column of your own:</p>\n<pre><code>add_filter( 'acato_readable_list_tables_column_widths', function ( $widths ) {\n    $widths['title']            = 320;\n    $widths['my_plugin_column'] = 200;\n\n    return $widths;\n} );\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/acato-readable-list-tables.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "accessibility": "accessibility",
+        "admin": "admin",
+        "columns": "columns",
+        "list-table": "list table",
+        "usability": "usability"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/acato-readable-list-tables.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/acato-readable-list-tables.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/acato-readable-list-tables/assets/banner-772x250.png?rev=3710773",
+        "high": "https://ps.w.org/acato-readable-list-tables/assets/banner-1544x500.png?rev=3710773"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/acato-readable-list-tables/assets/icon-128x128.png?rev=3710773",
+        "2x": "https://ps.w.org/acato-readable-list-tables/assets/icon-256x256.png?rev=3710773"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [
+        {
+            "filename": "blueprint.json",
+            "url": "https://wordpress.org/plugins/wp-json/plugins/v1/plugin/acato-readable-list-tables/blueprint.json?rev=3710775"
+        }
+    ],
+    "preview_link": "",
+    "language_packs": []
+}
