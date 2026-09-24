@@ -1,0 +1,146 @@
+{
+    "name": "ShopSocket",
+    "slug": "shopsocket",
+    "version": "0.3.2",
+    "author": "<a href=\"https://profiles.wordpress.org/wpsignal/\">wpsignal</a>",
+    "author_profile": "https://profiles.wordpress.org/wpsignal/",
+    "contributors": {
+        "wpsignal": {
+            "profile": "https://profiles.wordpress.org/wpsignal/",
+            "avatar": "https://secure.gravatar.com/avatar/af16d9c9f02acb5db9d9bf694eaf741b2e4d7650d7e3f2be33ea6e412c9b9966?s=96&d=monsterid&r=g",
+            "display_name": "wpsignal"
+        }
+    },
+    "requires": "6.7",
+    "tested": "7.1.2",
+    "requires_php": "8.2",
+    "requires_plugins": [
+        "wordsocket",
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/shopsocket/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-24 13:03:00",
+    "added": "2026-09-24",
+    "homepage": "https://wpsignal.io/extensions/shopsocket",
+    "sections": {
+        "description": "<p>ShopSocket puts what is happening in your store on screen the moment it happens, for staff and shoppers alike.</p>\n<p><strong>For your team: the ShopSocket board</strong></p>\n<p>A screen under WooCommerce that staff keep open all day.</p>\n<ul>\n<li>Live orders: every new order lands on the board the instant it is placed, with a chime, and status changes update the row in place</li>\n<li>Baskets, live and abandoned: how many shoppers hold a basket right now, how many have left with one still held, and the revenue in each</li>\n<li>Products in live baskets: what shoppers on the site are holding at this moment, with the number of baskets and units for each, linking to the product&#8217;s edit screen</li>\n<li>Users online and open connections, straight from the relay</li>\n<li>Low-stock and out-of-stock alerts as they happen</li>\n<li>Full-screen mode for a wall display</li>\n</ul>\n<p>Live and abandoned are not guesses from timestamps. A basket is live exactly while its shopper has an open connection to the site, and flips to abandoned the instant their last tab closes.</p>\n<p><strong>For shoppers: the storefront</strong></p>\n<ul>\n<li>Stock text on product pages updates in place when the product sells out or comes back, and the add-to-cart button follows</li>\n<li>&#8220;N shoppers have this in their cart right now&#8221; under the price, kept current as baskets change</li>\n<li>&#8220;Someone just added this to their basket&#8221; toasts, shown only for products the shopper also holds</li>\n<li>A shopper holding a product that sells out hears at once, wherever they are, and the cart shows WooCommerce&#8217;s own notice without a reload</li>\n<li>The Live Stock block: availability, units left, and the in-cart counter as one block for the Single Product template or any page</li>\n<li>A card on WordSocket&#8217;s Extensions tab with the connection state and a link to the board</li>\n</ul>\n<p><strong>How it works</strong></p>\n<p>WordSocket carries the events over one WebSocket per browser, with an SSE fallback. ShopSocket publishes order, stock, and basket events from WooCommerce&#8217;s own hooks, and reads presence from the relay to tell live baskets from abandoned ones. The storefront never polls: it fetches once per page load and then only reacts to events. The board does the same, plus a quiet refresh every 30 seconds as a safety net in case an event is ever missed.</p>\n<p>ShopSocket requires WordSocket and a WPSignal account. WPSignal is an independent service and is not affiliated with or endorsed by the WordPress project or by WooCommerce.</p>\n<p><strong>What leaves your site, and who can read it</strong></p>\n<p><strong>Every event is encrypted before it leaves WordPress, and WPSignal cannot read it.</strong> WordSocket encrypts the contents of every event with AES-256-GCM before it is sent: always on HTTPS sites, and on plain HTTP sites too with WordSocket 0.25 or later (older versions encrypt only over HTTPS). The key is derived from your site&#8217;s own WordPress salts in wp-config.php, which never leave your server and which WPSignal never has. The service relays ciphertext it has no way to open: it never sees an order total, a customer name, a product, or a stock level.</p>\n<p>What is inside those encrypted events:</p>\n<ul>\n<li>Order events, on a staff-only channel: the order number, status, total, item count, payment method, and the customer&#8217;s first name and last initial. No email, address, or line items.</li>\n<li>Stock and basket-activity events, public to your storefront: product names, permalinks, thumbnails, and counts, plus the anonymous basket id of the shopper behind the change, so a shopper&#8217;s own adds and purchases are never announced back to them.</li>\n</ul>\n<p>What the service does see, only because it needs it to route messages: channel names, how many browsers are connected, and each shopper&#8217;s presence, which is a random per-browser id and a keyed hash identifying their basket. None of it is personal, and none of it is reversible.</p>\n<h4>Third-Party Service</h4>\n<p>ShopSocket relies on the <strong>WPSignal service</strong> at api.wpsignal.io, reached through the WordSocket plugin. ShopSocket opens no connection of its own: everything below travels over the connection WordSocket already holds for your site.</p>\n<ul>\n<li><strong>Event publishing</strong>: when an order is placed or changes status, stock changes, or a product is added to a basket, WordSocket sends an HMAC-signed HTTP request to the service with the event described under &#8220;What leaves your site&#8221;.</li>\n<li><strong>Realtime connections</strong>: browsers on your storefront and the staff board connect to the service over WebSocket (or SSE) to receive those events. Shoppers&#8217; browsers also announce their presence on the site, which is how the board tells a live basket from an abandoned one.</li>\n<li><strong>Connection count</strong>: the board asks the service how many browsers are connected to your site right now.</li>\n</ul>\n<p>Events are relayed in realtime and are <strong>not stored</strong> on the service. Event contents are AES-256-GCM encrypted before they leave WordPress (on HTTPS sites, and on plain HTTP ones with WordSocket 0.25 or later), with a key derived from your site&#8217;s own WordPress salts, so the service relays ciphertext it cannot read. A WPSignal account is required; the free plan is enough to start.</p>\n<ul>\n<li><a href=\"https://wpsignal.io/terms\" rel=\"nofollow ugc\">Terms of Service</a></li>\n<li><a href=\"https://wpsignal.io/privacy\" rel=\"nofollow ugc\">Privacy Policy</a></li>\n</ul>\n<h4>Source code and build steps</h4>\n<p>ShopSocket is developed in the open. The full, uncompiled source for everything in <code>build/</code>, together with the build tooling, lives at <a href=\"https://github.com/wpsignal/wordsocket-extensions\" rel=\"nofollow ugc\">github.com/wpsignal/wordsocket-extensions</a> under <code>shopsocket/</code>.</p>\n<p>The compiled files in <code>build/</code> are generated from <code>src/</code> with:</p>\n<pre><code>npm install\nnpm run build\n</code></pre>\n<p>That runs <a href=\"https://www.npmjs.com/package/@wordpress/scripts\" rel=\"nofollow ugc\">@wordpress/scripts</a> (webpack) for the board, settings and block bundles, and <code>tsc</code> for the Interactivity API storefront modules. The bundled styles under <code>build/style-*.css</code> are produced by that same build from <a href=\"https://www.npmjs.com/package/@wordpress/components\" rel=\"nofollow ugc\">@wordpress/components</a>, which is GPL-2.0-or-later.</p>\n",
+        "installation": "<ol>\n<li>Install and activate WooCommerce and WordSocket 0.23 or newer, and connect WordSocket to your WPSignal account.</li>\n<li>Install and activate ShopSocket.</li>\n<li>Open Analytics &gt; Realtime for the board (WooCommerce &gt; ShopSocket when WooCommerce Analytics is switched off). Product pages start updating on their own.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20it%20work%20with%20block%20themes%3F\">\nDoes it work with block themes?\n</h4>\n<p>\n<p>Yes. The storefront features bind to the classic templates and to the Product Price and Product Stock Indicator blocks. For markup that is yours to place, add the Live Stock block to the Single Product template, or to any page with a product chosen.</p>\n</p>\n<dt id=\"does%20it%20work%20on%20a%20local%20site%20over%20plain%20http%3F\">\nDoes it work on a local site over plain HTTP?\n</h4>\n<p>\n<p>Yes. The connection to the relay is always TLS, even from an <code>http://</code> page, and with WordSocket 0.25 or later event contents are encrypted there too, so the relay cannot read them. Older versions of WordSocket send them unencrypted on plain HTTP. Use HTTPS in production regardless: it protects the page itself.</p>\n</p>\n<dt id=\"does%20it%20support%20high-performance%20order%20storage%3F\">\nDoes it support High-Performance Order Storage?\n</h4>\n<p>\n<p>Yes. ShopSocket declares HPOS compatibility and reads orders through WooCommerce&#8217;s order API.</p>\n</p>\n<dt id=\"can%20i%20turn%20parts%20of%20it%20off%3F\">\nCan I turn parts of it off?\n</h4>\n<p>\n<p>Filters: <code>shopsocket_storefront</code> controls which pages load the live storefront (every front-end page by default, so a shopper stays live wherever they browse), <code>shopsocket_in_carts_enabled</code> the basket counter, <code>shopsocket_activity_enabled</code> the added-to-basket toasts, <code>shopsocket_activity_throttle</code> how often one product may announce an add, and <code>shopsocket_publish_stock</code> whether stock changes are published (they are silent during imports).</p>\n</p>\n<dt id=\"who%20can%20see%20the%20board%3F\">\nWho can see the board?\n</h4>\n<p>\n<p>Users with the <code>manage_woocommerce</code> capability. Order and basket events travel on a channel only their connection tokens can read.</p>\n</p>\n\n",
+        "changelog": "<h4>0.3.2</h4>\n<ul>\n<li>Fixed: the extension registered its name and description before WordPress loads translations, which logged a notice with debugging enabled</li>\n</ul>\n<h4>0.3.1</h4>\n<ul>\n<li>Fixed: a shopper who buys the last unit is no longer told it has sold out (stock events now carry the buyer&#8217;s anonymous basket id)</li>\n<li>Fixed: the board&#8217;s logo no longer flashes at full screen width before its styles load</li>\n<li>The readme spells out what leaves your site and what the relay can read</li>\n</ul>\n<h4>0.3.0</h4>\n<ul>\n<li>The plugin is listed under WordSocket on the Plugins screen, where WordSocket 0.24 and later keep the family together</li>\n</ul>\n<h4>0.2.1</h4>\n<ul>\n<li>Requires WordSocket 0.23: the visitor id and channel check now come from WordSocket</li>\n<li>Fixed: the Live Stock block&#8217;s in-cart count was missing on load on pages other than the product&#8217;s own</li>\n<li>Works on plain HTTP sites</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>First public release</li>\n<li>The Realtime board under WooCommerce Analytics: users online, live and abandoned baskets from relay presence, products in live baskets with units, and live orders that update in place</li>\n<li>Live stock on product pages, the shop, and the cart: availability text, add-to-cart buttons, quantity limits, and &#8220;N shoppers have this in their cart&#8221;</li>\n<li>Sell-out notices: a shopper holding a product that sells out hears at once, and the cart shows WooCommerce&#8217;s own notice without a reload</li>\n<li>&#8220;Someone just added this to their basket&#8221; toasts, shown only for products the shopper also holds</li>\n<li>The Live Stock block for the Single Product template or any page</li>\n<li>A card on WordSocket&#8217;s Extensions tab</li>\n</ul>\n"
+    },
+    "short_description": "A live orders board for your team and live stock on product pages, pushed over the WordSocket realtime connection. No page reloads.",
+    "description": "<p>ShopSocket puts what is happening in your store on screen the moment it happens, for staff and shoppers alike.</p>\n<p><strong>For your team: the ShopSocket board</strong></p>\n<p>A screen under WooCommerce that staff keep open all day.</p>\n<ul>\n<li>Live orders: every new order lands on the board the instant it is placed, with a chime, and status changes update the row in place</li>\n<li>Baskets, live and abandoned: how many shoppers hold a basket right now, how many have left with one still held, and the revenue in each</li>\n<li>Products in live baskets: what shoppers on the site are holding at this moment, with the number of baskets and units for each, linking to the product&#8217;s edit screen</li>\n<li>Users online and open connections, straight from the relay</li>\n<li>Low-stock and out-of-stock alerts as they happen</li>\n<li>Full-screen mode for a wall display</li>\n</ul>\n<p>Live and abandoned are not guesses from timestamps. A basket is live exactly while its shopper has an open connection to the site, and flips to abandoned the instant their last tab closes.</p>\n<p><strong>For shoppers: the storefront</strong></p>\n<ul>\n<li>Stock text on product pages updates in place when the product sells out or comes back, and the add-to-cart button follows</li>\n<li>&#8220;N shoppers have this in their cart right now&#8221; under the price, kept current as baskets change</li>\n<li>&#8220;Someone just added this to their basket&#8221; toasts, shown only for products the shopper also holds</li>\n<li>A shopper holding a product that sells out hears at once, wherever they are, and the cart shows WooCommerce&#8217;s own notice without a reload</li>\n<li>The Live Stock block: availability, units left, and the in-cart counter as one block for the Single Product template or any page</li>\n<li>A card on WordSocket&#8217;s Extensions tab with the connection state and a link to the board</li>\n</ul>\n<p><strong>How it works</strong></p>\n<p>WordSocket carries the events over one WebSocket per browser, with an SSE fallback. ShopSocket publishes order, stock, and basket events from WooCommerce&#8217;s own hooks, and reads presence from the relay to tell live baskets from abandoned ones. The storefront never polls: it fetches once per page load and then only reacts to events. The board does the same, plus a quiet refresh every 30 seconds as a safety net in case an event is ever missed.</p>\n<p>ShopSocket requires WordSocket and a WPSignal account. WPSignal is an independent service and is not affiliated with or endorsed by the WordPress project or by WooCommerce.</p>\n<p><strong>What leaves your site, and who can read it</strong></p>\n<p><strong>Every event is encrypted before it leaves WordPress, and WPSignal cannot read it.</strong> WordSocket encrypts the contents of every event with AES-256-GCM before it is sent: always on HTTPS sites, and on plain HTTP sites too with WordSocket 0.25 or later (older versions encrypt only over HTTPS). The key is derived from your site&#8217;s own WordPress salts in wp-config.php, which never leave your server and which WPSignal never has. The service relays ciphertext it has no way to open: it never sees an order total, a customer name, a product, or a stock level.</p>\n<p>What is inside those encrypted events:</p>\n<ul>\n<li>Order events, on a staff-only channel: the order number, status, total, item count, payment method, and the customer&#8217;s first name and last initial. No email, address, or line items.</li>\n<li>Stock and basket-activity events, public to your storefront: product names, permalinks, thumbnails, and counts, plus the anonymous basket id of the shopper behind the change, so a shopper&#8217;s own adds and purchases are never announced back to them.</li>\n</ul>\n<p>What the service does see, only because it needs it to route messages: channel names, how many browsers are connected, and each shopper&#8217;s presence, which is a random per-browser id and a keyed hash identifying their basket. None of it is personal, and none of it is reversible.</p>\n<h4>Third-Party Service</h4>\n<p>ShopSocket relies on the <strong>WPSignal service</strong> at api.wpsignal.io, reached through the WordSocket plugin. ShopSocket opens no connection of its own: everything below travels over the connection WordSocket already holds for your site.</p>\n<ul>\n<li><strong>Event publishing</strong>: when an order is placed or changes status, stock changes, or a product is added to a basket, WordSocket sends an HMAC-signed HTTP request to the service with the event described under &#8220;What leaves your site&#8221;.</li>\n<li><strong>Realtime connections</strong>: browsers on your storefront and the staff board connect to the service over WebSocket (or SSE) to receive those events. Shoppers&#8217; browsers also announce their presence on the site, which is how the board tells a live basket from an abandoned one.</li>\n<li><strong>Connection count</strong>: the board asks the service how many browsers are connected to your site right now.</li>\n</ul>\n<p>Events are relayed in realtime and are <strong>not stored</strong> on the service. Event contents are AES-256-GCM encrypted before they leave WordPress (on HTTPS sites, and on plain HTTP ones with WordSocket 0.25 or later), with a key derived from your site&#8217;s own WordPress salts, so the service relays ciphertext it cannot read. A WPSignal account is required; the free plan is enough to start.</p>\n<ul>\n<li><a href=\"https://wpsignal.io/terms\" rel=\"nofollow ugc\">Terms of Service</a></li>\n<li><a href=\"https://wpsignal.io/privacy\" rel=\"nofollow ugc\">Privacy Policy</a></li>\n</ul>\n<h4>Source code and build steps</h4>\n<p>ShopSocket is developed in the open. The full, uncompiled source for everything in <code>build/</code>, together with the build tooling, lives at <a href=\"https://github.com/wpsignal/wordsocket-extensions\" rel=\"nofollow ugc\">github.com/wpsignal/wordsocket-extensions</a> under <code>shopsocket/</code>.</p>\n<p>The compiled files in <code>build/</code> are generated from <code>src/</code> with:</p>\n<pre><code>npm install\nnpm run build\n</code></pre>\n<p>That runs <a href=\"https://www.npmjs.com/package/@wordpress/scripts\" rel=\"nofollow ugc\">@wordpress/scripts</a> (webpack) for the board, settings and block bundles, and <code>tsc</code> for the Interactivity API storefront modules. The bundled styles under <code>build/style-*.css</code> are produced by that same build from <a href=\"https://www.npmjs.com/package/@wordpress/components\" rel=\"nofollow ugc\">@wordpress/components</a>, which is GPL-2.0-or-later.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/shopsocket.0.3.2.zip",
+    "upgrade_notice": {
+        "0.3.2": "<p>Fixes a premature translation notice logged with debugging enabled.</p>",
+        "0.3.1": "<p>Fixes a sold-out notice shown to the shopper who bought the last unit.</p>",
+        "0.3.0": "<p>The plugin is listed under WordSocket on the Plugins screen, with WordSocket 0.24 and later.</p>",
+        "0.2.1": "<p>Requires WordSocket 0.23: the visitor id and channel check now come from WordSocket</p>",
+        "0.2.0": "<p>First public release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/shopsocket/assets/screenshot-1.jpg?rev=3711333",
+            "caption": "The Realtime board under Analytics, before the first shopper arrives."
+        },
+        {
+            "src": "https://ps.w.org/shopsocket/assets/screenshot-2.png?rev=3711333",
+            "caption": "The board with a busy store: users online, live and abandoned baskets with their revenue, the products in live baskets, and orders as they are placed."
+        },
+        {
+            "src": "https://ps.w.org/shopsocket/assets/screenshot-3.png?rev=3711333",
+            "caption": "A product page: live stock, how many shoppers hold the product right now, and a toast when someone else adds it."
+        },
+        {
+            "src": "https://ps.w.org/shopsocket/assets/screenshot-4.png?rev=3711333",
+            "caption": "The cart at the moment a held product sells out elsewhere: WooCommerce's own notice appears without a reload, with ShopSocket's alert beside it."
+        },
+        {
+            "src": "https://ps.w.org/shopsocket/assets/screenshot-5.png?rev=3711333",
+            "caption": "The Live Stock block on an ordinary page: availability, units left, and the in-cart count, all live."
+        }
+    ],
+    "tags": {
+        "abandoned-cart": "abandoned cart",
+        "inventory": "inventory",
+        "live-orders": "live orders",
+        "realtime": "realtime",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "0.3.2",
+    "versions": {
+        "0.3.2": "https://downloads.wordpress.org/plugin/shopsocket.0.3.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/shopsocket.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/shopsocket/assets/banner-772x250.png?rev=3711333",
+        "high": "https://ps.w.org/shopsocket/assets/banner-1544x500.png?rev=3711333"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/shopsocket/assets/icon-128x128.png?rev=3711333",
+        "2x": "https://ps.w.org/shopsocket/assets/icon-256x256.png?rev=3711333"
+    },
+    "blocks": {
+        "shopsocket/live-stock": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "shopsocket/live-stock",
+            "version": "0.1.0",
+            "title": "Live Stock",
+            "category": "woocommerce",
+            "icon": "visibility",
+            "description": "A product's availability and how many shoppers hold it, kept live over WordSocket.",
+            "keywords": [
+                "stock",
+                "inventory",
+                "cart",
+                "realtime"
+            ],
+            "textdomain": "shopsocket",
+            "attributes": {
+                "productId": {
+                    "type": "integer",
+                    "default": 0
+                }
+            },
+            "usesContext": [
+                "postId",
+                "postType"
+            ],
+            "supports": {
+                "html": false,
+                "align": false,
+                "spacing": {
+                    "margin": true
+                },
+                "typography": {
+                    "fontSize": true
+                }
+            },
+            "editorScript": "file:./index.js"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
