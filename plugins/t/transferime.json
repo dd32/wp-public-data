@@ -1,0 +1,75 @@
+{
+    "name": "Transferime",
+    "slug": "transferime",
+    "version": "1.1.4",
+    "author": "<a href=\"https://profiles.wordpress.org/sitiosi/\">sitiosi</a>",
+    "author_profile": "https://profiles.wordpress.org/sitiosi/",
+    "contributors": {
+        "sitiosi": {
+            "profile": "https://profiles.wordpress.org/sitiosi/",
+            "avatar": "https://secure.gravatar.com/avatar/0ab17cef6eaf25160a5de2c053fd0b48b81eb2ece6cdc543c0d7907de7e493b4?s=96&d=monsterid&r=g",
+            "display_name": "sitiosi"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.2",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/transferime/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-24 19:06:00",
+    "added": "2026-09-24",
+    "homepage": "https://transferime.net/woocommerce-transferencia",
+    "sections": {
+        "description": "<p>This plugin adds &#8220;Transferime&#8221; as a payment method in the WooCommerce checkout.</p>\n<p>How it works for the buyer:</p>\n<ol>\n<li>They choose &#8220;Bank transfer&#8221; (or whatever title you set) and confirm the order.</li>\n<li>They&#8217;re redirected to a Transferime screen showing the alias/CVU/QR code to transfer to.</li>\n<li>As soon as Mercado Pago detects the transfer, Transferime confirms the payment automatically and sends the buyer back to your store&#8217;s &#8220;order received&#8221; page.</li>\n</ol>\n<p>You never handle bank details by hand, and you never have to manually check your account statement to confirm a transfer — Transferime takes care of that.</p>\n<h4>Requirements</h4>\n<ul>\n<li>An active account at https://transferime.net, with your Mercado Pago account connected and fully set up (Alias, CVU, CUIT).</li>\n<li>A Transferime plan with integrations enabled (&#8220;API / webhooks&#8221;).</li>\n<li>An API key generated from Transferime <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Integrations.</li>\n<li>Your store must invoice in ARS — the gateway automatically hides itself from checkout if the store currency is anything else.</li>\n</ul>\n<h4>External service used by this plugin</h4>\n<p>This plugin is an integration with <a href=\"https://transferime.net\" rel=\"nofollow ugc\">Transferime</a>, a paid service that runs outside your site. For it to work, your store needs to communicate with Transferime&#8217;s servers — this is not a plugin that processes payments locally.</p>\n<p>What data is sent to Transferime, and when:</p>\n<ul>\n<li><strong>When an order is placed with this payment method</strong>, the following is sent: the order concept (order number and your store name), the amount and currency, the buyer&#8217;s billing name and email (or phone), the order number, and the order&#8217;s edit URL in your wp-admin.</li>\n<li><strong>When the transfer is confirmed</strong>, Transferime calls back to your store (to a dedicated WooCommerce URL, signed with HMAC-SHA256) to report that the order was paid, expired, or cancelled. Nothing else is sent beyond that.</li>\n<li>Communication always happens server-to-server, using the WordPress HTTP API (<code>wp_remote_post</code>/<code>wp_remote_get</code>) — never via third-party scripts loaded at checkout, nor iframes.</li>\n<li>No data is sent while the gateway is disabled or has no API key configured — the plugin makes no calls to Transferime until you activate it and set it up with your own key.</li>\n</ul>\n<p>You can read Transferime&#8217;s <a href=\"https://transferime.net/terminos\" rel=\"nofollow ugc\">Terms of Use</a> and <a href=\"https://transferime.net/privacidad\" rel=\"nofollow ugc\">Privacy Policy</a> before activating it.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>transferime</code> folder to <code>wp-content/plugins/</code> (or install the .zip from Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin).</li>\n<li>Activate it from the Plugins screen.</li>\n<li>Go to WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Payments <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Transferime.</li>\n<li>Paste your API key (generated at transferime.net <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Integrations <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Create key).</li>\n<li>Enable the gateway and save.</li>\n<li>Do a full end-to-end test purchase before going live.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"what%20happens%20if%20the%20buyer%20doesn%27t%20transfer%20in%20time%3F\">\nWhat happens if the buyer doesn&#8217;t transfer in time?\n</h4>\n<p>\n<p>The order stays &#8220;On hold&#8221; until the configured deadline is reached (60 minutes by default). After that, Transferime notifies the plugin and the order is automatically moved to &#8220;Cancelled&#8221; — it never stays stuck forever.</p>\n</p>\n<dt id=\"can%20the%20plugin%20process%20automatic%20refunds%3F\">\nCan the plugin process automatic refunds?\n</h4>\n<p>\n<p>No. Transferime never holds funds — money goes directly from your customer to your Mercado Pago account. A refund has to be done by you manually (a transfer back) and marked manually in WooCommerce.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20currencies%20other%20than%20ars%3F\">\nDoes it work with currencies other than ARS?\n</h4>\n<p>\n<p>No. Transferime is a service for the Argentine market. The gateway doesn&#8217;t appear at checkout if the store doesn&#8217;t invoice in ARS.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.4</h4>\n<ul>\n<li>Renamed the gateway class from WC_Gateway_Transferime to Transferime_Gateway, matching the plugin&#8217;s own prefix used everywhere else (was flagged by the WordPress.org Plugin Check tool for not being prefixed).</li>\n<li>Minor: silenced a false-positive nonce-verification warning on a read-only admin screen check.</li>\n</ul>\n<h4>1.1.3</h4>\n<ul>\n<li>Admin notices (missing API key, missing WooCommerce) are now scoped to the specific screens where they&#8217;re actionable, instead of showing on every wp-admin page.</li>\n</ul>\n<h4>1.1.2</h4>\n<ul>\n<li>The gateway now sends the order&#8217;s edit URL (get_edit_order_url()) to Transferime when creating each charge — enables a &#8220;View order&#8221; button in the Transferime dashboard that opens the order directly in your wp-admin. Works with both HPOS and legacy order storage. No changes to checkout or payment confirmation behavior.</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>The gateway now sends an origin identifier (&#8216;woocommerce&#8217;) to Transferime when creating each charge — lets the Transferime dashboard correctly tell apart an order from this store from a charge with a custom form (previously both looked the same). No changes to checkout behavior.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>The gateway now respects the seller&#8217;s monthly Transferime plan quota. If the seller reaches their limit, Transferime stops appearing as a payment method at checkout (a lightweight, cached check against GET /api/v1/capacidad), and if a payment is still attempted (race condition), the plugin shows a friendly, neutral message instead of breaking checkout — the buyer is never told &#8220;the seller exceeded their plan limit&#8221;. Orders already created before the quota ran out keep confirming normally via webhook, with no change.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release: checkout with redirect to Transferime, signed webhook (HMAC-SHA256) to confirm/expire/cancel orders, idempotency by order number.</li>\n</ul>\n"
+    },
+    "short_description": "Accept bank transfer payments with automatic confirmation via Mercado Pago, powered by Transferime.",
+    "description": "<p>This plugin adds &#8220;Transferime&#8221; as a payment method in the WooCommerce checkout.</p>\n<p>How it works for the buyer:</p>\n<ol>\n<li>They choose &#8220;Bank transfer&#8221; (or whatever title you set) and confirm the order.</li>\n<li>They&#8217;re redirected to a Transferime screen showing the alias/CVU/QR code to transfer to.</li>\n<li>As soon as Mercado Pago detects the transfer, Transferime confirms the payment automatically and sends the buyer back to your store&#8217;s &#8220;order received&#8221; page.</li>\n</ol>\n<p>You never handle bank details by hand, and you never have to manually check your account statement to confirm a transfer — Transferime takes care of that.</p>\n<h4>Requirements</h4>\n<ul>\n<li>An active account at https://transferime.net, with your Mercado Pago account connected and fully set up (Alias, CVU, CUIT).</li>\n<li>A Transferime plan with integrations enabled (&#8220;API / webhooks&#8221;).</li>\n<li>An API key generated from Transferime <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Integrations.</li>\n<li>Your store must invoice in ARS — the gateway automatically hides itself from checkout if the store currency is anything else.</li>\n</ul>\n<h4>External service used by this plugin</h4>\n<p>This plugin is an integration with <a href=\"https://transferime.net\" rel=\"nofollow ugc\">Transferime</a>, a paid service that runs outside your site. For it to work, your store needs to communicate with Transferime&#8217;s servers — this is not a plugin that processes payments locally.</p>\n<p>What data is sent to Transferime, and when:</p>\n<ul>\n<li><strong>When an order is placed with this payment method</strong>, the following is sent: the order concept (order number and your store name), the amount and currency, the buyer&#8217;s billing name and email (or phone), the order number, and the order&#8217;s edit URL in your wp-admin.</li>\n<li><strong>When the transfer is confirmed</strong>, Transferime calls back to your store (to a dedicated WooCommerce URL, signed with HMAC-SHA256) to report that the order was paid, expired, or cancelled. Nothing else is sent beyond that.</li>\n<li>Communication always happens server-to-server, using the WordPress HTTP API (<code>wp_remote_post</code>/<code>wp_remote_get</code>) — never via third-party scripts loaded at checkout, nor iframes.</li>\n<li>No data is sent while the gateway is disabled or has no API key configured — the plugin makes no calls to Transferime until you activate it and set it up with your own key.</li>\n</ul>\n<p>You can read Transferime&#8217;s <a href=\"https://transferime.net/terminos\" rel=\"nofollow ugc\">Terms of Use</a> and <a href=\"https://transferime.net/privacidad\" rel=\"nofollow ugc\">Privacy Policy</a> before activating it.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/transferime.1.1.4.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "argentina": "Argentina",
+        "bank-transfer": "bank transfer",
+        "mercado-pago": "mercado pago",
+        "payment-gateway": "payment gateway",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.1.4",
+    "versions": {
+        "1.1.4": "https://downloads.wordpress.org/plugin/transferime.1.1.4.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/transferime.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/transferime.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

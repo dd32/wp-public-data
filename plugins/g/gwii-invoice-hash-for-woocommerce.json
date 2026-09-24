@@ -1,0 +1,80 @@
+{
+    "name": "Gwii Invoice Hash for WooCommerce",
+    "slug": "gwii-invoice-hash-for-woocommerce",
+    "version": "1.1.1",
+    "author": "<a href=\"https://profiles.wordpress.org/gwii/\">gwii</a>",
+    "author_profile": "https://profiles.wordpress.org/gwii/",
+    "contributors": {
+        "gwii": {
+            "profile": "https://profiles.wordpress.org/gwii/",
+            "avatar": "https://secure.gravatar.com/avatar/0448c727ead68d65458e4d265b5b437de7bb3d0f1c167cadf9552ff9a5d21327?s=96&d=monsterid&r=g",
+            "display_name": "gwii"
+        }
+    },
+    "requires": "5.8",
+    "tested": "7.1.2",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/gwii-invoice-hash-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-24 18:43:00",
+    "added": "2026-09-24",
+    "homepage": "https://gwi1i.github.io/verifactu/",
+    "sections": {
+        "description": "<p><strong>Gwii Invoice Hash for WooCommerce</strong> is a small utility for Spanish online shops. When an order is completed it computes, inside your own WordPress server, the SHA-256 chained invoice hash (&#8220;huella&#8221;) and the QR verification URL of the Spanish Tax Agency (AEAT), following the AEAT technical document v0.1.2 and chapter VIII of Orden HAC/1177/2024 (the &#8220;VeriFactu&#8221; invoicing regulation).</p>\n<p>This plugin is developed independently by an individual developer. It is not affiliated with, endorsed by or certified by the Agencia Estatal de Administración Tributaria (AEAT), Automattic or WooCommerce. &#8220;VeriFactu&#8221; refers to the AEAT regulation the plugin implements; &#8220;WooCommerce&#8221; refers to the e-commerce plugin it extends.</p>\n<h3>What it does</h3>\n<ul>\n<li><strong>SHA-256 chained hash</strong> built from the 8-field canonical string defined in the specification. The calculation matches the three official test vectors published by the AEAT.</li>\n<li><strong>Sequential invoice numbering</strong>, independent from the WooCommerce order ID.</li>\n<li><strong>Database lock</strong> (MySQL <code>GET_LOCK</code>, or an atomic row lock on SQLite) so that two orders completed at the same time cannot break the chain.</li>\n<li><strong>Timestamps in the WordPress time zone</strong> (+01:00 / +02:00 in Spain).</li>\n<li><strong>Cancellation record</strong> chained to the previous hash when a registered order is cancelled or fully refunded.</li>\n<li><strong>QR verification URL</strong> with the four official parameters: <code>nif</code>, <code>numserie</code>, <code>fecha</code> and <code>importe</code>.</li>\n<li><strong>HPOS compatible</strong> and integrates with WooCommerce PDF Invoices &amp; Packing Slips (adds text rows with the invoice number, hash and URL).</li>\n<li><strong>No external services:</strong> no API keys, no data sent to third parties.</li>\n</ul>\n<h3>What it does NOT do</h3>\n<ul>\n<li>It does not generate or sign the XML invoice record.</li>\n<li>It does not submit records to the AEAT.</li>\n<li>It does not keep the event log nor provide the manufacturer&#8217;s responsible declaration required by RD 1007/2023.</li>\n<li>It does not handle partial refunds (corrective invoices).</li>\n<li>It does not embed the QR image in the PDF (only the URL and the hash as text).</li>\n</ul>\n<p>On its own it does not turn a shop into an invoicing system compliant with RD 1007/2023. It is a calculation building block you can use as a base or to verify another implementation.</p>\n<p>The admin interface is currently in Spanish, as the regulation only applies to businesses in Spain.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>gwii-invoice-hash-for-woocommerce</code> folder to <code>/wp-content/plugins/</code>, or upload the <code>.zip</code> from <strong>Plugins &gt; Add New &gt; Upload Plugin</strong>.</li>\n<li>Activate the plugin. WooCommerce must be installed and active.</li>\n<li>Go to <strong>WooCommerce &gt; Huella VeriFactu</strong>.</li>\n<li>Enter the issuer tax ID (NIF, checked with its control digit), the invoice series prefix and the default invoice type, then save.</li>\n<li>Every order that changes to <strong>Completed</strong> will get its invoice number, chained hash and QR URL, stored as order meta and shown in the order edit screen.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20plugin%20make%20my%20shop%20compliant%20with%20orden%20hac%2F1177%2F2024%3F\">\nDoes this plugin make my shop compliant with Orden HAC/1177/2024?\n</h4>\n<p>\n<p>No. It implements the hash calculation and the QR URL exactly as defined by the regulation, and the calculation is checked against the official AEAT test vectors. But the regulation also requires generating the XML record, signing it or submitting it to the AEAT, keeping an event log and having a responsible declaration from the software manufacturer. None of that is done by this plugin.</p>\n</p>\n<dt id=\"when%20is%20the%20hash%20generated%3F\">\nWhen is the hash generated?\n</h4>\n<p>\n<p>When the order changes to the Completed status. The invoice date and the timestamp are taken at that moment, in the time zone configured in WordPress.</p>\n</p>\n<dt id=\"what%20happens%20if%20i%20cancel%20or%20refund%20a%20registered%20order%3F\">\nWhat happens if I cancel or refund a registered order?\n</h4>\n<p>\n<p>A chained cancellation record is generated and stored in the order. Partial refunds do not generate any record.</p>\n</p>\n<dt id=\"is%20it%20compatible%20with%20pdf%20invoice%20plugins%3F\">\nIs it compatible with PDF invoice plugins?\n</h4>\n<p>\n<p>Yes. The data is stored as order meta (<code>_verifactu_num_serie</code>, <code>_verifactu_hash</code>, <code>_verifactu_qr_url</code>, among others) and is automatically added as text rows in WooCommerce PDF Invoices &amp; Packing Slips.</p>\n</p>\n<dt id=\"i%20was%20using%20version%201.0.x%20under%20the%20previous%20name.%20will%20my%20chain%20continue%3F\">\nI was using version 1.0.x under the previous name. Will my chain continue?\n</h4>\n<p>\n<p>Yes. On activation the plugin copies the settings and the last hash saved by version 1.0.x, so the chain continues without gaps.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.1</h4>\n<ul>\n<li>Fixed: no hash was generated on sites whose database does not support GET_LOCK (SQLite, including WordPress Playground). The plugin now falls back to an atomic row lock in the options table.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Renamed to Gwii Invoice Hash for WooCommerce. Option names now use the <code>gwiih_</code> prefix; previous settings and the last hash are migrated automatically.</li>\n<li>Fixed the QR URL: it now uses https://www2.agenciatributaria.gob.es/wlpl/TIKE-CONT/ValidarQR with the <code>nif</code>, <code>numserie</code>, <code>fecha</code> and <code>importe</code> parameters.</li>\n<li>Timestamps use the WordPress time zone instead of UTC.</li>\n<li>Database lock (GET_LOCK) protects the hash chain against concurrent orders.</li>\n<li>Sequential invoice numbering independent from the order ID.</li>\n<li>Cancellation record when a registered order is cancelled or fully refunded.</li>\n<li>Tax ID control digit is validated when saving settings.</li>\n<li>Fixed the order meta box when HPOS is enabled.</li>\n<li>Added the <code>Requires Plugins: woocommerce</code> header.</li>\n<li>Rewritten descriptions: the plugin no longer presents itself as a complete compliance solution.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Computes the SHA-256 chained invoice hash and the AEAT QR verification URL (Spanish VeriFactu format) for each completed WooCommerce order.",
+    "description": "<p><strong>Gwii Invoice Hash for WooCommerce</strong> is a small utility for Spanish online shops. When an order is completed it computes, inside your own WordPress server, the SHA-256 chained invoice hash (&#8220;huella&#8221;) and the QR verification URL of the Spanish Tax Agency (AEAT), following the AEAT technical document v0.1.2 and chapter VIII of Orden HAC/1177/2024 (the &#8220;VeriFactu&#8221; invoicing regulation).</p>\n<p>This plugin is developed independently by an individual developer. It is not affiliated with, endorsed by or certified by the Agencia Estatal de Administración Tributaria (AEAT), Automattic or WooCommerce. &#8220;VeriFactu&#8221; refers to the AEAT regulation the plugin implements; &#8220;WooCommerce&#8221; refers to the e-commerce plugin it extends.</p>\n<h3>What it does</h3>\n<ul>\n<li><strong>SHA-256 chained hash</strong> built from the 8-field canonical string defined in the specification. The calculation matches the three official test vectors published by the AEAT.</li>\n<li><strong>Sequential invoice numbering</strong>, independent from the WooCommerce order ID.</li>\n<li><strong>Database lock</strong> (MySQL <code>GET_LOCK</code>, or an atomic row lock on SQLite) so that two orders completed at the same time cannot break the chain.</li>\n<li><strong>Timestamps in the WordPress time zone</strong> (+01:00 / +02:00 in Spain).</li>\n<li><strong>Cancellation record</strong> chained to the previous hash when a registered order is cancelled or fully refunded.</li>\n<li><strong>QR verification URL</strong> with the four official parameters: <code>nif</code>, <code>numserie</code>, <code>fecha</code> and <code>importe</code>.</li>\n<li><strong>HPOS compatible</strong> and integrates with WooCommerce PDF Invoices &amp; Packing Slips (adds text rows with the invoice number, hash and URL).</li>\n<li><strong>No external services:</strong> no API keys, no data sent to third parties.</li>\n</ul>\n<h3>What it does NOT do</h3>\n<ul>\n<li>It does not generate or sign the XML invoice record.</li>\n<li>It does not submit records to the AEAT.</li>\n<li>It does not keep the event log nor provide the manufacturer&#8217;s responsible declaration required by RD 1007/2023.</li>\n<li>It does not handle partial refunds (corrective invoices).</li>\n<li>It does not embed the QR image in the PDF (only the URL and the hash as text).</li>\n</ul>\n<p>On its own it does not turn a shop into an invoicing system compliant with RD 1007/2023. It is a calculation building block you can use as a base or to verify another implementation.</p>\n<p>The admin interface is currently in Spanish, as the regulation only applies to businesses in Spain.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/gwii-invoice-hash-for-woocommerce.1.1.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "aeat": "aeat",
+        "hash": "hash",
+        "invoice": "invoice",
+        "verifactu": "verifactu",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.1.1",
+    "versions": {
+        "1.1.0": "https://downloads.wordpress.org/plugin/gwii-invoice-hash-for-woocommerce.1.1.0.zip",
+        "1.1.1": "https://downloads.wordpress.org/plugin/gwii-invoice-hash-for-woocommerce.1.1.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/gwii-invoice-hash-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://gwi1i.github.io/verifactu/",
+    "banners": {
+        "low": "https://ps.w.org/gwii-invoice-hash-for-woocommerce/assets/banner-772x250.png?rev=3711853",
+        "high": "https://ps.w.org/gwii-invoice-hash-for-woocommerce/assets/banner-1544x500.png?rev=3711853"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/gwii-invoice-hash-for-woocommerce/assets/icon-128x128.png?rev=3711853",
+        "2x": "https://ps.w.org/gwii-invoice-hash-for-woocommerce/assets/icon-256x256.png?rev=3711853"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
