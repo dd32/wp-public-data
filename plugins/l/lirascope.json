@@ -1,0 +1,427 @@
+{
+    "name": "LiraScope",
+    "slug": "lirascope",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/lirascope/\">lirascope</a>",
+    "author_profile": "https://profiles.wordpress.org/lirascope/",
+    "contributors": {
+        "lirascope": {
+            "profile": "https://profiles.wordpress.org/lirascope/",
+            "avatar": "https://secure.gravatar.com/avatar/ddf4453313ec6c1cd293c5009e98a5aa0b8dfddda8c3d8b0ebbb82887ab9bf58?s=96&d=monsterid&r=g",
+            "display_name": "lirascope"
+        }
+    },
+    "requires": "6.7",
+    "tested": "7.1.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/lirascope/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-25 10:49:00",
+    "added": "2026-09-25",
+    "homepage": "https://lirascope.syria-cloud.sy/en/api-docs",
+    "sections": {
+        "description": "<p>LiraScope adds server-rendered shortcodes and dynamic blocks for Syrian Pound exchange rates. It shows the Central Bank rate and the market rate as separate sources, including the spread between them.</p>\n<p>The plugin works without an API key. Public mode is the default and includes every display in this release. Client mode uses an existing LiraScope API key for metered requests and falls back to public data when enabled. A key adds account routing; it does not unlock plugin code or place a licence restriction on the plugin.</p>\n<p>Included displays:</p>\n<ul>\n<li>One exchange-rate figure, using the consistent sell, then mid, then buy basis.</li>\n<li>A sortable and filterable rates table.</li>\n<li>The official-versus-market gap with widest, narrowest, and current values.</li>\n<li>A currency calculator with current or archived rates.</li>\n<li>Accessible history and multi-currency comparison charts with visible data tables.</li>\n<li>Gold and cryptocurrency tables with history charts.</li>\n<li>Market analysis links and current LiraScope service status.</li>\n<li>Bounded CSV exports streamed through a temporary file.</li>\n<li>An externally hosted image card that refreshes once a minute.</li>\n</ul>\n<p>Two classic widgets provide the single-rate and rates-table displays. Client mode also<br />\nshows plan usage and lets administrators create, edit, test, delete, and rotate webhook<br />\nsecrets. A signing secret is shown only once after creation or rotation.</p>\n<p>All displays show new SYP and can show the old-SYP value multiplied by 100. Arabic, English, German, Turkish, Kurdish Sorani, and Kurdish Kurmanji are included. Arabic and Sorani render right to left.</p>\n<p>No front-end credit link appears unless an administrator enables the clearly labelled attribution setting.</p>\n<p>Source code and development files are available at https://github.com/OMARINO-DE/LiraScope/tree/main/plugins/wordpress/lirascope</p>\n<h4>Shortcodes</h4>\n<ul>\n<li><code>[lirascope_rate currency=\"USD\" source=\"market\"]</code></li>\n<li><code>[lirascope_table currencies=\"USD,EUR,TRY\" source=\"market\"]</code></li>\n<li><code>[lirascope_gap currency=\"USD\" days=\"180\"]</code></li>\n<li><code>[lirascope_widget pair=\"USD\" source=\"market\" size=\"card\" theme=\"auto\"]</code></li>\n<li><code>[lirascope_calculator from=\"USD\" to=\"SYP\" source=\"market\"]</code></li>\n<li><code>[lirascope_chart currency=\"USD\" days=\"30\" mode=\"history\"]</code></li>\n<li><code>[lirascope_chart currencies=\"USD,EUR,TRY\" days=\"30\" mode=\"comparison\"]</code></li>\n<li><code>[lirascope_gold type=\"24K\" days=\"30\"]</code></li>\n<li><code>[lirascope_crypto symbol=\"BTC\" days=\"30\"]</code></li>\n<li><code>[lirascope_analysis take=\"5\"]</code></li>\n<li><code>[lirascope_status]</code></li>\n<li><code>[lirascope_export currency=\"USD\" days=\"30\" kind=\"history\"]</code></li>\n</ul>\n<p>Each shortcode has a matching dynamic block and uses the same PHP renderer.</p>\n<h4>WooCommerce currency feeds</h4>\n<p>When WooCommerce and a supported multi-currency plugin are active, LiraScope supplies the<br />\nSYP rate through FOX/WOOCS, CURCY Custom Finance API, WCML, or Booster. Each adapter follows<br />\nthat plugin&#8217;s documented rate direction. Market mode quotes the store base currency<br />\ndirectly when available and otherwise reconstructs it through the USD cross-rate payload.<br />\nCentral Bank mode supports only USD as the store base because the cross-rate endpoint is<br />\nmarket-derived. Other base currencies are refused and an administrator notice explains why.</p>\n<p>For CURCY, select Custom under Multi Currency &gt; Update &gt; Finance API. The filter is part of<br />\nCURCY&#8217;s paid-plugin documentation and is registered only when CURCY is active.</p>\n<h4>External services</h4>\n<p>LiraScope depends on the LiraScope service operated by OMARINO IT Services at <code>lirascope.syria-cloud.sy</code>.</p>\n<p><strong>Server-side API requests:</strong> On a display render or local REST-proxy request, the plugin contacts the service only when its local cache has no usable response. It sends currency codes and bounded query parameters. In client mode it also sends the configured <code>X-Api-Key</code> and <code>X-Api-Secret</code> headers. The User-Agent contains only <code>LiraScope-WordPress</code> and the plugin version; it does not contain the installing site&#8217;s URL. The service processes the WordPress server&#8217;s IP address for rate limiting. Results are cached for at least five minutes, and stale data is used during temporary upstream errors.</p>\n<p><strong>Embed card:</strong> If a site owner places the Embed Card block or shortcode, each visitor&#8217;s browser requests an image directly from <code>lirascope.syria-cloud.sy</code> once per minute while the page is open. The service receives the visitor&#8217;s IP address and normal <code>Referer</code> or <code>Origin</code>, from which it derives the embedding hostname. It also receives the selected pair, source, and optional embed identifier. The hostname and render counts are retained as daily aggregate statistics. The plugin ships its own refresh script and never downloads executable code from LiraScope.</p>\n<p><strong>Webhook management:</strong> In Client mode, webhook actions send the webhook URL, label, currency, threshold, and alert type entered by an administrator to LiraScope. The service stores this configuration against that API client. Requests occur only when an administrator opens the account panel or explicitly creates, edits, tests, deletes, or rotates a webhook.</p>\n<p>Service terms: https://lirascope.syria-cloud.sy/en/legal/terms</p>\n<p>Service privacy policy: https://lirascope.syria-cloud.sy/en/legal/privacy</p>\n<h4>Privacy</h4>\n<p>The plugin stores an HMAC identifier derived from a visitor IP and a one-minute time window to enforce its local REST-proxy limit. It never stores the raw visitor IP. These counter rows expire within 25 hours. Cached API data contains exchange-rate information, not visitor information.</p>\n<p>The Embed Card is externally hosted media and performs aggregate third-party measurement as described under External services. Do not place that block or shortcode unless the site&#8217;s privacy notice covers this request. The plugin adds precise suggested wording to WordPress&#8217;s Privacy Policy Guide.</p>\n<p>The API key and secret are stored in WordPress options with autoload disabled unless they are supplied as constants in <code>wp-config.php</code>. The secret field is never printed back into the settings page. A blank save keeps it; the separate Remove secret action clears it.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>lirascope</code> folder to <code>/wp-content/plugins/</code>, or install the zip through Plugins &gt; Add New &gt; Upload Plugin.</li>\n<li>Activate LiraScope. Network activation is supported; each site receives its own settings and local counters table.</li>\n<li>Open Settings &gt; LiraScope.</li>\n<li>Keep Public mode for key-free use, or enter an existing LiraScope API key and secret and select Client mode.</li>\n<li>Add a LiraScope block or shortcode to a page.</li>\n</ol>\n<p>No account or API key is required for the plugin&#8217;s display functionality.</p>\n",
+        "faq": "\n<dt id=\"does%20the%20plugin%20require%20an%20api%20key%3F\">\nDoes the plugin require an API key?\n</h4>\n<p>\n<p>No. Public mode is the default and supports every display in this release. Client mode is for sites that already have LiraScope API credentials.</p>\n</p>\n<dt id=\"why%20can%20the%20latest-rate%20cache%20not%20be%20set%20below%20five%20minutes%3F\">\nWhy can the latest-rate cache not be set below five minutes?\n</h4>\n<p>\n<p>The upstream service also caches current rates for five minutes. Faster polling would repeatedly download the same response and could consume shared-hosting rate limits without making the displayed rate newer.</p>\n</p>\n<dt id=\"which%20number%20is%20used%20when%20one%20figure%20represents%20a%20rate%3F\">\nWhich number is used when one figure represents a rate?\n</h4>\n<p>\n<p>The plugin uses sell, then mid when sell is absent, then buy when both are absent. This is the same basis used by the LiraScope website and gap calculation.</p>\n</p>\n<dt id=\"does%20the%20plugin%20send%20my%20site%20address%20in%20its%20user-agent%3F\">\nDoes the plugin send my site address in its User-Agent?\n</h4>\n<p>\n<p>No. The server-side User-Agent contains only the product name and plugin version. An Embed Card image is different: the visitor&#8217;s browser normally sends <code>Referer</code> or <code>Origin</code>, as disclosed above.</p>\n</p>\n<dt id=\"can%20visitors%20use%20a%20paid%20api%20key%20through%20the%20calculator%20or%20export%20links%3F\">\nCan visitors use a paid API key through the calculator or export links?\n</h4>\n<p>\n<p>Only parameter sets registered by a placed block, shortcode, or widget may cause a keyed<br />\ncache miss. Other valid requests use the public API. Site-wide and per-visitor budgets still<br />\napply, and CSV exports are capped at 20 MB.</p>\n</p>\n<dt id=\"can%20i%20remove%20all%20plugin%20data%3F\">\nCan I remove all plugin data?\n</h4>\n<p>\n<p>Yes. Deactivation keeps settings and cache data. Deleting the plugin through WordPress runs its uninstall routine across every multisite site, removes all <code>lirascope_*</code> options and transients, drops the local counters table, and removes temporary files.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial review-ready release with settings, public/client routing, local budgets, eleven shortcodes, eleven dynamic blocks, classic widgets, WooCommerce feeds, streamed exports, client usage and webhook controls, six locales, RTL support, and the REST proxy.</li>\n</ul>\n"
+    },
+    "short_description": "Show Syrian Pound official and market rates side by side, including their gap, in six languages with RTL support.",
+    "description": "<p>LiraScope adds server-rendered shortcodes and dynamic blocks for Syrian Pound exchange rates. It shows the Central Bank rate and the market rate as separate sources, including the spread between them.</p>\n<p>The plugin works without an API key. Public mode is the default and includes every display in this release. Client mode uses an existing LiraScope API key for metered requests and falls back to public data when enabled. A key adds account routing; it does not unlock plugin code or place a licence restriction on the plugin.</p>\n<p>Included displays:</p>\n<ul>\n<li>One exchange-rate figure, using the consistent sell, then mid, then buy basis.</li>\n<li>A sortable and filterable rates table.</li>\n<li>The official-versus-market gap with widest, narrowest, and current values.</li>\n<li>A currency calculator with current or archived rates.</li>\n<li>Accessible history and multi-currency comparison charts with visible data tables.</li>\n<li>Gold and cryptocurrency tables with history charts.</li>\n<li>Market analysis links and current LiraScope service status.</li>\n<li>Bounded CSV exports streamed through a temporary file.</li>\n<li>An externally hosted image card that refreshes once a minute.</li>\n</ul>\n<p>Two classic widgets provide the single-rate and rates-table displays. Client mode also<br />\nshows plan usage and lets administrators create, edit, test, delete, and rotate webhook<br />\nsecrets. A signing secret is shown only once after creation or rotation.</p>\n<p>All displays show new SYP and can show the old-SYP value multiplied by 100. Arabic, English, German, Turkish, Kurdish Sorani, and Kurdish Kurmanji are included. Arabic and Sorani render right to left.</p>\n<p>No front-end credit link appears unless an administrator enables the clearly labelled attribution setting.</p>\n<p>Source code and development files are available at https://github.com/OMARINO-DE/LiraScope/tree/main/plugins/wordpress/lirascope</p>\n<h4>Shortcodes</h4>\n<ul>\n<li><code>[lirascope_rate currency=\"USD\" source=\"market\"]</code></li>\n<li><code>[lirascope_table currencies=\"USD,EUR,TRY\" source=\"market\"]</code></li>\n<li><code>[lirascope_gap currency=\"USD\" days=\"180\"]</code></li>\n<li><code>[lirascope_widget pair=\"USD\" source=\"market\" size=\"card\" theme=\"auto\"]</code></li>\n<li><code>[lirascope_calculator from=\"USD\" to=\"SYP\" source=\"market\"]</code></li>\n<li><code>[lirascope_chart currency=\"USD\" days=\"30\" mode=\"history\"]</code></li>\n<li><code>[lirascope_chart currencies=\"USD,EUR,TRY\" days=\"30\" mode=\"comparison\"]</code></li>\n<li><code>[lirascope_gold type=\"24K\" days=\"30\"]</code></li>\n<li><code>[lirascope_crypto symbol=\"BTC\" days=\"30\"]</code></li>\n<li><code>[lirascope_analysis take=\"5\"]</code></li>\n<li><code>[lirascope_status]</code></li>\n<li><code>[lirascope_export currency=\"USD\" days=\"30\" kind=\"history\"]</code></li>\n</ul>\n<p>Each shortcode has a matching dynamic block and uses the same PHP renderer.</p>\n<h4>WooCommerce currency feeds</h4>\n<p>When WooCommerce and a supported multi-currency plugin are active, LiraScope supplies the<br />\nSYP rate through FOX/WOOCS, CURCY Custom Finance API, WCML, or Booster. Each adapter follows<br />\nthat plugin&#8217;s documented rate direction. Market mode quotes the store base currency<br />\ndirectly when available and otherwise reconstructs it through the USD cross-rate payload.<br />\nCentral Bank mode supports only USD as the store base because the cross-rate endpoint is<br />\nmarket-derived. Other base currencies are refused and an administrator notice explains why.</p>\n<p>For CURCY, select Custom under Multi Currency &gt; Update &gt; Finance API. The filter is part of<br />\nCURCY&#8217;s paid-plugin documentation and is registered only when CURCY is active.</p>\n<h4>External services</h4>\n<p>LiraScope depends on the LiraScope service operated by OMARINO IT Services at <code>lirascope.syria-cloud.sy</code>.</p>\n<p><strong>Server-side API requests:</strong> On a display render or local REST-proxy request, the plugin contacts the service only when its local cache has no usable response. It sends currency codes and bounded query parameters. In client mode it also sends the configured <code>X-Api-Key</code> and <code>X-Api-Secret</code> headers. The User-Agent contains only <code>LiraScope-WordPress</code> and the plugin version; it does not contain the installing site&#8217;s URL. The service processes the WordPress server&#8217;s IP address for rate limiting. Results are cached for at least five minutes, and stale data is used during temporary upstream errors.</p>\n<p><strong>Embed card:</strong> If a site owner places the Embed Card block or shortcode, each visitor&#8217;s browser requests an image directly from <code>lirascope.syria-cloud.sy</code> once per minute while the page is open. The service receives the visitor&#8217;s IP address and normal <code>Referer</code> or <code>Origin</code>, from which it derives the embedding hostname. It also receives the selected pair, source, and optional embed identifier. The hostname and render counts are retained as daily aggregate statistics. The plugin ships its own refresh script and never downloads executable code from LiraScope.</p>\n<p><strong>Webhook management:</strong> In Client mode, webhook actions send the webhook URL, label, currency, threshold, and alert type entered by an administrator to LiraScope. The service stores this configuration against that API client. Requests occur only when an administrator opens the account panel or explicitly creates, edits, tests, deletes, or rotates a webhook.</p>\n<p>Service terms: https://lirascope.syria-cloud.sy/en/legal/terms</p>\n<p>Service privacy policy: https://lirascope.syria-cloud.sy/en/legal/privacy</p>\n<h4>Privacy</h4>\n<p>The plugin stores an HMAC identifier derived from a visitor IP and a one-minute time window to enforce its local REST-proxy limit. It never stores the raw visitor IP. These counter rows expire within 25 hours. Cached API data contains exchange-rate information, not visitor information.</p>\n<p>The Embed Card is externally hosted media and performs aggregate third-party measurement as described under External services. Do not place that block or shortcode unless the site&#8217;s privacy notice covers this request. The plugin adds precise suggested wording to WordPress&#8217;s Privacy Policy Guide.</p>\n<p>The API key and secret are stored in WordPress options with autoload disabled unless they are supplied as constants in <code>wp-config.php</code>. The secret field is never printed back into the settings page. A blank save keeps it; the separate Remove secret action clears it.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/lirascope.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "block": "block",
+        "currency": "currency",
+        "exchange-rates": "exchange rates",
+        "rtl": "rtl",
+        "syrian-pound": "syrian pound"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/lirascope.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/lirascope.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/lirascope/assets/banner-772x250.png?rev=3712890",
+        "high": "https://ps.w.org/lirascope/assets/banner-1544x500.png?rev=3712890"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/lirascope/assets/icon.svg?rev=3712890",
+        "svg": "https://ps.w.org/lirascope/assets/icon.svg?rev=3712890"
+    },
+    "blocks": {
+        "lirascope/status": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "lirascope/status",
+            "version": "1.0.0",
+            "title": "LiraScope Status",
+            "category": "widgets",
+            "icon": "yes-alt",
+            "description": "Current LiraScope service status and component health.",
+            "textdomain": "lirascope",
+            "supports": {
+                "html": false
+            },
+            "editorScript": "file:./index.js",
+            "render": "file:./render.php"
+        },
+        "lirascope/widget": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "lirascope/widget",
+            "version": "1.0.0",
+            "title": "LiraScope Embed Card",
+            "category": "widgets",
+            "icon": "format-image",
+            "description": "An externally hosted LiraScope rate image that refreshes once a minute.",
+            "textdomain": "lirascope",
+            "attributes": {
+                "pair": {
+                    "type": "string",
+                    "default": "USD"
+                },
+                "source": {
+                    "type": "string",
+                    "enum": [
+                        "market",
+                        "cbs",
+                        "gap"
+                    ],
+                    "default": "market"
+                },
+                "size": {
+                    "type": "string",
+                    "enum": [
+                        "card",
+                        "badge"
+                    ],
+                    "default": "card"
+                },
+                "theme": {
+                    "type": "string",
+                    "enum": [
+                        "auto",
+                        "light",
+                        "dark"
+                    ],
+                    "default": "auto"
+                }
+            },
+            "supports": {
+                "html": false
+            },
+            "editorScript": "file:./index.js",
+            "render": "file:./render.php"
+        },
+        "lirascope/crypto": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "lirascope/crypto",
+            "version": "1.0.0",
+            "title": "LiraScope Crypto",
+            "category": "widgets",
+            "icon": "chart-area",
+            "description": "Latest cryptocurrency prices with a historical chart and semantic data table.",
+            "textdomain": "lirascope",
+            "attributes": {
+                "symbol": {
+                    "type": "string",
+                    "default": "BTC"
+                },
+                "days": {
+                    "type": "number",
+                    "default": 30
+                }
+            },
+            "supports": {
+                "html": false
+            },
+            "editorScript": "file:./index.js",
+            "render": "file:./render.php"
+        },
+        "lirascope/table": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "lirascope/table",
+            "version": "1.0.0",
+            "title": "LiraScope Rates Table",
+            "category": "widgets",
+            "icon": "editor-table",
+            "description": "A sortable and filterable exchange-rates table.",
+            "textdomain": "lirascope",
+            "attributes": {
+                "currencies": {
+                    "type": "string",
+                    "default": "USD,EUR,TRY"
+                },
+                "source": {
+                    "type": "string",
+                    "enum": [
+                        "market",
+                        "cbs"
+                    ],
+                    "default": "market"
+                }
+            },
+            "supports": {
+                "html": false
+            },
+            "editorScript": "file:./index.js",
+            "render": "file:./render.php"
+        },
+        "lirascope/gold": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "lirascope/gold",
+            "version": "1.0.0",
+            "title": "LiraScope Gold",
+            "category": "widgets",
+            "icon": "money-alt",
+            "description": "Latest gold prices with a historical chart and semantic data table.",
+            "textdomain": "lirascope",
+            "attributes": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "14K",
+                        "18K",
+                        "21K",
+                        "22K",
+                        "24K",
+                        "OUNCE"
+                    ],
+                    "default": "24K"
+                },
+                "days": {
+                    "type": "number",
+                    "default": 30
+                }
+            },
+            "supports": {
+                "html": false
+            },
+            "editorScript": "file:./index.js",
+            "render": "file:./render.php"
+        },
+        "lirascope/chart": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "lirascope/chart",
+            "version": "1.0.0",
+            "title": "LiraScope Chart",
+            "category": "widgets",
+            "icon": "chart-line",
+            "description": "Accessible history, comparison, or normalized exchange-rate chart.",
+            "textdomain": "lirascope",
+            "attributes": {
+                "mode": {
+                    "type": "string",
+                    "enum": [
+                        "history",
+                        "comparison",
+                        "normalized"
+                    ],
+                    "default": "history"
+                },
+                "currency": {
+                    "type": "string",
+                    "default": "USD"
+                },
+                "currencies": {
+                    "type": "string",
+                    "default": "USD,EUR,TRY"
+                },
+                "days": {
+                    "type": "number",
+                    "default": 30
+                },
+                "source": {
+                    "type": "string",
+                    "enum": [
+                        "market",
+                        "cbs"
+                    ],
+                    "default": "market"
+                }
+            },
+            "supports": {
+                "html": false
+            },
+            "editorScript": "file:./index.js",
+            "render": "file:./render.php"
+        },
+        "lirascope/rate": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "lirascope/rate",
+            "version": "1.0.0",
+            "title": "LiraScope Rate",
+            "category": "widgets",
+            "icon": "chart-line",
+            "description": "One Syrian Pound exchange-rate figure.",
+            "textdomain": "lirascope",
+            "attributes": {
+                "currency": {
+                    "type": "string",
+                    "default": "USD"
+                },
+                "source": {
+                    "type": "string",
+                    "enum": [
+                        "market",
+                        "cbs"
+                    ],
+                    "default": "market"
+                }
+            },
+            "supports": {
+                "html": false
+            },
+            "editorScript": "file:./index.js",
+            "render": "file:./render.php"
+        },
+        "lirascope/export": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "lirascope/export",
+            "version": "1.0.0",
+            "title": "LiraScope Export",
+            "category": "widgets",
+            "icon": "download",
+            "description": "Download current or historical exchange-rate data as CSV.",
+            "textdomain": "lirascope",
+            "attributes": {
+                "kind": {
+                    "type": "string",
+                    "enum": [
+                        "history",
+                        "rates"
+                    ],
+                    "default": "history"
+                },
+                "currency": {
+                    "type": "string",
+                    "default": "USD"
+                },
+                "days": {
+                    "type": "number",
+                    "default": 30
+                }
+            },
+            "supports": {
+                "html": false
+            },
+            "editorScript": "file:./index.js",
+            "render": "file:./render.php"
+        },
+        "lirascope/gap": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "lirascope/gap",
+            "version": "1.0.0",
+            "title": "Official vs Market Gap",
+            "category": "widgets",
+            "icon": "chart-area",
+            "description": "The spread between the official and market Syrian Pound rates.",
+            "textdomain": "lirascope",
+            "attributes": {
+                "currency": {
+                    "type": "string",
+                    "default": "USD"
+                },
+                "days": {
+                    "type": "number",
+                    "default": 180
+                }
+            },
+            "supports": {
+                "html": false
+            },
+            "editorScript": "file:./index.js",
+            "render": "file:./render.php"
+        },
+        "lirascope/analysis": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "lirascope/analysis",
+            "version": "1.0.0",
+            "title": "LiraScope Market Analysis",
+            "category": "widgets",
+            "icon": "media-document",
+            "description": "Recent LiraScope daily market briefs in the selected locale.",
+            "textdomain": "lirascope",
+            "attributes": {
+                "take": {
+                    "type": "number",
+                    "default": 5
+                }
+            },
+            "supports": {
+                "html": false
+            },
+            "editorScript": "file:./index.js",
+            "render": "file:./render.php"
+        },
+        "lirascope/calculator": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "lirascope/calculator",
+            "version": "1.0.0",
+            "title": "LiraScope Converter",
+            "category": "widgets",
+            "icon": "randomize",
+            "description": "Convert currencies using today’s rate or a historical closing rate.",
+            "textdomain": "lirascope",
+            "attributes": {
+                "from": {
+                    "type": "string",
+                    "default": "USD"
+                },
+                "to": {
+                    "type": "string",
+                    "default": "SYP"
+                },
+                "source": {
+                    "type": "string",
+                    "enum": [
+                        "market",
+                        "cbs"
+                    ],
+                    "default": "market"
+                }
+            },
+            "supports": {
+                "html": false
+            },
+            "editorScript": "file:./index.js",
+            "render": "file:./render.php"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
