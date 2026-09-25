@@ -1,0 +1,100 @@
+{
+    "name": "SazCOD – COD Order Confirmation for WooCommerce",
+    "slug": "sazcod-order-confirmation-for-woocommerce",
+    "version": "1.0.2",
+    "author": "<a href=\"https://profiles.wordpress.org/alexsazonov/\">alexsazonov</a>",
+    "author_profile": "https://profiles.wordpress.org/alexsazonov/",
+    "contributors": {
+        "alexsazonov": {
+            "profile": "https://profiles.wordpress.org/alexsazonov/",
+            "avatar": "https://secure.gravatar.com/avatar/cf8399a0058e1f096dc5170c778435375d02825c53b2b6d683d8e3bfd63fc128?s=96&d=monsterid&r=g",
+            "display_name": "alexsazonov"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1.2",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/sazcod-order-confirmation-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-25 17:30:00",
+    "added": "2026-09-25",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Cash on Delivery (COD) is essential for e-commerce growth in many regions, but fraudulent orders, impulsive checkouts, and wrong delivery addresses cost merchants substantial fulfillment and return shipping fees.</p>\n<p><strong>SazCOD – COD Order Confirmation for WooCommerce</strong> is a lightweight, 100% self-hosted plugin that automatically intercepts COD orders containing physical goods and places them into a custom status: <strong>Awaiting Confirmation</strong>.</p>\n<p>The buyer receives an actionable confirmation block in their order email. Clicking the link takes the customer to a secure verification screen where they explicitly confirm their order. Once confirmed, the order instantly transitions to <strong>Processing</strong> so your warehouse can safely begin packing.</p>\n<h3>Key Features</h3>\n<ul>\n<li><strong>Zero External Dependencies</strong>: 100% self-hosted. No external APIs, SMS gateways, or recurring subscriptions.</li>\n<li><strong>WooCommerce HPOS Compatible</strong>: Fully compatible with High-Performance Order Storage (<code>custom_order_tables</code>).</li>\n<li><strong>Block Checkout &amp; Classic Checkout Support</strong>: Intercepts COD orders across both WooCommerce Checkout Block (Store API) and classic shortcode checkouts.</li>\n<li><strong>Smart Physical Goods Detection</strong>: Only intercepts orders requiring physical shipping; virtual and digital orders pass through normally.</li>\n<li><strong>Hardened Token Security Architecture</strong>:\n<ul>\n<li>Cryptographically random, SHA-256 hashed tokens bound to the unique order.</li>\n<li>Encrypted at rest using AEAD AES-256-GCM with order-bound additional authenticated data (<code>v1:{order_id}</code>).</li>\n<li>Strict anti-cache headers (<code>Cache-Control: no-store, no-cache</code>) to prevent intermediate caching of confirmation screens.</li>\n<li>Synchronized 48-hour WordPress nonce lifetime matching the token TTL.</li>\n<li>Pre-commit business guards verifying COD payment method, awaiting-confirm status, and token hash.</li>\n<li>Sequential token revocation and native WooCommerce order state machine transitions to eliminate double-confirmation races.</li>\n<li>Post/Redirect/Get (PRG) flow with single-use opaque result tokens to eliminate order status enumeration.</li>\n<li>Strict Content Security Policy (<code>default-src 'none'</code>), Referrer-Policy, and anti-tampering checks.</li>\n</ul>\n</li>\n<li><strong>Responsive, Clean UI</strong>: Mobile-friendly confirmation screen rendered using native styles without heavy frontend libraries.</li>\n</ul>\n<h3>Privacy Policy</h3>\n<p>The plugin does not transmit customer order data to external services or third-party servers. It stores only confirmation-related metadata (<code>_qcoc_confirmed_at</code>) in the local WooCommerce order. Customer information displayed on the self-hosted confirmation screen is retrieved directly from the merchant&#8217;s local WordPress database.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/sazcod-order-confirmation-for-woocommerce</code> directory, or install the plugin directly through the WordPress plugins screen.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; screen in WordPress.</li>\n<li>Ensure Cash on Delivery (COD) is enabled in <strong>WooCommerce &gt; Settings &gt; Payments</strong>.</li>\n<li>Test with a physical product checkout using Cash on Delivery.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20plugin%20require%20an%20external%20service%20or%20api%20key%3F\">\nDoes this plugin require an external service or API key?\n</h4>\n<p>\n<p>No. The plugin is 100% self-hosted on your WordPress server. No third-party accounts, APIs, or ongoing fees are required.</p>\n</p>\n<dt id=\"what%20happens%20to%20virtual%20or%20downloadable%20orders%3F\">\nWhat happens to virtual or downloadable orders?\n</h4>\n<p>\n<p>Orders containing only virtual or downloadable items bypass the confirmation flow automatically and proceed to standard processing.</p>\n</p>\n<dt id=\"how%20long%20is%20a%20confirmation%20link%20valid%3F\">\nHow long is a confirmation link valid?\n</h4>\n<p>\n<p>By default, confirmation tokens remain valid for 48 hours.</p>\n</p>\n<dt id=\"does%20it%20support%20woocommerce%20high-performance%20order%20storage%20%28hpos%29%3F\">\nDoes it support WooCommerce High-Performance Order Storage (HPOS)?\n</h4>\n<p>\n<p>Yes, HPOS compatibility is declared and fully supported.</p>\n</p>\n<dt id=\"what%20happens%20if%20i%20rotate%20the%20wordpress%20security%20keys%20%28auth_key%20%2F%20auth_salt%29%3F\">\nWhat happens if I rotate the WordPress security keys (AUTH_KEY / AUTH_SALT)?\n</h4>\n<p>\n<p>Since unconfirmed order tokens are encrypted at rest using keys derived from your WordPress secret salts, rotating AUTH_KEY or AUTH_SALT in wp-config.php will invalidate existing pending confirmation links. Newly placed orders after key rotation will work normally.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.2</h4>\n<ul>\n<li>Added strict anti-cache headers (<code>Cache-Control: no-store, no-cache, must-revalidate</code>) on confirmation preview and result screens.</li>\n<li>Registered custom order status as non-public (<code>public =&gt; false</code>, <code>exclude_from_search =&gt; true</code>).</li>\n<li>Implemented immediate pre-commit business guards verifying COD payment method, status, and active token hash.</li>\n<li>Synchronized WordPress nonce lifetime to 48 hours for confirmation actions to prevent premature session expiry.</li>\n<li>Scoped plain-text email confirmation links with the customer email ID whitelist.</li>\n<li>Added explicit operator order note when token generation fails.</li>\n<li>Bundled official WordPress.org screenshot assets into release archive.</li>\n<li>Documented dual-layer cryptographic threat model in source code.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Hardened token encryption using AEAD AES-256-GCM with order-bound additional authenticated data.</li>\n<li>Implemented database-backed lock with owner tokens and pre-commit fencing.</li>\n<li>Added single-use opaque result tokens to PRG flow to prevent result status enumeration.</li>\n<li>Added Store API checkout interception hook for WooCommerce Checkout Block compatibility.</li>\n<li>Corrected physical product shipping check for mixed carts.</li>\n<li>Scoped customer email notifications with dedicated ID whitelist and rel=&#8221;noopener noreferrer&#8221;.</li>\n<li>Standardized clean POT localization template without fuzzy flags.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Reduce fake Cash on Delivery orders. Holds COD orders in Awaiting Confirmation until the buyer verifies via a secure 1-click confirmation link.",
+    "description": "<p>Cash on Delivery (COD) is essential for e-commerce growth in many regions, but fraudulent orders, impulsive checkouts, and wrong delivery addresses cost merchants substantial fulfillment and return shipping fees.</p>\n<p><strong>SazCOD – COD Order Confirmation for WooCommerce</strong> is a lightweight, 100% self-hosted plugin that automatically intercepts COD orders containing physical goods and places them into a custom status: <strong>Awaiting Confirmation</strong>.</p>\n<p>The buyer receives an actionable confirmation block in their order email. Clicking the link takes the customer to a secure verification screen where they explicitly confirm their order. Once confirmed, the order instantly transitions to <strong>Processing</strong> so your warehouse can safely begin packing.</p>\n<h3>Key Features</h3>\n<ul>\n<li><strong>Zero External Dependencies</strong>: 100% self-hosted. No external APIs, SMS gateways, or recurring subscriptions.</li>\n<li><strong>WooCommerce HPOS Compatible</strong>: Fully compatible with High-Performance Order Storage (<code>custom_order_tables</code>).</li>\n<li><strong>Block Checkout &amp; Classic Checkout Support</strong>: Intercepts COD orders across both WooCommerce Checkout Block (Store API) and classic shortcode checkouts.</li>\n<li><strong>Smart Physical Goods Detection</strong>: Only intercepts orders requiring physical shipping; virtual and digital orders pass through normally.</li>\n<li><strong>Hardened Token Security Architecture</strong>:\n<ul>\n<li>Cryptographically random, SHA-256 hashed tokens bound to the unique order.</li>\n<li>Encrypted at rest using AEAD AES-256-GCM with order-bound additional authenticated data (<code>v1:{order_id}</code>).</li>\n<li>Strict anti-cache headers (<code>Cache-Control: no-store, no-cache</code>) to prevent intermediate caching of confirmation screens.</li>\n<li>Synchronized 48-hour WordPress nonce lifetime matching the token TTL.</li>\n<li>Pre-commit business guards verifying COD payment method, awaiting-confirm status, and token hash.</li>\n<li>Sequential token revocation and native WooCommerce order state machine transitions to eliminate double-confirmation races.</li>\n<li>Post/Redirect/Get (PRG) flow with single-use opaque result tokens to eliminate order status enumeration.</li>\n<li>Strict Content Security Policy (<code>default-src 'none'</code>), Referrer-Policy, and anti-tampering checks.</li>\n</ul>\n</li>\n<li><strong>Responsive, Clean UI</strong>: Mobile-friendly confirmation screen rendered using native styles without heavy frontend libraries.</li>\n</ul>\n<h3>Privacy Policy</h3>\n<p>The plugin does not transmit customer order data to external services or third-party servers. It stores only confirmation-related metadata (<code>_qcoc_confirmed_at</code>) in the local WooCommerce order. Customer information displayed on the self-hosted confirmation screen is retrieved directly from the merchant&#8217;s local WordPress database.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/sazcod-order-confirmation-for-woocommerce.1.0.2.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/sazcod-order-confirmation-for-woocommerce/assets/screenshot-1.png?rev=3713381",
+            "caption": "Cash on Delivery confirmation banner on the Order Received page."
+        },
+        {
+            "src": "https://ps.w.org/sazcod-order-confirmation-for-woocommerce/assets/screenshot-2.png?rev=3713381",
+            "caption": "Dedicated secure customer confirmation screen."
+        },
+        {
+            "src": "https://ps.w.org/sazcod-order-confirmation-for-woocommerce/assets/screenshot-3.png?rev=3713381",
+            "caption": "Confirmation success screen with single-use opaque result token."
+        },
+        {
+            "src": "https://ps.w.org/sazcod-order-confirmation-for-woocommerce/assets/screenshot-4.png?rev=3713381",
+            "caption": "Real-time order status transition to Processing in WooCommerce admin."
+        },
+        {
+            "src": "https://ps.w.org/sazcod-order-confirmation-for-woocommerce/assets/screenshot-5.png?rev=3713381",
+            "caption": "Chronological order audit trail in WooCommerce order notes."
+        }
+    ],
+    "tags": {
+        "cash-on-delivery": "cash on delivery",
+        "cod": "cod",
+        "fake-order-protection": "fake order protection",
+        "order-confirmation": "order confirmation",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.2",
+    "versions": {
+        "1.0.2": "https://downloads.wordpress.org/plugin/sazcod-order-confirmation-for-woocommerce.1.0.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/sazcod-order-confirmation-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/sazcod-order-confirmation-for-woocommerce/assets/banner-772x250.png?rev=3713381",
+        "high": "https://ps.w.org/sazcod-order-confirmation-for-woocommerce/assets/banner-1544x500.png?rev=3713381"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/sazcod-order-confirmation-for-woocommerce/assets/icon-128x128.png?rev=3713381",
+        "2x": "https://ps.w.org/sazcod-order-confirmation-for-woocommerce/assets/icon-256x256.png?rev=3713381"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
