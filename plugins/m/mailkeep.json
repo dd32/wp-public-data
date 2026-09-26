@@ -1,0 +1,77 @@
+{
+    "name": "Mailkeep",
+    "slug": "mailkeep",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/emily50/\">MD. Samrat Hossen</a>",
+    "author_profile": "https://profiles.wordpress.org/emily50/",
+    "contributors": {
+        "emily50": {
+            "profile": "https://profiles.wordpress.org/emily50/",
+            "avatar": "https://secure.gravatar.com/avatar/96584323a4594e8874e47b0ffbc4f1eb2cbc5cacd0697e2121c9e2f62d5f437e?s=96&d=monsterid&r=g",
+            "display_name": "MD. Samrat Hossen"
+        }
+    },
+    "requires": "5.8",
+    "tested": "7.1.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/mailkeep/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-26 15:44:00",
+    "added": "2026-09-26",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Mailkeep is a lightweight logging tool for one of the most invisible parts of a WordPress site: outgoing email. Every time WordPress, a plugin or a theme calls <code>wp_mail()</code> — a password reset, a new-order notification, a contact form submission, an admin alert — Mailkeep records it to a dedicated database table, independent of whatever SMTP or mail-sending service actually delivers it.</p>\n<p>This makes it easy to answer questions that are otherwise hard to check: Did that notification actually get sent? What did the email say? Who received it, and when? You don&#8217;t need to reproduce the problem or dig through server mail logs — the answer is in your dashboard.</p>\n<p>Because it hooks into <code>wp_mail()</code> itself rather than any particular plugin, Mailkeep works the same way regardless of what generates the email — core, WooCommerce, a contact form, a membership plugin, or custom code.</p>\n<h4>How it works</h4>\n<ul>\n<li>Every outgoing email is written to its own table (<code>wp_mailkeep_logs</code>), recording the recipient, subject, message body, headers, attachments list and content type.</li>\n<li>The <strong>Mails</strong> admin screen lists every logged email with search, pagination and a modal preview of the full content.</li>\n<li>A background daily task removes logs older than your configured retention period, so the table doesn&#8217;t grow forever.</li>\n<li>Logging can be paused at any time from Settings without deactivating the plugin.</li>\n</ul>\n<h4>Built-in privacy protections</h4>\n<p>Mail bodies routinely contain sensitive one-click links — password resets, order-pay links, login tokens. Storing those in plain text would turn the log table into a security liability. Mailkeep redacts known sensitive query parameters (<code>key</code>, <code>token</code>, <code>password</code>, <code>otp</code>, <code>order_key</code>, and more, filterable via <code>mailkeep_sensitive_keys</code>) before anything is written to the database, and this is <strong>on by default</strong>.</p>\n<p>If you&#8217;d rather not store message content at all, you can disable body logging entirely and keep only the recipient, subject and timestamp. Mailkeep also registers with WordPress&#8217;s built-in personal data export and erasure tools, so logged mail is included when you process a privacy request.</p>\n<h4>Features</h4>\n<ul>\n<li><strong>Full email capture</strong> — recipient, subject, headers, message body, attachments and content type.</li>\n<li><strong>Sensitive link redaction</strong> — enabled by default; configurable via a settings toggle and a filter.</li>\n<li><strong>Search</strong> — find logged mail by recipient or subject.</li>\n<li><strong>Content preview</strong> — view the full rendered email in a modal, without leaving the log list.</li>\n<li><strong>Auto-cleanup</strong> — a daily scheduled task removes logs past your chosen retention window.</li>\n<li><strong>Global on/off switch</strong> — pause logging without deactivating the plugin.</li>\n<li><strong>Privacy-request ready</strong> — integrates with <code>wp_privacy_personal_data_exporters</code> / <code>erasers</code>.</li>\n<li><strong>Multisite aware</strong> — network activation provisions the log table on every site, and sites created later get it automatically.</li>\n<li><strong>Clean removal</strong> — deleting the plugin removes its table and settings; deactivating it does not.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>mailkeep</code> folder to the <code>/wp-content/plugins/</code> directory, or install it directly from the Plugins screen.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>Open the new &#8216;Mails&#8217; menu in your admin sidebar to view captured emails, or &#8216;Mails <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings&#8217; to configure retention and redaction.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20it%20log%20password%20reset%20emails%3F\">\nDoes it log password reset emails?\n</h4>\n<p>\n<p>Yes — it logs every email sent via the standard WordPress <code>wp_mail()</code> function, including password reset notifications. By default the reset link&#8217;s key is redacted before storage, so the log entry does not contain a working one-click login link. Redaction can be turned off in Settings if you need the raw content, but this is not recommended.</p>\n</p>\n<dt id=\"will%20this%20slow%20down%20my%20site%20or%20delay%20emails%3F\">\nWill this slow down my site or delay emails?\n</h4>\n<p>\n<p>No. Logging happens after <code>wp_mail()</code> builds the message and does not affect delivery. Retention cleanup runs on a daily background task rather than on every email sent, so it never adds overhead to a page request.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20plugins%20other%20than%20woocommerce%3F\">\nDoes it work with plugins other than WooCommerce?\n</h4>\n<p>\n<p>Yes. Mailkeep hooks into WordPress&#8217;s own <code>wp_mail()</code> filter, which every plugin and theme uses to send mail, so it captures messages regardless of what triggered them.</p>\n</p>\n<dt id=\"can%20i%20disable%20logging%20for%20a%20specific%20period%3F\">\nCan I disable logging for a specific period?\n</h4>\n<p>\n<p>Yes — toggle logging on or off from Mailkeep&#8217;s settings page at any time, without deactivating the plugin.</p>\n</p>\n<dt id=\"what%20happens%20to%20my%20logs%20if%20i%20deactivate%20or%20delete%20the%20plugin%3F\">\nWhat happens to my logs if I deactivate or delete the plugin?\n</h4>\n<p>\n<p>Deactivating the plugin leaves your logged data untouched so you can safely reactivate it later. Deleting the plugin through the Plugins screen permanently removes the log table and all plugin settings.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Capture, search and review every email your WordPress site sends, without touching your theme or mail delivery setup.",
+    "description": "<p>Mailkeep is a lightweight logging tool for one of the most invisible parts of a WordPress site: outgoing email. Every time WordPress, a plugin or a theme calls <code>wp_mail()</code> — a password reset, a new-order notification, a contact form submission, an admin alert — Mailkeep records it to a dedicated database table, independent of whatever SMTP or mail-sending service actually delivers it.</p>\n<p>This makes it easy to answer questions that are otherwise hard to check: Did that notification actually get sent? What did the email say? Who received it, and when? You don&#8217;t need to reproduce the problem or dig through server mail logs — the answer is in your dashboard.</p>\n<p>Because it hooks into <code>wp_mail()</code> itself rather than any particular plugin, Mailkeep works the same way regardless of what generates the email — core, WooCommerce, a contact form, a membership plugin, or custom code.</p>\n<h4>How it works</h4>\n<ul>\n<li>Every outgoing email is written to its own table (<code>wp_mailkeep_logs</code>), recording the recipient, subject, message body, headers, attachments list and content type.</li>\n<li>The <strong>Mails</strong> admin screen lists every logged email with search, pagination and a modal preview of the full content.</li>\n<li>A background daily task removes logs older than your configured retention period, so the table doesn&#8217;t grow forever.</li>\n<li>Logging can be paused at any time from Settings without deactivating the plugin.</li>\n</ul>\n<h4>Built-in privacy protections</h4>\n<p>Mail bodies routinely contain sensitive one-click links — password resets, order-pay links, login tokens. Storing those in plain text would turn the log table into a security liability. Mailkeep redacts known sensitive query parameters (<code>key</code>, <code>token</code>, <code>password</code>, <code>otp</code>, <code>order_key</code>, and more, filterable via <code>mailkeep_sensitive_keys</code>) before anything is written to the database, and this is <strong>on by default</strong>.</p>\n<p>If you&#8217;d rather not store message content at all, you can disable body logging entirely and keep only the recipient, subject and timestamp. Mailkeep also registers with WordPress&#8217;s built-in personal data export and erasure tools, so logged mail is included when you process a privacy request.</p>\n<h4>Features</h4>\n<ul>\n<li><strong>Full email capture</strong> — recipient, subject, headers, message body, attachments and content type.</li>\n<li><strong>Sensitive link redaction</strong> — enabled by default; configurable via a settings toggle and a filter.</li>\n<li><strong>Search</strong> — find logged mail by recipient or subject.</li>\n<li><strong>Content preview</strong> — view the full rendered email in a modal, without leaving the log list.</li>\n<li><strong>Auto-cleanup</strong> — a daily scheduled task removes logs past your chosen retention window.</li>\n<li><strong>Global on/off switch</strong> — pause logging without deactivating the plugin.</li>\n<li><strong>Privacy-request ready</strong> — integrates with <code>wp_privacy_personal_data_exporters</code> / <code>erasers</code>.</li>\n<li><strong>Multisite aware</strong> — network activation provisions the log table on every site, and sites created later get it automatically.</li>\n<li><strong>Clean removal</strong> — deleting the plugin removes its table and settings; deactivating it does not.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/mailkeep.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "email-log": "email log",
+        "email-tracker": "email tracker",
+        "mail-log": "mail log",
+        "smtp": "smtp",
+        "wp_mail": "wp_mail"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/mailkeep.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/mailkeep.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/mailkeep/assets/banner-772x250.png?rev=3714469",
+        "high": "https://ps.w.org/mailkeep/assets/banner-1544x500.png?rev=3714469"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/mailkeep/assets/icon-128x128.png?rev=3714469",
+        "2x": "https://ps.w.org/mailkeep/assets/icon-256x256.png?rev=3714469"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
