@@ -1,0 +1,81 @@
+{
+    "name": "StockLatch – On-Hold Order &amp; Stock Manager for WooCommerce",
+    "slug": "stocklatch",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/raoazwar/\">Rao Azwar</a>",
+    "author_profile": "https://profiles.wordpress.org/raoazwar/",
+    "contributors": {
+        "raoazwar": {
+            "profile": "https://profiles.wordpress.org/raoazwar/",
+            "avatar": "https://secure.gravatar.com/avatar/7f7f2205e9ec4abbe0673916b4909bb4f94168c73ba3e2da57dc6d97314ef7f2?s=96&d=monsterid&r=g",
+            "display_name": "Rao Azwar"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1.2",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/stocklatch/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-26 17:22:00",
+    "added": "2026-09-26",
+    "homepage": "",
+    "sections": {
+        "description": "<p>WooCommerce reduces stock as soon as an order reaches <strong>On hold</strong>. That is usually what you want, but WooCommerce&#8217;s built-in <strong>Hold stock (minutes)</strong> setting only expires orders sitting in <em>Pending payment</em>. It does not expire ordinary On hold orders.</p>\n<p>If you accept Direct Bank Transfer (BACS), cheque, or another offline payment method, that difference matters. A customer places an order, the order goes On hold, the stock comes off the shelf, and if that customer never pays, the stock stays reserved until somebody notices and changes the order by hand.</p>\n<p>StockLatch closes that gap. You pick which payment gateways to watch and one reservation timeout. When an order on a watched gateway enters On hold, StockLatch schedules a single check for the moment its deadline falls due. If the order is still unpaid and still On hold when that moment arrives, StockLatch cancels it.</p>\n<h4>Why cancelling is the safe answer</h4>\n<p>StockLatch never edits product stock itself. It changes the order status to Cancelled, and WooCommerce&#8217;s own stock restoration then runs, exactly as it does when you cancel an order by hand. WooCommerce checks what it actually reduced for that order and restores only that, which means no double restoration and no fighting with other extensions.</p>\n<p>StockLatch also deliberately does <em>not</em> offer a &#8220;release the stock but leave the order On hold&#8221; option. That sounds appealing, but it lets you sell the same units twice: the released stock goes to a new customer, then the original customer pays for an order you can no longer fulfil.</p>\n<h4>What it does</h4>\n<ul>\n<li>Watch one or more payment gateways, chosen by you.</li>\n<li>One reservation timeout, in minutes, hours, or days. The default is 48 hours.</li>\n<li>One scheduled check per order, run through WooCommerce&#8217;s bundled Action Scheduler.</li>\n<li>Every safety condition re-checked at the deadline, never assumed from when the job was queued.</li>\n<li>An internal order note whenever StockLatch starts monitoring an order or cancels one.</li>\n<li>A dashboard showing monitored orders, units held, what expires in the next 24 hours, and what it handled recently.</li>\n<li>A filterable activity log explaining why each order was cancelled, skipped, or superseded.</li>\n<li>A confirmation-gated tool for monitoring orders that were already On hold before you installed it.</li>\n<li>Full High-Performance Order Storage (HPOS) support.</li>\n</ul>\n<h4>Built to be careful</h4>\n<ul>\n<li><strong>Disabled on install.</strong> StockLatch does nothing until you enable it, pick a gateway, and save.</li>\n<li><strong>No surprise cancellations.</strong> Orders already On hold are never picked up automatically. You import them deliberately, and each one gets a full fresh timeout starting at import.</li>\n<li><strong>Re-checked at the last moment.</strong> Before cancelling, StockLatch confirms the plugin is still enabled, the order still exists, it is still On hold, it is still unpaid, its gateway is still selected, and its deadline really has passed.</li>\n<li><strong>Safe to run twice.</strong> Each lifecycle is claimed atomically, so a duplicated or replayed job cannot cancel twice or restore stock twice.</li>\n<li><strong>Your changes win.</strong> Mark an order paid, or move it to any other status, and StockLatch closes its lifecycle and stands down.</li>\n<li><strong>Turning a gateway off is a brake.</strong> Deselect a gateway and orders already queued on it are skipped rather than cancelled.</li>\n</ul>\n<h4>Privacy</h4>\n<p>StockLatch makes no external requests. There is no telemetry, no usage tracking, no license check, and no connection to any third-party service. Its activity table stores only order IDs, gateway IDs, quantities, timestamps, states, and reason codes. No customer names, email addresses, postal addresses, or payment details are ever recorded in it.</p>\n",
+        "installation": "<ol>\n<li>Install and activate StockLatch. WooCommerce must be active first.</li>\n<li>Go to <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> StockLatch <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings</strong>.</li>\n<li>Tick <strong>Enable StockLatch</strong>.</li>\n<li>Choose the payment gateways to watch. Direct Bank Transfer is selected by default.</li>\n<li>Set your reservation timeout, then save.</li>\n</ol>\n<p>StockLatch now watches orders that enter On hold from that point onwards. To also monitor orders that were already On hold, use <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> StockLatch <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Tools</strong>.</p>\n",
+        "faq": "\n<dt id=\"why%20does%20woocommerce%20keep%20bacs%20stock%20reserved%3F\">\nWhy does WooCommerce keep BACS stock reserved?\n</h4>\n<p>\n<p>WooCommerce reduces stock when an order reaches On hold, but its <strong>Hold stock (minutes)</strong> setting only cancels stale <em>Pending payment</em> orders. On hold orders are left alone, on the assumption that a human will deal with them. With an offline gateway like BACS, that assumption is often wrong, and the stock stays reserved.</p>\n</p>\n<dt id=\"does%20stocklatch%20directly%20edit%20product%20stock%3F\">\nDoes StockLatch directly edit product stock?\n</h4>\n<p>\n<p>No, and this is deliberate. StockLatch only changes the order status to Cancelled. WooCommerce&#8217;s own <code>wc_maybe_increase_stock_levels()</code> then restores stock using the quantities it recorded when it reduced them. That keeps the behaviour identical to cancelling the order by hand and respects filters such as <code>woocommerce_can_restore_order_stock</code>.</p>\n</p>\n<dt id=\"what%20happens%20if%20the%20customer%20pays%20before%20the%20deadline%3F\">\nWhat happens if the customer pays before the deadline?\n</h4>\n<p>\n<p>Nothing is cancelled. When the order leaves On hold, StockLatch closes its lifecycle and cancels the pending job. Even if a stale job somehow still runs, it re-checks the order first, sees that it is paid or no longer On hold, and stops.</p>\n</p>\n<dt id=\"will%20it%20affect%20orders%20that%20are%20already%20on%20hold%3F\">\nWill it affect orders that are already On hold?\n</h4>\n<p>\n<p>Not unless you ask it to. Existing orders are never picked up automatically. <strong>Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Monitor existing orders</strong> lets you preview how many are eligible and then confirm. Imported orders are given the full timeout counted from the import, not backdated to when they were placed, so nothing is cancelled the moment you import.</p>\n</p>\n<dt id=\"can%20each%20gateway%20have%20a%20different%20timeout%3F\">\nCan each gateway have a different timeout?\n</h4>\n<p>\n<p>Not in the free version. One timeout applies to every selected gateway.</p>\n</p>\n<dt id=\"does%20it%20support%20hpos%3F\">\nDoes it support HPOS?\n</h4>\n<p>\n<p>Yes. StockLatch reads and writes orders only through WooCommerce&#8217;s CRUD and query APIs and never touches order tables directly, so it behaves the same with High-Performance Order Storage on or off.</p>\n</p>\n<dt id=\"does%20it%20work%20if%20wp-cron%20is%20disabled%3F\">\nDoes it work if WP-Cron is disabled?\n</h4>\n<p>\n<p>StockLatch uses Action Scheduler, which WooCommerce bundles. If you have disabled WP-Cron and replaced it with a real system cron calling <code>wp-cron.php</code>, Action Scheduler runs normally. If nothing triggers the queue at all, deadlines are processed late rather than missed: each check runs when the queue next gets a chance, and re-validates the order at that point.</p>\n</p>\n<dt id=\"what%20happens%20when%20stocklatch%20is%20deactivated%3F\">\nWhat happens when StockLatch is deactivated?\n</h4>\n<p>\n<p>Deactivating switches StockLatch off and removes its queued jobs. Settings and history are kept. Switching off is intentional: if it stayed enabled, reactivating weeks later could cancel a backlog of overdue orders all at once. Re-enable it on the Settings screen when you are ready.</p>\n</p>\n<dt id=\"does%20uninstalling%20delete%20my%20data%3F\">\nDoes uninstalling delete my data?\n</h4>\n<p>\n<p>Only if you ask. There is a <strong>Delete data on uninstall</strong> setting, off by default. With it off, uninstalling leaves your settings and activity history in place so a reinstall can pick them up.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Automatically cancel expired WooCommerce on-hold orders so unpaid orders do not reserve inventory indefinitely.",
+    "description": "<p>WooCommerce reduces stock as soon as an order reaches <strong>On hold</strong>. That is usually what you want, but WooCommerce&#8217;s built-in <strong>Hold stock (minutes)</strong> setting only expires orders sitting in <em>Pending payment</em>. It does not expire ordinary On hold orders.</p>\n<p>If you accept Direct Bank Transfer (BACS), cheque, or another offline payment method, that difference matters. A customer places an order, the order goes On hold, the stock comes off the shelf, and if that customer never pays, the stock stays reserved until somebody notices and changes the order by hand.</p>\n<p>StockLatch closes that gap. You pick which payment gateways to watch and one reservation timeout. When an order on a watched gateway enters On hold, StockLatch schedules a single check for the moment its deadline falls due. If the order is still unpaid and still On hold when that moment arrives, StockLatch cancels it.</p>\n<h4>Why cancelling is the safe answer</h4>\n<p>StockLatch never edits product stock itself. It changes the order status to Cancelled, and WooCommerce&#8217;s own stock restoration then runs, exactly as it does when you cancel an order by hand. WooCommerce checks what it actually reduced for that order and restores only that, which means no double restoration and no fighting with other extensions.</p>\n<p>StockLatch also deliberately does <em>not</em> offer a &#8220;release the stock but leave the order On hold&#8221; option. That sounds appealing, but it lets you sell the same units twice: the released stock goes to a new customer, then the original customer pays for an order you can no longer fulfil.</p>\n<h4>What it does</h4>\n<ul>\n<li>Watch one or more payment gateways, chosen by you.</li>\n<li>One reservation timeout, in minutes, hours, or days. The default is 48 hours.</li>\n<li>One scheduled check per order, run through WooCommerce&#8217;s bundled Action Scheduler.</li>\n<li>Every safety condition re-checked at the deadline, never assumed from when the job was queued.</li>\n<li>An internal order note whenever StockLatch starts monitoring an order or cancels one.</li>\n<li>A dashboard showing monitored orders, units held, what expires in the next 24 hours, and what it handled recently.</li>\n<li>A filterable activity log explaining why each order was cancelled, skipped, or superseded.</li>\n<li>A confirmation-gated tool for monitoring orders that were already On hold before you installed it.</li>\n<li>Full High-Performance Order Storage (HPOS) support.</li>\n</ul>\n<h4>Built to be careful</h4>\n<ul>\n<li><strong>Disabled on install.</strong> StockLatch does nothing until you enable it, pick a gateway, and save.</li>\n<li><strong>No surprise cancellations.</strong> Orders already On hold are never picked up automatically. You import them deliberately, and each one gets a full fresh timeout starting at import.</li>\n<li><strong>Re-checked at the last moment.</strong> Before cancelling, StockLatch confirms the plugin is still enabled, the order still exists, it is still On hold, it is still unpaid, its gateway is still selected, and its deadline really has passed.</li>\n<li><strong>Safe to run twice.</strong> Each lifecycle is claimed atomically, so a duplicated or replayed job cannot cancel twice or restore stock twice.</li>\n<li><strong>Your changes win.</strong> Mark an order paid, or move it to any other status, and StockLatch closes its lifecycle and stands down.</li>\n<li><strong>Turning a gateway off is a brake.</strong> Deselect a gateway and orders already queued on it are skipped rather than cancelled.</li>\n</ul>\n<h4>Privacy</h4>\n<p>StockLatch makes no external requests. There is no telemetry, no usage tracking, no license check, and no connection to any third-party service. Its activity table stores only order IDs, gateway IDs, quantities, timestamps, states, and reason codes. No customer names, email addresses, postal addresses, or payment details are ever recorded in it.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/stocklatch.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "cancel-orders": "cancel orders",
+        "inventory": "inventory",
+        "on-hold-orders": "on-hold orders",
+        "stock-management": "stock management",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/stocklatch.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/stocklatch.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/stocklatch/assets/banner-772x250.png?rev=3714504",
+        "high": "https://ps.w.org/stocklatch/assets/banner-1544x500.png?rev=3714504"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/stocklatch/assets/icon-128x128.png?rev=3714504",
+        "2x": "https://ps.w.org/stocklatch/assets/icon-256x256.png?rev=3714504"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
