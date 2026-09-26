@@ -1,0 +1,77 @@
+{
+    "name": "NAVEST Toolkit for WooCommerce",
+    "slug": "navest-toolkit-for-woocommerce",
+    "version": "1.2.0",
+    "author": "<a href=\"https://profiles.wordpress.org/joelambord/\">joelambord</a>",
+    "author_profile": "https://profiles.wordpress.org/joelambord/",
+    "contributors": {
+        "joelambord": {
+            "profile": "https://profiles.wordpress.org/joelambord/",
+            "avatar": "https://secure.gravatar.com/avatar/4f0ff6debea0b2495508a122fdd8f50d9d90ea84470f9004acff379ed5857cd0?s=96&d=monsterid&r=g",
+            "display_name": "joelambord"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.1.2",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/navest-toolkit-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-26 12:07:00",
+    "added": "2026-09-26",
+    "homepage": "",
+    "sections": {
+        "description": "<p>NAVEST Toolkit for WooCommerce is an umbrella plugin for WooCommerce Subscriptions add-ons. It ships as a set of self-contained modules that can grow over time. The first module is a <strong>Subscription Trial</strong> coupon: applying it drops the initial cart total to 0.00 and pushes the first recurring payment out by the configured trial length. The customer sees &#8220;15 days&#8221; (for example) next to the coupon in the cart and &#8220;First renewal: Oct 9, 2026&#8221; in the totals.</p>\n<p>Planned modules:</p>\n<ul>\n<li><strong>Retention</strong> — win-back offers, cancellation-flow discounts, pause-instead-of-cancel.</li>\n<li><strong>Dunning</strong> — smarter retry &amp; customer messaging for failed renewals.</li>\n<li>More to come.</li>\n</ul>\n<h3>Compatibility</h3>\n<p>Payment gateway: The plugin only changes the <em>initial</em> recurring total to 0.00 via the standard WooCommerce Subscriptions trial mechanism (<code>_subscription_trial_length</code> / <code>_subscription_trial_period</code> on the cart item). It does not touch the tokenization, SCA, or pre-authorization flow of the payment gateway. That means gateways that place a temporary hold (&#8220;security authorization&#8221; / &#8220;zero-amount authorization&#8221; / &#8220;verification charge&#8221;) on the customer&#8217;s card at sign-up — such as Stripe, Payrexx, Braintree, Mollie, and other well-behaved subscription gateways — continue to work exactly as configured: the card is still verified and stored during checkout, so the first recurring charge after the trial can be processed without further customer action, and any pre-auth hold defined by the gateway is still placed. The trial only affects the amount collected today, not whether the payment method is validated.</p>\n<p>Other coupon extensions: Compatible with many other plugins like Smart Coupons for WooCommerce (Pro) by WebToffee. The new coupon type registers via the standard <code>woocommerce_coupon_discount_types</code> filter that WebToffee&#8217;s UI reads.</p>\n<p>Cache plugins: Compatible with WP Rocket, W3 Total Cache, LiteSpeed Cache, WP Super Cache and other page/object cache plugins. All plugin logic runs on the cart and checkout pages, which cache plugins already exclude from full-page HTML caching by default (WooCommerce sets <code>DONOTCACHEPAGE</code>). No additional cache-exclusion rules or nonces need to be configured. Object caches (Redis / Memcached) are respected — the plugin uses standard WordPress metadata APIs.</p>\n<h3>Requirements</h3>\n<ul>\n<li>WooCommerce 8.0+</li>\n<li>WooCommerce Subscriptions 5.0+</li>\n</ul>\n<h3>How the Trial Coupon module works</h3>\n<ol>\n<li>Admin creates a coupon and picks discount type &#8220;Subscription Trial&#8221;.</li>\n<li>Admin enters trial length + period (e.g. 15, days).</li>\n<li>Customer applies the coupon in the cart while at least one subscription product is present.</li>\n<li>The plugin hooks WooCommerce Subscriptions&#8217; trial getters (<code>woocommerce_subscriptions_product_trial_length</code> / <code>_period</code>), reading the coupon&#8217;s trial values directly from post meta. The trial is therefore returned wherever WCS asks for it and survives checkout retries after cancelled or failed payments.</li>\n<li>WooCommerce Subscriptions recalculates: the initial cart total becomes 0.00 and the first renewal is pushed out by the trial length.</li>\n</ol>\n",
+        "changelog": "<h4>1.2.0</h4>\n<ul>\n<li>Initial public release under the name <strong>NAVEST Toolkit for WooCommerce</strong>.</li>\n<li>Trial Coupons module: registers a &#8220;Subscription Trial&#8221; coupon type. When applied, the initial cart total drops to 0.00 and the first recurring payment is pushed out by the configured trial length. Compatible with Smart Coupons for WooCommerce (Pro) by WebToffee — the type registers via the standard <code>woocommerce_coupon_discount_types</code> filter.</li>\n<li>Robust against gateway retry flows: the trial is re-applied via WCS&#8217;s own trial getters (<code>woocommerce_subscriptions_product_trial_length</code> / <code>_period</code>) reading straight from post meta, so a cancelled or failed payment followed by a checkout retry keeps the trial intact.</li>\n<li>German translations bundled (de_DE, de_CH, de_AT). Rewrites the ungrammatical WooCommerce Subscriptions German phrase &#8220;mit ein 15-Tage kostenlose Testphase&#8221; into the correct dative form &#8220;mit 15 Tagen kostenloser Testphase&#8221;.</li>\n<li>Optional debug logging via WooCommerce&#8217;s logger (source <code>navest-trial-coupons</code>), enabled by <code>define( 'WCST_DEBUG', true );</code> in wp-config.php or automatically when <code>WP_DEBUG</code> is on.</li>\n</ul>\n"
+    },
+    "short_description": "A modular toolkit for WooCommerce Subscriptions. Ships with a Subscription Trial coupon type; retention and further modules planned.",
+    "description": "<p>NAVEST Toolkit for WooCommerce is an umbrella plugin for WooCommerce Subscriptions add-ons. It ships as a set of self-contained modules that can grow over time. The first module is a <strong>Subscription Trial</strong> coupon: applying it drops the initial cart total to 0.00 and pushes the first recurring payment out by the configured trial length. The customer sees &#8220;15 days&#8221; (for example) next to the coupon in the cart and &#8220;First renewal: Oct 9, 2026&#8221; in the totals.</p>\n<p>Planned modules:</p>\n<ul>\n<li><strong>Retention</strong> — win-back offers, cancellation-flow discounts, pause-instead-of-cancel.</li>\n<li><strong>Dunning</strong> — smarter retry &amp; customer messaging for failed renewals.</li>\n<li>More to come.</li>\n</ul>\n<h3>Compatibility</h3>\n<p>Payment gateway: The plugin only changes the <em>initial</em> recurring total to 0.00 via the standard WooCommerce Subscriptions trial mechanism (<code>_subscription_trial_length</code> / <code>_subscription_trial_period</code> on the cart item). It does not touch the tokenization, SCA, or pre-authorization flow of the payment gateway. That means gateways that place a temporary hold (&#8220;security authorization&#8221; / &#8220;zero-amount authorization&#8221; / &#8220;verification charge&#8221;) on the customer&#8217;s card at sign-up — such as Stripe, Payrexx, Braintree, Mollie, and other well-behaved subscription gateways — continue to work exactly as configured: the card is still verified and stored during checkout, so the first recurring charge after the trial can be processed without further customer action, and any pre-auth hold defined by the gateway is still placed. The trial only affects the amount collected today, not whether the payment method is validated.</p>\n<p>Other coupon extensions: Compatible with many other plugins like Smart Coupons for WooCommerce (Pro) by WebToffee. The new coupon type registers via the standard <code>woocommerce_coupon_discount_types</code> filter that WebToffee&#8217;s UI reads.</p>\n<p>Cache plugins: Compatible with WP Rocket, W3 Total Cache, LiteSpeed Cache, WP Super Cache and other page/object cache plugins. All plugin logic runs on the cart and checkout pages, which cache plugins already exclude from full-page HTML caching by default (WooCommerce sets <code>DONOTCACHEPAGE</code>). No additional cache-exclusion rules or nonces need to be configured. Object caches (Redis / Memcached) are respected — the plugin uses standard WordPress metadata APIs.</p>\n<h3>Requirements</h3>\n<ul>\n<li>WooCommerce 8.0+</li>\n<li>WooCommerce Subscriptions 5.0+</li>\n</ul>\n<h3>How the Trial Coupon module works</h3>\n<ol>\n<li>Admin creates a coupon and picks discount type &#8220;Subscription Trial&#8221;.</li>\n<li>Admin enters trial length + period (e.g. 15, days).</li>\n<li>Customer applies the coupon in the cart while at least one subscription product is present.</li>\n<li>The plugin hooks WooCommerce Subscriptions&#8217; trial getters (<code>woocommerce_subscriptions_product_trial_length</code> / <code>_period</code>), reading the coupon&#8217;s trial values directly from post meta. The trial is therefore returned wherever WCS asks for it and survives checkout retries after cancelled or failed payments.</li>\n<li>WooCommerce Subscriptions recalculates: the initial cart total becomes 0.00 and the first renewal is pushed out by the trial length.</li>\n</ol>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/navest-toolkit-for-woocommerce.1.2.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "coupons": "coupons",
+        "free-trial": "Free Trial",
+        "retention": "retention",
+        "subscriptions": "subscriptions",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.2.0",
+    "versions": {
+        "1.2.0": "https://downloads.wordpress.org/plugin/navest-toolkit-for-woocommerce.1.2.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/navest-toolkit-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/navest-toolkit-for-woocommerce/assets/banner-772x250.png?rev=3714219",
+        "high": "https://ps.w.org/navest-toolkit-for-woocommerce/assets/banner-1544x500.png?rev=3714219"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/navest-toolkit-for-woocommerce/assets/icon-128x128.png?rev=3714219",
+        "2x": "https://ps.w.org/navest-toolkit-for-woocommerce/assets/icon-256x256.png?rev=3714219"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

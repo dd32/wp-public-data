@@ -1,0 +1,105 @@
+{
+    "name": "ColorBreezy — CMYK to sRGB Converter",
+    "slug": "colorbreezy",
+    "version": "1.1.4",
+    "author": "<a href=\"https://profiles.wordpress.org/frotsquarnel/\">frotsquarnel</a>",
+    "author_profile": "https://profiles.wordpress.org/frotsquarnel/",
+    "contributors": {
+        "frotsquarnel": {
+            "profile": "https://profiles.wordpress.org/frotsquarnel/",
+            "avatar": "https://secure.gravatar.com/avatar/1b3f3ce05e3453fd87bb5bb4f0402792c069be0563e3ca6f8cc1e4fe2fe936b0?s=96&d=monsterid&r=g",
+            "display_name": "frotsquarnel"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.1.2",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/colorbreezy/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-26 11:43:00",
+    "added": "2026-09-26",
+    "homepage": "",
+    "sections": {
+        "description": "<p>ColorBreezy automatically converts CMYK JPEG and TIFF uploads to sRGB. You can also bulk-convert existing images in the Media Library. Original-image backup and restoration are supported. It uses PHP Imagick when available and falls back to ImageMagick CLI.</p>\n<ul>\n<li>Automatic conversion on upload.</li>\n<li>Media Library scan and batch conversion.</li>\n<li>Optional scheduled conversion using WP-Cron, disabled by default until an administrator enables it.</li>\n<li>Authenticated encrypted original backups with opaque filenames under <code>wp-content/uploads/cmyk-originals/</code>.</li>\n<li>Configurable retention with daily backup cleanup.</li>\n<li>Configurable conversion-log retention with daily cleanup.</li>\n<li>Conversion history, authenticated original downloads and one-click full-size restoration.</li>\n<li>CSV export of the conversion log.</li>\n<li>Removal of stale EWWW WebP/AVIF sidecars so an optimizer can regenerate them.</li>\n<li>Unlimited JPEG and single-page TIFF image conversions in the free edition.</li>\n</ul>\n<p>Uploaded images and image contents never leave your WordPress server.<br />\nThe optional one-question Yes/No satisfaction feedback is stored only in this WordPress site&#8217;s options. It has no free-text field, does not collect personal information, is not written to conversion logs, and is never sent externally. Administrators can clear it from Settings.</p>\n<h3>Privacy and external services</h3>\n<p>The plugin includes the Freemius SDK for opt-in usage analytics, update and future licensing support. Administrators may choose whether to share basic site, user, plugin, theme and environment information with Freemius. Declining does not disable image conversion. Freemius may also show an optional feedback form when the plugin is deactivated.</p>\n<p>Freemius terms: https://freemius.com/terms/<br />\nFreemius privacy policy: https://freemius.com/privacy/</p>\n<h3>Third-Party Notices</h3>\n<p>The bundled <code>sRGB_v4_ICC_preference.icc</code> profile is Copyright (c) 2012 International Color Consortium and distributed unchanged under the terms published for this profile: https://registry.color.org/rgb-registry/srgbprofiles</p>\n<p>Color conversion is best-effort and results vary with the source profile and server image library. Keep backups enabled and verify color-critical output before publishing. PHP Sodium is required for authenticated encrypted backups.</p>\n",
+        "installation": "<ol>\n<li>Install the plugin ZIP and activate it.</li>\n<li>Open <strong>Media &gt; ColorBreezy</strong> to check the environment before scanning or converting. Conversion requires the Sodium API and either PHP Imagick or ImageMagick CLI. The CLI fallback also requires PHP to allow <code>exec</code> and <code>proc_open</code>.</li>\n<li>If a dependency is unavailable, activation still succeeds, but conversion stays paused. The ColorBreezy page shows the missing requirement; ask your host to enable it, then reload the page and complete setup.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"which%20formats%20are%20supported%3F\">\nWhich formats are supported?\n</h4>\n<p>\n<p>JPEG and single-page TIFF. Multi-page TIFF is left unchanged to avoid losing pages. PNG, GIF, WebP, AVIF and other non-CMYK formats are also skipped without modification.</p>\n</p>\n<dt id=\"what%20happens%20when%20the%20imagick%20extension%20is%20not%20installed%3F\">\nWhat happens when the Imagick extension is not installed?\n</h4>\n<p>\n<p>ColorBreezy automatically uses ImageMagick CLI if the commands are available to PHP and <code>exec</code> and <code>proc_open</code> are enabled. If neither processor can run, the plugin remains active but does not convert images. The dashboard identifies the active processor, while the System tab provides more detail.</p>\n</p>\n<dt id=\"is%20conversion%20limited%20in%20the%20free%20edition%3F\">\nIs conversion limited in the free edition?\n</h4>\n<p>\n<p>No. JPEG and single-page TIFF conversion is unlimited. Request throttling and batch-size limits protect the server from accidental overload.</p>\n<p>Individual image inputs must be no larger than 50 MiB, 40 megapixels, or 20,000 pixels on either edge. Server policies may impose lower limits. Images that cannot be safely processed are left unchanged; check the conversion log for details.</p>\n</p>\n<dt id=\"can%20i%20network-activate%20colorbreezy%20on%20wordpress%20multisite%3F\">\nCan I network-activate ColorBreezy on WordPress Multisite?\n</h4>\n<p>\n<p>Network activation is not supported. Activate and configure ColorBreezy separately on each site. Network-wide conversion, settings and cleanup are not provided.</p>\n</p>\n<dt id=\"where%20are%20originals%20stored%3F\">\nWhere are originals stored?\n</h4>\n<p>\n<p>Under <code>wp-content/uploads/cmyk-originals/</code> as authenticated encrypted <code>.cmyk-backup</code> payloads with opaque names. The encryption key stays locally in a non-autoloaded WordPress option. A directly served backup payload does not contain the original image bytes. Daily WP-Cron cleanup enforces the configured retention period.</p>\n<p>The current v2 encrypted format binds each payload to its own opaque backup identity. Older plaintext and v1 encrypted payloads are deliberately not restored or served; create a new backup by reconverting from a trusted original instead.</p>\n</p>\n<dt id=\"what%20happens%20if%20wordpress%20regenerates%20thumbnails%20after%20conversion%3F\">\nWhat happens if WordPress regenerates thumbnails after conversion?\n</h4>\n<p>\n<p>Restoration uses the exact main image and size set recorded at backup time, even if current attachment metadata later removes or renames a size. Original paths that no longer exist are recreated. Sizes added after conversion are intentionally retained and are not deleted or overwritten by restoration.</p>\n</p>\n<dt id=\"does%20the%20plugin%20upload%20images%20elsewhere%3F\">\nDoes the plugin upload images elsewhere?\n</h4>\n<p>\n<p>No. Detection, backup and conversion run locally. See Privacy for the separate optional Freemius telemetry disclosure.</p>\n</p>\n<dt id=\"how%20is%20satisfaction%20feedback%20handled%3F\">\nHow is satisfaction feedback handled?\n</h4>\n<p>\n<p>After the first successful conversion, the admin may see one optional Yes/No question. The selected Yes, No, or Dismiss value stays only in this site&#8217;s WordPress options; no free text or personal information is collected, and it is never sent externally. It can be cleared from Settings.</p>\n</p>\n<dt id=\"what%20happens%20to%20ewww%20sidecars%3F\">\nWhat happens to EWWW sidecars?\n</h4>\n<p>\n<p>Stale WebP/AVIF sidecars are removed only after successful source conversion. EWWW can recreate them from the converted source, depending on your EWWW settings. ColorBreezy does not guarantee regeneration on the next request.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.4</h4>\n<ul>\n<li>Added a read-only requirements page when the server lacks a usable image processor or Sodium; conversion remains paused until dependencies are available.</li>\n<li>Show the selected image processor and Sodium status on the dashboard and at the start of setup.</li>\n<li>Aligned the WordPress.org package directory, main plugin file, text domain and translation catalogs with the assigned <code>colorbreezy</code> slug.</li>\n<li>Preserved existing stored options, database tables, REST routes, cron hooks and encrypted-backup identifiers for installed sites.</li>\n</ul>\n<h4>1.1.3</h4>\n<ul>\n<li>Introduced the ColorBreezy display name and clearer feature descriptions.</li>\n<li>Added Simplified Chinese and Arabic catalogs; improved language-specific caching and right-to-left support.</li>\n<li>Hardened original-file replacement, image resource limits, CSV exports and cleanup request validation.</li>\n<li>Corrected partial-failure status messages and added real WordPress authentication, conversion, restoration and concurrency tests.</li>\n<li>Separated WordPress.org language-pack delivery from bundled translations for standalone distributions.</li>\n<li>Updated the ICC profile licensing reference.</li>\n<li>Improved large-library batch processing, cancellation handling and scheduled sidecar cleanup.</li>\n<li>Added keyboard tab navigation and improved mobile and right-to-left layouts.</li>\n<li>Completed existing translation catalogs and added automated translation consistency checks.</li>\n</ul>\n<h4>1.1.2</h4>\n<ul>\n<li>Hardened review-related diagnostics and documented scoped Plugin Check exceptions for read-only notices, atomic database operations and third-party hooks.</li>\n<li>Logs: every conversion step now has a readable action label instead of &#8220;(unknown)&#8221;.</li>\n<li>Logs: TIFF and other formats browsers cannot display show a placeholder instead of a broken thumbnail.</li>\n<li>Added screenshots to the plugin listing.</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>Free JPEG/TIFF conversion is unlimited; monthly gating and upgrade prompts were removed.</li>\n<li>Paid pricing and trial promotion are hidden for the initial free-only release.</li>\n<li>Batch and REST results distinguish successful, failed and skipped conversions.</li>\n<li>Added daily cleanup for expired backups.</li>\n<li>Added local-only optional satisfaction feedback and configurable daily conversion-log retention.</li>\n<li>Added authenticated encrypted backups, secure downloads, integrity checks, and full attachment restoration.</li>\n<li>Free builds exclude PDF, custom ICC and automatic sidecar-cleanup implementations.</li>\n<li>Updated Freemius privacy disclosure and SDK.</li>\n<li>Updated compatibility metadata through WordPress 7.1.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Initial Free and Pro architecture, setup wizard, health checks and release tooling.</li>\n</ul>\n"
+    },
+    "short_description": "Detect and convert CMYK JPEG and single-page TIFF images to sRGB on upload or in batches, with original backups.",
+    "description": "<p>ColorBreezy automatically converts CMYK JPEG and TIFF uploads to sRGB. You can also bulk-convert existing images in the Media Library. Original-image backup and restoration are supported. It uses PHP Imagick when available and falls back to ImageMagick CLI.</p>\n<ul>\n<li>Automatic conversion on upload.</li>\n<li>Media Library scan and batch conversion.</li>\n<li>Optional scheduled conversion using WP-Cron, disabled by default until an administrator enables it.</li>\n<li>Authenticated encrypted original backups with opaque filenames under <code>wp-content/uploads/cmyk-originals/</code>.</li>\n<li>Configurable retention with daily backup cleanup.</li>\n<li>Configurable conversion-log retention with daily cleanup.</li>\n<li>Conversion history, authenticated original downloads and one-click full-size restoration.</li>\n<li>CSV export of the conversion log.</li>\n<li>Removal of stale EWWW WebP/AVIF sidecars so an optimizer can regenerate them.</li>\n<li>Unlimited JPEG and single-page TIFF image conversions in the free edition.</li>\n</ul>\n<p>Uploaded images and image contents never leave your WordPress server.<br />\nThe optional one-question Yes/No satisfaction feedback is stored only in this WordPress site&#8217;s options. It has no free-text field, does not collect personal information, is not written to conversion logs, and is never sent externally. Administrators can clear it from Settings.</p>\n<h3>Privacy and external services</h3>\n<p>The plugin includes the Freemius SDK for opt-in usage analytics, update and future licensing support. Administrators may choose whether to share basic site, user, plugin, theme and environment information with Freemius. Declining does not disable image conversion. Freemius may also show an optional feedback form when the plugin is deactivated.</p>\n<p>Freemius terms: https://freemius.com/terms/<br />\nFreemius privacy policy: https://freemius.com/privacy/</p>\n<h3>Third-Party Notices</h3>\n<p>The bundled <code>sRGB_v4_ICC_preference.icc</code> profile is Copyright (c) 2012 International Color Consortium and distributed unchanged under the terms published for this profile: https://registry.color.org/rgb-registry/srgbprofiles</p>\n<p>Color conversion is best-effort and results vary with the source profile and server image library. Keep backups enabled and verify color-critical output before publishing. PHP Sodium is required for authenticated encrypted backups.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/colorbreezy.1.1.4.zip",
+    "upgrade_notice": {
+        "1.1.2": "<p>Minor admin display fixes in the Logs tab. No changes to conversion behavior or stored data.</p>",
+        "1.1.1": "<p>Recommended release-hardening update with unlimited Free image conversion.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/colorbreezy/assets/screenshot-1.png?rev=3714201",
+            "caption": "Setup wizard: checks the conversion environment before scanning and starts a two-minute setup."
+        },
+        {
+            "src": "https://ps.w.org/colorbreezy/assets/screenshot-2.png?rev=3714201",
+            "caption": "Setup wizard: scans the Media Library and offers to convert unchecked JPEG/TIFF images in one click."
+        },
+        {
+            "src": "https://ps.w.org/colorbreezy/assets/screenshot-3.png?rev=3714201",
+            "caption": "Dashboard: active image processor, encrypted-backup support, monthly conversions, unchecked image count, batch conversion and EWWW sidecar cleanup."
+        },
+        {
+            "src": "https://ps.w.org/colorbreezy/assets/screenshot-4.png?rev=3714201",
+            "caption": "Logs: per-image conversion history with original download, one-click restore and CSV export."
+        },
+        {
+            "src": "https://ps.w.org/colorbreezy/assets/screenshot-5.png?rev=3714201",
+            "caption": "Settings: auto-convert on upload, encrypted original backups, retention periods and optional scheduled conversion."
+        },
+        {
+            "src": "https://ps.w.org/colorbreezy/assets/screenshot-6.png?rev=3714201",
+            "caption": "System: image engine, Imagick, Sodium, LCMS, memory, backup directory and Ghostscript status at a glance."
+        }
+    ],
+    "tags": {
+        "cmyk": "cmyk",
+        "color": "color",
+        "image": "image",
+        "imagick": "imagick",
+        "srgb": "srgb"
+    },
+    "stable_tag": "1.1.4",
+    "versions": {
+        "1.1.4": "https://downloads.wordpress.org/plugin/colorbreezy.1.1.4.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/colorbreezy.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/colorbreezy/assets/banner-772x250.png?rev=3714201",
+        "high": "https://ps.w.org/colorbreezy/assets/banner-1544x500.png?rev=3714201"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/colorbreezy/assets/icon.svg?rev=3714201",
+        "svg": "https://ps.w.org/colorbreezy/assets/icon.svg?rev=3714201"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
