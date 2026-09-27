@@ -1,0 +1,73 @@
+{
+    "name": "IvoryGate",
+    "slug": "ivorygate",
+    "version": "0.1.2",
+    "author": "<a href=\"https://profiles.wordpress.org/sebaklim93411/\">sebaklim93411</a>",
+    "author_profile": "https://profiles.wordpress.org/sebaklim93411/",
+    "contributors": {
+        "sebaklim93411": {
+            "profile": "https://profiles.wordpress.org/sebaklim93411/",
+            "avatar": "https://secure.gravatar.com/avatar/5dec519beacd9eb776bff8fcdabaa65fd8047408901d953b96df0086988d2f70?s=96&d=monsterid&r=g",
+            "display_name": "sebaklim93411"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/ivorygate/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-27 06:17:00",
+    "added": "2026-09-27",
+    "homepage": "",
+    "sections": {
+        "description": "<p>IvoryGate signs users in to existing WordPress accounts using an identity authenticated by Microsoft IIS Windows Authentication.</p>\n<p>The plugin is designed for controlled Windows and IIS environments such as intranets. It does not implement Kerberos or NTLM itself and never receives or stores a Windows password. IIS performs Windows Authentication and provides the trusted server identity.</p>\n<p>Key properties:</p>\n<ul>\n<li>Exact, case-sensitive mapping from a Windows identity to an existing WordPress user ID.</li>\n<li>No automatic user creation, role changes, or password changes.</li>\n<li>HTTPS is required for automatic SSO.</li>\n<li>Secure WordPress authentication cookies are created with the official WordPress API.</li>\n<li>When SSO is enabled, WordPress password login and application passwords are disabled.</li>\n<li>Unknown, missing, duplicated, or invalid mappings fail closed.</li>\n<li>Optional logging contains fixed event codes only and does not include identities, cookies, passwords, or request data.</li>\n<li>Existing WordPress sessions are not switched to another account.</li>\n</ul>\n<h4>Important requirements</h4>\n<p>IvoryGate requires:</p>\n<ul>\n<li>Microsoft IIS with Windows Authentication using Negotiate, NTLM, or Kerberos.</li>\n<li>A server configuration in which IIS securely sets REMOTE_USER, AUTH_USER, and AUTH_TYPE.</li>\n<li>HTTPS for the request, WordPress Address, and Site Address.</li>\n<li>Existing WordPress user accounts to map to.</li>\n<li>A single-site WordPress installation. WordPress Multisite is not supported.</li>\n</ul>\n<p>IIS may reject a request with HTTP 401 before WordPress or IvoryGate runs. In that case, the browser may show its own Windows credentials dialog. A WordPress plugin cannot replace that dialog or reliably detect private or incognito browsing mode.</p>\n<p>IvoryGate does not trust identity values from HTTP_REMOTE_USER, X-Forwarded-User, Authorization, cookies, or other client-controlled headers.</p>\n<h4>Lockout protection</h4>\n<p>Before enabling SSO, retain administrative access to the server files.</p>\n<p>To restore native WordPress login during recovery, add the following before WordPress loads:</p>\n<p>define( &#8216;IVORYGATE_DISABLE_SSO&#8217;, true );</p>\n<p>You can also disable the plugin by renaming its directory from the server file system. The plugin intentionally retains its settings when deactivated or uninstalled.</p>\n<h3>Privacy</h3>\n<p>IvoryGate does not transmit data to external services. Configuration is stored in the local WordPress options table. It contains explicit Windows identity strings and WordPress user IDs entered by an administrator.</p>\n<p>Optional diagnostic logging writes only fixed event codes to the operating system log through PHP syslog. It does not log identities, passwords, cookies, tokens, exception messages, or request data.</p>\n",
+        "installation": "<ol>\n<li>Configure HTTPS and IIS Windows Authentication.</li>\n<li>Install and activate IvoryGate.</li>\n<li>Open Settings &gt; IvoryGate while signed in as an administrator.</li>\n<li>Verify the displayed IIS identity and authentication type.</li>\n<li>Add an exact mapping from the current Windows identity to an existing WordPress user.</li>\n<li>Confirm that IIS is the trusted source of the server identity.</li>\n<li>Keep server file access available, then enable Windows SSO.</li>\n<li>Test with a separate browser profile and verify the selected WordPress user.</li>\n<li>Verify that an unknown identity is denied access.</li>\n</ol>\n<p>Do not enable SSO until the diagnostics, HTTPS status, and mapping are correct.</p>\n",
+        "faq": "\n<dt id=\"does%20ivorygate%20store%20windows%20passwords%3F\">\nDoes IvoryGate store Windows passwords?\n</h4>\n<p>\n<p>No. IIS performs Windows Authentication. IvoryGate never receives or stores the Windows password, PIN, Microsoft token, or incoming WordPress authentication cookie.</p>\n</p>\n<dt id=\"does%20it%20create%20wordpress%20users%3F\">\nDoes it create WordPress users?\n</h4>\n<p>\n<p>No. Every Windows identity must be explicitly mapped to one existing WordPress user ID.</p>\n</p>\n<dt id=\"why%20does%20the%20browser%20show%20a%20system%20credentials%20dialog%3F\">\nWhy does the browser show a system credentials dialog?\n</h4>\n<p>\n<p>IIS sends an authentication challenge before PHP and WordPress run. Browser policy, intranet-zone configuration, the Windows session, domain configuration, and Kerberos or NTLM availability determine whether authentication is automatic or a credentials dialog appears.</p>\n</p>\n<dt id=\"can%20ivorygate%20detect%20incognito%20or%20private%20browsing%3F\">\nCan IvoryGate detect incognito or private browsing?\n</h4>\n<p>\n<p>No. Browsers do not provide a reliable server-side signal for private browsing. Browser or organization policy must control private browsing when that is required.</p>\n</p>\n<dt id=\"what%20happens%20to%20the%20normal%20wordpress%20login%20form%3F\">\nWhat happens to the normal WordPress login form?\n</h4>\n<p>\n<p>When SSO is enabled, IvoryGate returns HTTP 403 instead of displaying password-based WordPress login to an unauthenticated user. It also blocks password authentication and application passwords. The emergency constant restores native login for recovery.</p>\n</p>\n<dt id=\"what%20happens%20when%20sso%20is%20disabled%3F\">\nWhat happens when SSO is disabled?\n</h4>\n<p>\n<p>WordPress authentication behaves normally. IvoryGate does not issue an SSO cookie or block password login.</p>\n</p>\n<dt id=\"does%20ivorygate%20support%20multisite%3F\">\nDoes IvoryGate support Multisite?\n</h4>\n<p>\n<p>No. SSO is blocked on WordPress Multisite.</p>\n</p>\n<dt id=\"does%20ivorygate%20send%20data%20to%20external%20services%3F\">\nDoes IvoryGate send data to external services?\n</h4>\n<p>\n<p>No. The plugin makes no external network requests and has no telemetry.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.2</h4>\n<ul>\n<li>Added the verified WordPress.org owner to Contributors.</li>\n<li>Sanitized nonce, settings, query, and server request values before use.</li>\n</ul>\n<h4>0.1.1</h4>\n<ul>\n<li>Added SSO-only mode when Windows SSO is enabled.</li>\n<li>Blocked the WordPress password form, password authentication, and application passwords while SSO is enabled.</li>\n<li>Added a clear HTTP 403 message when IIS admits a request but IvoryGate cannot complete SSO.</li>\n<li>Retained the emergency constant that restores native WordPress login.</li>\n<li>Added WordPress.org metadata and documentation.</li>\n<li>Corrected request-value sanitization and displayed version metadata.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial stable release.</li>\n<li>Added exact IIS Windows identity mapping to existing WordPress accounts.</li>\n<li>Added HTTPS-only automatic SSO and secure WordPress session creation.</li>\n<li>Added administrator diagnostics and fixed-code system logging.</li>\n</ul>\n"
+    },
+    "short_description": "Passwordless WordPress sign-in using trusted IIS Windows Authentication and explicit identity-to-user mappings.",
+    "description": "<p>IvoryGate signs users in to existing WordPress accounts using an identity authenticated by Microsoft IIS Windows Authentication.</p>\n<p>The plugin is designed for controlled Windows and IIS environments such as intranets. It does not implement Kerberos or NTLM itself and never receives or stores a Windows password. IIS performs Windows Authentication and provides the trusted server identity.</p>\n<p>Key properties:</p>\n<ul>\n<li>Exact, case-sensitive mapping from a Windows identity to an existing WordPress user ID.</li>\n<li>No automatic user creation, role changes, or password changes.</li>\n<li>HTTPS is required for automatic SSO.</li>\n<li>Secure WordPress authentication cookies are created with the official WordPress API.</li>\n<li>When SSO is enabled, WordPress password login and application passwords are disabled.</li>\n<li>Unknown, missing, duplicated, or invalid mappings fail closed.</li>\n<li>Optional logging contains fixed event codes only and does not include identities, cookies, passwords, or request data.</li>\n<li>Existing WordPress sessions are not switched to another account.</li>\n</ul>\n<h4>Important requirements</h4>\n<p>IvoryGate requires:</p>\n<ul>\n<li>Microsoft IIS with Windows Authentication using Negotiate, NTLM, or Kerberos.</li>\n<li>A server configuration in which IIS securely sets REMOTE_USER, AUTH_USER, and AUTH_TYPE.</li>\n<li>HTTPS for the request, WordPress Address, and Site Address.</li>\n<li>Existing WordPress user accounts to map to.</li>\n<li>A single-site WordPress installation. WordPress Multisite is not supported.</li>\n</ul>\n<p>IIS may reject a request with HTTP 401 before WordPress or IvoryGate runs. In that case, the browser may show its own Windows credentials dialog. A WordPress plugin cannot replace that dialog or reliably detect private or incognito browsing mode.</p>\n<p>IvoryGate does not trust identity values from HTTP_REMOTE_USER, X-Forwarded-User, Authorization, cookies, or other client-controlled headers.</p>\n<h4>Lockout protection</h4>\n<p>Before enabling SSO, retain administrative access to the server files.</p>\n<p>To restore native WordPress login during recovery, add the following before WordPress loads:</p>\n<p>define( &#8216;IVORYGATE_DISABLE_SSO&#8217;, true );</p>\n<p>You can also disable the plugin by renaming its directory from the server file system. The plugin intentionally retains its settings when deactivated or uninstalled.</p>\n<h3>Privacy</h3>\n<p>IvoryGate does not transmit data to external services. Configuration is stored in the local WordPress options table. It contains explicit Windows identity strings and WordPress user IDs entered by an administrator.</p>\n<p>Optional diagnostic logging writes only fixed event codes to the operating system log through PHP syslog. It does not log identities, passwords, cookies, tokens, exception messages, or request data.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/ivorygate.0.1.2.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "iis": "iis",
+        "intranet": "intranet",
+        "security": "security",
+        "sso": "sso",
+        "windows-authentication": "windows authentication"
+    },
+    "stable_tag": "0.1.2",
+    "versions": {
+        "0.1.2": "https://downloads.wordpress.org/plugin/ivorygate.0.1.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/ivorygate.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/ivorygate.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
