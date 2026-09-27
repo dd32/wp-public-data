@@ -1,0 +1,73 @@
+{
+    "name": "PageFerry",
+    "slug": "pageferry",
+    "version": "1.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/vadimc/\">vadimc</a>",
+    "author_profile": "https://profiles.wordpress.org/vadimc/",
+    "contributors": {
+        "vadimc": {
+            "profile": "https://profiles.wordpress.org/vadimc/",
+            "avatar": "https://secure.gravatar.com/avatar/b829af359496bdfb4a8293c46ac3f4391112d268190b1d3f1c5d21eddc131b23?s=96&d=monsterid&r=g",
+            "display_name": "vadimc"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1.2",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/pageferry/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-27 20:34:00",
+    "added": "2026-09-27",
+    "homepage": "https://vadim.xyz/pageferry",
+    "sections": {
+        "description": "<p>PageFerry exports a single Gutenberg page, post, or custom post type (content + manifest + media) to a ZIP file on staging, then imports it on production with correct block-level attachment remapping, slug + taxonomy preservation (categories, tags, and custom taxonomies), domain rewrite, hash-based media dedup, and update-in-place.</p>\n<p>Scope (Gutenberg-only): export/import via ZIP for pages, posts, and block-editor custom post types; featured + inline images; slug + categories/tags/custom taxonomies; basic staging<span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span>prod domain rewrite; existing-media reuse; create-new or update-selected; land-as-draft option; pre-import backup of overwritten content + plain-language log.</p>\n<p>Explicit v1 non-goals: builders (detect + refuse with a clear message), ACF/SEO meta beyond pass-through (exception: ACF blocks that store their fields in post meta via <code>usePostMeta</code> ferry their values with media-ID remap — see FAQ), bulk, direct push-without-ZIP, multisite.</p>\n<p>Small ZIPs import in one upload. Larger bundles (over your host&#8217;s per-upload limit) import file-by-file through an in-browser worker (bundled JavaScript, no extra service): the same dedupe/remap/create result either way. A single asset larger than the limit cannot import — the error names the file.</p>\n",
+        "installation": "<ol>\n<li>Upload <code>pageferry</code> to <code>/wp-content/plugins/</code>, activate.</li>\n<li>Staging: open a page <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> PageFerry Export <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Ferry this page <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> download ZIP.</li>\n<li>Production: Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> PageFerry Import <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> upload ZIP <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> choose create-new or update-selected <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload and preview <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Confirm import.</li>\n<li>Completed imports record one row each under Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> PageFerry Import <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Logs; pre-overwrite snapshots list under Backups.</li>\n</ol>\n<p>Requires: WordPress 6.5+, PHP 8.1+, PHP zip extension (for the export side).</p>\n",
+        "faq": "\n<dt id=\"why%20was%20my%20elementor%20page%20refused%3F\">\nWhy was my Elementor page refused?\n</h4>\n<p>\n<p>PageFerry v1 imports Gutenberg pages only. The exporter detects page-builder meta (Elementor, Divi, Beaver Builder, Bricks, WPBakery) and records it in the bundle; the importer refuses the bundle with a message naming the builder instead of silently corrupting the layout. Export your content as Gutenberg blocks (or rebuild the page in the block editor) and ferry again. Builder support is planned after v1.</p>\n</p>\n<dt id=\"how%20does%20media%20dedup%20work%3F\">\nHow does media dedup work?\n</h4>\n<p>\n<p>Every media file is hashed (SHA-256) at export. On import, PageFerry looks the hash up in its reuse index and verifies the match by re-hashing the existing attachment — a stale index row never reuses a deleted file. Identical bytes reuse the existing attachment; same filename with different bytes uploads separately. The confirmation screen reports reused-vs-new counts, and the Logs tab records them per import.</p>\n</p>\n<dt id=\"update%20vs%20create%20%E2%80%94%20which%20is%20used%3F\">\nUpdate vs create — which is used?\n</h4>\n<p>\n<p>You choose on the import screen. Create-new (default) inserts the content as a draft with a unique slug (a clash gets a <code>-2</code> suffix plus a notice). Update-selected overwrites the target&#8217;s content, excerpt, terms, and featured image after snapshotting the prior content + meta into Backups and writing a log row. Terms (categories, tags, and custom taxonomies) match by name: existing terms are reused as-is (their current parents are kept, never restructured); only new terms are created with their exported hierarchy. The imported post type must be registered on the production site (activate the plugin or theme that provides the custom post type first). There is no one-click rollback in v1 — restore from the Backups tab by pasting the stored content back.</p>\n</p>\n<dt id=\"where%20is%20my%20pre-import%20backup%3F\">\nWhere is my pre-import backup?\n</h4>\n<p>\n<p>Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> PageFerry Import <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Backups. Each update-selected import stores the target&#8217;s prior content and meta under a <code>pf-*</code> key before writing anything (kept: last 20). The Logs tab links each update row to its backup key.</p>\n</p>\n<dt id=\"the%20import%20says%20a%20file%20is%20too%20large.%20what%20now%3F\">\nThe import says a file is too large. What now?\n</h4>\n<p>\n<p>Your host caps each upload (<code>upload_max_filesize</code>). Bundles over that cap import file-by-file automatically — but one single asset over the cap cannot. Raise the PHP upload limit, or drop that asset from the page and re-export. The error names the file.</p>\n</p>\n<dt id=\"does%20pageferry%20ferry%20acf%20block%20data%3F\">\nDoes PageFerry ferry ACF block data?\n</h4>\n<p>\n<p>Blocks that keep their field data in the block comment (the ACF default) ferry like any other blocks: media IDs remap, everything else passes through. Blocks that store their fields in post meta (<code>usePostMeta</code>, ACF PRO 6.3+) ferry their field values too: image/file/gallery IDs remap to the new attachments, upload URLs rewrite, all other values restore verbatim through the ACF API. Two limits apply: reference fields (post/relationship/taxonomy/user/page-link IDs) point at source-site content and ferry verbatim — the export warns when they hold values — and on update-selected imports, fields unset on the source keep the target&#8217;s existing values.</p>\n</p>\n<dt id=\"does%20pageferry%20phone%20home%20or%20load%20remote%20code%3F\">\nDoes PageFerry phone home or load remote code?\n</h4>\n<p>\n<p>No. v1 makes no outbound requests, loads no CDN scripts, and runs with no account or license key. All JavaScript (including the large-bundle worker dependency fflate 0.8.3, MIT, source at https://github.com/101arrowz/fflate) ships inside the plugin. Import/export handlers require the <code>import</code> / <code>edit_post</code> capabilities plus nonces.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.0</h4>\n<ul>\n<li>Custom post types (block-editor) and custom taxonomies: the export metabox appears on every Gutenberg-edited post type, bundles carry all attached taxonomies, and the importer recreates the post type + term hierarchy on production (the post type must be registered there first).</li>\n<li>ACF <code>usePostMeta</code> blocks: field values stored in post meta now ferry in the bundle (<code>acf_post_meta</code>) and restore on import with media-ID remap and URL rewrite, written back through the ACF API. Skipped values are reported in the import log row (<code>acf_skipped</code>); reference-type IDs ferry verbatim (export warns).</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First release: ferry a Gutenberg page or post with its media as a single ZIP bundle — export with manifest, import with block-level attachment remap, URL + domain rewrite, SHA-256 media dedup, slug + category/tag preservation, create-new or update-selected, land-as-draft, pre-import backup plus plain-language log. Builder-marked bundles refuse with a clear message.</li>\n</ul>\n"
+    },
+    "short_description": "Ferry a page from staging to production — media included.",
+    "description": "<p>PageFerry exports a single Gutenberg page, post, or custom post type (content + manifest + media) to a ZIP file on staging, then imports it on production with correct block-level attachment remapping, slug + taxonomy preservation (categories, tags, and custom taxonomies), domain rewrite, hash-based media dedup, and update-in-place.</p>\n<p>Scope (Gutenberg-only): export/import via ZIP for pages, posts, and block-editor custom post types; featured + inline images; slug + categories/tags/custom taxonomies; basic staging<span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span>prod domain rewrite; existing-media reuse; create-new or update-selected; land-as-draft option; pre-import backup of overwritten content + plain-language log.</p>\n<p>Explicit v1 non-goals: builders (detect + refuse with a clear message), ACF/SEO meta beyond pass-through (exception: ACF blocks that store their fields in post meta via <code>usePostMeta</code> ferry their values with media-ID remap — see FAQ), bulk, direct push-without-ZIP, multisite.</p>\n<p>Small ZIPs import in one upload. Larger bundles (over your host&#8217;s per-upload limit) import file-by-file through an in-browser worker (bundled JavaScript, no extra service): the same dedupe/remap/create result either way. A single asset larger than the limit cannot import — the error names the file.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/pageferry.1.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "export": "export",
+        "gutenberg": "gutenberg",
+        "import": "import",
+        "migration": "migration",
+        "staging": "staging"
+    },
+    "stable_tag": "1.1.0",
+    "versions": {
+        "1.1.0": "https://downloads.wordpress.org/plugin/pageferry.1.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/pageferry.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/pageferry.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
