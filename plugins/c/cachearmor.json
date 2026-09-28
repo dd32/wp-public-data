@@ -1,0 +1,77 @@
+{
+    "name": "CacheArmor",
+    "slug": "cachearmor",
+    "version": "1.4.0",
+    "author": "<a href=\"https://profiles.wordpress.org/mandaffaaord/\">mandaffaaord</a>",
+    "author_profile": "https://profiles.wordpress.org/mandaffaaord/",
+    "contributors": {
+        "mandaffaaord": {
+            "profile": "https://profiles.wordpress.org/mandaffaaord/",
+            "avatar": "https://secure.gravatar.com/avatar/95a6985cbd2b1e88ed2f1fa75e27923d2a866d23076b2844e5c6e4890d18eab1?s=96&d=monsterid&r=g",
+            "display_name": "mandaffaaord"
+        }
+    },
+    "requires": "5.6",
+    "tested": "7.1.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/cachearmor/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-28 21:18:00",
+    "added": "2026-09-28",
+    "homepage": "https://github.com/AndreasJe/cachearmor",
+    "sections": {
+        "description": "<p>Most REST caching stops at &#8220;store the response, serve it until it expires&#8221;. The hard part is the moment it <em>does</em> expire: that is when every client that was being served instantly is suddenly queued behind one slow render.</p>\n<p>This plugin is built around that moment.</p>\n<p><strong>What makes it different</strong></p>\n<ul>\n<li><strong>Stale-while-revalidate.</strong> Once an entry exists, it keeps being served after it expires while a single request refreshes it in the background, so visitors are not held up by the refresh.</li>\n<li><strong>Stampede protection.</strong> When an entry is missing or has expired entirely, exactly one request regenerates it. The others wait briefly for that result instead of running the same expensive render in parallel.</li>\n<li><strong>Files on disk, no custom tables.</strong> Cached responses are files, not database rows, and there is no must-use plugin to drop into <code>mu-plugins</code>. The only things stored in the database are your settings and a note of when the cache was last cleared.</li>\n<li><strong>Opt-in per route, from a settings screen.</strong> Choose exactly which routes to cache, set a query filter and a lifetime for each, and see which routes carry a permission check. Nothing is cached until you enable it.</li>\n<li><strong>Safe by default.</strong> Only anonymous GET requests are ever cached. Routes whose responses differ per user or per shopping session, such as <code>/wp/v2/users</code> and the WooCommerce cart and checkout, cannot be enabled at all, and requests that carry a shopping session are never served from the cache.</li>\n<li><strong>Bounded.</strong> The cache stops growing at 1,000 entries or 256 MB, whichever comes first, so it can never fill the disk.</li>\n<li><strong>Multisite aware.</strong> Every site in a network has its own cache.</li>\n<li><strong>Fails open.</strong> An error, a corrupt file, or an unwritable directory falls back to normal uncached behaviour rather than breaking the endpoint.</li>\n<li><strong>No external requests, no telemetry, no data collection.</strong> Ever.</li>\n</ul>\n<p><strong>Why caching is opt-in</strong></p>\n<p>Caching the wrong endpoint can serve one visitor&#8217;s data to another. So the plugin does nothing until you enable a route yourself.</p>\n<p>The settings screen lists every REST route registered on your site, including routes added by other plugins and your own custom endpoints, with a filter to find the ones you want. Each is marked &#8220;Public&#8221; or &#8220;Permission check&#8221; so you can see which ones restrict access before you decide.</p>\n<p><strong>A worked example</strong></p>\n<p>A collection request that renders page-builder content for dozens of posts can take many seconds and hold a PHP worker for the whole time. When several clients poll that endpoint, the worker pool fills and the whole site slows down. Cache that one route and the cost collapses to a file read, even at the moment the entry expires.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin to <code>/wp-content/plugins/cachearmor/</code> or install it through the Plugins screen.</li>\n<li>Activate the plugin.</li>\n<li>Go to <strong>Settings &gt; CacheArmor</strong> and switch on the routes you want cached. Until you do, nothing is cached.</li>\n</ol>\n<p>Optionally set a query filter per route, for example <code>categories=42</code>, so only matching requests are cached. Leave it empty to cache every variation of that route.</p>\n<p>Developers can add rules in code instead, in a theme&#8217;s <code>functions.php</code> or a site-specific plugin. Rules from both sources are combined:</p>\n<pre><code>add_filter( 'cachearmor_rules', function ( $rules ) {\n    $rules[] = array(\n        'route' =&gt; '/wp/v2/pages',\n        'query' =&gt; array( 'categories' =&gt; 42 ),\n        'ttl'   =&gt; 900,\n    );\n    return $rules;\n} );\n</code></pre>\n",
+        "faq": "\n<dt id=\"why%20does%20it%20cache%20nothing%20after%20activation%3F\">\nWhy does it cache nothing after activation?\n</h4>\n<p>\n<p>By design. Caching the wrong endpoint can serve one visitor&#8217;s data to another, so you must choose which routes are safe to cache under Settings &gt; CacheArmor.</p>\n</p>\n<dt id=\"does%20it%20support%20custom%20endpoints%3F\">\nDoes it support custom endpoints?\n</h4>\n<p>\n<p>Yes. The settings screen lists all registered REST routes, including those added by other plugins and your own code, so custom endpoints appear alongside the core ones. Routes with placeholders, such as a single post by ID, cannot be selected there yet; add those with the <code>cachearmor_rules</code> filter.</p>\n</p>\n<dt id=\"what%20do%20%22public%22%20and%20%22permission%20check%22%20mean%3F\">\nWhat do &#8220;Public&#8221; and &#8220;Permission check&#8221; mean?\n</h4>\n<p>\n<p>A route with a permission check may give different responses to different visitors, so cache it only if you are certain every anonymous visitor receives the same response.</p>\n<p>&#8220;Public&#8221; means anyone may call the route. It does not guarantee that every visitor gets the same response: a route can still vary by cookie, session or location. The same care applies.</p>\n</p>\n<dt id=\"how%20do%20i%20know%20whether%20a%20response%20came%20from%20cache%3F\">\nHow do I know whether a response came from cache?\n</h4>\n<p>\n<p>Responses carry an <code>X-CacheArmor</code> header with a value of HIT, STALE or MISS, plus <code>X-CacheArmor-Age</code> in seconds.</p>\n</p>\n<dt id=\"how%20do%20i%20pause%20caching%3F\">\nHow do I pause caching?\n</h4>\n<p>\n<p>Turn on <strong>Pause caching</strong> on the Settings tab under Settings &gt; CacheArmor. To pause it from code instead, add <code>define( 'CACHEARMOR_DISABLE', true );</code> to <code>wp-config.php</code>.</p>\n</p>\n<dt id=\"how%20do%20i%20clear%20the%20cache%3F\">\nHow do I clear the cache?\n</h4>\n<p>\n<p>Click <strong>Clear cache now</strong> on the settings screen, or <strong>Clear REST cache</strong> in the admin bar. Developers can call <code>CacheArmor::purge_all()</code>.</p>\n<p>The cache is also cleared automatically when content visitors can see is published, updated, unpublished or deleted, and when a category, tag or other public term changes. Drafts and internal post types do not trigger it. Narrow it further with the <code>cachearmor_should_purge</code> filter. The settings screen shows when the cache was last cleared and why.</p>\n</p>\n<dt id=\"where%20are%20the%20cache%20files%20stored%3F\">\nWhere are the cache files stored?\n</h4>\n<p>\n<p>In a <code>cachearmor</code> folder inside your uploads directory, usually <code>wp-content/uploads/cachearmor/</code>, resolved at runtime with <code>wp_upload_dir()</code>. On multisite, each site&#8217;s lives in that site&#8217;s own uploads directory. The folder is protected from direct access and removed when you delete the plugin.</p>\n<p>Entries are plain JSON data; the plugin never writes files containing code.</p>\n</p>\n<dt id=\"what%20is%20never%20cached%3F\">\nWhat is never cached?\n</h4>\n<p>\n<p>Logged-in requests, anything other than GET, non-200 responses, routes with no matching rule, blocked routes, requests carrying a shopping session, and payloads larger than <code>max_bytes</code> (8 MB by default). Add your own exclusions with the <code>cachearmor_blocked_routes</code> and <code>cachearmor_bypass_request</code> filters.</p>\n</p>\n<dt id=\"what%20happens%20when%20the%20cache%20is%20full%3F\">\nWhat happens when the cache is full?\n</h4>\n<p>\n<p>New responses are simply not stored until the cache is next cleared; existing entries keep being served and refreshed. The settings screen tells you when this happens. Narrowing your query filters is usually the fix, or raise the limits as below.</p>\n</p>\n<dt id=\"can%20i%20change%20the%20timings%20and%20limits%3F\">\nCan I change the timings and limits?\n</h4>\n<p>\n<p>Yes, with the <code>cachearmor_config</code> filter. Options are <code>ttl</code>, <code>grace</code>, <code>lock_ttl</code>, <code>cold_wait</code>, <code>max_bytes</code>, <code>max_entries</code>, <code>max_total_bytes</code>, <code>send_headers</code>, and <code>dir</code> to store the cache somewhere other than the uploads directory.</p>\n</p>\n<dt id=\"does%20it%20work%20on%20multisite%3F\">\nDoes it work on multisite?\n</h4>\n<p>\n<p>Yes. Each site in the network keeps its own cache, so one site can never be served another&#8217;s responses, and clearing one site&#8217;s cache leaves the others alone.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20object%20caching%20or%20a%20page%20cache%3F\">\nDoes it work with object caching or a page cache?\n</h4>\n<p>\n<p>Yes. It operates inside the REST dispatch cycle and does not interact with page caches, which normally exclude <code>/wp-json/</code> anyway.</p>\n</p>\n<dt id=\"where%20is%20the%20source%20code%3F\">\nWhere is the source code?\n</h4>\n<p>\n<p>The source lives at the URL given in the Plugin URI field. The distributed plugin contains the complete, unminified source; there is no build step.</p>\n</p>\n\n",
+        "changelog": "<h4>1.4.0</h4>\n<ul>\n<li>Redesigned settings screen: status cards, Routes, Settings and Help tabs, toggle switches, routes grouped by namespace, and an access-type filter.</li>\n<li>Unsaved changes are counted in a sticky save bar, with a Discard button and a warning before leaving the page.</li>\n<li>Lifetimes are shown in minutes, hours or days next to each field.</li>\n<li>Routes are grouped by their registered namespace, such as wp/v2 or wc/store/v1.</li>\n<li>&#8220;No permission check&#8221; is now labelled &#8220;Public&#8221;.</li>\n<li>Shield icon on the &#8220;Clear REST cache&#8221; admin bar item.</li>\n</ul>\n<h4>1.3.0</h4>\n<ul>\n<li>First public release.</li>\n</ul>\n"
+    },
+    "short_description": "Disk cache for expensive WP REST API responses, with stale-while-revalidate and stampede protection. Full route picker, no paid tier.",
+    "description": "<p>Most REST caching stops at &#8220;store the response, serve it until it expires&#8221;. The hard part is the moment it <em>does</em> expire: that is when every client that was being served instantly is suddenly queued behind one slow render.</p>\n<p>This plugin is built around that moment.</p>\n<p><strong>What makes it different</strong></p>\n<ul>\n<li><strong>Stale-while-revalidate.</strong> Once an entry exists, it keeps being served after it expires while a single request refreshes it in the background, so visitors are not held up by the refresh.</li>\n<li><strong>Stampede protection.</strong> When an entry is missing or has expired entirely, exactly one request regenerates it. The others wait briefly for that result instead of running the same expensive render in parallel.</li>\n<li><strong>Files on disk, no custom tables.</strong> Cached responses are files, not database rows, and there is no must-use plugin to drop into <code>mu-plugins</code>. The only things stored in the database are your settings and a note of when the cache was last cleared.</li>\n<li><strong>Opt-in per route, from a settings screen.</strong> Choose exactly which routes to cache, set a query filter and a lifetime for each, and see which routes carry a permission check. Nothing is cached until you enable it.</li>\n<li><strong>Safe by default.</strong> Only anonymous GET requests are ever cached. Routes whose responses differ per user or per shopping session, such as <code>/wp/v2/users</code> and the WooCommerce cart and checkout, cannot be enabled at all, and requests that carry a shopping session are never served from the cache.</li>\n<li><strong>Bounded.</strong> The cache stops growing at 1,000 entries or 256 MB, whichever comes first, so it can never fill the disk.</li>\n<li><strong>Multisite aware.</strong> Every site in a network has its own cache.</li>\n<li><strong>Fails open.</strong> An error, a corrupt file, or an unwritable directory falls back to normal uncached behaviour rather than breaking the endpoint.</li>\n<li><strong>No external requests, no telemetry, no data collection.</strong> Ever.</li>\n</ul>\n<p><strong>Why caching is opt-in</strong></p>\n<p>Caching the wrong endpoint can serve one visitor&#8217;s data to another. So the plugin does nothing until you enable a route yourself.</p>\n<p>The settings screen lists every REST route registered on your site, including routes added by other plugins and your own custom endpoints, with a filter to find the ones you want. Each is marked &#8220;Public&#8221; or &#8220;Permission check&#8221; so you can see which ones restrict access before you decide.</p>\n<p><strong>A worked example</strong></p>\n<p>A collection request that renders page-builder content for dozens of posts can take many seconds and hold a PHP worker for the whole time. When several clients poll that endpoint, the worker pool fills and the whole site slows down. Cache that one route and the cost collapses to a file read, even at the moment the entry expires.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/cachearmor.1.4.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "api": "api",
+        "cache": "cache",
+        "performance": "performance",
+        "rest-api": "rest-api"
+    },
+    "stable_tag": "1.4.0",
+    "versions": {
+        "1.3.0": "https://downloads.wordpress.org/plugin/cachearmor.1.3.0.zip",
+        "1.4.0": "https://downloads.wordpress.org/plugin/cachearmor.1.4.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/cachearmor.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/cachearmor/assets/banner-772x250.png?rev=3717846",
+        "high": "https://ps.w.org/cachearmor/assets/banner-1544x500.png?rev=3717846"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/cachearmor/assets/icon-128x128.png?rev=3717846",
+        "2x": "https://ps.w.org/cachearmor/assets/icon-256x256.png?rev=3717846"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
