@@ -1,0 +1,95 @@
+{
+    "name": "QRPayBD Payments",
+    "slug": "qrpaybd-payments",
+    "version": "0.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/bitquintet/\">bitquintet</a>",
+    "author_profile": "https://profiles.wordpress.org/bitquintet/",
+    "contributors": {
+        "bitquintet": {
+            "profile": "https://profiles.wordpress.org/bitquintet/",
+            "avatar": "https://secure.gravatar.com/avatar/4407622b221034b274a3740372b4dba865ceef60d1cafdc29cdc28f08e9d3cff?s=96&d=monsterid&r=g",
+            "display_name": "bitquintet"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/qrpaybd-payments/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-29 17:53:00",
+    "added": "2026-09-29",
+    "homepage": "",
+    "sections": {
+        "description": "<p>QRPayBD confirms Bangladeshi mobile wallet and Bangla QR payments by reading the &#8220;payment received&#8221; SMS on an Android phone that you own. This plugin connects your WordPress site to <strong>your own QRPayBD server</strong>:</p>\n<ol>\n<li>Your site creates an order at QRPayBD and sends the customer to the QRPayBD-hosted payment page.</li>\n<li>The customer scans your shop&#8217;s QR in their wallet or banking app, pays the exact amount and enters the TrxID from their payment SMS.</li>\n<li>QRPayBD checks the TrxID and amount against the SMS on your phone and marks the order paid.</li>\n<li>QRPayBD sends your site a signed webhook and your order is completed. QRPayBD never holds your money.</li>\n</ol>\n<p><strong>Not affiliated.</strong> bKash, Nagad, Upay and Rocket are trademarks of their respective owners. This plugin is not affiliated with, endorsed by or sponsored by any of them; they are named only to describe payment services your customers may already use.</p>\n<p><strong>WooCommerce (optional)</strong></p>\n<ul>\n<li>Classic payment gateway that also works in the Cart and Checkout <strong>Blocks</strong> and with the classic checkout shortcode.</li>\n<li>Compatible with High-Performance Order Storage (custom order tables).</li>\n<li>BDT only. The method is hidden at checkout for any other currency.</li>\n<li>The order is placed <strong>on hold</strong> and completed automatically. An amount mismatch is never auto-completed: the order stays on hold with a clear order note.</li>\n<li>Order screen box with status, reference, TrxID, match method, payment link and a <strong>Re-check now</strong> button.</li>\n<li>Cancelling the WooCommerce order cancels the pending payment at QRPayBD (best effort).</li>\n</ul>\n<p><strong>Elementor (optional, the free version is enough)</strong></p>\n<ul>\n<li>Widget <strong>QRPayBD Pay Button</strong> in its own &#8220;QRPayBD&#8221; category. It works <strong>without WooCommerce</strong>: fixed amount, item text, optional return URL and full style controls.</li>\n<li>The amount is read from the saved page <strong>on the server</strong>. The browser only sends the page id and widget id, so the price cannot be tampered with.</li>\n<li>Each click creates a private record under <strong>QRPayBD Payments</strong> (amount, status, reference, TrxID, times).</li>\n<li>The action <code>qrpaybd_payment_completed</code> lets you run your own automation when a payment completes.</li>\n</ul>\n<p><strong>Reliability</strong></p>\n<ul>\n<li>Webhooks are verified with HMAC-SHA256 over the raw request body (constant-time comparison).</li>\n<li>QRPayBD has no webhook retry queue, so the plugin also checks unpaid orders every five minutes (Action Scheduler when available, otherwise WP-Cron) for up to 48 hours, and once when the customer returns to your site.</li>\n</ul>\n<p><strong>No tracking.</strong> The plugin has no analytics, telemetry, update checks or advertising, and it never contacts any server other than the QRPayBD address you configure.</p>\n<h4>External services</h4>\n<p>This plugin connects to exactly one external service: <strong>the QRPayBD server whose base URL you enter in Settings &gt; QRPayBD</strong> (for example <code>https://pay.example.com</code>). QRPayBD is the payment-confirmation service described above. Whoever operates that server (you, or the provider you use) is the service provider, and its terms and privacy policy apply.</p>\n<p>What is sent, and when:</p>\n<ul>\n<li><strong>Creating a payment</strong> (a customer chooses the QRPayBD payment method at checkout, or a visitor clicks a QRPayBD Pay Button): the order total in taka, a store order id (<code>wc-&lt;site hash&gt;-&lt;order number&gt;</code> or <code>el-&lt;page id&gt;-&lt;widget id&gt;-&lt;random&gt;</code>), and a return URL (the WooCommerce order-received page, or the page holding the button). Your store API key is sent in the <code>Authorization</code> header. The plugin sends no customer name, email address, phone number or address. The customer&#8217;s browser is then redirected to the QRPayBD-hosted payment page, where the customer enters the TrxID from their payment SMS; that page is operated by the QRPayBD server.</li>\n<li><strong>Checking a payment</strong>: the QRPayBD order id and your API key, every five minutes for unpaid orders younger than 48 hours, once when the customer returns to the order-received page, and when an administrator presses &#8220;Re-check now&#8221;.</li>\n<li><strong>Cancelling a payment</strong>: the QRPayBD order id and your API key, when a WooCommerce order is cancelled while its payment is unpaid.</li>\n<li><strong>Test connection</strong> (administrators only, on request): a request to <code>/health</code> with no data, and one lookup of a dummy order id with your API key.</li>\n</ul>\n<p>Data received: QRPayBD sends signed webhooks to <code>/wp-json/qrpaybd/v1/webhook</code> on your site containing the order ids, amounts, TrxID, match method and payment time. These are stored as order meta (WooCommerce) or in the private &#8220;QRPayBD Payments&#8221; records (Elementor).</p>\n<p>Terms of Service: https://qrpaybd.com/terms/</p>\n<p>Privacy Policy: https://qrpaybd.com/privacy/</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>qrpaybd-payments</code> folder to <code>/wp-content/plugins/</code>, or install the zip through Plugins &gt; Add New &gt; Upload Plugin, then activate it.</li>\n<li>Go to <strong>Settings &gt; QRPayBD</strong> (or WooCommerce &gt; Settings &gt; Payments &gt; QRPayBD) and enter:\n<ul>\n<li><strong>QRPayBD base URL</strong>: must start with <code>https://</code>. Plain <code>http://</code> is only accepted for <code>localhost</code> or <code>127.0.0.1</code>.</li>\n<li><strong>Store API key</strong>: create it in your QRPayBD dashboard (Store setup).</li>\n<li><strong>Webhook secret</strong>: shown in the QRPayBD dashboard next to the webhook URL.</li>\n</ul>\n</li>\n<li>Copy the <strong>Webhook URL</strong> shown on the settings page (<code>https://your-site/wp-json/qrpaybd/v1/webhook</code>) into the webhook setting of your QRPayBD dashboard. In production QRPayBD requires a public https address.</li>\n<li>Press <strong>Test connection</strong>. It checks that the server answers and that the key is accepted. The key is never displayed.</li>\n<li>WooCommerce: enable the QRPayBD method under WooCommerce &gt; Settings &gt; Payments and set the store currency to BDT.</li>\n<li>Elementor: drag <strong>QRPayBD Pay Button</strong> (QRPayBD category) into a page, set the amount and update the page.</li>\n</ol>\n<p>Both WooCommerce and Elementor are optional. Each part loads only when its plugin is active. With neither active the plugin loads harmlessly and shows a dismissible notice explaining what each part needs.</p>\n",
+        "faq": "\n<dt id=\"is%20this%20an%20official%20wallet%20or%20bank%20api%3F\">\nIs this an official wallet or bank API?\n</h4>\n<p>\n<p>No. QRPayBD reads the payment SMS on your own Android phone with a collector app and matches the customer&#8217;s TrxID and the exact amount. It is not an official wallet or bank API, the SMS wording of a wallet can change, and a forged SMS combined with a matching TrxID is a residual risk. Review unusual orders and use the optional balance check offered by QRPayBD.</p>\n</p>\n<dt id=\"which%20phones%20and%20currencies%20work%3F\">\nWhich phones and currencies work?\n</h4>\n<p>\n<p>The collector app is Android-only. Only Bangladeshi Taka (BDT) is supported.</p>\n</p>\n<dt id=\"can%20i%20refund%20from%20woocommerce%3F\">\nCan I refund from WooCommerce?\n</h4>\n<p>\n<p>No. QRPayBD does not hold or move money, so the gateway supports products only and no refunds. Refund the customer from your own wallet and then update the order.</p>\n</p>\n<dt id=\"what%20happens%20if%20the%20customer%20pays%20a%20different%20amount%3F\">\nWhat happens if the customer pays a different amount?\n</h4>\n<p>\n<p>The order is <strong>not</strong> completed. It stays on hold with a note &#8220;PAID AMOUNT DIFFERS&#8221; showing the order total, the QRPayBD amount, the amount received and the TrxID. You decide whether to complete or cancel it.</p>\n</p>\n<dt id=\"what%20if%20the%20webhook%20never%20arrives%3F\">\nWhat if the webhook never arrives?\n</h4>\n<p>\n<p>The plugin checks on-hold orders every five minutes and when the customer returns to the order-received page. You can also press <strong>Re-check now</strong> on the order.</p>\n</p>\n<dt id=\"does%20the%20five-minute%20check%20need%20a%20real%20cron%20job%3F\">\nDoes the five-minute check need a real cron job?\n</h4>\n<p>\n<p>WP-Cron and Action Scheduler only run when the site receives visits. On a quiet store add a system cron that requests <code>wp-cron.php</code> every few minutes.</p>\n</p>\n<dt id=\"why%20must%20my%20webhook%20url%20be%20https%20and%20public%20in%20production%3F\">\nWhy must my webhook URL be https and public in production?\n</h4>\n<p>\n<p>The QRPayBD server refuses webhook URLs that are not https or that point at a private or loopback address when it runs in production mode.</p>\n</p>\n<dt id=\"is%20the%20elementor%20pro%20checkout%20widget%20supported%3F\">\nIs the Elementor Pro Checkout widget supported?\n</h4>\n<p>\n<p>Elementor Pro widgets render the standard WooCommerce checkout, which this gateway supports. The plugin was tested on a page built with free Elementor and the <code>[woocommerce_checkout]</code> shortcode. Elementor Pro itself could not be tested, so the Pro widgets are untested.</p>\n</p>\n<dt id=\"where%20is%20the%20bangla%20translation%3F\">\nWhere is the Bangla translation?\n</h4>\n<p>\n<p>A <code>bn_BD</code> translation ships with the plugin. It has not been reviewed by a native speaker; corrections are welcome.</p>\n</p>\n<dt id=\"does%20the%20plugin%20work%20without%20woocommerce%20or%20without%20elementor%3F\">\nDoes the plugin work without WooCommerce or without Elementor?\n</h4>\n<p>\n<p>Yes. Each integration loads only when its host plugin is active. The Pay Button needs Elementor but not WooCommerce; the gateway needs WooCommerce but not Elementor.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>First release: WooCommerce gateway (classic and Blocks checkout, HPOS), signed webhook receiver, five-minute reconciliation, order box and cancel hook, Elementor Pay Button with server-side amount and payment records, Bangla translation.</li>\n</ul>\n"
+    },
+    "short_description": "Accept Bangladeshi wallet and Bangla QR payments confirmed from your own phone&#039;s payment SMS. WooCommerce gateway and Elementor Pay Button.",
+    "description": "<p>QRPayBD confirms Bangladeshi mobile wallet and Bangla QR payments by reading the &#8220;payment received&#8221; SMS on an Android phone that you own. This plugin connects your WordPress site to <strong>your own QRPayBD server</strong>:</p>\n<ol>\n<li>Your site creates an order at QRPayBD and sends the customer to the QRPayBD-hosted payment page.</li>\n<li>The customer scans your shop&#8217;s QR in their wallet or banking app, pays the exact amount and enters the TrxID from their payment SMS.</li>\n<li>QRPayBD checks the TrxID and amount against the SMS on your phone and marks the order paid.</li>\n<li>QRPayBD sends your site a signed webhook and your order is completed. QRPayBD never holds your money.</li>\n</ol>\n<p><strong>Not affiliated.</strong> bKash, Nagad, Upay and Rocket are trademarks of their respective owners. This plugin is not affiliated with, endorsed by or sponsored by any of them; they are named only to describe payment services your customers may already use.</p>\n<p><strong>WooCommerce (optional)</strong></p>\n<ul>\n<li>Classic payment gateway that also works in the Cart and Checkout <strong>Blocks</strong> and with the classic checkout shortcode.</li>\n<li>Compatible with High-Performance Order Storage (custom order tables).</li>\n<li>BDT only. The method is hidden at checkout for any other currency.</li>\n<li>The order is placed <strong>on hold</strong> and completed automatically. An amount mismatch is never auto-completed: the order stays on hold with a clear order note.</li>\n<li>Order screen box with status, reference, TrxID, match method, payment link and a <strong>Re-check now</strong> button.</li>\n<li>Cancelling the WooCommerce order cancels the pending payment at QRPayBD (best effort).</li>\n</ul>\n<p><strong>Elementor (optional, the free version is enough)</strong></p>\n<ul>\n<li>Widget <strong>QRPayBD Pay Button</strong> in its own &#8220;QRPayBD&#8221; category. It works <strong>without WooCommerce</strong>: fixed amount, item text, optional return URL and full style controls.</li>\n<li>The amount is read from the saved page <strong>on the server</strong>. The browser only sends the page id and widget id, so the price cannot be tampered with.</li>\n<li>Each click creates a private record under <strong>QRPayBD Payments</strong> (amount, status, reference, TrxID, times).</li>\n<li>The action <code>qrpaybd_payment_completed</code> lets you run your own automation when a payment completes.</li>\n</ul>\n<p><strong>Reliability</strong></p>\n<ul>\n<li>Webhooks are verified with HMAC-SHA256 over the raw request body (constant-time comparison).</li>\n<li>QRPayBD has no webhook retry queue, so the plugin also checks unpaid orders every five minutes (Action Scheduler when available, otherwise WP-Cron) for up to 48 hours, and once when the customer returns to your site.</li>\n</ul>\n<p><strong>No tracking.</strong> The plugin has no analytics, telemetry, update checks or advertising, and it never contacts any server other than the QRPayBD address you configure.</p>\n<h4>External services</h4>\n<p>This plugin connects to exactly one external service: <strong>the QRPayBD server whose base URL you enter in Settings &gt; QRPayBD</strong> (for example <code>https://pay.example.com</code>). QRPayBD is the payment-confirmation service described above. Whoever operates that server (you, or the provider you use) is the service provider, and its terms and privacy policy apply.</p>\n<p>What is sent, and when:</p>\n<ul>\n<li><strong>Creating a payment</strong> (a customer chooses the QRPayBD payment method at checkout, or a visitor clicks a QRPayBD Pay Button): the order total in taka, a store order id (<code>wc-&lt;site hash&gt;-&lt;order number&gt;</code> or <code>el-&lt;page id&gt;-&lt;widget id&gt;-&lt;random&gt;</code>), and a return URL (the WooCommerce order-received page, or the page holding the button). Your store API key is sent in the <code>Authorization</code> header. The plugin sends no customer name, email address, phone number or address. The customer&#8217;s browser is then redirected to the QRPayBD-hosted payment page, where the customer enters the TrxID from their payment SMS; that page is operated by the QRPayBD server.</li>\n<li><strong>Checking a payment</strong>: the QRPayBD order id and your API key, every five minutes for unpaid orders younger than 48 hours, once when the customer returns to the order-received page, and when an administrator presses &#8220;Re-check now&#8221;.</li>\n<li><strong>Cancelling a payment</strong>: the QRPayBD order id and your API key, when a WooCommerce order is cancelled while its payment is unpaid.</li>\n<li><strong>Test connection</strong> (administrators only, on request): a request to <code>/health</code> with no data, and one lookup of a dummy order id with your API key.</li>\n</ul>\n<p>Data received: QRPayBD sends signed webhooks to <code>/wp-json/qrpaybd/v1/webhook</code> on your site containing the order ids, amounts, TrxID, match method and payment time. These are stored as order meta (WooCommerce) or in the private &#8220;QRPayBD Payments&#8221; records (Elementor).</p>\n<p>Terms of Service: https://qrpaybd.com/terms/</p>\n<p>Privacy Policy: https://qrpaybd.com/privacy/</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/qrpaybd-payments.zip",
+    "upgrade_notice": {
+        "0.1.0": "<p>First release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/qrpaybd-payments/assets/screenshot-1.png?rev=3719561",
+            "caption": "Settings &gt; QRPayBD with the Test connection result."
+        },
+        {
+            "src": "https://ps.w.org/qrpaybd-payments/assets/screenshot-2.png?rev=3719561",
+            "caption": "WooCommerce gateway settings (shared connection fields, no-refunds note)."
+        },
+        {
+            "src": "https://ps.w.org/qrpaybd-payments/assets/screenshot-3.png?rev=3719561",
+            "caption": "Classic checkout with the three-step \"how you will pay\" text."
+        },
+        {
+            "src": "https://ps.w.org/qrpaybd-payments/assets/screenshot-4.png?rev=3719561",
+            "caption": "Checkout Block with the QRPayBD method."
+        }
+    ],
+    "tags": {
+        "bangladesh": "Bangladesh",
+        "elementor": "elementor",
+        "payments": "payments",
+        "qr-code": "qr code",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "trunk",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/qrpaybd-payments.1.0.0.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/qrpaybd-payments/assets/banner-772x250.png?rev=3719561",
+        "high": "https://ps.w.org/qrpaybd-payments/assets/banner-1544x500.png?rev=3719561"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/qrpaybd-payments/assets/icon-128x128.png?rev=3719561",
+        "2x": "https://ps.w.org/qrpaybd-payments/assets/icon-256x256.png?rev=3719561"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
