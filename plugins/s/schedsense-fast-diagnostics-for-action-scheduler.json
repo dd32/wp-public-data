@@ -1,0 +1,100 @@
+{
+    "name": "SchedSense: Fast Diagnostics for Action Scheduler",
+    "slug": "schedsense-fast-diagnostics-for-action-scheduler",
+    "version": "1.0.4",
+    "author": "<a href=\"https://profiles.wordpress.org/shahidirfan100/\">shahidirfan100</a>",
+    "author_profile": "https://profiles.wordpress.org/shahidirfan100/",
+    "contributors": {
+        "shahidirfan100": {
+            "profile": "https://profiles.wordpress.org/shahidirfan100/",
+            "avatar": "https://secure.gravatar.com/avatar/04e5b9cf4bd9f1af1263c1e9575d8fa985ebe808cbb9bd65304ea11e0f13a96e?s=96&d=monsterid&r=g",
+            "display_name": "shahidirfan100"
+        }
+    },
+    "requires": "6.8",
+    "tested": "7.1.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/schedsense-fast-diagnostics-for-action-scheduler/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-29 05:32:00",
+    "added": "2026-09-29",
+    "homepage": "https://github.com/shahidirfan100/schedsense-fast-diagnostics-for-action-scheduler",
+    "sections": {
+        "description": "<p>SchedSense: Fast Diagnostics for Action Scheduler helps administrators investigate delayed or failing scheduled work. It reads Action Scheduler through its public APIs and reports queue totals, overdue pending actions, potentially stuck in-progress actions, failed actions, and relevant site health checks. Counts and source attribution are clearly identified as bounded samples where applicable.</p>\n<h4>Features</h4>\n<ul>\n<li>Queue totals for pending, overdue, failed, in-progress, and completed actions.</li>\n<li>Overdue-age buckets from one hour to seven days, with links to matching action lists.</li>\n<li>Flags in-progress actions with no recorded update for over one hour as potentially stuck; long callbacks can be intentional.</li>\n<li>Checks WP-Cron configuration, the local WordPress loopback, and the local REST API.</li>\n<li>Attributes registered callbacks to likely source plugins using callback file metadata; uncertain matches are labelled.</li>\n<li>Bounded, filterable action lists by status, age range, exact hook, and exact group. Action arguments are never displayed.</li>\n<li>A confirmed, per-action delete control only for actions that are still failed. Deleting an entry does not repair or retry its callback.</li>\n<li>A copyable support report that excludes action arguments, credentials, cookies, customer records, and complete server paths.</li>\n<li>No telemetry, advertising, review nags, external account, analytics, remote service, or frontend assets.</li>\n</ul>\n<p>Diagnostics run on the current WordPress site. The loopback check follows WordPress Site Health behavior: it posts a test marker to this site&#8217;s <code>wp-cron.php</code>, includes the site&#8217;s current login cookies and optional HTTP Basic Authentication for that same request, and honors the <code>https_local_ssl_verify</code> filter. The marker makes <code>wp-cron.php</code> finish without starting cron jobs. The REST API check also requests this site&#8217;s own REST endpoint. No diagnostic data is sent to a third-party service.</p>\n<p>SchedSense does not bundle, replace, reset, retry, reschedule, or directly execute Action Scheduler actions. An authorized administrator can explicitly delete a selected failed action record after confirmation; the server checks that its status is still failed. Deleting a record does not fix or retry its callback. An administrator can also request WordPress&#8217;s normal cron spawner; due callbacks may then run, including callbacks that process Action Scheduler actions.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>schedsense-fast-diagnostics-for-action-scheduler</code> folder to <code>/wp-content/plugins/</code>, or install the ZIP through Plugins &gt; Add New &gt; Upload Plugin.</li>\n<li>Activate SchedSense through the Plugins screen.</li>\n<li>Open Tools &gt; SchedSense.</li>\n<li>Select Refresh diagnostics when you want a fresh snapshot.</li>\n</ol>\n<p>On Multisite, SchedSense reports the current site&#8217;s scheduler context. Network-wide aggregate diagnostics are not supported.</p>\n",
+        "faq": "\n<dt id=\"does%20schedsense%20require%20woocommerce%3F\">\nDoes SchedSense require WooCommerce?\n</h4>\n<p>\n<p>No. It works with Action Scheduler when a compatible plugin provides and initializes it.</p>\n</p>\n<dt id=\"does%20schedsense%20modify%20scheduled%20actions%3F\">\nDoes SchedSense modify scheduled actions?\n</h4>\n<p>\n<p>It can delete an individual action only when Action Scheduler reports that it is failed, and only after an administrator confirms the request. This removes the failed entry; it does not fix or retry the callback. SchedSense does not delete pending, in-progress, or completed actions, and it does not retry, reschedule, or directly execute actions. The optional cron control asks WordPress to run its normal due cron events; those events may include Action Scheduler processing.</p>\n</p>\n<dt id=\"does%20schedsense%20send%20data%20to%20another%20service%3F\">\nDoes SchedSense send data to another service?\n</h4>\n<p>\n<p>No. Checks and reports stay on this WordPress site. The loopback test sends its test marker and, when present, this site&#8217;s login cookies or HTTP Basic Authentication only to this site&#8217;s own <code>wp-cron.php</code> endpoint. The report is shared only if an administrator chooses to copy it.</p>\n</p>\n<dt id=\"why%20is%20wp-cron%20shown%20as%20disabled%3F\">\nWhy is WP-Cron shown as disabled?\n</h4>\n<p>\n<p>DISABLE_WP_CRON can be intentional on production sites using a server-level cron or WP-CLI. SchedSense reports that configuration as informational unless queue evidence suggests processing is inactive. PHP cannot prove that every external scheduler exists.</p>\n</p>\n<dt id=\"does%20every%20overdue%20action%20indicate%20a%20problem%3F\">\nDoes every overdue action indicate a problem?\n</h4>\n<p>\n<p>No. Normal WP-Cron depends on site traffic, and long-running callbacks can be intentional. SchedSense uses age thresholds and labels in-progress actions without an update for over one hour as potentially stuck, not as confirmed failures.</p>\n</p>\n<dt id=\"can%20schedsense%20fix%20a%20firewall%20or%20server%20configuration%3F\">\nCan SchedSense fix a firewall or server configuration?\n</h4>\n<p>\n<p>No. It can report symptoms such as HTTP errors or timeouts, but it does not modify a CDN, firewall, security plugin, server configuration, <code>.htaccess</code>, or <code>wp-config.php</code>.</p>\n</p>\n<dt id=\"what%20appears%20in%20the%20diagnostic%20report%3F\">\nWhat appears in the diagnostic report?\n</h4>\n<p>\n<p>The report contains WordPress, PHP, database, Action Scheduler, and WooCommerce versions; queue counts; check summaries; bounded source totals; and the current diagnosis. It excludes action arguments, credentials, cookies, authorization data, customer records, and complete server paths.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.4</h4>\n<ul>\n<li>Make nonce verification explicit in each read-only GET filter handler.</li>\n<li>Document the WordPress core API used for the local wp-cron.php endpoint.</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>Hardened diagnostic request context and nonce-protected queue filters.</li>\n<li>Updated plugin identifiers and WordPress path resolution for the SchedSense brand.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Rebranded the plugin as SchedSense: Fast Diagnostics for Action Scheduler and aligned the plugin slug and text domain.</li>\n<li>Removed a redundant WordPress core cron include before calling the normal cron spawner.</li>\n<li>Updated the plugin icon, banner, and screenshots for the new name.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Added Action Scheduler queue health and overdue-age diagnostics.</li>\n<li>Added potentially stuck in-progress action checks.</li>\n<li>Added WP-Cron, loopback, and REST API diagnostics.</li>\n<li>Added callback source attribution and a privacy-conscious report.</li>\n<li>Added links from queue totals and overdue-age buckets to matching action lists.</li>\n<li>Added confirmed deletion for individual failed actions and clearer failure-specific guidance.</li>\n</ul>\n"
+    },
+    "short_description": "Fast diagnostics for Action Scheduler queues: review overdue and failed actions, likely sources, WP-Cron, loopback, and REST API health.",
+    "description": "<p>SchedSense: Fast Diagnostics for Action Scheduler helps administrators investigate delayed or failing scheduled work. It reads Action Scheduler through its public APIs and reports queue totals, overdue pending actions, potentially stuck in-progress actions, failed actions, and relevant site health checks. Counts and source attribution are clearly identified as bounded samples where applicable.</p>\n<h4>Features</h4>\n<ul>\n<li>Queue totals for pending, overdue, failed, in-progress, and completed actions.</li>\n<li>Overdue-age buckets from one hour to seven days, with links to matching action lists.</li>\n<li>Flags in-progress actions with no recorded update for over one hour as potentially stuck; long callbacks can be intentional.</li>\n<li>Checks WP-Cron configuration, the local WordPress loopback, and the local REST API.</li>\n<li>Attributes registered callbacks to likely source plugins using callback file metadata; uncertain matches are labelled.</li>\n<li>Bounded, filterable action lists by status, age range, exact hook, and exact group. Action arguments are never displayed.</li>\n<li>A confirmed, per-action delete control only for actions that are still failed. Deleting an entry does not repair or retry its callback.</li>\n<li>A copyable support report that excludes action arguments, credentials, cookies, customer records, and complete server paths.</li>\n<li>No telemetry, advertising, review nags, external account, analytics, remote service, or frontend assets.</li>\n</ul>\n<p>Diagnostics run on the current WordPress site. The loopback check follows WordPress Site Health behavior: it posts a test marker to this site&#8217;s <code>wp-cron.php</code>, includes the site&#8217;s current login cookies and optional HTTP Basic Authentication for that same request, and honors the <code>https_local_ssl_verify</code> filter. The marker makes <code>wp-cron.php</code> finish without starting cron jobs. The REST API check also requests this site&#8217;s own REST endpoint. No diagnostic data is sent to a third-party service.</p>\n<p>SchedSense does not bundle, replace, reset, retry, reschedule, or directly execute Action Scheduler actions. An authorized administrator can explicitly delete a selected failed action record after confirmation; the server checks that its status is still failed. Deleting a record does not fix or retry its callback. An administrator can also request WordPress&#8217;s normal cron spawner; due callbacks may then run, including callbacks that process Action Scheduler actions.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/schedsense-fast-diagnostics-for-action-scheduler.1.0.4.zip",
+    "upgrade_notice": {
+        "1.0.4": "<p>Makes view-filter nonce checks explicit for security review and documents the canonical WordPress loopback endpoint.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/schedsense-fast-diagnostics-for-action-scheduler/assets/screenshot-1.png?rev=3718291",
+            "caption": "SchedSense overview with queue totals, overdue-age filters, environment checks, and the current diagnosis."
+        },
+        {
+            "src": "https://ps.w.org/schedsense-fast-diagnostics-for-action-scheduler/assets/screenshot-2.png?rev=3718291",
+            "caption": "Environment checks for Action Scheduler, WP-Cron, loopback, and REST API health."
+        },
+        {
+            "src": "https://ps.w.org/schedsense-fast-diagnostics-for-action-scheduler/assets/screenshot-3.png?rev=3718291",
+            "caption": "Bounded action list filtered by status, overdue age, exact hook, or exact group, with delete controls only for failed records."
+        },
+        {
+            "src": "https://ps.w.org/schedsense-fast-diagnostics-for-action-scheduler/assets/screenshot-4.png?rev=3718291",
+            "caption": "Likely source plugins ranked by sampled failed, overdue, and potentially stuck actions."
+        },
+        {
+            "src": "https://ps.w.org/schedsense-fast-diagnostics-for-action-scheduler/assets/screenshot-5.png?rev=3718291",
+            "caption": "Copyable diagnostic report with queue data availability and privacy details."
+        }
+    ],
+    "tags": {
+        "cron": "cron",
+        "diagnostics": "diagnostics",
+        "queue": "queue",
+        "site-health": "site health",
+        "troubleshooting": "troubleshooting"
+    },
+    "stable_tag": "1.0.4",
+    "versions": {
+        "1.0.4": "https://downloads.wordpress.org/plugin/schedsense-fast-diagnostics-for-action-scheduler.1.0.4.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/schedsense-fast-diagnostics-for-action-scheduler.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/schedsense-fast-diagnostics-for-action-scheduler/assets/banner-772x250.png?rev=3718291",
+        "high": "https://ps.w.org/schedsense-fast-diagnostics-for-action-scheduler/assets/banner-1544x500.png?rev=3718291"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/schedsense-fast-diagnostics-for-action-scheduler/assets/icon-128x128.png?rev=3718291",
+        "2x": "https://ps.w.org/schedsense-fast-diagnostics-for-action-scheduler/assets/icon-256x256.png?rev=3718291"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

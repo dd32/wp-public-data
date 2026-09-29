@@ -1,0 +1,100 @@
+{
+    "name": "Awlware Link Checker",
+    "slug": "awlware-link-checker",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/awlware/\">awlware</a>",
+    "author_profile": "https://profiles.wordpress.org/awlware/",
+    "contributors": {
+        "awlware": {
+            "profile": "https://profiles.wordpress.org/awlware/",
+            "avatar": "https://secure.gravatar.com/avatar/77fa428412b474ae72f737cd793114e59fd8636b6b0397f2d9971b13a7a716ad?s=96&d=monsterid&r=g",
+            "display_name": "awlware"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.1.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/awlware-link-checker/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-09-29 08:10:00",
+    "added": "2026-09-29",
+    "homepage": "https://awlware.com/link-checker/",
+    "sections": {
+        "description": "<p>Awlware Link Checker finds links and images that are really broken and helps you fix them where they are used. Everything runs on your own server: there is no account, no cloud service and no limit on the number of links.</p>\n<p><strong>It tells &#8220;broken&#8221; apart from &#8220;the site refuses robots&#8221;.</strong> Social networks, marketplaces and job boards often answer automated requests with 403, 429, 999 or a captcha page while the page works fine in a browser. Those links are shown as <em>Blocked (verify manually)</em> instead of cluttering the Broken list. Server errors (5xx) and timeouts are rechecked later and reported as broken only if they repeat.</p>\n<p><strong>It looks where links actually are:</strong> posts, pages and public post types (content and excerpts), classic menus, block theme navigation, synced patterns and templates, custom fields you choose, Text, Custom HTML and Block widgets, pages built with Elementor, and (optionally) approved comments and commenters&#8217; websites. Images (including srcset), iframes, video and audio sources are checked too.</p>\n<p><strong>Fix links from the report:</strong> Edit URL or Unlink in one or all places (menu items and navigation links stay as plain text), Remove image, Recheck, Dismiss. Posts keep a revision, every change is written to a log and can be undone. Elementor layouts are shown with a link to the Elementor editor.</p>\n<p><strong>Light on your site:</strong> checks run in short background slices (WP-Cron, 20 seconds every 5 minutes), one request at a time per external site with a pause between requests. Links to your own content are verified from the database instead of over HTTP. Nothing runs on visitor page views. Database tables are created and updated only through dbDelta under a lock, never on visitor requests.</p>\n<h4>How a link is judged</h4>\n<ul>\n<li><strong>Broken</strong>: 404 or 410, domain does not exist, redirect loop, missing anchor on one of your pages, or a server error / refused connection that repeated on separate checks.</li>\n<li><strong>Unconfirmed</strong>: a server error or refused connection on the first check. It is checked again after an hour (then 2, 4… hours) and becomes Broken only if it fails again.</li>\n<li><strong>Timeout</strong>: the server did not answer on repeated checks.</li>\n<li><strong>Suspected</strong>: the page answers &#8220;200 OK&#8221; but looks like a &#8220;not found&#8221; page (soft 404): its title or text says so, WordPress shows its 404 template, or a deep link redirects to the home page. Never counted as broken.</li>\n<li><strong>Blocked</strong>: anti-bot protection (Cloudflare, PerimeterX, DataDome, Akamai, Imperva, Sucuri, AWS WAF, captcha pages), rate limiting (429), login required (401), or a site known to refuse automated checks.</li>\n<li><strong>Unknown</strong>: the answer does not prove anything (for example 403 without anti-bot signs or a TLS error).</li>\n<li><strong>Redirect</strong> and <strong>OK</strong>: the link works.</li>\n</ul>\n<h4>WP-CLI</h4>\n<pre><code>wp awlware-lc scan, `index`, `report --format=table|json|jsonl`, `where &lt;url&gt;`, `stats`, `reset`.\n</code></pre>\n<h4>For developers</h4>\n<p>Actions and filters start with <code>awlwlc_</code>, for example <code>awlwlc_user_agent</code>, <code>awlwlc_request_args</code>, <code>awlwlc_post_types</code>, <code>awlwlc_meta_keys</code>, <code>awlwlc_exclude_url</code>, <code>awlwlc_classify_result</code>, <code>awlwlc_verdict_changed</code>, <code>awlwlc_results_saved</code>, <code>awlwlc_report_tablenav</code>, <code>awlwlc_admin_tabs</code>.</p>\n<h3>External requests</h3>\n<p>Checking links means requesting them, so this plugin makes outgoing HTTP requests. Here is exactly what it does:</p>\n<ul>\n<li>It requests <strong>only the URLs found in your own content</strong> (HEAD first, GET when needed) to see whether they work. Nothing else is fetched.</li>\n<li><strong>No data is sent to the plugin author</strong> or to any third-party service. There are no Awlware servers involved, no telemetry, no license checks and no remote lists: the list of anti-bot sites ships with the plugin.</li>\n<li>Each request carries the User-Agent <code>Mozilla/5.0 (compatible; AwlwareLinkChecker/1.0.0; +https://awlware.com/link-checker/)</code>, so site owners can see who is checking. It can be changed with the <code>awlwlc_user_agent</code> filter. The plugin never pretends to be a browser.</li>\n<li>One request at a time per external site, with a pause between requests, and at most three attempts per URL per check (redirects are followed hop by hop). Soft-404 detection on other sites (one extra GET per working page) is off unless you enable it. A site that does not resolve or refuses connections is not asked again in the same run.</li>\n<li>All requests go through the WordPress HTTP API, so proxies, <code>WP_HTTP_BLOCK_EXTERNAL</code>, <code>WP_ACCESSIBLE_HOSTS</code> and HTTP filters apply.</li>\n<li>SSRF protection: addresses in private, loopback, link-local and reserved ranges (IPv4 and IPv6) are never requested, every redirect is checked again, and the checked address is pinned for the connection to prevent DNS rebinding.</li>\n</ul>\n<h3>Privacy</h3>\n<p>The plugin stores the list of links, where they are used, their check results and a log of fixes (who changed what, kept 90 days) in its own database tables on your site. No data leaves your site except the link-check requests described above. It does not use cookies and adds nothing to the public side of your site.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin.</li>\n<li>Open <strong>Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Link Checker</strong>. The first check starts in the background within a few minutes.</li>\n<li>Optional: in <strong>Settings</strong>, choose what to scan and add custom field names.</li>\n</ol>\n<p>If WP-Cron is disabled on your site, run <code>wp cron event run --due-now</code> from a system cron job every 5 minutes, or use <code>wp awlware-lc scan</code>. While the report is open, checks also run in the browser tab.</p>\n",
+        "faq": "\n<dt id=\"why%20is%20a%20link%20%22blocked%22%20and%20not%20%22broken%22%3F\">\nWhy is a link &#8220;Blocked&#8221; and not &#8220;Broken&#8221;?\n</h4>\n<p>\n<p>The site refused the automated check (anti-bot protection, rate limit or login). The page most likely works for people. Open it in your browser; if it really is gone, fix it or leave it. Blocked links are never counted as broken.</p>\n</p>\n<dt id=\"why%20is%20a%20server%20error%20%22unconfirmed%22%3F\">\nWhy is a server error &#8220;Unconfirmed&#8221;?\n</h4>\n<p>\n<p>Servers have short outages. A 5xx error, a refused connection or a timeout is checked again later and reported as broken only when it repeats, so a five-minute outage does not produce a false alarm.</p>\n</p>\n<dt id=\"will%20it%20slow%20down%20my%20site%3F\">\nWill it slow down my site?\n</h4>\n<p>\n<p>No work is done on visitor page views. Background slices are short, links to your own site are verified from the database, and results are written in batches. On a test site with 2,000 posts and 26,000 links, building the index took about 2 seconds.</p>\n</p>\n<dt id=\"wp-cron%20is%20disabled%20on%20my%20server.\">\nWP-Cron is disabled on my server.\n</h4>\n<p>\n<p>See Installation: use a system cron job or WP-CLI. The report page shows a notice with instructions and keeps checking while it is open.</p>\n</p>\n<dt id=\"i%20am%20moving%20from%20another%20broken%20link%20checker.\">\nI am moving from another broken link checker.\n</h4>\n<p>\n<p>Deactivate the old plugin, activate this one, and add the custom field names you want scanned under Settings. There is nothing to import: the index is built from your content automatically.</p>\n</p>\n<dt id=\"does%20it%20support%20elementor%20and%20comments%3F\">\nDoes it support Elementor and comments?\n</h4>\n<p>\n<p>Links in Elementor layouts are found and checked; change them in the Elementor editor (the report links to it). Comment scanning is off by default: enable it under Settings to check links in approved comments and commenters&#8217; websites, and fix or unlink them from the report.</p>\n</p>\n<dt id=\"does%20it%20change%20my%20content%3F\">\nDoes it change my content?\n</h4>\n<p>\n<p>Only when you click Edit URL, Unlink or Remove image. Changes go through the normal WordPress API (posts get a revision), are logged, and can be undone from the Log tab.</p>\n</p>\n<dt id=\"what%20is%20removed%20when%20i%20delete%20the%20plugin%3F\">\nWhat is removed when I delete the plugin?\n</h4>\n<p>\n<p>By default all plugin tables, settings and scheduled events. You can keep the data by turning off &#8220;Delete all plugin data&#8221; in the settings before deleting.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "Find truly broken links and images. Runs on your server: no account, no cloud, no link limits, no false alarms from anti-bot sites.",
+    "description": "<p>Awlware Link Checker finds links and images that are really broken and helps you fix them where they are used. Everything runs on your own server: there is no account, no cloud service and no limit on the number of links.</p>\n<p><strong>It tells &#8220;broken&#8221; apart from &#8220;the site refuses robots&#8221;.</strong> Social networks, marketplaces and job boards often answer automated requests with 403, 429, 999 or a captcha page while the page works fine in a browser. Those links are shown as <em>Blocked (verify manually)</em> instead of cluttering the Broken list. Server errors (5xx) and timeouts are rechecked later and reported as broken only if they repeat.</p>\n<p><strong>It looks where links actually are:</strong> posts, pages and public post types (content and excerpts), classic menus, block theme navigation, synced patterns and templates, custom fields you choose, Text, Custom HTML and Block widgets, pages built with Elementor, and (optionally) approved comments and commenters&#8217; websites. Images (including srcset), iframes, video and audio sources are checked too.</p>\n<p><strong>Fix links from the report:</strong> Edit URL or Unlink in one or all places (menu items and navigation links stay as plain text), Remove image, Recheck, Dismiss. Posts keep a revision, every change is written to a log and can be undone. Elementor layouts are shown with a link to the Elementor editor.</p>\n<p><strong>Light on your site:</strong> checks run in short background slices (WP-Cron, 20 seconds every 5 minutes), one request at a time per external site with a pause between requests. Links to your own content are verified from the database instead of over HTTP. Nothing runs on visitor page views. Database tables are created and updated only through dbDelta under a lock, never on visitor requests.</p>\n<h4>How a link is judged</h4>\n<ul>\n<li><strong>Broken</strong>: 404 or 410, domain does not exist, redirect loop, missing anchor on one of your pages, or a server error / refused connection that repeated on separate checks.</li>\n<li><strong>Unconfirmed</strong>: a server error or refused connection on the first check. It is checked again after an hour (then 2, 4… hours) and becomes Broken only if it fails again.</li>\n<li><strong>Timeout</strong>: the server did not answer on repeated checks.</li>\n<li><strong>Suspected</strong>: the page answers &#8220;200 OK&#8221; but looks like a &#8220;not found&#8221; page (soft 404): its title or text says so, WordPress shows its 404 template, or a deep link redirects to the home page. Never counted as broken.</li>\n<li><strong>Blocked</strong>: anti-bot protection (Cloudflare, PerimeterX, DataDome, Akamai, Imperva, Sucuri, AWS WAF, captcha pages), rate limiting (429), login required (401), or a site known to refuse automated checks.</li>\n<li><strong>Unknown</strong>: the answer does not prove anything (for example 403 without anti-bot signs or a TLS error).</li>\n<li><strong>Redirect</strong> and <strong>OK</strong>: the link works.</li>\n</ul>\n<h4>WP-CLI</h4>\n<pre><code>wp awlware-lc scan, `index`, `report --format=table|json|jsonl`, `where &lt;url&gt;`, `stats`, `reset`.\n</code></pre>\n<h4>For developers</h4>\n<p>Actions and filters start with <code>awlwlc_</code>, for example <code>awlwlc_user_agent</code>, <code>awlwlc_request_args</code>, <code>awlwlc_post_types</code>, <code>awlwlc_meta_keys</code>, <code>awlwlc_exclude_url</code>, <code>awlwlc_classify_result</code>, <code>awlwlc_verdict_changed</code>, <code>awlwlc_results_saved</code>, <code>awlwlc_report_tablenav</code>, <code>awlwlc_admin_tabs</code>.</p>\n<h3>External requests</h3>\n<p>Checking links means requesting them, so this plugin makes outgoing HTTP requests. Here is exactly what it does:</p>\n<ul>\n<li>It requests <strong>only the URLs found in your own content</strong> (HEAD first, GET when needed) to see whether they work. Nothing else is fetched.</li>\n<li><strong>No data is sent to the plugin author</strong> or to any third-party service. There are no Awlware servers involved, no telemetry, no license checks and no remote lists: the list of anti-bot sites ships with the plugin.</li>\n<li>Each request carries the User-Agent <code>Mozilla/5.0 (compatible; AwlwareLinkChecker/1.0.0; +https://awlware.com/link-checker/)</code>, so site owners can see who is checking. It can be changed with the <code>awlwlc_user_agent</code> filter. The plugin never pretends to be a browser.</li>\n<li>One request at a time per external site, with a pause between requests, and at most three attempts per URL per check (redirects are followed hop by hop). Soft-404 detection on other sites (one extra GET per working page) is off unless you enable it. A site that does not resolve or refuses connections is not asked again in the same run.</li>\n<li>All requests go through the WordPress HTTP API, so proxies, <code>WP_HTTP_BLOCK_EXTERNAL</code>, <code>WP_ACCESSIBLE_HOSTS</code> and HTTP filters apply.</li>\n<li>SSRF protection: addresses in private, loopback, link-local and reserved ranges (IPv4 and IPv6) are never requested, every redirect is checked again, and the checked address is pinned for the connection to prevent DNS rebinding.</li>\n</ul>\n<h3>Privacy</h3>\n<p>The plugin stores the list of links, where they are used, their check results and a log of fixes (who changed what, kept 90 days) in its own database tables on your site. No data leaves your site except the link-check requests described above. It does not use cookies and adds nothing to the public side of your site.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/awlware-link-checker.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>First release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/awlware-link-checker/assets/screenshot-1.png?rev=3718527",
+            "caption": "Report: broken links and the places where each one is used, with tabs for Unconfirmed, Blocked, Unknown, Redirect and OK."
+        },
+        {
+            "src": "https://ps.w.org/awlware-link-checker/assets/screenshot-2.png?rev=3718527",
+            "caption": "Fix screen: replace a URL or unlink it in one or all places."
+        },
+        {
+            "src": "https://ps.w.org/awlware-link-checker/assets/screenshot-3.png?rev=3718527",
+            "caption": "Settings: what to scan, exclusions, check intervals and confirmation of server errors."
+        },
+        {
+            "src": "https://ps.w.org/awlware-link-checker/assets/screenshot-4.png?rev=3718527",
+            "caption": "Log of changes with Undo."
+        },
+        {
+            "src": "https://ps.w.org/awlware-link-checker/assets/screenshot-5.png?rev=3718527",
+            "caption": "WP-CLI: scan, report and where a URL is used."
+        }
+    ],
+    "tags": {
+        "broken-images": "broken images",
+        "broken-links": "broken links",
+        "dead-links": "dead links",
+        "link-checker": "link checker",
+        "seo": "seo"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/awlware-link-checker.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/awlware-link-checker.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/awlware-link-checker/assets/banner-772x250.png?rev=3718527",
+        "high": "https://ps.w.org/awlware-link-checker/assets/banner-1544x500.png?rev=3718527"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/awlware-link-checker/assets/icon-128x128.png?rev=3718527",
+        "2x": "https://ps.w.org/awlware-link-checker/assets/icon-256x256.png?rev=3718527"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
