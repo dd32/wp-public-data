@@ -1,0 +1,1329 @@
+{
+    "name": "Axismundi Object Projections",
+    "slug": "axismundi-object-projections",
+    "version": "0.1.2",
+    "author": "<a href=\"https://profiles.wordpress.org/kimjiwoon/\">Jiwoon Kim</a>",
+    "author_profile": "https://profiles.wordpress.org/kimjiwoon/",
+    "contributors": {
+        "kimjiwoon": {
+            "profile": "https://profiles.wordpress.org/kimjiwoon/",
+            "avatar": "https://secure.gravatar.com/avatar/62655840fd27b0a4acf8570555c64e7aecfcf5a334203fa8333c351f85feb604?s=96&d=monsterid&r=g",
+            "display_name": "Jiwoon Kim"
+        }
+    },
+    "requires": "6.7",
+    "tested": "7.1.2",
+    "requires_php": "8.1",
+    "requires_plugins": [
+        "axismundi-actors"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/axismundi-object-projections/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-02 15:37:00",
+    "added": "2026-10-02",
+    "homepage": "https://github.com/Jiwoon-Kim/axismundi/tree/main/products/wordpress/plugins/axismundi-object-projections",
+    "sections": {
+        "description": "<p>Axismundi Object Projections turns a WordPress object &#8212; a post, an attachment, an<br />\narchive, a folder &#8212; or an Axismundi Actor into an ActivityStreams 2.0 object or<br />\ncollection, so that the URL it already has can answer with JSON-LD when something asks<br />\nfor it.</p>\n<p>It owns <strong>representation</strong> and nothing else: a transformer registry, the URIs objects and<br />\ncollections are named by, and the single renderer that writes the JSON. What a thing <em>is</em><br />\nstays with the plugin that stores it; this decides how it is described to a reader that<br />\nspeaks ActivityStreams.</p>\n<p><strong>This plugin needs Axismundi Actors.</strong> It resolves the identities an object names &#8212; its<br />\nauthor, the accounts it mentions, the Actor documents it serves &#8212; and without that registry<br />\nthere is nobody for any of them to refer to.</p>\n<p><strong>Axismundi Activities is optional, and adds four things.</strong> Without it a published post is<br />\npublic and is projected as such, which is this plugin&#8217;s own default. With it, the four<br />\nauthored visibility levels decide who a post is addressed to, an Actor&#8217;s outbox and follow<br />\ncollections have contents rather than being empty, an object states who may quote it, and an<br />\nobject says who published it. Nothing here breaks when it is absent; less is said.</p>\n<p>That last one is worth stating plainly: who an object is attributed to is decided by whatever<br />\nrecorded its publication, not derived here from the WordPress author. An object nobody has<br />\npublished has no <code>attributedTo</code> &#8212; it is readable, it simply was not published by anyone.</p>\n<h4>What this version does</h4>\n<ul>\n<li><strong>Content negotiation on the URL a post already has.</strong> Ask for<br />\n  application/activity+json and the same address answers with JSON-LD instead of HTML.</li>\n<li>A <strong>Core Post to Article transformer</strong>, and an optional adapter for Axismundi Media<br />\nLibrary attachments.</li>\n<li><strong>A post&#8217;s own media</strong>, listed as attachments so a reader can fetch what the body shows:<br />\nthe featured image and the media blocks the author placed. Only media this site holds &#8212;<br />\na hotlinked image is left in the text, because its type and size cannot be stated.</li>\n<li><strong>Collections</strong>: an Actor&#8217;s outbox, followers and following, a shared media folder at a<br />\nstable UUID route, and a replies collection. An Actor document always names them; without<br />\nan Activity ledger they answer empty rather than 404.</li>\n<li>The <strong>relations that make a document readable in context</strong> &#8212; hashtags, mentions, thread<br />\nedges, reply context, and quote context &#8212; kept as their own records rather than parsed<br />\nout of content each time.</li>\n<li>A <strong>remote object repository</strong>: URI-keyed, rebuildable observations of objects this site<br />\nhas been told about, for administrators to inspect under <strong>Tools &gt; Remote Objects</strong>.</li>\n<li>An administrator can <strong>probe a remote collection</strong> and its first page without storing the<br />\ncollection, following its item URLs, or downloading anything binary.</li>\n</ul>\n<h4>What this version does not do</h4>\n<p>There is no Activity ledger, no inbox write handling, no Follow/Like/Announce state, no<br />\nHTTP signatures, and no delivery. Those belong to Axismundi Activities and to the<br />\nActivityPub transport boundary. Nothing here signs or sends an Activity.</p>\n<h4>Alongside the official ActivityPub plugin</h4>\n<p>Both plugins negotiate the same canonical URLs, and two answers for one address is worse<br />\nthan either answer alone. So when the official ActivityPub plugin is active, this plugin&#8217;s<br />\nstandalone negotiator <strong>turns itself off</strong> and leaves those URLs to it, while the registry<br />\nand renderer stay available. Nothing here overrides or replaces that plugin&#8217;s object ids.</p>\n<h4>What is stored about other people&#8217;s documents</h4>\n<p>An observation of a remote object is a <strong>cache, not a record</strong>: it is keyed by the remote<br />\nURI, which stays canonical, and it can be rebuilt by fetching again. Observations expire,<br />\nand a scheduled daily task deletes the expired ones along with anything left pointing at<br />\nthem.</p>\n<p>Remote media is <strong>never downloaded and never hotlinked</strong>. A cached object&#8217;s attachments are<br />\ndescribed &#8212; type, size, the text the author wrote about them &#8212; and not fetched. Where a<br />\ncached object is shown locally at all, it is shown <code>noindex</code>, only for objects that were<br />\naddressed publicly, and only as a courtesy view beside the remote original.</p>\n<h3>External services</h3>\n<p>This plugin reads documents from other websites. Every request is a <code>GET</code> made through<br />\n    wp_safe_remote_get(): redirects are not followed automatically, the response size is<br />\ncapped, and any address inside your own network is refused. Nothing about your site&#8217;s<br />\ncontent or your users is sent as data. As with any outgoing HTTP request the server being<br />\ncontacted receives <strong>your site&#8217;s IP address</strong>, and a <code>User-Agent</code> header naming this<br />\nplugin, its version, and <strong>your site&#8217;s home URL</strong>.</p>\n<p>Requests happen for two reasons, and the second is worth being clear about.</p>\n<p><strong>Because an administrator asked.</strong></p>\n<ul>\n<li><strong>Fetching one remote object.</strong> Under <strong>Tools &gt; Remote Objects</strong>, an administrator can<br />\nfetch the address of an ActivityStreams object to inspect it. What is read is that one<br />\nJSON document; what is stored is its metadata &#8212; tags, mentions, audience, attachment<br />\ndescriptors, extension properties, and the payload itself, escaped.</li>\n<li><strong>Probing a remote collection.</strong> An administrator can read a collection and its first<br />\npage from the same host to see what it contains. The collection is not stored, its item<br />\nURLs are not followed, and nothing binary is downloaded.</li>\n</ul>\n<p><strong>Because something arrived here naming an address.</strong></p>\n<ul>\n<li><strong>Only if you switch it on.</strong> Under <strong>Tools &gt; Remote Objects</strong> there is a setting called<br />\n<em>Background acquisition</em>, and it is <strong>off</strong> unless an administrator turns it on. While it<br />\nis off this site contacts a remote server only when you ask it to on that screen.</li>\n<li>With it on: when a publicly addressed <code>Announce</code> reaches this site&#8217;s inbox carrying only<br />\nthe URI of the object it announces, that one address is queued for a single background<br />\nfetch, so that the announcement can be shown as something rather than as a link. The<br />\nobject&#8217;s author is looked up the same way if this site does not already know them.</li>\n<li>Either way the request tells the remote host that this site exists, including its address<br />\nand its IP, which is why the decision is the site owner&#8217;s and not a stranger&#8217;s.</li>\n<li>This is deliberately bounded. It never runs while a page is being rendered, it does not<br />\nfan out to the mentions or the audience named in the document, an address already known<br />\nis not fetched again, and only <code>https</code> addresses are considered. Turning the setting off<br />\nalso clears anything already queued.</li>\n</ul>\n<p>Which servers are contacted therefore depends on which addresses your administrators enter<br />\nand which sites send things to your inbox. This plugin has no service of its own and sends<br />\nnothing to its author. Each server contacted is somebody else&#8217;s, run under its own terms of<br />\nservice and privacy policy.</p>\n",
+        "installation": "<ol>\n<li>Install and activate <strong>Axismundi Actors</strong> first. This plugin projects identities from<br />\nthat registry and does very little without it.</li>\n<li>Upload this plugin folder to <code>/wp-content/plugins/</code>, or install it through<br />\n<strong>Plugins &gt; Add New</strong>, then activate it.</li>\n<li>Nothing else is required. A published post is projected straight away; ask its URL for<br />\n   application/activity+json to see the result. It carries no <code>attributedTo</code> until<br />\nsomething records who published it. Add <strong>Axismundi Activities</strong> for that, and for the<br />\nfour authored visibility levels and an Actor outbox with activities in it, and the<br />\nofficial <strong>ActivityPub</strong> plugin with <strong>Axismundi ActivityPub Bridge</strong> to send and<br />\nreceive.</li>\n<li>Remote observations, where there are any, are listed under <strong>Tools &gt; Remote Objects</strong>.</li>\n</ol>\n<p>Activation creates this plugin&#8217;s own database tables. Nothing is contacted on the internet<br />\nduring installation, and deactivation removes the scheduled tasks it added.</p>\n",
+        "changelog": "<h4>0.1.2</h4>\n<ul>\n<li>Server-rendered block output is escaped where it is printed, with an allowlist that covers<br />\nwhat these blocks emit. The stock post allowlist removes the <code>template</code> element and the<br />\nInteractivity API directives, so it is not used here.</li>\n<li>Body decoration filters run before sanitizing rather than after it, so nothing a filter adds<br />\ncan reach the page unsanitized.</li>\n<li>Who an object is attributed to now comes from whatever recorded its publication instead of<br />\nbeing derived from the WordPress post author. The two agree only while every account has one<br />\nidentity, and they stop agreeing as soon as anyone publishes as an organisation.</li>\n<li>A post whose author has no Actor is projected and readable, without an <code>attributedTo</code>,<br />\nrather than refused. It is not published to anyone.</li>\n<li>The site Actor is no longer a fallback author. It is an application identity, not a person<br />\nwho writes posts.</li>\n</ul>\n<h4>0.1.1</h4>\n<ul>\n<li>Background acquisition is now a setting, off by default. While it is off this site<br />\ncontacts a remote server only when an administrator asks it to under Tools &gt; Remote<br />\nObjects. Turning it off also clears anything already queued.</li>\n<li>A post publishes its own media as attachments: the featured image and the media blocks<br />\nthe author placed, and only media this site holds.</li>\n<li>A published post is projected with Axismundi Actors alone; an Actor document always names<br />\nits outbox, followers and following, which answer empty without an Activity ledger.</li>\n<li>A product can claim this projection for an object whose context it owns, instead of<br />\nrebuilding it. Axismundi Forum publishes its Topics that way.</li>\n<li>A quote of the author&#8217;s own post is recognised as approved, as FEP-044f allows, when both<br />\nauthors are known here.</li>\n<li>Filtered card templates and interaction controls are now named blocks rather than markup,<br />\nso what reaches the page is always something a registered block rendered.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>First release.</li>\n<li>Content negotiation on existing WordPress object URLs, so a post&#8217;s own address answers<br />\nwith ActivityStreams JSON-LD when asked for it, and a transformer registry with a single<br />\nrenderer behind it.</li>\n<li>A Core Post to Article transformer, and an optional adapter for Axismundi Media Library<br />\nattachments.</li>\n<li>Collections: shared media folders on a stable UUID route, a replies collection, and the<br />\nrepresentation of an Actor outbox where Axismundi Activities supplies one.</li>\n<li>Hashtags, mentions, thread edges, reply context and quote context stored as their own<br />\nrecords rather than re-derived from content.</li>\n<li>A URI-keyed repository of remote object observations, with administrator inspection under<br />\nTools &gt; Remote Objects and a remote collection probe that stores nothing.</li>\n<li>Cached remote media is described and never downloaded or hotlinked; observations expire<br />\nand are purged daily.</li>\n<li>The standalone negotiator disables itself when the official ActivityPub plugin is active,<br />\nso that one URL keeps one answer.</li>\n</ul>\n"
+    },
+    "short_description": "Projects WordPress objects into ActivityStreams JSON-LD through a transformer registry and one renderer.",
+    "description": "<p>Axismundi Object Projections turns a WordPress object &#8212; a post, an attachment, an<br />\narchive, a folder &#8212; or an Axismundi Actor into an ActivityStreams 2.0 object or<br />\ncollection, so that the URL it already has can answer with JSON-LD when something asks<br />\nfor it.</p>\n<p>It owns <strong>representation</strong> and nothing else: a transformer registry, the URIs objects and<br />\ncollections are named by, and the single renderer that writes the JSON. What a thing <em>is</em><br />\nstays with the plugin that stores it; this decides how it is described to a reader that<br />\nspeaks ActivityStreams.</p>\n<p><strong>This plugin needs Axismundi Actors.</strong> It resolves the identities an object names &#8212; its<br />\nauthor, the accounts it mentions, the Actor documents it serves &#8212; and without that registry<br />\nthere is nobody for any of them to refer to.</p>\n<p><strong>Axismundi Activities is optional, and adds four things.</strong> Without it a published post is<br />\npublic and is projected as such, which is this plugin&#8217;s own default. With it, the four<br />\nauthored visibility levels decide who a post is addressed to, an Actor&#8217;s outbox and follow<br />\ncollections have contents rather than being empty, an object states who may quote it, and an<br />\nobject says who published it. Nothing here breaks when it is absent; less is said.</p>\n<p>That last one is worth stating plainly: who an object is attributed to is decided by whatever<br />\nrecorded its publication, not derived here from the WordPress author. An object nobody has<br />\npublished has no <code>attributedTo</code> &#8212; it is readable, it simply was not published by anyone.</p>\n<h4>What this version does</h4>\n<ul>\n<li><strong>Content negotiation on the URL a post already has.</strong> Ask for<br />\n  application/activity+json and the same address answers with JSON-LD instead of HTML.</li>\n<li>A <strong>Core Post to Article transformer</strong>, and an optional adapter for Axismundi Media<br />\nLibrary attachments.</li>\n<li><strong>A post&#8217;s own media</strong>, listed as attachments so a reader can fetch what the body shows:<br />\nthe featured image and the media blocks the author placed. Only media this site holds &#8212;<br />\na hotlinked image is left in the text, because its type and size cannot be stated.</li>\n<li><strong>Collections</strong>: an Actor&#8217;s outbox, followers and following, a shared media folder at a<br />\nstable UUID route, and a replies collection. An Actor document always names them; without<br />\nan Activity ledger they answer empty rather than 404.</li>\n<li>The <strong>relations that make a document readable in context</strong> &#8212; hashtags, mentions, thread<br />\nedges, reply context, and quote context &#8212; kept as their own records rather than parsed<br />\nout of content each time.</li>\n<li>A <strong>remote object repository</strong>: URI-keyed, rebuildable observations of objects this site<br />\nhas been told about, for administrators to inspect under <strong>Tools &gt; Remote Objects</strong>.</li>\n<li>An administrator can <strong>probe a remote collection</strong> and its first page without storing the<br />\ncollection, following its item URLs, or downloading anything binary.</li>\n</ul>\n<h4>What this version does not do</h4>\n<p>There is no Activity ledger, no inbox write handling, no Follow/Like/Announce state, no<br />\nHTTP signatures, and no delivery. Those belong to Axismundi Activities and to the<br />\nActivityPub transport boundary. Nothing here signs or sends an Activity.</p>\n<h4>Alongside the official ActivityPub plugin</h4>\n<p>Both plugins negotiate the same canonical URLs, and two answers for one address is worse<br />\nthan either answer alone. So when the official ActivityPub plugin is active, this plugin&#8217;s<br />\nstandalone negotiator <strong>turns itself off</strong> and leaves those URLs to it, while the registry<br />\nand renderer stay available. Nothing here overrides or replaces that plugin&#8217;s object ids.</p>\n<h4>What is stored about other people&#8217;s documents</h4>\n<p>An observation of a remote object is a <strong>cache, not a record</strong>: it is keyed by the remote<br />\nURI, which stays canonical, and it can be rebuilt by fetching again. Observations expire,<br />\nand a scheduled daily task deletes the expired ones along with anything left pointing at<br />\nthem.</p>\n<p>Remote media is <strong>never downloaded and never hotlinked</strong>. A cached object&#8217;s attachments are<br />\ndescribed &#8212; type, size, the text the author wrote about them &#8212; and not fetched. Where a<br />\ncached object is shown locally at all, it is shown <code>noindex</code>, only for objects that were<br />\naddressed publicly, and only as a courtesy view beside the remote original.</p>\n<h3>External services</h3>\n<p>This plugin reads documents from other websites. Every request is a <code>GET</code> made through<br />\n    wp_safe_remote_get(): redirects are not followed automatically, the response size is<br />\ncapped, and any address inside your own network is refused. Nothing about your site&#8217;s<br />\ncontent or your users is sent as data. As with any outgoing HTTP request the server being<br />\ncontacted receives <strong>your site&#8217;s IP address</strong>, and a <code>User-Agent</code> header naming this<br />\nplugin, its version, and <strong>your site&#8217;s home URL</strong>.</p>\n<p>Requests happen for two reasons, and the second is worth being clear about.</p>\n<p><strong>Because an administrator asked.</strong></p>\n<ul>\n<li><strong>Fetching one remote object.</strong> Under <strong>Tools &gt; Remote Objects</strong>, an administrator can<br />\nfetch the address of an ActivityStreams object to inspect it. What is read is that one<br />\nJSON document; what is stored is its metadata &#8212; tags, mentions, audience, attachment<br />\ndescriptors, extension properties, and the payload itself, escaped.</li>\n<li><strong>Probing a remote collection.</strong> An administrator can read a collection and its first<br />\npage from the same host to see what it contains. The collection is not stored, its item<br />\nURLs are not followed, and nothing binary is downloaded.</li>\n</ul>\n<p><strong>Because something arrived here naming an address.</strong></p>\n<ul>\n<li><strong>Only if you switch it on.</strong> Under <strong>Tools &gt; Remote Objects</strong> there is a setting called<br />\n<em>Background acquisition</em>, and it is <strong>off</strong> unless an administrator turns it on. While it<br />\nis off this site contacts a remote server only when you ask it to on that screen.</li>\n<li>With it on: when a publicly addressed <code>Announce</code> reaches this site&#8217;s inbox carrying only<br />\nthe URI of the object it announces, that one address is queued for a single background<br />\nfetch, so that the announcement can be shown as something rather than as a link. The<br />\nobject&#8217;s author is looked up the same way if this site does not already know them.</li>\n<li>Either way the request tells the remote host that this site exists, including its address<br />\nand its IP, which is why the decision is the site owner&#8217;s and not a stranger&#8217;s.</li>\n<li>This is deliberately bounded. It never runs while a page is being rendered, it does not<br />\nfan out to the mentions or the audience named in the document, an address already known<br />\nis not fetched again, and only <code>https</code> addresses are considered. Turning the setting off<br />\nalso clears anything already queued.</li>\n</ul>\n<p>Which servers are contacted therefore depends on which addresses your administrators enter<br />\nand which sites send things to your inbox. This plugin has no service of its own and sends<br />\nnothing to its author. Each server contacted is somebody else&#8217;s, run under its own terms of<br />\nservice and privacy policy.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/axismundi-object-projections.0.1.2.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "activitypub": "activitypub",
+        "activitystreams": "ActivityStreams",
+        "federation": "federation",
+        "jsonld": "jsonld"
+    },
+    "stable_tag": "0.1.2",
+    "versions": {
+        "0.1.2": "https://downloads.wordpress.org/plugin/axismundi-object-projections.0.1.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/axismundi-object-projections.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/axismundi-object-projections.svg"
+    },
+    "blocks": {
+        "axismundi/interactions": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "axismundi/interactions",
+            "version": "0.1.1",
+            "title": "Interactions",
+            "category": "theme",
+            "icon": "button",
+            "description": "The row of interaction controls for the current Object. Holds Interaction blocks the way Core's Buttons holds Button, so alignment, gap, and justification work the same way.",
+            "textdomain": "axismundi-object-projections",
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "__experimentalExposeControlsToChildren": true,
+                "color": {
+                    "gradients": true,
+                    "text": true,
+                    "background": true,
+                    "__experimentalDefaultControls": {
+                        "text": true
+                    }
+                },
+                "spacing": {
+                    "blockGap": [
+                        "horizontal",
+                        "vertical"
+                    ],
+                    "padding": true,
+                    "margin": [
+                        "top",
+                        "bottom"
+                    ],
+                    "__experimentalDefaultControls": {
+                        "blockGap": true
+                    }
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true,
+                    "__experimentalFontWeight": true,
+                    "__experimentalFontStyle": true,
+                    "__experimentalTextTransform": true,
+                    "__experimentalLetterSpacing": true,
+                    "__experimentalDefaultControls": {
+                        "fontSize": true
+                    }
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "color": true,
+                    "width": true,
+                    "style": true
+                },
+                "layout": {
+                    "allowSwitching": false,
+                    "allowInheriting": false,
+                    "default": {
+                        "type": "flex"
+                    }
+                }
+            },
+            "editorScript": "file:./edit.js",
+            "style": "axismundi-op-object-view",
+            "editorStyle": "axismundi-op-object-view",
+            "render": "file:./render.php"
+        },
+        "axismundi/question": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "axismundi/question",
+            "version": "0.2.1",
+            "title": "Axismundi Question",
+            "category": "theme",
+            "icon": "forms",
+            "description": "A Question's local voting controls or read-only results.",
+            "textdomain": "axismundi-object-projections",
+            "attributes": {
+                "previewVariant": {
+                    "type": "string",
+                    "default": "oneOf"
+                }
+            },
+            "example": {
+                "attributes": {
+                    "previewVariant": "oneOf"
+                },
+                "viewportWidth": 420
+            },
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "color": {
+                    "text": true,
+                    "background": true,
+                    "link": true,
+                    "gradients": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true,
+                    "__experimentalFontWeight": true,
+                    "__experimentalFontStyle": true,
+                    "__experimentalTextTransform": true,
+                    "__experimentalTextDecoration": true,
+                    "__experimentalLetterSpacing": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "color": true,
+                    "width": true,
+                    "style": true
+                }
+            },
+            "editorScript": "file:./edit.js",
+            "style": "axismundi-op-object-view",
+            "editorStyle": "axismundi-op-object-view",
+            "render": "file:./render.php"
+        },
+        "axismundi/object-card-body": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "axismundi/object-card-body",
+            "version": "0.1.0",
+            "title": "Object Card Body",
+            "category": "theme",
+            "icon": "align-center",
+            "description": "The part of an Object card that depends on what kind of Object it is: a Note's warned body, or an Article's lead image, title and summary.",
+            "textdomain": "axismundi-object-projections",
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "interactivity": {
+                    "clientNavigation": true
+                }
+            },
+            "editorScript": "file:./edit.js",
+            "render": "file:./render.php"
+        },
+        "axismundi/object-replies": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "axismundi/object-replies",
+            "version": "0.1.0",
+            "title": "Object Replies",
+            "category": "theme",
+            "icon": "format-chat",
+            "description": "The public reply thread of the ActivityStreams Object being rendered, including replies received from other servers.",
+            "textdomain": "axismundi-object-projections",
+            "attributes": {
+                "perPage": {
+                    "type": "number",
+                    "default": 20
+                }
+            },
+            "example": {
+                "viewportWidth": 500
+            },
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "color": {
+                    "text": true,
+                    "background": true,
+                    "link": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true,
+                    "blockGap": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true
+                }
+            },
+            "editorScript": "file:./edit.js",
+            "style": [
+                "axismundi-op-object-view"
+            ],
+            "render": "file:./render.php"
+        },
+        "axismundi/object-content": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "axismundi/object-content",
+            "version": "0.2.1",
+            "usesContext": [
+                "axismundi/objectDisclosure"
+            ],
+            "title": "Object Content",
+            "category": "theme",
+            "icon": "media-text",
+            "description": "The body of the ActivityStreams Object being rendered, with its authored sensitive-content gate. The Object sibling of Core's Post Content.",
+            "textdomain": "axismundi-object-projections",
+            "attributes": {
+                "tagName": {
+                    "type": "string",
+                    "default": "div"
+                },
+                "hideInFeed": {
+                    "type": "boolean",
+                    "default": false
+                }
+            },
+            "example": {
+                "viewportWidth": 350
+            },
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "layout": true,
+                "background": {
+                    "backgroundImage": true,
+                    "backgroundSize": true,
+                    "__experimentalDefaultControls": {
+                        "backgroundImage": true
+                    }
+                },
+                "dimensions": {
+                    "minHeight": true
+                },
+                "color": {
+                    "gradients": true,
+                    "heading": true,
+                    "link": true,
+                    "__experimentalDefaultControls": {
+                        "background": false,
+                        "text": false
+                    }
+                },
+                "spacing": {
+                    "blockGap": true,
+                    "margin": true,
+                    "padding": true,
+                    "__experimentalDefaultControls": {
+                        "margin": false,
+                        "padding": false
+                    }
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true,
+                    "__experimentalFontWeight": true,
+                    "__experimentalFontStyle": true,
+                    "__experimentalTextTransform": true,
+                    "__experimentalTextDecoration": true,
+                    "__experimentalLetterSpacing": true,
+                    "__experimentalDefaultControls": {
+                        "fontSize": true
+                    }
+                },
+                "interactivity": {
+                    "clientNavigation": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "color": true,
+                    "width": true,
+                    "style": true,
+                    "__experimentalDefaultControls": {
+                        "radius": true,
+                        "color": true,
+                        "width": true,
+                        "style": true
+                    }
+                }
+            },
+            "editorScript": "file:./edit.js",
+            "style": [
+                "wp-block-post-content",
+                "axismundi-op-object-view"
+            ],
+            "editorStyle": [
+                "wp-block-post-content-editor",
+                "axismundi-op-object-view"
+            ],
+            "render": "file:./render.php"
+        },
+        "axismundi/object-date": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "axismundi/object-date",
+            "version": "0.1.1",
+            "title": "Object Date",
+            "category": "theme",
+            "icon": "calendar",
+            "description": "The publication or modification date of the ActivityStreams Object being rendered. The Object sibling of Core's Post Date.",
+            "textdomain": "axismundi-object-projections",
+            "attributes": {
+                "textAlign": {
+                    "type": "string"
+                },
+                "field": {
+                    "type": "string",
+                    "default": "published"
+                },
+                "format": {
+                    "type": "string",
+                    "default": ""
+                },
+                "isLink": {
+                    "type": "boolean",
+                    "default": true,
+                    "role": "content"
+                }
+            },
+            "example": {
+                "viewportWidth": 500
+            },
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "color": {
+                    "gradients": true,
+                    "link": true,
+                    "__experimentalDefaultControls": {
+                        "background": true,
+                        "text": true,
+                        "link": true
+                    }
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true,
+                    "__experimentalFontWeight": true,
+                    "__experimentalFontStyle": true,
+                    "__experimentalTextTransform": true,
+                    "__experimentalTextDecoration": true,
+                    "__experimentalLetterSpacing": true,
+                    "__experimentalDefaultControls": {
+                        "fontSize": true
+                    }
+                },
+                "interactivity": {
+                    "clientNavigation": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "color": true,
+                    "width": true,
+                    "style": true,
+                    "__experimentalDefaultControls": {
+                        "radius": true,
+                        "color": true,
+                        "width": true,
+                        "style": true
+                    }
+                }
+            },
+            "editorScript": "file:./edit.js",
+            "style": [
+                "wp-block-post-date",
+                "axismundi-op-object-view"
+            ],
+            "editorStyle": [
+                "wp-block-post-date-editor",
+                "axismundi-op-object-view"
+            ],
+            "render": "file:./render.php"
+        },
+        "axismundi/object-content-warning": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "axismundi/object-content-warning",
+            "version": "0.1.0",
+            "title": "Object Content Warning",
+            "category": "theme",
+            "icon": "hidden",
+            "description": "Folds everything an authored content warning covers — body, quote, poll, and attachments — behind one disclosure, the way Mastodon and Misskey present a warned post. Without an authored warning it renders its blocks untouched.",
+            "textdomain": "axismundi-object-projections",
+            "attributes": {
+                "ownsDisclosure": {
+                    "type": "boolean",
+                    "default": true
+                }
+            },
+            "providesContext": {
+                "axismundi/objectDisclosure": "ownsDisclosure"
+            },
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "layout": true,
+                "spacing": {
+                    "blockGap": true,
+                    "margin": true,
+                    "padding": true,
+                    "__experimentalDefaultControls": {
+                        "blockGap": true
+                    }
+                },
+                "color": {
+                    "gradients": true,
+                    "link": true,
+                    "__experimentalDefaultControls": {
+                        "background": false,
+                        "text": false
+                    }
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true,
+                    "__experimentalFontWeight": true,
+                    "__experimentalDefaultControls": {
+                        "fontSize": false
+                    }
+                },
+                "interactivity": {
+                    "clientNavigation": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "color": true,
+                    "width": true,
+                    "style": true
+                }
+            },
+            "editorScript": "file:./edit.js",
+            "style": "axismundi-op-object-view",
+            "editorStyle": "axismundi-op-object-view",
+            "render": "file:./render.php"
+        },
+        "axismundi/object-hashtags": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "axismundi/object-hashtags",
+            "version": "0.1.0",
+            "title": "Object Hashtags",
+            "category": "theme",
+            "icon": "tag",
+            "description": "The shared hashtags of the ActivityStreams Object being rendered. The Object sibling of Core's Post Terms: same term links, but resolved for cached remote Objects as well as local ones.",
+            "textdomain": "axismundi-object-projections",
+            "attributes": {
+                "prefix": {
+                    "type": "string",
+                    "default": ""
+                },
+                "suffix": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "example": {
+                "viewportWidth": 350
+            },
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "color": {
+                    "gradients": true,
+                    "link": true,
+                    "__experimentalDefaultControls": {
+                        "text": true
+                    }
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true,
+                    "__experimentalFontWeight": true,
+                    "__experimentalFontStyle": true,
+                    "__experimentalTextTransform": true,
+                    "__experimentalTextDecoration": true,
+                    "__experimentalLetterSpacing": true,
+                    "__experimentalDefaultControls": {
+                        "fontSize": true
+                    }
+                },
+                "interactivity": {
+                    "clientNavigation": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "color": true,
+                    "width": true,
+                    "style": true
+                }
+            },
+            "styles": [
+                {
+                    "name": "inline",
+                    "label": "Inline",
+                    "isDefault": true
+                },
+                {
+                    "name": "tags",
+                    "label": "Tags"
+                }
+            ],
+            "editorScript": "file:./edit.js",
+            "style": [
+                "wp-block-post-terms",
+                "axismundi-op-object-view"
+            ],
+            "editorStyle": [
+                "wp-block-post-terms",
+                "axismundi-op-object-view"
+            ],
+            "render": "file:./render.php"
+        },
+        "axismundi/object-visibility": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "axismundi/object-visibility",
+            "version": "0.1.0",
+            "title": "Object Visibility",
+            "category": "theme",
+            "icon": "visibility",
+            "description": "Who the ActivityStreams Object being rendered was addressed to. Its audience, not where it was posted — being in a community is a separate fact.",
+            "textdomain": "axismundi-object-projections",
+            "attributes": {
+                "showLabel": {
+                    "type": "boolean",
+                    "default": false
+                }
+            },
+            "example": {
+                "viewportWidth": 500
+            },
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "color": {
+                    "gradients": false,
+                    "__experimentalDefaultControls": {
+                        "text": true
+                    }
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalDefaultControls": {
+                        "fontSize": true
+                    }
+                },
+                "interactivity": {
+                    "clientNavigation": true
+                }
+            },
+            "editorScript": "file:./edit.js",
+            "style": "file:./style.css",
+            "render": "file:./render.php"
+        },
+        "axismundi/object-featured-image": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "axismundi/object-featured-image",
+            "version": "0.3.0",
+            "title": "Object Featured Image",
+            "category": "theme",
+            "icon": "format-image",
+            "description": "The lead image of the ActivityStreams Object being rendered, or the header image of the Actor in context. The Object sibling of Core's Featured Image, with Cover's overlay and focal-point controls.",
+            "textdomain": "axismundi-object-projections",
+            "usesContext": [
+                "axismundi/actorId"
+            ],
+            "attributes": {
+                "scale": {
+                    "type": "string",
+                    "default": "cover"
+                },
+                "isLink": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "linkTarget": {
+                    "type": "string",
+                    "default": "_self"
+                },
+                "rel": {
+                    "type": "string",
+                    "attribute": "rel",
+                    "default": ""
+                },
+                "dimRatio": {
+                    "type": "number",
+                    "default": 0
+                },
+                "overlayColor": {
+                    "type": "string"
+                },
+                "customOverlayColor": {
+                    "type": "string"
+                },
+                "gradient": {
+                    "type": "string"
+                },
+                "customGradient": {
+                    "type": "string"
+                },
+                "focalPoint": {
+                    "type": "object"
+                },
+                "hasParallax": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "isRepeated": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "showPlaceholder": {
+                    "type": "boolean",
+                    "default": false
+                }
+            },
+            "example": {
+                "viewportWidth": 350
+            },
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "align": [
+                    "left",
+                    "right",
+                    "center",
+                    "wide",
+                    "full"
+                ],
+                "shadow": true,
+                "color": {
+                    "text": true,
+                    "background": false,
+                    "enableContrastChecker": false
+                },
+                "dimensions": {
+                    "aspectRatio": true,
+                    "height": true,
+                    "minHeight": true,
+                    "__experimentalDefaultControls": {
+                        "aspectRatio": true
+                    }
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "filter": {
+                    "duotone": true
+                },
+                "interactivity": {
+                    "clientNavigation": true
+                },
+                "__experimentalBorder": {
+                    "color": true,
+                    "radius": true,
+                    "style": true,
+                    "width": true,
+                    "__experimentalDefaultControls": {
+                        "color": true,
+                        "radius": true,
+                        "width": true
+                    }
+                }
+            },
+            "selectors": {
+                "filter": {
+                    "duotone": ".wp-block-axismundi-object-featured-image .axismundi-object__featured-image-media"
+                }
+            },
+            "editorScript": "file:./edit.js",
+            "style": "axismundi-op-object-view",
+            "editorStyle": "axismundi-op-object-view",
+            "render": "file:./render.php"
+        },
+        "axismundi/object-summary": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "axismundi/object-summary",
+            "version": "0.3.0",
+            "title": "Object Summary",
+            "category": "theme",
+            "icon": "excerpt-view",
+            "description": "The explicit summary of the ActivityStreams Object being rendered. The Object sibling of Core's Post Excerpt: local Articles use content before the More block, or their authored excerpt when no More block exists; remote Objects use their authored summary.",
+            "textdomain": "axismundi-object-projections",
+            "attributes": {
+                "textAlign": {
+                    "type": "string"
+                },
+                "moreText": {
+                    "type": "string",
+                    "role": "content"
+                },
+                "showMoreOnNewLine": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "excerptLength": {
+                    "type": "number",
+                    "default": 55
+                }
+            },
+            "example": {
+                "viewportWidth": 500
+            },
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "color": {
+                    "gradients": true,
+                    "link": true,
+                    "__experimentalDefaultControls": {
+                        "background": true,
+                        "text": true,
+                        "link": true
+                    }
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "textColumns": true,
+                    "__experimentalFontFamily": true,
+                    "__experimentalFontWeight": true,
+                    "__experimentalFontStyle": true,
+                    "__experimentalTextTransform": true,
+                    "__experimentalTextDecoration": true,
+                    "__experimentalLetterSpacing": true,
+                    "__experimentalDefaultControls": {
+                        "fontSize": true
+                    }
+                },
+                "interactivity": {
+                    "clientNavigation": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "color": true,
+                    "width": true,
+                    "style": true,
+                    "__experimentalDefaultControls": {
+                        "radius": true,
+                        "color": true,
+                        "width": true,
+                        "style": true
+                    }
+                }
+            },
+            "editorScript": "file:./edit.js",
+            "viewScript": "file:./view.js",
+            "style": [
+                "wp-block-post-excerpt",
+                "axismundi-op-object-view"
+            ],
+            "editorStyle": [
+                "wp-block-post-excerpt-editor",
+                "axismundi-op-object-view"
+            ],
+            "render": "file:./render.php"
+        },
+        "axismundi/object-card-header": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "axismundi/object-card-header",
+            "version": "0.1.0",
+            "title": "Object Card Header",
+            "category": "theme",
+            "icon": "id",
+            "description": "The identity row an Object card opens with. Which Actor it names is decided by the surface the card is on.",
+            "textdomain": "axismundi-object-projections",
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "interactivity": {
+                    "clientNavigation": true
+                }
+            },
+            "editorScript": "file:./edit.js",
+            "render": "file:./render.php"
+        },
+        "axismundi/object-read-more": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "axismundi/object-read-more",
+            "version": "0.1.0",
+            "title": "Object Read More",
+            "category": "theme",
+            "icon": "arrow-right-alt",
+            "description": "A link into the full representation of the ActivityStreams Object being rendered. The words are yours to write, the destination is the Object's.",
+            "textdomain": "axismundi-object-projections",
+            "attributes": {
+                "text": {
+                    "type": "string",
+                    "role": "content",
+                    "default": "Read more"
+                },
+                "textAlign": {
+                    "type": "string"
+                }
+            },
+            "example": {
+                "viewportWidth": 500
+            },
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "color": {
+                    "gradients": true,
+                    "link": true,
+                    "__experimentalDefaultControls": {
+                        "background": true,
+                        "text": true,
+                        "link": true
+                    }
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true,
+                    "__experimentalFontWeight": true,
+                    "__experimentalFontStyle": true,
+                    "__experimentalTextTransform": true,
+                    "__experimentalTextDecoration": true,
+                    "__experimentalLetterSpacing": true,
+                    "__experimentalDefaultControls": {
+                        "fontSize": true
+                    }
+                },
+                "interactivity": {
+                    "clientNavigation": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "color": true,
+                    "width": true,
+                    "style": true
+                }
+            },
+            "editorScript": "file:./edit.js",
+            "render": "file:./render.php"
+        },
+        "axismundi/object-type": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "axismundi/object-type",
+            "version": "0.1.0",
+            "title": "Object Type",
+            "category": "theme",
+            "icon": "category",
+            "description": "The ActivityStreams type of the Object being rendered. The Object sibling of Core's Query Title.",
+            "textdomain": "axismundi-object-projections",
+            "attributes": {
+                "textAlign": {
+                    "type": "string"
+                },
+                "level": {
+                    "type": "number",
+                    "default": 0
+                },
+                "levelOptions": {
+                    "type": "array"
+                }
+            },
+            "example": {
+                "viewportWidth": 500
+            },
+            "supports": {
+                "anchor": true,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "html": false,
+                "color": {
+                    "gradients": true,
+                    "link": true,
+                    "__experimentalDefaultControls": {
+                        "background": true,
+                        "text": true,
+                        "link": true
+                    }
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true,
+                    "__experimentalFontWeight": true,
+                    "__experimentalFontStyle": true,
+                    "__experimentalTextTransform": true,
+                    "__experimentalTextDecoration": true,
+                    "__experimentalLetterSpacing": true,
+                    "__experimentalDefaultControls": {
+                        "fontSize": true
+                    }
+                },
+                "interactivity": {
+                    "clientNavigation": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "color": true,
+                    "width": true,
+                    "style": true,
+                    "__experimentalDefaultControls": {
+                        "radius": true,
+                        "color": true,
+                        "width": true,
+                        "style": true
+                    }
+                }
+            },
+            "editorScript": "file:./edit.js",
+            "style": [
+                "wp-block-query-title",
+                "axismundi-op-object-view"
+            ],
+            "editorStyle": [
+                "wp-block-query-title-editor",
+                "axismundi-op-object-view"
+            ],
+            "render": "file:./render.php"
+        },
+        "axismundi/object-attachments": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "axismundi/object-attachments",
+            "version": "0.2.15",
+            "title": "Object Attachments",
+            "category": "theme",
+            "icon": "format-gallery",
+            "description": "The media attachments of the ActivityStreams Object being rendered. The Object sibling of Core's Gallery: same nested-image markup, columns, and crop behaviour, but the items come from a local or cached remote Object instead of the Media Library.",
+            "textdomain": "axismundi-object-projections",
+            "attributes": {
+                "displayMode": {
+                    "type": "string",
+                    "default": "gallery",
+                    "enum": [
+                        "gallery",
+                        "carousel"
+                    ]
+                },
+                "columns": {
+                    "type": "number",
+                    "default": 2,
+                    "minimum": 1,
+                    "maximum": 8
+                },
+                "previewCount": {
+                    "type": "number",
+                    "default": 4,
+                    "minimum": 0,
+                    "maximum": 20
+                },
+                "imageCrop": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "aspectRatio": {
+                    "type": "string",
+                    "default": "5/3"
+                },
+                "linkTo": {
+                    "type": "string",
+                    "default": "none"
+                },
+                "linkTarget": {
+                    "type": "string",
+                    "default": "_blank"
+                }
+            },
+            "example": {
+                "viewportWidth": 500
+            },
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "align": [
+                    "left",
+                    "right",
+                    "center",
+                    "wide",
+                    "full"
+                ],
+                "units": [
+                    "px",
+                    "em",
+                    "rem",
+                    "vh",
+                    "vw"
+                ],
+                "spacing": {
+                    "margin": true,
+                    "padding": true,
+                    "blockGap": [
+                        "horizontal",
+                        "vertical"
+                    ],
+                    "__experimentalSkipSerialization": [
+                        "blockGap"
+                    ],
+                    "__experimentalDefaultControls": {
+                        "blockGap": true,
+                        "margin": false,
+                        "padding": false
+                    }
+                },
+                "color": {
+                    "text": false,
+                    "background": true,
+                    "gradients": true
+                },
+                "interactivity": {
+                    "clientNavigation": true
+                },
+                "layout": {
+                    "allowSwitching": false,
+                    "allowInheriting": false,
+                    "allowEditing": false,
+                    "default": {
+                        "type": "flex"
+                    }
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "color": true,
+                    "width": true,
+                    "style": true,
+                    "__experimentalDefaultControls": {
+                        "color": true,
+                        "radius": true
+                    }
+                }
+            },
+            "editorScript": "file:./edit.js",
+            "viewScript": "file:./view.js",
+            "style": [
+                "wp-block-gallery",
+                "wp-block-image",
+                "axismundi-op-object-view"
+            ],
+            "editorStyle": [
+                "wp-block-gallery",
+                "wp-block-image",
+                "axismundi-op-object-view",
+                "file:./editor.css"
+            ],
+            "render": "file:./render.php"
+        },
+        "axismundi/object-title": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "axismundi/object-title",
+            "version": "0.1.0",
+            "title": "Object Title",
+            "category": "theme",
+            "icon": "heading",
+            "description": "The title of the ActivityStreams Object being rendered. The Object sibling of Core's Post Title: it resolves a local or cached remote Object instead of the current WordPress post.",
+            "textdomain": "axismundi-object-projections",
+            "attributes": {
+                "textAlign": {
+                    "type": "string"
+                },
+                "level": {
+                    "type": "number"
+                },
+                "levelOptions": {
+                    "type": "array"
+                },
+                "isLink": {
+                    "type": "boolean",
+                    "default": false,
+                    "role": "content"
+                },
+                "rel": {
+                    "type": "string",
+                    "attribute": "rel",
+                    "default": "",
+                    "role": "content"
+                },
+                "linkTarget": {
+                    "type": "string",
+                    "default": "_self",
+                    "role": "content"
+                }
+            },
+            "example": {
+                "viewportWidth": 500
+            },
+            "supports": {
+                "anchor": true,
+                "align": [
+                    "wide",
+                    "full"
+                ],
+                "html": false,
+                "color": {
+                    "gradients": true,
+                    "link": true,
+                    "__experimentalDefaultControls": {
+                        "background": true,
+                        "text": true,
+                        "link": true
+                    }
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true,
+                    "__experimentalFontWeight": true,
+                    "__experimentalFontStyle": true,
+                    "__experimentalTextTransform": true,
+                    "__experimentalTextDecoration": true,
+                    "__experimentalLetterSpacing": true,
+                    "__experimentalDefaultControls": {
+                        "fontSize": true
+                    }
+                },
+                "interactivity": {
+                    "clientNavigation": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "color": true,
+                    "width": true,
+                    "style": true,
+                    "__experimentalDefaultControls": {
+                        "radius": true,
+                        "color": true,
+                        "width": true,
+                        "style": true
+                    }
+                }
+            },
+            "editorScript": "file:./edit.js",
+            "style": [
+                "wp-block-post-title",
+                "axismundi-op-object-view"
+            ],
+            "editorStyle": [
+                "wp-block-post-title-editor",
+                "axismundi-op-object-view"
+            ],
+            "render": "file:./render.php"
+        },
+        "axismundi/quote-context": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "axismundi/quote-context",
+            "version": "0.1.0",
+            "title": "Quote Context",
+            "category": "theme",
+            "icon": "format-quote",
+            "description": "A consent-aware embedded preview of the Object quoted by the current Object.",
+            "textdomain": "axismundi-object-projections",
+            "attributes": {
+                "previewVariant": {
+                    "type": "string",
+                    "default": "note"
+                }
+            },
+            "example": {
+                "attributes": {
+                    "previewVariant": "note"
+                },
+                "viewportWidth": 420
+            },
+            "supports": {
+                "anchor": true,
+                "html": false,
+                "color": {
+                    "text": true,
+                    "background": true,
+                    "link": true,
+                    "gradients": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true,
+                    "__experimentalFontWeight": true,
+                    "__experimentalFontStyle": true,
+                    "__experimentalTextTransform": true,
+                    "__experimentalTextDecoration": true,
+                    "__experimentalLetterSpacing": true
+                },
+                "__experimentalBorder": {
+                    "radius": true,
+                    "color": true,
+                    "width": true,
+                    "style": true
+                }
+            },
+            "editorScript": "file:./edit.js",
+            "style": "axismundi-op-object-view",
+            "editorStyle": "axismundi-op-object-view",
+            "render": "file:./render.php"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
