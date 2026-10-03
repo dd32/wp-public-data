@@ -1,0 +1,77 @@
+{
+    "name": "CSP Violation Reporter",
+    "slug": "csp-violation-reporter",
+    "version": "0.2.0",
+    "author": "<a href=\"https://profiles.wordpress.org/guidumasperes/\">Guilherme Dumas Peres</a>",
+    "author_profile": "https://profiles.wordpress.org/guidumasperes/",
+    "contributors": {
+        "guidumasperes": {
+            "profile": "https://profiles.wordpress.org/guidumasperes/",
+            "avatar": "https://secure.gravatar.com/avatar/c6d45dadb8bd31d0052d967a6a1f43ae597a802167c68a5df84f4d3352d4067d?s=96&d=monsterid&r=g",
+            "display_name": "Guilherme Dumas Peres"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 1,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/csp-violation-reporter/",
+    "support_threads": 1,
+    "support_threads_resolved": 0,
+    "active_installs": 20,
+    "last_updated": "2026-10-03 16:40:00",
+    "added": "2026-05-28",
+    "homepage": "https://wordpress.org/plugins/csp-violation-reporter/",
+    "sections": {
+        "description": "<p>CSP Violation Reporter helps site administrators investigate Content Security Policy violations. It receives browser reports through a public WordPress REST endpoint, stores them in the site&#8217;s own database, and provides a searchable administrative dashboard.</p>\n<p>Reports can be reviewed from Tools &gt; CSP Violations. The plugin supports the modern Reporting API payload format as well as the older <code>csp-report</code> JSON shape.</p>\n<ul>\n<li>Review violations by directive, blocked resource, document URL, disposition and date.</li>\n<li>Group noisy resources and count repeated occurrences without storing an extra row for every identical report.</li>\n<li>Inspect safely escaped raw JSON, source locations, referrers and first/last-seen timestamps.</li>\n<li>Configure rate limits, retention and the maximum number of stored records.</li>\n<li>Receive same-origin iframe reports and automatically upgrade the database schema without reactivation.</li>\n</ul>\n<p>Filter by directive, disposition, URL and date range, or group violations by resource. Repeated violations with the same document, blocked resource, directive, policy and source location share one record with an occurrence count. Each record includes first/last-seen timestamps and the latest raw JSON report.</p>\n<p>Protection is enabled by default:</p>\n<ul>\n<li>Accepts document URLs only from the origins configured in this site&#8217;s WordPress Address and Site Address. Redacted iframe reports require a local referrer.</li>\n<li>Limits intake to 100 reports per minute per connecting address and 1,000 reports per minute for the site.</li>\n<li>Limits request bodies to 64 KiB, individual normalized reports to 16 KiB and batches to 50 entries.</li>\n<li>Removes inactive reports after 30 days and retains at most 10,000 records, keeping the most recently seen.</li>\n</ul>\n<p>Retention and quotas can be adjusted in Tools &gt; CSP Violations &gt; Settings. Existing reports are preserved during schema upgrades; retention rules also apply to pre-upgrade reports.</p>\n<p>Endpoint:</p>\n<pre><code>/wp-json/csp-violation-reporter/v1/report\n</code></pre>\n<p>The plugin does not create or modify Content Security Policy headers. Site owners should configure CSP headers in their web server, hosting dashboard, theme, or security tooling.</p>\n<p>Example report endpoint configuration:</p>\n<pre><code>Content-Security-Policy: default-src 'self'; report-uri https://example.com/wp-json/csp-violation-reporter/v1/report\n</code></pre>\n<p>For the modern Reporting API, use an HTTPS endpoint:</p>\n<pre><code>Reporting-Endpoints: csp-endpoint=\"https://example.com/wp-json/csp-violation-reporter/v1/report\"\n\nContent-Security-Policy: default-src 'self'; report-to csp-endpoint\n</code></pre>\n<h3>Privacy</h3>\n<p>This plugin stores CSP violation reports submitted by browsers. Stored fields can include the document URL, referrer URL, blocked URI, violated directive, source file, line and column numbers, a user agent string, a salted hash of the remote address, and the raw report payload.</p>\n<p>Short-lived rate-limit records contain a salted address hash and counters. Raw JSON can contain URL query parameters and other information supplied by the browser. Administrators should set retention to suit their site&#8217;s privacy policy. Reports expire by last-seen time and can also be cleared manually. Uninstalling removes the plugin&#8217;s report tables, protection settings and scheduled cleanup events.</p>\n<p>The plugin does not store raw IP addresses and does not transmit report data to external services.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to <code>/wp-content/plugins/</code>.</li>\n<li>Activate the plugin through the Plugins screen in WordPress.</li>\n<li>Open Tools &gt; CSP Violations to copy the reporting endpoint.</li>\n<li>Configure your CSP Reporting API group and reference it from your <code>report-to</code> directive.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20plugin%20set%20my%20csp%20header%3F\">\nDoes this plugin set my CSP header?\n</h4>\n<p>\n<p>No. This plugin receives and displays CSP violation reports. CSP header generation is intentionally left to your theme, server, security plugin, or hosting environment.</p>\n</p>\n<dt id=\"is%20the%20report%20endpoint%20public%3F\">\nIs the report endpoint public?\n</h4>\n<p>\n<p>Yes. Browser violation reports are sent without WordPress authentication. Admin views remain protected by the <code>manage_options</code> capability.</p>\n</p>\n<dt id=\"does%20origin%20validation%20authenticate%20the%20sender%3F\">\nDoes origin validation authenticate the sender?\n</h4>\n<p>\n<p>No. The document URL is supplied by the sender, so it can be forged. Origin checks reject unrelated sites but are not authentication. Database-backed per-address and site-wide quotas, payload limits and retention reduce abuse. For high-volume attacks, also configure rate limiting at your web server or firewall.</p>\n</p>\n<dt id=\"how%20are%20proxies%20and%20cdns%20handled%3F\">\nHow are proxies and CDNs handled?\n</h4>\n<p>\n<p>Limits use the connecting address in <code>REMOTE_ADDR</code>. The plugin does not trust client-controlled <code>X-Forwarded-For</code> headers. Configure trusted-proxy address restoration in your web server if a CDN or reverse proxy fronts the site.</p>\n</p>\n<dt id=\"are%20iframe%20violations%20supported%3F\">\nAre iframe violations supported?\n</h4>\n<p>\n<p>Yes. Some browsers report iframe document URLs as <code>about</code>, <code>about:blank</code>, <code>about:srcdoc</code> or <code>blob</code> instead of an HTTP URL. These reports are accepted only with a referrer on this site&#8217;s origin. Full blob URLs are checked against their embedded HTTP(S) origin. Redacted reports without a local referrer are rejected because their origin cannot be established. Parent referrers also distinguish otherwise identical redacted violations during deduplication.</p>\n</p>\n<dt id=\"when%20does%20automatic%20cleanup%20run%3F\">\nWhen does automatic cleanup run?\n</h4>\n<p>\n<p>Cleanup is scheduled hourly with WP-Cron and also runs when reports are accepted or retention settings change. WP-Cron depends on site traffic; on low-traffic sites, configure a server scheduler to trigger WordPress cron. Expired records are removed in batches. The record ceiling is enforced on every accepted request.</p>\n</p>\n<dt id=\"are%20repeated%20reports%20discarded%3F\">\nAre repeated reports discarded?\n</h4>\n<p>\n<p>Their occurrences are counted, the last-seen time is refreshed, and the latest raw report is retained. The raw JSON is the normalized CSP report body, not the outer Reporting API envelope. Historical 0.1.1 records keep their original data and can be inspected through grouped views.</p>\n</p>\n<dt id=\"what%20happens%20when%20the%20endpoint%20rejects%20a%20report%3F\">\nWhat happens when the endpoint rejects a report?\n</h4>\n<p>\n<p>The endpoint returns HTTP 400 for malformed reports, 403 for foreign document origins, 413 for oversized payloads, and 429 with a Retry-After header for rate limits. Storage failures return HTTP 500 or 503. Accepted requests retain the existing <code>{\"stored\": N}</code> response format; N counts accepted occurrences, including duplicates.</p>\n</p>\n<dt id=\"does%20the%20plugin%20store%20visitor%20ip%20addresses%3F\">\nDoes the plugin store visitor IP addresses?\n</h4>\n<p>\n<p>No. The plugin stores a salted hash of the remote address to help with deduplication and abuse analysis without retaining the raw IP address.</p>\n</p>\n<dt id=\"does%20the%20plugin%20send%20data%20to%20third%20parties%3F\">\nDoes the plugin send data to third parties?\n</h4>\n<p>\n<p>No. Reports are stored in the site&#8217;s own WordPress database.</p>\n</p>\n\n",
+        "changelog": "<h4>0.2.0</h4>\n<ul>\n<li>Tested compatibility with WordPress 7.1, 7.1.2 and the minimum supported WordPress 6.5.</li>\n<li>Added atomic per-address and site-wide rate limits and reduced payload and batch ceilings.</li>\n<li>Validated reported document origins against the current site&#8217;s URLs.</li>\n<li>Supported same-origin iframe reports, including browser-redacted about/blob URLs.</li>\n<li>Added configurable retention, a storage ceiling and scheduled cleanup.</li>\n<li>Deduplicated new violations with occurrence counts and first/last-seen times.</li>\n<li>Added filters, grouped views and safely escaped raw JSON details.</li>\n<li>Added automatic versioned database upgrades and complete lifecycle cleanup.</li>\n<li>Corrected modern originalPolicy and legacy script-sample field handling.</li>\n<li>Preserved the existing endpoint and accepted-response format for integrations.</li>\n<li>Improved grouped display of historical reports without a directive.</li>\n</ul>\n<h4>0.1.1</h4>\n<ul>\n<li>Prepared SQL statements that include the plugin&#8217;s custom table name.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial development release.</li>\n</ul>\n"
+    },
+    "short_description": "Collect and inspect Content Security Policy (CSP) reports with filtering, grouping, rate limits and automatic cleanup.",
+    "description": "<p>CSP Violation Reporter helps site administrators investigate Content Security Policy violations. It receives browser reports through a public WordPress REST endpoint, stores them in the site&#8217;s own database, and provides a searchable administrative dashboard.</p>\n<p>Reports can be reviewed from Tools &gt; CSP Violations. The plugin supports the modern Reporting API payload format as well as the older <code>csp-report</code> JSON shape.</p>\n<ul>\n<li>Review violations by directive, blocked resource, document URL, disposition and date.</li>\n<li>Group noisy resources and count repeated occurrences without storing an extra row for every identical report.</li>\n<li>Inspect safely escaped raw JSON, source locations, referrers and first/last-seen timestamps.</li>\n<li>Configure rate limits, retention and the maximum number of stored records.</li>\n<li>Receive same-origin iframe reports and automatically upgrade the database schema without reactivation.</li>\n</ul>\n<p>Filter by directive, disposition, URL and date range, or group violations by resource. Repeated violations with the same document, blocked resource, directive, policy and source location share one record with an occurrence count. Each record includes first/last-seen timestamps and the latest raw JSON report.</p>\n<p>Protection is enabled by default:</p>\n<ul>\n<li>Accepts document URLs only from the origins configured in this site&#8217;s WordPress Address and Site Address. Redacted iframe reports require a local referrer.</li>\n<li>Limits intake to 100 reports per minute per connecting address and 1,000 reports per minute for the site.</li>\n<li>Limits request bodies to 64 KiB, individual normalized reports to 16 KiB and batches to 50 entries.</li>\n<li>Removes inactive reports after 30 days and retains at most 10,000 records, keeping the most recently seen.</li>\n</ul>\n<p>Retention and quotas can be adjusted in Tools &gt; CSP Violations &gt; Settings. Existing reports are preserved during schema upgrades; retention rules also apply to pre-upgrade reports.</p>\n<p>Endpoint:</p>\n<pre><code>/wp-json/csp-violation-reporter/v1/report\n</code></pre>\n<p>The plugin does not create or modify Content Security Policy headers. Site owners should configure CSP headers in their web server, hosting dashboard, theme, or security tooling.</p>\n<p>Example report endpoint configuration:</p>\n<pre><code>Content-Security-Policy: default-src 'self'; report-uri https://example.com/wp-json/csp-violation-reporter/v1/report\n</code></pre>\n<p>For the modern Reporting API, use an HTTPS endpoint:</p>\n<pre><code>Reporting-Endpoints: csp-endpoint=\"https://example.com/wp-json/csp-violation-reporter/v1/report\"\n\nContent-Security-Policy: default-src 'self'; report-to csp-endpoint\n</code></pre>\n<h3>Privacy</h3>\n<p>This plugin stores CSP violation reports submitted by browsers. Stored fields can include the document URL, referrer URL, blocked URI, violated directive, source file, line and column numbers, a user agent string, a salted hash of the remote address, and the raw report payload.</p>\n<p>Short-lived rate-limit records contain a salted address hash and counters. Raw JSON can contain URL query parameters and other information supplied by the browser. Administrators should set retention to suit their site&#8217;s privacy policy. Reports expire by last-seen time and can also be cleared manually. Uninstalling removes the plugin&#8217;s report tables, protection settings and scheduled cleanup events.</p>\n<p>The plugin does not store raw IP addresses and does not transmit report data to external services.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/csp-violation-reporter.0.2.0.zip",
+    "upgrade_notice": {
+        "0.2.0": "<p>Back up your database. Enables origin checks, rate limits, 30-day retention and a 10,000-record cap by default, including old reports. Review Tools &gt; CSP Violations &gt; Settings. Endpoint URL unchanged.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "content-security-policy": "content security policy",
+        "csp": "csp",
+        "reporting": "reporting",
+        "reports": "reports",
+        "security": "security"
+    },
+    "stable_tag": "0.2.0",
+    "versions": {
+        "0.1.1": "https://downloads.wordpress.org/plugin/csp-violation-reporter.0.1.1.zip",
+        "0.2.0": "https://downloads.wordpress.org/plugin/csp-violation-reporter.0.2.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/csp-violation-reporter.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/csp-violation-reporter/assets/icon-128x128.png?rev=3726510",
+        "2x": "https://ps.w.org/csp-violation-reporter/assets/icon-256x256.png?rev=3726510"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
