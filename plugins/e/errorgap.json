@@ -1,0 +1,85 @@
+{
+    "name": "Errorgap",
+    "slug": "errorgap",
+    "version": "0.3.0",
+    "author": "<a href=\"https://profiles.wordpress.org/errorgap/\">errorgap</a>",
+    "author_profile": "https://profiles.wordpress.org/errorgap/",
+    "contributors": {
+        "jgrubbs": {
+            "profile": "https://profiles.wordpress.org/jgrubbs/",
+            "avatar": "https://secure.gravatar.com/avatar/02e149205aa61d18943b8f1d528562aa1f509c42273f85360d13fc5a8ab599ae?s=96&d=monsterid&r=g",
+            "display_name": "jgrubbs"
+        },
+        "errorgap": {
+            "profile": "https://profiles.wordpress.org/errorgap/",
+            "avatar": "https://secure.gravatar.com/avatar/67f0cceac802d3005e9c8d1574b2393bca31459e1cff77f3cb6288ec0697498e?s=96&d=monsterid&r=g",
+            "display_name": "errorgap"
+        }
+    },
+    "requires": "5.8",
+    "tested": "7.1.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/errorgap/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-05 16:59:00",
+    "added": "2026-10-05",
+    "homepage": "https://github.com/errorgaphq/errorgap-wordpress",
+    "sections": {
+        "description": "<p>errorgap captures WordPress runtime failures and sends them to an errorgap project using the native errorgap notice endpoint.</p>\n<p>The plugin is intentionally dependency-free and uses WordPress core APIs for settings, sanitization, and HTTP delivery.</p>\n<p>Reporting is disabled by default. A site administrator must configure an Errorgap endpoint and enable reporting before the plugin sends data.</p>\n<h3>Configuration</h3>\n<p>Endpoint:<br />\nThe base URL for your errorgap instance, for example <code>https://errorgap.example.com</code>.</p>\n<p>Project slug:<br />\nThe errorgap project slug. Notices are sent to <code>/api/projects/{project_slug}/notices</code>.</p>\n<p>Project key:<br />\nThe errorgap Project API key. It is sent as <code>X-Errorgap-Project-Key</code>.</p>\n<p>Environment:<br />\nDefaults to <code>wp_get_environment_type()</code>, then <code>production</code>.</p>\n<p>Sample rate:<br />\nUse <code>1.0</code> to report every captured error. Lower values sample captured notices before sending.</p>\n<p>APM:<br />\nOptionally record request timings and send APM transactions. Database query spans can also be included; SQL string and numeric literals are replaced with placeholders before transmission. APM can also be enabled from <code>wp-config.php</code> with <code>define('ERRORGAP_APM_ENABLED', true);</code> and <code>define('ERRORGAP_APM_DB_QUERIES', true);</code>.</p>\n<p>Reported severities:<br />\nThe plugin reports its own set of PHP error severities (errors and warnings) independently of the site&#8217;s global error-reporting level, so activating it never changes how the rest of your site reports or displays PHP errors. Notices, deprecations, and strict notices are not reported by default. Adjust the set with the <code>errorgap_reported_severities</code> filter:</p>\n<pre><code>add_filter('errorgap_reported_severities', fn() =&gt; E_ALL &amp; ~E_DEPRECATED);\n</code></pre>\n<p>Constants:<br />\nEvery connection setting can also be defined in <code>wp-config.php</code>, above the <code>/* That's all, stop editing! */</code> line. Constants take precedence over values saved on the settings screen, and keep the project key out of the database:</p>\n<pre><code>define('ERRORGAP_ENDPOINT', 'https://errorgap.example.com');\ndefine('ERRORGAP_PROJECT_SLUG', 'my-project');\ndefine('ERRORGAP_API_KEY', getenv('ERRORGAP_API_KEY'));\ndefine('ERRORGAP_ENVIRONMENT', 'production'); // optional\ndefine('ERRORGAP_ENABLED', true); // optional; implied when endpoint and slug are defined\n</code></pre>\n<p>Empty values and <code>getenv()</code> misses are ignored, so the defines are safe in environments where the variables are not set.</p>\n<h3>External Service and Data Disclosure</h3>\n<p>This plugin connects to the Errorgap endpoint configured by the site administrator. The service receives and stores error reports and, when APM is enabled, performance transactions so administrators can diagnose application failures and performance problems. The plugin does not send data until reporting has been explicitly enabled or enabled through the documented <code>wp-config.php</code> constants.</p>\n<p>Error reports may include error types and messages, request URLs, HTTP methods and hostnames, backtrace file paths and function names, source-code excerpts surrounding failing lines, WordPress and PHP versions, environment and site URLs, sanitized GET and POST parameters, and the ID, login, email address, and roles of a logged-in WordPress user. Fields whose names indicate passwords, authorization values, tokens, secrets, keys, nonces, or cookies are replaced with <code>[FILTERED]</code>; other request values may still contain personal or sensitive information.</p>\n<p>When APM is enabled, transactions may include a random per-request identifier (also attached to errors from that request), request paths, response status codes, durations, environment names, and timestamps. If database query spans are also enabled, normalized SQL statements and their durations are sent. String and numeric SQL literals are replaced with placeholders before transmission.</p>\n<p>The destination and data-handling terms depend on the endpoint selected by the administrator. For the hosted Errorgap service, see the <a href=\"https://errorgap.com/privacy\" rel=\"nofollow ugc\">Errorgap Privacy Policy</a> and <a href=\"https://errorgap.com/terms\" rel=\"nofollow ugc\">Errorgap Terms of Service</a>. Administrators using a self-hosted or third-party endpoint are responsible for that endpoint&#8217;s data handling and disclosures.</p>\n",
+        "installation": "<ol>\n<li>Copy this directory to <code>wp-content/plugins/errorgap</code>.</li>\n<li>Activate the errorgap plugin in WordPress.</li>\n<li>Open Settings &gt; errorgap.</li>\n<li>Enter your errorgap endpoint and project slug.</li>\n<li>Enable reporting.</li>\n</ol>\n<p>Alternatively, skip the settings screen and define constants in <code>wp-config.php</code> (see Configuration below). Reporting turns on automatically when both <code>ERRORGAP_ENDPOINT</code> and <code>ERRORGAP_PROJECT_SLUG</code> are defined.</p>\n",
+        "faq": "\n<dt id=\"does%20the%20plugin%20send%20data%20immediately%20after%20activation%3F\">\nDoes the plugin send data immediately after activation?\n</h4>\n<p>\n<p>No. Reporting is disabled by default. It starts only after an administrator configures an endpoint and enables reporting, or defines the documented endpoint and project-slug constants in <code>wp-config.php</code>.</p>\n</p>\n<dt id=\"what%20information%20is%20sent%20to%20errorgap%3F\">\nWhat information is sent to Errorgap?\n</h4>\n<p>\n<p>See the External Service and Data Disclosure section above. Error reports can contain source excerpts, request data, site and runtime information, and logged-in user information. Secret-like request fields are filtered by name, but administrators should review the disclosure before enabling reporting.</p>\n</p>\n<dt id=\"can%20the%20project%20key%20be%20kept%20out%20of%20the%20wordpress%20database%3F\">\nCan the project key be kept out of the WordPress database?\n</h4>\n<p>\n<p>Yes. Define <code>ERRORGAP_API_KEY</code> and the other connection constants in <code>wp-config.php</code>. Constants take precedence over saved settings.</p>\n</p>\n<dt id=\"can%20i%20send%20reports%20to%20a%20self-hosted%20errorgap%20instance%3F\">\nCan I send reports to a self-hosted Errorgap instance?\n</h4>\n<p>\n<p>Yes. Set the endpoint to the base URL of the compatible Errorgap instance. The site administrator is responsible for the privacy, security, and data-handling practices of the selected endpoint.</p>\n</p>\n\n",
+        "changelog": "<h4>0.3.0</h4>\n<ul>\n<li>With APM enabled, errors reported during a request carry that request&#8217;s transaction id, so Errorgap shows the error a request raised on its trace and links each occurrence to its request. The id is random and generated per request; it identifies nothing about a visitor.</li>\n<li>With APM enabled, a request carrying the <code>x-errorgap-trace</code> header sent by the Errorgap browser SDK records it on its transaction, so Errorgap links the browser&#8217;s view of an API call to the server request that answered it. Only a random UUID is accepted.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>Report a plugin-defined set of PHP error severities (errors and warnings) instead of reading the site&#8217;s global error-reporting level, so activating the plugin never changes how the rest of the site reports or displays errors. Adjustable with the <code>errorgap_reported_severities</code> filter.</li>\n<li>Report nested exception causes: the <code>getPrevious()</code> chain is captured as <code>context.causes</code> and each cause&#8217;s frames are merged into a single backtrace.</li>\n<li>Mark backtrace frames as in-app (theme/plugin/mu-plugin code) or vendor (WordPress core) so the dashboard can separate application frames from core.</li>\n<li>Avoid reporting an uncaught exception twice (once from the exception handler, once from the shutdown handler).</li>\n<li>Allow enabling APM and DB query spans from <code>wp-config.php</code> via <code>ERRORGAP_APM_ENABLED</code> and <code>ERRORGAP_APM_DB_QUERIES</code>.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial errorgap WordPress notifier.</li>\n<li>Ships source excerpts with backtrace frames so errorgap renders code context without repository access.</li>\n</ul>\n"
+    },
+    "short_description": "Reports WordPress PHP errors, exceptions, and shutdown fatals to errorgap.",
+    "description": "<p>errorgap captures WordPress runtime failures and sends them to an errorgap project using the native errorgap notice endpoint.</p>\n<p>The plugin is intentionally dependency-free and uses WordPress core APIs for settings, sanitization, and HTTP delivery.</p>\n<p>Reporting is disabled by default. A site administrator must configure an Errorgap endpoint and enable reporting before the plugin sends data.</p>\n<h3>Configuration</h3>\n<p>Endpoint:<br />\nThe base URL for your errorgap instance, for example <code>https://errorgap.example.com</code>.</p>\n<p>Project slug:<br />\nThe errorgap project slug. Notices are sent to <code>/api/projects/{project_slug}/notices</code>.</p>\n<p>Project key:<br />\nThe errorgap Project API key. It is sent as <code>X-Errorgap-Project-Key</code>.</p>\n<p>Environment:<br />\nDefaults to <code>wp_get_environment_type()</code>, then <code>production</code>.</p>\n<p>Sample rate:<br />\nUse <code>1.0</code> to report every captured error. Lower values sample captured notices before sending.</p>\n<p>APM:<br />\nOptionally record request timings and send APM transactions. Database query spans can also be included; SQL string and numeric literals are replaced with placeholders before transmission. APM can also be enabled from <code>wp-config.php</code> with <code>define('ERRORGAP_APM_ENABLED', true);</code> and <code>define('ERRORGAP_APM_DB_QUERIES', true);</code>.</p>\n<p>Reported severities:<br />\nThe plugin reports its own set of PHP error severities (errors and warnings) independently of the site&#8217;s global error-reporting level, so activating it never changes how the rest of your site reports or displays PHP errors. Notices, deprecations, and strict notices are not reported by default. Adjust the set with the <code>errorgap_reported_severities</code> filter:</p>\n<pre><code>add_filter('errorgap_reported_severities', fn() =&gt; E_ALL &amp; ~E_DEPRECATED);\n</code></pre>\n<p>Constants:<br />\nEvery connection setting can also be defined in <code>wp-config.php</code>, above the <code>/* That's all, stop editing! */</code> line. Constants take precedence over values saved on the settings screen, and keep the project key out of the database:</p>\n<pre><code>define('ERRORGAP_ENDPOINT', 'https://errorgap.example.com');\ndefine('ERRORGAP_PROJECT_SLUG', 'my-project');\ndefine('ERRORGAP_API_KEY', getenv('ERRORGAP_API_KEY'));\ndefine('ERRORGAP_ENVIRONMENT', 'production'); // optional\ndefine('ERRORGAP_ENABLED', true); // optional; implied when endpoint and slug are defined\n</code></pre>\n<p>Empty values and <code>getenv()</code> misses are ignored, so the defines are safe in environments where the variables are not set.</p>\n<h3>External Service and Data Disclosure</h3>\n<p>This plugin connects to the Errorgap endpoint configured by the site administrator. The service receives and stores error reports and, when APM is enabled, performance transactions so administrators can diagnose application failures and performance problems. The plugin does not send data until reporting has been explicitly enabled or enabled through the documented <code>wp-config.php</code> constants.</p>\n<p>Error reports may include error types and messages, request URLs, HTTP methods and hostnames, backtrace file paths and function names, source-code excerpts surrounding failing lines, WordPress and PHP versions, environment and site URLs, sanitized GET and POST parameters, and the ID, login, email address, and roles of a logged-in WordPress user. Fields whose names indicate passwords, authorization values, tokens, secrets, keys, nonces, or cookies are replaced with <code>[FILTERED]</code>; other request values may still contain personal or sensitive information.</p>\n<p>When APM is enabled, transactions may include a random per-request identifier (also attached to errors from that request), request paths, response status codes, durations, environment names, and timestamps. If database query spans are also enabled, normalized SQL statements and their durations are sent. String and numeric SQL literals are replaced with placeholders before transmission.</p>\n<p>The destination and data-handling terms depend on the endpoint selected by the administrator. For the hosted Errorgap service, see the <a href=\"https://errorgap.com/privacy\" rel=\"nofollow ugc\">Errorgap Privacy Policy</a> and <a href=\"https://errorgap.com/terms\" rel=\"nofollow ugc\">Errorgap Terms of Service</a>. Administrators using a self-hosted or third-party endpoint are responsible for that endpoint&#8217;s data handling and disclosures.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/errorgap.0.3.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/errorgap/assets/screenshot-1.png?rev=3729326",
+            "caption": "Errorgap connection, error reporting, sampling, and APM settings in WordPress admin."
+        }
+    ],
+    "tags": {
+        "errors": "errors",
+        "logging": "logging",
+        "monitoring": "monitoring"
+    },
+    "stable_tag": "0.3.0",
+    "versions": {
+        "0.3.0": "https://downloads.wordpress.org/plugin/errorgap.0.3.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/errorgap.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/errorgap/assets/banner-772x250.png?rev=3729326",
+        "high": "https://ps.w.org/errorgap/assets/banner-1544x500.png?rev=3729326"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/errorgap/assets/icon-128x128.png?rev=3729326",
+        "2x": "https://ps.w.org/errorgap/assets/icon-256x256.png?rev=3729326"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
