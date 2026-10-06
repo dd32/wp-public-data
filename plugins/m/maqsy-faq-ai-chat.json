@@ -1,0 +1,138 @@
+{
+    "name": "Maqsy: FAQ Manager and AI Chat",
+    "slug": "maqsy-faq-ai-chat",
+    "version": "1.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/sijad/\">sijad</a>",
+    "author_profile": "https://profiles.wordpress.org/sijad/",
+    "contributors": {
+        "sijad": {
+            "profile": "https://profiles.wordpress.org/sijad/",
+            "avatar": "https://secure.gravatar.com/avatar/cf0cf91177b46c2a04252756ef06569265634a6a4773d6a2bcdb08616f1be689?s=96&d=monsterid&r=g",
+            "display_name": "sijad"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/maqsy-faq-ai-chat/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-06 13:38:00",
+    "added": "2026-09-02",
+    "homepage": "https://github.com/sijad/maqsy-faq-ai-chat",
+    "sections": {
+        "description": "<p>Maqsy lets you write and organise frequently asked questions as a dedicated<br />\npost type, then place any FAQ on a page with a shortcode or a block. Each FAQ<br />\noutputs clean, accessible markup plus <code>FAQPage</code> JSON-LD structured data so search<br />\nengines can understand it.</p>\n<p>It also ships an <strong>optional</strong> AI chat widget: a small floating button that, when<br />\na visitor clicks it, lazy-loads a chat UI whose answers are grounded in your<br />\npublished FAQs. The chat feature is off by default and does nothing until you add<br />\nan API key.</p>\n<h4>FAQ management</h4>\n<ul>\n<li>FAQs are a private custom post type (<code>maqsy</code>) — not publicly browsable on their own.</li>\n<li>Each FAQ holds an ordered list of question/answer pairs, edited with a drag-to-reorder UI and the standard WordPress editor for answers.</li>\n<li>Two display templates: <strong>Simple</strong> (a definition list) and <strong>Accordion</strong> (WAI-ARIA disclosure pattern with keyboard support).</li>\n</ul>\n<h4>Placing a FAQ</h4>\n<p>Shortcode:</p>\n<pre><code>[maqsy id=\"123\"]\n[maqsy id=\"123\" template=\"accordion\"]\n</code></pre>\n<p>Block: insert the <strong>FAQ</strong> block, pick a FAQ, and optionally override the template.<br />\nBoth render through the same code path.</p>\n<h4>Structured data</h4>\n<p>On singular views, each rendered FAQ emits <code>schema.org/FAQPage</code> JSON-LD built from<br />\nits question/answer text. Output is limited to singular views (not archives,<br />\nfeeds or search) to follow Google&#8217;s one-FAQPage-per-URL guidance.</p>\n<h4>AI chat widget (optional)</h4>\n<p>Configure a provider and API key under <strong>FAQs <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> AI Chat Settings</strong> and turn on<br />\n&#8220;Enable AI chat&#8221;. The always-loaded launcher script is tiny; the chat<br />\ninterface is only downloaded when a<br />\nvisitor actually opens the chat. Answers are grounded in your published FAQs plus<br />\nany site/branding instructions you enter in settings, and the public endpoint is<br />\nrate-limited per IP.</p>\n<p>The built-in provider works with any OpenAI-compatible <code>/chat/completions</code> API<br />\n(OpenAI, OpenRouter, or a self-hosted compatible endpoint — you choose the base<br />\nURL). Other plugins can register additional providers via the<br />\n    maqsy_ai_providers filter.</p>\n<h3>External services</h3>\n<p>This plugin&#8217;s AI chat feature is <strong>optional and disabled by default</strong>. It does<br />\nnot contact any external service unless a site administrator enables the AI chat<br />\nand saves an API key.</p>\n<p>When the AI chat is enabled and a visitor sends a message, the plugin makes a<br />\nserver-to-server request to the AI API endpoint you configure (&#8220;API base URL&#8221; in<br />\nsettings). By default this is OpenRouter (<code>https://openrouter.ai/api/v1</code>); you<br />\ncan change it to OpenAI (<code>https://api.openai.com/v1</code>) or any other<br />\nOpenAI-compatible endpoint.</p>\n<p><strong>What is sent, and when:</strong></p>\n<ul>\n<li>On each visitor chat message: the visitor&#8217;s message text, the text of your published FAQ posts, and any &#8220;Site &amp; branding instructions&#8221; you entered — sent to the configured endpoint together with your API key, so the model can generate a reply.</li>\n<li>When an administrator clicks &#8220;Fetch models&#8221; on the settings page: a request to the endpoint&#8217;s <code>/models</code> route, authenticated with the API key entered in the form.</li>\n</ul>\n<p>No data is sent to the plugin&#8217;s author or to WordPress.org. The plugin does not<br />\nadd analytics, tracking, or telemetry.</p>\n<p>Because you choose the endpoint, review the terms and privacy policy of whichever<br />\nprovider you configure. For the two presets:</p>\n<ul>\n<li>OpenRouter — Terms: https://openrouter.ai/terms ; Privacy: https://openrouter.ai/privacy</li>\n<li>OpenAI — Terms: https://openai.com/policies/terms-of-use/ ; Privacy: https://openai.com/policies/privacy-policy/</li>\n</ul>\n<h3>Source code and build process</h3>\n<p>Compiled assets in <code>build/</code> are generated from the human-readable sources<br />\nincluded in this package:</p>\n<ul>\n<li><code>src/</code> — admin, front-end and block scripts/styles, built with <code>@wordpress/scripts</code> (webpack). See <code>webpack.config.js</code>.</li>\n<li><code>chat-runtime/src/</code> — the lazy-loaded chat UI (React 19 + TypeScript), bundled with esbuild, and its Tailwind stylesheet. See <code>package.json</code> and <code>tailwind.config.js</code>.</li>\n</ul>\n<p>To build from source:</p>\n<pre><code>npm install\nnpm --prefix chat-runtime install\nnpm run build\n</code></pre>\n<p>Development repository: https://github.com/sijad/maqsy-faq-ai-chat</p>\n<p>Bundled third-party libraries in the chat bundle (all MIT-licensed): React and<br />\nReactDOM, scheduler, use-sync-external-store, @floating-ui, @shadcn/react, clsx,<br />\ntailwind-merge.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>maqsy-faq-ai-chat</code> folder to <code>/wp-content/plugins/</code>, or install the plugin through the Plugins screen in WordPress.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> screen.</li>\n<li>Open the new <strong>FAQs</strong> menu and add a FAQ with one or more question/answer pairs.</li>\n<li>Add <code>[maqsy id=\"…\"]</code> (the shortcode is shown on the FAQ edit screen) to a page or post, or insert the <strong>FAQ</strong> block.</li>\n<li>(Optional) To enable the AI chat, go to <strong>FAQs <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> AI Chat Settings</strong>, enter an API key for an OpenAI-compatible provider, and turn on &#8220;Enable AI chat&#8221;.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20an%20api%20key%20to%20use%20the%20plugin%3F\">\nDo I need an API key to use the plugin?\n</h4>\n<p>\n<p>No. FAQ management, the shortcode, the block, and the structured-data output all<br />\nwork with no configuration. An API key is only required for the optional AI chat<br />\nwidget.</p>\n</p>\n<dt id=\"where%20does%20the%20ai%20chat%20get%20its%20answers%3F\">\nWhere does the AI chat get its answers?\n</h4>\n<p>\n<p>From the text of your published FAQ posts plus any instructions you add in<br />\nsettings. The system prompt instructs the model not to invent facts that aren&#8217;t<br />\nin that content. See the &#8220;External services&#8221; section for exactly what is sent.</p>\n</p>\n<dt id=\"does%20the%20plugin%20work%20without%20javascript%3F\">\nDoes the plugin work without JavaScript?\n</h4>\n<p>\n<p>Both FAQ templates and the structured data work without JavaScript. The Accordion<br />\ntemplate uses native HTML details/summary elements. The AI chat widget needs<br />\nJavaScript.</p>\n</p>\n<dt id=\"what%20happens%20to%20my%20data%20when%20i%20uninstall%3F\">\nWhat happens to my data when I uninstall?\n</h4>\n<p>\n<p>Deleting the plugin removes all FAQ posts it created and its settings option.<br />\nDeactivating does not delete anything.</p>\n</p>\n<dt id=\"can%20i%20add%20my%20own%20ai%20provider%3F\">\nCan I add my own AI provider?\n</h4>\n<p>\n<p>Yes. Implement <code>Maqsy_AI_Provider</code> and add it via the <code>maqsy_ai_providers</code><br />\nfilter. The filters <code>maqsy_ai_system_prompt</code>, <code>maqsy_ai_before_request</code><br />\nand <code>maqsy_ai_after_response</code> are also available.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.0</h4>\n<ul>\n<li>Use native details/summary elements for the Accordion template, with keyboard support and no JavaScript required.</li>\n<li>Add Maqsy_Public::get_schema( $id ) to retrieve FAQPage structured data separately.</li>\n<li>Remove the FAQ accordion script and its manual accessibility state handling.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Manage FAQs as a post type, drop them in with a shortcode or block, and let an optional AI chat widget answer visitors from that content.",
+    "description": "<p>Maqsy lets you write and organise frequently asked questions as a dedicated<br />\npost type, then place any FAQ on a page with a shortcode or a block. Each FAQ<br />\noutputs clean, accessible markup plus <code>FAQPage</code> JSON-LD structured data so search<br />\nengines can understand it.</p>\n<p>It also ships an <strong>optional</strong> AI chat widget: a small floating button that, when<br />\na visitor clicks it, lazy-loads a chat UI whose answers are grounded in your<br />\npublished FAQs. The chat feature is off by default and does nothing until you add<br />\nan API key.</p>\n<h4>FAQ management</h4>\n<ul>\n<li>FAQs are a private custom post type (<code>maqsy</code>) — not publicly browsable on their own.</li>\n<li>Each FAQ holds an ordered list of question/answer pairs, edited with a drag-to-reorder UI and the standard WordPress editor for answers.</li>\n<li>Two display templates: <strong>Simple</strong> (a definition list) and <strong>Accordion</strong> (WAI-ARIA disclosure pattern with keyboard support).</li>\n</ul>\n<h4>Placing a FAQ</h4>\n<p>Shortcode:</p>\n<pre><code>[maqsy id=\"123\"]\n[maqsy id=\"123\" template=\"accordion\"]\n</code></pre>\n<p>Block: insert the <strong>FAQ</strong> block, pick a FAQ, and optionally override the template.<br />\nBoth render through the same code path.</p>\n<h4>Structured data</h4>\n<p>On singular views, each rendered FAQ emits <code>schema.org/FAQPage</code> JSON-LD built from<br />\nits question/answer text. Output is limited to singular views (not archives,<br />\nfeeds or search) to follow Google&#8217;s one-FAQPage-per-URL guidance.</p>\n<h4>AI chat widget (optional)</h4>\n<p>Configure a provider and API key under <strong>FAQs <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> AI Chat Settings</strong> and turn on<br />\n&#8220;Enable AI chat&#8221;. The always-loaded launcher script is tiny; the chat<br />\ninterface is only downloaded when a<br />\nvisitor actually opens the chat. Answers are grounded in your published FAQs plus<br />\nany site/branding instructions you enter in settings, and the public endpoint is<br />\nrate-limited per IP.</p>\n<p>The built-in provider works with any OpenAI-compatible <code>/chat/completions</code> API<br />\n(OpenAI, OpenRouter, or a self-hosted compatible endpoint — you choose the base<br />\nURL). Other plugins can register additional providers via the<br />\n    maqsy_ai_providers filter.</p>\n<h3>External services</h3>\n<p>This plugin&#8217;s AI chat feature is <strong>optional and disabled by default</strong>. It does<br />\nnot contact any external service unless a site administrator enables the AI chat<br />\nand saves an API key.</p>\n<p>When the AI chat is enabled and a visitor sends a message, the plugin makes a<br />\nserver-to-server request to the AI API endpoint you configure (&#8220;API base URL&#8221; in<br />\nsettings). By default this is OpenRouter (<code>https://openrouter.ai/api/v1</code>); you<br />\ncan change it to OpenAI (<code>https://api.openai.com/v1</code>) or any other<br />\nOpenAI-compatible endpoint.</p>\n<p><strong>What is sent, and when:</strong></p>\n<ul>\n<li>On each visitor chat message: the visitor&#8217;s message text, the text of your published FAQ posts, and any &#8220;Site &amp; branding instructions&#8221; you entered — sent to the configured endpoint together with your API key, so the model can generate a reply.</li>\n<li>When an administrator clicks &#8220;Fetch models&#8221; on the settings page: a request to the endpoint&#8217;s <code>/models</code> route, authenticated with the API key entered in the form.</li>\n</ul>\n<p>No data is sent to the plugin&#8217;s author or to WordPress.org. The plugin does not<br />\nadd analytics, tracking, or telemetry.</p>\n<p>Because you choose the endpoint, review the terms and privacy policy of whichever<br />\nprovider you configure. For the two presets:</p>\n<ul>\n<li>OpenRouter — Terms: https://openrouter.ai/terms ; Privacy: https://openrouter.ai/privacy</li>\n<li>OpenAI — Terms: https://openai.com/policies/terms-of-use/ ; Privacy: https://openai.com/policies/privacy-policy/</li>\n</ul>\n<h3>Source code and build process</h3>\n<p>Compiled assets in <code>build/</code> are generated from the human-readable sources<br />\nincluded in this package:</p>\n<ul>\n<li><code>src/</code> — admin, front-end and block scripts/styles, built with <code>@wordpress/scripts</code> (webpack). See <code>webpack.config.js</code>.</li>\n<li><code>chat-runtime/src/</code> — the lazy-loaded chat UI (React 19 + TypeScript), bundled with esbuild, and its Tailwind stylesheet. See <code>package.json</code> and <code>tailwind.config.js</code>.</li>\n</ul>\n<p>To build from source:</p>\n<pre><code>npm install\nnpm --prefix chat-runtime install\nnpm run build\n</code></pre>\n<p>Development repository: https://github.com/sijad/maqsy-faq-ai-chat</p>\n<p>Bundled third-party libraries in the chat bundle (all MIT-licensed): React and<br />\nReactDOM, scheduler, use-sync-external-store, @floating-ui, @shadcn/react, clsx,<br />\ntailwind-merge.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/maqsy-faq-ai-chat.1.1.0.zip",
+    "upgrade_notice": {
+        "1.1.0": "<p>Accordion FAQs now use native details/summary markup. Update custom button or .active CSS selectors to target summary and details[open].</p>",
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/maqsy-faq-ai-chat/assets/screenshot-1.png?rev=3677252",
+            "caption": "The AI Chat Settings screen."
+        },
+        {
+            "src": "https://ps.w.org/maqsy-faq-ai-chat/assets/screenshot-2.png?rev=3677252",
+            "caption": "The chat widget, shown in dark and light mode."
+        },
+        {
+            "src": "https://ps.w.org/maqsy-faq-ai-chat/assets/screenshot-3.png?rev=3677252",
+            "caption": "Editing a FAQ: drag-to-reorder question/answer pairs, with the ready-to-paste shortcode."
+        },
+        {
+            "src": "https://ps.w.org/maqsy-faq-ai-chat/assets/screenshot-4.png?rev=3677252",
+            "caption": "The FAQs admin list."
+        },
+        {
+            "src": "https://ps.w.org/maqsy-faq-ai-chat/assets/screenshot-5.png?rev=3677252",
+            "caption": "The FAQ block in the editor, set to the Accordion template."
+        },
+        {
+            "src": "https://ps.w.org/maqsy-faq-ai-chat/assets/screenshot-6.png?rev=3677252",
+            "caption": "The FAQ block in the editor, set to the Simple template."
+        }
+    ],
+    "tags": {
+        "accordion": "Accordion",
+        "ai-chat": "AI chat",
+        "chatbot": "chatbot",
+        "faq": "faq",
+        "structured-data": "structured data"
+    },
+    "stable_tag": "1.1.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/maqsy-faq-ai-chat.1.0.0.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/maqsy-faq-ai-chat.1.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/maqsy-faq-ai-chat.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/maqsy-faq-ai-chat/assets/banner-772x250.png?rev=3677252",
+        "high": "https://ps.w.org/maqsy-faq-ai-chat/assets/banner-1544x500.png?rev=3677252"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/maqsy-faq-ai-chat/assets/icon-128x128.png?rev=3677252",
+        "2x": "https://ps.w.org/maqsy-faq-ai-chat/assets/icon-256x256.png?rev=3677252"
+    },
+    "blocks": {
+        "maqsy/faq": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "maqsy/faq",
+            "title": "FAQ",
+            "category": "widgets",
+            "icon": "sos",
+            "description": "Insert a Maqsy FAQ, with an optional template override.",
+            "keywords": [
+                "faq",
+                "questions",
+                "accordion"
+            ],
+            "textdomain": "maqsy-faq-ai-chat",
+            "attributes": {
+                "postId": {
+                    "type": "number",
+                    "default": 0
+                },
+                "template": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "supports": {
+                "html": false
+            },
+            "editorScript": "file:./index.js",
+            "style": "maqsy-public",
+            "render": "file:./render.php"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
