@@ -1,0 +1,94 @@
+{
+    "name": "Blackaha Pricing Updater for WooCommerce",
+    "slug": "blackaha-pricing-updater-for-woocommerce",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/blackahaaaaaaaaa/\">blackaha</a>",
+    "author_profile": "https://profiles.wordpress.org/blackahaaaaaaaaa/",
+    "contributors": {
+        "blackahaaaaaaaaa": {
+            "profile": "https://profiles.wordpress.org/blackahaaaaaaaaa/",
+            "avatar": "https://secure.gravatar.com/avatar/5c84381c4a67fa2ececb968dd5c3ead9e46e4cd64543b85c97a54d5df379a07b?s=96&d=monsterid&r=g",
+            "display_name": "blackaha"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1.2",
+    "requires_php": "8.0",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/blackaha-pricing-updater-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-06 05:14:00",
+    "added": "2026-10-06",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Blackaha Pricing Updater for WooCommerce lets your pricing service set product prices in your store. The service sends a SKU and a new price; the plugin finds that product by its SKU, sets the price, checks the result and answers whether the price is now in effect.</p>\n<p>Setting it up takes two steps: copy the webhook URL the plugin shows you, and paste in the signing secret your pricing service gives you. There is nothing else to configure.</p>\n<h4>What it does</h4>\n<ul>\n<li>Updates the price of simple products and product variations, matched by SKU.</li>\n<li>Respects a running sale: a new price below the regular price becomes the sale price and the regular price is kept; a new price at or above the regular price replaces it and ends the sale.</li>\n<li>Confirms every update: a price is only reported as applied after it has been read back from the store.</li>\n<li>Accepts signed requests only. Every request is verified with your signing secret, must be recent, and cannot be replayed.</li>\n<li>Applies each update exactly once, even if the same update arrives more than once.</li>\n<li>Shows the connection status and the most recent price updates under WooCommerce &gt; Pricing Updater.</li>\n</ul>\n<h4>What it deliberately does not do</h4>\n<p>The plugin refuses an update, and says why, rather than guess:</p>\n<ul>\n<li>It does not convert currencies. The price must be in your store currency.</li>\n<li>It does not round. The price must fit the number of decimals your store uses.</li>\n<li>It does not pick one of several products sharing a SKU. The SKU must identify exactly one product.</li>\n<li>It does not set a price on a variable product. Use the SKU of the variation.</li>\n</ul>\n<h4>Requirements</h4>\n<ul>\n<li>WooCommerce 8.0 or newer.</li>\n<li>A site served over HTTPS.</li>\n<li>A signing secret from your pricing service.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin does not contact any service on its own. It exposes one webhook endpoint on your site, which the pricing service you connect calls to deliver price updates.</p>\n<p>Each request is authenticated with your signing secret. The plugin answers the caller with, for each update received: the identifier of the update, whether it was applied, the price now in effect, the WooCommerce product ID, and, when the update was not applied, the reason. No customer or order data is ever read or sent.</p>\n<p>Which pricing service you connect is your choice; its own terms of service and privacy policy apply to the data it holds.</p>\n",
+        "installation": "<ol>\n<li>Install and activate WooCommerce if it is not already active.</li>\n<li>Install and activate Blackaha Pricing Updater for WooCommerce.</li>\n<li>Go to WooCommerce &gt; Pricing Updater.</li>\n<li>Copy the webhook URL into the store connection settings of your pricing service.</li>\n<li>Paste the signing secret you are given there into the Signing secret field, and save.</li>\n<li>Run the connection test from your pricing service. The settings page then shows the store as connected.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"which%20products%20can%20be%20updated%3F\">\nWhich products can be updated?\n</h4>\n<p>\n<p>Simple products and variations that have a SKU. The SKU must be unique in your store.</p>\n</p>\n<dt id=\"which%20price%20is%20changed%3F\">\nWhich price is changed?\n</h4>\n<p>\n<p>For a product that is not on sale, the regular price. For a product on sale, a new price below the regular price is written as the sale price, keeping the regular price and the sale schedule; a new price at or above the regular price replaces the regular price and removes the sale.</p>\n</p>\n<dt id=\"a%20price%20update%20was%20not%20applied.%20why%3F\">\nA price update was not applied. Why?\n</h4>\n<p>\n<p>The reason is listed under WooCommerce &gt; Pricing Updater, in Recent price updates, and is reported back to your pricing service. The usual causes are an unknown or duplicated SKU, a different currency, or more decimals than your store uses.</p>\n</p>\n<dt id=\"the%20connection%20test%20fails.%20what%20should%20i%20check%3F\">\nThe connection test fails. What should I check?\n</h4>\n<p>\n<ul>\n<li>The webhook URL is used exactly as shown on the settings page: same address, HTTPS, no redirect.</li>\n<li>The signing secret was pasted completely, with no spaces.</li>\n<li>No security plugin, firewall or cache blocks, alters or caches requests to <code>/wp-json/pricing-updater/v1/webhook</code>. The REST API must be reachable without logging in.</li>\n<li>The clock of your server is correct.</li>\n</ul>\n</p>\n<dt id=\"is%20the%20signing%20secret%20safe%3F\">\nIs the signing secret safe?\n</h4>\n<p>\n<p>It is stored in your site&#8217;s database, is never displayed again after saving, and is never sent anywhere. To replace it, save a new one. To stop accepting price updates, use Disconnect.</p>\n</p>\n<dt id=\"can%20i%20protect%20some%20products%20from%20being%20updated%3F\">\nCan I protect some products from being updated?\n</h4>\n<p>\n<p>Yes, with the <code>pricing_updater_allow_price_update</code> filter. Return <code>false</code>, or a string with the reason, for the products that must keep their price.</p>\n</p>\n<dt id=\"what%20happens%20to%20my%20data%20if%20i%20delete%20the%20plugin%3F\">\nWhat happens to my data if I delete the plugin?\n</h4>\n<p>\n<p>Deleting the plugin removes its settings and its records of received updates. Product prices stay as they are.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Connects your WooCommerce store to your pricing service and applies the product prices it sends, matched by SKU.",
+    "description": "<p>Blackaha Pricing Updater for WooCommerce lets your pricing service set product prices in your store. The service sends a SKU and a new price; the plugin finds that product by its SKU, sets the price, checks the result and answers whether the price is now in effect.</p>\n<p>Setting it up takes two steps: copy the webhook URL the plugin shows you, and paste in the signing secret your pricing service gives you. There is nothing else to configure.</p>\n<h4>What it does</h4>\n<ul>\n<li>Updates the price of simple products and product variations, matched by SKU.</li>\n<li>Respects a running sale: a new price below the regular price becomes the sale price and the regular price is kept; a new price at or above the regular price replaces it and ends the sale.</li>\n<li>Confirms every update: a price is only reported as applied after it has been read back from the store.</li>\n<li>Accepts signed requests only. Every request is verified with your signing secret, must be recent, and cannot be replayed.</li>\n<li>Applies each update exactly once, even if the same update arrives more than once.</li>\n<li>Shows the connection status and the most recent price updates under WooCommerce &gt; Pricing Updater.</li>\n</ul>\n<h4>What it deliberately does not do</h4>\n<p>The plugin refuses an update, and says why, rather than guess:</p>\n<ul>\n<li>It does not convert currencies. The price must be in your store currency.</li>\n<li>It does not round. The price must fit the number of decimals your store uses.</li>\n<li>It does not pick one of several products sharing a SKU. The SKU must identify exactly one product.</li>\n<li>It does not set a price on a variable product. Use the SKU of the variation.</li>\n</ul>\n<h4>Requirements</h4>\n<ul>\n<li>WooCommerce 8.0 or newer.</li>\n<li>A site served over HTTPS.</li>\n<li>A signing secret from your pricing service.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin does not contact any service on its own. It exposes one webhook endpoint on your site, which the pricing service you connect calls to deliver price updates.</p>\n<p>Each request is authenticated with your signing secret. The plugin answers the caller with, for each update received: the identifier of the update, whether it was applied, the price now in effect, the WooCommerce product ID, and, when the update was not applied, the reason. No customer or order data is ever read or sent.</p>\n<p>Which pricing service you connect is your choice; its own terms of service and privacy policy apply to the data it holds.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/blackaha-pricing-updater-for-woocommerce.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/blackaha-pricing-updater-for-woocommerce/assets/screenshot-1.png?rev=3730030",
+            "caption": "The settings page once the store is connected: webhook URL, signing secret and connection status."
+        },
+        {
+            "src": "https://ps.w.org/blackaha-pricing-updater-for-woocommerce/assets/screenshot-2.png?rev=3730030",
+            "caption": "Connecting the store takes two steps: copy the webhook URL, paste the signing secret."
+        },
+        {
+            "src": "https://ps.w.org/blackaha-pricing-updater-for-woocommerce/assets/screenshot-3.png?rev=3730030",
+            "caption": "Recent price updates, with the result of each one."
+        }
+    ],
+    "tags": {
+        "auto-price": "auto price",
+        "auto-set-price": "auto set price",
+        "competitor-pricing": "competitor pricing",
+        "dynamic-pricing": "dynamic pricing",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/blackaha-pricing-updater-for-woocommerce.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/blackaha-pricing-updater-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/blackaha-pricing-updater-for-woocommerce/assets/banner-772x250.png?rev=3730030",
+        "high": "https://ps.w.org/blackaha-pricing-updater-for-woocommerce/assets/banner-1544x500.png?rev=3730030"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/blackaha-pricing-updater-for-woocommerce/assets/icon-128x128.png?rev=3730030",
+        "2x": "https://ps.w.org/blackaha-pricing-updater-for-woocommerce/assets/icon-256x256.png?rev=3730030"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
