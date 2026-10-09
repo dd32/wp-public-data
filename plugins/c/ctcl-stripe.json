@@ -1,7 +1,7 @@
 {
     "name": "CTCL Stripe",
     "slug": "ctcl-stripe",
-    "version": "1.2.2",
+    "version": "2.0.0",
     "author": "<a href=\"https://profiles.wordpress.org/ujw0l/\">UjW0L</a>",
     "author_profile": "https://profiles.wordpress.org/ujw0l/",
     "contributors": {
@@ -11,10 +11,12 @@
             "display_name": "UjW0L"
         }
     },
-    "requires": false,
-    "tested": "7.0.2",
-    "requires_php": false,
-    "requires_plugins": [],
+    "requires": "6.5",
+    "tested": "7.1.3",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "ctc-lite"
+    ],
     "compatibility": [],
     "rating": 0,
     "ratings": {
@@ -29,42 +31,50 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2026-07-22 01:06:00",
+    "last_updated": "2026-10-09 05:13:00",
     "added": "2020-11-07",
-    "homepage": "",
+    "homepage": "https://github.com/ujw0l/ctcl-stripe",
     "sections": {
-        "description": "<p><strong>CTCL Stripe</strong> is an addon for the CT Commerce Lite platform that allows you to accept secure payments through Stripe. With this integration, you can offer your customers a seamless checkout experience directly on your eCommerce site.</p>\n<p><strong>Key Features:</strong><br />\n&#8211; Accept payments via Stripe, one of the most trusted payment gateways.<br />\n&#8211; Secure transactions with SSL and PCI-DSS compliance.<br />\n&#8211; Easy setup with your Stripe credentials.</p>\n<h3>Obtaining Your Stripe Credentials</h3>\n<ol>\n<li>Log in to your Stripe account at <a href=\"https://dashboard.stripe.com\" rel=\"nofollow ugc\">dashboard.stripe.com</a>.</li>\n<li>Navigate to <strong>Developers &gt; API keys</strong> in the sidebar.</li>\n<li>Here, you’ll find your Publishable Key and Secret Key under the “Standard keys” section.</li>\n</ol>\n<h3>Additional Information</h3>\n<p>For any issues or feature requests, please contact <a href=\"mailto:bktujwol@gmail.com\" rel=\"nofollow ugc\">Ujwol Bastakoti</a>.</p>\n",
-        "installation": "<p>This section describes how to install the plugin and get it working.</p>\n<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/ctcl-stripe</code> directory, or install the plugin directly through the WordPress plugins screen.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; screen in WordPress.</li>\n<li>Navigate to the CT Commerce Lite settings panel, and you will find the Stripe settings under the <strong>Billing Tab</strong>.</li>\n<li>Enter your Stripe Publishable Key and Secret Key.</li>\n</ol>\n",
-        "faq": "\n<dt id=\"how%20do%20i%20add%20stripe%20payment%20option%20to%20my%20checkout%3F\">\nHow do I add Stripe payment option to my checkout?\n</h4>\n<p>\n<p>Simply install and activate the CTCL Stripe addon, then enter your Stripe API credentials in the CT Commerce Lite settings under the <strong>Billing Tab</strong>.</p>\n</p>\n<dt id=\"is%20stripe%20secure%3F\">\nIs Stripe secure?\n</h4>\n<p>\n<p>Yes, Stripe is one of the most secure payment gateways available, offering SSL and PCI-DSS compliance to ensure your transactions are safe.</p>\n</p>\n\n",
-        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
+        "description": "<p>CTCL Stripe adds Stripe payments to the existing CT Commerce Lite checkout. Customers keep the store&#8217;s cart, contact details, shipping options and order confirmation page, with a modern Stripe Payment Element for secure payment and any required authentication.</p>\n<p>The settings panel includes separate test and live credentials, masked API keys, a custom payment method label, a checkout appearance preview and webhook setup instructions.</p>\n<p>Features:</p>\n<ul>\n<li>Modern Checkout Sessions and Payment Element replace legacy card tokens and Charges.</li>\n<li>Payment methods are managed in the Stripe Dashboard; Stripe shows eligible methods for each checkout.</li>\n<li>Server-side validation uses CT Commerce Lite&#8217;s published products, quantities, variations, shipping, tax and coupon rules.</li>\n<li>The Stripe Session charges the exact validated CT Commerce Lite grand total.</li>\n<li>Signed webhooks and browser returns share one fulfillment handler, preventing duplicate orders and notifications.</li>\n<li>Asynchronous payments create orders only after Stripe confirms payment.</li>\n<li>Existing CT Commerce Lite order records, shipping hooks, email, SMS and WhatsApp integrations remain available.</li>\n<li>Accessible loading, validation and payment error messages.</li>\n<li>Settings survive deactivation. Existing test/live API keys and label settings are preserved on upgrade.</li>\n<li>Stripe PHP SDK 22.0.0 and API version 2026-09-30.endive.</li>\n</ul>\n<p>Requires CT Commerce Lite 2.8.3 or later with its server-side checkout validation class. Three-decimal currencies are not supported. Zero-decimal currencies require a whole-number grand total.</p>\n<h3>Upgrading from 1.x</h3>\n<p>Existing activation, test mode, publishable/secret key and payment label options are retained. Add webhook signing secrets for each environment. New payments use Checkout Sessions; posted legacy stripe_token values are no longer accepted.</p>\n<p>CTCL Stripe stores a temporary validated checkout snapshot to recover paid orders when the customer leaves the page. The duplicate snapshot is cleared after fulfillment. Checkout records older than 30 days are removed by WP-Cron; completed orders remain in CT Commerce Lite&#8217;s order table.</p>\n<h3>External services</h3>\n<p>This plugin connects to Stripe to process payments.</p>\n<p>Stripe.js is loaded from js.stripe.com on storefront pages while Stripe is enabled and configured. Payment details entered in the Payment Element are sent directly to Stripe. When a customer continues to secure payment, the server sends Stripe the validated total, currency, customer email, generated order reference and checkout metadata. Card details do not pass through WordPress.</p>\n<p>Stripe sends signed payment events to the configured webhook endpoint to confirm orders. Use of Stripe is subject to its terms and privacy policy.</p>\n<ul>\n<li>Service: https://stripe.com/</li>\n<li>Terms: https://stripe.com/legal/ssa</li>\n<li>Privacy: https://stripe.com/privacy</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Install and activate CT Commerce Lite, then install and activate CTCL Stripe.</li>\n<li>Open CT Commerce Lite &gt; Billing &gt; Stripe (or use the plugin&#8217;s Settings link).</li>\n<li>Enable Stripe, choose your payment method label and start in Test mode.</li>\n<li>Enter the test publishable key and a restricted API key with Checkout Sessions and PaymentIntents read/write permissions. Existing secret keys are also supported. Use a separate Stripe sandbox for development where possible.</li>\n<li>Configure a webhook in Stripe pointing to the endpoint shown in the settings panel. Subscribe to checkout.session.completed, checkout.session.async_payment_succeeded and checkout.session.async_payment_failed, then add that environment&#8217;s signing secret.</li>\n<li>Ensure the CT Commerce Lite checkout block points to a published page containing its order-processing block.</li>\n<li>Add a product, continue through CT Commerce Lite&#8217;s checkout, fill contact details and select shipping and Stripe. Choose Continue to secure payment, then complete the Payment Element and place your order.</li>\n<li>Test successful payments, declines and authentication. Before accepting real payments, add live credentials and the live webhook signing secret, serve the store over HTTPS, and turn off Test mode.</li>\n</ol>\n<p>For localhost webhooks, use the Stripe CLI&#8217;s forwarding feature. Stripe cannot directly deliver webhooks to a localhost URL. Copy the CLI signing secret into the test webhook signing secret field. Webhooks are required for reliable fulfillment and delayed payment methods; the browser return is an additional confirmation path.</p>\n",
+        "faq": "\n<dt id=\"does%20this%20replace%20ct%20commerce%20lite%27s%20checkout%3F\">\nDoes this replace CT Commerce Lite&#8217;s checkout?\n</h4>\n<p>\n<p>No. The addon uses the existing cart, contact fields, shipping options, published product pricing and order-processing page. Stripe handles the payment fields and authentication.</p>\n</p>\n<dt id=\"which%20payment%20methods%20can%20customers%20use%3F\">\nWhich payment methods can customers use?\n</h4>\n<p>\n<p>Enable methods in your Stripe Dashboard. Stripe determines eligibility based on your account, currency, customer and integration. Wallets may also require HTTPS and payment-method domain registration.</p>\n</p>\n<dt id=\"why%20do%20i%20need%20a%20webhook%3F\">\nWhy do I need a webhook?\n</h4>\n<p>\n<p>A customer can close the browser after paying. Webhooks let Stripe confirm the payment and place the CT Commerce Lite order independently. A delayed payment method must succeed before an order is created.</p>\n</p>\n<dt id=\"will%20refreshing%20the%20confirmation%20page%20create%20another%20order%3F\">\nWill refreshing the confirmation page create another order?\n</h4>\n<p>\n<p>No. Stripe Session creation uses an idempotency key. Browser returns and webhook events use a shared database claim and CT Commerce Lite&#8217;s unique order ID to avoid duplicate orders.</p>\n</p>\n<dt id=\"does%20stripe%20calculate%20my%20store%27s%20tax%20and%20shipping%3F\">\nDoes Stripe calculate my store&#8217;s tax and shipping?\n</h4>\n<p>\n<p>This addon charges CT Commerce Lite&#8217;s validated total, including its shipping, tax and discounts. It does not enable Stripe Tax or alter the store&#8217;s tax settings.</p>\n</p>\n<dt id=\"where%20are%20secret%20keys%20stored%3F\">\nWhere are secret keys stored?\n</h4>\n<p>\n<p>Keys are saved in WordPress options and masked in the administrator interface. Server keys and webhook secrets are never sent to the storefront. Protect database backups and administrator access, and use restricted API keys with minimum permissions.</p>\n</p>\n\n",
+        "changelog": "<h4>2.0.0</h4>\n<ul>\n<li>Keep order IDs compatible with CT Commerce Lite dates; repair early development IDs while preserving Stripe references.</li>\n<li>Replace legacy card token and Charges integration with Checkout Sessions and Payment Element.</li>\n<li>Validate totals through CT Commerce Lite before starting payment.</li>\n<li>Add signed webhook fulfillment, asynchronous payment handling and duplicate order protection.</li>\n<li>Preserve CT Commerce Lite order storage, shipping and notification hooks.</li>\n<li>Redesign settings and checkout with responsive layouts, previews and accessible status messages.</li>\n<li>Mask and escape credential fields, add settings sanitization and correct field labels and IDs.</li>\n<li>Preserve settings on deactivation; separate test/live webhook secrets.</li>\n<li>Update Stripe PHP SDK to 22.0.0 and API to 2026-09-30.endive.</li>\n<li>Refresh screenshots and confirm WordPress 7.1.3 compatibility.</li>\n</ul>\n<h4>1.2.2</h4>\n<ul>\n<li>Local maintenance update for single-payment-option checkout display.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
     },
-    "short_description": "Accept Stripe Payment with CT Commerce Lite ecommerce platform.",
-    "description": "<p><strong>CTCL Stripe</strong> is an addon for the CT Commerce Lite platform that allows you to accept secure payments through Stripe. With this integration, you can offer your customers a seamless checkout experience directly on your eCommerce site.</p>\n<p><strong>Key Features:</strong><br />\n&#8211; Accept payments via Stripe, one of the most trusted payment gateways.<br />\n&#8211; Secure transactions with SSL and PCI-DSS compliance.<br />\n&#8211; Easy setup with your Stripe credentials.</p>\n<h3>Obtaining Your Stripe Credentials</h3>\n<ol>\n<li>Log in to your Stripe account at <a href=\"https://dashboard.stripe.com\" rel=\"nofollow ugc\">dashboard.stripe.com</a>.</li>\n<li>Navigate to <strong>Developers &gt; API keys</strong> in the sidebar.</li>\n<li>Here, you’ll find your Publishable Key and Secret Key under the “Standard keys” section.</li>\n</ol>\n<h3>Additional Information</h3>\n<p>For any issues or feature requests, please contact <a href=\"mailto:bktujwol@gmail.com\" rel=\"nofollow ugc\">Ujwol Bastakoti</a>.</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/ctcl-stripe.1.2.2.zip",
-    "upgrade_notice": [],
+    "short_description": "Accept Stripe payments in CT Commerce Lite with a polished Payment Element, verified checkout totals and reliable order confirmation.",
+    "description": "<p>CTCL Stripe adds Stripe payments to the existing CT Commerce Lite checkout. Customers keep the store&#8217;s cart, contact details, shipping options and order confirmation page, with a modern Stripe Payment Element for secure payment and any required authentication.</p>\n<p>The settings panel includes separate test and live credentials, masked API keys, a custom payment method label, a checkout appearance preview and webhook setup instructions.</p>\n<p>Features:</p>\n<ul>\n<li>Modern Checkout Sessions and Payment Element replace legacy card tokens and Charges.</li>\n<li>Payment methods are managed in the Stripe Dashboard; Stripe shows eligible methods for each checkout.</li>\n<li>Server-side validation uses CT Commerce Lite&#8217;s published products, quantities, variations, shipping, tax and coupon rules.</li>\n<li>The Stripe Session charges the exact validated CT Commerce Lite grand total.</li>\n<li>Signed webhooks and browser returns share one fulfillment handler, preventing duplicate orders and notifications.</li>\n<li>Asynchronous payments create orders only after Stripe confirms payment.</li>\n<li>Existing CT Commerce Lite order records, shipping hooks, email, SMS and WhatsApp integrations remain available.</li>\n<li>Accessible loading, validation and payment error messages.</li>\n<li>Settings survive deactivation. Existing test/live API keys and label settings are preserved on upgrade.</li>\n<li>Stripe PHP SDK 22.0.0 and API version 2026-09-30.endive.</li>\n</ul>\n<p>Requires CT Commerce Lite 2.8.3 or later with its server-side checkout validation class. Three-decimal currencies are not supported. Zero-decimal currencies require a whole-number grand total.</p>\n<h3>Upgrading from 1.x</h3>\n<p>Existing activation, test mode, publishable/secret key and payment label options are retained. Add webhook signing secrets for each environment. New payments use Checkout Sessions; posted legacy stripe_token values are no longer accepted.</p>\n<p>CTCL Stripe stores a temporary validated checkout snapshot to recover paid orders when the customer leaves the page. The duplicate snapshot is cleared after fulfillment. Checkout records older than 30 days are removed by WP-Cron; completed orders remain in CT Commerce Lite&#8217;s order table.</p>\n<h3>External services</h3>\n<p>This plugin connects to Stripe to process payments.</p>\n<p>Stripe.js is loaded from js.stripe.com on storefront pages while Stripe is enabled and configured. Payment details entered in the Payment Element are sent directly to Stripe. When a customer continues to secure payment, the server sends Stripe the validated total, currency, customer email, generated order reference and checkout metadata. Card details do not pass through WordPress.</p>\n<p>Stripe sends signed payment events to the configured webhook endpoint to confirm orders. Use of Stripe is subject to its terms and privacy policy.</p>\n<ul>\n<li>Service: https://stripe.com/</li>\n<li>Terms: https://stripe.com/legal/ssa</li>\n<li>Privacy: https://stripe.com/privacy</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/ctcl-stripe.2.0.0.zip",
+    "upgrade_notice": {
+        "2.0.0": "<p>Modern Stripe checkout. Existing API keys are retained. Add webhook signing secrets, verify your CT Commerce Lite order-processing page and test checkout before enabling live payments.</p>"
+    },
     "screenshots": [
         {
-            "src": "https://ps.w.org/ctcl-stripe/trunk/screenshot-1.png?rev=3617814",
-            "caption": "<strong>Stripe Settings Page:</strong> Where you enter your Stripe API keys."
+            "src": "https://ps.w.org/ctcl-stripe/assets/screenshot-1.png?rev=3735978",
+            "caption": "Stripe settings with checkout customization, masked test/live credentials and appearance preview."
         },
         {
-            "src": "https://ps.w.org/ctcl-stripe/trunk/screenshot-2.png?rev=3617814",
-            "caption": "<strong>Stripe Checkout:</strong> Example of a checkout page with Stripe enabled."
+            "src": "https://ps.w.org/ctcl-stripe/assets/screenshot-2.png?rev=3735978",
+            "caption": "Stripe's modern Payment Element inside CT Commerce Lite's checkout."
+        },
+        {
+            "src": "https://ps.w.org/ctcl-stripe/assets/screenshot-3.png?rev=3735978",
+            "caption": "Webhook configuration and signing-secret fields for reliable order confirmation."
         }
     ],
     "tags": {
+        "checkout": "checkout",
         "ct-commerce-lite": "CT Commerce Lite",
         "ecommerce": "ecommerce",
         "payment-gateway": "payment gateway",
         "stripe": "stripe"
     },
-    "stable_tag": "1.2.2",
+    "stable_tag": "2.0.0",
     "versions": {
         "1.0.0": "https://downloads.wordpress.org/plugin/ctcl-stripe.1.0.0.zip",
         "1.1.0": "https://downloads.wordpress.org/plugin/ctcl-stripe.1.1.0.zip",
         "1.2.0": "https://downloads.wordpress.org/plugin/ctcl-stripe.1.2.0.zip",
         "1.2.1": "https://downloads.wordpress.org/plugin/ctcl-stripe.1.2.1.zip",
         "1.2.2": "https://downloads.wordpress.org/plugin/ctcl-stripe.1.2.2.zip",
+        "2.0.0": "https://downloads.wordpress.org/plugin/ctcl-stripe.2.0.0.zip",
         "trunk": "https://downloads.wordpress.org/plugin/ctcl-stripe.zip"
     },
     "business_model": false,
@@ -76,8 +86,8 @@
         "high": "https://ps.w.org/ctcl-stripe/assets/banner-1544x500.png?rev=3134838"
     },
     "icons": {
-        "1x": "https://ps.w.org/ctcl-stripe/assets/icon-256x256.png?rev=3134838",
-        "2x": "https://ps.w.org/ctcl-stripe/assets/icon-256x256.png?rev=3134838"
+        "1x": "https://ps.w.org/ctcl-stripe/assets/icon-128x128.png?rev=3735927",
+        "2x": "https://ps.w.org/ctcl-stripe/assets/icon-256x256.png?rev=3735927"
     },
     "blocks": [],
     "block_assets": [],
