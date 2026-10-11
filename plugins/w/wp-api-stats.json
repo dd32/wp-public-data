@@ -1,19 +1,19 @@
 {
     "name": "API Stats",
     "slug": "wp-api-stats",
-    "version": "1.4",
-    "author": "<a href=\"http://salar.one/\">Salar Gholizadeh</a>",
+    "version": "2.0",
+    "author": "<a href=\"https://profiles.wordpress.org/salar6990/\">Salar Gholizadeh</a>",
     "author_profile": "https://profiles.wordpress.org/salar6990/",
     "contributors": {
         "salar6990": {
             "profile": "https://profiles.wordpress.org/salar6990/",
-            "avatar": "https://secure.gravatar.com/avatar/f09e9d0849eadda7f0bcc86e55db5f81?s=96&d=monsterid&r=g",
+            "avatar": "https://secure.gravatar.com/avatar/8ee02fdf58261fff39d2092b9e1b77063476f0905296ef96d36bdc2f034af7ef?s=96&d=monsterid&r=g",
             "display_name": "Salar Gholizadeh"
         }
     },
-    "requires": "4.4",
-    "tested": "6.4.5",
-    "requires_php": "5.6",
+    "requires": "5.3",
+    "tested": "7.1.3",
+    "requires_php": "7.2",
     "requires_plugins": [],
     "compatibility": [],
     "rating": 100,
@@ -28,34 +28,48 @@
     "support_url": "https://wordpress.org/support/plugin/wp-api-stats/",
     "support_threads": 0,
     "support_threads_resolved": 0,
-    "active_installs": 100,
-    "downloaded": 2093,
-    "last_updated": "2023-11-25 23:33:00",
+    "active_installs": 80,
+    "last_updated": "2026-10-11 18:33:00",
     "added": "2019-08-14",
     "homepage": "https://github.com/salar90/wp-api-stats",
     "sections": {
-        "description": "<p>Do you use WordPress&#8217;s REST-API system to serve applications?<br />\nAPI Stats allows you to view and monitor API requests to your website on a clear chart.<br />\nyou can easily view statistics in different time spans and durations.</p>\n<h4>API Stat&#8217;s main Features</h4>\n<ul>\n<li>Record any route from all plugins (e.g WooCommerce) and WordPress core</li>\n<li>Filter API requests by date</li>\n<li>Adjust duration of points</li>\n<li>Show/Filter known request types such as GET, POST, PUT, PATCH, DELETE,&#8230;</li>\n<li>List of most requested routes</li>\n</ul>\n<p>You can view this project at <a href=\"https://github.com/salar90/wp-api-stats\" rel=\"nofollow ugc\">API stat&#8217;s Github page</a></p>\n",
-        "changelog": "<h4>1.4</h4>\n<ul>\n<li>Update plugin description</li>\n<li>Fix Input sanitization</li>\n<li>Add Feature to display size of data stored in database for API events</li>\n<li>Test with WP 6.4.1</li>\n</ul>\n"
+        "description": "<p>Do you use the WordPress REST API to serve apps, headless front ends or integrations?<br />\nAPI Stats records every REST API request to your site and shows you what is being called, how often, how fast, and what fails.</p>\n<h4>Features</h4>\n<ul>\n<li>Records every REST route: WordPress core, WooCommerce and any other plugin or custom endpoint</li>\n<li>Requests-over-time chart, broken down by HTTP method or by status (2xx / 3xx / 4xx / 5xx)</li>\n<li>Summary of requests, error rate, average and maximum response time</li>\n<li>Routes table grouped by route pattern (e.g. <code>/wp/v2/posts/(?P&lt;id&gt;[\\d]+)</code>) or by exact path, with error counts and timings</li>\n<li>Quick date ranges (today, yesterday, 7 and 30 days) or any custom range, with minute / hour / day / week resolution</li>\n<li>Filter everything by route (contains or exact), HTTP method and status (e.g. only errors); click a route to drill down</li>\n<li>Configurable data retention, and a button to delete all recorded data</li>\n<li>Developer hooks to skip requests or attach a readable label to them</li>\n</ul>\n<p>Stats are under <strong>Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> API Stats</strong>. Data is stored in your own database; nothing is sent anywhere.</p>\n<p>You can view this project on <a href=\"https://github.com/salar90/wp-api-stats\" rel=\"nofollow ugc\">GitHub</a>.</p>\n",
+        "faq": "\n<dt id=\"how%20long%20is%20data%20kept%3F\">\nHow long is data kept?\n</h4>\n<p>\n<p>30 days by default. Change it under Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> API Stats <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Stored data. Set it to 0 to keep data forever (the page shows how big the table is). Old events are removed hourly. Lowering the number deletes older events right away, after a confirmation that tells you how many; deleted events can&#8217;t be restored by raising the number again. Developers can also set it in code:</p>\n<pre><code>add_filter( 'sg_api_stats_retention_days', function () { return 90; } );\n</code></pre>\n</p>\n<dt id=\"how%20do%20i%20delete%20all%20recorded%20data%3F\">\nHow do I delete all recorded data?\n</h4>\n<p>\n<p>Use the &#8220;Delete all data&#8221; button under Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> API Stats <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Stored data. Recording continues afterwards. Uninstalling the plugin also removes its table and settings.</p>\n</p>\n<dt id=\"can%20i%20stop%20some%20requests%20from%20being%20recorded%3F\">\nCan I stop some requests from being recorded?\n</h4>\n<p>\n<p>Yes, with the <code>sg_api_stats_should_record</code> filter. Return false to skip a request:</p>\n<pre><code>add_filter( 'sg_api_stats_should_record', function ( $record, $request ) {\n    return 0 !== strpos( $request-&gt;get_route(), '/wp/v2/' );\n}, 10, 2 );\n</code></pre>\n</p>\n<dt id=\"can%20i%20show%20a%20readable%20name%20next%20to%20routes%20like%20%2Fmyapi%2Fdoc%2F123%3F\">\nCan I show a readable name next to routes like /myapi/doc/123?\n</h4>\n<p>\n<p>Yes. Return a label from the <code>sg_api_stats_label</code> filter. It is stored with the request and shown in the routes table when grouping by exact path:</p>\n<pre><code>add_filter( 'sg_api_stats_label', function ( $label, $request ) {\n    if ( preg_match( '#^/myapi/doc/(\\d+)$#', $request-&gt;get_route(), $m ) ) {\n        return get_the_title( (int) $m[1] );\n    }\n    return $label;\n}, 10, 2 );\n</code></pre>\n</p>\n<dt id=\"what%20does%20%22by%20pattern%22%20mean%20in%20the%20routes%20table%3F\">\nWhat does &#8220;By pattern&#8221; mean in the routes table?\n</h4>\n<p>\n<p>Requests are grouped by the registered route they matched, so <code>/wp/v2/posts/1</code>, <code>/wp/v2/posts/2</code>, &#8230; appear as one row <code>/wp/v2/posts/(?P&lt;id&gt;[\\d]+)</code> with the number of distinct paths. Switch to &#8220;By exact path&#8221; to see each URL separately. Requests that matched no route (404) are always shown by path.</p>\n</p>\n<dt id=\"which%20timezone%20is%20used%3F\">\nWhich timezone is used?\n</h4>\n<p>\n<p>Your site&#8217;s timezone (Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> General). Durations are measured from the start of REST API handling until the response is sent, in milliseconds.</p>\n</p>\n\n",
+        "changelog": "<h4>2.0</h4>\n<ul>\n<li>New: redesigned stats page with summary cards, quick date ranges and a sortable routes table</li>\n<li>New: filter the whole page (cards, chart and table) by route, method and status, e.g. &#8220;errors only&#8221;; active filters are shown as removable chips and kept in the URL</li>\n<li>New: click a route in the table to drill down into it</li>\n<li>New: chart breakdown by status class (2xx/3xx/4xx/5xx) in addition to HTTP method</li>\n<li>New: routes grouped by registered route pattern, so /posts/1, /posts/2, &#8230; count as one route (switchable to exact paths)</li>\n<li>New: error counts and maximum duration per route</li>\n<li>New: configurable data retention (0 = keep forever) and a &#8220;Delete all data&#8221; button; lowering retention asks for confirmation and shows how many events will be deleted</li>\n<li>New: developer filters sg_api_stats_should_record, sg_api_stats_label and sg_api_stats_retention_days</li>\n<li>Fix: event IDs could overflow after about 8.4 million recorded requests, which stopped recording</li>\n<li>Performance: index on the event time column; old events are deleted in batches</li>\n<li>Database schema is upgraded automatically on update</li>\n<li>Chart.js updated from 2.8 to 4.5</li>\n</ul>\n<h4>1.5</h4>\n<ul>\n<li>Security: escape recorded routes and methods on the stats page (fixes stored XSS via crafted REST URLs)</li>\n<li>Security: strictly validate date and point filters; all SQL queries now use prepared statements</li>\n<li>Faster stats page: chart data comes from a single grouped query instead of one query per point</li>\n<li>Fix: date filters now use the site timezone consistently for both the chart and the routes table</li>\n<li>Filters use the URL (GET), so filtered views can be bookmarked and reloaded</li>\n<li>Routes table limited to the top 200 routes</li>\n<li>Uninstalling the plugin now removes its database table, option and scheduled event</li>\n<li>Text domain changed to wp-api-stats to match the plugin slug (enables wordpress.org translations)</li>\n<li>Requires WordPress 5.3+ and PHP 7.2+</li>\n<li>Tested with WordPress 7.1</li>\n</ul>\n<h4>1.4</h4>\n<ul>\n<li>Update plugin description</li>\n<li>Fix Input sanitization</li>\n<li>Add Feature to display size of data stored in database for API events</li>\n<li>Test with WP 6.4.1</li>\n</ul>\n"
     },
     "short_description": "View and filter API calls to your website with details about Method, Path, Response time, and Count.",
-    "description": "<p>Do you use WordPress&#8217;s REST-API system to serve applications?<br />\nAPI Stats allows you to view and monitor API requests to your website on a clear chart.<br />\nyou can easily view statistics in different time spans and durations.</p>\n<h4>API Stat&#8217;s main Features</h4>\n<ul>\n<li>Record any route from all plugins (e.g WooCommerce) and WordPress core</li>\n<li>Filter API requests by date</li>\n<li>Adjust duration of points</li>\n<li>Show/Filter known request types such as GET, POST, PUT, PATCH, DELETE,&#8230;</li>\n<li>List of most requested routes</li>\n</ul>\n<p>You can view this project at <a href=\"https://github.com/salar90/wp-api-stats\" rel=\"nofollow ugc\">API stat&#8217;s Github page</a></p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/wp-api-stats.1.4.zip",
+    "description": "<p>Do you use the WordPress REST API to serve apps, headless front ends or integrations?<br />\nAPI Stats records every REST API request to your site and shows you what is being called, how often, how fast, and what fails.</p>\n<h4>Features</h4>\n<ul>\n<li>Records every REST route: WordPress core, WooCommerce and any other plugin or custom endpoint</li>\n<li>Requests-over-time chart, broken down by HTTP method or by status (2xx / 3xx / 4xx / 5xx)</li>\n<li>Summary of requests, error rate, average and maximum response time</li>\n<li>Routes table grouped by route pattern (e.g. <code>/wp/v2/posts/(?P&lt;id&gt;[\\d]+)</code>) or by exact path, with error counts and timings</li>\n<li>Quick date ranges (today, yesterday, 7 and 30 days) or any custom range, with minute / hour / day / week resolution</li>\n<li>Filter everything by route (contains or exact), HTTP method and status (e.g. only errors); click a route to drill down</li>\n<li>Configurable data retention, and a button to delete all recorded data</li>\n<li>Developer hooks to skip requests or attach a readable label to them</li>\n</ul>\n<p>Stats are under <strong>Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> API Stats</strong>. Data is stored in your own database; nothing is sent anywhere.</p>\n<p>You can view this project on <a href=\"https://github.com/salar90/wp-api-stats\" rel=\"nofollow ugc\">GitHub</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/wp-api-stats.2.0.zip",
     "upgrade_notice": [],
     "screenshots": [
         {
-            "src": "https://ps.w.org/wp-api-stats/assets/screenshot-1.png?rev=2148597",
-            "caption": "Statistics Page"
+            "src": "https://ps.w.org/wp-api-stats/assets/screenshot-1.png?rev=3739954",
+            "caption": "Stats page: filters, summary, requests over time by HTTP method, routes grouped by route pattern, and data retention."
+        },
+        {
+            "src": "https://ps.w.org/wp-api-stats/assets/screenshot-2.png?rev=3739954",
+            "caption": "Drill-down: clicking a route filters the whole page. Here a failing endpoint, with the chart broken down by status."
+        },
+        {
+            "src": "https://ps.w.org/wp-api-stats/assets/screenshot-3.png?rev=3739954",
+            "caption": "Routes by exact path, with readable labels added through the sg_api_stats_label filter."
         }
     ],
     "tags": {
-        "api-rest-api-statistics-stats": "API REST-API Statistics stats"
+        "api": "api",
+        "monitoring": "monitoring",
+        "performance": "performance",
+        "rest-api": "rest-api",
+        "statistics": "statistics"
     },
-    "stable_tag": "1.4",
+    "stable_tag": "2.0",
     "versions": {
         "1.2.0": "https://downloads.wordpress.org/plugin/wp-api-stats.1.2.0.zip",
         "1.3.0": "https://downloads.wordpress.org/plugin/wp-api-stats.1.3.0.zip",
         "1.3.1": "https://downloads.wordpress.org/plugin/wp-api-stats.1.3.1.zip",
         "1.4": "https://downloads.wordpress.org/plugin/wp-api-stats.1.4.zip",
+        "1.5": "https://downloads.wordpress.org/plugin/wp-api-stats.1.5.zip",
+        "2.0": "https://downloads.wordpress.org/plugin/wp-api-stats.2.0.zip",
         "trunk": "https://downloads.wordpress.org/plugin/wp-api-stats.zip"
     },
     "business_model": false,
@@ -64,8 +78,8 @@
     "donate_link": "",
     "banners": [],
     "icons": {
-        "1x": "https://ps.w.org/wp-api-stats/assets/icon-256x256.png?rev=2140775",
-        "2x": "https://ps.w.org/wp-api-stats/assets/icon-256x256.png?rev=2140775"
+        "1x": "https://ps.w.org/wp-api-stats/assets/icon-256x256.png?rev=3739858",
+        "2x": "https://ps.w.org/wp-api-stats/assets/icon-256x256.png?rev=3739858"
     },
     "blocks": [],
     "block_assets": [],

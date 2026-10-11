@@ -1,0 +1,79 @@
+{
+    "name": "Transit &#8211; Site Migration &amp; Backup",
+    "slug": "transit-site-migration",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/devmizan/\">Mizanur Rahaman</a>",
+    "author_profile": "https://profiles.wordpress.org/devmizan/",
+    "contributors": {
+        "devmizan": {
+            "profile": "https://profiles.wordpress.org/devmizan/",
+            "avatar": "https://secure.gravatar.com/avatar/417d56cd961bdeafc700cafacc0b781c69cf3c6601bcfaccffec8c7feb64594c?s=96&d=monsterid&r=g",
+            "display_name": "Mizanur Rahaman"
+        }
+    },
+    "requires": "5.6",
+    "tested": "7.1.3",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/transit-site-migration/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-11 17:01:00",
+    "added": "2026-10-11",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Transit packs your complete WordPress site into a single <code>.tsmig</code> file and restores it on any other WordPress site: a new domain, a new host, or local <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">↔</span> live. URLs, server paths and the database table prefix are updated automatically while the database is imported — no separate search-and-replace step.</p>\n<h4>Built for large sites</h4>\n<ul>\n<li><strong>No size limit from your host.</strong> Uploads are sent in chunks, so <code>upload_max_filesize</code> doesn&#8217;t matter. Big files — a 20 GB video — are copied across as many requests as needed.</li>\n<li><strong>Every request stays short.</strong> Export and import work in steps of about 20 seconds, well below PHP and proxy timeouts.</li>\n<li><strong>Flat memory use.</strong> Files are streamed straight to disk, and the database is read with index-based pagination, however many rows a table has.</li>\n<li><strong>Resumes after interruptions.</strong> Close the page, lose the connection or hit a server timeout: the export, the upload and the import continue where they stopped. Downloads can be resumed too.</li>\n<li><strong>Crash-safe.</strong> A request that dies mid-write is rolled back and redone. Database imports run in transactions, so an interruption never duplicates rows.</li>\n<li><strong>WP-CLI support</strong> for very large sites: <code>wp transit-site-migration export</code> and <code>wp transit-site-migration import</code>.</li>\n</ul>\n<h4>What a backup contains</h4>\n<ul>\n<li>The database — every table with your site&#8217;s prefix</li>\n<li>Media library (<code>wp-content/uploads</code>)</li>\n<li>Plugins, themes and must-use plugins</li>\n</ul>\n<p>WordPress core, <code>wp-config.php</code> and transients (temporary cache data) are not included.</p>\n<h4>Import that just works</h4>\n<ul>\n<li>Site URL, <code>https</code>/<code>http</code>, <code>www</code>, JSON-escaped and URL-encoded URLs, email domains and server paths are replaced.</li>\n<li>Serialized data (widgets, theme and plugin settings) stays valid.</li>\n<li>A different table prefix on the new site is handled.</li>\n<li>After import, plugins that were active stay active. Caching and host-specific plugins are deactivated with a clear note, and caches (including Elementor CSS and block-theme styles) are cleared.</li>\n<li>Server checks run before an import: PHP version, memory, disk space, folder and database permissions.</li>\n</ul>\n<h4>Backups page</h4>\n<p>Every backup is listed with its source site, date and size. Download it, import it again with one click (no re-upload), or delete it. The newest 5 backups are kept automatically.</p>\n<h4>Privacy</h4>\n<p>Transit does not connect to any external service and sends no data anywhere. Backups stay on your server in <code>wp-content/transit-site-migration-backups/</code>, which is protected against direct web access.</p>\n",
+        "installation": "<ol>\n<li>Install Transit from <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New</strong> and activate it — on both the old and the new site.</li>\n<li>On the old site, go to <strong>Transit <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Export</strong> and click the export button. Download the file when it&#8217;s done.</li>\n<li>On the new site, go to <strong>Transit <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Import</strong>, drop the <code>.tsmig</code> file onto the page and confirm.</li>\n<li>When the import finishes, log in with the <strong>old site&#8217;s</strong> username and password.</li>\n</ol>\n<h4>Nginx servers</h4>\n<p>Apache, LiteSpeed and IIS block direct access to the backup folder automatically. On Nginx, add this to your server block:</p>\n<pre><code>location ^~ /wp-content/transit-site-migration-backups/ { deny all; }\n</code></pre>\n",
+        "faq": "\n<dt id=\"is%20there%20a%20file%20size%20limit%3F\">\nIs there a file size limit?\n</h4>\n<p>\n<p>Transit accepts backups up to 100 GB (a filter can raise this). Your server needs enough free disk space for the backup file.</p>\n</p>\n<dt id=\"the%20import%20overwrote%20my%20users%20%E2%80%94%20why%20can%27t%20i%20log%20in%3F\">\nThe import overwrote my users — why can&#8217;t I log in?\n</h4>\n<p>\n<p>The whole database is replaced, including users. Log in with the username and password of the site you exported from.</p>\n</p>\n<dt id=\"what%20happens%20to%20urls%20and%20links%3F\">\nWhat happens to URLs and links?\n</h4>\n<p>\n<p>They are changed to the new site&#8217;s address during the import, including links inside page builder data and serialized settings.</p>\n</p>\n<dt id=\"the%20export%20or%20import%20stopped.%20what%20now%3F\">\nThe export or import stopped. What now?\n</h4>\n<p>\n<p>Open the Export or Import page again. Transit continues where it left off.</p>\n</p>\n<dt id=\"my%20host%20has%20short%20timeouts.\">\nMy host has short timeouts.\n</h4>\n<p>\n<p>Steps take about 20 seconds by default. Lower it with the <code>transit_site_migration_step_time_budget</code> filter, or use WP-CLI, which has no web timeouts.</p>\n</p>\n<dt id=\"does%20transit%20work%20on%20wordpress%20multisite%3F\">\nDoes Transit work on WordPress Multisite?\n</h4>\n<p>\n<p>Not yet. On a Multisite network Transit is disabled and shows a notice.</p>\n</p>\n<dt id=\"file%20changes%20are%20disabled%20on%20my%20site%20%28disallow_file_mods%29.\">\nFile changes are disabled on my site (DISALLOW_FILE_MODS).\n</h4>\n<p>\n<p>Transit respects it: the database and media are restored, but plugin and theme files from the backup are not installed. A warning lists how many were skipped.</p>\n</p>\n<dt id=\"why%20is%20it%20slow%20on%20my%20windows%20computer%3F\">\nWhy is it slow on my Windows computer?\n</h4>\n<p>\n<p>Antivirus software such as Windows Defender scans every script file as it is opened, which slows down copying plugin files. Linux hosting servers are not affected.</p>\n</p>\n<dt id=\"can%20i%20use%20wp-cli%3F\">\nCan I use WP-CLI?\n</h4>\n<p>\n<p>Yes:</p>\n<pre><code>wp transit-site-migration export\nwp transit-site-migration import /path/to/site.tsmig\nwp transit-site-migration list\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>First public release.</li>\n</ul>\n"
+    },
+    "short_description": "Move or back up a whole WordPress site — database, media, plugins and themes — in one file. Handles sites of any size.",
+    "description": "<p>Transit packs your complete WordPress site into a single <code>.tsmig</code> file and restores it on any other WordPress site: a new domain, a new host, or local <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">↔</span> live. URLs, server paths and the database table prefix are updated automatically while the database is imported — no separate search-and-replace step.</p>\n<h4>Built for large sites</h4>\n<ul>\n<li><strong>No size limit from your host.</strong> Uploads are sent in chunks, so <code>upload_max_filesize</code> doesn&#8217;t matter. Big files — a 20 GB video — are copied across as many requests as needed.</li>\n<li><strong>Every request stays short.</strong> Export and import work in steps of about 20 seconds, well below PHP and proxy timeouts.</li>\n<li><strong>Flat memory use.</strong> Files are streamed straight to disk, and the database is read with index-based pagination, however many rows a table has.</li>\n<li><strong>Resumes after interruptions.</strong> Close the page, lose the connection or hit a server timeout: the export, the upload and the import continue where they stopped. Downloads can be resumed too.</li>\n<li><strong>Crash-safe.</strong> A request that dies mid-write is rolled back and redone. Database imports run in transactions, so an interruption never duplicates rows.</li>\n<li><strong>WP-CLI support</strong> for very large sites: <code>wp transit-site-migration export</code> and <code>wp transit-site-migration import</code>.</li>\n</ul>\n<h4>What a backup contains</h4>\n<ul>\n<li>The database — every table with your site&#8217;s prefix</li>\n<li>Media library (<code>wp-content/uploads</code>)</li>\n<li>Plugins, themes and must-use plugins</li>\n</ul>\n<p>WordPress core, <code>wp-config.php</code> and transients (temporary cache data) are not included.</p>\n<h4>Import that just works</h4>\n<ul>\n<li>Site URL, <code>https</code>/<code>http</code>, <code>www</code>, JSON-escaped and URL-encoded URLs, email domains and server paths are replaced.</li>\n<li>Serialized data (widgets, theme and plugin settings) stays valid.</li>\n<li>A different table prefix on the new site is handled.</li>\n<li>After import, plugins that were active stay active. Caching and host-specific plugins are deactivated with a clear note, and caches (including Elementor CSS and block-theme styles) are cleared.</li>\n<li>Server checks run before an import: PHP version, memory, disk space, folder and database permissions.</li>\n</ul>\n<h4>Backups page</h4>\n<p>Every backup is listed with its source site, date and size. Download it, import it again with one click (no re-upload), or delete it. The newest 5 backups are kept automatically.</p>\n<h4>Privacy</h4>\n<p>Transit does not connect to any external service and sends no data anywhere. Backups stay on your server in <code>wp-content/transit-site-migration-backups/</code>, which is protected against direct web access.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/transit-site-migration.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>First public release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "backup": "backup",
+        "clone": "clone",
+        "migrate": "migrate",
+        "migration": "migration",
+        "restore": "restore"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/transit-site-migration.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/transit-site-migration.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/transit-site-migration/assets/banner-772x250.png?rev=3739868",
+        "high": "https://ps.w.org/transit-site-migration/assets/banner-1544x500.png?rev=3739868"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/transit-site-migration/assets/icon-128x128.png?rev=3739868",
+        "2x": "https://ps.w.org/transit-site-migration/assets/icon-256x256.png?rev=3739868"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
