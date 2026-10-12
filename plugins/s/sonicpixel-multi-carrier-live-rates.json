@@ -1,0 +1,88 @@
+{
+    "name": "Sonic Pixel Multi-Carrier Live Rates for WooCommerce",
+    "slug": "sonicpixel-multi-carrier-live-rates",
+    "version": "0.4.1",
+    "author": "<a href=\"https://profiles.wordpress.org/maikunari/\">Sonic Pixel</a>",
+    "author_profile": "https://profiles.wordpress.org/maikunari/",
+    "contributors": {
+        "maikunari": {
+            "profile": "https://profiles.wordpress.org/maikunari/",
+            "avatar": "https://secure.gravatar.com/avatar/e3d63228293f7ffafbb75fc9a96035c3bfb3a6f2055b5d9b6c0c203e7a107f77?s=96&d=monsterid&r=g",
+            "display_name": "Sonic Pixel"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.3",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/sonicpixel-multi-carrier-live-rates/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-12 00:33:00",
+    "added": "2026-10-12",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Live multi-carrier shipping rates at checkout from the ShipStation API v2 (UPS, Canada Post, Purolator, DHL, and more), with a guaranteed fallback so a carrier or API outage can never leave checkout with zero shipping options.</p>\n<p>Key features:</p>\n<ul>\n<li>Proper WooCommerce shipping method (extends WC_Shipping_Method), instance-based per shipping zone.</li>\n<li>Multi-carrier redundancy: one carrier erroring never suppresses the others.</li>\n<li>Mandatory fallback flat rate on API error, timeout, or zero usable rates — the fallback amount cannot be saved empty or negative.</li>\n<li>Two-tier rate caching (fresh + 24h stale) keyed by a package/destination hash, with a configurable TTL.</li>\n<li>Customs handling for US/international shipments (default HS code + per-product overrides).</li>\n<li>Per-service whitelist, percentage + flat markup, generic or carrier-named labels, delivery-day estimates.</li>\n<li>Structured logging via the WooCommerce logger (source: sonicpixel-mclr); the API key is never logged.</li>\n<li>API client isolated from WooCommerce (injectable transport) so it is unit-testable and reusable.</li>\n</ul>\n<p>Sonic Pixel Multi-Carrier Live Rates is an independent plugin by Sonic Pixel. It is not affiliated with, endorsed by, or sponsored by ShipStation, Auctane, or WooCommerce. ShipStation and WooCommerce are trademarks of their respective owners and are named here only to describe what the plugin works with.</p>\n<h3>External services</h3>\n<p>This plugin connects to the ShipStation API v2 (<code>https://api.shipstation.com/v2</code>), operated by ShipStation (Auctane). It is required: live shipping rates come from this service. Nothing is sent until you enter your own ShipStation API key, and all requests are authenticated with that key.</p>\n<ul>\n<li><strong>When shipping is calculated in the cart or at checkout</strong> (classic or block checkout), the plugin requests rates (<code>POST /v2/rates</code>). It sends the package weight and dimensions; the ship-from address, name, company, and phone from the plugin settings; and the destination address the customer entered (street, city, state/province, postcode, country). No customer name, email, or phone number is sent. On cross-border shipments it also sends customs details for each item: description, quantity, value, currency, HS code, and country of origin. Rates are cached, so repeat views of the same cart do not trigger another request.</li>\n<li><strong>When you save the plugin settings</strong>, it requests your connected carriers and their services (<code>GET /v2/carriers</code>) to build the service list. No store or customer data is sent with this request.</li>\n</ul>\n<p>ShipStation&#8217;s <a href=\"https://www.shipstation.com/terms-of-service/\" rel=\"nofollow ugc\">Terms of Service</a> and <a href=\"https://www.shipstation.com/privacy-policy/\" rel=\"nofollow ugc\">Privacy Policy</a>.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>sonicpixel-multi-carrier-live-rates</code> folder to /wp-content/plugins/ and activate it (WooCommerce must be active).</li>\n<li>Go to WooCommerce &gt; Settings &gt; Shipping &gt; Multi-Carrier Live Rates and enter your ShipStation API v2 key and ship-from origin. Save to load the carrier list.</li>\n<li>Add the &#8220;Multi-Carrier Live Rates&#8221; method to each shipping zone and configure the carrier/service whitelist, markup, fallback amount, cache TTL, and timeout per zone.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"what%20happens%20if%20the%20shipstation%20api%20is%20down%3F\">\nWhat happens if the ShipStation API is down?\n</h4>\n<p>\n<p>The method serves stale cached rates if available; otherwise it emits the configured flat-rate fallback. Checkout never shows zero shipping options.</p>\n</p>\n<dt id=\"does%20it%20handle%20us%20and%20international%20customs%3F\">\nDoes it handle US and international customs?\n</h4>\n<p>\n<p>Yes. Cross-border requests automatically include a customs block (required by ShipStation, or cross-border returns zero rates). Defaults are set globally; products can override HS code, description, and country of origin.</p>\n</p>\n<dt id=\"the%20rates%20show%2C%20but%20the%20selected%20option%20looks%20unselected\">\nThe rates show, but the selected option looks unselected\n</h4>\n<p>\n<p>That is theme CSS, not the plugin. Some themes style radio inputs with <code>appearance: none</code><br />\nand draw their own indicator; when WooCommerce replaces the cart totals over AJAX, that<br />\nstyling is not always re-applied, so the chosen option renders blank while still being<br />\nchecked. Confirmed on Blocksy 2.1.</p>\n<p>To check, run this in the browser console on the cart page — if a dot appears, it is<br />\npurely visual:</p>\n<pre><code>document.querySelectorAll('input.shipping_method').forEach(i =&gt; i.style.cssText='appearance:auto;opacity:1;width:16px;height:16px;position:static')\n</code></pre>\n<p>Easiest fix: enable <strong>Fix unselected-looking shipping options</strong> in WooCommerce &gt; Settings &gt; Shipping &gt; Multi-Carrier Live Rates. Or do it in your theme&#8217;s Additional CSS:</p>\n<pre><code>.woocommerce ul#shipping_method input.shipping_method, .woocommerce .woocommerce-shipping-methods input.shipping_method { appearance: auto; -webkit-appearance: radio; opacity: 1; width: 16px; height: 16px; position: static; margin-right: .5em; }\n</code></pre>\n</p>\n<dt id=\"why%20do%20international%20rates%20only%20appear%20once%20a%20street%20address%20is%20entered%3F\">\nWhy do international rates only appear once a street address is entered?\n</h4>\n<p>\n<p>Carriers will not quote an international shipment without one. Until the customer enters<br />\na street address, the request has nothing to rate against and the fallback is shown. This<br />\nis a carrier requirement, so set your fallback amount to something defensible — customers<br />\nsee it before they have typed an address.</p>\n</p>\n<dt id=\"which%20carriers%20are%20supported%3F\">\nWhich carriers are supported?\n</h4>\n<p>\n<p>Any carrier connected in your ShipStation account. Note that Canada Post exposes no international services through ShipStation — use UPS or DHL for international zones.</p>\n</p>\n\n",
+        "changelog": "<h4>0.4.1</h4>\n<ul>\n<li>The carriers / services list is now styled by an enqueued stylesheet on WooCommerce &gt; Settings &gt; Shipping, rather than an inline style element.</li>\n<li>The &#8220;WooCommerce is required&#8221; notice now appears on the Plugins screen only.</li>\n<li>The shipping debug mode warning now appears on WooCommerce &gt; Settings &gt; Shipping only.</li>\n</ul>\n<h4>0.4.0</h4>\n<ul>\n<li>Renamed to Sonic Pixel Multi-Carrier Live Rates for WooCommerce. The plugin folder, main file and text domain are now <code>sonicpixel-multi-carrier-live-rates</code>.</li>\n<li>The WooCommerce log source is now <code>sonicpixel-mclr</code> (was <code>shipstation-rates</code>). Older log files keep their old name.</li>\n<li>Uninstalling no longer removes settings while a copy under the old <code>multi-carrier-live-rates-for-woocommerce</code> folder is still installed.</li>\n<li>Moving from the old folder: deactivate the old plugin, remove its folder over FTP or a file manager (do not use Plugins &gt; Delete, which runs the old copy&#8217;s cleanup and erases the shared settings), then install and activate this one. Settings, zone methods and product customs fields carry over, since the stored keys are unchanged.</li>\n</ul>\n<h4>0.3.0</h4>\n<ul>\n<li>Added an opt-in &#8220;Fix unselected-looking shipping options&#8221; setting. Some themes style radios with appearance:none and their indicator is not re-applied after WooCommerce replaces the totals over AJAX, so the chosen option looks unselected while being genuinely checked. Off by default — enabling it replaces your theme&#8217;s radio styling on those fields, which would be a regression on themes that render correctly.</li>\n</ul>\n<h4>0.2.3</h4>\n<ul>\n<li>Every filter that can drop a rate now reports itself. A quote that returns nothing always says which check consumed the rates, and the whitelist mismatch log lists what the carrier offered next to what is selected.</li>\n</ul>\n<h4>0.2.2</h4>\n<ul>\n<li>Fixed international rates never being offered. ShipStation returns validation_status &#8220;has_warnings&#8221; routinely on cross-border shipments — incomplete customs, an unverified address, a guessed residential indicator — and every one of those rates was being discarded. The price is valid; the warning is advisory. Only &#8220;invalid&#8221; is now treated as unusable.</li>\n<li>Rates dropped on validation status are counted and logged, so this cannot fail invisibly again.</li>\n</ul>\n<h4>0.2.1</h4>\n<ul>\n<li>Fixed the shipping zone method settings modal failing to open. WooCommerce&#8217;s moveHTMLHelpTips reads label.attr(&#8216;for&#8217;) without a guard, so a label carrying a help tip but no for attribute threw a TypeError and the modal never rendered.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>Added a currency conversion rate, for stores whose currency differs from the currency their carriers quote in. Carriers rate in their account&#8217;s currency and cannot be asked for another; leaving the field empty keeps the previous behaviour of ignoring mismatched rates.</li>\n<li>Carriers / services is now a grouped checkbox list rather than a multi-select, so it is clear more than one can be chosen and the whole list is visible.</li>\n<li>The per-zone method title now defaults to the plugin name instead of &#8220;Shipping&#8221;, matching WooCommerce convention.</li>\n<li>Logging: currency-mismatch now reports the currency actually received and how to resolve it, empty-usable carries the skipped count, and conversions are logged for audit.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release: live multi-carrier rates, mandatory fallback, two-tier caching, customs handling, per-zone settings, redacted logging.</li>\n</ul>\n"
+    },
+    "short_description": "Multi-carrier live shipping rates at checkout from the ShipStation API v2, with a mandatory never-empty-rates fallback.",
+    "description": "<p>Live multi-carrier shipping rates at checkout from the ShipStation API v2 (UPS, Canada Post, Purolator, DHL, and more), with a guaranteed fallback so a carrier or API outage can never leave checkout with zero shipping options.</p>\n<p>Key features:</p>\n<ul>\n<li>Proper WooCommerce shipping method (extends WC_Shipping_Method), instance-based per shipping zone.</li>\n<li>Multi-carrier redundancy: one carrier erroring never suppresses the others.</li>\n<li>Mandatory fallback flat rate on API error, timeout, or zero usable rates — the fallback amount cannot be saved empty or negative.</li>\n<li>Two-tier rate caching (fresh + 24h stale) keyed by a package/destination hash, with a configurable TTL.</li>\n<li>Customs handling for US/international shipments (default HS code + per-product overrides).</li>\n<li>Per-service whitelist, percentage + flat markup, generic or carrier-named labels, delivery-day estimates.</li>\n<li>Structured logging via the WooCommerce logger (source: sonicpixel-mclr); the API key is never logged.</li>\n<li>API client isolated from WooCommerce (injectable transport) so it is unit-testable and reusable.</li>\n</ul>\n<p>Sonic Pixel Multi-Carrier Live Rates is an independent plugin by Sonic Pixel. It is not affiliated with, endorsed by, or sponsored by ShipStation, Auctane, or WooCommerce. ShipStation and WooCommerce are trademarks of their respective owners and are named here only to describe what the plugin works with.</p>\n<h3>External services</h3>\n<p>This plugin connects to the ShipStation API v2 (<code>https://api.shipstation.com/v2</code>), operated by ShipStation (Auctane). It is required: live shipping rates come from this service. Nothing is sent until you enter your own ShipStation API key, and all requests are authenticated with that key.</p>\n<ul>\n<li><strong>When shipping is calculated in the cart or at checkout</strong> (classic or block checkout), the plugin requests rates (<code>POST /v2/rates</code>). It sends the package weight and dimensions; the ship-from address, name, company, and phone from the plugin settings; and the destination address the customer entered (street, city, state/province, postcode, country). No customer name, email, or phone number is sent. On cross-border shipments it also sends customs details for each item: description, quantity, value, currency, HS code, and country of origin. Rates are cached, so repeat views of the same cart do not trigger another request.</li>\n<li><strong>When you save the plugin settings</strong>, it requests your connected carriers and their services (<code>GET /v2/carriers</code>) to build the service list. No store or customer data is sent with this request.</li>\n</ul>\n<p>ShipStation&#8217;s <a href=\"https://www.shipstation.com/terms-of-service/\" rel=\"nofollow ugc\">Terms of Service</a> and <a href=\"https://www.shipstation.com/privacy-policy/\" rel=\"nofollow ugc\">Privacy Policy</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/sonicpixel-multi-carrier-live-rates.0.4.1.zip",
+    "upgrade_notice": {
+        "0.4.1": "<p>Admin tidy-up: notices are limited to the screens they apply to and the carrier list styling is now an enqueued stylesheet. No change to shipping rates.</p>",
+        "0.4.0": "<p>New name and folder (<code>sonicpixel-multi-carrier-live-rates</code>). Remove the old <code>multi-carrier-live-rates-for-woocommerce</code> folder without using Plugins &gt; Delete, or its cleanup erases your settings. See the changelog.</p>",
+        "0.3.0": "<p>Optional fix for themes where the selected shipping option looks unselected. No change unless you enable it.</p>",
+        "0.2.3": "<p>Diagnostics only. No behaviour change.</p>",
+        "0.2.2": "<p>Fixes international rates always falling back to the fallback rate. Upgrade if you ship cross-border.</p>",
+        "0.2.1": "<p>Fixes the zone settings modal not opening on 0.2.0. Upgrade if you are on 0.2.0.</p>",
+        "0.2.0": "<p>Fixes every quote falling back to the fallback rate when your store currency differs from your carriers&#039; currency. Settings are preserved.</p>",
+        "0.1.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "carriers": "carriers",
+        "live-rates": "live rates",
+        "shipping": "shipping",
+        "shipping-rates": "shipping rates",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "0.4.1",
+    "versions": {
+        "0.4.1": "https://downloads.wordpress.org/plugin/sonicpixel-multi-carrier-live-rates.0.4.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/sonicpixel-multi-carrier-live-rates.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/sonicpixel-multi-carrier-live-rates/assets/banner-772x250.png?rev=3740304",
+        "high": "https://ps.w.org/sonicpixel-multi-carrier-live-rates/assets/banner-1544x500.png?rev=3740304"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/sonicpixel-multi-carrier-live-rates/assets/icon-128x128.png?rev=3740304",
+        "2x": "https://ps.w.org/sonicpixel-multi-carrier-live-rates/assets/icon-256x256.png?rev=3740304"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
