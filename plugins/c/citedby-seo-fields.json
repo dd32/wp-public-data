@@ -1,0 +1,75 @@
+{
+    "name": "CitedBy SEO Fields",
+    "slug": "citedby-seo-fields",
+    "version": "0.4.0",
+    "author": "<a href=\"https://profiles.wordpress.org/seofields/\">seofields</a>",
+    "author_profile": "https://profiles.wordpress.org/seofields/",
+    "contributors": {
+        "seofields": {
+            "profile": "https://profiles.wordpress.org/seofields/",
+            "avatar": "https://secure.gravatar.com/avatar/f86b78ed6aaab613ca1b81dc490b7fa2c024848750cd5b40e831f9476516733f?s=96&d=monsterid&r=g",
+            "display_name": "seofields"
+        }
+    },
+    "requires": "5.6",
+    "tested": "7.1.3",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/citedby-seo-fields/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-12 18:43:00",
+    "added": "2026-10-12",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Keeps an SEO title and a meta description for each published page and post, and prints them<br />\nin the page head: the title in the title tag, the description in one meta description tag.<br />\nA page with no SEO title keeps the title WordPress gives it. A page with no description gets<br />\nno description tag.</p>\n<p>It can also keep one business schema block for a page or post: a schema.org LocalBusiness (or<br />\na more exact kind, such as Plumber) with the business&#8217;s name, phone, address, area served,<br />\nwebsite and profile links. It prints it as one JSON-LD script in that page&#8217;s head. Nothing<br />\nelse can go in the block: no reviews or ratings, no other kinds of schema.</p>\n<p>It is made for sites with no other SEO plugin. While another SEO plugin is active, or a theme<br />\nwith SEO built in, it prints no title or description. A theme that prints its own title tag<br />\nstops the title and description only.</p>\n<p>The business block works with no SEO plugin, printed as its own script, and with Yoast SEO<br />\n(version 20 or later, without Yoast Local SEO), placed inside Yoast&#8217;s own schema through<br />\nYoast&#8217;s public filter. When Yoast&#8217;s schema names the same business, that entry is given the<br />\nbusiness type, phone, address and area, and keeps its own name exactly as written; otherwise the<br />\nblock is added as its own entry. Names count as the same when they differ only in capitals, in<br />\napostrophes, full stops or commas, in &#8220;&amp;&#8221; against &#8220;and&#8221;, in spacing, or by one closing Ltd,<br />\nLimited, LLP or PLC. It is left out whenever the page&#8217;s schema already holds a local business, or<br />\nYoast&#8217;s entry names a different business, or already has a phone, address or area. With any other SEO<br />\nplugin or an SEO theme, it prints no block and will not store one.</p>\n<p>It does not import anything from another SEO plugin.</p>\n<p>It never changes a page&#8217;s content, its own title, a menu or a theme file. It adds no admin<br />\nscreen and contacts no outside server.</p>\n<p>Switched off, it prints nothing and keeps what it stored. Deleted, everything it stored is<br />\nremoved. A page or post deleted for good takes its business block with it.</p>\n<p>Asked for its fields by page or post id, it reads each one directly, so another plugin&#8217;s<br />\nquery filter cannot leave one out. The full list, asked without ids, goes through WordPress&#8217;s<br />\nown query: with a language plugin it may hold one language only.</p>\n<h3>The service that fills it in</h3>\n<p>This plugin is the WordPress side of CitedBy (https://citedby.co.uk), a paid service for UK<br />\nlocal businesses. CitedBy works out the SEO title, meta description and business block for a<br />\npage, and sends them to this plugin through the WordPress REST API. It uses an application<br />\npassword that an administrator of the site creates and gives to CitedBy.</p>\n<p>CitedBy calls the site; the plugin never calls CitedBy or any other outside server. What CitedBy<br />\nsends: a page or post id and the title, description or business block for it. What it reads<br />\nback: what the plugin holds for that page, its version, and whether another SEO plugin stops it<br />\nprinting.</p>\n<p>Any tool holding an administrator&#8217;s application password can use the same calls. CitedBy is the<br />\none it is made for.</p>\n<p>CitedBy&#8217;s terms: https://citedby.co.uk/terms<br />\nCitedBy&#8217;s privacy policy: https://citedby.co.uk/privacy</p>\n",
+        "faq": "\n<dt id=\"how%20are%20the%20fields%20filled%20in%3F\">\nHow are the fields filled in?\n</h4>\n<p>\n<p>Through two REST API calls at <code>/wp-json/seo-fields/v1/seo_fields</code>: GET reads the stored<br />\nfields, POST writes them. Both need a user who can manage the site&#8217;s options; a write also<br />\nneeds that user to be allowed to edit the page or post. They are meant for CitedBy, which the site<br />\nowner connects with an administrator&#8217;s application password. The plugin adds no screen of its<br />\nown.</p>\n</p>\n<dt id=\"what%20if%20a%20field%20is%20changed%20while%20a%20write%20is%20on%20its%20way%3F\">\nWhat if a field is changed while a write is on its way?\n</h4>\n<p>\n<p>A write can say what it expects each field to hold now. The field is then written only while it<br />\nstill holds exactly that, checked by the database in the same step as the write. If anyone has<br />\nchanged it since, nothing is written and the answer says so, with what the fields hold now.<br />\nThe read says <code>conditional_write: true</code> when the plugin supports this.</p>\n</p>\n<dt id=\"how%20is%20the%20business%20block%20filled%20in%3F\">\nHow is the business block filled in?\n</h4>\n<p>\n<p>Through <code>/wp-json/seo-fields/v1/schema</code>, with the same rights as the fields. Every write names<br />\nthe revision it read, and is done only while the block still holds exactly that, checked by the<br />\ndatabase in the same step as the write. Each page&#8217;s block is one row in the options table,<br />\nnamed <code>citedby_seo_fields_schema_</code> and the page id, so two writers filling an empty block at the same<br />\nmoment cannot both win. An undo puts back the block that write replaced, or removes the block<br />\nif that write created it, and only while the block still holds exactly what that write stored.</p>\n</p>\n<dt id=\"which%20pages%20can%20hold%20them%3F\">\nWhich pages can hold them?\n</h4>\n<p>\n<p>Published pages and posts with no password. A page WordPress never shows as itself, such as a<br />\nWooCommerce shop page, is refused, since nothing stored for it could print.</p>\n</p>\n<dt id=\"does%20it%20work%20on%20a%20multisite%20network%3F\">\nDoes it work on a multisite network?\n</h4>\n<p>\n<p>Not in this version. On a network it registers nothing and prints nothing.</p>\n</p>\n\n",
+        "changelog": "<h4>0.4.0</h4>\n<ul>\n<li>Every function, constant and stored name starts with citedby_seo_fields_, so none can clash with another plugin. Values stored by earlier versions are moved to the new names once.</li>\n<li>The title and description are printed with WordPress&#8217;s own escaping; the business block with wp_json_encode&#8217;s own escaping kept.</li>\n<li>Prints nothing while this plugin under its old name, SEO Fields, is active.</li>\n</ul>\n<h4>0.3.3</h4>\n<ul>\n<li>Preserve empty schema revisions after Undo and refuse stale retries.</li>\n<li>Preserve recovery of earlier changes; new approvals only fill an empty schema slot.</li>\n</ul>\n"
+    },
+    "short_description": "An SEO title, a meta description and a business schema block for each page and post, filled in by CitedBy.",
+    "description": "<p>Keeps an SEO title and a meta description for each published page and post, and prints them<br />\nin the page head: the title in the title tag, the description in one meta description tag.<br />\nA page with no SEO title keeps the title WordPress gives it. A page with no description gets<br />\nno description tag.</p>\n<p>It can also keep one business schema block for a page or post: a schema.org LocalBusiness (or<br />\na more exact kind, such as Plumber) with the business&#8217;s name, phone, address, area served,<br />\nwebsite and profile links. It prints it as one JSON-LD script in that page&#8217;s head. Nothing<br />\nelse can go in the block: no reviews or ratings, no other kinds of schema.</p>\n<p>It is made for sites with no other SEO plugin. While another SEO plugin is active, or a theme<br />\nwith SEO built in, it prints no title or description. A theme that prints its own title tag<br />\nstops the title and description only.</p>\n<p>The business block works with no SEO plugin, printed as its own script, and with Yoast SEO<br />\n(version 20 or later, without Yoast Local SEO), placed inside Yoast&#8217;s own schema through<br />\nYoast&#8217;s public filter. When Yoast&#8217;s schema names the same business, that entry is given the<br />\nbusiness type, phone, address and area, and keeps its own name exactly as written; otherwise the<br />\nblock is added as its own entry. Names count as the same when they differ only in capitals, in<br />\napostrophes, full stops or commas, in &#8220;&amp;&#8221; against &#8220;and&#8221;, in spacing, or by one closing Ltd,<br />\nLimited, LLP or PLC. It is left out whenever the page&#8217;s schema already holds a local business, or<br />\nYoast&#8217;s entry names a different business, or already has a phone, address or area. With any other SEO<br />\nplugin or an SEO theme, it prints no block and will not store one.</p>\n<p>It does not import anything from another SEO plugin.</p>\n<p>It never changes a page&#8217;s content, its own title, a menu or a theme file. It adds no admin<br />\nscreen and contacts no outside server.</p>\n<p>Switched off, it prints nothing and keeps what it stored. Deleted, everything it stored is<br />\nremoved. A page or post deleted for good takes its business block with it.</p>\n<p>Asked for its fields by page or post id, it reads each one directly, so another plugin&#8217;s<br />\nquery filter cannot leave one out. The full list, asked without ids, goes through WordPress&#8217;s<br />\nown query: with a language plugin it may hold one language only.</p>\n<h3>The service that fills it in</h3>\n<p>This plugin is the WordPress side of CitedBy (https://citedby.co.uk), a paid service for UK<br />\nlocal businesses. CitedBy works out the SEO title, meta description and business block for a<br />\npage, and sends them to this plugin through the WordPress REST API. It uses an application<br />\npassword that an administrator of the site creates and gives to CitedBy.</p>\n<p>CitedBy calls the site; the plugin never calls CitedBy or any other outside server. What CitedBy<br />\nsends: a page or post id and the title, description or business block for it. What it reads<br />\nback: what the plugin holds for that page, its version, and whether another SEO plugin stops it<br />\nprinting.</p>\n<p>Any tool holding an administrator&#8217;s application password can use the same calls. CitedBy is the<br />\none it is made for.</p>\n<p>CitedBy&#8217;s terms: https://citedby.co.uk/terms<br />\nCitedBy&#8217;s privacy policy: https://citedby.co.uk/privacy</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/citedby-seo-fields.0.4.0.zip",
+    "upgrade_notice": {
+        "0.4.0": "<p>Every name the plugin uses now starts with citedby_seo_fields_. Values stored by earlier versions are moved to the new names once, on the first visit after the update. Do not go back to 0.3.3 afterwards: it reads only the old names.</p>",
+        "0.3.3": "<p>Update the CitedBy application before installing this plugin version. Schema contract 3 prevents delayed retries from bringing back a change after Undo. Earlier applied changes remain recoverable.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "local-business": "local business",
+        "meta-description": "meta description",
+        "schema": "schema",
+        "seo": "seo",
+        "title": "title"
+    },
+    "stable_tag": "0.4.0",
+    "versions": {
+        "0.4.0": "https://downloads.wordpress.org/plugin/citedby-seo-fields.0.4.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/citedby-seo-fields.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/citedby-seo-fields.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
