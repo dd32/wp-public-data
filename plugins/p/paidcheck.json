@@ -1,0 +1,88 @@
+{
+    "name": "Paidcheck &#8211; Find Orders Paid with Stripe but Stuck in Pending for WooCommerce",
+    "slug": "paidcheck",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/mykytadudariev/\">mykytadudariev</a>",
+    "author_profile": "https://profiles.wordpress.org/mykytadudariev/",
+    "contributors": {
+        "mykytadudariev": {
+            "profile": "https://profiles.wordpress.org/mykytadudariev/",
+            "avatar": "https://secure.gravatar.com/avatar/bad5a1c40c558c5712b80bb453273b5f2bbf6636cf18ca016ad977dab66882aa?s=96&d=monsterid&r=g",
+            "display_name": "mykytadudariev"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1.3",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/paidcheck/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-12 09:08:00",
+    "added": "2026-10-12",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Sometimes a customer pays with Stripe, but the WooCommerce order never hears about it: a webhook is missed, the customer closes the tab before the redirect back, or a confirmation gets lost. The money is in your Stripe account, while the order sits in &#8220;Pending payment&#8221;, &#8220;Failed&#8221;, &#8220;On hold&#8221; or even &#8220;Cancelled&#8221;, and the customer waits for goods that never ship.</p>\n<p>Paidcheck finds those orders. Open <strong>WooCommerce &gt; Paidcheck</strong>, choose how far back to look (1, 2 or 7 days) and press <strong>Check orders</strong>. Paidcheck reads each recent unpaid Stripe order&#8217;s payment from Stripe and sorts the results:</p>\n<ul>\n<li><strong>Paid, order not updated</strong>: Stripe has the full payment (or an uncaptured authorization on a pending or failed order), the order does not.</li>\n<li><strong>Paid, amount differs</strong>: Stripe has a payment, but for a different amount or currency.</li>\n<li><strong>No link to a Stripe payment</strong>: the order has no Stripe payment recorded, or Stripe does not know it.</li>\n<li><strong>Payment in progress</strong>: the payment is still processing or waits for the customer.</li>\n<li><strong>Could not check</strong>: Stripe could not be reached for that order; the reason is shown.</li>\n</ul>\n<p>Each finding shows the order with a link to edit it, both amounts, both statuses, the payment time and the Stripe payment ID linked to your Stripe Dashboard, so you can fix the order by hand.</p>\n<p><strong>Read-only.</strong> Paidcheck never changes an order, never adds an order note and never creates, changes or cancels anything in Stripe. Orders created in the last 15 minutes are skipped, so payments still being confirmed are not reported.</p>\n<p><strong>Supported gateway.</strong> Paidcheck works with the official <a href=\"https://wordpress.org/plugins/woocommerce-gateway-stripe/\" rel=\"ugc\">WooCommerce Stripe Gateway</a> plugin, including its card, wallet and local payment methods. WooPayments is not supported: it does not give the store a Stripe key to read with. Other Stripe plugins are not supported either.</p>\n<p><strong>Where the Stripe key comes from.</strong> There is nothing to configure. Paidcheck uses the secret key that the WooCommerce Stripe Gateway has saved for its current mode: the test key in test mode, the live key otherwise. The key is used only for the requests below; Paidcheck does not store, display or log it.</p>\n<p>The last result stays on the screen until the next check and holds order numbers, statuses, amounts and Stripe payment IDs only, no customer names, emails or addresses. Paidcheck supports High-Performance Order Storage.</p>\n<h3>External services</h3>\n<p>Paidcheck connects to the Stripe API (<code>api.stripe.com</code>), provided by Stripe, to read the payment state of your orders.</p>\n<ul>\n<li><strong>When:</strong> only while a shop manager runs a check on the WooCommerce &gt; Paidcheck screen. Nothing is sent in the background.</li>\n<li><strong>What is sent:</strong> for each checked order, a read request for the PaymentIntent or Checkout Session ID that the WooCommerce Stripe Gateway recorded on the order, authenticated with the gateway&#8217;s secret key. No customer data is sent.</li>\n<li><strong>What is received:</strong> Stripe returns the full payment object, which includes the latest charge and, for a Checkout Session, the session. These can contain the customer&#8217;s billing name, email and address as Stripe recorded them. Paidcheck uses only the payment&#8217;s ID, status, amount, currency, creation time and refund flag; it stores and shows nothing else, and keeps no customer details.</li>\n</ul>\n<p>Stripe <a href=\"https://stripe.com/legal/ssa\" rel=\"nofollow ugc\">Services Agreement</a> and <a href=\"https://stripe.com/privacy\" rel=\"nofollow ugc\">Privacy Policy</a>.</p>\n",
+        "installation": "<ol>\n<li>Install and activate WooCommerce and the WooCommerce Stripe Gateway.</li>\n<li>Install Paidcheck through the Plugins screen, or upload it to <code>/wp-content/plugins/</code>, and activate it.</li>\n<li>Open WooCommerce &gt; Paidcheck and press Check orders.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"will%20paidcheck%20mark%20my%20orders%20as%20paid%3F\">\nWill Paidcheck mark my orders as paid?\n</h4>\n<p>\n<p>No. It only reports. Open the order from the report, compare it with the payment in your Stripe Dashboard and update it yourself.</p>\n</p>\n<dt id=\"which%20orders%20are%20checked%3F\">\nWhich orders are checked?\n</h4>\n<p>\n<p>Orders placed with the WooCommerce Stripe Gateway in the last 1, 2 or 7 days that are pending payment, failed, on hold or cancelled, and older than 15 minutes.</p>\n</p>\n<dt id=\"the%20report%20says%20%22no%20link%22%20for%20an%20order%20that%20was%20paid.%20why%3F\">\nThe report says &#8220;No link&#8221; for an order that was paid. Why?\n</h4>\n<p>\n<p>The order has no Stripe payment ID, or Stripe does not know that ID for the key in use. A common cause is an order paid in test mode while the gateway is now in live mode, or the other way round. The report shows which mode was checked.</p>\n</p>\n<dt id=\"who%20can%20use%20it%3F\">\nWho can use it?\n</h4>\n<p>\n<p>Users who can manage WooCommerce, such as administrators and shop managers.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20many%20orders%3F\">\nDoes it work with many orders?\n</h4>\n<p>\n<p>Yes. The check runs in small batches with a progress indicator, so hundreds of orders finish without hitting your server&#8217;s time limit.</p>\n</p>\n<dt id=\"what%20happens%20to%20my%20data%20if%20i%20delete%20the%20plugin%3F\">\nWhat happens to my data if I delete the plugin?\n</h4>\n<p>\n<p>Deleting Paidcheck removes its last result and any unfinished check. Orders and gateway settings are never touched.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Find WooCommerce orders that Stripe says were paid but are still pending, failed, on hold or cancelled in your store.",
+    "description": "<p>Sometimes a customer pays with Stripe, but the WooCommerce order never hears about it: a webhook is missed, the customer closes the tab before the redirect back, or a confirmation gets lost. The money is in your Stripe account, while the order sits in &#8220;Pending payment&#8221;, &#8220;Failed&#8221;, &#8220;On hold&#8221; or even &#8220;Cancelled&#8221;, and the customer waits for goods that never ship.</p>\n<p>Paidcheck finds those orders. Open <strong>WooCommerce &gt; Paidcheck</strong>, choose how far back to look (1, 2 or 7 days) and press <strong>Check orders</strong>. Paidcheck reads each recent unpaid Stripe order&#8217;s payment from Stripe and sorts the results:</p>\n<ul>\n<li><strong>Paid, order not updated</strong>: Stripe has the full payment (or an uncaptured authorization on a pending or failed order), the order does not.</li>\n<li><strong>Paid, amount differs</strong>: Stripe has a payment, but for a different amount or currency.</li>\n<li><strong>No link to a Stripe payment</strong>: the order has no Stripe payment recorded, or Stripe does not know it.</li>\n<li><strong>Payment in progress</strong>: the payment is still processing or waits for the customer.</li>\n<li><strong>Could not check</strong>: Stripe could not be reached for that order; the reason is shown.</li>\n</ul>\n<p>Each finding shows the order with a link to edit it, both amounts, both statuses, the payment time and the Stripe payment ID linked to your Stripe Dashboard, so you can fix the order by hand.</p>\n<p><strong>Read-only.</strong> Paidcheck never changes an order, never adds an order note and never creates, changes or cancels anything in Stripe. Orders created in the last 15 minutes are skipped, so payments still being confirmed are not reported.</p>\n<p><strong>Supported gateway.</strong> Paidcheck works with the official <a href=\"https://wordpress.org/plugins/woocommerce-gateway-stripe/\" rel=\"ugc\">WooCommerce Stripe Gateway</a> plugin, including its card, wallet and local payment methods. WooPayments is not supported: it does not give the store a Stripe key to read with. Other Stripe plugins are not supported either.</p>\n<p><strong>Where the Stripe key comes from.</strong> There is nothing to configure. Paidcheck uses the secret key that the WooCommerce Stripe Gateway has saved for its current mode: the test key in test mode, the live key otherwise. The key is used only for the requests below; Paidcheck does not store, display or log it.</p>\n<p>The last result stays on the screen until the next check and holds order numbers, statuses, amounts and Stripe payment IDs only, no customer names, emails or addresses. Paidcheck supports High-Performance Order Storage.</p>\n<h3>External services</h3>\n<p>Paidcheck connects to the Stripe API (<code>api.stripe.com</code>), provided by Stripe, to read the payment state of your orders.</p>\n<ul>\n<li><strong>When:</strong> only while a shop manager runs a check on the WooCommerce &gt; Paidcheck screen. Nothing is sent in the background.</li>\n<li><strong>What is sent:</strong> for each checked order, a read request for the PaymentIntent or Checkout Session ID that the WooCommerce Stripe Gateway recorded on the order, authenticated with the gateway&#8217;s secret key. No customer data is sent.</li>\n<li><strong>What is received:</strong> Stripe returns the full payment object, which includes the latest charge and, for a Checkout Session, the session. These can contain the customer&#8217;s billing name, email and address as Stripe recorded them. Paidcheck uses only the payment&#8217;s ID, status, amount, currency, creation time and refund flag; it stores and shows nothing else, and keeps no customer details.</li>\n</ul>\n<p>Stripe <a href=\"https://stripe.com/legal/ssa\" rel=\"nofollow ugc\">Services Agreement</a> and <a href=\"https://stripe.com/privacy\" rel=\"nofollow ugc\">Privacy Policy</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/paidcheck.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/paidcheck/assets/screenshot-1.png?rev=3740925",
+            "caption": "Findings grouped by result, with both amounts, both statuses and a link to each payment in the Stripe Dashboard."
+        },
+        {
+            "src": "https://ps.w.org/paidcheck/assets/screenshot-2.png?rev=3740925",
+            "caption": "A check in progress. In test mode the screen says that it checks test-mode payments."
+        }
+    ],
+    "tags": {
+        "order-status": "order status",
+        "orders": "orders",
+        "payments": "payments",
+        "stripe": "stripe",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/paidcheck.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/paidcheck.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/paidcheck/assets/banner-772x250.png?rev=3740925",
+        "high": "https://ps.w.org/paidcheck/assets/banner-1544x500.png?rev=3740925"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/paidcheck/assets/icon-128x128.png?rev=3740925",
+        "2x": "https://ps.w.org/paidcheck/assets/icon-256x256.png?rev=3740925"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
