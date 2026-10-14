@@ -1,0 +1,79 @@
+{
+    "name": "Statinform: Cookieless Analytics (No Consent Banner)",
+    "slug": "statinform",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/einform/\">einform</a>",
+    "author_profile": "https://profiles.wordpress.org/einform/",
+    "contributors": {
+        "einform": {
+            "profile": "https://profiles.wordpress.org/einform/",
+            "avatar": "https://secure.gravatar.com/avatar/78a2e313b8a4d46e0263455d0ec75bb8fe5b0eed5fd1cbfa6c6d22c385926214?s=96&d=monsterid&r=g",
+            "display_name": "einform"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.3",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/statinform/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-14 12:50:00",
+    "added": "2026-10-14",
+    "homepage": "",
+    "sections": {
+        "description": "<p>StatInform is a self-hosted analytics plugin for WordPress that keeps all data on your own server. It does <strong>not</strong> use cookies, does <strong>not</strong> send data to third parties (Google, Yandex, or anyone else), and has a minimal impact on your site&#8217;s performance.</p>\n<p><strong>Key features</strong></p>\n<ul>\n<li><strong>No cookies.</strong> Session identification uses <code>sessionStorage</code>, which is cleared when the browser tab closes. No long-lived identifiers, no cross-visit tracking.</li>\n<li><strong>No external services.</strong> All data is stored in your own MySQL database. Nothing is sent anywhere.</li>\n<li><strong>Minimal server load.</strong> The collection endpoint runs outside of WordPress core. It does not load <code>wp-load.php</code>, does not touch the database, and simply appends a line to a buffer file.</li>\n<li><strong>Page-level detail.</strong> Tracks entry/exit pages, full session page chains, time on each page, and transitions between pages.</li>\n<li><strong>Source detection.</strong> Classifies traffic by referrer and UTM tags. Recognizes search engines, social networks, and messengers (Telegram, WhatsApp, Viber, and others).</li>\n<li><strong>Outbound link tracking.</strong> Tracks clicks on external links, <code>mailto:</code>, and <code>tel:</code> links.</li>\n<li><strong>Bot filtering.</strong> Detects known bots by User-Agent and <code>Accept-Language</code> headers.</li>\n<li><strong>Bounce rate.</strong> A session is a bounce when it has &lt;= 1 unique page and total time &lt; 15 seconds.</li>\n<li><strong>Data export.</strong> Export any table to CSV for a chosen period. Create ZIP archives on the server. Delete old data with optional pre-archiving.</li>\n<li><strong>No cookie consent banner required</strong> for this plugin&#8217;s own data collection, because no cookies are used and no personal data is stored in identifiable form.</li>\n</ul>\n<h3>Performance and architecture</h3>\n<p>StatInform&#8217;s collection endpoint intentionally runs outside of WordPress core. This means:</p>\n<ul>\n<li><strong>No <code>wp-load.php</code>.</strong> The endpoint is a standalone PHP script. It does not load WordPress, does not connect to the database, and does not fire any hooks.</li>\n<li><strong>The endpoint lives in <code>wp-content/uploads/eistat/</code>.</strong> It is copied there on activation from a template file inside the plugin folder. WordPress.org guidelines require plugins to store user data in <code>uploads/</code>, not in the plugin directory.</li>\n<li><strong>No SQL in the collection path.</strong> Events are appended to hourly <code>.jsonl</code> buffer files. Aggregation into the database happens separately via WP-Cron or the manual &#8220;Update now&#8221; button.</li>\n<li><strong>Data files are protected from direct access.</strong> <code>.htaccess</code> files in the buffer and archives folders block direct HTTP access. On Nginx, these files are ignored and equivalent server-level rules should be configured.</li>\n</ul>\n<h3>Notes for reviewers</h3>\n<p>A few static-analysis warnings appear when running Plugin Check (PCP) on this plugin. They are false positives:</p>\n<ol>\n<li>\n<p><strong><code>InterpolatedNotPrepared</code> on SQL queries.</strong> All queries use <code>$wpdb-&gt;prepare()</code> for values. Table names are built as <code>$wpdb-&gt;prefix . 'eistat_'</code> and cannot be parameterized through <code>prepare()</code>. The table prefix is a controlled value that never comes from user input.</p>\n</li>\n<li>\n<p><strong><code>NonceVerification.Recommended</code> on GET parameters.</strong> The admin views read filter parameters (<code>days</code>, <code>view</code>, <code>date</code>, <code>source</code>, <code>link_type</code>, <code>paged</code>) directly from <code>$_GET</code>. These are read-only filters that do not change state, so a nonce is not required. All values are sanitized with <code>sanitize_text_field()</code>, <code>sanitize_key()</code>, or <code>absint()</code>.</p>\n</li>\n<li>\n<p><strong><code>DirectDatabaseQuery</code> and <code>NoCaching</code>.</strong> The plugin uses custom tables with the prefix <code>wp_eistat_</code>. These tables are not part of the WordPress object cache, so caching them would provide no benefit.</p>\n</li>\n</ol>\n<p>The plugin does <strong>not</strong> write any PHP code to user files. The buffer path is stored as plain JSON in <code>uploads/eistat/buffer-path.json</code> and read with <code>file_get_contents()</code> + <code>json_decode()</code>.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>statinform</code> folder to <code>/wp-content/plugins/</code>.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> menu in WordPress.</li>\n<li>On activation, the plugin creates six database tables and a data folder at <code>wp-content/uploads/eistat/</code> with the following structure:\n<ul>\n<li><code>uploads/eistat/collect.php</code> — the collection endpoint.</li>\n<li><code>uploads/eistat/buffer-path.json</code> — a plain JSON config with the buffer directory path.</li>\n<li><code>uploads/eistat/buffer/</code> — hourly <code>.jsonl</code> files.</li>\n<li><code>uploads/eistat/archives/</code> — exported ZIP archives.</li>\n</ul>\n</li>\n<li>Go to <strong>Analytics</strong> in the admin menu to view your dashboard.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20statinform%20use%20cookies%3F\">\nDoes StatInform use cookies?\n</h4>\n<p>\n<p>No. Session identification uses <code>sessionStorage</code>, which is cleared when the browser tab is closed. No cookies are set by the tracker.</p>\n</p>\n<dt id=\"does%20it%20send%20data%20to%20google%2C%20yandex%2C%20or%20any%20other%20service%3F\">\nDoes it send data to Google, Yandex, or any other service?\n</h4>\n<p>\n<p>No. All data stays in your own MySQL database on your own server.</p>\n</p>\n<dt id=\"is%20a%20cookie%20consent%20banner%20required%3F\">\nIs a cookie consent banner required?\n</h4>\n<p>\n<p>For StatInform&#8217;s own data collection, no &#8211; because no cookies are set and no personal data is stored in identifiable form.</p>\n</p>\n<dt id=\"does%20it%20slow%20down%20my%20site%3F\">\nDoes it slow down my site?\n</h4>\n<p>\n<p>The collection endpoint bypasses WordPress core entirely. Each tracked event adds roughly a few milliseconds of server work. Aggregation runs in the background, not during page loads.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Lightweight, privacy-friendly analytics. No cookies, no external services, minimal server load.",
+    "description": "<p>StatInform is a self-hosted analytics plugin for WordPress that keeps all data on your own server. It does <strong>not</strong> use cookies, does <strong>not</strong> send data to third parties (Google, Yandex, or anyone else), and has a minimal impact on your site&#8217;s performance.</p>\n<p><strong>Key features</strong></p>\n<ul>\n<li><strong>No cookies.</strong> Session identification uses <code>sessionStorage</code>, which is cleared when the browser tab closes. No long-lived identifiers, no cross-visit tracking.</li>\n<li><strong>No external services.</strong> All data is stored in your own MySQL database. Nothing is sent anywhere.</li>\n<li><strong>Minimal server load.</strong> The collection endpoint runs outside of WordPress core. It does not load <code>wp-load.php</code>, does not touch the database, and simply appends a line to a buffer file.</li>\n<li><strong>Page-level detail.</strong> Tracks entry/exit pages, full session page chains, time on each page, and transitions between pages.</li>\n<li><strong>Source detection.</strong> Classifies traffic by referrer and UTM tags. Recognizes search engines, social networks, and messengers (Telegram, WhatsApp, Viber, and others).</li>\n<li><strong>Outbound link tracking.</strong> Tracks clicks on external links, <code>mailto:</code>, and <code>tel:</code> links.</li>\n<li><strong>Bot filtering.</strong> Detects known bots by User-Agent and <code>Accept-Language</code> headers.</li>\n<li><strong>Bounce rate.</strong> A session is a bounce when it has &lt;= 1 unique page and total time &lt; 15 seconds.</li>\n<li><strong>Data export.</strong> Export any table to CSV for a chosen period. Create ZIP archives on the server. Delete old data with optional pre-archiving.</li>\n<li><strong>No cookie consent banner required</strong> for this plugin&#8217;s own data collection, because no cookies are used and no personal data is stored in identifiable form.</li>\n</ul>\n<h3>Performance and architecture</h3>\n<p>StatInform&#8217;s collection endpoint intentionally runs outside of WordPress core. This means:</p>\n<ul>\n<li><strong>No <code>wp-load.php</code>.</strong> The endpoint is a standalone PHP script. It does not load WordPress, does not connect to the database, and does not fire any hooks.</li>\n<li><strong>The endpoint lives in <code>wp-content/uploads/eistat/</code>.</strong> It is copied there on activation from a template file inside the plugin folder. WordPress.org guidelines require plugins to store user data in <code>uploads/</code>, not in the plugin directory.</li>\n<li><strong>No SQL in the collection path.</strong> Events are appended to hourly <code>.jsonl</code> buffer files. Aggregation into the database happens separately via WP-Cron or the manual &#8220;Update now&#8221; button.</li>\n<li><strong>Data files are protected from direct access.</strong> <code>.htaccess</code> files in the buffer and archives folders block direct HTTP access. On Nginx, these files are ignored and equivalent server-level rules should be configured.</li>\n</ul>\n<h3>Notes for reviewers</h3>\n<p>A few static-analysis warnings appear when running Plugin Check (PCP) on this plugin. They are false positives:</p>\n<ol>\n<li>\n<p><strong><code>InterpolatedNotPrepared</code> on SQL queries.</strong> All queries use <code>$wpdb-&gt;prepare()</code> for values. Table names are built as <code>$wpdb-&gt;prefix . 'eistat_'</code> and cannot be parameterized through <code>prepare()</code>. The table prefix is a controlled value that never comes from user input.</p>\n</li>\n<li>\n<p><strong><code>NonceVerification.Recommended</code> on GET parameters.</strong> The admin views read filter parameters (<code>days</code>, <code>view</code>, <code>date</code>, <code>source</code>, <code>link_type</code>, <code>paged</code>) directly from <code>$_GET</code>. These are read-only filters that do not change state, so a nonce is not required. All values are sanitized with <code>sanitize_text_field()</code>, <code>sanitize_key()</code>, or <code>absint()</code>.</p>\n</li>\n<li>\n<p><strong><code>DirectDatabaseQuery</code> and <code>NoCaching</code>.</strong> The plugin uses custom tables with the prefix <code>wp_eistat_</code>. These tables are not part of the WordPress object cache, so caching them would provide no benefit.</p>\n</li>\n</ol>\n<p>The plugin does <strong>not</strong> write any PHP code to user files. The buffer path is stored as plain JSON in <code>uploads/eistat/buffer-path.json</code> and read with <code>file_get_contents()</code> + <code>json_decode()</code>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/statinform.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/statinform/assets/screenshot-1.png?rev=3746351",
+            "caption": "Overview dashboard with today's summary."
+        }
+    ],
+    "tags": {
+        "analytics": "analytics",
+        "lightweight": "lightweight",
+        "no-cookies": "no cookies",
+        "privacy": "privacy",
+        "statistics": "statistics"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/statinform.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/statinform.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/statinform/assets/icon-128x128.png?rev=3746351",
+        "2x": "https://ps.w.org/statinform/assets/icon-256x256.png?rev=3746351"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
