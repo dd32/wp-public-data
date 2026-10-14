@@ -1,0 +1,91 @@
+{
+    "name": "HDWebmobile Formula Pricing",
+    "slug": "hdwebmobile-formula-pricing",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/htrxuan/\">HDWebMobile</a>",
+    "author_profile": "https://profiles.wordpress.org/htrxuan/",
+    "contributors": {
+        "htrxuan": {
+            "profile": "https://profiles.wordpress.org/htrxuan/",
+            "avatar": "https://secure.gravatar.com/avatar/c7d0821daad4677138a9012dcf9a066760e313fd4e25d942155ba9792022c37f?s=96&d=monsterid&r=g",
+            "display_name": "HDWebMobile"
+        }
+    },
+    "requires": "6.9",
+    "tested": "7.1.3",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/hdwebmobile-formula-pricing/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-13 23:51:00",
+    "added": "2026-10-13",
+    "homepage": "https://hdwebmobile.com/plugins/hdwebmobile-formula-pricing/",
+    "sections": {
+        "description": "<p>HDWebmobile Formula Pricing lets customers enter measurements or quantities on the product page, and prices the product live from a formula you write using those field names (e.g. <code>10 + width * height * 0.05</code> for a custom-cut material priced by area). This is a common real need for stores selling custom-sized fabric, framed prints, engraved items, or anything priced by dimension or quantity, not just a flat number.</p>\n<h4>Security by design</h4>\n<p>The simplest way to implement formula-based pricing &#8212; passing the merchant&#8217;s formula text straight into PHP&#8217;s <code>eval()</code> at calculation time &#8212; is also the most dangerous: it turns any formula input into a remote code execution path. This plugin closes that entire vulnerability class by construction:</p>\n<ul>\n<li>The formula is tokenized character-by-character into a strict set of allowed pieces: numbers, your own configured field names, and the four arithmetic operators plus parentheses. Anything else in the formula text &#8212; any other letter sequence, any function-call-looking pattern, any special character &#8212; causes the formula to be rejected outright when you save it.</li>\n<li>The token stream is evaluated by a small hand-written arithmetic parser. There is no <code>eval()</code>, no <code>create_function()</code>, no dynamic function dispatch of any kind anywhere in this plugin &#8212; the only operations that can ever run are addition, subtraction, multiplication, and division of plain numbers.</li>\n<li>The customer-facing live price preview also never exposes your formula to the browser: it&#8217;s computed by an AJAX call back to your own server, through the exact same safe evaluator used at checkout, so the formula text itself is never sent to a visitor&#8217;s browser.</li>\n<li>The real price used at checkout is always recomputed server-side from the product&#8217;s own stored fields and formula &#8212; never trusted from what the browser submitted.</li>\n</ul>\n<h4>Key Features</h4>\n<ul>\n<li>Add up to 6 numeric input fields per product (label, variable name, min/max bounds, default value)</li>\n<li>Write a formula referencing those fields by name &#8212; validated for safety the moment you save it</li>\n<li>Live price preview on the product page as the customer types, computed server-side</li>\n<li>Optional minimum/maximum price clamps, so no combination of inputs can produce an unreasonable price</li>\n<li>Every field&#8217;s min/max bounds are enforced again server-side at add-to-cart time, not just in the browser</li>\n<li>Field values show on the cart, checkout, and order screens exactly as entered</li>\n</ul>\n<h4>Limitations (please read before installing)</h4>\n<ul>\n<li>Simple products only in this version &#8212; no variable-product support</li>\n<li>Formulas support only +, -, *, /, and parentheses (no exponents, square roots, or conditional logic) &#8212; deliberately, since a richer grammar is a larger safety surface to get right</li>\n<li>No formula &#8220;test&#8221; button in the admin beyond the save-time validation &#8212; if a formula is rejected, the error message names exactly what&#8217;s wrong (an unknown variable, a bad character, division by zero with the values you tried)</li>\n<li>Requires a Regular Price to be set on the product (even a nominal placeholder) &#8212; this is standard WooCommerce behavior for any product with no price at all, not something this plugin can work around</li>\n</ul>\n<h3>How to Use</h3>\n<h4>1. Add your input fields</h4>\n<p>On a simple product&#8217;s &#8220;Formula Pricing&#8221; tab, click &#8220;+ Add Field&#8221; for each number the customer should enter (e.g. &#8220;Width in cm&#8221; with variable name <code>width</code>). Set a minimum, an optional maximum, and a default value for each.</p>\n<h4>2. Write the formula</h4>\n<p>In the Formula box, write an expression using your field names exactly as shown, e.g. <code>10 + width * height * 0.05</code>. Save the product &#8212; if the formula uses anything other than your field names, numbers, and <code>+ - * / ( )</code>, you&#8217;ll see exactly what&#8217;s wrong and the formula won&#8217;t be saved until it&#8217;s fixed.</p>\n<h4>3. What the customer sees</h4>\n<p>The product page shows your input fields above the Add to Cart button, with a live estimated price that updates as they type. The real price is confirmed the moment the product is actually added to the cart.</p>\n<h4>4. Keeping prices sane</h4>\n<p>Set an optional minimum and/or maximum price on the same tab &#8212; no matter what a customer enters (within their allowed field ranges), the final price is clamped to stay within those bounds.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin files to the <code>/wp-content/plugins/hdwebmobile-formula-pricing</code> directory, or install the plugin through the WordPress plugins screen directly.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; screen in WordPress. WooCommerce must already be installed and active.</li>\n<li>Edit a simple product, open its new &#8220;Formula Pricing&#8221; tab under Product Data, add your fields and formula.</li>\n<li>On the product&#8217;s &#8220;General&#8221; tab, set a Regular Price &#8212; WooCommerce hides the entire purchase form on a product with no price at all, even with formula pricing enabled, so enter at least a nominal placeholder amount (it will be overridden the moment a customer enters a value).</li>\n</ol>\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release: per-product numeric input fields, safe formula evaluation via a hand-written tokenizer and recursive-descent parser (no eval()), server-side live price preview via AJAX, min/max price clamping, field values shown on cart/checkout/order screens.</li>\n</ul>\n"
+    },
+    "short_description": "Price a product from customer-entered numbers using a formula -- evaluated safely, never with PHP's eval().",
+    "description": "<p>HDWebmobile Formula Pricing lets customers enter measurements or quantities on the product page, and prices the product live from a formula you write using those field names (e.g. <code>10 + width * height * 0.05</code> for a custom-cut material priced by area). This is a common real need for stores selling custom-sized fabric, framed prints, engraved items, or anything priced by dimension or quantity, not just a flat number.</p>\n<h4>Security by design</h4>\n<p>The simplest way to implement formula-based pricing &#8212; passing the merchant&#8217;s formula text straight into PHP&#8217;s <code>eval()</code> at calculation time &#8212; is also the most dangerous: it turns any formula input into a remote code execution path. This plugin closes that entire vulnerability class by construction:</p>\n<ul>\n<li>The formula is tokenized character-by-character into a strict set of allowed pieces: numbers, your own configured field names, and the four arithmetic operators plus parentheses. Anything else in the formula text &#8212; any other letter sequence, any function-call-looking pattern, any special character &#8212; causes the formula to be rejected outright when you save it.</li>\n<li>The token stream is evaluated by a small hand-written arithmetic parser. There is no <code>eval()</code>, no <code>create_function()</code>, no dynamic function dispatch of any kind anywhere in this plugin &#8212; the only operations that can ever run are addition, subtraction, multiplication, and division of plain numbers.</li>\n<li>The customer-facing live price preview also never exposes your formula to the browser: it&#8217;s computed by an AJAX call back to your own server, through the exact same safe evaluator used at checkout, so the formula text itself is never sent to a visitor&#8217;s browser.</li>\n<li>The real price used at checkout is always recomputed server-side from the product&#8217;s own stored fields and formula &#8212; never trusted from what the browser submitted.</li>\n</ul>\n<h4>Key Features</h4>\n<ul>\n<li>Add up to 6 numeric input fields per product (label, variable name, min/max bounds, default value)</li>\n<li>Write a formula referencing those fields by name &#8212; validated for safety the moment you save it</li>\n<li>Live price preview on the product page as the customer types, computed server-side</li>\n<li>Optional minimum/maximum price clamps, so no combination of inputs can produce an unreasonable price</li>\n<li>Every field&#8217;s min/max bounds are enforced again server-side at add-to-cart time, not just in the browser</li>\n<li>Field values show on the cart, checkout, and order screens exactly as entered</li>\n</ul>\n<h4>Limitations (please read before installing)</h4>\n<ul>\n<li>Simple products only in this version &#8212; no variable-product support</li>\n<li>Formulas support only +, -, *, /, and parentheses (no exponents, square roots, or conditional logic) &#8212; deliberately, since a richer grammar is a larger safety surface to get right</li>\n<li>No formula &#8220;test&#8221; button in the admin beyond the save-time validation &#8212; if a formula is rejected, the error message names exactly what&#8217;s wrong (an unknown variable, a bad character, division by zero with the values you tried)</li>\n<li>Requires a Regular Price to be set on the product (even a nominal placeholder) &#8212; this is standard WooCommerce behavior for any product with no price at all, not something this plugin can work around</li>\n</ul>\n<h3>How to Use</h3>\n<h4>1. Add your input fields</h4>\n<p>On a simple product&#8217;s &#8220;Formula Pricing&#8221; tab, click &#8220;+ Add Field&#8221; for each number the customer should enter (e.g. &#8220;Width in cm&#8221; with variable name <code>width</code>). Set a minimum, an optional maximum, and a default value for each.</p>\n<h4>2. Write the formula</h4>\n<p>In the Formula box, write an expression using your field names exactly as shown, e.g. <code>10 + width * height * 0.05</code>. Save the product &#8212; if the formula uses anything other than your field names, numbers, and <code>+ - * / ( )</code>, you&#8217;ll see exactly what&#8217;s wrong and the formula won&#8217;t be saved until it&#8217;s fixed.</p>\n<h4>3. What the customer sees</h4>\n<p>The product page shows your input fields above the Add to Cart button, with a live estimated price that updates as they type. The real price is confirmed the moment the product is actually added to the cart.</p>\n<h4>4. Keeping prices sane</h4>\n<p>Set an optional minimum and/or maximum price on the same tab &#8212; no matter what a customer enters (within their allowed field ranges), the final price is clamped to stay within those bounds.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/hdwebmobile-formula-pricing.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/hdwebmobile-formula-pricing/assets/screenshot-1.png?rev=3745071",
+            "caption": "The Formula Pricing tab on a product's edit screen -- fields and formula configuration."
+        },
+        {
+            "src": "https://ps.w.org/hdwebmobile-formula-pricing/assets/screenshot-2.png?rev=3745071",
+            "caption": "The customer-facing input fields and live price preview on the product page."
+        },
+        {
+            "src": "https://ps.w.org/hdwebmobile-formula-pricing/assets/screenshot-3.png?rev=3745071",
+            "caption": "A cart line item showing the entered measurements alongside the computed price."
+        }
+    ],
+    "tags": {
+        "calculator": "calculator",
+        "custom-pricing": "Custom Pricing",
+        "dynamic-pricing": "dynamic pricing",
+        "formula": "formula",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/hdwebmobile-formula-pricing.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/hdwebmobile-formula-pricing.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "https://paypal.me/htrxuan/20",
+    "banners": {
+        "low": "https://ps.w.org/hdwebmobile-formula-pricing/assets/banner-772x250.png?rev=3745071",
+        "high": "https://ps.w.org/hdwebmobile-formula-pricing/assets/banner-1544x500.png?rev=3745071"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/hdwebmobile-formula-pricing/assets/icon-128x128.png?rev=3745071",
+        "2x": "https://ps.w.org/hdwebmobile-formula-pricing/assets/icon-256x256.png?rev=3745071"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
