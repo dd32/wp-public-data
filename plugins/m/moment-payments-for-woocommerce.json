@@ -1,0 +1,92 @@
+{
+    "name": "Moment Payments for WooCommerce",
+    "slug": "moment-payments-for-woocommerce",
+    "version": "1.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/momentco/\">momentco</a>",
+    "author_profile": "https://profiles.wordpress.org/momentco/",
+    "contributors": {
+        "momentco": {
+            "profile": "https://profiles.wordpress.org/momentco/",
+            "avatar": "https://secure.gravatar.com/avatar/536790f526d7b2ce3eaac5fa22e5a26f70db166f6c2583340fbd4f5edd7ac7fe?s=96&d=monsterid&r=g",
+            "display_name": "momentco"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.3",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/moment-payments-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-14 18:21:00",
+    "added": "2026-05-19",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Moment Payments for WooCommerce integrates the <a href=\"https://momentco.net\" rel=\"nofollow ugc\">Moment</a> hosted checkout into your WooCommerce store. Customers are redirected to a secure Moment-hosted payment page and returned to your store after completion. Order status is driven by signed webhooks — no polling required.</p>\n<p><strong>Features</strong></p>\n<ul>\n<li>One-time payments via hosted checkout redirect</li>\n<li>EFT and wallet support</li>\n<li>Subscriptions (requires WooCommerce Subscriptions)</li>\n<li>Full and partial refunds from the WooCommerce admin</li>\n<li>Block checkout and classic shortcode checkout support</li>\n<li>HMAC-SHA256 webhook signature verification with replay-attack protection</li>\n<li>Configurable verify-on-return API check to close the redirect–webhook race</li>\n<li>Admin notices for missing credentials, no HTTPS, and WooCommerce version checks</li>\n<li>Debug logging via WooCommerce log viewer (tagged <code>source=moment-payments</code>)</li>\n</ul>\n<p><strong>Requirements</strong></p>\n<ul>\n<li>WordPress 6.0+</li>\n<li>WooCommerce 8.0+</li>\n<li>PHP 7.4+</li>\n<li>A Moment merchant account (<a href=\"https://momentco.net\" rel=\"nofollow ugc\">sign up</a>)</li>\n<li>Store currency must be ZAR</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the Moment payments API (https://api.momentpay.net) operated by Moment. The connection is required for the plugin to function as a payment gateway.</p>\n<p><strong>What is sent and when</strong></p>\n<ul>\n<li>When a customer places an order, the plugin sends the order ID, order key, currency, amount, customer email, and billing details (name, address) to Moment to create a hosted-checkout payment session.</li>\n<li>After the customer is redirected back to the store, if the &#8220;Verify on return&#8221; option is enabled, the plugin queries Moment for the session status using the session ID.</li>\n<li>When a card last-4 / scheme is needed for display in the WooCommerce admin, the plugin queries Moment for the payment object using its payment ID.</li>\n<li>When a merchant issues a refund from the WooCommerce admin, the plugin sends the payment ID, amount, and optional reason to Moment.</li>\n<li>Moment delivers signed webhook events (payment_session.updated, payment.refunded) inbound to the plugin&#8217;s webhook endpoint; the plugin verifies the HMAC-SHA256 signature and updates order status accordingly.</li>\n</ul>\n<p>No card data ever touches the merchant site — card details are entered only on Moment&#8217;s hosted checkout pages, which the plugin does not control.</p>\n<p><strong>Service provider</strong></p>\n<ul>\n<li>Service: Moment — https://momentco.net</li>\n<li>Terms of service and privacy policy: https://momentco.net/legal</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>moment-payments</code> folder to <code>/wp-content/plugins/</code>, or install via the WordPress plugin screen.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> screen.</li>\n<li>Go to <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Payments <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Moment Payments</strong>.</li>\n<li>Enter your Secret Key, Public Key, and Webhook Signing Secret from your Moment merchant dashboard.</li>\n<li>Register <code>https://yourstore.com/?wc-api=moment_webhook</code> as a webhook endpoint in your Moment account.</li>\n<li>Enable the gateway and save.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"what%20currencies%20are%20supported%3F\">\nWhat currencies are supported?\n</h4>\n<p>\n<p>ZAR (South African Rand) only. The gateway will not appear at checkout on stores configured with a different base currency.</p>\n</p>\n<dt id=\"where%20do%20i%20find%20my%20api%20keys%3F\">\nWhere do I find my API keys?\n</h4>\n<p>\n<p>Log in to your <a href=\"https://momentco.net\" rel=\"nofollow ugc\">Moment merchant dashboard</a>, navigate to <strong>Developers <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> API Keys</strong> for your Secret and Public keys, and <strong>Developers <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Webhooks</strong> for the signing secret.</p>\n</p>\n<dt id=\"does%20this%20plugin%20support%20woocommerce%20subscriptions%3F\">\nDoes this plugin support WooCommerce Subscriptions?\n</h4>\n<p>\n<p>Yes. Install and activate WooCommerce Subscriptions and the Moment gateway will detect it automatically. Initial subscription payments follow the hosted checkout flow; renewals are charged server-side without customer interaction.</p>\n</p>\n<dt id=\"the%20payment%20gateway%20is%20not%20appearing%20at%20checkout.\">\nThe payment gateway is not appearing at checkout.\n</h4>\n<p>\n<p>Check that: (1) the plugin is activated, (2) the gateway is enabled under WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Payments, (3) a Secret Key is configured, and (4) your store currency is set to ZAR.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.1</h4>\n<ul>\n<li>New Moment logo across the plugin and the WordPress.org listing.</li>\n<li>Moment logo shown in WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Payments.</li>\n<li>Checkout shows accepted payment method logos beside Moment.</li>\n<li>Tested up to WordPress 7.1.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>Hosted checkout redirect via the Moment API.</li>\n<li>HMAC-SHA256 webhook signature verification.</li>\n<li>Full and partial refund support.</li>\n<li>WooCommerce Subscriptions compatibility.</li>\n<li>Block checkout and classic shortcode support.</li>\n<li>HPOS compatibility declared.</li>\n</ul>\n"
+    },
+    "short_description": "Accept payments via Moment — one-time hosted checkout with webhook-driven order updates.",
+    "description": "<p>Moment Payments for WooCommerce integrates the <a href=\"https://momentco.net\" rel=\"nofollow ugc\">Moment</a> hosted checkout into your WooCommerce store. Customers are redirected to a secure Moment-hosted payment page and returned to your store after completion. Order status is driven by signed webhooks — no polling required.</p>\n<p><strong>Features</strong></p>\n<ul>\n<li>One-time payments via hosted checkout redirect</li>\n<li>EFT and wallet support</li>\n<li>Subscriptions (requires WooCommerce Subscriptions)</li>\n<li>Full and partial refunds from the WooCommerce admin</li>\n<li>Block checkout and classic shortcode checkout support</li>\n<li>HMAC-SHA256 webhook signature verification with replay-attack protection</li>\n<li>Configurable verify-on-return API check to close the redirect–webhook race</li>\n<li>Admin notices for missing credentials, no HTTPS, and WooCommerce version checks</li>\n<li>Debug logging via WooCommerce log viewer (tagged <code>source=moment-payments</code>)</li>\n</ul>\n<p><strong>Requirements</strong></p>\n<ul>\n<li>WordPress 6.0+</li>\n<li>WooCommerce 8.0+</li>\n<li>PHP 7.4+</li>\n<li>A Moment merchant account (<a href=\"https://momentco.net\" rel=\"nofollow ugc\">sign up</a>)</li>\n<li>Store currency must be ZAR</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the Moment payments API (https://api.momentpay.net) operated by Moment. The connection is required for the plugin to function as a payment gateway.</p>\n<p><strong>What is sent and when</strong></p>\n<ul>\n<li>When a customer places an order, the plugin sends the order ID, order key, currency, amount, customer email, and billing details (name, address) to Moment to create a hosted-checkout payment session.</li>\n<li>After the customer is redirected back to the store, if the &#8220;Verify on return&#8221; option is enabled, the plugin queries Moment for the session status using the session ID.</li>\n<li>When a card last-4 / scheme is needed for display in the WooCommerce admin, the plugin queries Moment for the payment object using its payment ID.</li>\n<li>When a merchant issues a refund from the WooCommerce admin, the plugin sends the payment ID, amount, and optional reason to Moment.</li>\n<li>Moment delivers signed webhook events (payment_session.updated, payment.refunded) inbound to the plugin&#8217;s webhook endpoint; the plugin verifies the HMAC-SHA256 signature and updates order status accordingly.</li>\n</ul>\n<p>No card data ever touches the merchant site — card details are entered only on Moment&#8217;s hosted checkout pages, which the plugin does not control.</p>\n<p><strong>Service provider</strong></p>\n<ul>\n<li>Service: Moment — https://momentco.net</li>\n<li>Terms of service and privacy policy: https://momentco.net/legal</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/moment-payments-for-woocommerce.1.0.1.zip",
+    "upgrade_notice": {
+        "1.0.1": "<p>Visual update — new logo and payment method logos at checkout. No configuration changes.</p>",
+        "1.0.0": "<p>Initial release — no upgrade steps required.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/moment-payments-for-woocommerce/assets/screenshot-1.png?rev=3746925",
+            "caption": "The Moment Payments settings page in WooCommerce."
+        },
+        {
+            "src": "https://ps.w.org/moment-payments-for-woocommerce/assets/screenshot-2.png?rev=3746925",
+            "caption": "Moment gateway displayed at block checkout."
+        }
+    ],
+    "tags": {
+        "checkout": "checkout",
+        "gateway": "gateway",
+        "payment": "payment",
+        "south-africa": "south africa",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.1",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/moment-payments-for-woocommerce.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/moment-payments-for-woocommerce.1.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/moment-payments-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/moment-payments-for-woocommerce/assets/banner-772x250.png?rev=3746925",
+        "high": "https://ps.w.org/moment-payments-for-woocommerce/assets/banner-1544x500.png?rev=3746925"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/moment-payments-for-woocommerce/assets/icon-128x128.png?rev=3746925",
+        "2x": "https://ps.w.org/moment-payments-for-woocommerce/assets/icon-256x256.png?rev=3746925"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
