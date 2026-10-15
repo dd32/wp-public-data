@@ -1,0 +1,616 @@
+{
+    "name": "CASABLANCA Booking Engine",
+    "slug": "casablanca-booking-engine",
+    "version": "1.0.3",
+    "author": "<a href=\"https://profiles.wordpress.org/mhairer/\">CASABLANCA</a>",
+    "author_profile": "https://profiles.wordpress.org/mhairer/",
+    "contributors": {
+        "mhairer": {
+            "profile": "https://profiles.wordpress.org/mhairer/",
+            "avatar": "https://secure.gravatar.com/avatar/339fa6824f115ed8555dbbb9235f7d07c56b6441516619262bc2207e33067cdc?s=96&d=monsterid&r=g",
+            "display_name": "CASABLANCA"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1.3",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/casablanca-booking-engine/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-15 19:04:00",
+    "added": "2026-10-12",
+    "homepage": "https://www.casablanca.at/",
+    "sections": {
+        "description": "<p>Author: Martin Hairer (martin.hairer@casablanca.at)</p>\n<p>This plugin synchronises room types, rates, and availability from the CASABLANCA IBE v2 API and renders SEO-friendly booking widgets. Guests complete booking and payment on the CASABLANCA booking engine (PCI-safe redirect).</p>\n<p><strong>Requirements</strong></p>\n<p>The plugin is free to install, but it <strong>only works with the hosted CASABLANCA Booking Engine</strong> (external IBE API and booking website). You need a valid <strong>Tenant ID and API key</strong> from that service under <strong>CASABLANCA Booking</strong> in the admin. Without an active Booking Engine account, sync and widgets cannot load live data or hand guests off to complete a booking.</p>\n<p><strong>Features</strong></p>\n<ul>\n<li>Background ARI sync with audit log</li>\n<li>Daily WP-Cron task (staggered on first save)</li>\n<li>Gutenberg blocks and matching shortcodes (search, calendar, rooms, packages, detail pages, price teaser)</li>\n<li>Overview <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> detail links via pretty URLs <code>/{detail-page}/{slug}/</code></li>\n<li>Live calendar via same-origin REST proxy</li>\n<li>Backend configuration with encrypted API key</li>\n<li>Theme and per-site CSS overrides</li>\n<li>Environment mode via <code>CASABLANCA_BOOKING_ENV</code> in wp-config.php</li>\n</ul>\n<p><strong>License note:</strong> The plugin source is free software under <strong>AGPL-3.0-only</strong>; you may use, modify, and share it under that license. That is separate from the CASABLANCA Booking Engine service and API key needed for live operation.</p>\n<h3>External services</h3>\n<p>This plugin <strong>requires</strong> the third-party <strong>CASABLANCA Booking Engine v2</strong> operated by CASABLANCA hotelsoftware GmbH. It is not a generic booking plugin: without that service, widgets show no live availability and guests cannot complete reservations.</p>\n<p><strong>What it is used for:</strong> Background sync of room types, rates, and availability; live calendar and offer data; redirecting guests to the CASABLANCA booking website for checkout and payment. WordPress never stores payment card data.</p>\n<p><strong>What data is sent and when:</strong></p>\n<ul>\n<li><strong>Admin configuration, connection test, and sync</strong> (when you save settings, click Sync, or WP-Cron runs): Tenant ID and API key are sent to the CASABLANCA IBE API (default <code>https://api.casablanca.at</code>, or staging hosts when <code>CASABLANCA_BOOKING_ENV</code> is set in wp-config.php).</li>\n<li><strong>Calendar and offers on the public site</strong> (when a visitor loads or interacts with a widget): stay dates, occupancy, optional room or rate filters, and culture/language. No WordPress login or site visitor identity is sent to CASABLANCA for these requests.</li>\n<li><strong>Search and book</strong> (when a visitor submits the search bar or a book button): the visitor&#8217;s browser is redirected to your hotel&#8217;s CASABLANCA booking URL with arrival, departure, occupancy, and optional room or rate identifiers.</li>\n</ul>\n<p><strong>Service provider:</strong> CASABLANCA hotelsoftware GmbH — <a href=\"https://www.casablanca.at/legal/agb/\" rel=\"nofollow ugc\">Terms of use</a>, <a href=\"https://www.casablanca.at/legal/datenschutzerklaerung/\" rel=\"nofollow ugc\">Privacy policy</a>.</p>\n<h3>Shortcodes</h3>\n<ul>\n<li><code>[casablanca_search_bar]</code></li>\n<li><code>[casablanca_calendar]</code></li>\n<li><code>[casablanca_room_types]</code></li>\n<li><code>[casablanca_packages]</code></li>\n<li><code>[casablanca_room_detail]</code></li>\n<li><code>[casablanca_package_detail]</code></li>\n<li><code>[casablanca_price_teaser]</code></li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the plugin zip via <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin</strong>, or copy the <code>casablanca-booking-engine</code> folder to <code>wp-content/plugins/</code>.</li>\n<li>Activate the plugin.</li>\n<li>Open <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Permalinks</strong> and click <strong>Save</strong> once (registers detail-page rewrite rules).</li>\n<li>Open <strong>CASABLANCA Booking</strong> in the admin menu.</li>\n<li>Enter Tenant ID and API key, then save.</li>\n<li>Insert blocks or shortcodes on your pages.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20casablanca%20booking%20engine%20to%20use%20this%20plugin%3F\">\nDo I need CASABLANCA Booking Engine to use this plugin?\n</h4>\n<p>\n<p>The plugin itself is free under AGPL-3.0-only. To work on a live site you need an active <strong>CASABLANCA Booking Engine</strong> subscription (Tenant ID + API key). The plugin has no standalone booking function; it connects to CASABLANCA’s external API and booking engine.</p>\n</p>\n<dt id=\"how%20do%20i%20run%20sync%20manually%3F\">\nHow do I run sync manually?\n</h4>\n<p>\n<p>Use <strong>Sync now</strong> in the admin module, or <code>wp casablanca-booking sync</code> when WP-CLI is available.</p>\n</p>\n<dt id=\"how%20do%20i%20use%20staging%20api%20hosts%3F\">\nHow do I use staging API hosts?\n</h4>\n<p>\n<p>Add to <code>wp-config.php</code>:</p>\n<pre><code>define('CASABLANCA_BOOKING_ENV', 'staging');\n</code></pre>\n</p>\n<dt id=\"how%20do%20i%20link%20room%2Fpackage%20cards%20to%20a%20detail%20page%3F\">\nHow do I link room/package cards to a detail page?\n</h4>\n<p>\n<ol>\n<li>Create a detail page and add the <strong>Room details</strong> or <strong>Package details</strong> block.</li>\n<li>On the overview block, set <strong>Card link</strong> to <strong>Details</strong> and select that page.</li>\n<li>Cards link to <code>/{detail-page}/{slug}/</code>. No fallback id is required on the live URL.</li>\n<li>If detail pages show “not found”, save <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Permalinks</strong> once.</li>\n</ol>\n</p>\n\n",
+        "changelog": "<h4>1.0.3</h4>\n<ul>\n<li>Calendar offers: reuse one booking offer and recalculate it when dates or occupancy change (fewer CreateBookingOffer calls).</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>API authentication: send the raw key in the <code>api-key</code> request header (no Bearer token).</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>WordPress.org review fixes: plugin directory slug, distribution zip contents, inline theme CSS sanitization, text domain alignment.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial WordPress plugin.</li>\n<li>Room/package detail URLs resolve the synced slug from the last path segment.</li>\n</ul>\n"
+    },
+    "short_description": "Integrates the CASABLANCA Booking Engine v2 into WordPress with background sync, SSR widgets, and PCI-safe redirect handover.",
+    "description": "<p>Author: Martin Hairer (martin.hairer@casablanca.at)</p>\n<p>This plugin synchronises room types, rates, and availability from the CASABLANCA IBE v2 API and renders SEO-friendly booking widgets. Guests complete booking and payment on the CASABLANCA booking engine (PCI-safe redirect).</p>\n<p><strong>Requirements</strong></p>\n<p>The plugin is free to install, but it <strong>only works with the hosted CASABLANCA Booking Engine</strong> (external IBE API and booking website). You need a valid <strong>Tenant ID and API key</strong> from that service under <strong>CASABLANCA Booking</strong> in the admin. Without an active Booking Engine account, sync and widgets cannot load live data or hand guests off to complete a booking.</p>\n<p><strong>Features</strong></p>\n<ul>\n<li>Background ARI sync with audit log</li>\n<li>Daily WP-Cron task (staggered on first save)</li>\n<li>Gutenberg blocks and matching shortcodes (search, calendar, rooms, packages, detail pages, price teaser)</li>\n<li>Overview <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> detail links via pretty URLs <code>/{detail-page}/{slug}/</code></li>\n<li>Live calendar via same-origin REST proxy</li>\n<li>Backend configuration with encrypted API key</li>\n<li>Theme and per-site CSS overrides</li>\n<li>Environment mode via <code>CASABLANCA_BOOKING_ENV</code> in wp-config.php</li>\n</ul>\n<p><strong>License note:</strong> The plugin source is free software under <strong>AGPL-3.0-only</strong>; you may use, modify, and share it under that license. That is separate from the CASABLANCA Booking Engine service and API key needed for live operation.</p>\n<h3>External services</h3>\n<p>This plugin <strong>requires</strong> the third-party <strong>CASABLANCA Booking Engine v2</strong> operated by CASABLANCA hotelsoftware GmbH. It is not a generic booking plugin: without that service, widgets show no live availability and guests cannot complete reservations.</p>\n<p><strong>What it is used for:</strong> Background sync of room types, rates, and availability; live calendar and offer data; redirecting guests to the CASABLANCA booking website for checkout and payment. WordPress never stores payment card data.</p>\n<p><strong>What data is sent and when:</strong></p>\n<ul>\n<li><strong>Admin configuration, connection test, and sync</strong> (when you save settings, click Sync, or WP-Cron runs): Tenant ID and API key are sent to the CASABLANCA IBE API (default <code>https://api.casablanca.at</code>, or staging hosts when <code>CASABLANCA_BOOKING_ENV</code> is set in wp-config.php).</li>\n<li><strong>Calendar and offers on the public site</strong> (when a visitor loads or interacts with a widget): stay dates, occupancy, optional room or rate filters, and culture/language. No WordPress login or site visitor identity is sent to CASABLANCA for these requests.</li>\n<li><strong>Search and book</strong> (when a visitor submits the search bar or a book button): the visitor&#8217;s browser is redirected to your hotel&#8217;s CASABLANCA booking URL with arrival, departure, occupancy, and optional room or rate identifiers.</li>\n</ul>\n<p><strong>Service provider:</strong> CASABLANCA hotelsoftware GmbH — <a href=\"https://www.casablanca.at/legal/agb/\" rel=\"nofollow ugc\">Terms of use</a>, <a href=\"https://www.casablanca.at/legal/datenschutzerklaerung/\" rel=\"nofollow ugc\">Privacy policy</a>.</p>\n<h3>Shortcodes</h3>\n<ul>\n<li><code>[casablanca_search_bar]</code></li>\n<li><code>[casablanca_calendar]</code></li>\n<li><code>[casablanca_room_types]</code></li>\n<li><code>[casablanca_packages]</code></li>\n<li><code>[casablanca_room_detail]</code></li>\n<li><code>[casablanca_package_detail]</code></li>\n<li><code>[casablanca_price_teaser]</code></li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/casablanca-booking-engine.1.0.3.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "availability": "availability",
+        "booking-engine": "Booking Engine",
+        "casablanca": "CASABLANCA",
+        "hotel": "Hotel"
+    },
+    "stable_tag": "1.0.3",
+    "versions": {
+        "1.0.1": "https://downloads.wordpress.org/plugin/casablanca-booking-engine.1.0.1.zip",
+        "1.0.2": "https://downloads.wordpress.org/plugin/casablanca-booking-engine.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/casablanca-booking-engine.1.0.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/casablanca-booking-engine.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/casablanca-booking-engine.svg"
+    },
+    "blocks": {
+        "casablanca/calendar": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "casablanca/calendar",
+            "title": "CASABLANCA Availability Calendar",
+            "category": "casablanca",
+            "icon": "calendar-alt",
+            "description": "Live availability calendar with min-stay enforcement.",
+            "textdomain": "casablanca-booking-engine",
+            "supports": {
+                "html": false
+            },
+            "attributes": {
+                "appearance": {
+                    "type": "string",
+                    "default": "default"
+                },
+                "preselectRoomCategory": {
+                    "type": "string",
+                    "default": ""
+                },
+                "defaultRooms": {
+                    "type": "number",
+                    "default": 1
+                },
+                "defaultAdults": {
+                    "type": "number",
+                    "default": 2
+                },
+                "defaultChildren": {
+                    "type": "number",
+                    "default": 0
+                },
+                "defaultChildrenAges": {
+                    "type": "string",
+                    "default": ""
+                },
+                "language": {
+                    "type": "string",
+                    "default": ""
+                },
+                "ibeLinkTarget": {
+                    "type": "string",
+                    "default": "_self"
+                },
+                "windowDays": {
+                    "type": "number",
+                    "default": 90
+                },
+                "calendarInitialMonths": {
+                    "type": "number",
+                    "default": 1
+                },
+                "calendarOfferMode": {
+                    "type": "string",
+                    "default": "none"
+                },
+                "showEnquiryButton": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "enquiryUrl": {
+                    "type": "string",
+                    "default": ""
+                },
+                "enquiryLinkTarget": {
+                    "type": "string",
+                    "default": "_self"
+                },
+                "labels": {
+                    "type": "object",
+                    "default": []
+                }
+            },
+            "editorScript": "casablanca-booking-blocks",
+            "keywords": [
+                "CASABLANCA",
+                "booking",
+                "casablanca"
+            ]
+        },
+        "casablanca/room-types": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "casablanca/room-types",
+            "title": "CASABLANCA Room Types",
+            "category": "casablanca",
+            "icon": "building",
+            "description": "SSR room type overview with synced prices.",
+            "textdomain": "casablanca-booking-engine",
+            "supports": {
+                "html": false
+            },
+            "attributes": {
+                "appearance": {
+                    "type": "string",
+                    "default": "default"
+                },
+                "filterRoomType": {
+                    "type": "string",
+                    "default": ""
+                },
+                "windowDays": {
+                    "type": "number",
+                    "default": 90
+                },
+                "defaultAdults": {
+                    "type": "number",
+                    "default": 2
+                },
+                "defaultChildren": {
+                    "type": "number",
+                    "default": 0
+                },
+                "language": {
+                    "type": "string",
+                    "default": ""
+                },
+                "stayNights": {
+                    "type": "number",
+                    "default": 7
+                },
+                "showName": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showDescription": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "overviewDescriptionMode": {
+                    "type": "string",
+                    "default": "teaser"
+                },
+                "overviewDescriptionLimit": {
+                    "type": "number",
+                    "default": 250
+                },
+                "overviewLayout": {
+                    "type": "string",
+                    "default": "grid"
+                },
+                "showPrice": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showImage": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "cardLinkType": {
+                    "type": "string",
+                    "default": "book"
+                },
+                "ibeLinkTarget": {
+                    "type": "string",
+                    "default": "_self"
+                },
+                "detailPageId": {
+                    "type": "number",
+                    "default": 0
+                },
+                "labels": {
+                    "type": "object",
+                    "default": []
+                }
+            },
+            "editorScript": "casablanca-booking-blocks",
+            "keywords": [
+                "CASABLANCA",
+                "booking",
+                "casablanca"
+            ]
+        },
+        "casablanca/package-detail": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "casablanca/package-detail",
+            "title": "CASABLANCA Package details",
+            "category": "casablanca",
+            "icon": "tag",
+            "description": "Single package detail page (slug from URL, optional fallback for preview).",
+            "textdomain": "casablanca-booking-engine",
+            "supports": {
+                "html": false
+            },
+            "attributes": {
+                "appearance": {
+                    "type": "string",
+                    "default": "default"
+                },
+                "fallbackPackage": {
+                    "type": "string",
+                    "default": ""
+                },
+                "windowDays": {
+                    "type": "number",
+                    "default": 90
+                },
+                "defaultAdults": {
+                    "type": "number",
+                    "default": 2
+                },
+                "language": {
+                    "type": "string",
+                    "default": ""
+                },
+                "stayNights": {
+                    "type": "number",
+                    "default": 7
+                },
+                "showName": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showDescription": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showPrice": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showImage": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "ibeLinkTarget": {
+                    "type": "string",
+                    "default": "_self"
+                },
+                "showDetailCalendar": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "detailCalendarPosition": {
+                    "type": "string",
+                    "default": "below"
+                },
+                "detailCalendarInitialMonths": {
+                    "type": "number",
+                    "default": 1
+                },
+                "detailCalendarOfferMode": {
+                    "type": "string",
+                    "default": "packages_only"
+                },
+                "labels": {
+                    "type": "object",
+                    "default": []
+                }
+            },
+            "editorScript": "casablanca-booking-blocks",
+            "keywords": [
+                "CASABLANCA",
+                "booking",
+                "package",
+                "detail"
+            ]
+        },
+        "casablanca/price-teaser": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "casablanca/price-teaser",
+            "title": "CASABLANCA Price Teaser",
+            "category": "casablanca",
+            "icon": "money-alt",
+            "description": "SEO price block with JSON-LD from synced local prices.",
+            "textdomain": "casablanca-booking-engine",
+            "supports": {
+                "html": false
+            },
+            "attributes": {
+                "appearance": {
+                    "type": "string",
+                    "default": "default"
+                },
+                "roomType": {
+                    "type": "string",
+                    "default": ""
+                },
+                "windowDays": {
+                    "type": "number",
+                    "default": 90
+                },
+                "language": {
+                    "type": "string",
+                    "default": ""
+                },
+                "labels": {
+                    "type": "object",
+                    "default": []
+                }
+            },
+            "editorScript": "casablanca-booking-blocks",
+            "keywords": [
+                "CASABLANCA",
+                "booking",
+                "casablanca"
+            ]
+        },
+        "casablanca/search-bar": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "casablanca/search-bar",
+            "title": "CASABLANCA Search Bar",
+            "category": "casablanca",
+            "icon": "calendar",
+            "description": "Header booking search bar with PCI-safe IBE handover.",
+            "textdomain": "casablanca-booking-engine",
+            "supports": {
+                "html": false
+            },
+            "attributes": {
+                "appearance": {
+                    "type": "string",
+                    "default": "default"
+                },
+                "defaultRooms": {
+                    "type": "number",
+                    "default": 1
+                },
+                "defaultAdults": {
+                    "type": "number",
+                    "default": 2
+                },
+                "defaultChildren": {
+                    "type": "number",
+                    "default": 0
+                },
+                "defaultChildrenAges": {
+                    "type": "string",
+                    "default": ""
+                },
+                "compactOccupancy": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "ibeLinkTarget": {
+                    "type": "string",
+                    "default": "_self"
+                },
+                "language": {
+                    "type": "string",
+                    "default": ""
+                },
+                "labels": {
+                    "type": "object",
+                    "default": []
+                }
+            },
+            "editorScript": "casablanca-booking-blocks",
+            "keywords": [
+                "CASABLANCA",
+                "booking",
+                "casablanca"
+            ]
+        },
+        "casablanca/room-detail": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "casablanca/room-detail",
+            "title": "CASABLANCA Room details",
+            "category": "casablanca",
+            "icon": "admin-home",
+            "description": "Single room detail page (slug from URL, optional fallback for preview).",
+            "textdomain": "casablanca-booking-engine",
+            "supports": {
+                "html": false
+            },
+            "attributes": {
+                "appearance": {
+                    "type": "string",
+                    "default": "default"
+                },
+                "fallbackRoomType": {
+                    "type": "string",
+                    "default": ""
+                },
+                "windowDays": {
+                    "type": "number",
+                    "default": 90
+                },
+                "defaultAdults": {
+                    "type": "number",
+                    "default": 2
+                },
+                "defaultChildren": {
+                    "type": "number",
+                    "default": 0
+                },
+                "language": {
+                    "type": "string",
+                    "default": ""
+                },
+                "stayNights": {
+                    "type": "number",
+                    "default": 7
+                },
+                "showName": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showDescription": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showPrice": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showImage": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "ibeLinkTarget": {
+                    "type": "string",
+                    "default": "_self"
+                },
+                "showDetailCalendar": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "detailCalendarPosition": {
+                    "type": "string",
+                    "default": "below"
+                },
+                "detailCalendarInitialMonths": {
+                    "type": "number",
+                    "default": 1
+                },
+                "detailCalendarOfferMode": {
+                    "type": "string",
+                    "default": "rates_only"
+                },
+                "labels": {
+                    "type": "object",
+                    "default": []
+                }
+            },
+            "editorScript": "casablanca-booking-blocks",
+            "keywords": [
+                "CASABLANCA",
+                "booking",
+                "room",
+                "detail"
+            ]
+        },
+        "casablanca/packages": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "casablanca/packages",
+            "title": "CASABLANCA Packages",
+            "category": "casablanca",
+            "icon": "tickets-alt",
+            "description": "SSR package overview with synced prices.",
+            "textdomain": "casablanca-booking-engine",
+            "supports": {
+                "html": false
+            },
+            "attributes": {
+                "appearance": {
+                    "type": "string",
+                    "default": "default"
+                },
+                "filterPackage": {
+                    "type": "string",
+                    "default": ""
+                },
+                "stayNights": {
+                    "type": "number",
+                    "default": 7
+                },
+                "filterByStayNights": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "windowDays": {
+                    "type": "number",
+                    "default": 90
+                },
+                "defaultAdults": {
+                    "type": "number",
+                    "default": 2
+                },
+                "language": {
+                    "type": "string",
+                    "default": ""
+                },
+                "showName": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showDescription": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "overviewDescriptionMode": {
+                    "type": "string",
+                    "default": "teaser"
+                },
+                "overviewDescriptionLimit": {
+                    "type": "number",
+                    "default": 250
+                },
+                "overviewLayout": {
+                    "type": "string",
+                    "default": "grid"
+                },
+                "showPrice": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showImage": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "cardLinkType": {
+                    "type": "string",
+                    "default": "book"
+                },
+                "ibeLinkTarget": {
+                    "type": "string",
+                    "default": "_self"
+                },
+                "detailPageId": {
+                    "type": "number",
+                    "default": 0
+                },
+                "labels": {
+                    "type": "object",
+                    "default": []
+                }
+            },
+            "editorScript": "casablanca-booking-blocks",
+            "keywords": [
+                "CASABLANCA",
+                "booking",
+                "casablanca"
+            ]
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

@@ -1,0 +1,94 @@
+{
+    "name": "Tracedown Culprit Finder",
+    "slug": "tracedown-culprit-finder",
+    "version": "0.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/kuber8821/\">kuber</a>",
+    "author_profile": "https://profiles.wordpress.org/kuber8821/",
+    "contributors": {
+        "kuber8821": {
+            "profile": "https://profiles.wordpress.org/kuber8821/",
+            "avatar": "https://secure.gravatar.com/avatar/2207921e41bbc7f9695051a35b4d11f8f3e503d66e6ee0e99865353eec67ad68?s=96&d=monsterid&r=g",
+            "display_name": "kuber"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.1.3",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/tracedown-culprit-finder/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-15 19:27:00",
+    "added": "2026-10-15",
+    "homepage": "",
+    "sections": {
+        "description": "<p><strong>You cannot get stuck.</strong> Tracedown never writes the <code>active_plugins</code> option. Not once, on any code path. It filters the active plugin list in memory, for one signed-in administrator, for the length of one expiring session. Because nothing is written, restoring is not an operation Tracedown has to perform correctly. There is nothing to undo. Doing nothing restores the site when the session expires. Deleting one file restores it instantly.</p>\n<p>That is a checkable claim, not a slogan. Search this plugin for a write to the <code>active_plugins</code> option, or for a call to core&#8217;s plugin activation and deactivation helpers, and you will not find one. The build fails automatically if anyone ever adds one.</p>\n<p><strong>And it names the culprit.</strong> Tracedown does not hand you a list of 86 checkboxes to toggle one at a time. It runs a deterministic delta-debugging search (ddmin) over the plugins that were active when the session started and returns a minimal failing set, which stays correct when two plugins only break the site <em>together</em>, the case a naive one-at-a-time or split-in-half search reports as &#8220;everything looks fine&#8221;.</p>\n<h4>How the safety works</h4>\n<ul>\n<li><strong>Four independent ways out, all of them a delete or a no-op, never a repair.</strong>\n<ol>\n<li>Add <code>define( 'TRACEDOWN_DISABLE', true );</code> to <code>wp-config.php</code>. It is the first thing the safe-mode file checks.</li>\n<li>Delete <code>wp-content/mu-plugins/tracedown-safe-mode.php</code> over FTP, SFTP or your file manager.</li>\n<li>Run <code>wp tracedown abort</code>. The command is registered from the safe-mode file itself, so it works even while the plugin is filtered out.</li>\n<li>Wait. Sessions expire on their own: 30 minutes by default, 15 minutes idle, and a hard one-hour ceiling that is written into the file rather than the database, so tampering with a database row cannot extend it.</li>\n</ol>\n</li>\n<li><strong>Visitors are not affected.</strong> The session is bound to one signed-in administrator through an HMAC-signed, HttpOnly, SameSite=Strict cookie. It is never bound to an IP address, so a mobile network, a VPN or a CDN edge change cannot silently drop you out of safe mode and give you a false &#8220;this looks clean&#8221; reading. Tracedown&#8217;s own loopback checks run logged out and carry no WordPress login cookies; each one proves itself with a single random key that expires within a minute.</li>\n<li><strong>Write attempts are blocked and logged.</strong> While a session is live, Tracedown strips plugin-management capabilities from the session user and vetoes any attempt to write the active plugin list, from any source, at the last possible moment. If something tries, you are told what tried.</li>\n<li><strong>It refuses rather than half-installing.</strong> If the mu-plugins directory is not writable, file modifications are disabled, the site is multisite, a <code>.maintenance</code> file is present, another must-use plugin already filters the same list, or a test write does not read back from the database, Tracedown declines to start and tells you exactly which of those it was.</li>\n<li><strong>It removes itself when it should.</strong> If the Tracedown plugin folder disappears (deleted over SFTP mid-session, for instance), the safe-mode file deletes itself on the next request instead of stranding an orphan. It also deletes itself after two consecutive fatal errors attributable to its own code.</li>\n</ul>\n<h4>What it does not do</h4>\n<p>Tracedown states its limits rather than returning a confident wrong answer.</p>\n<ul>\n<li>It cannot test must-use plugins, drop-ins such as <code>object-cache.php</code> or <code>advanced-cache.php</code>, <code>wp-config.php</code>, your theme beyond a single default-theme comparison, WordPress core, or your host&#8217;s configuration. Those are reported as untested scope.</li>\n<li>Plugins you pin cannot be identified as the culprit, and the report says so by name. Security, firewall, two-factor, login and SSL plugins are pinned by default.</li>\n<li>Multisite is refused outright in this version.</li>\n</ul>\n<h4>Prior art</h4>\n<p>Tracedown is an original, clean-room implementation, but it is not the first plugin to work this way and it does not pretend to be. <a href=\"https://wordpress.org/plugins/health-check/\" rel=\"ugc\">Health Check &amp; Troubleshooting</a> established the mu-plugin-filters-<code>active_plugins</code> approach that every tool in this category, including this one, depends on. Plugin Detective popularised searching for the conflict rather than making the user toggle plugins by hand. Both are GPL, both are worth your respect, and Tracedown differs from them in architecture rather than in ambition: no write to <code>active_plugins</code>, expiry evaluated on read, and a deterministic minimal-set search.</p>\n<h3>What Tracedown writes to your site</h3>\n<p>Two files, both only while a session is running, both removed when it ends:</p>\n<ul>\n<li><code>wp-content/mu-plugins/tracedown-safe-mode.php</code> (default location): the must-use plugin that hides plugins from your own requests. It is a fixed file bundled with the plugin, copied byte for byte. Nothing you type ever reaches its contents. Deleting it ends the session immediately and returns the site to normal.</li>\n<li><code>wp-content/uploads/tracedown/snapshot-&lt;site id&gt;-&lt;random&gt;.json</code> (default location): a plain JSON list of the plugins that were active when the session began. It exists so <code>wp tracedown restore</code> can read the original list even if the database record and the plugin itself are gone. It is data, never code. Its name carries a random part so it cannot be guessed, and the folder also carries an <code>.htaccess</code> deny rule and an empty <code>index.php</code>.</li>\n</ul>\n<p>A small number of <code>tracedown_*</code> rows are stored in the options table. Everything above is removed on uninstall.</p>\n<p>Tracedown never writes the <code>active_plugins</code> option.</p>\n",
+        "installation": "<ol>\n<li>Install and activate Tracedown like any other plugin.</li>\n<li>Go to <strong>Tracedown</strong> in the admin menu.</li>\n<li>Read the preflight result. If anything is refused, fix that first. Tracedown will not start a partial session.</li>\n<li>Start a session. Tracedown writes one file to <code>wp-content/mu-plugins/</code> and verifies the site still responds before handing control back to you.</li>\n<li>Isolate the conflict, copy the report, then exit. Or close the tab: the session expires on its own.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"what%20happens%20if%20i%20close%20the%20tab%20and%20forget%20about%20it%3F\">\nWhat happens if I close the tab and forget about it?\n</h4>\n<p>\n<p>The session ends by itself. Expiry is evaluated every time the safe-mode file loads, so it needs no cron job, no scheduled task, no traffic and no action from you. Nothing was written to the database, so when the session ends the site is exactly as it was.</p>\n</p>\n<dt id=\"what%20happens%20if%20my%20site%20was%20already%20down%20when%20i%20started%3F\">\nWhat happens if my site was already down when I started?\n</h4>\n<p>\n<p>If WordPress cannot start at all, no plugin can help you, including this one. Add <code>define( 'TRACEDOWN_DISABLE', true );</code> to <code>wp-config.php</code> or delete <code>wp-content/mu-plugins/tracedown-safe-mode.php</code>, and you are back to the state you were in before Tracedown was involved.</p>\n</p>\n<dt id=\"do%20my%20visitors%20see%20the%20site%20with%20plugins%20disabled%3F\">\nDo my visitors see the site with plugins disabled?\n</h4>\n<p>\n<p>No. The filter only applies to requests carrying your signed session cookie. Tracedown also marks its own responses as uncacheable so a page cache or CDN cannot store a safe-mode response and serve it to someone else. There is a button in the session bar that opens a logged-out preview so you can see this for yourself.</p>\n</p>\n<dt id=\"does%20it%20deactivate%20my%20plugins%3F\">\nDoes it deactivate my plugins?\n</h4>\n<p>\n<p>No. It changes what WordPress loads for one request, for one person. The stored list of active plugins is never modified, which is also why Tracedown complies with the WordPress.org rule that a plugin may not change the activation status of other plugins.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20wp-cli%3F\">\nDoes it work with WP-CLI?\n</h4>\n<p>\n<p>Yes, and safe mode never applies to WP-CLI. <code>wp tracedown status</code>, <code>wp tracedown abort</code>, <code>wp tracedown restore</code> and <code>wp tracedown nuke</code> are registered from the safe-mode file so they keep working even while the plugin itself is filtered out of the active list.</p>\n</p>\n<dt id=\"multisite%3F\">\nMultisite?\n</h4>\n<p>\n<p>Refused in this version, with a message explaining why. Network, site and subsite activation are three separate states and a partial implementation would be worse than none.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "Finds the plugin that broke the site, without ever writing the active plugin list. You cannot get stuck, and you get a name.",
+    "description": "<p><strong>You cannot get stuck.</strong> Tracedown never writes the <code>active_plugins</code> option. Not once, on any code path. It filters the active plugin list in memory, for one signed-in administrator, for the length of one expiring session. Because nothing is written, restoring is not an operation Tracedown has to perform correctly. There is nothing to undo. Doing nothing restores the site when the session expires. Deleting one file restores it instantly.</p>\n<p>That is a checkable claim, not a slogan. Search this plugin for a write to the <code>active_plugins</code> option, or for a call to core&#8217;s plugin activation and deactivation helpers, and you will not find one. The build fails automatically if anyone ever adds one.</p>\n<p><strong>And it names the culprit.</strong> Tracedown does not hand you a list of 86 checkboxes to toggle one at a time. It runs a deterministic delta-debugging search (ddmin) over the plugins that were active when the session started and returns a minimal failing set, which stays correct when two plugins only break the site <em>together</em>, the case a naive one-at-a-time or split-in-half search reports as &#8220;everything looks fine&#8221;.</p>\n<h4>How the safety works</h4>\n<ul>\n<li><strong>Four independent ways out, all of them a delete or a no-op, never a repair.</strong>\n<ol>\n<li>Add <code>define( 'TRACEDOWN_DISABLE', true );</code> to <code>wp-config.php</code>. It is the first thing the safe-mode file checks.</li>\n<li>Delete <code>wp-content/mu-plugins/tracedown-safe-mode.php</code> over FTP, SFTP or your file manager.</li>\n<li>Run <code>wp tracedown abort</code>. The command is registered from the safe-mode file itself, so it works even while the plugin is filtered out.</li>\n<li>Wait. Sessions expire on their own: 30 minutes by default, 15 minutes idle, and a hard one-hour ceiling that is written into the file rather than the database, so tampering with a database row cannot extend it.</li>\n</ol>\n</li>\n<li><strong>Visitors are not affected.</strong> The session is bound to one signed-in administrator through an HMAC-signed, HttpOnly, SameSite=Strict cookie. It is never bound to an IP address, so a mobile network, a VPN or a CDN edge change cannot silently drop you out of safe mode and give you a false &#8220;this looks clean&#8221; reading. Tracedown&#8217;s own loopback checks run logged out and carry no WordPress login cookies; each one proves itself with a single random key that expires within a minute.</li>\n<li><strong>Write attempts are blocked and logged.</strong> While a session is live, Tracedown strips plugin-management capabilities from the session user and vetoes any attempt to write the active plugin list, from any source, at the last possible moment. If something tries, you are told what tried.</li>\n<li><strong>It refuses rather than half-installing.</strong> If the mu-plugins directory is not writable, file modifications are disabled, the site is multisite, a <code>.maintenance</code> file is present, another must-use plugin already filters the same list, or a test write does not read back from the database, Tracedown declines to start and tells you exactly which of those it was.</li>\n<li><strong>It removes itself when it should.</strong> If the Tracedown plugin folder disappears (deleted over SFTP mid-session, for instance), the safe-mode file deletes itself on the next request instead of stranding an orphan. It also deletes itself after two consecutive fatal errors attributable to its own code.</li>\n</ul>\n<h4>What it does not do</h4>\n<p>Tracedown states its limits rather than returning a confident wrong answer.</p>\n<ul>\n<li>It cannot test must-use plugins, drop-ins such as <code>object-cache.php</code> or <code>advanced-cache.php</code>, <code>wp-config.php</code>, your theme beyond a single default-theme comparison, WordPress core, or your host&#8217;s configuration. Those are reported as untested scope.</li>\n<li>Plugins you pin cannot be identified as the culprit, and the report says so by name. Security, firewall, two-factor, login and SSL plugins are pinned by default.</li>\n<li>Multisite is refused outright in this version.</li>\n</ul>\n<h4>Prior art</h4>\n<p>Tracedown is an original, clean-room implementation, but it is not the first plugin to work this way and it does not pretend to be. <a href=\"https://wordpress.org/plugins/health-check/\" rel=\"ugc\">Health Check &amp; Troubleshooting</a> established the mu-plugin-filters-<code>active_plugins</code> approach that every tool in this category, including this one, depends on. Plugin Detective popularised searching for the conflict rather than making the user toggle plugins by hand. Both are GPL, both are worth your respect, and Tracedown differs from them in architecture rather than in ambition: no write to <code>active_plugins</code>, expiry evaluated on read, and a deterministic minimal-set search.</p>\n<h3>What Tracedown writes to your site</h3>\n<p>Two files, both only while a session is running, both removed when it ends:</p>\n<ul>\n<li><code>wp-content/mu-plugins/tracedown-safe-mode.php</code> (default location): the must-use plugin that hides plugins from your own requests. It is a fixed file bundled with the plugin, copied byte for byte. Nothing you type ever reaches its contents. Deleting it ends the session immediately and returns the site to normal.</li>\n<li><code>wp-content/uploads/tracedown/snapshot-&lt;site id&gt;-&lt;random&gt;.json</code> (default location): a plain JSON list of the plugins that were active when the session began. It exists so <code>wp tracedown restore</code> can read the original list even if the database record and the plugin itself are gone. It is data, never code. Its name carries a random part so it cannot be guessed, and the folder also carries an <code>.htaccess</code> deny rule and an empty <code>index.php</code>.</li>\n</ul>\n<p>A small number of <code>tracedown_*</code> rows are stored in the options table. Everything above is removed on uninstall.</p>\n<p>Tracedown never writes the <code>active_plugins</code> option.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/tracedown-culprit-finder.0.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/tracedown-culprit-finder/assets/screenshot-1.jpg?rev=3749192",
+            "caption": "The start screen: what the site looks like right now, and one button."
+        },
+        {
+            "src": "https://ps.w.org/tracedown-culprit-finder/assets/screenshot-2.jpg?rev=3749192",
+            "caption": "The result: the smallest set of plugins that still reproduces the fault, and proof that no smaller set does."
+        },
+        {
+            "src": "https://ps.w.org/tracedown-culprit-finder/assets/screenshot-3.jpg?rev=3749192",
+            "caption": "Probes: the pages and content markers every verdict is built from."
+        },
+        {
+            "src": "https://ps.w.org/tracedown-culprit-finder/assets/screenshot-4.jpg?rev=3749192",
+            "caption": "Content markers: a piece of text that proves a page is right, so a silent break is not scored as healthy."
+        }
+    ],
+    "tags": {
+        "debug": "debug",
+        "maintenance": "maintenance",
+        "plugin-conflict": "plugin conflict",
+        "safe-mode": "safe mode",
+        "troubleshooting": "troubleshooting"
+    },
+    "stable_tag": "0.1.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/tracedown-culprit-finder.0.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/tracedown-culprit-finder.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/tracedown-culprit-finder/assets/banner-772x250.png?rev=3749192",
+        "high": "https://ps.w.org/tracedown-culprit-finder/assets/banner-1544x500.png?rev=3749192"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/tracedown-culprit-finder/assets/icon-128x128.png?rev=3749192",
+        "2x": "https://ps.w.org/tracedown-culprit-finder/assets/icon-256x256.png?rev=3749192"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
