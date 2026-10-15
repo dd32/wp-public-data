@@ -1,0 +1,79 @@
+{
+    "name": "Gyvar Payments",
+    "slug": "gyvar-payments",
+    "version": "0.1.1",
+    "author": "<a href=\"https://profiles.wordpress.org/gyvar/\">gyvar</a>",
+    "author_profile": "https://profiles.wordpress.org/gyvar/",
+    "contributors": {
+        "gyvar": {
+            "profile": "https://profiles.wordpress.org/gyvar/",
+            "avatar": "https://secure.gravatar.com/avatar/975e999021a9d99ea4eb56f6a7aab9b5c4a29f669e2dae639f654b2d03b21f5c?s=96&d=monsterid&r=g",
+            "display_name": "gyvar"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.1.3",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/gyvar-payments/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-15 13:07:00",
+    "added": "2026-10-15",
+    "homepage": "https://docs.gyvar.com/wordpress",
+    "sections": {
+        "description": "<p>Gyvar Payments puts a Pay button on your WordPress site and adds a payment<br />\ngateway to WooCommerce. Your customer pays from a Bitcoin or stablecoin balance;<br />\nthe money lands in the account you nominate.</p>\n<p>What this plugin does:</p>\n<ul>\n<li>A <strong>Pay button</strong> block and <code>[gyvar_pay]</code> shortcode, pointing at a payment link<br />\nyou created in your Gyvar dashboard. No API key needed.</li>\n<li>A <strong>webhook receiver</strong>, so your site is told when a payment completes. Every<br />\ndelivery is signature-verified and deduplicated before anything acts on it.</li>\n<li>A <strong>WooCommerce payment gateway</strong>. Your customer picks Bitcoin and stablecoins<br />\nat checkout, pays on a page Gyvar hosts, and the order is marked paid by a<br />\nsigned webhook &#8211; not by the customer coming back, so a closed tab still<br />\ndelivers the goods. Works with both the classic and the block checkout.</li>\n</ul>\n<p>You need a Gyvar account. The Pay button also needs a payment link from your<br />\nGyvar dashboard; the WooCommerce gateway does not, because it creates a Gyvar<br />\norder for each checkout. Fees, corridors and settlement are configured in your<br />\nGyvar dashboard, not here.</p>\n<h3>External services</h3>\n<p>This plugin communicates with Gyvar, operated by Gyvar, Inc.</p>\n<ul>\n<li><strong>The Pay button</strong> renders a link to <code>pay.gyvar.com</code>. Nothing is sent from your<br />\nserver; your visitor&#8217;s browser loads that page when they click.</li>\n<li><strong>The connection test</strong> on the settings screen sends a signed request to<br />\n  api.gyvar.com/v1/whoami. It contains your key id, a timestamp, a nonce and a<br />\nsignature. It moves no money and returns which key authenticated.</li>\n<li><strong>The WooCommerce gateway</strong> sends a signed request to<br />\n  api.gyvar.com/v1/checkout/orders when a customer checks out with Gyvar. It<br />\ncontains the order number and total, the currency, your site name and the<br />\nreturn URLs. It sends no customer name, email or address.</li>\n<li><strong>The webhook receiver</strong> accepts inbound requests from Gyvar at<br />\n  /wp-json/gyvar/v1/webhook and verifies their signature. It sends nothing.</li>\n</ul>\n<p>No visitor data is transmitted to Gyvar by this plugin. Terms:<br />\nhttps://gyvar.com/legal/terms &#8211; Privacy: https://gyvar.com/legal/privacy</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin, then go to Settings &gt; Gyvar Payments.</li>\n<li>For webhooks, register the endpoint URL shown on the settings screen in your<br />\nGyvar dashboard and paste the signing secret it gives you.</li>\n</ol>\n<p>For WooCommerce:</p>\n<ol>\n<li>Generate a key on the settings screen, upload its public key in your Gyvar<br />\ndashboard with Read and Receive, and paste the key id back.</li>\n<li>In your Gyvar dashboard, under Settings &gt; Payment links, add your shop&#8217;s<br />\naddress as a return address.</li>\n<li>Enable Gyvar under WooCommerce &gt; Settings &gt; Payments.</li>\n</ol>\n<p>For the Pay button:</p>\n<ol>\n<li>Create a payment link in your Gyvar dashboard and paste its slug.</li>\n<li>Add the Pay button block to a page, or use <code>[gyvar_pay slug=\"your-slug\"]</code>.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20uninstalling%20revoke%20my%20api%20key%3F\">\nDoes uninstalling revoke my API key?\n</h4>\n<p>\n<p>No. Uninstalling deletes the key from this site, but the key stays registered on<br />\nGyvar until you revoke it in your dashboard. Revoke it there first.</p>\n</p>\n<dt id=\"why%20does%20the%20connection%20test%20say%20ip_not_allowed%3F\">\nWhy does the connection test say ip_not_allowed?\n</h4>\n<p>\n<p>The key has an IP allowlist and your server called from another address. The<br />\nerror message includes the address Gyvar saw; add that one. A store key needs<br />\nonly read and receive, and those keys do not require an allowlist.</p>\n</p>\n<dt id=\"is%20the%20woocommerce%20gateway%20ready%3F\">\nIs the WooCommerce gateway ready?\n</h4>\n<p>\n<p>Yes. It takes live payments on production stores. Use test mode to try it on<br />\nyour own store before you switch to live.</p>\n</p>\n<dt id=\"how%20do%20gyvar%20statuses%20map%20to%20woocommerce%20orders%3F\">\nHow do Gyvar statuses map to WooCommerce orders?\n</h4>\n<p>\n<ul>\n<li>paid: Processing.</li>\n<li>paid late (after expiry): Processing, even if already Cancelled. Check stock.</li>\n<li>expired or cancelled: Cancelled.</li>\n<li>underpaid and declined: Failed. The money is still in your Gyvar wallet.</li>\n<li>underpaid, not yet decided: stays On hold. Decide in your Gyvar dashboard.</li>\n<li>escalated for review: stays On hold until Gyvar resolves it, then follows the<br />\noutcome (paid, or failed if closed or cancelled).</li>\n<li>superseded by a newer payment: left as it is. Refund the extra in Gyvar.</li>\n<li>refunded: unchanged. Refund in WooCommerce by hand.</li>\n</ul>\n<p>A paid order is never un-paid by a later event.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.1</h4>\n<ul>\n<li>BTC, USDT and USDC logos beside the payment method at checkout.</li>\n<li>The WooCommerce settings screen shows test or live mode, whether a key<br />\nand webhook secret are set, and the setup steps above the settings.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>First release: Pay button block and shortcode, signature-verified webhook<br />\nreceiver, settings screen with key generation and a connection test.</li>\n<li>WooCommerce gateway for the classic and block checkout, with orders updated<br />\nby signed webhook. Not yet run against a live store.</li>\n</ul>\n"
+    },
+    "short_description": "Take payments in Bitcoin and stablecoins on WordPress and WooCommerce.",
+    "description": "<p>Gyvar Payments puts a Pay button on your WordPress site and adds a payment<br />\ngateway to WooCommerce. Your customer pays from a Bitcoin or stablecoin balance;<br />\nthe money lands in the account you nominate.</p>\n<p>What this plugin does:</p>\n<ul>\n<li>A <strong>Pay button</strong> block and <code>[gyvar_pay]</code> shortcode, pointing at a payment link<br />\nyou created in your Gyvar dashboard. No API key needed.</li>\n<li>A <strong>webhook receiver</strong>, so your site is told when a payment completes. Every<br />\ndelivery is signature-verified and deduplicated before anything acts on it.</li>\n<li>A <strong>WooCommerce payment gateway</strong>. Your customer picks Bitcoin and stablecoins<br />\nat checkout, pays on a page Gyvar hosts, and the order is marked paid by a<br />\nsigned webhook &#8211; not by the customer coming back, so a closed tab still<br />\ndelivers the goods. Works with both the classic and the block checkout.</li>\n</ul>\n<p>You need a Gyvar account. The Pay button also needs a payment link from your<br />\nGyvar dashboard; the WooCommerce gateway does not, because it creates a Gyvar<br />\norder for each checkout. Fees, corridors and settlement are configured in your<br />\nGyvar dashboard, not here.</p>\n<h3>External services</h3>\n<p>This plugin communicates with Gyvar, operated by Gyvar, Inc.</p>\n<ul>\n<li><strong>The Pay button</strong> renders a link to <code>pay.gyvar.com</code>. Nothing is sent from your<br />\nserver; your visitor&#8217;s browser loads that page when they click.</li>\n<li><strong>The connection test</strong> on the settings screen sends a signed request to<br />\n  api.gyvar.com/v1/whoami. It contains your key id, a timestamp, a nonce and a<br />\nsignature. It moves no money and returns which key authenticated.</li>\n<li><strong>The WooCommerce gateway</strong> sends a signed request to<br />\n  api.gyvar.com/v1/checkout/orders when a customer checks out with Gyvar. It<br />\ncontains the order number and total, the currency, your site name and the<br />\nreturn URLs. It sends no customer name, email or address.</li>\n<li><strong>The webhook receiver</strong> accepts inbound requests from Gyvar at<br />\n  /wp-json/gyvar/v1/webhook and verifies their signature. It sends nothing.</li>\n</ul>\n<p>No visitor data is transmitted to Gyvar by this plugin. Terms:<br />\nhttps://gyvar.com/legal/terms &#8211; Privacy: https://gyvar.com/legal/privacy</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/gyvar-payments.0.1.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "bitcoin": "bitcoin",
+        "mobile-money": "mobile money",
+        "payments": "payments",
+        "stablecoins": "stablecoins",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "0.1.1",
+    "versions": {
+        "0.1.1": "https://downloads.wordpress.org/plugin/gyvar-payments.0.1.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/gyvar-payments.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/gyvar-payments/assets/icon-128x128.png?rev=3748183",
+        "2x": "https://ps.w.org/gyvar-payments/assets/icon-256x256.png?rev=3748183"
+    },
+    "blocks": {
+        "gyvar/pay-button": {
+            "name": "gyvar/pay-button",
+            "title": "Gyvar Pay Button"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
