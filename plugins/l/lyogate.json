@@ -1,0 +1,91 @@
+{
+    "name": "LyoGate — Login Security",
+    "slug": "lyogate",
+    "version": "1.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/andresitaly/\">Andres Hunger</a>",
+    "author_profile": "https://profiles.wordpress.org/andresitaly/",
+    "contributors": {
+        "andresitaly": {
+            "profile": "https://profiles.wordpress.org/andresitaly/",
+            "avatar": "https://secure.gravatar.com/avatar/fd9629e203ba43683a1220d9b115f99729003ad16fb4a38dd970a80767360c99?s=96&d=monsterid&r=g",
+            "display_name": "Andres Hunger"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.3",
+    "requires_php": "8.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/lyogate/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-16 11:01:00",
+    "added": "2026-09-30",
+    "homepage": "",
+    "sections": {
+        "description": "<p>LyoGate replaces the default WordPress login page with a modern, protected one. Everything is configured from <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> LyoGate</strong>. No external accounts, no third-party services: everything runs on your own site.</p>\n<p><strong>Security</strong></p>\n<ul>\n<li><strong>Arithmetic captcha</strong> — a simple sum is required before signing in, backed by an HMAC-signed token with expiry (10 minutes): the answer never travels in clear text and is never stored in the database.</li>\n<li><strong>Per-IP brute-force lockout</strong> — after N failed attempts (default 5) the IP address is locked out for X minutes (default 15). Wrong captcha and honeypot hits count too; a successful login resets the counter. The lockout applies even with correct credentials.</li>\n<li><strong>Honeypot</strong> — a field hidden from humans: whoever fills it in is a bot and gets rejected without hints.</li>\n<li><strong>Unified error messages</strong> — no username enumeration: &#8220;unknown user&#8221; and &#8220;wrong password&#8221; produce the same generic message.</li>\n<li><strong>Reduced attack surface</strong> — XML-RPC disabled, X-Pingback header removed, public REST user endpoints removed (they remain available to users who can edit posts, for the block editor), and <code>?author=N</code> requests plus author archives redirect to the home page: no username scraping.</li>\n</ul>\n<p><strong>Customizable appearance</strong></p>\n<ul>\n<li>Title, subtitle and footer message</li>\n<li>Custom logo from the media library, with a configurable clickable link (empty = site home)</li>\n<li>Two Google Fonts to choose from: Syne, Instrument Sans, Inter, Space Grotesk, Manrope, DM Sans, Outfit, Sora, Archivo, Playfair Display and JetBrains Mono (one for headings, one for body text)</li>\n<li>Three colors: background, text and accent (buttons and focus)</li>\n</ul>\n<p><strong>Compatibility</strong></p>\n<ul>\n<li>The security gate runs as a late filter on the <code>authenticate</code> flow: captcha and lockout always take precedence over valid credentials. The gate only acts on the wp-login.php form: XML-RPC is disabled entirely while LyoGate is active, and application password / REST requests follow the normal WordPress flow (should another plugin re-enable XML-RPC, its authentication is not intercepted by the captcha).</li>\n<li>All settings live in a single database option; on uninstall, options and transients are removed (also on multi-site).</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>lyogate</code> folder to <code>/wp-content/plugins/</code>, or install the ZIP via Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin.</li>\n<li>Activate the plugin.</li>\n<li>Go to <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> LyoGate</strong> to pick title, logo, fonts and colors.</li>\n<li>Open your login page: the new look and the protection are already active.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"can%20i%20disable%20the%20captcha%3F\">\nCan I disable the captcha?\n</h4>\n<p>\n<p>Yes: in <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> LyoGate</strong> untick &#8220;Anti-robot captcha&#8221;. Honeypot and brute-force lockout stay active.</p>\n</p>\n<dt id=\"am%20i%20locked%20out%20myself%3F\">\nAm I locked out myself?\n</h4>\n<p>\n<p>The lockout is per IP address and expires on its own (default 15 minutes). A successful login resets the counter immediately. With WP-CLI: <code>wp transient delete --all</code> also clears lockouts.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20application%20passwords%20or%20mobile%20apps%3F\">\nDoes it work with application passwords or mobile apps?\n</h4>\n<p>\n<p>Yes: the captcha and lockout only act on the wp-login.php form. XML-RPC is disabled while LyoGate is active, so XML-RPC logins cannot happen at all; requests authenticated via REST or application passwords follow the normal WordPress flow.</p>\n</p>\n<dt id=\"does%20it%20add%20cookies%20or%20interfere%20with%20other%20plugins%3F\">\nDoes it add cookies or interfere with other plugins?\n</h4>\n<p>\n<p>No. LyoGate only touches the login form authentication flow and the appearance of the login page; no extra cookies, no tracking.</p>\n</p>\n<dt id=\"does%20it%20work%20on%20multi-site%3F\">\nDoes it work on multi-site?\n</h4>\n<p>\n<p>Yes, and on uninstall it cleans up options on every site in the network.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.0</h4>\n<ul>\n<li>Fix: custom logo, background, text and accent colors now take precedence over themes that style the login page after the plugin (their CSS no longer overrides the settings)</li>\n<li>Fix: the custom logo is applied reliably — the internal default no longer wins over the custom image; the theme&#8217;s own heading size and padding are reset when the logo is set</li>\n<li>Fix: both selected Google Fonts (display and body) are always included in the fonts request</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First public release: arithmetic captcha with HMAC token, honeypot, per-IP brute-force lockout, unified anti-enumeration errors, protected XML-RPC and REST user endpoints, customizable appearance (logo, fonts, colors) under Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> LyoGate.</li>\n</ul>\n"
+    },
+    "short_description": "A modern, hardened WordPress login page with captcha, honeypot and brute-force protection — fully customizable, no third-party services.",
+    "description": "<p>LyoGate replaces the default WordPress login page with a modern, protected one. Everything is configured from <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> LyoGate</strong>. No external accounts, no third-party services: everything runs on your own site.</p>\n<p><strong>Security</strong></p>\n<ul>\n<li><strong>Arithmetic captcha</strong> — a simple sum is required before signing in, backed by an HMAC-signed token with expiry (10 minutes): the answer never travels in clear text and is never stored in the database.</li>\n<li><strong>Per-IP brute-force lockout</strong> — after N failed attempts (default 5) the IP address is locked out for X minutes (default 15). Wrong captcha and honeypot hits count too; a successful login resets the counter. The lockout applies even with correct credentials.</li>\n<li><strong>Honeypot</strong> — a field hidden from humans: whoever fills it in is a bot and gets rejected without hints.</li>\n<li><strong>Unified error messages</strong> — no username enumeration: &#8220;unknown user&#8221; and &#8220;wrong password&#8221; produce the same generic message.</li>\n<li><strong>Reduced attack surface</strong> — XML-RPC disabled, X-Pingback header removed, public REST user endpoints removed (they remain available to users who can edit posts, for the block editor), and <code>?author=N</code> requests plus author archives redirect to the home page: no username scraping.</li>\n</ul>\n<p><strong>Customizable appearance</strong></p>\n<ul>\n<li>Title, subtitle and footer message</li>\n<li>Custom logo from the media library, with a configurable clickable link (empty = site home)</li>\n<li>Two Google Fonts to choose from: Syne, Instrument Sans, Inter, Space Grotesk, Manrope, DM Sans, Outfit, Sora, Archivo, Playfair Display and JetBrains Mono (one for headings, one for body text)</li>\n<li>Three colors: background, text and accent (buttons and focus)</li>\n</ul>\n<p><strong>Compatibility</strong></p>\n<ul>\n<li>The security gate runs as a late filter on the <code>authenticate</code> flow: captcha and lockout always take precedence over valid credentials. The gate only acts on the wp-login.php form: XML-RPC is disabled entirely while LyoGate is active, and application password / REST requests follow the normal WordPress flow (should another plugin re-enable XML-RPC, its authentication is not intercepted by the captcha).</li>\n<li>All settings live in a single database option; on uninstall, options and transients are removed (also on multi-site).</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/lyogate.1.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/lyogate/assets/screenshot-1.png?rev=3721913",
+            "caption": "The login page with the default dark theme, captcha and subtitle."
+        },
+        {
+            "src": "https://ps.w.org/lyogate/assets/screenshot-2.png?rev=3721913",
+            "caption": "The configuration screen in Settings → LyoGate."
+        },
+        {
+            "src": "https://ps.w.org/lyogate/assets/screenshot-3.png?rev=3721913",
+            "caption": "The lockout message after too many failed attempts."
+        }
+    ],
+    "tags": {
+        "brute-force": "Brute Force",
+        "captcha": "captcha",
+        "custom-login": "custom login",
+        "login": "login",
+        "security": "security"
+    },
+    "stable_tag": "1.1.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/lyogate.1.0.0.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/lyogate.1.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/lyogate.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/lyogate/assets/banner-772x250.png?rev=3721913",
+        "high": "https://ps.w.org/lyogate/assets/banner-1544x500.png?rev=3721913"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/lyogate/assets/icon-128x128.png?rev=3721940",
+        "2x": "https://ps.w.org/lyogate/assets/icon-256x256.png?rev=3721940"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
