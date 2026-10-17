@@ -1,0 +1,439 @@
+{
+    "name": "show.fm Podcast Player",
+    "slug": "showfm",
+    "version": "1.0.4",
+    "author": "<a href=\"https://profiles.wordpress.org/danmaby/\">Dan Maby</a>",
+    "author_profile": "https://profiles.wordpress.org/danmaby/",
+    "contributors": {
+        "danmaby": {
+            "profile": "https://profiles.wordpress.org/danmaby/",
+            "avatar": "https://secure.gravatar.com/avatar/118878ecc9cb79635bec169d59f61cad32d26f3f84db7d5271169aaa28111cb5?s=96&d=monsterid&r=g",
+            "display_name": "Dan Maby"
+        }
+    },
+    "requires": "6.6",
+    "tested": "7.1.3",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/showfm/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-17 10:56:00",
+    "added": "2026-10-17",
+    "homepage": "https://github.com/ShowDotFM/showfm-wordpress",
+    "sections": {
+        "description": "<p>show.fm hosts podcasts. This plugin brings a show.fm show into WordPress.</p>\n<p><strong>Blocks for any public show, with no account</strong></p>\n<ul>\n<li><strong>Player:</strong> one episode, or always the latest, in standard or compact size, with a waveform, an optional transcript, and an optional mini-player that keeps it playing at the bottom of the page when the visitor scrolls away.</li>\n<li><strong>Episode list:</strong> a show&#8217;s episodes as cards or a minimal list, filtered by season, with or without trailers and bonus episodes. The playing episode has a Transcript button when its transcript is on show.fm.</li>\n<li><strong>Play button:</strong> a button or a link in a sentence that plays an episode in a mini-player along the bottom of the page.</li>\n<li><strong>Transcript:</strong> a follow-along transcript that highlights the words as they are spoken.</li>\n</ul>\n<p>Each block previews the real player in the editor. Type the show&#8217;s address, then pick an episode or &#8220;Latest episode&#8221;. The same elements are available as the <code>[showfm]</code> shortcode, and a pasted show.fm link becomes a player.</p>\n<p><strong>Publish to WordPress, for show.fm accounts</strong></p>\n<p>Connect the site to show.fm in Settings &gt; show.fm and each new episode becomes a post: scheduled episodes are scheduled, unpublished ones go back to draft and deleted ones go to the bin. You choose the post type, category, author and template, and whether to add the transcript and use the episode artwork as the featured image. Posts you edit in WordPress keep your edits.</p>\n<p><strong>Move from another podcast host</strong></p>\n<p>The Migrate tab finds players from Buzzsprout, Libsyn, Captivate, Transistor, Spotify, Podbean, PowerPress and Seriously Simple Podcasting in your posts and pages. It shows a dry run first, and swaps them for show.fm blocks only when you confirm. WordPress keeps a revision of every post it changes.</p>\n<p><strong>Built for WordPress</strong></p>\n<ul>\n<li>Players render on the server from a local cache, so pages never wait for show.fm.</li>\n<li>The player scripts ship with the plugin. Nothing loads from a CDN.</li>\n<li>The &#8220;Powered by show.fm&#8221; credit is off for every show unless you turn it on.</li>\n<li>WP-CLI: <code>wp showfm connect</code>, <code>status</code>, <code>disconnect</code>, <code>sync</code>, <code>cache flush</code> and <code>migrate-embeds</code>.</li>\n<li>Multisite: each site connects separately.</li>\n</ul>\n<p><strong>Source code</strong></p>\n<p>The plugin&#8217;s source and build instructions are on GitHub at <a href=\"https://github.com/ShowDotFM/showfm-wordpress\" rel=\"nofollow ugc\">ShowDotFM/showfm-wordpress</a>. The block editor scripts in <code>build/</code> are compiled from <code>src/</code> there with @wordpress/scripts. The player scripts in <code>assets/showfm-embed/</code> are copied unchanged from the MIT-licensed <a href=\"https://github.com/ShowDotFM/showfm-embed/tree/v1.6.2\" rel=\"nofollow ugc\">@showfm/embed 1.6.2</a> package, and a test checks every file byte for byte. The package&#8217;s MIT licence is in <code>assets/showfm-embed-license.txt</code>. With &#8220;Load players only after a visitor clicks&#8221; on, the plugin loads the package&#8217;s self-hosting click loader (<code>click-loader-local.js</code>) instead of the player script. It names no host: it loads only the bundled <code>v1.js</code> the plugin gives it, after a visitor presses a block, and without that it does nothing. The package&#8217;s CDN click loader is not in the plugin, and a release check fails if any script in the plugin names embed.cdn.media.</p>\n<h3>External services</h3>\n<p>This plugin connects to show.fm, a podcast hosting service run by show.fm Ltd. It sends nothing until you add a show or an episode to a page, paste a show.fm link, or connect the site to show.fm. It collects no analytics or telemetry. show.fm&#8217;s <a href=\"https://show.fm/terms\" rel=\"nofollow ugc\">Terms of Service</a> and <a href=\"https://show.fm/privacy\" rel=\"nofollow ugc\">Privacy Policy</a> apply to every service below.</p>\n<p>A site&#8217;s own code can point the plugin at a different show.fm environment for testing, with the <code>showfm_environment</code> filter. The plugin then uses that environment&#8217;s hosts instead of the ones below, and sends the site key only to that environment&#8217;s API.</p>\n<h4>show.fm public API (api.show.fm)</h4>\n<p>Gives the titles, descriptions, artwork, audio links and transcript links of public shows and episodes.</p>\n<ul>\n<li>When: WP-Cron refreshes a show or episode you added to a page when its cached copy is missing or more than 15 minutes old. Pages read only the cache and never wait for a request. While the site is connected, the sync also fetches each newly published episode&#8217;s public details (/v1/episodes/{id}) in the background, so the post&#8217;s first view already has them. With featured images on, that same answer gives the artwork. In the block editor, the site looks up a show when someone who can edit posts enters its address or opens a show.fm block. WordPress asks /v1/oembed about a pasted show.fm link once, and keeps the answer in post meta.</li>\n<li>On a connected site, opening Settings &gt; show.fm may schedule a WP-Cron refresh of each connected show&#8217;s public details (/v1/podcasts/{id}), for the artwork shown there. The screen itself makes no request.</li>\n<li>In visitors&#8217; browsers: see &#8220;What visitors&#8217; browsers request&#8221; below.</li>\n<li>What is sent: the show or episode identifier, and your site&#8217;s address in the User-Agent header. show.fm sees your server&#8217;s IP address. From a browser, show.fm sees the visitor&#8217;s IP address and browser details, as with any web request. No visitor data is sent from your server.</li>\n</ul>\n<h4>show.fm API for connected sites (api.show.fm)</h4>\n<p>Used only after an administrator connects the site to a show.fm account.</p>\n<ul>\n<li>Connecting: once, when the administrator returns from my.show.fm. Sent: a one-time code and the verifier this site created. show.fm answers with a site key and ping secret, which the plugin stores encrypted. With <code>wp showfm connect</code>, the plugin sends the site key you give it, the site&#8217;s address and REST API address, and a one-time state and challenge.</li>\n<li>Reporting in: right after connecting, and again before the next sync if that fails. Sent: the site key, the plugin, WordPress and PHP versions, and the site&#8217;s name.</li>\n<li>Health report: once a day while connected. Sent: the site key, the plugin, WordPress and PHP versions, the time of the last sync and the number of sync errors. After connecting and after each report, the plugin reads the account holder&#8217;s name and the shows the key can read, to show on the settings screen. For a connection made before 1.0.1, the plugin also reads them once in the background, at most hourly, when an administrator opens the Publishing tab, to learn whether transcripts were approved.</li>\n<li>Sync: every 15 minutes, when show.fm sends a wake-up ping, and when someone runs <code>wp showfm sync</code>. Sent: the site key and the last change the site applied. After each post is created, published or moved to the bin, the plugin reports the episode ID, post ID, post address, post status and the content hash show.fm sent for that post, so show.fm knows which version the post holds. No post text and no visitor data are sent.</li>\n<li>Block editor: while connected, when someone who can publish posts adds a show.fm block, the site lists the account&#8217;s shows and episodes, including scheduled ones. Sent: the site key, and show and episode IDs. The key never reaches the browser.</li>\n<li>Migrate: when an administrator runs a scan, the plugin lists the account&#8217;s shows and published episodes, with fingerprints of their audio files, to match old players. Post content and old player addresses stay on your site.</li>\n<li>Disconnecting: one request asks show.fm to revoke the site key. The plugin removes the key from the site whatever the answer.</li>\n</ul>\n<h4>Requests from show.fm to your site</h4>\n<ul>\n<li>While an administrator connects, show.fm requests <code>/wp-json/showfm/v1/challenge</code> once to confirm the site asked to connect. The site answers with the one-time challenge only.</li>\n<li>While connected, show.fm sends signed, empty requests to <code>/wp-json/showfm/v1/ping</code> when an episode changes. The plugin checks the signature, then syncs in the background.</li>\n</ul>\n<h4>show.fm media (m.cdn.media and media.podcasterplus.com)</h4>\n<p>Serves the artwork, audio and transcript files of show.fm shows and episodes. media.podcasterplus.com is show.fm&#8217;s older media host, which some older episodes still use.</p>\n<ul>\n<li>When, in visitors&#8217; browsers: see &#8220;What visitors&#8217; browsers request&#8221; below. A page with a Player or an Episode list contacts the media host on every view, for the artwork. The settings screen also shows each connected show&#8217;s artwork in the administrator&#8217;s browser.</li>\n<li>When, from your server: with &#8220;Use the episode artwork as the featured image&#8221; on (Settings &gt; show.fm &gt; Publishing), the sync downloads each episode&#8217;s artwork once into the media library.</li>\n<li>What is sent: the file&#8217;s address. show.fm sees the visitor&#8217;s IP address and browser details, or your server&#8217;s IP address for artwork downloads. No site key is sent.</li>\n</ul>\n<h4>What visitors&#8217; browsers request</h4>\n<p>The Player loads the episode&#8217;s details from api.show.fm and its artwork as soon as it appears, the audio when the visitor plays it, and the transcript file when the visitor opens the transcript (or as soon as it appears, if the transcript is set to open). The Episode list loads the show&#8217;s episode details from api.show.fm and each episode&#8217;s artwork as soon as it appears, the audio when the visitor plays an episode, and that episode&#8217;s transcript file when the visitor opens its transcript. The Play button loads the episode&#8217;s details from api.show.fm as soon as it appears, and the audio and artwork when the visitor plays it. The Transcript loads the episode&#8217;s details from api.show.fm and the transcript file as soon as it appears. Artwork, audio and transcript files come from m.cdn.media, or media.podcasterplus.com for some older episodes. With &#8220;Load players only after a visitor clicks&#8221; turned on, each block first shows a button (&#8220;Play podcast episode&#8221;, &#8220;Load episodes&#8221; or &#8220;Load transcript&#8221;), and nothing is requested from show.fm until the visitor presses it. The block then makes the requests above. Each request shows show.fm the visitor&#8217;s IP address and browser details, as with any web request.</p>\n<h4>show.fm embed CDN (embed.cdn.media)</h4>\n<p>Not used. The plugin&#8217;s own code never loads anything from a CDN: the player scripts ship inside the plugin, and the click loader loads only the bundled copy. show.fm embeds in pasted links are always replaced with the plugin&#8217;s local player, or with a plain link to the show.fm page when the plugin can&#8217;t play them locally.</p>\n<h4>show.fm account (my.show.fm)</h4>\n<ul>\n<li>When: an administrator clicks Connect to show.fm. my.show.fm opens in their browser, where they sign in and approve the connection.</li>\n<li>What is sent, in the address the browser opens: your site&#8217;s address, its REST API address, the settings page to return to, a one-time state and challenge, and a partner code if your host set one. The address never holds a key.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin from Plugins &gt; Add New.</li>\n<li>Add a show.fm Player, Episode list, Play button or Transcript block to a post or page, and type your show&#8217;s address.</li>\n<li>To post new episodes automatically, go to Settings &gt; show.fm and choose Connect to show.fm.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"do%20i%20need%20a%20show.fm%20account%3F\">\nDo I need a show.fm account?\n</h4>\n<p>\n<p>Not for the blocks. They work for any public show.fm show. Publish to WordPress and the Migrate tab need a show.fm account and a connected site.</p>\n</p>\n<dt id=\"how%20do%20i%20add%20an%20episode%20to%20a%20post%3F\">\nHow do I add an episode to a post?\n</h4>\n<p>\n<p>Add a show.fm Player, Episode list, Play button or Transcript block. Type the show&#8217;s address (such as the-long-table.show.fm) or its slug, then choose an episode or &#8220;Latest episode&#8221;. On a connected site you pick from your own shows instead, including scheduled episodes, which the editor marks with the date they go live. Visitors see nothing for an episode until it is public.</p>\n</p>\n<dt id=\"who%20can%20see%20scheduled%20episodes%20in%20the%20editor%3F\">\nWho can see scheduled episodes in the editor?\n</h4>\n<p>\n<p>On a connected site, only people who can publish posts (Authors, Editors and Administrators) see the account&#8217;s shows and scheduled episodes. Contributors can add public shows and episodes by address. A scheduled episode&#8217;s title is never saved in the post.</p>\n</p>\n<dt id=\"can%20i%20use%20a%20shortcode%3F\">\nCan I use a shortcode?\n</h4>\n<p>\n<p>Yes. <code>[showfm type=\"player\" episode=\"&lt;episode ID&gt;\"]</code> adds a player. <code>type</code> can be <code>player</code>, <code>episodes</code>, <code>play</code> or <code>transcript</code>, and the other attributes match the blocks&#8217; settings.</p>\n</p>\n<dt id=\"where%20are%20the%20settings%3F\">\nWhere are the settings?\n</h4>\n<p>\n<p>Settings &gt; show.fm. The Connection tab connects the site and shows the account, the connected shows and when the key expires. The Display tab has four site-wide switches: the &#8220;Powered by show.fm&#8221; credit (off), loading players only after a visitor clicks (off), episode structured data for search engines (on) and using your theme&#8217;s colours and fonts (on). Publishing and Migrate appear once the site is connected.</p>\n</p>\n<dt id=\"how%20do%20i%20choose%20how%20episodes%20are%20posted%3F\">\nHow do I choose how episodes are posted?\n</h4>\n<p>\n<p>Settings &gt; show.fm &gt; Publishing. Choose whether new episodes are posted automatically, the post type, category, author and template, and whether to include the transcript and use the episode artwork as the featured image. These settings shape new posts only. The tab also lists the last 20 things the sync did, with a link to each post.</p>\n</p>\n<dt id=\"what%20if%20i%20edit%20a%20post%20that%20show.fm%20created%3F\">\nWhat if I edit a post that show.fm created?\n</h4>\n<p>\n<p>Your edits stay. Once a post is edited in WordPress, show.fm only updates its date and status. The &#8220;show.fm&#8221; panel in the post sidebar says so.</p>\n</p>\n<dt id=\"can%20i%20move%20my%20old%20podcast%20players%20to%20show.fm%3F\">\nCan I move my old podcast players to show.fm?\n</h4>\n<p>\n<p>Yes, on a connected site. In Settings &gt; show.fm &gt; Migrate, choose Scan posts. You then see a dry run: players ready to swap and how each was matched, players where you pick the episode, players with no match, and posts that already use show.fm. Nothing changes until you confirm. The results link to the revision WordPress keeps of each changed post, so you can restore any of them. From the command line, run <code>wp showfm migrate-embeds --dry-run --user=&lt;administrator&gt;</code>, then <code>wp showfm migrate-embeds --resume --yes --user=&lt;administrator&gt;</code>.</p>\n</p>\n<dt id=\"what%20do%20the%20admin%20notices%20mean%3F\">\nWhat do the admin notices mean?\n</h4>\n<p>\n<p>The plugin shows at most one notice, on the Dashboard, Plugins and show.fm screens only, and only to administrators. It warns 30 and 7 days before the site key expires, when show.fm stops accepting the key, when the shows&#8217; plan pauses auto-posting, and when a publishing setting stops new episodes being posted. Each notice has one button that fixes the problem, and you can dismiss it.</p>\n</p>\n<dt id=\"can%20i%20connect%20from%20the%20command%20line%3F\">\nCan I connect from the command line?\n</h4>\n<p>\n<p>Yes. Create a site key in show.fm under Connected sites, then run <code>wp showfm connect</code>. It asks for the key with the input hidden, or reads it from the <code>SHOWFM_KEY</code> environment variable or standard input (<code>--key=-</code>). On a multisite network, add <code>--url=</code> to pick the site.</p>\n</p>\n<dt id=\"how%20do%20i%20clear%20the%20plugin%27s%20cache%3F\">\nHow do I clear the plugin&#8217;s cache?\n</h4>\n<p>\n<p>Run <code>wp showfm cache flush</code>. It clears the show and episode details the blocks render from and the block editor&#8217;s lookups, and says how many stored entries it removed. Pages show each block&#8217;s saved copy until the background refresh fetches the data again. On a multisite network, <code>wp showfm cache flush --network</code> does it for every site. Nothing else in your site&#8217;s cache is touched.</p>\n</p>\n<dt id=\"how%20is%20the%20connection%20stored%3F\">\nHow is the connection stored?\n</h4>\n<p>\n<p>The site key and ping secret are encrypted with a key derived from your WordPress salts, and are never shown in full, logged or sent to the browser. Set the salts in <code>wp-config.php</code>. If they change, connect again.</p>\n</p>\n<dt id=\"does%20disconnecting%20cancel%20the%20site%20key%3F\">\nDoes disconnecting cancel the site key?\n</h4>\n<p>\n<p>Yes, when show.fm can be reached. Disconnect asks show.fm to revoke the key, then removes it from the site whatever the answer. If show.fm didn&#8217;t confirm, the message links to Connected sites in show.fm, where you can revoke it by hand. Posts already created stay.</p>\n</p>\n<dt id=\"what%20does%20uninstalling%20remove%3F\">\nWhat does uninstalling remove?\n</h4>\n<p>\n<p>The plugin&#8217;s settings, cache, scheduled events and its own post meta. Your posts and media stay.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.4</h4>\n<ul>\n<li>The plugin&#8217;s licence and the bundled player&#8217;s MIT licence are now <code>license.txt</code> and <code>assets/showfm-embed-license.txt</code>, so every file in the plugin has a standard file type. Nothing else changes.</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>Renames a block editor CSS class whose selector text was read as a remote file host. The editor looks and works the same, and the plugin still loads no files from other sites.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>The plugin&#8217;s built-in hosts are show.fm&#8217;s production services only. A site&#8217;s own code can select another show.fm environment for testing with the <code>showfm_environment</code> filter, which replaces the <code>SHOWFM_API_URL</code> and <code>SHOWFM_APP_URL</code> constants. The block editor gets the same hosts from the site.</li>\n<li>Bundles @showfm/embed 1.6.2, which names only production hosts.</li>\n<li>A connection is tied to the show.fm API that issued its key. If the site&#8217;s environment changes, the plugin asks to reconnect and never sends the old key to the new one.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Posts created by Publish to WordPress save the episode&#8217;s title, listen page and audio in their blocks, as the editor does, so their first view has a readable fallback. The plugin also fills its cache for the episode during the sync and clears the post&#8217;s cache whenever that changes, so page caches don&#8217;t keep an empty first render.</li>\n<li>The Connection tab shows each show&#8217;s address from show.fm.</li>\n<li><code>wp showfm cache flush</code> reports the new cache version when the site uses a persistent object cache.</li>\n<li>With &#8220;Load players only after a visitor clicks&#8221; on, a Transcript block for an episode without a transcript shows nothing instead of a &#8220;Load transcript&#8221; box, and a Transcript block with its own height reserves that height before it loads.</li>\n<li>&#8220;Include the transcript&#8221; (Settings &gt; show.fm &gt; Publishing) starts the way the connection was approved: on with &#8220;Include transcripts in posts&#8221;, off without it. For a connection made before 1.0.1 it starts on until show.fm tells the site, which the plugin asks soon after you open the Publishing tab.</li>\n<li>Disconnecting, or reconnecting to another site, clears the last sync time and the sync errors, so the new connection shows &#8220;never&#8221; until it first syncs. Reconnecting the same site keeps them.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First public release.</li>\n<li>Player, Episode list, Play button and Transcript blocks, the <code>[showfm]</code> shortcode and show.fm oEmbed, rendered on the server from a local cache with no request on page view.</li>\n<li>Block editor pickers for shows and episodes, block settings, the heading level control and in-block messages for scheduled, unavailable, paused and unreachable episodes.</li>\n<li>Settings &gt; show.fm with Connection, Publishing, Display and Migrate tabs, and admin notices for key expiry, a refused key, a plan pause and a publishing problem.</li>\n<li>Connect a site to show.fm in the browser or with WP-CLI. The site key is stored encrypted.</li>\n<li>Publish to WordPress: new episodes become posts that follow the episode when it is rescheduled, unpublished or deleted, and keep any edits made in WordPress.</li>\n<li>Embed migration from eight podcast hosts, with a dry run, episode picks and revisions to undo.</li>\n<li><code>wp showfm cache flush</code> (with <code>--network</code> on multisite) clears the plugin&#8217;s cache of show.fm data.</li>\n<li>show.fm embeds in pasted links are always replaced with the plugin&#8217;s local player, or a plain link when it can&#8217;t play them locally.</li>\n<li>The Player, Episode list and Play button can open a mini-player, with a choice of corner. The Player&#8217;s is off by default and takes over when a visitor scrolls past it while it plays.</li>\n<li>Bundles @showfm/embed 1.6.1. Every element carries <code>platform=\"wordpress\"</code>, so with the credit setting off, no show displays &#8220;Powered by show.fm&#8221;.</li>\n</ul>\n"
+    },
+    "short_description": "Podcast player, episode lists and auto-posting for show.fm shows.",
+    "description": "<p>show.fm hosts podcasts. This plugin brings a show.fm show into WordPress.</p>\n<p><strong>Blocks for any public show, with no account</strong></p>\n<ul>\n<li><strong>Player:</strong> one episode, or always the latest, in standard or compact size, with a waveform, an optional transcript, and an optional mini-player that keeps it playing at the bottom of the page when the visitor scrolls away.</li>\n<li><strong>Episode list:</strong> a show&#8217;s episodes as cards or a minimal list, filtered by season, with or without trailers and bonus episodes. The playing episode has a Transcript button when its transcript is on show.fm.</li>\n<li><strong>Play button:</strong> a button or a link in a sentence that plays an episode in a mini-player along the bottom of the page.</li>\n<li><strong>Transcript:</strong> a follow-along transcript that highlights the words as they are spoken.</li>\n</ul>\n<p>Each block previews the real player in the editor. Type the show&#8217;s address, then pick an episode or &#8220;Latest episode&#8221;. The same elements are available as the <code>[showfm]</code> shortcode, and a pasted show.fm link becomes a player.</p>\n<p><strong>Publish to WordPress, for show.fm accounts</strong></p>\n<p>Connect the site to show.fm in Settings &gt; show.fm and each new episode becomes a post: scheduled episodes are scheduled, unpublished ones go back to draft and deleted ones go to the bin. You choose the post type, category, author and template, and whether to add the transcript and use the episode artwork as the featured image. Posts you edit in WordPress keep your edits.</p>\n<p><strong>Move from another podcast host</strong></p>\n<p>The Migrate tab finds players from Buzzsprout, Libsyn, Captivate, Transistor, Spotify, Podbean, PowerPress and Seriously Simple Podcasting in your posts and pages. It shows a dry run first, and swaps them for show.fm blocks only when you confirm. WordPress keeps a revision of every post it changes.</p>\n<p><strong>Built for WordPress</strong></p>\n<ul>\n<li>Players render on the server from a local cache, so pages never wait for show.fm.</li>\n<li>The player scripts ship with the plugin. Nothing loads from a CDN.</li>\n<li>The &#8220;Powered by show.fm&#8221; credit is off for every show unless you turn it on.</li>\n<li>WP-CLI: <code>wp showfm connect</code>, <code>status</code>, <code>disconnect</code>, <code>sync</code>, <code>cache flush</code> and <code>migrate-embeds</code>.</li>\n<li>Multisite: each site connects separately.</li>\n</ul>\n<p><strong>Source code</strong></p>\n<p>The plugin&#8217;s source and build instructions are on GitHub at <a href=\"https://github.com/ShowDotFM/showfm-wordpress\" rel=\"nofollow ugc\">ShowDotFM/showfm-wordpress</a>. The block editor scripts in <code>build/</code> are compiled from <code>src/</code> there with @wordpress/scripts. The player scripts in <code>assets/showfm-embed/</code> are copied unchanged from the MIT-licensed <a href=\"https://github.com/ShowDotFM/showfm-embed/tree/v1.6.2\" rel=\"nofollow ugc\">@showfm/embed 1.6.2</a> package, and a test checks every file byte for byte. The package&#8217;s MIT licence is in <code>assets/showfm-embed-license.txt</code>. With &#8220;Load players only after a visitor clicks&#8221; on, the plugin loads the package&#8217;s self-hosting click loader (<code>click-loader-local.js</code>) instead of the player script. It names no host: it loads only the bundled <code>v1.js</code> the plugin gives it, after a visitor presses a block, and without that it does nothing. The package&#8217;s CDN click loader is not in the plugin, and a release check fails if any script in the plugin names embed.cdn.media.</p>\n<h3>External services</h3>\n<p>This plugin connects to show.fm, a podcast hosting service run by show.fm Ltd. It sends nothing until you add a show or an episode to a page, paste a show.fm link, or connect the site to show.fm. It collects no analytics or telemetry. show.fm&#8217;s <a href=\"https://show.fm/terms\" rel=\"nofollow ugc\">Terms of Service</a> and <a href=\"https://show.fm/privacy\" rel=\"nofollow ugc\">Privacy Policy</a> apply to every service below.</p>\n<p>A site&#8217;s own code can point the plugin at a different show.fm environment for testing, with the <code>showfm_environment</code> filter. The plugin then uses that environment&#8217;s hosts instead of the ones below, and sends the site key only to that environment&#8217;s API.</p>\n<h4>show.fm public API (api.show.fm)</h4>\n<p>Gives the titles, descriptions, artwork, audio links and transcript links of public shows and episodes.</p>\n<ul>\n<li>When: WP-Cron refreshes a show or episode you added to a page when its cached copy is missing or more than 15 minutes old. Pages read only the cache and never wait for a request. While the site is connected, the sync also fetches each newly published episode&#8217;s public details (/v1/episodes/{id}) in the background, so the post&#8217;s first view already has them. With featured images on, that same answer gives the artwork. In the block editor, the site looks up a show when someone who can edit posts enters its address or opens a show.fm block. WordPress asks /v1/oembed about a pasted show.fm link once, and keeps the answer in post meta.</li>\n<li>On a connected site, opening Settings &gt; show.fm may schedule a WP-Cron refresh of each connected show&#8217;s public details (/v1/podcasts/{id}), for the artwork shown there. The screen itself makes no request.</li>\n<li>In visitors&#8217; browsers: see &#8220;What visitors&#8217; browsers request&#8221; below.</li>\n<li>What is sent: the show or episode identifier, and your site&#8217;s address in the User-Agent header. show.fm sees your server&#8217;s IP address. From a browser, show.fm sees the visitor&#8217;s IP address and browser details, as with any web request. No visitor data is sent from your server.</li>\n</ul>\n<h4>show.fm API for connected sites (api.show.fm)</h4>\n<p>Used only after an administrator connects the site to a show.fm account.</p>\n<ul>\n<li>Connecting: once, when the administrator returns from my.show.fm. Sent: a one-time code and the verifier this site created. show.fm answers with a site key and ping secret, which the plugin stores encrypted. With <code>wp showfm connect</code>, the plugin sends the site key you give it, the site&#8217;s address and REST API address, and a one-time state and challenge.</li>\n<li>Reporting in: right after connecting, and again before the next sync if that fails. Sent: the site key, the plugin, WordPress and PHP versions, and the site&#8217;s name.</li>\n<li>Health report: once a day while connected. Sent: the site key, the plugin, WordPress and PHP versions, the time of the last sync and the number of sync errors. After connecting and after each report, the plugin reads the account holder&#8217;s name and the shows the key can read, to show on the settings screen. For a connection made before 1.0.1, the plugin also reads them once in the background, at most hourly, when an administrator opens the Publishing tab, to learn whether transcripts were approved.</li>\n<li>Sync: every 15 minutes, when show.fm sends a wake-up ping, and when someone runs <code>wp showfm sync</code>. Sent: the site key and the last change the site applied. After each post is created, published or moved to the bin, the plugin reports the episode ID, post ID, post address, post status and the content hash show.fm sent for that post, so show.fm knows which version the post holds. No post text and no visitor data are sent.</li>\n<li>Block editor: while connected, when someone who can publish posts adds a show.fm block, the site lists the account&#8217;s shows and episodes, including scheduled ones. Sent: the site key, and show and episode IDs. The key never reaches the browser.</li>\n<li>Migrate: when an administrator runs a scan, the plugin lists the account&#8217;s shows and published episodes, with fingerprints of their audio files, to match old players. Post content and old player addresses stay on your site.</li>\n<li>Disconnecting: one request asks show.fm to revoke the site key. The plugin removes the key from the site whatever the answer.</li>\n</ul>\n<h4>Requests from show.fm to your site</h4>\n<ul>\n<li>While an administrator connects, show.fm requests <code>/wp-json/showfm/v1/challenge</code> once to confirm the site asked to connect. The site answers with the one-time challenge only.</li>\n<li>While connected, show.fm sends signed, empty requests to <code>/wp-json/showfm/v1/ping</code> when an episode changes. The plugin checks the signature, then syncs in the background.</li>\n</ul>\n<h4>show.fm media (m.cdn.media and media.podcasterplus.com)</h4>\n<p>Serves the artwork, audio and transcript files of show.fm shows and episodes. media.podcasterplus.com is show.fm&#8217;s older media host, which some older episodes still use.</p>\n<ul>\n<li>When, in visitors&#8217; browsers: see &#8220;What visitors&#8217; browsers request&#8221; below. A page with a Player or an Episode list contacts the media host on every view, for the artwork. The settings screen also shows each connected show&#8217;s artwork in the administrator&#8217;s browser.</li>\n<li>When, from your server: with &#8220;Use the episode artwork as the featured image&#8221; on (Settings &gt; show.fm &gt; Publishing), the sync downloads each episode&#8217;s artwork once into the media library.</li>\n<li>What is sent: the file&#8217;s address. show.fm sees the visitor&#8217;s IP address and browser details, or your server&#8217;s IP address for artwork downloads. No site key is sent.</li>\n</ul>\n<h4>What visitors&#8217; browsers request</h4>\n<p>The Player loads the episode&#8217;s details from api.show.fm and its artwork as soon as it appears, the audio when the visitor plays it, and the transcript file when the visitor opens the transcript (or as soon as it appears, if the transcript is set to open). The Episode list loads the show&#8217;s episode details from api.show.fm and each episode&#8217;s artwork as soon as it appears, the audio when the visitor plays an episode, and that episode&#8217;s transcript file when the visitor opens its transcript. The Play button loads the episode&#8217;s details from api.show.fm as soon as it appears, and the audio and artwork when the visitor plays it. The Transcript loads the episode&#8217;s details from api.show.fm and the transcript file as soon as it appears. Artwork, audio and transcript files come from m.cdn.media, or media.podcasterplus.com for some older episodes. With &#8220;Load players only after a visitor clicks&#8221; turned on, each block first shows a button (&#8220;Play podcast episode&#8221;, &#8220;Load episodes&#8221; or &#8220;Load transcript&#8221;), and nothing is requested from show.fm until the visitor presses it. The block then makes the requests above. Each request shows show.fm the visitor&#8217;s IP address and browser details, as with any web request.</p>\n<h4>show.fm embed CDN (embed.cdn.media)</h4>\n<p>Not used. The plugin&#8217;s own code never loads anything from a CDN: the player scripts ship inside the plugin, and the click loader loads only the bundled copy. show.fm embeds in pasted links are always replaced with the plugin&#8217;s local player, or with a plain link to the show.fm page when the plugin can&#8217;t play them locally.</p>\n<h4>show.fm account (my.show.fm)</h4>\n<ul>\n<li>When: an administrator clicks Connect to show.fm. my.show.fm opens in their browser, where they sign in and approve the connection.</li>\n<li>What is sent, in the address the browser opens: your site&#8217;s address, its REST API address, the settings page to return to, a one-time state and challenge, and a partner code if your host set one. The address never holds a key.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/showfm.1.0.4.zip",
+    "upgrade_notice": {
+        "1.0.4": "<p>Renames the two licence files. Nothing else changes.</p>",
+        "1.0.3": "<p>Renames a block editor CSS class. Nothing else changes.</p>",
+        "1.0.2": "<p>Production hosts only. Sites that set <code>SHOWFM_API_URL</code> or <code>SHOWFM_APP_URL</code> use the <code>showfm_environment</code> filter instead.</p>",
+        "1.0.1": "<p>Fixes empty first renders of synced posts behind page caches, and smaller display and WP-CLI issues.</p>",
+        "1.0.0": "<p>First public release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/showfm/assets/screenshot-1.png?rev=3751807",
+            "caption": "The Player block in the editor, with its theme, accent colour, waveform, transcript and mini-player settings."
+        },
+        {
+            "src": "https://ps.w.org/showfm/assets/screenshot-2.png?rev=3751807",
+            "caption": "The Episode list block in Card style, with season, trailer and bonus episode filters."
+        },
+        {
+            "src": "https://ps.w.org/showfm/assets/screenshot-3.png?rev=3751807",
+            "caption": "Connect your site to show.fm to post new episodes automatically."
+        },
+        {
+            "src": "https://ps.w.org/showfm/assets/screenshot-4.png?rev=3751807",
+            "caption": "Choose how new episodes are posted, and see what was synced recently."
+        },
+        {
+            "src": "https://ps.w.org/showfm/assets/screenshot-5.png?rev=3751807",
+            "caption": "Swap embeds from other podcast hosts for show.fm blocks. Nothing changes until you confirm."
+        }
+    ],
+    "tags": {
+        "audio": "audio",
+        "episodes": "episodes",
+        "player": "player",
+        "podcast": "podcast",
+        "podcasting": "podcasting"
+    },
+    "stable_tag": "1.0.4",
+    "versions": {
+        "1.0.4": "https://downloads.wordpress.org/plugin/showfm.1.0.4.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/showfm.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/showfm/assets/banner-772x250.png?rev=3751807",
+        "high": "https://ps.w.org/showfm/assets/banner-1544x500.png?rev=3751807"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/showfm/assets/icon.svg?rev=3751807",
+        "svg": "https://ps.w.org/showfm/assets/icon.svg?rev=3751807"
+    },
+    "blocks": {
+        "showfm/episodes": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "showfm/episodes",
+            "version": "1.0.4",
+            "title": "show.fm Episode list",
+            "category": "embed",
+            "icon": "microphone",
+            "description": "List a show’s episodes, newest first.",
+            "keywords": [
+                "podcast",
+                "episodes",
+                "list"
+            ],
+            "textdomain": "showfm",
+            "attributes": {
+                "id": {
+                    "type": "string"
+                },
+                "theme": {
+                    "type": "string"
+                },
+                "accent": {
+                    "type": "string"
+                },
+                "api": {
+                    "type": "string"
+                },
+                "credit": {
+                    "type": "string"
+                },
+                "load": {
+                    "type": "string"
+                },
+                "lang": {
+                    "type": "string"
+                },
+                "podcast": {
+                    "type": "string"
+                },
+                "variant": {
+                    "type": "string"
+                },
+                "layout": {
+                    "type": "string"
+                },
+                "count": {
+                    "type": "string"
+                },
+                "season": {
+                    "type": "string"
+                },
+                "hide": {
+                    "type": "string"
+                },
+                "descriptions": {
+                    "type": "string"
+                },
+                "mini-player": {
+                    "type": "string"
+                },
+                "mini-player-position": {
+                    "type": "string"
+                },
+                "heading-level": {
+                    "type": "string"
+                },
+                "snapshot": {
+                    "type": "object",
+                    "default": []
+                }
+            },
+            "supports": {
+                "html": false,
+                "color": {
+                    "text": true,
+                    "background": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true
+                }
+            },
+            "editorScript": "showfm-block-editor",
+            "providesContext": [],
+            "editorStyle": "showfm-block-editor"
+        },
+        "showfm/transcript": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "showfm/transcript",
+            "version": "1.0.4",
+            "title": "show.fm Transcript",
+            "category": "embed",
+            "icon": "microphone",
+            "description": "A follow-along transcript for a Player on this page.",
+            "keywords": [
+                "podcast",
+                "transcript"
+            ],
+            "textdomain": "showfm",
+            "attributes": {
+                "podcast": {
+                    "type": "string"
+                },
+                "theme": {
+                    "type": "string"
+                },
+                "accent": {
+                    "type": "string"
+                },
+                "api": {
+                    "type": "string"
+                },
+                "credit": {
+                    "type": "string"
+                },
+                "load": {
+                    "type": "string"
+                },
+                "lang": {
+                    "type": "string"
+                },
+                "episode": {
+                    "type": "string"
+                },
+                "for": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "string"
+                },
+                "snapshot": {
+                    "type": "object",
+                    "default": []
+                }
+            },
+            "supports": {
+                "html": false,
+                "color": {
+                    "text": true,
+                    "background": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true
+                }
+            },
+            "editorScript": "showfm-block-editor",
+            "providesContext": {
+                "showfm/episode": "episode"
+            },
+            "editorStyle": "showfm-block-editor"
+        },
+        "showfm/play": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "showfm/play",
+            "version": "1.0.4",
+            "title": "show.fm Play button",
+            "category": "embed",
+            "icon": "microphone",
+            "description": "A play button for one episode, for use anywhere on the page.",
+            "keywords": [
+                "podcast",
+                "play",
+                "button"
+            ],
+            "textdomain": "showfm",
+            "attributes": {
+                "podcast": {
+                    "type": "string"
+                },
+                "theme": {
+                    "type": "string"
+                },
+                "accent": {
+                    "type": "string"
+                },
+                "api": {
+                    "type": "string"
+                },
+                "credit": {
+                    "type": "string"
+                },
+                "load": {
+                    "type": "string"
+                },
+                "lang": {
+                    "type": "string"
+                },
+                "episode": {
+                    "type": "string"
+                },
+                "variant": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "string"
+                },
+                "mini-player": {
+                    "type": "string"
+                },
+                "mini-player-position": {
+                    "type": "string"
+                },
+                "snapshot": {
+                    "type": "object",
+                    "default": []
+                }
+            },
+            "supports": {
+                "html": false,
+                "color": {
+                    "text": true,
+                    "background": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true
+                }
+            },
+            "editorScript": "showfm-block-editor",
+            "providesContext": {
+                "showfm/episode": "episode"
+            },
+            "editorStyle": "showfm-block-editor"
+        },
+        "showfm/player": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "showfm/player",
+            "version": "1.0.4",
+            "title": "show.fm Player",
+            "category": "embed",
+            "icon": "microphone",
+            "description": "Play one episode, with an optional transcript.",
+            "keywords": [
+                "podcast",
+                "audio",
+                "episode"
+            ],
+            "textdomain": "showfm",
+            "attributes": {
+                "id": {
+                    "type": "string"
+                },
+                "theme": {
+                    "type": "string"
+                },
+                "accent": {
+                    "type": "string"
+                },
+                "api": {
+                    "type": "string"
+                },
+                "credit": {
+                    "type": "string"
+                },
+                "load": {
+                    "type": "string"
+                },
+                "lang": {
+                    "type": "string"
+                },
+                "episode": {
+                    "type": "string"
+                },
+                "podcast": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "string"
+                },
+                "wave": {
+                    "type": "string"
+                },
+                "heading-level": {
+                    "type": "string"
+                },
+                "transcript": {
+                    "type": "string"
+                },
+                "mini-player": {
+                    "type": "string"
+                },
+                "mini-player-position": {
+                    "type": "string"
+                },
+                "snapshot": {
+                    "type": "object",
+                    "default": []
+                },
+                "strings": {
+                    "type": "string"
+                }
+            },
+            "supports": {
+                "html": false,
+                "color": {
+                    "text": true,
+                    "background": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "lineHeight": true,
+                    "__experimentalFontFamily": true
+                }
+            },
+            "editorScript": "showfm-block-editor",
+            "providesContext": {
+                "showfm/episode": "episode"
+            },
+            "editorStyle": "showfm-block-editor"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
