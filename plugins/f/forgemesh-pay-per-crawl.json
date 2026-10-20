@@ -1,0 +1,90 @@
+{
+    "name": "ForgeMesh Pay-per-Crawl",
+    "slug": "forgemesh-pay-per-crawl",
+    "version": "0.2.2",
+    "author": "<a href=\"https://profiles.wordpress.org/forgemeshlabs/\">forgemeshlabs</a>",
+    "author_profile": "https://profiles.wordpress.org/forgemeshlabs/",
+    "contributors": {
+        "forgemeshlabs": {
+            "profile": "https://profiles.wordpress.org/forgemeshlabs/",
+            "avatar": "https://secure.gravatar.com/avatar/c7f87c8a5529ad78711d568db4bbe6da519705547262a4116c668e2335df388b?s=96&d=monsterid&r=g",
+            "display_name": "forgemeshlabs"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.1.3",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/forgemesh-pay-per-crawl/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-20 13:02:00",
+    "added": "2026-10-20",
+    "homepage": "https://forgemesh.io/wordpress",
+    "sections": {
+        "description": "<p>Most of a website&#8217;s traffic is not human. Search indexers, AI crawlers, LLM &#8220;readers&#8221;, scrapers and autonomous agents fetch pages all day and pay nothing. This plugin gives that traffic a price.</p>\n<ul>\n<li><strong>Humans see nothing different.</strong> Browsers get the page as always.</li>\n<li><strong>Verified search engines stay free.</strong> Googlebot, Bingbot, DuckDuckBot, Applebot and friends are checked by reverse DNS so your SEO is untouched. A crawler that only <em>claims</em> to be Googlebot is treated as a script.</li>\n<li><strong>AI crawlers, SEO crawlers and scripts get HTTP 402 Payment Required.</strong> The response carries the x402 challenge (v2 header and v1 body, so every current client can pay) and an MPP challenge. The client pays USDC on Base and retries; the page is served only after the payment is settled on-chain.</li>\n<li><strong>You keep 100%.</strong> The payer&#8217;s USDC goes directly to the wallet you enter. Nothing is held by the plugin, by ForgeMesh, or by anyone else.</li>\n<li><strong>Bot analytics in wp-admin.</strong> Who is crawling (by name and class), how often, from how many sources, which paths, what was paid, every settlement with its transaction link. Start in <em>Monitor</em> mode and see what the bots would have paid before you charge anything.</li>\n<li><strong>Pro (optional, $4.99/month).</strong> A hosted dashboard for up to 5 sites, a Monday digest, daily paywall monitoring with alerts, a crawler-intelligence feed that keeps the bot list current, and a listing in the paid-sites directory. Everything above works without it.</li>\n<li><strong>Discovery built in.</strong> The plugin serves <code>/.well-known/x402.json</code>, <code>/llms.txt</code> and <code>/agents.txt</code> and adds lines to <code>robots.txt</code>, so paying agents and x402 indexes find your paid pages.</li>\n</ul>\n<h4>How a payment works</h4>\n<ol>\n<li>A bot requests a page and gets <code>402 Payment Required</code> with the price, asset (USDC on Base) and your wallet.</li>\n<li>The bot signs a USDC transfer authorization and retries with it in a header.</li>\n<li>The plugin sends that authorization to an x402 <strong>facilitator</strong>, which checks it and submits it on-chain. The facilitator never holds funds.</li>\n<li>The plugin serves the page only when the facilitator returns a transaction hash, and records the hit, the payer and the hash.</li>\n</ol>\n<h4>Third-party services</h4>\n<p>The plugin makes outbound requests only when a payment is presented, and only to the x402 facilitator configured in Settings:</p>\n<ul>\n<li><strong>PayAI facilitator</strong> (default): <code>https://facilitator.payai.network</code> — <a href=\"https://payai.network/terms\" rel=\"nofollow ugc\">terms</a> · <a href=\"https://payai.network/privacy\" rel=\"nofollow ugc\">privacy</a>. It receives the payer&#8217;s signed authorization and the payment terms (your wallet address, amount, the page URL). No visitor data, no site content.</li>\n<li>\n<p>Or <strong>any facilitator URL you enter</strong>, including one you run yourself.</p>\n</li>\n<li>\n<p><strong>ForgeMesh Pay-per-Crawl Pro</strong> (only after you enter a Pro license key): <code>https://proxy.forgemesh.io</code> — <a href=\"https://proxy.forgemesh.io/terms\" rel=\"nofollow ugc\">terms</a> · <a href=\"https://proxy.forgemesh.io/privacy\" rel=\"nofollow ugc\">privacy</a>. The plugin sends your license key, the site&#8217;s host, name, mode, price and payout wallet, daily per-bot counts (bot name, class, hits, paid, revenue, number of distinct hashed sources) and settlement records (transaction hash, payer wallet, path, amount). No visitor IPs, no page content, no human user agents. It pulls a crawler list from the same service once a day. Without a key the plugin never contacts ForgeMesh.</p>\n</li>\n</ul>\n<p>Search-engine verification uses ordinary DNS lookups.</p>\n<h4>Privacy</h4>\n<p>Visitor IP addresses are never stored. Bot sources are counted by a daily-salted hash. Human page views are stored only as a count (class &#8220;human&#8221;, no user agent) when that option is on. Rows are deleted after the retention period you set.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin and activate it.</li>\n<li>Go to <strong>Pay-per-Crawl <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings</strong>, paste your payout wallet (a 0x address on Base, for example from Coinbase Wallet or MetaMask), choose a price, save.</li>\n<li>Watch <strong>Pay-per-Crawl <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Bot analytics</strong> for a day or two in Monitor mode.</li>\n<li>Switch the mode to <strong>Charge</strong>.</li>\n</ol>\n<p>If your site is behind Cloudflare or another proxy, set the <em>Client IP header</em> so search-engine verification sees the real client address. Choose a header your proxy sets itself (CF-Connecting-IP, X-Real-IP, True-Client-IP); with X-Forwarded-For the plugin uses the right-most address, the one your proxy appended.</p>\n",
+        "faq": "\n<dt id=\"will%20this%20hurt%20my%20google%20ranking%3F\">\nWill this hurt my Google ranking?\n</h4>\n<p>\n<p>No. Verified search engines are free by default and are checked by reverse DNS, the same method Google documents for verifying Googlebot. Social link previews and uptime monitors are also free by default.</p>\n</p>\n<dt id=\"what%20do%20bots%20pay%20with%3F\">\nWhat do bots pay with?\n</h4>\n<p>\n<p>USDC on the Base network, using the x402 protocol (HTTP 402) or MPP. Payers sign a transfer authorization; a facilitator submits it on-chain. You receive USDC in your own wallet within seconds.</p>\n</p>\n<dt id=\"do%20i%20need%20a%20coinbase%20account%20or%20an%20api%20key%3F\">\nDo I need a Coinbase account or an API key?\n</h4>\n<p>\n<p>No. The default facilitator needs no account. You only need a wallet address.</p>\n</p>\n<dt id=\"can%20a%20bot%20read%20the%20page%20without%20paying%3F\">\nCan a bot read the page without paying?\n</h4>\n<p>\n<p>Not through WordPress: the 402 is answered before any template runs, and the page body is empty. Pages cached by a CDN or a full-page cache plugin may be served to bots from the cache; exclude bot user agents from that cache or put the cache behind the plugin.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20caching%20plugins%3F\">\nDoes it work with caching plugins?\n</h4>\n<p>\n<p>The 402 is sent with <code>Cache-Control: no-store</code>, and paid responses are marked private. Full-page caches that serve HTML before WordPress loads will bypass the gate for cached pages.</p>\n</p>\n<dt id=\"what%20if%20the%20facilitator%20is%20down%3F\">\nWhat if the facilitator is down?\n</h4>\n<p>\n<p>Payers get a 402 with the reason, can retry, and are never charged. Humans are never affected.</p>\n</p>\n\n",
+        "changelog": "<h4>0.2.2</h4>\n<ul>\n<li>Security: exempt-path matching is anchored. Look-alike paths (/robots.txt.x, /sitemapfoo, /.well-known/../post, an allow path /pricing matching /pricing-secret) no longer bypass the paywall; dot segments and %2e / %2f paths are gated.</li>\n</ul>\n<h4>0.2.1</h4>\n<ul>\n<li>Security: with a multi-value client-IP header (X-Forwarded-For), use the right-most address so a crawler cannot prepend a search-engine IP and bypass the paywall.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>Pro: license key, hourly sync to the hosted dashboard, crawler-intel feed merged into the classifier, directory opt-in.</li>\n<li>CSV export neutralises formula-leading cells.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>First release: classifier with 80+ known agents, x402 v1 and v2 plus MPP challenges, facilitator verify/settle, discovery files, bot analytics, CSV export.</li>\n</ul>\n"
+    },
+    "short_description": "Charge AI crawlers and bots per page with x402 USDC micropayments, paid straight to your wallet. Humans and verified search engines read free.",
+    "description": "<p>Most of a website&#8217;s traffic is not human. Search indexers, AI crawlers, LLM &#8220;readers&#8221;, scrapers and autonomous agents fetch pages all day and pay nothing. This plugin gives that traffic a price.</p>\n<ul>\n<li><strong>Humans see nothing different.</strong> Browsers get the page as always.</li>\n<li><strong>Verified search engines stay free.</strong> Googlebot, Bingbot, DuckDuckBot, Applebot and friends are checked by reverse DNS so your SEO is untouched. A crawler that only <em>claims</em> to be Googlebot is treated as a script.</li>\n<li><strong>AI crawlers, SEO crawlers and scripts get HTTP 402 Payment Required.</strong> The response carries the x402 challenge (v2 header and v1 body, so every current client can pay) and an MPP challenge. The client pays USDC on Base and retries; the page is served only after the payment is settled on-chain.</li>\n<li><strong>You keep 100%.</strong> The payer&#8217;s USDC goes directly to the wallet you enter. Nothing is held by the plugin, by ForgeMesh, or by anyone else.</li>\n<li><strong>Bot analytics in wp-admin.</strong> Who is crawling (by name and class), how often, from how many sources, which paths, what was paid, every settlement with its transaction link. Start in <em>Monitor</em> mode and see what the bots would have paid before you charge anything.</li>\n<li><strong>Pro (optional, $4.99/month).</strong> A hosted dashboard for up to 5 sites, a Monday digest, daily paywall monitoring with alerts, a crawler-intelligence feed that keeps the bot list current, and a listing in the paid-sites directory. Everything above works without it.</li>\n<li><strong>Discovery built in.</strong> The plugin serves <code>/.well-known/x402.json</code>, <code>/llms.txt</code> and <code>/agents.txt</code> and adds lines to <code>robots.txt</code>, so paying agents and x402 indexes find your paid pages.</li>\n</ul>\n<h4>How a payment works</h4>\n<ol>\n<li>A bot requests a page and gets <code>402 Payment Required</code> with the price, asset (USDC on Base) and your wallet.</li>\n<li>The bot signs a USDC transfer authorization and retries with it in a header.</li>\n<li>The plugin sends that authorization to an x402 <strong>facilitator</strong>, which checks it and submits it on-chain. The facilitator never holds funds.</li>\n<li>The plugin serves the page only when the facilitator returns a transaction hash, and records the hit, the payer and the hash.</li>\n</ol>\n<h4>Third-party services</h4>\n<p>The plugin makes outbound requests only when a payment is presented, and only to the x402 facilitator configured in Settings:</p>\n<ul>\n<li><strong>PayAI facilitator</strong> (default): <code>https://facilitator.payai.network</code> — <a href=\"https://payai.network/terms\" rel=\"nofollow ugc\">terms</a> · <a href=\"https://payai.network/privacy\" rel=\"nofollow ugc\">privacy</a>. It receives the payer&#8217;s signed authorization and the payment terms (your wallet address, amount, the page URL). No visitor data, no site content.</li>\n<li>\n<p>Or <strong>any facilitator URL you enter</strong>, including one you run yourself.</p>\n</li>\n<li>\n<p><strong>ForgeMesh Pay-per-Crawl Pro</strong> (only after you enter a Pro license key): <code>https://proxy.forgemesh.io</code> — <a href=\"https://proxy.forgemesh.io/terms\" rel=\"nofollow ugc\">terms</a> · <a href=\"https://proxy.forgemesh.io/privacy\" rel=\"nofollow ugc\">privacy</a>. The plugin sends your license key, the site&#8217;s host, name, mode, price and payout wallet, daily per-bot counts (bot name, class, hits, paid, revenue, number of distinct hashed sources) and settlement records (transaction hash, payer wallet, path, amount). No visitor IPs, no page content, no human user agents. It pulls a crawler list from the same service once a day. Without a key the plugin never contacts ForgeMesh.</p>\n</li>\n</ul>\n<p>Search-engine verification uses ordinary DNS lookups.</p>\n<h4>Privacy</h4>\n<p>Visitor IP addresses are never stored. Bot sources are counted by a daily-salted hash. Human page views are stored only as a count (class &#8220;human&#8221;, no user agent) when that option is on. Rows are deleted after the retention period you set.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/forgemesh-pay-per-crawl.0.2.2.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/forgemesh-pay-per-crawl/assets/screenshot-1.png?rev=3756768",
+            "caption": "Bot analytics: hits per day, who is crawling, paid fetches and revenue."
+        },
+        {
+            "src": "https://ps.w.org/forgemesh-pay-per-crawl/assets/screenshot-2.png?rev=3756768",
+            "caption": "Settings: wallet, price, mode, and which classes pay."
+        },
+        {
+            "src": "https://ps.w.org/forgemesh-pay-per-crawl/assets/screenshot-3.png?rev=3756768",
+            "caption": "A 402 challenge as a bot sees it."
+        }
+    ],
+    "tags": {
+        "ai-crawlers": "AI Crawlers",
+        "analytics": "analytics",
+        "bots": "bots",
+        "paywall": "paywall",
+        "x402": "x402"
+    },
+    "stable_tag": "0.2.2",
+    "versions": {
+        "0.2.2": "https://downloads.wordpress.org/plugin/forgemesh-pay-per-crawl.0.2.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/forgemesh-pay-per-crawl.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/forgemesh-pay-per-crawl/assets/banner-772x250.png?rev=3756768",
+        "high": "https://ps.w.org/forgemesh-pay-per-crawl/assets/banner-1544x500.png?rev=3756768"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/forgemesh-pay-per-crawl/assets/icon-128x128.png?rev=3756768",
+        "2x": "https://ps.w.org/forgemesh-pay-per-crawl/assets/icon-256x256.png?rev=3756768"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
