@@ -1,0 +1,91 @@
+{
+    "name": "flatin.pt",
+    "slug": "flatin-pt",
+    "version": "1.0.3",
+    "author": "<a href=\"https://profiles.wordpress.org/flatin/\">flatin</a>",
+    "author_profile": "https://profiles.wordpress.org/flatin/",
+    "contributors": {
+        "flatin": {
+            "profile": "https://profiles.wordpress.org/flatin/",
+            "avatar": "https://secure.gravatar.com/avatar/3d474e08d26b321685d6c4c1acce3313cb6258aa479a68382e990cbe2307f85e?s=96&d=monsterid&r=g",
+            "display_name": "flatin"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.3",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/flatin-pt/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-20 19:39:00",
+    "added": "2026-10-20",
+    "homepage": "https://gitlab.com/flatin-pt-group/wp",
+    "sections": {
+        "description": "<p>Two shortcodes for sites that write about buying property in Portugal.</p>\n<ul>\n<li><code>[flatin_imt value=\"250000\"]</code> — what a purchase costs on top of the price:<br />\nIMT, stamp duty and the price of registering the purchase.</li>\n<li><code>[flatin_imi concelho=\"porto\"]</code> — the yearly property tax (IMI) rate for a<br />\nmunicipality, with the tax year next to it.</li>\n</ul>\n<p><strong>Rendered on your server, into your page.</strong> No iframes and no client-side<br />\ndrawing: the output is part of your HTML, so it is styled by your theme,<br />\nreadable without JavaScript, and visible to search engines.</p>\n<p><strong>Where the numbers come from.</strong> IMT is calculated from the official 2026<br />\ntables. IMI rates were harvested from the Autoridade Tributária portal and<br />\nthen verified line by line against that same source — all 308 municipalities.<br />\nWhere a municipality sets no single rate (it sets one per freguesia instead),<br />\nthe plugin says so rather than printing a zero. The registration line is not a<br />\nguess either: it is the published price of the Casa Pronta counter of the<br />\nMinistério da Justiça for one registration act. It does not cover the purchase<br />\ncontract at a notary or a solicitador, and the shortcode says so under the<br />\ntable.</p>\n<h4>Shortcode options</h4>\n<ul>\n<li><code>[flatin_imt value=\"250000\" territory=\"regioes_autonomas\"]</code> — the Azores<br />\nor Madeira scale (default: <code>continente</code>, mainland Portugal).</li>\n<li><code>[flatin_imt value=\"250000\" primary=\"no\"]</code> — not the buyer&#8217;s own permanent<br />\nhome (default: <code>yes</code>).</li>\n<li><code>[flatin_imt value=\"250000\" young=\"yes\"]</code> — the reduced IMT table and the<br />\nstamp duty deduction for buyers aged 35 or under buying their first own<br />\npermanent home (default: <code>no</code>).</li>\n<li><code>[flatin_imt value=\"250000\" vpt=\"180000\"]</code> — the VPT (valor patrimonial<br />\ntributário) from the caderneta predial, if known. IMT and stamp duty are<br />\ncharged on the higher of the contract price and the VPT, and the answer<br />\nsays which one it used.</li>\n<li><code>[flatin_imi concelho=\"porto\" vpt=\"180000\"]</code> — also shows the yearly IMI for<br />\nthat taxable value (VPT). <code>concelho</code> takes a name or the four-digit code.</li>\n</ul>\n<h4>Credit link</h4>\n<p>The credit link is <strong>off by default</strong>. If you would like to credit the source,<br />\nswitch it on in <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> flatin.pt</strong>: results then show a small<br />\n&#8220;Calculated by flatin.pt&#8221; line with a link. While it is off, the plugin adds<br />\nno link to flatin.pt anywhere in your pages — not even when the service is<br />\nunreachable — and the calculators work exactly the same either way.</p>\n<h4>Who we are</h4>\n<p>flatin.pt is a lead-generation platform for property in Portugal. <strong>It is not<br />\na real-estate agency and holds no AMI licence</strong>; the service itself is<br />\nprovided by licensed agencies. The results are estimates from official tables,<br />\nnot tax advice. This plugin sells nothing and collects nothing.</p>\n<h3>External services</h3>\n<p>This plugin connects to the flatin.pt API (<code>https://flatin.pt/api/v1</code>), run<br />\nby flatin.pt, to calculate taxes and look up IMI rates. The calculations are<br />\ndone there so that one maintained tax table serves every site. Without this<br />\nservice the shortcodes cannot show results.</p>\n<p><strong>When.</strong> Only when a page containing a shortcode is rendered and the answer<br />\nfor that exact input is not already cached in your site&#8217;s database. Answers<br />\nare stored as transients: IMI rates for one day, IMT calculations for one<br />\nhour, invalid input (for example a misspelt municipality) for one hour. No<br />\nrequest is made on activation, from the settings screen, or on pages without<br />\na shortcode.</p>\n<p><strong>What is sent.</strong></p>\n<ul>\n<li><code>[flatin_imt]</code>: an HTTPS POST to <code>https://flatin.pt/api/v1/imt/calculate</code><br />\nwith the price, the VPT if the shortcode gives one, the territory, and the<br />\ntwo yes/no options from the shortcode.</li>\n<li><code>[flatin_imi]</code>: an HTTPS GET to <code>https://flatin.pt/api/v1/imi/rates/{municipality}</code><br />\nwith the municipality name or code from the shortcode. The taxable value<br />\n(<code>vpt</code>) is not sent: the yearly amount is calculated on your server.</li>\n</ul>\n<p>Each request identifies the plugin with the User-Agent<br />\n    flatin-pt-wordpress/1.0.3 (+https://flatin.pt/). <strong>Nothing about your<br />\nvisitors is sent</strong>: no visitor IP address, page URL, referrer, cookies or<br />\nidentifiers. As with any HTTPS request, the flatin.pt server sees the IP<br />\naddress of your web server; it is kept in server logs as described in the<br />\nprivacy policy.</p>\n<ul>\n<li>Terms of use: https://flatin.pt/en/legal/termos-utilizacao/</li>\n<li>Privacy policy: https://flatin.pt/en/legal/privacidade/</li>\n<li>API documentation: https://flatin.pt/en/tools/api-and-data/</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Install the plugin from the Plugins screen, or upload the <code>flatin-pt</code><br />\nfolder to <code>/wp-content/plugins/</code>.</li>\n<li>Activate it.</li>\n<li>Put a shortcode into any post, page or widget, for example<br />\n   [flatin_imt value=&#8221;250000&#8243;].</li>\n<li>Optional: turn on the credit link in <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> flatin.pt</strong>.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20it%20work%20without%20javascript%3F\">\nDoes it work without JavaScript?\n</h4>\n<p>\n<p>Yes. The whole output is rendered on the server.</p>\n</p>\n<dt id=\"does%20it%20slow%20my%20page%20down%3F\">\nDoes it slow my page down?\n</h4>\n<p>\n<p>The first render of a given input makes one HTTPS request with a five-second<br />\ntimeout; after that the answer is served from your own database until the<br />\ncache expires. The stylesheet loads only on pages that actually use a<br />\nshortcode.</p>\n</p>\n<dt id=\"what%20happens%20if%20flatin.pt%20is%20unreachable%3F\">\nWhat happens if flatin.pt is unreachable?\n</h4>\n<p>\n<p>The block shows a short notice that the calculation service did not answer,<br />\nand the rest of your page renders as usual. If you turned the credit link on,<br />\nthe notice also links to the calculator on flatin.pt.</p>\n</p>\n<dt id=\"does%20it%20collect%20data%20about%20my%20visitors%20or%20set%20cookies%3F\">\nDoes it collect data about my visitors or set cookies?\n</h4>\n<p>\n<p>No. The plugin reads nothing about the visitor and sets no cookies. See<br />\n&#8220;External services&#8221; above for exactly what is sent.</p>\n</p>\n<dt id=\"can%20i%20use%20it%20for%20a%20municipality%20that%20has%20no%20single%20rate%3F\">\nCan I use it for a municipality that has no single rate?\n</h4>\n<p>\n<p>Yes, and the plugin will tell your readers exactly that. Printing a zero there<br />\nwould be untrue.</p>\n</p>\n<dt id=\"is%20it%20available%20in%20portuguese%3F\">\nIs it available in Portuguese?\n</h4>\n<p>\n<p>Translations are delivered through translate.wordpress.org. On a site set<br />\nto Portuguese, the output and the settings screen switch to Portuguese once<br />\nthe pt_PT translation is published there.</p>\n</p>\n<dt id=\"what%20is%20removed%20when%20i%20delete%20the%20plugin%3F\">\nWhat is removed when I delete the plugin?\n</h4>\n<p>\n<p>The credit-link setting and every cached answer the plugin stored.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.3</h4>\n<ul>\n<li>Translations are no longer bundled; WordPress loads them from<br />\ntranslate.wordpress.org.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>New <code>vpt</code> attribute for <code>[flatin_imt]</code>. IMT and stamp duty are charged on<br />\nthe higher of the contract price and the VPT; the table now says which one<br />\nit was calculated on, and without a VPT says that a higher VPT would raise<br />\nboth taxes.</li>\n<li>The Casa Pronta amounts in the note under the table come with the answer<br />\nfrom flatin.pt instead of being written into the plugin.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>The third line of the purchase table is named for what the figure actually<br />\nis: the published price of registering the purchase at the Casa Pronta<br />\ncounter, not an estimate for the deed. The note under the table now names<br />\nthat source, says the contract at a notary or a solicitador is charged<br />\nseparately, and warns that buying with a mortgage costs more.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First release: <code>[flatin_imt]</code> and <code>[flatin_imi]</code>, server-side rendering,<br />\ntransient caching, Portuguese translation, opt-in credit link (off by<br />\ndefault).</li>\n</ul>\n"
+    },
+    "short_description": "Portuguese property tax shortcodes: IMT and stamp duty on a purchase, IMI rates for all 308 municipalities. Rendered server-side, no iframes.",
+    "description": "<p>Two shortcodes for sites that write about buying property in Portugal.</p>\n<ul>\n<li><code>[flatin_imt value=\"250000\"]</code> — what a purchase costs on top of the price:<br />\nIMT, stamp duty and the price of registering the purchase.</li>\n<li><code>[flatin_imi concelho=\"porto\"]</code> — the yearly property tax (IMI) rate for a<br />\nmunicipality, with the tax year next to it.</li>\n</ul>\n<p><strong>Rendered on your server, into your page.</strong> No iframes and no client-side<br />\ndrawing: the output is part of your HTML, so it is styled by your theme,<br />\nreadable without JavaScript, and visible to search engines.</p>\n<p><strong>Where the numbers come from.</strong> IMT is calculated from the official 2026<br />\ntables. IMI rates were harvested from the Autoridade Tributária portal and<br />\nthen verified line by line against that same source — all 308 municipalities.<br />\nWhere a municipality sets no single rate (it sets one per freguesia instead),<br />\nthe plugin says so rather than printing a zero. The registration line is not a<br />\nguess either: it is the published price of the Casa Pronta counter of the<br />\nMinistério da Justiça for one registration act. It does not cover the purchase<br />\ncontract at a notary or a solicitador, and the shortcode says so under the<br />\ntable.</p>\n<h4>Shortcode options</h4>\n<ul>\n<li><code>[flatin_imt value=\"250000\" territory=\"regioes_autonomas\"]</code> — the Azores<br />\nor Madeira scale (default: <code>continente</code>, mainland Portugal).</li>\n<li><code>[flatin_imt value=\"250000\" primary=\"no\"]</code> — not the buyer&#8217;s own permanent<br />\nhome (default: <code>yes</code>).</li>\n<li><code>[flatin_imt value=\"250000\" young=\"yes\"]</code> — the reduced IMT table and the<br />\nstamp duty deduction for buyers aged 35 or under buying their first own<br />\npermanent home (default: <code>no</code>).</li>\n<li><code>[flatin_imt value=\"250000\" vpt=\"180000\"]</code> — the VPT (valor patrimonial<br />\ntributário) from the caderneta predial, if known. IMT and stamp duty are<br />\ncharged on the higher of the contract price and the VPT, and the answer<br />\nsays which one it used.</li>\n<li><code>[flatin_imi concelho=\"porto\" vpt=\"180000\"]</code> — also shows the yearly IMI for<br />\nthat taxable value (VPT). <code>concelho</code> takes a name or the four-digit code.</li>\n</ul>\n<h4>Credit link</h4>\n<p>The credit link is <strong>off by default</strong>. If you would like to credit the source,<br />\nswitch it on in <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> flatin.pt</strong>: results then show a small<br />\n&#8220;Calculated by flatin.pt&#8221; line with a link. While it is off, the plugin adds<br />\nno link to flatin.pt anywhere in your pages — not even when the service is<br />\nunreachable — and the calculators work exactly the same either way.</p>\n<h4>Who we are</h4>\n<p>flatin.pt is a lead-generation platform for property in Portugal. <strong>It is not<br />\na real-estate agency and holds no AMI licence</strong>; the service itself is<br />\nprovided by licensed agencies. The results are estimates from official tables,<br />\nnot tax advice. This plugin sells nothing and collects nothing.</p>\n<h3>External services</h3>\n<p>This plugin connects to the flatin.pt API (<code>https://flatin.pt/api/v1</code>), run<br />\nby flatin.pt, to calculate taxes and look up IMI rates. The calculations are<br />\ndone there so that one maintained tax table serves every site. Without this<br />\nservice the shortcodes cannot show results.</p>\n<p><strong>When.</strong> Only when a page containing a shortcode is rendered and the answer<br />\nfor that exact input is not already cached in your site&#8217;s database. Answers<br />\nare stored as transients: IMI rates for one day, IMT calculations for one<br />\nhour, invalid input (for example a misspelt municipality) for one hour. No<br />\nrequest is made on activation, from the settings screen, or on pages without<br />\na shortcode.</p>\n<p><strong>What is sent.</strong></p>\n<ul>\n<li><code>[flatin_imt]</code>: an HTTPS POST to <code>https://flatin.pt/api/v1/imt/calculate</code><br />\nwith the price, the VPT if the shortcode gives one, the territory, and the<br />\ntwo yes/no options from the shortcode.</li>\n<li><code>[flatin_imi]</code>: an HTTPS GET to <code>https://flatin.pt/api/v1/imi/rates/{municipality}</code><br />\nwith the municipality name or code from the shortcode. The taxable value<br />\n(<code>vpt</code>) is not sent: the yearly amount is calculated on your server.</li>\n</ul>\n<p>Each request identifies the plugin with the User-Agent<br />\n    flatin-pt-wordpress/1.0.3 (+https://flatin.pt/). <strong>Nothing about your<br />\nvisitors is sent</strong>: no visitor IP address, page URL, referrer, cookies or<br />\nidentifiers. As with any HTTPS request, the flatin.pt server sees the IP<br />\naddress of your web server; it is kept in server logs as described in the<br />\nprivacy policy.</p>\n<ul>\n<li>Terms of use: https://flatin.pt/en/legal/termos-utilizacao/</li>\n<li>Privacy policy: https://flatin.pt/en/legal/privacidade/</li>\n<li>API documentation: https://flatin.pt/en/tools/api-and-data/</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/flatin-pt.1.0.3.zip",
+    "upgrade_notice": {
+        "1.0.3": "<p>Translations now come from translate.wordpress.org. No shortcode, attribute\nor setting changes.</p>",
+        "1.0.2": "<p>Optional <code>vpt</code> attribute for <code>[flatin_imt]</code>; the answer names the value the\ntaxes were calculated on. Existing shortcodes keep working unchanged.</p>",
+        "1.0.1": "<p>Wording only: the registration line is named correctly and its source is given.\nNo shortcode, attribute or setting changes.</p>",
+        "1.0.0": "<p>First release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/flatin-pt/assets/screenshot-1.png?rev=3757375",
+            "caption": "IMT breakdown and IMI rate rendered inside a post with the default theme; the second IMI block is a municipality that sets no single rate."
+        },
+        {
+            "src": "https://ps.w.org/flatin-pt/assets/screenshot-2.png?rev=3757375",
+            "caption": "Settings → flatin.pt: the opt-in credit link (off by default), the shortcodes, and what leaves your site."
+        }
+    ],
+    "tags": {
+        "calculator": "calculator",
+        "imt": "imt",
+        "portugal": "portugal",
+        "real-estate": "real-estate",
+        "tax": "tax"
+    },
+    "stable_tag": "1.0.3",
+    "versions": {
+        "1.0.3": "https://downloads.wordpress.org/plugin/flatin-pt.1.0.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/flatin-pt.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/flatin-pt/assets/banner-772x250.png?rev=3757375",
+        "high": "https://ps.w.org/flatin-pt/assets/banner-1544x500.png?rev=3757375"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/flatin-pt/assets/icon-128x128.png?rev=3757375",
+        "2x": "https://ps.w.org/flatin-pt/assets/icon-256x256.png?rev=3757375"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
