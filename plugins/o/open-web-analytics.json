@@ -1,7 +1,7 @@
 {
     "name": "Open Web Analytics for WordPress",
     "slug": "open-web-analytics",
-    "version": "2.2.2",
+    "version": "2.3.1",
     "author": "<a href=\"https://profiles.wordpress.org/padams/\">padams</a>",
     "author_profile": "https://profiles.wordpress.org/padams/",
     "contributors": {
@@ -29,26 +29,49 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 100,
-    "last_updated": "2026-10-21 18:25:00",
+    "last_updated": "2026-10-22 06:11:00",
     "added": "2008-08-10",
     "homepage": "http://www.openwebanalytics.com",
     "sections": {
-        "description": "<p>Open Web Analytics is an open source alternative to commercial tools such as Google Analytics. Stay in control of the data you collect about the users of your website or app. This plugin does NOT install an instance of OWA server. It requires that you have admin access to a running instance of OWA, version 1.14 or later.</p>\n<h4>FEATURES</h4>\n<ul>\n<li>Integrates your OWA instance with WordPress</li>\n<li>Track page views, visits actions etc. </li>\n<li>Automatically inserts tracking code on all published web pages (posts, pages, attachments, taxonomies, archives, etc.)</li>\n<li>Track WordPress admin interface pages</li>\n<li>Automatically sets page title</li>\n<li>Automatically sets page type</li>\n<li>Automatically sets user name of logged in users</li>\n</ul>\n<h3>Development</h3>\n<p>This plugin is actively developed on <a href=\"https://github.com/open-web-analytics/owa-wordpress-plugin\" rel=\"nofollow ugc\">Github</a>. Please file any bugs, feature, or support requests on Github!</p>\n<h3>Donate!</h3>\n<p>Open Web analytics is free. However, we ask that you <a href=\"http://paypal.me/openwebanalytics\" rel=\"nofollow ugc\">make a donation</a> if you require support or find this plugin useful!</p>\n",
-        "changelog": "<h4>2.2.2</h4>\n<ul>\n<li>Requires OWA PHP SDK 1.1.1, which no longer installs its tests and development files.</li>\n</ul>\n<h4>2.2.1</h4>\n<ul>\n<li>The plugin package no longer includes the OWA SDK&#8217;s development files (its tests, test fixtures and CI configuration). 2.2.0 shipped them under vendor/open-web-analytics/owa-php-sdk/, including a test server script that echoes requests back.</li>\n</ul>\n<h4>2.2.0</h4>\n<ul>\n<li>Requires PHP 8.2 and OWA 1.14 or later.</li>\n<li>Updated the OWA PHP SDK to 1.1.0, which no longer bundles Guzzle. Fixes conflicts with other plugins that ship their own copy, and the fatal error when OWA cannot be reached.</li>\n<li>The tracking tag loads the tracker from OWA 1.14&#8217;s path (public/base/dist/owa.tracker.js) instead of relying on a redirect.</li>\n<li>The Website ID list reads the site list OWA has returned since 1.10.1. When the list cannot be loaded, the reason is shown under the field and the saved Website ID is kept.</li>\n<li>Removed tracking of WordPress admin actions (logins, posts, comments, etc.) and feed tracking (feed requests and tracking parameters on feed links), with their settings.</li>\n<li>Tracking commands are JSON encoded; page titles are sent as plain text, and an empty title no longer overwrites the page&#8217;s own.</li>\n<li>User names are sent only for logged-in users.</li>\n<li>Fixed the endpoint URL scheme check, a fatal error on an invalid On/Off value, and PHP 8 deprecation notices.</li>\n</ul>\n"
+        "description": "<p>Adds the Open Web Analytics (OWA) tracking tag to your site&#8217;s public pages. Requires an OWA server, 1.14 or later. The plugin does not install one.</p>\n<h4>OWA 1.x and 2.x</h4>\n<p>Choose the server version under OWA &gt; Settings.</p>\n<ul>\n<li><strong>1.x</strong> authenticates with an OWA user&#8217;s API key and the server&#8217;s Secret Auth Key. Tracker options are set in WordPress.</li>\n<li><strong>2.x (beta)</strong> authenticates with an OWA application password and loads the Observation Profile&#8217;s tracking bundle. Tracker options are set on the OWA server; the settings page links to them.</li>\n</ul>\n<h4>What is tracked</h4>\n<ul>\n<li>Public pages, with their title and page type.</li>\n<li>The user name of logged-in users, if Track Named Users is on.</li>\n<li>WordPress admin pages, if Track WP Admin Pages is on (1.x only).</li>\n</ul>\n<p>Previews, the Customizer and, if Don&#8217;t Track Logged-in Users is on, logged-in users are not tracked.</p>\n<h4>Multisite</h4>\n<p>With OWA 2.x, Network Admin &gt; OWA sets one OWA server and application password for every site in the network. Then either:</p>\n<ul>\n<li>each site chooses its Observation Profile from those that share its domain, or</li>\n<li>the network sets each site&#8217;s Observation Profile and turns tracking on or off per site.</li>\n</ul>\n<h4>Page caches</h4>\n<p>A cached page keeps the tracking tag it was rendered with. When a site&#8217;s tag changes (tracking turned on or off, another Observation Profile or OWA server), the plugin fires <code>owa_wp_tag_changed</code> with the blog ID, in that site&#8217;s context. Proxy Cache Purge purges the whole site on it. Other page caches can hook the same action.</p>\n<h3>Development</h3>\n<p>Developed on <a href=\"https://github.com/open-web-analytics/owa-wordpress-plugin\" rel=\"nofollow ugc\">GitHub</a>. File bugs and feature requests there.</p>\n<h3>Donate</h3>\n<p>Open Web Analytics is free. If you need support or find the plugin useful, please <a href=\"http://paypal.me/openwebanalytics\" rel=\"nofollow ugc\">donate</a>.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin.</li>\n<li>Go to OWA &gt; Settings.</li>\n<li>Enter your OWA server&#8217;s URL as the OWA Endpoint, ending with <code>/</code>.</li>\n<li>Enter the credentials:\n<ul>\n<li>1.x: the API Key (OWA: Settings &gt; Users &gt; Edit) and the Secret Auth Key (<code>OWA_AUTH_KEY</code> in the server&#8217;s <code>owa-config.php</code>).</li>\n<li>2.x: select 2.x and enter an Application Password (OWA: My Preferences &gt; Application Passwords). A read-only password is enough.</li>\n</ul>\n</li>\n<li>Save, then select the Observation Profile to track and save again. The plugin stores its site ID; in 1.x the field is labeled Website ID.</li>\n</ol>\n<p>On a multisite network, set up OWA 2.x once under Network Admin &gt; OWA.</p>\n",
+        "faq": "\n<dt id=\"no%20tracking%20tag%20appears\">\nNo tracking tag appears\n</h4>\n<p>\n<p>The tag is added once Enable OWA is on and the OWA Endpoint and Observation Profile are saved. Your theme must call <code>wp_head()</code>.</p>\n</p>\n<dt id=\"the%20observation%20profiles%20do%20not%20load%20over%20http\">\nThe Observation Profiles do not load over http\n</h4>\n<p>\n<p>Application passwords are sent only over https. To use an http OWA server, turn off Application Passwords Need HTTPS on the OWA server, and set <code>allow_insecure_app_password</code> through the plugin&#8217;s <code>owa_wp_sdk_config</code> filter:</p>\n<pre><code>add_filter( 'owa_wp_sdk_config', fn( $config ) =&gt; [ 'allow_insecure_app_password' =&gt; true ] + $config );\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>2.3.1</h4>\n<ul>\n<li>Settings link on the Plugins screen. When the plugin is network-activated, the Network Admin &gt; Plugins link goes to the network settings.</li>\n<li>Observation Profiles are listed as &#8220;site ID – domain (name)&#8221; on the network page and in each site&#8217;s picker, with the name left off when the Profile has none.</li>\n</ul>\n<h4>2.3.0</h4>\n<ul>\n<li>OWA 2.x support (beta), chosen with the new OWA Server Version setting. 1.x stays the default.\n<ul>\n<li>Authenticates with an OWA application password.</li>\n<li>Loads the Observation Profile&#8217;s tracking bundle. Tracker options are set on the OWA server; the settings page links to them.</li>\n<li>Tags public pages only.</li>\n</ul>\n</li>\n<li>Multisite network mode (2.x): one OWA server and application password for the network. Each site chooses an Observation Profile that shares its domain, or the network sets each site&#8217;s Observation Profile and tracking switch.</li>\n<li>Fires <code>owa_wp_tag_changed</code> when a site&#8217;s tag changes. Proxy Cache Purge purges the site on it.</li>\n<li>New setting: Don&#8217;t Track Logged-in Users.</li>\n<li>Settings pages rebuilt with WordPress components. Keys and passwords are never sent back to the browser. An invalid entry is reported under its field and nothing is saved.</li>\n</ul>\n<h4>2.2.3</h4>\n<ul>\n<li>No tracking tag until the OWA Endpoint and Website ID are both set. Before, activating the plugin added a tag with an empty endpoint to every page, so each page view also requested a tracker URL that resolved against the page itself and returned a 404.</li>\n</ul>\n<h4>2.2.2</h4>\n<ul>\n<li>Requires OWA PHP SDK 1.1.1, which no longer installs its tests and development files.</li>\n</ul>\n<h4>2.2.1</h4>\n<ul>\n<li>The plugin package no longer includes the OWA SDK&#8217;s development files (its tests, test fixtures and CI configuration). 2.2.0 shipped them under vendor/open-web-analytics/owa-php-sdk/, including a test server script that echoes requests back.</li>\n</ul>\n<h4>2.2.0</h4>\n<ul>\n<li>Requires PHP 8.2 and OWA 1.14 or later.</li>\n<li>Updated the OWA PHP SDK to 1.1.0, which no longer bundles Guzzle. Fixes conflicts with other plugins that ship their own copy, and the fatal error when OWA cannot be reached.</li>\n<li>The tracking tag loads the tracker from OWA 1.14&#8217;s path (public/base/dist/owa.tracker.js) instead of relying on a redirect.</li>\n<li>The Website ID list reads the site list OWA has returned since 1.10.1. When the list cannot be loaded, the reason is shown under the field and the saved Website ID is kept.</li>\n<li>Removed tracking of WordPress admin actions (logins, posts, comments, etc.) and feed tracking (feed requests and tracking parameters on feed links), with their settings.</li>\n<li>Tracking commands are JSON encoded; page titles are sent as plain text, and an empty title no longer overwrites the page&#8217;s own.</li>\n<li>User names are sent only for logged-in users.</li>\n<li>Fixed the endpoint URL scheme check, a fatal error on an invalid On/Off value, and PHP 8 deprecation notices.</li>\n</ul>\n"
     },
-    "short_description": "The official plugin for integrating Open Web Analytics with WordPress based web sites and applications.",
-    "description": "<p>Open Web Analytics is an open source alternative to commercial tools such as Google Analytics. Stay in control of the data you collect about the users of your website or app. This plugin does NOT install an instance of OWA server. It requires that you have admin access to a running instance of OWA, version 1.14 or later.</p>\n<h4>FEATURES</h4>\n<ul>\n<li>Integrates your OWA instance with WordPress</li>\n<li>Track page views, visits actions etc. </li>\n<li>Automatically inserts tracking code on all published web pages (posts, pages, attachments, taxonomies, archives, etc.)</li>\n<li>Track WordPress admin interface pages</li>\n<li>Automatically sets page title</li>\n<li>Automatically sets page type</li>\n<li>Automatically sets user name of logged in users</li>\n</ul>\n<h3>Development</h3>\n<p>This plugin is actively developed on <a href=\"https://github.com/open-web-analytics/owa-wordpress-plugin\" rel=\"nofollow ugc\">Github</a>. Please file any bugs, feature, or support requests on Github!</p>\n<h3>Donate!</h3>\n<p>Open Web analytics is free. However, we ask that you <a href=\"http://paypal.me/openwebanalytics\" rel=\"nofollow ugc\">make a donation</a> if you require support or find this plugin useful!</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/open-web-analytics.2.2.2.zip",
+    "short_description": "Adds Open Web Analytics tracking to WordPress sites and multisite networks.",
+    "description": "<p>Adds the Open Web Analytics (OWA) tracking tag to your site&#8217;s public pages. Requires an OWA server, 1.14 or later. The plugin does not install one.</p>\n<h4>OWA 1.x and 2.x</h4>\n<p>Choose the server version under OWA &gt; Settings.</p>\n<ul>\n<li><strong>1.x</strong> authenticates with an OWA user&#8217;s API key and the server&#8217;s Secret Auth Key. Tracker options are set in WordPress.</li>\n<li><strong>2.x (beta)</strong> authenticates with an OWA application password and loads the Observation Profile&#8217;s tracking bundle. Tracker options are set on the OWA server; the settings page links to them.</li>\n</ul>\n<h4>What is tracked</h4>\n<ul>\n<li>Public pages, with their title and page type.</li>\n<li>The user name of logged-in users, if Track Named Users is on.</li>\n<li>WordPress admin pages, if Track WP Admin Pages is on (1.x only).</li>\n</ul>\n<p>Previews, the Customizer and, if Don&#8217;t Track Logged-in Users is on, logged-in users are not tracked.</p>\n<h4>Multisite</h4>\n<p>With OWA 2.x, Network Admin &gt; OWA sets one OWA server and application password for every site in the network. Then either:</p>\n<ul>\n<li>each site chooses its Observation Profile from those that share its domain, or</li>\n<li>the network sets each site&#8217;s Observation Profile and turns tracking on or off per site.</li>\n</ul>\n<h4>Page caches</h4>\n<p>A cached page keeps the tracking tag it was rendered with. When a site&#8217;s tag changes (tracking turned on or off, another Observation Profile or OWA server), the plugin fires <code>owa_wp_tag_changed</code> with the blog ID, in that site&#8217;s context. Proxy Cache Purge purges the whole site on it. Other page caches can hook the same action.</p>\n<h3>Development</h3>\n<p>Developed on <a href=\"https://github.com/open-web-analytics/owa-wordpress-plugin\" rel=\"nofollow ugc\">GitHub</a>. File bugs and feature requests there.</p>\n<h3>Donate</h3>\n<p>Open Web Analytics is free. If you need support or find the plugin useful, please <a href=\"http://paypal.me/openwebanalytics\" rel=\"nofollow ugc\">donate</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/open-web-analytics.2.3.1.zip",
     "upgrade_notice": [],
-    "screenshots": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/open-web-analytics/assets/screenshot-1.png?rev=3759271",
+            "caption": "Settings for OWA 1.x."
+        },
+        {
+            "src": "https://ps.w.org/open-web-analytics/assets/screenshot-2.png?rev=3759271",
+            "caption": "Settings for OWA 2.x."
+        },
+        {
+            "src": "https://ps.w.org/open-web-analytics/assets/screenshot-3.png?rev=3759271",
+            "caption": "Network Admin &gt; OWA: each site's Observation Profile and tracking switch."
+        },
+        {
+            "src": "https://ps.w.org/open-web-analytics/assets/screenshot-4.png?rev=3759271",
+            "caption": "A site whose Observation Profile the network sets."
+        },
+        {
+            "src": "https://ps.w.org/open-web-analytics/assets/screenshot-5.png?rev=3759271",
+            "caption": "A site choosing from the Observation Profiles that share its domain."
+        }
+    ],
     "tags": {
-        "clickstream": "clickstream",
+        "owa": "öwa",
+        "multisite": "multisite",
+        "open-web-analytics": "open web analytics",
         "traffic-analysis": "traffic analysis",
-        "traffic-reporting": "traffic reporting",
-        "user-tracking": "user tracking",
         "web-analytics": "web analytics"
     },
-    "stable_tag": "2.2.2",
+    "stable_tag": "2.3.1",
     "versions": {
         "2.0.0-fix": "https://downloads.wordpress.org/plugin/open-web-analytics.2.0.0-fix.zip",
         "2.0.1": "https://downloads.wordpress.org/plugin/open-web-analytics.2.0.1.zip",
@@ -66,6 +89,9 @@
         "2.2.0": "https://downloads.wordpress.org/plugin/open-web-analytics.2.2.0.zip",
         "2.2.1": "https://downloads.wordpress.org/plugin/open-web-analytics.2.2.1.zip",
         "2.2.2": "https://downloads.wordpress.org/plugin/open-web-analytics.2.2.2.zip",
+        "2.2.3": "https://downloads.wordpress.org/plugin/open-web-analytics.2.2.3.zip",
+        "2.3.0": "https://downloads.wordpress.org/plugin/open-web-analytics.2.3.0.zip",
+        "2.3.1": "https://downloads.wordpress.org/plugin/open-web-analytics.2.3.1.zip",
         "trunk": "https://downloads.wordpress.org/plugin/open-web-analytics.zip"
     },
     "business_model": false,
@@ -88,17 +114,17 @@
             "type": "plugin",
             "slug": "open-web-analytics",
             "language": "de_DE",
-            "version": "2.1.5",
+            "version": "2.3.0",
             "updated": "2024-02-23 22:38:25",
-            "package": "https://downloads.wordpress.org/translation/plugin/open-web-analytics/2.1.5/de_DE.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/open-web-analytics/2.3.0/de_DE.zip"
         },
         {
             "type": "plugin",
             "slug": "open-web-analytics",
             "language": "de_DE_formal",
-            "version": "2.1.5",
+            "version": "2.3.0",
             "updated": "2024-02-23 22:37:13",
-            "package": "https://downloads.wordpress.org/translation/plugin/open-web-analytics/2.1.5/de_DE_formal.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/open-web-analytics/2.3.0/de_DE_formal.zip"
         }
     ]
 }
