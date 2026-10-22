@@ -1,7 +1,7 @@
 {
     "name": "Slimify",
     "slug": "slimify",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "author": "<a href=\"https://profiles.wordpress.org/mirosedlacek/\">Miro Sedlacek</a>",
     "author_profile": "https://profiles.wordpress.org/mirosedlacek/",
     "contributors": {
@@ -12,7 +12,7 @@
         }
     },
     "requires": "6.4",
-    "tested": "7.0.4",
+    "tested": "7.1.3",
     "requires_php": "8.4",
     "requires_plugins": [],
     "compatibility": [],
@@ -29,18 +29,18 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2026-08-14 11:09:00",
+    "last_updated": "2026-10-22 13:05:00",
     "added": "2026-08-14",
     "homepage": "",
     "sections": {
-        "description": "<p>Slimify compresses JPEG and PNG uploads on your server using pngquant, MozJPEG, jpegoptim, and Imagick. Optional WebP siblings are created when smaller than the final image.</p>\n<ul>\n<li>Local tooling only — no third-party API, accounts, or telemetry</li>\n<li>Compress on upload, restore from originals, and bulk-process the library</li>\n<li>Private originals storage under uploads with nginx/Apache deny patterns</li>\n<li>Works with common offload plugins via filters</li>\n</ul>\n",
+        "description": "<p>Slimify compresses JPEG and PNG uploads on your server using pngquant, MozJPEG, jpegoptim, and Imagick. Optional WebP siblings are created when smaller than the final image.</p>\n<ul>\n<li>Local tooling only — no third-party API, accounts, or telemetry</li>\n<li>Compress on upload, restore from originals, and bulk-process the library</li>\n<li>Private originals storage under uploads with nginx/Apache deny patterns</li>\n<li>Works with common offload plugins (WP Offload Media and others) — remote originals are fetched, compressed, and pushed back, and WebP siblings are only served from the CDN once confirmed there</li>\n<li>Missing files screen lists library entries whose original is gone, so bulk runs never stall on them</li>\n</ul>\n",
         "installation": "<ol>\n<li>Upload the <code>slimify</code> folder to <code>/wp-content/plugins/</code></li>\n<li>Activate the plugin through the Plugins screen</li>\n<li>Open Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Media Compressor to configure quality and WebP</li>\n</ol>\n",
-        "faq": "\n<dt id=\"does%20slimify%20send%20images%20to%20a%20third%20party%3F\">\nDoes Slimify send images to a third party?\n</h4>\n<p>\n<p>No. Compression runs on your server with local binaries or Imagick.</p>\n</p>\n<dt id=\"which%20formats%20are%20supported%3F\">\nWhich formats are supported?\n</h4>\n<p>\n<p>JPEG and PNG inputs. Optional WebP siblings can be generated when beneficial.</p>\n</p>\n\n",
-        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
+        "faq": "\n<dt id=\"does%20slimify%20send%20images%20to%20a%20third%20party%3F\">\nDoes Slimify send images to a third party?\n</h4>\n<p>\n<p>No. Compression runs on your server with local binaries or Imagick.</p>\n</p>\n<dt id=\"which%20formats%20are%20supported%3F\">\nWhich formats are supported?\n</h4>\n<p>\n<p>JPEG and PNG inputs. Optional WebP siblings can be generated when beneficial.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20wp%20offload%20media%20or%20other%20offload%20plugins%3F\">\nDoes it work with WP Offload Media or other offload plugins?\n</h4>\n<p>\n<p>Yes. If an original only exists in remote storage, Slimify downloads it, compresses it, and asks the offload plugin to re-upload. WebP siblings are added to WP Offload Media&#8217;s upload list and are only served from the CDN after Slimify confirms they exist there; until then the local WebP is used.</p>\n</p>\n<dt id=\"what%20is%20the%20missing%20files%20tab%3F\">\nWhat is the Missing files tab?\n</h4>\n<p>\n<p>It lists media library entries whose original is neither on the server nor fetchable from remote storage. Bulk compression skips them. You can restore the file or delete the entries from there.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.1</h4>\n<ul>\n<li>Fix: auto-offload failed when a theme registers a numeric size name (e.g. add_image_size(&#8216;680&#8217;, …)) — WordPress stores it under key 0 and reports it missing forever; Slimify treats it as present, uses a safe offload key, and keeps its srcset entry correct</li>\n<li>Fix: images under 2 KB were marked &#8220;Over limits&#8221; and skipped WebP — compression and WebP eligibility are now separate</li>\n<li>Fix: &#8220;Over limits&#8221; attachments could never recover — skipped files are no longer locked in the ledger</li>\n<li>Fix: offload file-path hooks are collected on <code>init</code> so themes and mu-plugins can register them</li>\n<li>Fix: WebP is only served from the CDN once confirmed there; otherwise a local WebP URL is used</li>\n<li>Fix: delivery filters run last so offloaders cannot undo the WebP swap</li>\n<li>Improvement: WebP siblings in offload manifests use named keys (<code>size.webp</code>)</li>\n<li>Feature: after compress/restore, any offload plugin that hooks metadata updates is asked to re-upload; WebPs are HEAD-checked before CDN delivery</li>\n<li>Feature: Missing files screen lists attachments with no local or remote source instead of stalling bulk runs</li>\n<li>Fix: Missing files scan no longer flags offloaded items whose local copy was removed</li>\n<li>Security: Missing files delete only accepts flagged attachments and re-checks before deleting</li>\n<li>Security: remote WebP checks use safe HTTP requests with redirects disabled</li>\n<li>Performance: remote WebP checks only run for offloaded attachments (3 s timeout, 12-file cap, 10 s budget)</li>\n<li>Fix: &#8220;pushed to remote&#8221; is not reported until WebPs are confirmed</li>\n<li>Fix: library stats no longer count an attachment as both compressed and missing</li>\n<li>Fix: a successful compress clears the missing-file flag</li>\n<li>Fix: a busy compress no longer triggers a needless offload</li>\n<li>Fix: remote downloads that swap format behind a .jpg/.png URL are rejected</li>\n<li>Hardening: temporary copies go to the system temp directory, not public uploads</li>\n<li>Fix: WebP delivery treats www and non-www hosts as the same site</li>\n<li>Fix: uninstall removes Slimify cron events</li>\n<li>Fix: WebP clients keep a responsive srcset (rebuilt when Core drops it for a .webp src)</li>\n<li>Fix: host-less upload URLs under WP-CLI without &#8211;url are no longer treated as remotely fetchable</li>\n<li>Fix: images offloaded after compression switch to CDN WebP once confirmed (offloader upload + hourly delivery re-check)</li>\n<li>Fix: new uploads queue that re-check only after WebPs exist</li>\n<li>Fix: the deferred queue waits for the upload request to finish before compressing</li>\n<li>Fix: remote WebP checks with more than 12 files make progress on each run</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
     },
     "short_description": "Local JPEG and PNG compression with optional WebP siblings. No remote API.",
-    "description": "<p>Slimify compresses JPEG and PNG uploads on your server using pngquant, MozJPEG, jpegoptim, and Imagick. Optional WebP siblings are created when smaller than the final image.</p>\n<ul>\n<li>Local tooling only — no third-party API, accounts, or telemetry</li>\n<li>Compress on upload, restore from originals, and bulk-process the library</li>\n<li>Private originals storage under uploads with nginx/Apache deny patterns</li>\n<li>Works with common offload plugins via filters</li>\n</ul>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/slimify.1.0.0.zip",
+    "description": "<p>Slimify compresses JPEG and PNG uploads on your server using pngquant, MozJPEG, jpegoptim, and Imagick. Optional WebP siblings are created when smaller than the final image.</p>\n<ul>\n<li>Local tooling only — no third-party API, accounts, or telemetry</li>\n<li>Compress on upload, restore from originals, and bulk-process the library</li>\n<li>Private originals storage under uploads with nginx/Apache deny patterns</li>\n<li>Works with common offload plugins (WP Offload Media and others) — remote originals are fetched, compressed, and pushed back, and WebP siblings are only served from the CDN once confirmed there</li>\n<li>Missing files screen lists library entries whose original is gone, so bulk runs never stall on them</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/slimify.1.0.1.zip",
     "upgrade_notice": [],
     "screenshots": [
         {
@@ -55,9 +55,10 @@
         "performance": "performance",
         "webp": "webp"
     },
-    "stable_tag": "1.0.0",
+    "stable_tag": "1.0.1",
     "versions": {
         "1.0.0": "https://downloads.wordpress.org/plugin/slimify.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/slimify.1.0.1.zip",
         "v1.0.0": "https://downloads.wordpress.org/plugin/slimify.v1.0.0.zip",
         "trunk": "https://downloads.wordpress.org/plugin/slimify.zip"
     },
