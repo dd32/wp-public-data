@@ -1,0 +1,79 @@
+{
+    "name": "Daily Picks Fee Report for WooCommerce",
+    "slug": "daily-picks-fee-report",
+    "version": "1.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/dailypicks/\">dailypicks</a>",
+    "author_profile": "https://profiles.wordpress.org/dailypicks/",
+    "contributors": {
+        "dailypicks": {
+            "profile": "https://profiles.wordpress.org/dailypicks/",
+            "avatar": "https://secure.gravatar.com/avatar/16b87e7cd06803b8863b63bb83c414be564ce02c9fc7d4c78f83dba2d001cfa9?s=96&d=monsterid&r=g",
+            "display_name": "dailypicks"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1.3",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/daily-picks-fee-report/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-23 10:58:00",
+    "added": "2026-10-23",
+    "homepage": "",
+    "sections": {
+        "description": "<p>WooCommerce shows what customers paid. It does not show what Stripe and PayPal kept. This plugin does — using the exact amounts the official payment plugins saved on each order, not an estimate.</p>\n<p><strong>What you get</strong></p>\n<ul>\n<li>A monthly report of sales, refunds, fees, net received, order count and fee rate, for Stripe and PayPal separately.</li>\n<li>Currencies kept apart. Stripe settles in your balance currency, which can differ from the order currency; each combination gets its own row. Nothing is converted.</li>\n<li>Net after refunds, done right. Stripe adds each refund to the order&#8217;s running totals while PayPal re-sums all refunds every time; both are handled so a refund is never subtracted twice.</li>\n<li>PayPal refunds use PayPal&#8217;s own numbers: net is the captured net minus the refunded net. The PayPal fee on refunds is shown on its own line for reference and is not used in any total.</li>\n<li>Orders that cannot be trusted are shown, not hidden. Orders whose fee has not been saved yet (unsettled payments, delayed payment methods, older orders) are listed instead of being counted as zero. Orders whose saved numbers do not add up — for example a Stripe charge whose fee was saved twice — are listed with the reason and kept out of the totals.</li>\n<li>Fee and Net columns in the WooCommerce order list.</li>\n<li>Monthly and per-order CSV files that open cleanly in Excel.</li>\n<li>Works with High-Performance Order Storage (HPOS) and with the classic posts storage.</li>\n</ul>\n<p><strong>Read-only by design</strong></p>\n<p>The plugin only reads what the payment plugins already saved. It never calls Stripe or PayPal, never asks for API keys, and never writes to your orders. (The Stripe plugin&#8217;s own helper silently rewrites old meta keys when it reads them; this plugin reads the values directly so that nothing changes.)</p>\n<p><strong>Supported payment plugins</strong></p>\n<ul>\n<li>WooCommerce Stripe Payment Gateway (all Stripe payment methods)</li>\n<li>WooCommerce PayPal Payments</li>\n</ul>\n<p>Square, Mollie and WooPayments are not included. WooPayments has its own fee report.</p>\n<p><strong>Add-on</strong></p>\n<p>A paid add-on reconciles Stripe payouts: for each payout it lists the orders, refunds, fees and adjustments it contains and shows any difference from WooCommerce. It also exports accounting CSVs for Xero and QuickBooks. <a href=\"https://dailypicksjp.gumroad.com/l/fee-report-addon\" rel=\"nofollow ugc\">About the add-on</a></p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin. WooCommerce must be active.</li>\n<li>Open WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Fee Report.</li>\n</ol>\n<p>There is nothing to set up.</p>\n",
+        "faq": "\n<dt id=\"where%20do%20the%20numbers%20come%20from%3F\">\nWhere do the numbers come from?\n</h4>\n<p>\n<p>From the order meta written by the official plugins: <code>_stripe_fee</code>, <code>_stripe_net</code> and <code>_stripe_currency</code> for Stripe, and <code>_ppcp_paypal_fees</code> and <code>_ppcp_paypal_refund_fees</code> for PayPal Payments.</p>\n</p>\n<dt id=\"why%20is%20an%20order%20listed%20as%20%22no%20fee%20data%22%3F\">\nWhy is an order listed as &#8220;No fee data&#8221;?\n</h4>\n<p>\n<p>The payment plugin has not saved a fee for it yet. This is normal for payments that settle later (some bank-based methods), for subscription renewals before the charge succeeds, and for orders older than the payment plugin&#8217;s fee feature. These orders are not counted as zero.</p>\n</p>\n<dt id=\"why%20is%20an%20order%20listed%20as%20%22does%20not%20add%20up%22%3F\">\nWhy is an order listed as &#8220;Does not add up&#8221;?\n</h4>\n<p>\n<p>When the fee is saved in the order currency, the plugin checks that the saved fee plus the saved net equals the order total minus refunds (PayPal: that PayPal&#8217;s captured and refunded amounts match the order). If they don&#8217;t, the order is listed with the reason so you can look at it, and its numbers are left out of the totals.</p>\n</p>\n<dt id=\"which%20month%20does%20a%20refund%20belong%20to%3F\">\nWhich month does a refund belong to?\n</h4>\n<p>\n<p>The month of the original order. The payment plugins store fee and net per order, so a later refund updates that order.</p>\n</p>\n<dt id=\"which%20orders%20are%20included%3F\">\nWhich orders are included?\n</h4>\n<p>\n<p>Orders with the status Processing, Completed or Refunded, by paid date in your site&#8217;s time zone. Developers can change the statuses with the <code>dpfr_report_statuses</code> filter.</p>\n</p>\n<dt id=\"does%20it%20slow%20down%20my%20store%3F\">\nDoes it slow down my store?\n</h4>\n<p>\n<p>No. It only runs when you open the report or the order list in the admin. Reports are calculated with a few database queries and cached for 10 minutes; use &#8220;Recalculate&#8221; to refresh. In testing, 12,000 orders took about two seconds to calculate.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.1</h4>\n<ul>\n<li>CSV downloads: any text cell starting with = + &#8211; @ is now written as text, so a spreadsheet cannot run it as a formula.</li>\n<li>Removed the bundled translation files; translations come from translate.wordpress.org.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "The real Stripe and PayPal fees, and your real net revenue, month by month. Read-only: your orders are never modified.",
+    "description": "<p>WooCommerce shows what customers paid. It does not show what Stripe and PayPal kept. This plugin does — using the exact amounts the official payment plugins saved on each order, not an estimate.</p>\n<p><strong>What you get</strong></p>\n<ul>\n<li>A monthly report of sales, refunds, fees, net received, order count and fee rate, for Stripe and PayPal separately.</li>\n<li>Currencies kept apart. Stripe settles in your balance currency, which can differ from the order currency; each combination gets its own row. Nothing is converted.</li>\n<li>Net after refunds, done right. Stripe adds each refund to the order&#8217;s running totals while PayPal re-sums all refunds every time; both are handled so a refund is never subtracted twice.</li>\n<li>PayPal refunds use PayPal&#8217;s own numbers: net is the captured net minus the refunded net. The PayPal fee on refunds is shown on its own line for reference and is not used in any total.</li>\n<li>Orders that cannot be trusted are shown, not hidden. Orders whose fee has not been saved yet (unsettled payments, delayed payment methods, older orders) are listed instead of being counted as zero. Orders whose saved numbers do not add up — for example a Stripe charge whose fee was saved twice — are listed with the reason and kept out of the totals.</li>\n<li>Fee and Net columns in the WooCommerce order list.</li>\n<li>Monthly and per-order CSV files that open cleanly in Excel.</li>\n<li>Works with High-Performance Order Storage (HPOS) and with the classic posts storage.</li>\n</ul>\n<p><strong>Read-only by design</strong></p>\n<p>The plugin only reads what the payment plugins already saved. It never calls Stripe or PayPal, never asks for API keys, and never writes to your orders. (The Stripe plugin&#8217;s own helper silently rewrites old meta keys when it reads them; this plugin reads the values directly so that nothing changes.)</p>\n<p><strong>Supported payment plugins</strong></p>\n<ul>\n<li>WooCommerce Stripe Payment Gateway (all Stripe payment methods)</li>\n<li>WooCommerce PayPal Payments</li>\n</ul>\n<p>Square, Mollie and WooPayments are not included. WooPayments has its own fee report.</p>\n<p><strong>Add-on</strong></p>\n<p>A paid add-on reconciles Stripe payouts: for each payout it lists the orders, refunds, fees and adjustments it contains and shows any difference from WooCommerce. It also exports accounting CSVs for Xero and QuickBooks. <a href=\"https://dailypicksjp.gumroad.com/l/fee-report-addon\" rel=\"nofollow ugc\">About the add-on</a></p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/daily-picks-fee-report.1.0.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "net-revenue": "net revenue",
+        "paypal-fees": "paypal fees",
+        "reports": "reports",
+        "stripe-fees": "stripe fees",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.1",
+    "versions": {
+        "1.0.1": "https://downloads.wordpress.org/plugin/daily-picks-fee-report.1.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/daily-picks-fee-report.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/daily-picks-fee-report/assets/banner-772x250.png?rev=3761476",
+        "high": "https://ps.w.org/daily-picks-fee-report/assets/banner-1544x500.png?rev=3761476"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/daily-picks-fee-report/assets/icon-128x128.png?rev=3761476",
+        "2x": "https://ps.w.org/daily-picks-fee-report/assets/icon-256x256.png?rev=3761476"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
