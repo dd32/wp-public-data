@@ -1,7 +1,7 @@
 {
-    "name": "Login Security for WP",
+    "name": "Login Security – Custom Login URL",
     "slug": "login-security-for-wp",
-    "version": "1.0.1",
+    "version": "2.0.0",
     "author": "<a href=\"https://profiles.wordpress.org/christianzimpel/\">Christian Zimpel</a>",
     "author_profile": "https://profiles.wordpress.org/christianzimpel/",
     "contributors": {
@@ -11,8 +11,8 @@
             "display_name": "Christian Zimpel"
         }
     },
-    "requires": false,
-    "tested": "6.8",
+    "requires": "6.2",
+    "tested": "7.1.3",
     "requires_php": "7.4",
     "requires_plugins": [],
     "compatibility": [],
@@ -29,34 +29,48 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2025-04-16 07:12:00",
+    "last_updated": "2026-10-24 18:41:00",
     "added": "2023-04-21",
-    "homepage": "https://wp-support-blog.com/",
+    "homepage": "https://wordpress.org/plugins/login-security-for-wp/",
     "sections": {
-        "description": "<p>This Plugin Protect the wp-login.php and wp-admin. By allowing you to change the URL of your login page, this lightweight plugin makes it more difficult for potential attackers to find and target your site.<br />\nIt helps you to hide and change the login url to any URL you want.<br />\nThe wp-login.php and wp-admin can not be reaches any more and gives back a 404 page.</p>\n<p>It&#8217;s important to remember the new URL or bookmark it, as you&#8217;ll need it to access the login form yourself. If you ever decide to deactivate the plugin, your site will be restored to its previous state without any modifications.</p>\n"
+        "description": "<p>Bots hammer <code>/wp-login.php</code> on almost every WordPress site. This plugin moves the login form to an address only you know, for example <code>example.com/my-door/</code>, and answers requests to the default entry points with a regular 404 page of your theme.</p>\n<h4>Features</h4>\n<ul>\n<li>Choose any login URL – letters, numbers, hyphens and underscores.</li>\n<li><code>wp-login.php</code>, <code>wp-register.php</code> and <code>/wp-admin/</code> return a real <strong>404 status</strong> for logged-out visitors (no white screen, no redirect that gives the new URL away).</li>\n<li>WordPress&#8217; shortcuts <code>/login</code>, <code>/admin</code> and <code>/dashboard</code> no longer reveal the login.</li>\n<li>Password reset, registration, logout and e-mail links automatically use the new URL.</li>\n<li>Works with and without pretty permalinks. Your permalink settings are never touched.</li>\n<li>Collision check: the plugin refuses slugs that are already used by WordPress, a page or a post.</li>\n<li>Emergency switch: <code>define( 'LSFW_DISABLE', true );</code> in <code>wp-config.php</code>.</li>\n<li>No database tables, no rewrite rules, no tracking. Uninstall removes all options.</li>\n</ul>\n<h4>Why hide the login at all?</h4>\n<p>Honest answer: a hidden login is no replacement for strong passwords, two-factor authentication or a login limit. Its value is different – automated attacks stop hitting your login form, which means less server load, fewer lockouts of real users and cleaner logs. It is especially handy on sites with customer accounts where a <code>.htaccess</code> password is not an option, and it gives your customers a nicer login address. Combine it with 2FA for real protection.</p>\n<h4>Settings</h4>\n<p>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Login Security</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin.</li>\n<li>Go to Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Login Security and enter your new login slug.</li>\n<li>Bookmark the new login URL shown on the settings page.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"i%20forgot%20my%20login%20url.%20how%20do%20i%20get%20back%20in%3F\">\nI forgot my login URL. How do I get back in?\n</h4>\n<p>\n<p>Add <code>define( 'LSFW_DISABLE', true );</code> to your <code>wp-config.php</code> or rename the folder <code>wp-content/plugins/login-security-for-wp</code> via FTP. The default login works again. With WP-CLI you can read the slug with <code>wp option get wplogsec_url</code>.</p>\n</p>\n<dt id=\"why%20does%20%2Fwp-admin%2F%20show%20a%20404%20instead%20of%20redirecting%20to%20the%20login%3F\">\nWhy does /wp-admin/ show a 404 instead of redirecting to the login?\n</h4>\n<p>\n<p>A redirect would tell every visitor where your login is. Logged-in users can use wp-admin as usual.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20woocommerce%20or%20membership%20plugins%3F\">\nDoes it work with WooCommerce or membership plugins?\n</h4>\n<p>\n<p>Yes. Front-end login forms (e.g. the WooCommerce &#8220;My account&#8221; page) are not affected. Only <code>wp-login.php</code> and <code>/wp-admin/</code> are hidden.</p>\n</p>\n<dt id=\"my%20theme%20shows%20a%20login%20link.%20does%20that%20reveal%20the%20url%3F\">\nMy theme shows a login link. Does that reveal the URL?\n</h4>\n<p>\n<p>Yes – every link created with <code>wp_login_url()</code>, for example the &#8220;Log in&#8221; link of the comment form or the Login/out block, points to the new URL. Remove those links if you want to keep the address private.</p>\n</p>\n<dt id=\"does%20it%20work%20on%20multisite%3F\">\nDoes it work on multisite?\n</h4>\n<p>\n<p>The plugin is built and tested for single sites.</p>\n</p>\n\n",
+        "changelog": "<h4>2.0.0 – 2026-10-24</h4>\n<ul>\n<li>Complete rewrite following the WordPress Coding Standards.</li>\n<li>Fixed: the login could still be reached through <code>index.php?lsfw_custom_login=1</code>. The query variable no longer exists.</li>\n<li>Fixed: hidden pages showed a white screen. They now return a proper 404 page with HTTP status 404.</li>\n<li>Fixed: <code>/login</code>, <code>/admin</code>, <code>/dashboard</code> and <code>wp-signup.php</code> redirected to the custom login and revealed it.</li>\n<li>Fixed: rewrite rules were flushed on every page load (performance).</li>\n<li>Fixed: an empty login slug no longer breaks the site – the protection simply stays off until a slug is set.</li>\n<li>Changed: the plugin no longer changes your permalink structure on activation or deactivation.</li>\n<li>Changed: settings page moved to <code>add_options_page()</code> (wrong <code>add_submenu_page()</code> parameters and duplicate text domain removed).</li>\n<li>New: validation against reserved slugs and existing pages/posts.</li>\n<li>New: emergency switch <code>LSFW_DISABLE</code>.</li>\n<li>New: uninstall routine removes all options.</li>\n<li>Tested with WordPress 7.1 and PHP 8.3.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Tested up to WordPress 6.8.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
     },
-    "short_description": "This Plugin helps you to hide and change the login url to any URL you want. You find the Menü -&gt; Settings -&gt; WP Login Security",
-    "description": "<p>This Plugin Protect the wp-login.php and wp-admin. By allowing you to change the URL of your login page, this lightweight plugin makes it more difficult for potential attackers to find and target your site.<br />\nIt helps you to hide and change the login url to any URL you want.<br />\nThe wp-login.php and wp-admin can not be reaches any more and gives back a 404 page.</p>\n<p>It&#8217;s important to remember the new URL or bookmark it, as you&#8217;ll need it to access the login form yourself. If you ever decide to deactivate the plugin, your site will be restored to its previous state without any modifications.</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/login-security-for-wp.zip",
-    "upgrade_notice": [],
-    "screenshots": [],
+    "short_description": "Move your login to a custom URL. wp-login.php and wp-admin answer logged-out visitors with a clean 404 page.",
+    "description": "<p>Bots hammer <code>/wp-login.php</code> on almost every WordPress site. This plugin moves the login form to an address only you know, for example <code>example.com/my-door/</code>, and answers requests to the default entry points with a regular 404 page of your theme.</p>\n<h4>Features</h4>\n<ul>\n<li>Choose any login URL – letters, numbers, hyphens and underscores.</li>\n<li><code>wp-login.php</code>, <code>wp-register.php</code> and <code>/wp-admin/</code> return a real <strong>404 status</strong> for logged-out visitors (no white screen, no redirect that gives the new URL away).</li>\n<li>WordPress&#8217; shortcuts <code>/login</code>, <code>/admin</code> and <code>/dashboard</code> no longer reveal the login.</li>\n<li>Password reset, registration, logout and e-mail links automatically use the new URL.</li>\n<li>Works with and without pretty permalinks. Your permalink settings are never touched.</li>\n<li>Collision check: the plugin refuses slugs that are already used by WordPress, a page or a post.</li>\n<li>Emergency switch: <code>define( 'LSFW_DISABLE', true );</code> in <code>wp-config.php</code>.</li>\n<li>No database tables, no rewrite rules, no tracking. Uninstall removes all options.</li>\n</ul>\n<h4>Why hide the login at all?</h4>\n<p>Honest answer: a hidden login is no replacement for strong passwords, two-factor authentication or a login limit. Its value is different – automated attacks stop hitting your login form, which means less server load, fewer lockouts of real users and cleaner logs. It is especially handy on sites with customer accounts where a <code>.htaccess</code> password is not an option, and it gives your customers a nicer login address. Combine it with 2FA for real protection.</p>\n<h4>Settings</h4>\n<p>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Login Security</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/login-security-for-wp.2.0.0.zip",
+    "upgrade_notice": {
+        "2.0.0": "<p>Security and stability release: closes a login bypass, returns real 404 pages and stops flushing rewrite rules on every request. Your login URL is kept.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/login-security-for-wp/assets/screenshot-1.png?rev=3763655",
+            "caption": "Settings page with the active login URL."
+        }
+    ],
     "tags": {
-        "custom-url": "custom url",
+        "custom-login-url": "custom login url",
         "hide-login": "hide login",
-        "hide-my-login": "hide my login",
         "login": "login",
+        "security": "security",
         "wp-login": "wp login"
     },
-    "stable_tag": "trunk",
-    "versions": [],
+    "stable_tag": "2.0.0",
+    "versions": {
+        "2.0.0": "https://downloads.wordpress.org/plugin/login-security-for-wp.2.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/login-security-for-wp.zip"
+    },
     "business_model": false,
     "repository_url": "",
     "commercial_support_url": "",
-    "donate_link": "http://paypal.me/wirsindveg",
+    "guideline_labels": [],
+    "donate_link": "https://paypal.me/wirsindveg",
     "banners": [],
     "icons": {
-        "1x": "https://ps.w.org/login-security-for-wp/assets/icon-128x128.jpg?rev=2905506",
-        "2x": "https://ps.w.org/login-security-for-wp/assets/icon-256x256.jpg?rev=2905506"
+        "1x": "https://ps.w.org/login-security-for-wp/assets/icon-128x128.png?rev=3763655",
+        "2x": "https://ps.w.org/login-security-for-wp/assets/icon-256x256.png?rev=3763655"
     },
     "blocks": [],
     "block_assets": [],
@@ -72,6 +86,14 @@
             "version": "1.0.1",
             "updated": "2023-05-03 09:44:36",
             "package": "https://downloads.wordpress.org/translation/plugin/login-security-for-wp/1.0.1/de_DE.zip"
+        },
+        {
+            "type": "plugin",
+            "slug": "login-security-for-wp",
+            "language": "de_DE_formal",
+            "version": "1.0.1",
+            "updated": "2025-07-20 15:02:47",
+            "package": "https://downloads.wordpress.org/translation/plugin/login-security-for-wp/1.0.1/de_DE_formal.zip"
         }
     ]
 }
