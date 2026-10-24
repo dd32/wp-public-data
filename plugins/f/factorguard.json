@@ -1,0 +1,96 @@
+{
+    "name": "FactorGuard – Two-Factor Authentication",
+    "slug": "factorguard",
+    "version": "1.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/usmanaliqureshi/\">Usman Ali Qureshi</a>",
+    "author_profile": "https://profiles.wordpress.org/usmanaliqureshi/",
+    "contributors": {
+        "usmanaliqureshi": {
+            "profile": "https://profiles.wordpress.org/usmanaliqureshi/",
+            "avatar": "https://secure.gravatar.com/avatar/057b5929695d275dd1da3a3336cf4954f1f93a86a198afdac3e6d7e8e9bdd6db?s=96&d=monsterid&r=g",
+            "display_name": "Usman Ali Qureshi"
+        }
+    },
+    "requires": "5.6",
+    "tested": "7.1.3",
+    "requires_php": "8.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/factorguard/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-24 04:42:00",
+    "added": "2026-08-31",
+    "homepage": "",
+    "sections": {
+        "description": "<p><strong>FactorGuard</strong> is a lightweight, privacy-first Two-Factor Authentication (2FA) plugin for WordPress. It adds a rock-solid two-step verification layer to the default WordPress login page, without relying on any external cloud service or third-party API.</p>\n<p>After a user enters the correct username and password, they must complete a second step: enter a one-time code sent to their email <strong>or</strong> use a time-based code from an authenticator app like Google Authenticator or Authy.</p>\n<blockquote>\n<p>🔒 <strong>Zero external API calls. All verification happens on your own server.</strong></p>\n</blockquote>\n<p><strong>Core Features:</strong></p>\n<ul>\n<li>⚡ <strong>Email OTP:</strong> send a one-time passcode to the user&#8217;s registered email address</li>\n<li>📱 <strong>Authenticator App (TOTP):</strong> full RFC 6238 support for Google Authenticator, Authy, and any TOTP-compatible app</li>\n<li>🔑 <strong>One-time backup codes:</strong> hashed recovery codes so users never get locked out</li>\n<li>🔐 <strong>Military-grade encryption:</strong> TOTP secrets encrypted at rest using libsodium XSalsa20-Poly1305</li>\n<li>🚫 <strong>Replay attack protection:</strong> accepted TOTP codes are invalidated for the current time-slice</li>\n<li>⏱️ <strong>Brute force &amp; rate limiting:</strong> configurable lockout after too many failed attempts</li>\n<li>🎛️ <strong>Flexible settings:</strong> OTP code length (4-10 digits), code expiry (1-60 min), lockout duration</li>\n<li>🧙 <strong>Setup wizard:</strong> guided onboarding to configure your preferred 2FA method in minutes</li>\n<li>🌐 <strong>API-safe:</strong> automatically bypasses OTP for REST API and XML-RPC requests</li>\n<li>🌍 <strong>Translation ready:</strong> fully internationalised and <code>.pot</code> file included</li>\n<li>🧹 <strong>Clean uninstall:</strong> removes all plugin data on uninstall (opt-in)</li>\n</ul>\n<h4>How It Works &#8211; Email OTP</h4>\n<ol>\n<li>User enters their username and password on the login page</li>\n<li>If credentials are correct and OTP is enabled, a verification code is emailed to the user</li>\n<li>The login form shows an OTP input field (username/password fields are hidden)</li>\n<li>User enters the code sent to their email</li>\n<li>On success, login completes. On failure, the attempt is counted toward the lockout limit</li>\n</ol>\n<h4>How It Works &#8211; TOTP (Authenticator App)</h4>\n<ol>\n<li>Site admin enables TOTP under Settings &gt; FactorGuard</li>\n<li>Each user visits their Profile page and scans the QR code with their authenticator app</li>\n<li>Users enter the 6-digit code shown in their app to activate TOTP on their account</li>\n<li>On subsequent logins, the login form asks for the current authenticator app code instead of sending an email</li>\n</ol>\n",
+        "installation": "<ol>\n<li>Upload the <code>factorguard</code> folder to the <code>/wp-content/plugins/</code> directory</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress</li>\n<li>Go to Settings &gt; FactorGuard to configure the plugin</li>\n<li>Make sure your WordPress site can send emails (test with a password reset if unsure)</li>\n</ol>\n<h4>Privacy and External Services</h4>\n<p>FactorGuard performs OTP and authenticator app verification locally on your WordPress site. It does not send verification codes, authentication secrets, site data, or user data to a FactorGuard service.</p>\n<p>Email OTP messages are sent through WordPress using <code>wp_mail()</code>. Your site&#8217;s configured mail delivery provider may process those emails according to that provider&#8217;s terms and privacy policy.</p>\n<p>QR codes for authenticator app setup are generated locally using libraries bundled with the plugin. No external QR code API is contacted. The bundled TOTP library includes optional remote provider classes, but FactorGuard initializes only the local QR provider and does not use those remote providers.</p>\n<h4>Recovery Notice</h4>\n<p>Before forcing two-factor authentication for all users, confirm that at least one administrator has a working verification method, has generated backup codes, and can access those codes if email delivery or an authenticator app is unavailable.</p>\n",
+        "faq": "\n<dt id=\"does%20this%20work%20with%20custom%20login%20forms%3F\">\nDoes this work with custom login forms?\n</h4>\n<p>\n<p>FactorGuard hooks into the default WordPress login page at <code>/wp-login.php</code>. For custom login forms, developers can use the <code>factorguard_bypass</code> filter to control the behavior programmatically.</p>\n</p>\n<dt id=\"does%20this%20affect%20rest%20api%20or%20xml-rpc%20authentication%3F\">\nDoes this affect REST API or XML-RPC authentication?\n</h4>\n<p>\n<p>No. The plugin automatically detects API requests and skips OTP verification for them. Application passwords and other API authentication methods continue to work normally.</p>\n</p>\n<dt id=\"what%20if%20the%20email%20doesn%27t%20arrive%3F\">\nWhat if the email doesn&#8217;t arrive?\n</h4>\n<p>\n<p>If the email fails to send, the user will see an error message and can try logging in again to trigger a new email. Check your WordPress email delivery settings if this persists.</p>\n</p>\n<dt id=\"does%20factorguard%20contact%20external%20services%3F\">\nDoes FactorGuard contact external services?\n</h4>\n<p>\n<p>No. FactorGuard does not contact a FactorGuard server or any third-party API during normal operation. Email delivery is handled by your WordPress site&#8217;s configured mail system.</p>\n</p>\n<dt id=\"what%20should%20i%20do%20before%20forcing%20two-factor%20authentication%20for%20all%20users%3F\">\nWhat should I do before forcing two-factor authentication for all users?\n</h4>\n<p>\n<p>Verify that your administrator account can complete login with the selected method, confirm that WordPress email delivery works, and generate backup codes from your WordPress profile.</p>\n</p>\n<dt id=\"where%20do%20users%20scan%20the%20authenticator%20app%20qr%20code%3F\">\nWhere do users scan the authenticator app QR code?\n</h4>\n<p>\n<p>After an administrator enables Authenticator App support under Settings &gt; FactorGuard, each user can enroll from their WordPress profile page. The profile screen shows the QR code, manual setup key, confirmation field, and backup-code controls.</p>\n</p>\n<dt id=\"can%20i%20exclude%20specific%20users%20from%20otp%3F\">\nCan I exclude specific users from OTP?\n</h4>\n<p>\n<p>Yes. Use the <code>factorguard_user_can_bypass</code> filter. Example: <code>add_filter( 'factorguard_user_can_bypass', '__return_true' );</code> to bypass for all users, or check user roles/capabilities in your callback.</p>\n</p>\n<dt id=\"does%20factorguard%20process%20file%20uploads%20or%20execute%20system%20commands%3F\">\nDoes FactorGuard process file uploads or execute system commands?\n</h4>\n<p>\n<p>No. FactorGuard does not handle file uploads or multipart request bodies, does not execute shell/system commands (PHP exec, shell_exec, system, passthru, proc_open), and does not unserialize untrusted data. Its only outbound communication is the email your site sends via wp_mail(). Vulnerabilities in the PHP runtime itself (such as PHP2Shell, CVE-2026-109618 / CVE-2026-109619) are fixed by updating the server&#8217;s PHP to 8.2.35+, 8.3.36+, 8.4.27+, or 8.5.12+, not by plugins.</p>\n</p>\n<dt id=\"does%20totp%20require%20any%20server%20extensions%3F\">\nDoes TOTP require any server extensions?\n</h4>\n<p>\n<p>TOTP setup requires the PHP libsodium extension so FactorGuard can encrypt authenticator app secrets at rest. FactorGuard will not create new authenticator app enrollments if secrets cannot be encrypted. QR codes are generated locally using bundled libraries, and no external QR code API is needed.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.1</h4>\n<ul>\n<li>Fix: PHP fatal error (&#8220;Failed opening required &#8230; platform_check.php&#8221;) when activating the plugin on some releases &#8211; the 1.0.0 package shipped a vendor autoloader referencing a file that was not included. Any site affected by that fatal should update to 1.0.1.</li>\n<li>Security audit: verified against the PHP2Shell (CVE-2026-109618 / CVE-2026-109619) disclosure &#8211; FactorGuard performs no file upload or multipart request handling, executes no shell/system commands, and unserializes no untrusted data, so it adds no surface to those PHP-runtime vulnerabilities. Keep your server&#8217;s PHP updated (8.2.35+, 8.3.36+, 8.4.27+, or 8.5.12+).</li>\n<li>Confirmed bundled TOTP/QR libraries are at their latest releases (robthree/twofactorauth v3.0.3, bacon-qr-code v3.1.1, dasprid/enum 1.0.7) with no known security advisories.</li>\n<li>Added composer.json documenting all bundled third-party libraries and their versions.</li>\n<li>Minor hardening: wp_unslash() handling for a request value in the setup wizard finish handler.</li>\n<li>Verified compatibility with WordPress 7.1.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release with email OTP and TOTP (authenticator app) support</li>\n</ul>\n"
+    },
+    "short_description": "Protect your WordPress login with Two-Factor Authentication (2FA) - email OTP and authenticator apps (TOTP) with military-grade libsodium encryption.",
+    "description": "<p><strong>FactorGuard</strong> is a lightweight, privacy-first Two-Factor Authentication (2FA) plugin for WordPress. It adds a rock-solid two-step verification layer to the default WordPress login page, without relying on any external cloud service or third-party API.</p>\n<p>After a user enters the correct username and password, they must complete a second step: enter a one-time code sent to their email <strong>or</strong> use a time-based code from an authenticator app like Google Authenticator or Authy.</p>\n<blockquote>\n<p>🔒 <strong>Zero external API calls. All verification happens on your own server.</strong></p>\n</blockquote>\n<p><strong>Core Features:</strong></p>\n<ul>\n<li>⚡ <strong>Email OTP:</strong> send a one-time passcode to the user&#8217;s registered email address</li>\n<li>📱 <strong>Authenticator App (TOTP):</strong> full RFC 6238 support for Google Authenticator, Authy, and any TOTP-compatible app</li>\n<li>🔑 <strong>One-time backup codes:</strong> hashed recovery codes so users never get locked out</li>\n<li>🔐 <strong>Military-grade encryption:</strong> TOTP secrets encrypted at rest using libsodium XSalsa20-Poly1305</li>\n<li>🚫 <strong>Replay attack protection:</strong> accepted TOTP codes are invalidated for the current time-slice</li>\n<li>⏱️ <strong>Brute force &amp; rate limiting:</strong> configurable lockout after too many failed attempts</li>\n<li>🎛️ <strong>Flexible settings:</strong> OTP code length (4-10 digits), code expiry (1-60 min), lockout duration</li>\n<li>🧙 <strong>Setup wizard:</strong> guided onboarding to configure your preferred 2FA method in minutes</li>\n<li>🌐 <strong>API-safe:</strong> automatically bypasses OTP for REST API and XML-RPC requests</li>\n<li>🌍 <strong>Translation ready:</strong> fully internationalised and <code>.pot</code> file included</li>\n<li>🧹 <strong>Clean uninstall:</strong> removes all plugin data on uninstall (opt-in)</li>\n</ul>\n<h4>How It Works &#8211; Email OTP</h4>\n<ol>\n<li>User enters their username and password on the login page</li>\n<li>If credentials are correct and OTP is enabled, a verification code is emailed to the user</li>\n<li>The login form shows an OTP input field (username/password fields are hidden)</li>\n<li>User enters the code sent to their email</li>\n<li>On success, login completes. On failure, the attempt is counted toward the lockout limit</li>\n</ol>\n<h4>How It Works &#8211; TOTP (Authenticator App)</h4>\n<ol>\n<li>Site admin enables TOTP under Settings &gt; FactorGuard</li>\n<li>Each user visits their Profile page and scans the QR code with their authenticator app</li>\n<li>Users enter the 6-digit code shown in their app to activate TOTP on their account</li>\n<li>On subsequent logins, the login form asks for the current authenticator app code instead of sending an email</li>\n</ol>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/factorguard.1.0.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/factorguard/assets/screenshot-1.jpg?rev=3674628",
+            "caption": "General settings for email OTP length, expiry, rate limiting, and lockout behavior."
+        },
+        {
+            "src": "https://ps.w.org/factorguard/assets/screenshot-2.jpg?rev=3674628",
+            "caption": "Authenticator App settings with profile enrollment guidance for QR-code setup."
+        },
+        {
+            "src": "https://ps.w.org/factorguard/assets/screenshot-3.jpg?rev=3674628",
+            "caption": "FactorGuard setup wizard for choosing the site's two-factor verification method."
+        },
+        {
+            "src": "https://ps.w.org/factorguard/assets/screenshot-4.jpg?rev=3674628",
+            "caption": "User profile two-factor section showing active authenticator status and backup-code controls."
+        }
+    ],
+    "tags": {
+        "2fa": "2FA",
+        "authentication": "authentication",
+        "login-security": "login security",
+        "otp": "otp",
+        "two-factor": "two factor"
+    },
+    "stable_tag": "1.0.1",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/factorguard.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/factorguard.1.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/factorguard.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/factorguard/assets/banner-772x250.png?rev=3674744",
+        "high": "https://ps.w.org/factorguard/assets/banner-1544x500.png?rev=3674744"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/factorguard/assets/icon-128x128.png?rev=3674744",
+        "2x": "https://ps.w.org/factorguard/assets/icon-256x256.png?rev=3674744"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
