@@ -1,0 +1,83 @@
+{
+    "name": "SnapEX Pay for WooCommerce",
+    "slug": "snapex-pay-for-woocommerce",
+    "version": "1.2.2",
+    "author": "<a href=\"https://profiles.wordpress.org/snapexpay/\">snapexpay</a>",
+    "author_profile": "https://profiles.wordpress.org/snapexpay/",
+    "contributors": {
+        "snapexpay": {
+            "profile": "https://profiles.wordpress.org/snapexpay/",
+            "avatar": "https://secure.gravatar.com/avatar/cf48d77aba93fdb8cd9dff27c976467dbd93f8d55b6cab444495655371d01703?s=96&d=monsterid&r=g",
+            "display_name": "snapexpay"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.1.3",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/snapex-pay-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-25 20:11:00",
+    "added": "2026-10-12",
+    "homepage": "",
+    "sections": {
+        "description": "<p>The customer picks SnapEX Pay — crypto at checkout, pays on the SnapEX Pay page and the order is marked paid automatically.</p>\n<ul>\n<li>No wallets or nodes to run; funds arrive in your SnapEX Pay merchant balance.</li>\n<li>Checkout block and classic checkout, &#8220;Pay for order&#8221; links, HPOS compatible.</li>\n<li>Three independent ways an order gets marked paid: the signed webhook, the customer returning from the payment page and a check every 5 minutes. A lost webhook never leaves a paid order unpaid, and an order is never completed twice.</li>\n<li>Partial payments and payments arriving after an order was cancelled put the order On hold for review.</li>\n<li>Test mode with test invoices that confirm without real money, visible only to shop managers.</li>\n<li>Stores in EUR, GBP and other currencies: SnapEX Pay converts each order to USD at the current rate, nothing to update by hand.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the SnapEX Pay merchant API (https://snapex.pro/api/v1/merchant), run by SnapEX, to take crypto payments. It is required for the payment method to work.</p>\n<ul>\n<li>When a customer places an order with this payment method, the plugin creates a SnapEX Pay invoice. It sends the order amount (in USD, or in the store currency for SnapEX Pay to convert), the order ID, the shop name and order number as the invoice description, the return and cancel URLs of your shop, the payment window and the fee and test-mode settings, authenticated with your API key. No customer name, e-mail, address or IP address is sent. The customer is then redirected to the SnapEX Pay payment page.</li>\n<li>For stores not in USD with the automatic exchange rate, the plugin asks SnapEX Pay for the rate of the store currency (at most once an hour) to check the currency is covered and to show the rate in the settings.</li>\n<li>To settle orders, the plugin requests the status of those invoices: when the customer returns, when SnapEX Pay sends a webhook, and every 5 minutes for recent unpaid orders.</li>\n<li>SnapEX Pay sends signed webhooks to your shop (/wc-api/snapexpay_webhook/) if you configure the webhook in the SnapEX Pay merchant cabinet.</li>\n</ul>\n<p>Terms of use: https://snapex.pro/p/soglashenie<br />\nPrivacy policy: https://snapex.pro/p/privacy</p>\n",
+        "installation": "<ol>\n<li>Upload and activate the plugin.</li>\n<li>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Payments <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> SnapEX Pay (crypto).</li>\n<li>Paste the merchant API key (starts with smk_) from the SnapEX Pay cabinet <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Merchant <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Developers (scopes invoices.read and invoices.write). The exchange Partner API key (spx_) does not work here; the settings page says so if one is pasted.</li>\n<li>Recommended: set the webhook URL shown under &#8220;Webhook secret&#8221; in the cabinet and paste the whsec_… secret.</li>\n<li>If the store currency is not USD, nothing else is needed: the Exchange rate setting is Auto by default. Choose Manual to use a fixed rate of your own.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"which%20currencies%20can%20the%20store%20use%3F\">\nWhich currencies can the store use?\n</h4>\n<p>\n<p>SnapEX Pay invoices are in USD. USD stores work as is. For other currencies the Exchange rate setting is Auto by default: SnapEX Pay converts each order at its current rate (ECB rates, refreshed hourly) when the payment page opens, and the order note shows the rate used. You can switch to Manual and enter a fixed rate, or convert with the snapexpay_wc_amount_usd filter. With Auto, a rate typed into USD for 1 … is used as a fallback while SnapEX Pay has no rate for the currency. The settings page shows the current rate, or says if SnapEX Pay has none for your currency.</p>\n</p>\n<dt id=\"can%20i%20refund%20from%20woocommerce%3F\">\nCan I refund from WooCommerce?\n</h4>\n<p>\n<p>No. Refunds are made from the SnapEX Pay cabinet.</p>\n</p>\n\n",
+        "changelog": "<h4>1.2.2</h4>\n<ul>\n<li>Checkout title now includes the SnapEX Pay brand by default: &#8220;SnapEX Pay — crypto (USDT and other coins)&#8221;.</li>\n<li>Existing stores: a title left at the old default &#8220;Crypto (USDT and other coins)&#8221; is updated once on upgrade. A title you changed yourself is kept as it is; edit it in WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Payments <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> SnapEX Pay if you want the brand shown.</li>\n</ul>\n<h4>1.2.1</h4>\n<ul>\n<li>The settings page says when the API key is the exchange Partner API key (spx_…) or a cut/masked key, and where to get the merchant key (smk_…). Such a key hides the method at checkout instead of failing on payment.</li>\n<li>An enabled method hidden at checkout (no key, wrong key, no exchange rate) is now explained in a notice on every admin page, not only in its settings.</li>\n<li>Auto exchange rate: a rate typed into USD for 1 … is used as a fallback while SnapEX Pay has no rate for the store currency.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>New: automatic exchange rate for stores not in USD (EUR, GBP and others). SnapEX Pay converts each order at its current rate; no daily rate updates by hand. The settings page shows the rate in use.</li>\n<li>Stores that already had a fixed rate keep it (Exchange rate: Manual) until you switch to Auto.</li>\n<li>The settings page now says why the method is hidden at checkout when no rate is available.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>New: optional Partner ID setting for the SnapEX Pay referral program (the integrator who set up the plugin).</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Fix: a customer can get a new payment page after the previous one expired or the order total changed. Each SnapEX Pay invoice now gets its own external ID; invoices created by 1.0.0 are still settled.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "Accept crypto in WooCommerce: USDT on TRON, Ethereum, BSC and other networks, or other coins converted to USDT.",
+    "description": "<p>The customer picks SnapEX Pay — crypto at checkout, pays on the SnapEX Pay page and the order is marked paid automatically.</p>\n<ul>\n<li>No wallets or nodes to run; funds arrive in your SnapEX Pay merchant balance.</li>\n<li>Checkout block and classic checkout, &#8220;Pay for order&#8221; links, HPOS compatible.</li>\n<li>Three independent ways an order gets marked paid: the signed webhook, the customer returning from the payment page and a check every 5 minutes. A lost webhook never leaves a paid order unpaid, and an order is never completed twice.</li>\n<li>Partial payments and payments arriving after an order was cancelled put the order On hold for review.</li>\n<li>Test mode with test invoices that confirm without real money, visible only to shop managers.</li>\n<li>Stores in EUR, GBP and other currencies: SnapEX Pay converts each order to USD at the current rate, nothing to update by hand.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the SnapEX Pay merchant API (https://snapex.pro/api/v1/merchant), run by SnapEX, to take crypto payments. It is required for the payment method to work.</p>\n<ul>\n<li>When a customer places an order with this payment method, the plugin creates a SnapEX Pay invoice. It sends the order amount (in USD, or in the store currency for SnapEX Pay to convert), the order ID, the shop name and order number as the invoice description, the return and cancel URLs of your shop, the payment window and the fee and test-mode settings, authenticated with your API key. No customer name, e-mail, address or IP address is sent. The customer is then redirected to the SnapEX Pay payment page.</li>\n<li>For stores not in USD with the automatic exchange rate, the plugin asks SnapEX Pay for the rate of the store currency (at most once an hour) to check the currency is covered and to show the rate in the settings.</li>\n<li>To settle orders, the plugin requests the status of those invoices: when the customer returns, when SnapEX Pay sends a webhook, and every 5 minutes for recent unpaid orders.</li>\n<li>SnapEX Pay sends signed webhooks to your shop (/wc-api/snapexpay_webhook/) if you configure the webhook in the SnapEX Pay merchant cabinet.</li>\n</ul>\n<p>Terms of use: https://snapex.pro/p/soglashenie<br />\nPrivacy policy: https://snapex.pro/p/privacy</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/snapex-pay-for-woocommerce.1.2.2.zip",
+    "upgrade_notice": {
+        "1.2.2": "<p>The checkout title now shows the SnapEX Pay brand. A title left at the old default is updated; a custom title is kept.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "crypto": "crypto",
+        "payment-gateway": "payment gateway",
+        "tron": "Tron",
+        "usdt": "USDT",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.2.2",
+    "versions": {
+        "1.1.0": "https://downloads.wordpress.org/plugin/snapex-pay-for-woocommerce.1.1.0.zip",
+        "1.2.2": "https://downloads.wordpress.org/plugin/snapex-pay-for-woocommerce.1.2.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/snapex-pay-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/snapex-pay-for-woocommerce/assets/banner-772x250.png?rev=3746061",
+        "high": "https://ps.w.org/snapex-pay-for-woocommerce/assets/banner-1544x500.png?rev=3746061"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/snapex-pay-for-woocommerce/assets/icon-128x128.png?rev=3741252",
+        "2x": "https://ps.w.org/snapex-pay-for-woocommerce/assets/icon-256x256.png?rev=3741252"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
