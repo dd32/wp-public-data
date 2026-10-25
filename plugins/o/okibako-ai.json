@@ -1,0 +1,91 @@
+{
+    "name": "Okibako AI",
+    "slug": "okibako-ai",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/hokkaidoweb/\">hokkaidoweb</a>",
+    "author_profile": "https://profiles.wordpress.org/hokkaidoweb/",
+    "contributors": {
+        "hokkaidoweb": {
+            "profile": "https://profiles.wordpress.org/hokkaidoweb/",
+            "avatar": "https://secure.gravatar.com/avatar/51e6ecf30fa92550667ac906b127772c7699bf2ccc03ca6c66d77546ac6db06a?s=96&d=monsterid&r=g",
+            "display_name": "hokkaidoweb"
+        }
+    },
+    "requires": "6.3",
+    "tested": "7.1.3",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/okibako-ai/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-25 08:32:00",
+    "added": "2026-10-25",
+    "homepage": "",
+    "sections": {
+        "description": "<p><strong>Note: the admin interface of this plugin is currently in Japanese.</strong></p>\n<p>Most llms.txt plugins stop at writing the file. This one is built around the question that comes next: <strong>did any AI actually come and read it?</strong></p>\n<p>It keeps a lightweight log of AI crawler visits (no database tables, no human visits, no IP addresses), charts them by crawler and by page, and lets you fetch your own site as GPTBot to see whether the text is really in the HTML. llms.txt is included so the whole loop — publish, measure, check — lives in one place.</p>\n<h4>1. Files for AI, generated on the fly</h4>\n<ul>\n<li><strong>llms.txt</strong> — a map of the site: what the business is, and what is on each page.</li>\n<li><strong>llms-full.txt</strong> — the body text of every post and page in one file, each entry carrying its URL and last-modified date so an AI can cite the source.</li>\n<li><strong>robots.txt</strong> — AI crawlers listed by name, so refusing one later is a single click.</li>\n</ul>\n<p>Nothing is written to disk. The files are built when they are requested, so they match the site the moment you edit a post. There is no &#8220;generate&#8221; button and no sync setting to remember.</p>\n<h4>2. Measurement: is anything actually reading it?</h4>\n<p>The plugin records visits from 19 crawlers — GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, Claude-User, PerplexityBot, Googlebot, bingbot and others — and charts them by day, by crawler and by page.</p>\n<ul>\n<li><strong>Human visits are never recorded.</strong> A line is written only when the User-Agent matches a known AI crawler.</li>\n<li><strong>No IP addresses are stored.</strong></li>\n<li><strong>No database tables are created.</strong> One file per day under <code>wp-content/uploads/</code>.</li>\n</ul>\n<p>If a page cache is active, cached responses never run PHP, so visits go uncounted. The plugin detects this and tells you exactly which user agents to exclude in your cache plugin.</p>\n<h4>3. See your site the way an AI sees it</h4>\n<p>One button fetches your own site while identifying as GPTBot, and reports:</p>\n<ul>\n<li>Whether the body text is actually in the HTML. <strong>Page builders and lazy loading routinely leave text visible to people but absent from the HTML</strong>, which is easy to miss when you only look at the page in a browser.</li>\n<li>Whether structured data (JSON-LD), <code>h1</code> and <code>title</code> are present.</li>\n<li>Whether <code>llms.txt</code> and <code>robots.txt</code> are really being served, or shadowed by a real file on disk.</li>\n<li>Whether canonical, description, og:title or the analytics tag appear <strong>twice</strong> — a common and quietly destructive conflict between a theme and a plugin.</li>\n</ul>\n<h4>4. SEO and analytics basics</h4>\n<p>Title, meta description, canonical, Open Graph, and JSON-LD (Organization, WebSite, BlogPosting, BreadcrumbList). Optional noindex for thin archive pages. A field for a Google Analytics 4 measurement ID.</p>\n<p><strong>If another SEO or analytics plugin is active, these parts switch themselves off.</strong> Yoast SEO, Rank Math, All in One SEO, SEO SIMPLE PACK, The SEO Framework, Slim SEO, SEOPress, Site Kit by Google, MonsterInsights and others are detected. Emitting a second canonical tag or a second analytics tag does real damage, so the plugin yields. llms.txt and the measurement keep running either way, because they do not conflict with those plugins.</p>\n<h4>What this plugin cannot tell you</h4>\n<p>It counts <strong>fetches</strong>. It does not show whether an AI quoted your page in an answer; a crawler visit is not the same as a citation.</p>\n<p>Placing an llms.txt file is also no guarantee of being picked up by anything. What this plugin does is prepare the content properly and measure what actually arrives.</p>\n<h3>External services</h3>\n<p>This plugin can load one external service, and only if you turn it on.</p>\n<h4>Google Analytics (gtag.js)</h4>\n<ul>\n<li>What it is: Google Analytics 4, a web analytics service provided by Google LLC. It is used to measure visits by people, separately from the AI crawler log.</li>\n<li>When: only if you enter a Google Analytics measurement ID in the settings. With the field empty, nothing is loaded.</li>\n<li>What is sent: visitors&#8217; browsers load <code>https://www.googletagmanager.com/gtag/js</code> and send Google the usual page-view data (page URL, referrer, browser and device information, IP address, and Google Analytics cookies). The plugin itself sends nothing from your server.</li>\n<li>Options: logged-in editors can be excluded, and browsers sending &#8220;Do Not Track&#8221; can be skipped.</li>\n<li>Google Terms of Service: https://policies.google.com/terms</li>\n<li>Google Analytics Terms of Service: https://marketingplatform.google.com/about/analytics/terms/us/</li>\n<li>Google Privacy Policy: https://policies.google.com/privacy</li>\n</ul>\n<p>No other external service is contacted. The diagnose button fetches only your own site, from your own server.</p>\n<h3>Privacy</h3>\n<p>The AI crawler log stays on your own server and is never sent anywhere.</p>\n<h4>What is recorded</h4>\n<p>When an AI crawler requests a page, four fields are appended to a file on your own server: the time (UTC), the crawler name, the HTTP status, and the request path with the query string removed. Files live at <code>wp-content/uploads/okibako-ai/YYYY-MM-DD.tsv</code>, protected by an <code>.htaccess</code> file.</p>\n<p>Human visits, IP addresses and cookies are not involved, and no database table is created.</p>\n<h4>Outbound connections</h4>\n<ol>\n<li>Pressing the diagnose button fetches <strong>your own site</strong> from your own server. The result is not sent anywhere.</li>\n<li>Google Analytics is loaded only if you enter a measurement ID. See &#8220;External services&#8221; above.</li>\n</ol>\n",
+        "installation": "<ol>\n<li>Upload and activate the plugin.</li>\n<li>Open <strong>オキバコAI <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> 設定</strong> and write one line describing what the site is.</li>\n<li>Open <strong>オキバコAI <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> レポート</strong> and press the diagnose button. Every row should come back green.</li>\n</ol>\n<p>Numbers only become readable after about two weeks. Crawlers do not visit every day.</p>\n",
+        "faq": "\n<dt id=\"llms.txt%20returns%20404\">\nllms.txt returns 404\n</h4>\n<p>\n<p>Open <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Permalinks</strong> and save without changing anything. If it still fails, a real <code>llms.txt</code> file exists in your web root; delete it.</p>\n</p>\n<dt id=\"my%20robots.txt%20does%20not%20include%20the%20ai%20lines\">\nMy robots.txt does not include the AI lines\n</h4>\n<p>\n<p>A real <code>robots.txt</code> file on disk overrides the one WordPress generates. The diagnose screen detects this. Note also that some SEO plugins rebuild robots.txt and drop comment lines while keeping the rules.</p>\n</p>\n<dt id=\"i%20have%20several%20hundred%20posts.%20will%20this%20slow%20the%20site%20down%3F\">\nI have several hundred posts. Will this slow the site down?\n</h4>\n<p>\n<p>llms-full.txt is streamed rather than held in memory, and the number of entries is configurable. llms.txt is cached for a day and rebuilt only when a post changes.</p>\n</p>\n<dt id=\"does%20uninstalling%20delete%20my%20measurements%3F\">\nDoes uninstalling delete my measurements?\n</h4>\n<p>\n<p>Settings and per-post fields are removed. <strong>Measurement files are kept.</strong> Delete <code>wp-content/uploads/okibako-ai/</code> yourself if you do not want them.</p>\n</p>\n<dt id=\"google-extended%20never%20appears%20in%20the%20report\">\nGoogle-Extended never appears in the report\n</h4>\n<p>\n<p>Correct, and it never will. <code>Google-Extended</code> and <code>Applebot-Extended</code> are robots.txt tokens only; they are never sent as a User-Agent. Allowing or refusing them still works from the settings screen.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "Records which AI crawlers actually fetch your pages, checks what they can read, and serves llms.txt — no database tables, no IPs stored.",
+    "description": "<p><strong>Note: the admin interface of this plugin is currently in Japanese.</strong></p>\n<p>Most llms.txt plugins stop at writing the file. This one is built around the question that comes next: <strong>did any AI actually come and read it?</strong></p>\n<p>It keeps a lightweight log of AI crawler visits (no database tables, no human visits, no IP addresses), charts them by crawler and by page, and lets you fetch your own site as GPTBot to see whether the text is really in the HTML. llms.txt is included so the whole loop — publish, measure, check — lives in one place.</p>\n<h4>1. Files for AI, generated on the fly</h4>\n<ul>\n<li><strong>llms.txt</strong> — a map of the site: what the business is, and what is on each page.</li>\n<li><strong>llms-full.txt</strong> — the body text of every post and page in one file, each entry carrying its URL and last-modified date so an AI can cite the source.</li>\n<li><strong>robots.txt</strong> — AI crawlers listed by name, so refusing one later is a single click.</li>\n</ul>\n<p>Nothing is written to disk. The files are built when they are requested, so they match the site the moment you edit a post. There is no &#8220;generate&#8221; button and no sync setting to remember.</p>\n<h4>2. Measurement: is anything actually reading it?</h4>\n<p>The plugin records visits from 19 crawlers — GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, Claude-User, PerplexityBot, Googlebot, bingbot and others — and charts them by day, by crawler and by page.</p>\n<ul>\n<li><strong>Human visits are never recorded.</strong> A line is written only when the User-Agent matches a known AI crawler.</li>\n<li><strong>No IP addresses are stored.</strong></li>\n<li><strong>No database tables are created.</strong> One file per day under <code>wp-content/uploads/</code>.</li>\n</ul>\n<p>If a page cache is active, cached responses never run PHP, so visits go uncounted. The plugin detects this and tells you exactly which user agents to exclude in your cache plugin.</p>\n<h4>3. See your site the way an AI sees it</h4>\n<p>One button fetches your own site while identifying as GPTBot, and reports:</p>\n<ul>\n<li>Whether the body text is actually in the HTML. <strong>Page builders and lazy loading routinely leave text visible to people but absent from the HTML</strong>, which is easy to miss when you only look at the page in a browser.</li>\n<li>Whether structured data (JSON-LD), <code>h1</code> and <code>title</code> are present.</li>\n<li>Whether <code>llms.txt</code> and <code>robots.txt</code> are really being served, or shadowed by a real file on disk.</li>\n<li>Whether canonical, description, og:title or the analytics tag appear <strong>twice</strong> — a common and quietly destructive conflict between a theme and a plugin.</li>\n</ul>\n<h4>4. SEO and analytics basics</h4>\n<p>Title, meta description, canonical, Open Graph, and JSON-LD (Organization, WebSite, BlogPosting, BreadcrumbList). Optional noindex for thin archive pages. A field for a Google Analytics 4 measurement ID.</p>\n<p><strong>If another SEO or analytics plugin is active, these parts switch themselves off.</strong> Yoast SEO, Rank Math, All in One SEO, SEO SIMPLE PACK, The SEO Framework, Slim SEO, SEOPress, Site Kit by Google, MonsterInsights and others are detected. Emitting a second canonical tag or a second analytics tag does real damage, so the plugin yields. llms.txt and the measurement keep running either way, because they do not conflict with those plugins.</p>\n<h4>What this plugin cannot tell you</h4>\n<p>It counts <strong>fetches</strong>. It does not show whether an AI quoted your page in an answer; a crawler visit is not the same as a citation.</p>\n<p>Placing an llms.txt file is also no guarantee of being picked up by anything. What this plugin does is prepare the content properly and measure what actually arrives.</p>\n<h3>External services</h3>\n<p>This plugin can load one external service, and only if you turn it on.</p>\n<h4>Google Analytics (gtag.js)</h4>\n<ul>\n<li>What it is: Google Analytics 4, a web analytics service provided by Google LLC. It is used to measure visits by people, separately from the AI crawler log.</li>\n<li>When: only if you enter a Google Analytics measurement ID in the settings. With the field empty, nothing is loaded.</li>\n<li>What is sent: visitors&#8217; browsers load <code>https://www.googletagmanager.com/gtag/js</code> and send Google the usual page-view data (page URL, referrer, browser and device information, IP address, and Google Analytics cookies). The plugin itself sends nothing from your server.</li>\n<li>Options: logged-in editors can be excluded, and browsers sending &#8220;Do Not Track&#8221; can be skipped.</li>\n<li>Google Terms of Service: https://policies.google.com/terms</li>\n<li>Google Analytics Terms of Service: https://marketingplatform.google.com/about/analytics/terms/us/</li>\n<li>Google Privacy Policy: https://policies.google.com/privacy</li>\n</ul>\n<p>No other external service is contacted. The diagnose button fetches only your own site, from your own server.</p>\n<h3>Privacy</h3>\n<p>The AI crawler log stays on your own server and is never sent anywhere.</p>\n<h4>What is recorded</h4>\n<p>When an AI crawler requests a page, four fields are appended to a file on your own server: the time (UTC), the crawler name, the HTTP status, and the request path with the query string removed. Files live at <code>wp-content/uploads/okibako-ai/YYYY-MM-DD.tsv</code>, protected by an <code>.htaccess</code> file.</p>\n<p>Human visits, IP addresses and cookies are not involved, and no database table is created.</p>\n<h4>Outbound connections</h4>\n<ol>\n<li>Pressing the diagnose button fetches <strong>your own site</strong> from your own server. The result is not sent anywhere.</li>\n<li>Google Analytics is loaded only if you enter a measurement ID. See &#8220;External services&#8221; above.</li>\n</ol>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/okibako-ai.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/okibako-ai/assets/screenshot-1.png?rev=3764117",
+            "caption": "The report: how often AI crawlers fetched the site, which ones came, and which pages they took."
+        },
+        {
+            "src": "https://ps.w.org/okibako-ai/assets/screenshot-2.png?rev=3764117",
+            "caption": "The diagnosis: the site fetched as GPTBot, checking that the text is really in the HTML and that nothing is emitted twice."
+        },
+        {
+            "src": "https://ps.w.org/okibako-ai/assets/screenshot-3.png?rev=3764117",
+            "caption": "Settings: what to serve, which crawlers to refuse, how long to keep the records."
+        }
+    ],
+    "tags": {
+        "ai": "AI",
+        "crawler": "crawler",
+        "gptbot": "gptbot",
+        "llms-txt": "llms.txt",
+        "seo": "seo"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/okibako-ai.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/okibako-ai.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/okibako-ai/assets/banner-772x250.png?rev=3764117",
+        "high": "https://ps.w.org/okibako-ai/assets/banner-1544x500.png?rev=3764117"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/okibako-ai/assets/icon-128x128.png?rev=3764117",
+        "2x": "https://ps.w.org/okibako-ai/assets/icon-256x256.png?rev=3764117"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
