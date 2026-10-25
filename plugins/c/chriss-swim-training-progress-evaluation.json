@@ -29,7 +29,7 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2026-10-25 15:22:00",
+    "last_updated": "2026-10-25 17:33:00",
     "added": "2026-10-23",
     "homepage": "",
     "sections": {
@@ -40,7 +40,28 @@
     "description": "<p>Chris&#8217;s Swim Training Progress and Evaluation is a multi-user WordPress plugin for importing FIT and<br />\nCSV swimming workouts, preserving normalized workout history, evaluating native<br />\nmeter and yard performances, tracking personal bests, managing swim events and<br />\nlocations, and displaying selected results through display-only shortcodes.</p>\n<p>Version 0.7 includes the open-water, Garmin, rebuild, training-analysis, privacy, and integration work introduced after v0.5, plus native Block Editor support for all six public display features, improved workout administration and post creation, responsive public tables, and per-swimmer REST API permissions and documentation.</p>\n<h4>v0.7 Block Editor support</h4>\n<p>Version 0.7 adds native Block Editor support for the six existing public display features while preserving their shortcodes for backward compatibility. The blocks are dynamic/server-rendered and share the same PHP rendering, authorization, and privacy logic as the shortcodes.</p>\n<ul>\n<li>Latest Workouts — <code>[swimlog_latest]</code>: swimmer override, count, and heading controls.</li>\n<li>Personal Bests — <code>[swimlog_bests]</code>: swimmer, course, stroke, distance, lifetime/age-group selection, age-group mode, and heading controls.</li>\n<li>Upcoming Events — <code>[swimlog_upcoming_events]</code>: swimmer, event count/site default, and heading controls.</li>\n<li>Workout — <code>[swimlog_workout]</code>: workout ID and heading controls; workout ownership determines the swimmer.</li>\n<li>Training Log — <code>[swimlog_log]</code>: swimmer, monthly/annual mode, month/year, and heading controls.</li>\n<li>Progress — <code>[swimlog_progress]</code>: swimmer, course, stroke, distance, and heading controls.</li>\n</ul>\n<p>Public-results authorization is unchanged. Applicable blocks use the page/post author when no swimmer override is supplied and never fall back to the logged-in viewer. Open-water GPS routes remain separately opt-in, and GPS coordinates/trackpoints are not stored in block attributes or editor scripts.</p>\n<h3>Data Preservation</h3>\n<p>Historical data is preserved by default. Deactivation and ordinary updates do<br />\nnot delete workout history or original source imports. Derived performances are<br />\ndesigned to be rebuildable from preserved authoritative workout data.</p>\n",
     "download_link": "https://downloads.wordpress.org/plugin/chriss-swim-training-progress-evaluation.0.7.zip",
     "upgrade_notice": [],
-    "screenshots": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/chriss-swim-training-progress-evaluation/assets/screenshot-1.png?rev=3765002",
+            "caption": "Swim Training Dashboard provides an overview of the latest workout, personal bests, upcoming events, and recent training activity."
+        },
+        {
+            "src": "https://ps.w.org/chriss-swim-training-progress-evaluation/assets/screenshot-2.png?rev=3765002",
+            "caption": "Workout Details displays imported workout information, detected performances, preserved source imports, and normalized swim data."
+        },
+        {
+            "src": "https://ps.w.org/chriss-swim-training-progress-evaluation/assets/screenshot-3.png?rev=3765002",
+            "caption": "Personal Bests tracks performances by age group, course, distance, and stroke, with lifetime personal bests identified."
+        },
+        {
+            "src": "https://ps.w.org/chriss-swim-training-progress-evaluation/assets/screenshot-4.png?rev=3765002",
+            "caption": "PB Progression shows the performance history for a selected distance and stroke over time."
+        },
+        {
+            "src": "https://ps.w.org/chriss-swim-training-progress-evaluation/assets/screenshot-5.png?rev=3765002",
+            "caption": "Six native WordPress blocks make it easy to add latest workouts, personal bests, upcoming events, individual workouts, training logs, and progress displays to pages and posts."
+        }
+    ],
     "tags": {
         "csv": "csv",
         "fit": "fit",
@@ -59,26 +80,38 @@
     "commercial_support_url": "",
     "guideline_labels": [],
     "donate_link": "",
-    "banners": [],
+    "banners": {
+        "low": "https://ps.w.org/chriss-swim-training-progress-evaluation/assets/banner-772x250.png?rev=3765002",
+        "high": "https://ps.w.org/chriss-swim-training-progress-evaluation/assets/banner-1544x500.png?rev=3765002"
+    },
     "icons": {
-        "default": "https://s.w.org/plugins/geopattern-icon/chriss-swim-training-progress-evaluation.svg"
+        "1x": "https://ps.w.org/chriss-swim-training-progress-evaluation/assets/icon-128x128.png?rev=3765002",
+        "2x": "https://ps.w.org/chriss-swim-training-progress-evaluation/assets/icon-256x256.png?rev=3765002"
     },
     "blocks": {
-        "swimlog/upcoming-events": {
+        "swimlog/progress": {
             "apiVersion": 3,
-            "name": "swimlog/upcoming-events",
+            "name": "swimlog/progress",
             "version": "0.7.0",
-            "title": "Upcoming Events",
+            "title": "Progress",
             "category": "widgets",
-            "icon": "calendar-alt",
-            "description": "Display upcoming swim events and the swimmer's current exact personal best for each event.",
+            "icon": "chart-line",
+            "description": "Display personal-best progression for one exact swim event.",
             "textdomain": "chriss-swim-training-progress-evaluation",
             "attributes": {
                 "user": {
                     "type": "integer",
                     "default": 0
                 },
-                "count": {
+                "course": {
+                    "type": "string",
+                    "default": ""
+                },
+                "stroke": {
+                    "type": "string",
+                    "default": ""
+                },
+                "distance": {
                     "type": "integer",
                     "default": 0
                 },
@@ -91,7 +124,7 @@
                     "default": ""
                 }
             },
-            "editorScript": "swimlog-block-upcoming-events",
+            "editorScript": "swimlog-block-progress",
             "supports": {
                 "align": [
                     "wide",
@@ -136,29 +169,21 @@
                 "html": false
             }
         },
-        "swimlog/progress": {
+        "swimlog/upcoming-events": {
             "apiVersion": 3,
-            "name": "swimlog/progress",
+            "name": "swimlog/upcoming-events",
             "version": "0.7.0",
-            "title": "Progress",
+            "title": "Upcoming Events",
             "category": "widgets",
-            "icon": "chart-line",
-            "description": "Display personal-best progression for one exact swim event.",
+            "icon": "calendar-alt",
+            "description": "Display upcoming swim events and the swimmer's current exact personal best for each event.",
             "textdomain": "chriss-swim-training-progress-evaluation",
             "attributes": {
                 "user": {
                     "type": "integer",
                     "default": 0
                 },
-                "course": {
-                    "type": "string",
-                    "default": ""
-                },
-                "stroke": {
-                    "type": "string",
-                    "default": ""
-                },
-                "distance": {
+                "count": {
                     "type": "integer",
                     "default": 0
                 },
@@ -171,7 +196,7 @@
                     "default": ""
                 }
             },
-            "editorScript": "swimlog-block-progress",
+            "editorScript": "swimlog-block-upcoming-events",
             "supports": {
                 "align": [
                     "wide",
