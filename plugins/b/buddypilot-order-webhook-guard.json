@@ -1,0 +1,87 @@
+{
+    "name": "BuddyPilot Order Webhook Guard",
+    "slug": "buddypilot-order-webhook-guard",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/buddypilot/\">BuddyPilot</a>",
+    "author_profile": "https://profiles.wordpress.org/buddypilot/",
+    "contributors": {
+        "buddypilot": {
+            "profile": "https://profiles.wordpress.org/buddypilot/",
+            "avatar": "https://secure.gravatar.com/avatar/e8031fdd1738cb88bdd79c3e1ddb000193aa63e61235b6e96ea72651efb4d1b3?s=96&d=monsterid&r=g",
+            "display_name": "BuddyPilot"
+        },
+        "domkawula": {
+            "profile": "https://profiles.wordpress.org/domkawula/",
+            "avatar": "https://secure.gravatar.com/avatar/2fef6a74c8cf1e48550b936e6caeca5604013c1d3a05cdfcf5dd078b207e7dfe?s=96&d=monsterid&r=g",
+            "display_name": "Dominik Kawula"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1.3",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/buddypilot-order-webhook-guard/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-26 16:22:00",
+    "added": "2026-10-26",
+    "homepage": "https://github.com/buddypilot-io/buddypilot-order-webhook-guard",
+    "sections": {
+        "description": "<p><strong>BuddyPilot Order Webhook Guard</strong> fixes one specific WooCommerce side effect. Since WooCommerce 11.0, verifying a customer&#8217;s email address (a completed password reset, a set-password link for a new account, or a clicked verification link) reassigns every matching guest order to that account. Each reassigned order is saved, and every save fires the <code>order.updated</code> webhook.</p>\n<p>If an external integration listens to <code>order.updated</code> and acts on it, for example an invoicing service that issues an invoice per order update, a single password reset can produce a burst of unwanted webhooks and duplicate documents, one for each past guest order on that email address.</p>\n<p>This plugin suppresses the <code>order.updated</code> webhook only while that linking routine runs. The orders are still reassigned to the account, so the customer keeps their order history and download permissions; only the webhook delivery for those particular saves is skipped. Every other <code>order.updated</code> event, such as a status change or a manual edit in the admin, is delivered as usual.</p>\n<h4>What it does</h4>\n<ul>\n<li>Suppresses the <code>order.updated</code> webhook only during guest-order linking, and nothing else</li>\n<li>Keeps the account linking intact, so customers keep their past orders and download permissions</li>\n<li>Covers both linking paths: automatic (after email verification) and manual (the admin &#8220;link orders&#8221; action on the Customers report)</li>\n<li>Leaves every other webhook topic, and every other <code>order.updated</code> event, untouched</li>\n<li>Uses only public WooCommerce extension points and does not modify WooCommerce core</li>\n<li>Zero configuration: no settings page, no options, no database writes</li>\n</ul>\n<h4>How it works</h4>\n<p>WooCommerce links past guest orders through its <code>wc_update_new_customer_past_orders()</code> routine. The plugin wraps that routine with a short-lived, process-local flag and, while the flag is raised, returns false from the <code>woocommerce_webhook_should_deliver</code> filter for the <code>order.updated</code> topic. WooCommerce evaluates that decision synchronously as each order is saved, so no matching webhook is queued for delivery. The flag is always cleared afterwards, even if an order save throws.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>buddypilot-order-webhook-guard</code> folder to <code>/wp-content/plugins/</code>, or install the plugin ZIP via <strong>Plugins &gt; Add New &gt; Upload Plugin</strong>.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> menu in WordPress.</li>\n<li>There is nothing to configure. WooCommerce must be active.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"does%20this%20stop%20guest%20orders%20from%20being%20linked%20to%20customer%20accounts%3F\">\nDoes this stop guest orders from being linked to customer accounts?\n</h4>\n<p>\n<p>No. The linking still happens, so customers keep their past guest orders and any download permissions. Only the <code>order.updated</code> webhook that would fire during the linking is suppressed.</p>\n</p>\n<dt id=\"does%20it%20affect%20normal%20order.updated%20webhooks%3F\">\nDoes it affect normal order.updated webhooks?\n</h4>\n<p>\n<p>No. Suppression is active only during the guest-order linking routine. Status changes, manual edits, and every other order update deliver their webhooks normally.</p>\n</p>\n<dt id=\"which%20integrations%20does%20this%20help%3F\">\nWhich integrations does this help?\n</h4>\n<p>\n<p>Any integration that consumes the WooCommerce <code>order.updated</code> webhook and reacts to it, for example invoicing services that create a document per order update.</p>\n</p>\n<dt id=\"does%20it%20work%20without%20woocommerce%3F\">\nDoes it work without WooCommerce?\n</h4>\n<p>\n<p>No. The plugin registers nothing meaningful unless WooCommerce is active, and does nothing otherwise.</p>\n</p>\n<dt id=\"does%20it%20write%20anything%20to%20the%20database%3F\">\nDoes it write anything to the database?\n</h4>\n<p>\n<p>No. There are no options, no custom tables, and no settings screen. Deactivating the plugin fully restores the default WooCommerce behaviour.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>Suppress the <code>order.updated</code> webhook while past guest orders are linked to a customer account, on both the email-verification path and the admin &#8220;link orders&#8221; path.</li>\n</ul>\n"
+    },
+    "short_description": "Stops a burst of WooCommerce order.updated webhooks (and the duplicate invoices they cause) when past guest orders are linked to a customer account.",
+    "description": "<p><strong>BuddyPilot Order Webhook Guard</strong> fixes one specific WooCommerce side effect. Since WooCommerce 11.0, verifying a customer&#8217;s email address (a completed password reset, a set-password link for a new account, or a clicked verification link) reassigns every matching guest order to that account. Each reassigned order is saved, and every save fires the <code>order.updated</code> webhook.</p>\n<p>If an external integration listens to <code>order.updated</code> and acts on it, for example an invoicing service that issues an invoice per order update, a single password reset can produce a burst of unwanted webhooks and duplicate documents, one for each past guest order on that email address.</p>\n<p>This plugin suppresses the <code>order.updated</code> webhook only while that linking routine runs. The orders are still reassigned to the account, so the customer keeps their order history and download permissions; only the webhook delivery for those particular saves is skipped. Every other <code>order.updated</code> event, such as a status change or a manual edit in the admin, is delivered as usual.</p>\n<h4>What it does</h4>\n<ul>\n<li>Suppresses the <code>order.updated</code> webhook only during guest-order linking, and nothing else</li>\n<li>Keeps the account linking intact, so customers keep their past orders and download permissions</li>\n<li>Covers both linking paths: automatic (after email verification) and manual (the admin &#8220;link orders&#8221; action on the Customers report)</li>\n<li>Leaves every other webhook topic, and every other <code>order.updated</code> event, untouched</li>\n<li>Uses only public WooCommerce extension points and does not modify WooCommerce core</li>\n<li>Zero configuration: no settings page, no options, no database writes</li>\n</ul>\n<h4>How it works</h4>\n<p>WooCommerce links past guest orders through its <code>wc_update_new_customer_past_orders()</code> routine. The plugin wraps that routine with a short-lived, process-local flag and, while the flag is raised, returns false from the <code>woocommerce_webhook_should_deliver</code> filter for the <code>order.updated</code> topic. WooCommerce evaluates that decision synchronously as each order is saved, so no matching webhook is queued for delivery. The flag is always cleared afterwards, even if an order save throws.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/buddypilot-order-webhook-guard.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "integration": "integration",
+        "invoice": "invoice",
+        "orders": "orders",
+        "webhook": "webhook",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/buddypilot-order-webhook-guard.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/buddypilot-order-webhook-guard.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/buddypilot-order-webhook-guard/assets/banner-772x250.png?rev=3766898",
+        "high": "https://ps.w.org/buddypilot-order-webhook-guard/assets/banner-1544x500.png?rev=3766898"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/buddypilot-order-webhook-guard/assets/icon-128x128.gif?rev=3766898",
+        "2x": "https://ps.w.org/buddypilot-order-webhook-guard/assets/icon-256x256.gif?rev=3766898"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

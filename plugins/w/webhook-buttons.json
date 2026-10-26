@@ -1,0 +1,109 @@
+{
+    "name": "Webhook Buttons for WooCommerce",
+    "slug": "webhook-buttons",
+    "version": "1.0.4",
+    "author": "<a href=\"https://profiles.wordpress.org/noblestrategies/\">noblestrategies</a>",
+    "author_profile": "https://profiles.wordpress.org/noblestrategies/",
+    "contributors": {
+        "noblestrategies": {
+            "profile": "https://profiles.wordpress.org/noblestrategies/",
+            "avatar": "https://secure.gravatar.com/avatar/10f952742cd31f4f5812732edc5aab708eb1215bd6e30bc7c7f13f03f16aeb44?s=96&d=monsterid&r=g",
+            "display_name": "noblestrategies"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1.3",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/webhook-buttons/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-26 17:43:00",
+    "added": "2026-10-26",
+    "homepage": "https://noblestrategies.dev/webhook-buttons",
+    "sections": {
+        "description": "<p>Webhook Buttons for WooCommerce adds a box of buttons to the order edit screen. Click a button and the plugin sends the order data to the webhook URL you set for that button. Use it to start a workflow in your automation tool, create a job in another system, or notify your team.</p>\n<p>You choose where order data goes. You are responsible for the customer data you send to that destination.</p>\n<p><strong>What you can do</strong></p>\n<p><strong>Free version</strong></p>\n<ul>\n<li>Add as many buttons as you need, in one or more boxes on the order screen.</li>\n<li>Give each button its own webhook URL.</li>\n<li>Ask for confirmation before a send, or send right away.</li>\n<li>Send an order again whenever you need to.</li>\n<li>Leave chosen product attributes out of the data.</li>\n<li>Every send adds an order note with the result.</li>\n</ul>\n<p><strong>Pro adds</strong></p>\n<ul>\n<li>Custom fields: values from the WooCommerce Admin Custom Order Fields extension, plus any order meta keys you pick (Checkout Field Editor, ACF and others).</li>\n<li>Flat data: one level, for tools that cannot read nested fields.</li>\n<li>A short staff note sent with the order.</li>\n<li>User access control: show a box or a button only to the staff you pick.</li>\n<li>Sample sends with up to 100 line items, so Zapier, Make and n8n see every field.</li>\n<li>An auth header on each button&#8217;s requests, for example an API key.</li>\n</ul>\n<p><strong>What is sent</strong></p>\n<p>A JSON POST with the order ID, status, date, total, billing and shipping details, customer email and phone, the customer note, the line items (name, quantity, attributes), and the name of the user who clicked.</p>\n<p><strong>License</strong></p>\n<p>The free version has no limits and no license. Pro is a separate download for license holders. Everything is kept in your own database; nothing is checked on our servers.</p>\n<h3>Development</h3>\n<p>The settings page is a small React app. Its readable source is in react-settings-ui/src. To rebuild it:</p>\n<pre><code>cd react-settings-ui &amp;&amp; npm install &amp;&amp; npm run build\n</code></pre>\n<p>Build the release zips with <code>scripts/build.sh</code> in the product folder (freemius, marketplace, lite).</p>\n",
+        "installation": "<ol>\n<li>Make sure WooCommerce is installed and active.</li>\n<li>Upload the <code>webhook-buttons</code> folder to <code>/wp-content/plugins/</code>, or upload the zip file in Plugins &gt; Add New &gt; Upload Plugin.</li>\n<li>Activate the plugin.</li>\n<li>Go to Webhook Buttons in the admin menu.</li>\n<li>Click &#8220;Add your first button&#8221;. Add a box title, a button label, and the webhook URL. Check &#8220;Enable this button&#8221;.</li>\n<li>Click &#8220;Save all&#8221;.</li>\n<li>Open an order. The box with your button is in the right-hand column.</li>\n</ol>\n",
+        "faq": "\n<dt id=\"which%20services%20can%20receive%20the%20data%3F\">\nWhich services can receive the data?\n</h4>\n<p>\n<p>Any service that gives you a webhook URL that accepts a JSON POST: Zapier, Make, n8n, Pabbly Connect, Microsoft Power Automate, IFTTT, Activepieces, Pipedream, Zoho Flow and others. Make and n8n offer webhooks on their free plans; Zapier and IFTTT need a paid plan for webhooks.</p>\n</p>\n<dt id=\"which%20woocommerce%20setups%20and%20plugins%20are%20supported%3F\">\nWhich WooCommerce setups and plugins are supported?\n</h4>\n<p>\n<ul>\n<li>WooCommerce with High-Performance Order Storage (HPOS) on or off.</li>\n<li>Admin Custom Order Fields (SkyVerge): every custom field is sent automatically.</li>\n<li>Order meta from any other plugin (for example Advanced Custom Fields, Checkout Field Editor, Flexible Checkout Fields): pick the keys once in Advanced settings and they are sent under custom_fields.</li>\n</ul>\n</p>\n<dt id=\"can%20i%20send%20to%20a%20tool%20on%20the%20same%20server%20%28localhost%29%3F\">\nCan I send to a tool on the same server (localhost)?\n</h4>\n<p>\n<p>By default WordPress refuses requests to localhost and private network addresses, which protects shared hosts. To allow your own n8n or similar on the same machine, add one line to your theme or a small plugin:</p>\n<pre><code>add_filter( 'http_request_host_is_external', fn( $external, $host ) =&gt; $host === 'localhost' ? true : $external, 10, 2 );\n</code></pre>\n</p>\n<dt id=\"why%20does%20the%20settings%20page%20warn%20about%20http%3A%2F%2F%20urls%3F\">\nWhy does the settings page warn about http:// URLs?\n</h4>\n<p>\n<p>Order data includes customer names, emails and phone numbers. Over plain http:// it travels unencrypted. Use https:// wherever you can.</p>\n</p>\n<dt id=\"what%20is%20the%20difference%20between%20lite%20and%20pro%3F\">\nWhat is the difference between Lite and Pro?\n</h4>\n<p>\n<p>The free version sends the standard order data (order, totals, billing, shipping, line items) from as many buttons and boxes as you like, as often as you like. Pro is extra code, not a switch: custom fields, flat data, staff notes, user access control, sample sends with up to 100 line items, and an auth header per button.</p>\n</p>\n<dt id=\"what%20happens%20when%20my%20license%20expires%3F\">\nWhat happens when my license expires?\n</h4>\n<p>\n<p>All buttons keep working with the free features. The Pro options switch off until you renew, and the values you set for them are kept, so they come back when you renew. Updates and support stop until then.</p>\n</p>\n<dt id=\"where%20do%20i%20get%20help%3F\">\nWhere do I get help?\n</h4>\n<p>\n<p>https://noblestrategies.dev/webhook-buttons</p>\n</p>\n<dt id=\"when%20is%20a%20send%20counted%20as%20successful%3F\">\nWhen is a send counted as successful?\n</h4>\n<p>\n<p>When the webhook URL answers with an HTTP 2xx status. The order note records the result either way.</p>\n</p>\n<dt id=\"who%20can%20click%20the%20buttons%3F\">\nWho can click the buttons?\n</h4>\n<p>\n<p>Users who can edit WooCommerce orders. Pro can limit each box and each button to chosen users.</p>\n</p>\n<dt id=\"does%20it%20work%20with%20high-performance%20order%20storage%20%28hpos%29%3F\">\nDoes it work with High-Performance Order Storage (HPOS)?\n</h4>\n<p>\n<p>Yes. The plugin declares HPOS compatibility and supports both the HPOS and the classic order screens.</p>\n</p>\n<dt id=\"where%20does%20the%20order%20data%20go%3F\">\nWhere does the order data go?\n</h4>\n<p>\n<p>Only to the webhook URLs you enter. You choose where order data goes. You are responsible for the customer data you send to that destination.</p>\n</p>\n<dt id=\"what%20does%20the%20data%20look%20like%3F\">\nWhat does the data look like?\n</h4>\n<p>\n<p>JSON with these groups: order, totals, billing, shipping, items (a list), button, sent_by, sent_at. Pro adds custom_fields and note, and can send one flat level instead (for example items_1_name). Dates use ISO 8601. Developers can change the data with the webhook_buttons_order_data filter, the body with webhook_buttons_request_body, and the headers with webhook_buttons_request_headers.</p>\n</p>\n<dt id=\"does%20it%20send%20custom%20order%20fields%3F\">\nDoes it send custom order fields?\n</h4>\n<p>\n<p>Pro does. With the Admin Custom Order Fields extension (SkyVerge) active, every field is sent under custom_fields as field_{id}, so the key stays the same if you rename a field. Values typed on the order screen are sent even before you click Update. Pro also sends any order meta keys you pick in Advanced settings.</p>\n</p>\n<dt id=\"does%20the%20plugin%20send%20data%20to%20anyone%20else%3F\">\nDoes the plugin send data to anyone else?\n</h4>\n<p>\n<p>License checks use Freemius. If you opt in, Freemius receives your site URL and email. Nothing else leaves your site except what you send to your own webhook URLs.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.4</h4>\n<ul>\n<li>One review request after your store has sent 5 orders. Dismiss it for good or snooze it for 30 days.</li>\n<li>New action for developers: <code>webhook_buttons_sent</code> fires after every successful send.</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>Cleaner Upgrade page: one Pro card with a site-count picker, yearly prices.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Declares the WooCommerce versions it was tested with.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Free version: no limits on boxes, buttons or resends. Pro features are separate code: custom fields, flat data, notes, user access control, sample sends, auth header.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "Add buttons to the WooCommerce order screen. Each button sends that order's data to a webhook URL you choose.",
+    "description": "<p>Webhook Buttons for WooCommerce adds a box of buttons to the order edit screen. Click a button and the plugin sends the order data to the webhook URL you set for that button. Use it to start a workflow in your automation tool, create a job in another system, or notify your team.</p>\n<p>You choose where order data goes. You are responsible for the customer data you send to that destination.</p>\n<p><strong>What you can do</strong></p>\n<p><strong>Free version</strong></p>\n<ul>\n<li>Add as many buttons as you need, in one or more boxes on the order screen.</li>\n<li>Give each button its own webhook URL.</li>\n<li>Ask for confirmation before a send, or send right away.</li>\n<li>Send an order again whenever you need to.</li>\n<li>Leave chosen product attributes out of the data.</li>\n<li>Every send adds an order note with the result.</li>\n</ul>\n<p><strong>Pro adds</strong></p>\n<ul>\n<li>Custom fields: values from the WooCommerce Admin Custom Order Fields extension, plus any order meta keys you pick (Checkout Field Editor, ACF and others).</li>\n<li>Flat data: one level, for tools that cannot read nested fields.</li>\n<li>A short staff note sent with the order.</li>\n<li>User access control: show a box or a button only to the staff you pick.</li>\n<li>Sample sends with up to 100 line items, so Zapier, Make and n8n see every field.</li>\n<li>An auth header on each button&#8217;s requests, for example an API key.</li>\n</ul>\n<p><strong>What is sent</strong></p>\n<p>A JSON POST with the order ID, status, date, total, billing and shipping details, customer email and phone, the customer note, the line items (name, quantity, attributes), and the name of the user who clicked.</p>\n<p><strong>License</strong></p>\n<p>The free version has no limits and no license. Pro is a separate download for license holders. Everything is kept in your own database; nothing is checked on our servers.</p>\n<h3>Development</h3>\n<p>The settings page is a small React app. Its readable source is in react-settings-ui/src. To rebuild it:</p>\n<pre><code>cd react-settings-ui &amp;&amp; npm install &amp;&amp; npm run build\n</code></pre>\n<p>Build the release zips with <code>scripts/build.sh</code> in the product folder (freemius, marketplace, lite).</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/webhook-buttons.1.0.4.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/webhook-buttons/assets/screenshot-1.png?rev=3766615",
+            "caption": "The settings page: boxes and buttons, each with its own webhook URL."
+        },
+        {
+            "src": "https://ps.w.org/webhook-buttons/assets/screenshot-2.png?rev=3766615",
+            "caption": "A button box on the WooCommerce order screen."
+        },
+        {
+            "src": "https://ps.w.org/webhook-buttons/assets/screenshot-3.png?rev=3766830",
+            "caption": "The order data as received by a webhook."
+        }
+    ],
+    "tags": {
+        "automation": "automation",
+        "buttons": "buttons",
+        "orders": "orders",
+        "webhook": "webhook",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.4",
+    "versions": {
+        "1.0.2": "https://downloads.wordpress.org/plugin/webhook-buttons.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/webhook-buttons.1.0.3.zip",
+        "1.0.4": "https://downloads.wordpress.org/plugin/webhook-buttons.1.0.4.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/webhook-buttons.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/webhook-buttons/assets/banner-772x250.png?rev=3766615",
+        "high": "https://ps.w.org/webhook-buttons/assets/banner-1544x500.png?rev=3766615"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/webhook-buttons/assets/icon-128x128.png?rev=3766615",
+        "2x": "https://ps.w.org/webhook-buttons/assets/icon-256x256.png?rev=3766615"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [
+        {
+            "filename": "blueprint.json",
+            "url": "https://wordpress.org/plugins/wp-json/plugins/v1/plugin/webhook-buttons/blueprint.json?rev=3767005"
+        }
+    ],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "webhook-buttons",
+            "language": "nl_NL",
+            "version": "1.0.2",
+            "updated": "2026-10-26 14:34:30",
+            "package": "https://downloads.wordpress.org/translation/plugin/webhook-buttons/1.0.2/nl_NL.zip"
+        }
+    ]
+}
