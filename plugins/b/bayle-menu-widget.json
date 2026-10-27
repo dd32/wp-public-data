@@ -1,0 +1,165 @@
+{
+    "name": "Bayle Menu Widget",
+    "slug": "bayle-menu-widget",
+    "version": "0.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/bayle/\">Bayle</a>",
+    "author_profile": "https://profiles.wordpress.org/bayle/",
+    "contributors": {
+        "bayle": {
+            "profile": "https://profiles.wordpress.org/bayle/",
+            "avatar": "https://secure.gravatar.com/avatar/438163da43edfd83a2a3d925f717f369c733012858d9c50d6de48f6acc4c3b8e?s=96&d=monsterid&r=g",
+            "display_name": "Bayle"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.3",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/bayle-menu-widget/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-27 11:34:00",
+    "added": "2026-10-27",
+    "homepage": "https://bayle.food",
+    "sections": {
+        "description": "<p>Bayle Menu Widget shows a restaurant&#8217;s live Bayle menu on a WordPress page. Dishes, prices, sizes, allergens and diets, photos and the weekly lunch list are managed in Bayle; the plugin shows them as part of your page, styled by your theme (fonts, colours, readable by search engines).</p>\n<p>This plugin is an interface to the Bayle menu service at <code>https://menu.bayle.food</code>. You need an active Bayle restaurant with the menu module turned on. Each site sets its own restaurant slug in Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Bayle Menu. The plugin stores only the slug, default language, display options and the menu base URL. It does not store API keys.</p>\n<ul>\n<li><strong>In your theme&#8217;s style (default):</strong> WordPress reads Bayle&#8217;s public menu feed and keeps a cached copy for 10 minutes. If Bayle cannot be reached, the last good copy is shown, so the page never breaks.</li>\n<li><strong>Embedded Bayle menu page:</strong> an iframe of the restaurant&#8217;s Bayle menu page, if you prefer.</li>\n<li><strong>Pickup ordering (optional):</strong> when online ordering is on for the restaurant in Bayle, guests can add dishes (with sizes and extras) to an order and continue to Bayle&#8217;s secure checkout, by default in a window on your site. Pickup time, contact details and payment are handled by Bayle; nothing is paid in WordPress. Untick &#8220;Online ordering&#8221; in Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Bayle Menu to show the menu only.</li>\n</ul>\n<p>Add the <strong>Bayle Menu</strong> block, or the shortcode <code>[bayle_menu_widget]</code> (also available as <code>[bayle_menu]</code> when no other plugin uses that shortcode).</p>\n<p>For table booking, see the separate <strong>Bayle Booking Widget</strong> plugin.</p>\n<h3>External services</h3>\n<p>This plugin connects to the Bayle menu service, operated by Bayle (https://bayle.food). It is required: without it there is no menu to show.</p>\n<ul>\n<li>Service: Bayle public menu feed and menu page at <code>https://menu.bayle.food</code> (or another official <code>https://*.bayle.food</code> host set by the site admin).</li>\n<li>Menu feed (server side): in the default display, WordPress (your server) requests <code>https://menu.bayle.food/api/{slug}/menu?lang=…</code> when a page with the menu is viewed and no fresh cached copy exists, at most once every 10 minutes per language, and when the admin clicks &#8220;Refresh menu now&#8221;. It sends the restaurant slug and language, and your site address in the User-Agent. Visitors&#8217; browsers do not contact Bayle for the menu text.</li>\n<li>Dish photos: when the restaurant added photos in Bayle, the visitor&#8217;s browser loads them from the image addresses in Bayle&#8217;s menu feed (https only). This sends the visitor&#8217;s IP address and your site address (referrer) to that image host. Turn photos off in the block settings or with <code>images=\"0\"</code>.</li>\n<li>Embedded menu page: in iframe display, the visitor&#8217;s browser loads <code>https://menu.bayle.food/{slug}?embed=1&amp;lang=…</code>, which sends the visitor&#8217;s IP address and your site address as part of the normal page request.</li>\n<li>Pickup ordering (only when online ordering is on for the restaurant in Bayle and in Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Bayle Menu): when the guest clicks &#8220;Continue to checkout&#8221;, their browser opens the restaurant&#8217;s Bayle checkout with the chosen dish references, quantities and extras, either in a window on your site (an iframe from the menu host above) or on the restaurant&#8217;s checkout page. That checkout address comes from Bayle&#8217;s menu feed: a <code>https://*.bayle.food</code> page or the restaurant&#8217;s own Bayle-hosted store (https only). Contact details (name, email, phone), pickup time and card payment are entered there, not in WordPress.</li>\n<li>Human verification: inside the checkout, a Cap.js proof-of-work captcha may run from Bayle&#8217;s captcha service at <code>https://captcha.bayle.food</code>. No Google reCAPTCHA is used, and this plugin does not load the captcha script on your site.</li>\n<li>Payments: card payment in Bayle&#8217;s checkout is processed by Stripe. This plugin does not load Stripe on your site and never sees card numbers. Stripe terms: https://stripe.com/legal/ssa, Stripe privacy policy: https://stripe.com/privacy</li>\n<li>Why: to show the restaurant&#8217;s current menu and, when ordering is on, to place pickup orders with the restaurant.</li>\n<li>Bayle Terms of Service: https://bayle.food/legal/terms/</li>\n<li>Bayle Privacy Policy: https://bayle.food/legal/privacy/</li>\n</ul>\n<p>The plugin&#8217;s only server-side request is the public menu feed above. It sets no cookies and adds no tracking. The pickup order in progress is kept in the guest&#8217;s browser (localStorage) until checkout or until the guest empties it.</p>\n<h3>Shortcode</h3>\n<p>Basic:</p>\n<pre><code>[bayle_menu_widget]\n</code></pre>\n<p>Options:</p>\n<ul>\n<li><code>slug=\"your-restaurant\"</code> – show another restaurant than the one in Settings.</li>\n<li><code>lang=\"fi|sv|en\"</code> – fixed language. If omitted, the Settings default, then the visitor&#8217;s language (site language, Polylang or WPML).</li>\n<li><code>display=\"native|iframe\"</code> – in your theme&#8217;s style, or the embedded Bayle page.</li>\n<li><code>layout=\"list|grid\"</code>, <code>images=\"0\"</code> (no photos), <code>categories=\"0\"</code> (no section links), <code>ordering=\"0\"</code> (menu only), <code>heading=\"2|3|4\"</code> (section heading level).</li>\n<li><code>base_url</code> – only an official <code>https://*.bayle.food</code> address; other values are ignored.</li>\n</ul>\n<p>Example: <code>[bayle_menu_widget slug=\"your-restaurant\" lang=\"fi\" layout=\"grid\"]</code></p>\n",
+        "installation": "<ol>\n<li>Upload the <code>bayle-menu-widget</code> folder to <code>/wp-content/plugins/</code>, or install the zip from Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin.</li>\n<li>Activate <strong>Bayle Menu Widget</strong>.</li>\n<li>Open <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Bayle Menu</strong>.</li>\n<li>Enter your restaurant slug from Bayle (the last part of your Bayle menu address). Leave the menu base URL as <code>https://menu.bayle.food</code> unless Bayle gave you another host.</li>\n<li>Insert the <strong>Bayle Menu</strong> block, or <code>[bayle_menu_widget]</code>, on a page.</li>\n</ol>\n",
+        "faq": "\n<h4>\nDo I need API keys in WordPress?\n</h4>\n<p>\n<p>No. WordPress only reads Bayle&#8217;s public, key-less menu feed.</p>\n</p>\n<h4>\nThe menu says it is not available.\n</h4>\n<p>\n<p>Check the restaurant slug in Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Bayle Menu and that the menu module is on for your restaurant in Bayle. Admins see a hint on the page; visitors see a neutral message.</p>\n</p>\n<h4>\nI changed a dish in Bayle. When does my site show it?\n</h4>\n<p>\n<p>Within 10 minutes. To see it now, click &#8220;Refresh menu now&#8221; in Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Bayle Menu.</p>\n</p>\n<h4>\nWhy is there no &#8220;Add to order&#8221; button?\n</h4>\n<p>\n<p>Ordering shows only when online ordering is on for your restaurant in Bayle, &#8220;Online ordering&#8221; is ticked in Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Bayle Menu, and the block or shortcode allows it.</p>\n</p>\n<h4>\nWhere does guest data go?\n</h4>\n<p>\n<p>Order details, contact details and payment are entered in Bayle&#8217;s checkout and go directly to Bayle (payments by Stripe). This plugin does not keep a copy in the WordPress database. A suggested privacy policy text is added under Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Privacy.</p>\n</p>\n<h4>\nCan I use it with the Bayle Restaurant plugin?\n</h4>\n<p>\n<p>Use one of them for the menu. If both are active, <code>[bayle_menu]</code> stays with the plugin that registered it first; <code>[bayle_menu_widget]</code> and the Bayle Menu block of this plugin always work.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>Initial release: Bayle Menu block and <code>[bayle_menu_widget]</code> shortcode, menu in your theme&#8217;s style or as an embedded Bayle page, 10-minute cache with last-good fallback, optional pickup ordering with Bayle&#8217;s secure checkout, Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Bayle Menu, suggested privacy policy text, Finnish and Swedish translations.</li>\n</ul>\n"
+    },
+    "short_description": "Show your live Bayle restaurant menu on your website, in your theme's style, with optional pickup ordering. No API keys in WordPress.",
+    "description": "<p>Bayle Menu Widget shows a restaurant&#8217;s live Bayle menu on a WordPress page. Dishes, prices, sizes, allergens and diets, photos and the weekly lunch list are managed in Bayle; the plugin shows them as part of your page, styled by your theme (fonts, colours, readable by search engines).</p>\n<p>This plugin is an interface to the Bayle menu service at <code>https://menu.bayle.food</code>. You need an active Bayle restaurant with the menu module turned on. Each site sets its own restaurant slug in Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Bayle Menu. The plugin stores only the slug, default language, display options and the menu base URL. It does not store API keys.</p>\n<ul>\n<li><strong>In your theme&#8217;s style (default):</strong> WordPress reads Bayle&#8217;s public menu feed and keeps a cached copy for 10 minutes. If Bayle cannot be reached, the last good copy is shown, so the page never breaks.</li>\n<li><strong>Embedded Bayle menu page:</strong> an iframe of the restaurant&#8217;s Bayle menu page, if you prefer.</li>\n<li><strong>Pickup ordering (optional):</strong> when online ordering is on for the restaurant in Bayle, guests can add dishes (with sizes and extras) to an order and continue to Bayle&#8217;s secure checkout, by default in a window on your site. Pickup time, contact details and payment are handled by Bayle; nothing is paid in WordPress. Untick &#8220;Online ordering&#8221; in Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Bayle Menu to show the menu only.</li>\n</ul>\n<p>Add the <strong>Bayle Menu</strong> block, or the shortcode <code>[bayle_menu_widget]</code> (also available as <code>[bayle_menu]</code> when no other plugin uses that shortcode).</p>\n<p>For table booking, see the separate <strong>Bayle Booking Widget</strong> plugin.</p>\n<h3>External services</h3>\n<p>This plugin connects to the Bayle menu service, operated by Bayle (https://bayle.food). It is required: without it there is no menu to show.</p>\n<ul>\n<li>Service: Bayle public menu feed and menu page at <code>https://menu.bayle.food</code> (or another official <code>https://*.bayle.food</code> host set by the site admin).</li>\n<li>Menu feed (server side): in the default display, WordPress (your server) requests <code>https://menu.bayle.food/api/{slug}/menu?lang=…</code> when a page with the menu is viewed and no fresh cached copy exists, at most once every 10 minutes per language, and when the admin clicks &#8220;Refresh menu now&#8221;. It sends the restaurant slug and language, and your site address in the User-Agent. Visitors&#8217; browsers do not contact Bayle for the menu text.</li>\n<li>Dish photos: when the restaurant added photos in Bayle, the visitor&#8217;s browser loads them from the image addresses in Bayle&#8217;s menu feed (https only). This sends the visitor&#8217;s IP address and your site address (referrer) to that image host. Turn photos off in the block settings or with <code>images=\"0\"</code>.</li>\n<li>Embedded menu page: in iframe display, the visitor&#8217;s browser loads <code>https://menu.bayle.food/{slug}?embed=1&amp;lang=…</code>, which sends the visitor&#8217;s IP address and your site address as part of the normal page request.</li>\n<li>Pickup ordering (only when online ordering is on for the restaurant in Bayle and in Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Bayle Menu): when the guest clicks &#8220;Continue to checkout&#8221;, their browser opens the restaurant&#8217;s Bayle checkout with the chosen dish references, quantities and extras, either in a window on your site (an iframe from the menu host above) or on the restaurant&#8217;s checkout page. That checkout address comes from Bayle&#8217;s menu feed: a <code>https://*.bayle.food</code> page or the restaurant&#8217;s own Bayle-hosted store (https only). Contact details (name, email, phone), pickup time and card payment are entered there, not in WordPress.</li>\n<li>Human verification: inside the checkout, a Cap.js proof-of-work captcha may run from Bayle&#8217;s captcha service at <code>https://captcha.bayle.food</code>. No Google reCAPTCHA is used, and this plugin does not load the captcha script on your site.</li>\n<li>Payments: card payment in Bayle&#8217;s checkout is processed by Stripe. This plugin does not load Stripe on your site and never sees card numbers. Stripe terms: https://stripe.com/legal/ssa, Stripe privacy policy: https://stripe.com/privacy</li>\n<li>Why: to show the restaurant&#8217;s current menu and, when ordering is on, to place pickup orders with the restaurant.</li>\n<li>Bayle Terms of Service: https://bayle.food/legal/terms/</li>\n<li>Bayle Privacy Policy: https://bayle.food/legal/privacy/</li>\n</ul>\n<p>The plugin&#8217;s only server-side request is the public menu feed above. It sets no cookies and adds no tracking. The pickup order in progress is kept in the guest&#8217;s browser (localStorage) until checkout or until the guest empties it.</p>\n<h3>Shortcode</h3>\n<p>Basic:</p>\n<pre><code>[bayle_menu_widget]\n</code></pre>\n<p>Options:</p>\n<ul>\n<li><code>slug=\"your-restaurant\"</code> – show another restaurant than the one in Settings.</li>\n<li><code>lang=\"fi|sv|en\"</code> – fixed language. If omitted, the Settings default, then the visitor&#8217;s language (site language, Polylang or WPML).</li>\n<li><code>display=\"native|iframe\"</code> – in your theme&#8217;s style, or the embedded Bayle page.</li>\n<li><code>layout=\"list|grid\"</code>, <code>images=\"0\"</code> (no photos), <code>categories=\"0\"</code> (no section links), <code>ordering=\"0\"</code> (menu only), <code>heading=\"2|3|4\"</code> (section heading level).</li>\n<li><code>base_url</code> – only an official <code>https://*.bayle.food</code> address; other values are ignored.</li>\n</ul>\n<p>Example: <code>[bayle_menu_widget slug=\"your-restaurant\" lang=\"fi\" layout=\"grid\"]</code></p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/bayle-menu-widget.0.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/bayle-menu-widget/assets/screenshot-1.png?rev=3768363",
+            "caption": "The live Bayle menu on a restaurant page, in the theme's style."
+        },
+        {
+            "src": "https://ps.w.org/bayle-menu-widget/assets/screenshot-2.png?rev=3768363",
+            "caption": "The Bayle Menu block and its settings in the block editor."
+        },
+        {
+            "src": "https://ps.w.org/bayle-menu-widget/assets/screenshot-3.png?rev=3768363",
+            "caption": "Settings → Bayle Menu: restaurant slug, language, display, ordering and checkout."
+        }
+    ],
+    "tags": {
+        "food-menu": "food menu",
+        "food-ordering": "food ordering",
+        "menu": "menu",
+        "pickup": "pickup",
+        "restaurant": "restaurant"
+    },
+    "stable_tag": "0.1.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/bayle-menu-widget.0.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/bayle-menu-widget.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/bayle-menu-widget/assets/banner-772x250.png?rev=3768363",
+        "high": "https://ps.w.org/bayle-menu-widget/assets/banner-1544x500.png?rev=3768363"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/bayle-menu-widget/assets/icon-128x128.png?rev=3768363",
+        "2x": "https://ps.w.org/bayle-menu-widget/assets/icon-256x256.png?rev=3768363"
+    },
+    "blocks": {
+        "bayle-menu-widget/menu": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "bayle-menu-widget/menu",
+            "version": "0.1.0",
+            "title": "Bayle Menu",
+            "category": "widgets",
+            "icon": "food",
+            "description": "Your live Bayle menu, shown in your theme's style. Guests can order for pickup when online ordering is on in Bayle.",
+            "keywords": [
+                "menu",
+                "restaurant",
+                "bayle",
+                "order",
+                "pickup"
+            ],
+            "textdomain": "bayle-menu-widget",
+            "attributes": {
+                "slug": {
+                    "type": "string",
+                    "default": ""
+                },
+                "lang": {
+                    "type": "string",
+                    "default": ""
+                },
+                "display": {
+                    "type": "string",
+                    "enum": [
+                        "",
+                        "native",
+                        "iframe"
+                    ],
+                    "default": ""
+                },
+                "layout": {
+                    "type": "string",
+                    "enum": [
+                        "list",
+                        "grid"
+                    ],
+                    "default": "list"
+                },
+                "showImages": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "showCategories": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "ordering": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "headingLevel": {
+                    "type": "number",
+                    "default": 2
+                }
+            },
+            "supports": {
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ]
+            },
+            "editorScript": "bayle-menu-widget-block",
+            "style": [
+                "bayle-menu-widget",
+                "bayle-menu-widget-menu"
+            ]
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
