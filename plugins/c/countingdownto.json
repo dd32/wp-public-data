@@ -1,0 +1,150 @@
+{
+    "name": "CountingDownTo",
+    "slug": "countingdownto",
+    "version": "0.2.0",
+    "author": "<a href=\"https://profiles.wordpress.org/countingdownto/\">countingdownto</a>",
+    "author_profile": "https://profiles.wordpress.org/countingdownto/",
+    "contributors": {
+        "countingdownto": {
+            "profile": "https://profiles.wordpress.org/countingdownto/",
+            "avatar": "https://secure.gravatar.com/avatar/8fea61b1a1fbe0f065156fe651556f26b530b7209c9934d76f67bd86a74f3ed4?s=96&d=monsterid&r=g",
+            "display_name": "countingdownto"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/countingdownto/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-29 07:39:00",
+    "added": "2026-10-29",
+    "homepage": "",
+    "sections": {
+        "description": "<p>CountingDownTo (countingdownto.com) is a countdown timer service. This plugin embeds those timers on your WordPress site without copying countdown logic into WordPress.</p>\n<p>This plugin relies on the CountingDownTo service. Countdowns are created and hosted on countingdownto.com and shown on your site in an iframe. See <strong>External services</strong> below for exactly what is sent and when.</p>\n<p><strong>What you get</strong></p>\n<ul>\n<li>A <strong>Countdown</strong> block: paste a countdown URL or pick one from your connected account</li>\n<li>A <code>[countingdownto]</code> shortcode for classic themes and page builders</li>\n<li>An optional <strong>site-wide bar</strong> (fixed top or bottom) that shows a countdown on every page</li>\n<li>Block patterns for common layouts</li>\n<li>Settings diagnostics so you can see whether embeds and API calls reach CountingDownTo</li>\n</ul>\n<p><strong>How it works</strong></p>\n<p>Published embeds load an iframe from <code>https://countingdownto.com/w4/{slug}</code>. The timer ticks in the visitor&#8217;s browser against an absolute target time, so a cached page stays accurate.</p>\n<ul>\n<li><strong>Fixed-date</strong> embeds do not set cookies on visitors.</li>\n<li><strong>Evergreen (rolling)</strong> embeds may set a partitioned <code>vid</code> cookie from countingdownto.com (not a cookie on your WordPress domain) so the rolling timer continues across visits.</li>\n</ul>\n<p>Connect your CountingDownTo account under Settings &gt; CountingDownTo to list and insert your own countdowns from the block editor. The connection uses a read-only access token stored only on your WordPress site and never sent to visitors. Uninstalling the plugin deletes that token on the current site; your countdowns stay in your CountingDownTo account.</p>\n<p><strong>Source code</strong></p>\n<p>The block editor script in <code>build/</code> is compiled. Its human-readable source is included in the plugin under <code>src/countdown/</code>. To rebuild it, run <code>npm install</code> and then <code>npm run build</code> in the plugin folder (uses <code>@wordpress/scripts</code>).</p>\n<h3>External services</h3>\n<p>This plugin connects to CountingDownTo (https://countingdownto.com), a countdown timer service run by the plugin author. It is needed to show countdowns, which are created and hosted there.</p>\n<ul>\n<li><strong>Countdown embeds.</strong> Every page that contains a Countdown block, a <code>[countingdownto]</code> shortcode or the site-wide bar loads an iframe from <code>https://countingdownto.com/w4/{slug}</code> in the visitor&#8217;s browser. That request sends the visitor&#8217;s IP address, User-Agent and, on HTTPS pages, the referring page URL (<code>referrerpolicy=no-referrer-when-downgrade</code>). Fixed-date embeds set no cookies. Evergreen (rolling) embeds may set a partitioned <code>vid</code> cookie (about 180 days, <code>SameSite=None; Partitioned</code>) on countingdownto.com, not on your WordPress domain.</li>\n<li><strong>oEmbed.</strong> When an editor pastes a countingdownto.com countdown URL, WordPress fetches oEmbed data from <code>https://countingdownto.com/oembed</code> on the server. The pasted URL is sent.</li>\n<li><strong>Block editor URL lookup.</strong> When an editor pastes a countdown URL into the Countdown block or picks one from the account list, the editor&#8217;s browser also requests <code>https://countingdownto.com/oembed</code> directly to read the countdown&#8217;s size. That request sends the countdown URL plus the editor&#8217;s IP address and User-Agent. It is separate from WordPress&#8217;s own server-side oEmbed lookup.</li>\n<li><strong>Block editor preview.</strong> When a Countdown block in the editor has a countdown selected (pasted, picked from the account list or created), the editor shows a live preview loaded as an iframe from <code>https://countingdownto.com/w4/{slug}</code> in the editor&#8217;s browser. That request sends the editor&#8217;s IP address, User-Agent and the referring admin page URL. The block inserter&#8217;s example preview is drawn locally and makes no request.</li>\n<li><strong>Settings page.</strong> The settings page does not load anything from countingdownto.com in the administrator&#8217;s browser. The starter cards are text and links only; nothing is requested until the administrator clicks one of the buttons described below.</li>\n<li><strong>Connect.</strong> When an administrator clicks Connect your account, the browser goes to <code>https://countingdownto.com/wp-connect</code> with the site&#8217;s host name, the plugin&#8217;s return URL (<code>redirect_uri</code>), a random <code>state</code> value, and a PKCE <code>code_challenge</code> with <code>code_challenge_method=S256</code>.</li>\n<li><strong>Connected account.</strong> After the administrator approves, the WordPress server exchanges a one-time code at <code>https://countingdownto.com/api/wp/v1/token</code>. After that it calls <code>https://countingdownto.com/api/wp/v1/*</code> with the stored read-only token to list countdowns and check the account plan. The token is never sent to browsers or visitors.</li>\n<li><strong>Create a countdown.</strong> When an editor clicks Create a countdown in the block, the WordPress server asks <code>https://countingdownto.com/api/wp/v1/pending</code> for a one-time handoff code (sending the site&#8217;s host name) and then checks it every few seconds, for up to 15 minutes, until the new countdown is ready to insert.</li>\n<li><strong>Create and starter tabs.</strong> When a user clicks Create a countdown (in the block or on the settings page) or a starter card, a new tab opens <code>https://countingdownto.com/c/create-countdown</code> with <code>src=wp</code>, the site&#8217;s timezone, locale and host name, plus the starter&#8217;s slug (<code>from</code>) for a starter and the handoff code (<code>state</code>) when started from the block.</li>\n<li><strong>Diagnostics.</strong> Only when an administrator clicks Run diagnostics, the WordPress server requests <code>https://countingdownto.com/healthz</code> and the administrator&#8217;s browser loads <code>https://countingdownto.com/favicon.ico</code>.</li>\n</ul>\n<p>Uninstalling deletes the stored token and plugin caches on the current site. Countdowns on CountingDownTo are not deleted.</p>\n<p>CountingDownTo terms of use: https://countingdownto.com/terms-of-use<br />\nCountingDownTo privacy policy: https://countingdownto.com/privacy-policy</p>\n",
+        "installation": "<ol>\n<li>Install from Plugins &gt; Add New, or upload the plugin ZIP.</li>\n<li>Activate <strong>CountingDownTo</strong>.</li>\n<li>(Optional) Open Settings &gt; CountingDownTo and click <strong>Connect your account</strong>.</li>\n<li>In the block editor, insert the <strong>Countdown</strong> block, or use <code>[countingdownto slug=\"your-slug\"]</code> in classic content.</li>\n</ol>\n<p>Shortcode attributes: <code>slug</code> or <code>url</code> (a countingdownto.com countdown link), plus optional <code>height</code> (pixels), <code>aspect_ratio</code> (for example <code>16/7</code>) and <code>label</code> (the iframe title read by screen readers).</p>\n",
+        "faq": "\n<h4>\nDo visitors need a CountingDownTo account?\n</h4>\n<p>\n<p>No. Visitors only load the public embed. You only need an account if you want the editor picker and the create and connect handoffs.</p>\n</p>\n<h4>\nDoes the plugin track visitors?\n</h4>\n<p>\n<p>The plugin adds no tracking scripts or telemetry. Loading an embed makes a normal HTTPS request from the visitor&#8217;s browser to countingdownto.com, which receives the visitor&#8217;s IP address, User-Agent and usually the referring page URL. Fixed-date embeds set no cookies; evergreen embeds may set a partitioned <code>vid</code> cookie on countingdownto.com. See External services.</p>\n</p>\n<h4>\nWhat happens if CountingDownTo is down?\n</h4>\n<p>\n<p>The iframe may fail to load, but the rest of your page still renders.</p>\n</p>\n<h4>\nWhat is stored in WordPress?\n</h4>\n<p>\n<p>If you connect an account, WordPress stores a read-only access token and short-lived caches of your countdown list on the current site. Uninstalling removes those for the current site only (on multisite, other subsites are not cleaned up). Countdown content lives on CountingDownTo.</p>\n</p>\n<h4>\nCan I use this with page builders or the Classic Editor?\n</h4>\n<p>\n<p>Yes. Use the shortcode, or paste a CountingDownTo countdown URL where oEmbed is supported. The block is the main path.</p>\n</p>\n<h4>\nDoes &#8220;Redirect at zero&#8221; work in an embedded countdown?\n</h4>\n<p>\n<p>No. A countdown embedded by this plugin runs in a sandboxed iframe that cannot navigate your page, so when it reaches zero it shows its ending (message, hidden countdown or hidden buttons) inside the iframe instead of redirecting. The redirect works when visitors open the countdown page on countingdownto.com directly.</p>\n</p>\n<h4>\nWhere do I get support?\n</h4>\n<p>\n<p>Use the support forum for this plugin on WordPress.org, or contact CountingDownTo through the help link on countingdownto.com.</p>\n</p>\n\n",
+        "changelog": "<h4>0.2.0</h4>\n<ul>\n<li>Site-wide bar, diagnostics, block patterns, privacy policy suggested text, and cache refresh when your plan changes.</li>\n<li>Account connect, countdown picker, and create-a-countdown handoff.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release: block, shortcode, and embed rendering.</li>\n</ul>\n"
+    },
+    "short_description": "Embed live countdown timers from CountingDownTo in posts and pages via a Gutenberg block or shortcode.",
+    "description": "<p>CountingDownTo (countingdownto.com) is a countdown timer service. This plugin embeds those timers on your WordPress site without copying countdown logic into WordPress.</p>\n<p>This plugin relies on the CountingDownTo service. Countdowns are created and hosted on countingdownto.com and shown on your site in an iframe. See <strong>External services</strong> below for exactly what is sent and when.</p>\n<p><strong>What you get</strong></p>\n<ul>\n<li>A <strong>Countdown</strong> block: paste a countdown URL or pick one from your connected account</li>\n<li>A <code>[countingdownto]</code> shortcode for classic themes and page builders</li>\n<li>An optional <strong>site-wide bar</strong> (fixed top or bottom) that shows a countdown on every page</li>\n<li>Block patterns for common layouts</li>\n<li>Settings diagnostics so you can see whether embeds and API calls reach CountingDownTo</li>\n</ul>\n<p><strong>How it works</strong></p>\n<p>Published embeds load an iframe from <code>https://countingdownto.com/w4/{slug}</code>. The timer ticks in the visitor&#8217;s browser against an absolute target time, so a cached page stays accurate.</p>\n<ul>\n<li><strong>Fixed-date</strong> embeds do not set cookies on visitors.</li>\n<li><strong>Evergreen (rolling)</strong> embeds may set a partitioned <code>vid</code> cookie from countingdownto.com (not a cookie on your WordPress domain) so the rolling timer continues across visits.</li>\n</ul>\n<p>Connect your CountingDownTo account under Settings &gt; CountingDownTo to list and insert your own countdowns from the block editor. The connection uses a read-only access token stored only on your WordPress site and never sent to visitors. Uninstalling the plugin deletes that token on the current site; your countdowns stay in your CountingDownTo account.</p>\n<p><strong>Source code</strong></p>\n<p>The block editor script in <code>build/</code> is compiled. Its human-readable source is included in the plugin under <code>src/countdown/</code>. To rebuild it, run <code>npm install</code> and then <code>npm run build</code> in the plugin folder (uses <code>@wordpress/scripts</code>).</p>\n<h3>External services</h3>\n<p>This plugin connects to CountingDownTo (https://countingdownto.com), a countdown timer service run by the plugin author. It is needed to show countdowns, which are created and hosted there.</p>\n<ul>\n<li><strong>Countdown embeds.</strong> Every page that contains a Countdown block, a <code>[countingdownto]</code> shortcode or the site-wide bar loads an iframe from <code>https://countingdownto.com/w4/{slug}</code> in the visitor&#8217;s browser. That request sends the visitor&#8217;s IP address, User-Agent and, on HTTPS pages, the referring page URL (<code>referrerpolicy=no-referrer-when-downgrade</code>). Fixed-date embeds set no cookies. Evergreen (rolling) embeds may set a partitioned <code>vid</code> cookie (about 180 days, <code>SameSite=None; Partitioned</code>) on countingdownto.com, not on your WordPress domain.</li>\n<li><strong>oEmbed.</strong> When an editor pastes a countingdownto.com countdown URL, WordPress fetches oEmbed data from <code>https://countingdownto.com/oembed</code> on the server. The pasted URL is sent.</li>\n<li><strong>Block editor URL lookup.</strong> When an editor pastes a countdown URL into the Countdown block or picks one from the account list, the editor&#8217;s browser also requests <code>https://countingdownto.com/oembed</code> directly to read the countdown&#8217;s size. That request sends the countdown URL plus the editor&#8217;s IP address and User-Agent. It is separate from WordPress&#8217;s own server-side oEmbed lookup.</li>\n<li><strong>Block editor preview.</strong> When a Countdown block in the editor has a countdown selected (pasted, picked from the account list or created), the editor shows a live preview loaded as an iframe from <code>https://countingdownto.com/w4/{slug}</code> in the editor&#8217;s browser. That request sends the editor&#8217;s IP address, User-Agent and the referring admin page URL. The block inserter&#8217;s example preview is drawn locally and makes no request.</li>\n<li><strong>Settings page.</strong> The settings page does not load anything from countingdownto.com in the administrator&#8217;s browser. The starter cards are text and links only; nothing is requested until the administrator clicks one of the buttons described below.</li>\n<li><strong>Connect.</strong> When an administrator clicks Connect your account, the browser goes to <code>https://countingdownto.com/wp-connect</code> with the site&#8217;s host name, the plugin&#8217;s return URL (<code>redirect_uri</code>), a random <code>state</code> value, and a PKCE <code>code_challenge</code> with <code>code_challenge_method=S256</code>.</li>\n<li><strong>Connected account.</strong> After the administrator approves, the WordPress server exchanges a one-time code at <code>https://countingdownto.com/api/wp/v1/token</code>. After that it calls <code>https://countingdownto.com/api/wp/v1/*</code> with the stored read-only token to list countdowns and check the account plan. The token is never sent to browsers or visitors.</li>\n<li><strong>Create a countdown.</strong> When an editor clicks Create a countdown in the block, the WordPress server asks <code>https://countingdownto.com/api/wp/v1/pending</code> for a one-time handoff code (sending the site&#8217;s host name) and then checks it every few seconds, for up to 15 minutes, until the new countdown is ready to insert.</li>\n<li><strong>Create and starter tabs.</strong> When a user clicks Create a countdown (in the block or on the settings page) or a starter card, a new tab opens <code>https://countingdownto.com/c/create-countdown</code> with <code>src=wp</code>, the site&#8217;s timezone, locale and host name, plus the starter&#8217;s slug (<code>from</code>) for a starter and the handoff code (<code>state</code>) when started from the block.</li>\n<li><strong>Diagnostics.</strong> Only when an administrator clicks Run diagnostics, the WordPress server requests <code>https://countingdownto.com/healthz</code> and the administrator&#8217;s browser loads <code>https://countingdownto.com/favicon.ico</code>.</li>\n</ul>\n<p>Uninstalling deletes the stored token and plugin caches on the current site. Countdowns on CountingDownTo are not deleted.</p>\n<p>CountingDownTo terms of use: https://countingdownto.com/terms-of-use<br />\nCountingDownTo privacy policy: https://countingdownto.com/privacy-policy</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/countingdownto.0.2.0.zip",
+    "upgrade_notice": {
+        "0.2.0": "<p>Adds the site-wide bar, diagnostics and account connect.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/countingdownto/assets/screenshot-1.png?rev=3772312",
+            "caption": "The Countdown block in the editor, with a live preview and its settings panel."
+        },
+        {
+            "src": "https://ps.w.org/countingdownto/assets/screenshot-2.png?rev=3772312",
+            "caption": "Settings &gt; CountingDownTo: connect your account, start from a template, and turn on the site-wide bar."
+        },
+        {
+            "src": "https://ps.w.org/countingdownto/assets/screenshot-3.png?rev=3772312",
+            "caption": "A published post with a countdown embed, and the optional site-wide bar across the top."
+        },
+        {
+            "src": "https://ps.w.org/countingdownto/assets/screenshot-4.png?rev=3772312",
+            "caption": "Diagnostics and Privacy &amp; data sections on the settings page."
+        }
+    ],
+    "tags": {
+        "block": "block",
+        "countdown": "countdown",
+        "embed": "embed",
+        "oembed": "oembed",
+        "timer": "timer"
+    },
+    "stable_tag": "0.2.0",
+    "versions": {
+        "0.2.0": "https://downloads.wordpress.org/plugin/countingdownto.0.2.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/countingdownto.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/countingdownto/assets/banner-772x250.png?rev=3772312",
+        "high": "https://ps.w.org/countingdownto/assets/banner-1544x500.png?rev=3772312"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/countingdownto/assets/icon-128x128.png?rev=3772312",
+        "2x": "https://ps.w.org/countingdownto/assets/icon-256x256.png?rev=3772312"
+    },
+    "blocks": {
+        "countingdownto/countdown": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "countingdownto/countdown",
+            "title": "Countdown",
+            "category": "embed",
+            "icon": "clock",
+            "description": "Embed a CountingDownTo countdown.",
+            "keywords": [
+                "countdown",
+                "timer",
+                "event"
+            ],
+            "textdomain": "countingdownto",
+            "attributes": {
+                "slug": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "number"
+                },
+                "aspectRatio": {
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
+                },
+                "align": {
+                    "type": "string"
+                },
+                "isExample": {
+                    "type": "boolean",
+                    "default": false
+                }
+            },
+            "supports": {
+                "align": [
+                    "wide",
+                    "full"
+                ]
+            },
+            "example": {
+                "attributes": {
+                    "isExample": true
+                }
+            },
+            "editorScript": "file:./index.js",
+            "render": "file:./render.php"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
