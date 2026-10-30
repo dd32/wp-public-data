@@ -1,0 +1,82 @@
+{
+    "name": "RedyPago Bank Transfers for WooCommerce",
+    "slug": "redypago",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/mariompolit/\">mariompolit</a>",
+    "author_profile": "https://profiles.wordpress.org/mariompolit/",
+    "contributors": {
+        "mariompolit": {
+            "profile": "https://profiles.wordpress.org/mariompolit/",
+            "avatar": "https://secure.gravatar.com/avatar/32e461c186332dbcf1555cbdf0a49e6b135e45a046b5b9b787f3c024d9a65c05?s=96&d=monsterid&r=g",
+            "display_name": "mariompolit"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/redypago/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-30 15:32:00",
+    "added": "2026-10-30",
+    "homepage": "",
+    "sections": {
+        "description": "<p>RedyPago Bank Transfers adds a payment method to WooCommerce that lets your customers pay by bank transfer through the RedyPago network, with automatic confirmation within seconds.</p>\n<p><strong>How it works for the customer</strong></p>\n<ol>\n<li>At checkout the customer chooses &#8220;Pagar por transferencia (RedyPago)&#8221;, selects their bank and enters their national ID (cédula or RUC).</li>\n<li>They get a unique payment code for the order, on screen and by email.</li>\n<li>They open their bank&#8217;s app or online banking, go to &#8220;Pago de servicios&#8221; (pay services), search for &#8220;RedyPago&#8221; and enter the code.</li>\n<li>RedyPago validates the transfer automatically and notifies the store.</li>\n<li>The order moves to &#8220;Processing&#8221; / &#8220;Completed&#8221; with no manual work, and the customer sees a payment receipt.</li>\n</ol>\n<p><strong>Features</strong></p>\n<ul>\n<li>Works with the classic checkout and with the Cart &amp; Checkout Blocks.</li>\n<li>Compatible with High-Performance Order Storage (HPOS).</li>\n<li>Dedicated payment screen with the payment code, copy button, bank instructions, automatic payment detection and a cancel button that disables the code.</li>\n<li>Automatic confirmation through a webhook protected with HTTP Basic credentials. The payment status is always re-checked against the RedyPago API before an order is marked as paid.</li>\n<li>Scheduled backup check for orders whose webhook did not arrive, and automatic expiry of unpaid orders (configurable).</li>\n<li>Optional reconciliation: RedyPago settles stores every morning; with the settlements webhook enabled, orders are marked as settled and the orders list gets a &#8220;Settlement&#8221; column and filter.</li>\n<li>Sandbox and production environments with separate credentials, and a &#8220;Test connection&#8221; button in the settings.</li>\n<li>Payment receipt (authorization number, payer, bank, date) on the confirmation page, in the order emails and in the order notes.</li>\n</ul>\n<p><strong>Requirements</strong></p>\n<ul>\n<li>A RedyPago merchant account with API credentials (user and password).</li>\n<li>WooCommerce 8.0 or later. Store currency: USD.</li>\n<li>A phone number and national ID are required at checkout while this payment method is active (they are requested by the RedyPago API).</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the <strong>RedyPago</strong> payment service (https://www.redypago.com) to create, check and cancel bank-transfer payment codes. Without this service the plugin cannot work.</p>\n<p><strong>What is sent and when</strong></p>\n<ul>\n<li>When the customer places an order with this payment method: the customer&#8217;s name, email, phone number, street address and city, identification number (cédula/RUC), the order total and currency, the chosen bank, and the store&#8217;s internal order number. It is used to register the transfer and obtain a payment code.</li>\n<li>While the order is pending (from the payment screen, a scheduled task, or when RedyPago notifies the store): the payment code, the bank code and the internal order number. It is used to check whether the transfer was paid.</li>\n<li>When the customer cancels or the order expires: the same codes, to disable the payment code.</li>\n<li>When the checkout is displayed: a request for the list of available banks (no customer data).</li>\n<li>Sandbox mode only: the same codes, to simulate a payment.</li>\n</ul>\n<p>RedyPago also sends notifications to the store&#8217;s webhook URLs (<code>/wp-json/redypago/v1/webhook</code> and <code>/wp-json/redypago/v1/settlements</code>), protected with HTTP Basic credentials configured by the merchant.</p>\n<p><strong>Service endpoints:</strong> https://apipagos.redypago.com (production) and https://apitesting.redypago.com (sandbox).</p>\n<ul>\n<li>Terms and conditions: https://www.redypago.com/terminos-y-condiciones</li>\n<li>Privacy policy: https://www.redypago.com/politicas-de-privacidad</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>redypago</code> folder to <code>/wp-content/plugins/</code>, or install the .zip from &#8220;Plugins &gt; Add New &gt; Upload Plugin&#8221;.</li>\n<li>Activate the plugin.</li>\n<li>Go to WooCommerce &gt; Settings &gt; Payments &gt; RedyPago Transferencias.</li>\n<li>Enable the method, enter your RedyPago user and password (sandbox or production) and save.</li>\n<li>Click &#8220;Test connection&#8221; to validate your credentials.</li>\n<li>Give RedyPago the webhook URL, user and password shown in the settings so confirmations are automatic.</li>\n</ol>\n",
+        "faq": "\n<h4>\nWhat happens if the RedyPago webhook does not arrive?\n</h4>\n<p>\n<p>The plugin runs a scheduled check every 15 minutes that asks the RedyPago API for the status of pending orders. If an order is still unpaid after the configured time, it is cancelled automatically and its payment code is disabled.</p>\n</p>\n<h4>\nIs the payment confirmed at checkout?\n</h4>\n<p>\n<p>No. The transfer is validated by the bank and RedyPago, which can take a few seconds. The customer is taken to a payment screen that detects the payment automatically; the order stays &#8220;On hold&#8221; until it is confirmed.</p>\n</p>\n<h4>\nDoes it work with the Cart &amp; Checkout Blocks?\n</h4>\n<p>\n<p>Yes. The payment method is registered for both the classic checkout and the block-based checkout.</p>\n</p>\n<h4>\nIs it compatible with HPOS?\n</h4>\n<p>\n<p>Yes. The plugin declares compatibility with High-Performance Order Storage and only uses the WC_Order CRUD methods.</p>\n</p>\n<h4>\nWhat is the reconciliation option?\n</h4>\n<p>\n<p>RedyPago settles merchants every morning for the previous day&#8217;s transactions. If you enable it in the settings, RedyPago notifies the store and each order is marked as settled, so you can filter settled and unsettled orders. It is optional and off by default.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Accept bank transfer payments in Ecuador with automatic validation through RedyPago.",
+    "description": "<p>RedyPago Bank Transfers adds a payment method to WooCommerce that lets your customers pay by bank transfer through the RedyPago network, with automatic confirmation within seconds.</p>\n<p><strong>How it works for the customer</strong></p>\n<ol>\n<li>At checkout the customer chooses &#8220;Pagar por transferencia (RedyPago)&#8221;, selects their bank and enters their national ID (cédula or RUC).</li>\n<li>They get a unique payment code for the order, on screen and by email.</li>\n<li>They open their bank&#8217;s app or online banking, go to &#8220;Pago de servicios&#8221; (pay services), search for &#8220;RedyPago&#8221; and enter the code.</li>\n<li>RedyPago validates the transfer automatically and notifies the store.</li>\n<li>The order moves to &#8220;Processing&#8221; / &#8220;Completed&#8221; with no manual work, and the customer sees a payment receipt.</li>\n</ol>\n<p><strong>Features</strong></p>\n<ul>\n<li>Works with the classic checkout and with the Cart &amp; Checkout Blocks.</li>\n<li>Compatible with High-Performance Order Storage (HPOS).</li>\n<li>Dedicated payment screen with the payment code, copy button, bank instructions, automatic payment detection and a cancel button that disables the code.</li>\n<li>Automatic confirmation through a webhook protected with HTTP Basic credentials. The payment status is always re-checked against the RedyPago API before an order is marked as paid.</li>\n<li>Scheduled backup check for orders whose webhook did not arrive, and automatic expiry of unpaid orders (configurable).</li>\n<li>Optional reconciliation: RedyPago settles stores every morning; with the settlements webhook enabled, orders are marked as settled and the orders list gets a &#8220;Settlement&#8221; column and filter.</li>\n<li>Sandbox and production environments with separate credentials, and a &#8220;Test connection&#8221; button in the settings.</li>\n<li>Payment receipt (authorization number, payer, bank, date) on the confirmation page, in the order emails and in the order notes.</li>\n</ul>\n<p><strong>Requirements</strong></p>\n<ul>\n<li>A RedyPago merchant account with API credentials (user and password).</li>\n<li>WooCommerce 8.0 or later. Store currency: USD.</li>\n<li>A phone number and national ID are required at checkout while this payment method is active (they are requested by the RedyPago API).</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin connects to the <strong>RedyPago</strong> payment service (https://www.redypago.com) to create, check and cancel bank-transfer payment codes. Without this service the plugin cannot work.</p>\n<p><strong>What is sent and when</strong></p>\n<ul>\n<li>When the customer places an order with this payment method: the customer&#8217;s name, email, phone number, street address and city, identification number (cédula/RUC), the order total and currency, the chosen bank, and the store&#8217;s internal order number. It is used to register the transfer and obtain a payment code.</li>\n<li>While the order is pending (from the payment screen, a scheduled task, or when RedyPago notifies the store): the payment code, the bank code and the internal order number. It is used to check whether the transfer was paid.</li>\n<li>When the customer cancels or the order expires: the same codes, to disable the payment code.</li>\n<li>When the checkout is displayed: a request for the list of available banks (no customer data).</li>\n<li>Sandbox mode only: the same codes, to simulate a payment.</li>\n</ul>\n<p>RedyPago also sends notifications to the store&#8217;s webhook URLs (<code>/wp-json/redypago/v1/webhook</code> and <code>/wp-json/redypago/v1/settlements</code>), protected with HTTP Basic credentials configured by the merchant.</p>\n<p><strong>Service endpoints:</strong> https://apipagos.redypago.com (production) and https://apitesting.redypago.com (sandbox).</p>\n<ul>\n<li>Terms and conditions: https://www.redypago.com/terminos-y-condiciones</li>\n<li>Privacy policy: https://www.redypago.com/politicas-de-privacidad</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/redypago.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>First release of the plugin.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "bank-transfer": "bank transfer",
+        "ecuador": "ecuador",
+        "payments": "payments",
+        "redypago": "redypago",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/redypago.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/redypago.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/redypago/assets/banner-772x250.png?rev=3775565",
+        "high": "https://ps.w.org/redypago/assets/banner-1544x500.png?rev=3775565"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/redypago/assets/icon-128x128.png?rev=3775565",
+        "2x": "https://ps.w.org/redypago/assets/icon-256x256.png?rev=3775565"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
