@@ -1,0 +1,91 @@
+{
+    "name": "tlloancy Behavioral Ultimate Finisher",
+    "slug": "tlloancy-behavioral-ultimate-finisher",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/tlloancy/\">Thomas Lloancy</a>",
+    "author_profile": "https://profiles.wordpress.org/tlloancy/",
+    "contributors": {
+        "tlloancy": {
+            "profile": "https://profiles.wordpress.org/tlloancy/",
+            "avatar": "https://secure.gravatar.com/avatar/c4c69c0a9e0098d951460c12fd1d8ecbd8ecf9588215dc76a29116ea2a329b60?s=96&d=monsterid&r=g",
+            "display_name": "Thomas Lloancy"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/tlloancy-behavioral-ultimate-finisher/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-30 20:14:00",
+    "added": "2026-10-30",
+    "homepage": "https://codeberg.org/tlloancy/tlloancy-behavioral-ultimate-finisher",
+    "sections": {
+        "description": "<p>tlloancy Behavioral Ultimate Finisher looks at <strong>how</strong> a form was filled, not only at what was sent. It scores each submission from a few behavioral signals and lets you decide what happens to the ones that look automated. No CAPTCHA, no cookies, no external service.</p>\n<p><strong>A companion for your anti-spam plugin</strong></p>\n<p>Honeypots, nonces and form timers are good against simple bots, but a bot that runs JavaScript can satisfy them. Behavioral Ultimate Finisher adds the missing angle: a bot that loads the page, fills the form in a fraction of a second and never touches the mouse or the keyboard gives itself away by how it behaved.</p>\n<p>It uses standard WordPress hooks and its own field names, so it is designed to sit next to plugins such as La Sentinelle antispam, Antispam Bee or Akismet. Each plugin runs its own check, and a submission is stopped if either one flags it. This plugin is independent and is not affiliated with those projects.</p>\n<p><strong>What it catches</strong></p>\n<ul>\n<li>Bots that run JavaScript but do not behave like a person: submitting within a fraction of a second, no mouse, keyboard, touch or scroll, scripted keystrokes, headless-browser windows.</li>\n<li>Raw bots that post straight to the form without a browser: by default through the honeypot, and through the missing or forged token once you raise the &#8220;no valid token&#8221; score (see the FAQ).</li>\n</ul>\n<p><strong>What it does not catch</strong></p>\n<p>Bots that drive a real browser with genuine input events, and human spammers, can look like a normal visitor. Keep a content-based anti-spam plugin for those.</p>\n<p><strong>Signals (each with an editable score)</strong></p>\n<ul>\n<li>Honeypot field filled in</li>\n<li>No valid token (direct POST without a browser, forged or expired token)</li>\n<li>Form submitted faster than a minimum fill time</li>\n<li>No human interaction before the submission (mouse, keyboard, touch, scroll, focus)</li>\n<li>Browser reports automation (<code>navigator.webdriver</code>)</li>\n<li>Browser window reports a size of 0 x 0, typical of headless browsers</li>\n<li>Many keystrokes or clicks fired by a script instead of the browser (simulated typing)</li>\n</ul>\n<p>Scores add up. A submission is flagged when its total reaches your threshold, so one weak signal never blocks a real visitor on its own.</p>\n<p><strong>Three modes</strong></p>\n<ul>\n<li><strong>Reject</strong> (default): every flagged submission is rejected.</li>\n<li><strong>Mark as spam</strong>: flagged comments go to the spam queue, other forms reject the submission.</li>\n<li><strong>Observe</strong>: scores are logged, nothing is blocked. Useful to check the log and calibrate your thresholds on your own traffic.</li>\n</ul>\n<p><strong>Protected forms</strong></p>\n<ul>\n<li>WordPress comments (including WooCommerce reviews)</li>\n<li>User registration (WordPress and WooCommerce)</li>\n<li>Contact Form 7</li>\n<li>Login (optional, off by default)</li>\n</ul>\n<p><strong>For developers</strong></p>\n<pre><code>$result = tlbuf_evaluate( 'my-plugin' ); returns `score`, `signals` and `flagged` for the current submission. Use the `tlbuf_behavior_score` filter to adjust the score.\n</code></pre>\n<p><strong>Privacy</strong></p>\n<p>No cookies, no IP address stored, no data sent to any third-party service. The optional log only keeps the date, form type, score, decision, triggered signals and a short line of event counters (numbers only, never what was typed), and is purged automatically.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to <code>/wp-content/plugins/</code>, or install it from the Plugins screen.</li>\n<li>Activate it.</li>\n<li>Open Settings &gt; Behavioral Ultimate Finisher. The plugin starts in Reject mode, so flagged submissions are blocked right away.</li>\n<li>Optional: switch to &#8220;Observe&#8221; or &#8220;Mark as spam&#8221; if you want to review the log first.</li>\n</ol>\n",
+        "faq": "\n<h4>\nDoes it replace my anti-spam plugin?\n</h4>\n<p>\n<p>No, it is meant to work next to it. A content-based plugin judges what was sent, Behavioral Ultimate Finisher judges how the form was filled. You can switch to observe mode at any time to see what it would flag on your own traffic.</p>\n</p>\n<h4>\nWill it block real visitors?\n</h4>\n<p>\n<p>Not on a single signal. By default a visitor with JavaScript disabled only gets the &#8220;no valid token&#8221; score, which is below the threshold. The trade-off is that raw bots that never fill the honeypot also pass at that setting. Check in the log (observe mode) that your real visitors always have a token, then raise the &#8220;no valid token&#8221; score to the threshold value to reject raw bots.</p>\n</p>\n<h4>\nThe login form is off by default. Why?\n</h4>\n<p>\n<p>Password managers can fill and submit a login form within a second or two, which looks like a bot. Enable it only if you need it, and check the log first.</p>\n</p>\n<h4>\nDoes it work with page caching?\n</h4>\n<p>\n<p>Yes. The token is requested from a REST endpoint after the page loads, so cached pages are fine. If a security plugin blocks the REST API for visitors, no token is issued and only the honeypot and the other signals apply. Plugins that delay JavaScript until the first interaction should exclude <code>tlbuf-tracker.js</code>.</p>\n</p>\n<h4>\nDoes it stop every bot?\n</h4>\n<p>\n<p>No. Bots that drive a real browser with genuine input events, and human spammers, can pass behavioral checks. Use it as a first filter next to a content-based anti-spam plugin. Tokens are valid for 24 hours and are not single-use.</p>\n</p>\n<h4>\nDoes it use an external service or cookies?\n</h4>\n<p>\n<p>No.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "Invisible behavioral spam filter for comments and forms. No CAPTCHA, no cookies, no external service. Pairs well with your anti-spam plugin.",
+    "description": "<p>tlloancy Behavioral Ultimate Finisher looks at <strong>how</strong> a form was filled, not only at what was sent. It scores each submission from a few behavioral signals and lets you decide what happens to the ones that look automated. No CAPTCHA, no cookies, no external service.</p>\n<p><strong>A companion for your anti-spam plugin</strong></p>\n<p>Honeypots, nonces and form timers are good against simple bots, but a bot that runs JavaScript can satisfy them. Behavioral Ultimate Finisher adds the missing angle: a bot that loads the page, fills the form in a fraction of a second and never touches the mouse or the keyboard gives itself away by how it behaved.</p>\n<p>It uses standard WordPress hooks and its own field names, so it is designed to sit next to plugins such as La Sentinelle antispam, Antispam Bee or Akismet. Each plugin runs its own check, and a submission is stopped if either one flags it. This plugin is independent and is not affiliated with those projects.</p>\n<p><strong>What it catches</strong></p>\n<ul>\n<li>Bots that run JavaScript but do not behave like a person: submitting within a fraction of a second, no mouse, keyboard, touch or scroll, scripted keystrokes, headless-browser windows.</li>\n<li>Raw bots that post straight to the form without a browser: by default through the honeypot, and through the missing or forged token once you raise the &#8220;no valid token&#8221; score (see the FAQ).</li>\n</ul>\n<p><strong>What it does not catch</strong></p>\n<p>Bots that drive a real browser with genuine input events, and human spammers, can look like a normal visitor. Keep a content-based anti-spam plugin for those.</p>\n<p><strong>Signals (each with an editable score)</strong></p>\n<ul>\n<li>Honeypot field filled in</li>\n<li>No valid token (direct POST without a browser, forged or expired token)</li>\n<li>Form submitted faster than a minimum fill time</li>\n<li>No human interaction before the submission (mouse, keyboard, touch, scroll, focus)</li>\n<li>Browser reports automation (<code>navigator.webdriver</code>)</li>\n<li>Browser window reports a size of 0 x 0, typical of headless browsers</li>\n<li>Many keystrokes or clicks fired by a script instead of the browser (simulated typing)</li>\n</ul>\n<p>Scores add up. A submission is flagged when its total reaches your threshold, so one weak signal never blocks a real visitor on its own.</p>\n<p><strong>Three modes</strong></p>\n<ul>\n<li><strong>Reject</strong> (default): every flagged submission is rejected.</li>\n<li><strong>Mark as spam</strong>: flagged comments go to the spam queue, other forms reject the submission.</li>\n<li><strong>Observe</strong>: scores are logged, nothing is blocked. Useful to check the log and calibrate your thresholds on your own traffic.</li>\n</ul>\n<p><strong>Protected forms</strong></p>\n<ul>\n<li>WordPress comments (including WooCommerce reviews)</li>\n<li>User registration (WordPress and WooCommerce)</li>\n<li>Contact Form 7</li>\n<li>Login (optional, off by default)</li>\n</ul>\n<p><strong>For developers</strong></p>\n<pre><code>$result = tlbuf_evaluate( 'my-plugin' ); returns `score`, `signals` and `flagged` for the current submission. Use the `tlbuf_behavior_score` filter to adjust the score.\n</code></pre>\n<p><strong>Privacy</strong></p>\n<p>No cookies, no IP address stored, no data sent to any third-party service. The optional log only keeps the date, form type, score, decision, triggered signals and a short line of event counters (numbers only, never what was typed), and is purged automatically.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/tlloancy-behavioral-ultimate-finisher.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/tlloancy-behavioral-ultimate-finisher/assets/screenshot-1.png?rev=3775978",
+            "caption": "Choose a mode (reject, mark as spam, observe) and the forms to protect."
+        },
+        {
+            "src": "https://ps.w.org/tlloancy-behavioral-ultimate-finisher/assets/screenshot-2.png?rev=3775978",
+            "caption": "Every signal has its own editable score."
+        },
+        {
+            "src": "https://ps.w.org/tlloancy-behavioral-ultimate-finisher/assets/screenshot-3.png?rev=3775978",
+            "caption": "The score log lists each submission with its signals and event counters (demo traffic)."
+        }
+    ],
+    "tags": {
+        "anti-spam": "anti-spam",
+        "bot-protection": "bot protection",
+        "comments": "comments",
+        "honeypot": "honeypot",
+        "spam": "spam"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/tlloancy-behavioral-ultimate-finisher.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/tlloancy-behavioral-ultimate-finisher.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/tlloancy-behavioral-ultimate-finisher/assets/banner-772x250.png?rev=3775978",
+        "high": "https://ps.w.org/tlloancy-behavioral-ultimate-finisher/assets/banner-1544x500.png?rev=3775978"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/tlloancy-behavioral-ultimate-finisher/assets/icon.svg?rev=3775978",
+        "svg": "https://ps.w.org/tlloancy-behavioral-ultimate-finisher/assets/icon.svg?rev=3775978"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
