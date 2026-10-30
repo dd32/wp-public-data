@@ -1,0 +1,90 @@
+{
+    "name": "Axle Read-Only Mode",
+    "slug": "axle-read-only-mode",
+    "version": "3.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/aryanjasala/\">Aryan Jasala</a>",
+    "author_profile": "https://profiles.wordpress.org/aryanjasala/",
+    "contributors": {
+        "aryanjasala": {
+            "profile": "https://profiles.wordpress.org/aryanjasala/",
+            "avatar": "https://secure.gravatar.com/avatar/a07cde38459da198989bc86a69bf773cadb8bf50cc14734b3fcdaa33d7a6fa53?s=96&d=monsterid&r=g",
+            "display_name": "Aryan Jasala"
+        }
+    },
+    "requires": "6.6",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/axle-read-only-mode/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-30 07:48:00",
+    "added": "2026-10-30",
+    "homepage": "https://wordpress.org/plugins/axle-read-only-mode/",
+    "sections": {
+        "description": "<p>When you move a site to a new server, or replace the live database with one from staging, anything saved on the old copy during the move is lost: a post an editor was finishing, a comment, a form entry, a WooCommerce order.</p>\n<p>Maintenance mode hides the whole site from visitors. Axle Read-Only Mode keeps the site online but makes it <strong>read-only</strong>:</p>\n<ul>\n<li><strong>Editors</strong> can open and read everything in wp-admin, but cannot save. The block editor disables Save and Publish and shows why. People who already have the editor open are locked within a minute, through the WordPress heartbeat, and unlocked again when the freeze ends.</li>\n<li><strong>Admin actions</strong> that change data are refused: saving settings, uploading media, installing or updating plugins, trashing posts. Automatic updates are paused.</li>\n<li><strong>The REST API and XML-RPC</strong> refuse anything that writes, with HTTP status 423. Reading still works.</li>\n<li><strong>Visitor submissions</strong> (optional, on by default): comments, sign-ups, contact forms, checkouts and any other form post get a &#8220;back soon&#8221; page with HTTP 503 and a Retry-After header, which search engines understand.</li>\n<li><strong>Scheduled tasks</strong> (optional, on by default) are held back and run when the freeze ends.</li>\n</ul>\n<p>Logging in always works, so an admin can always unfreeze.</p>\n<p>Free and open source under the GPL. No pro version, no upsells, no ads in wp-admin, no tracking. And it stays that way.</p>\n<p>Part of Axle by AryanX, a family of plugins for running WordPress sites safely.</p>\n<h4>See what was blocked</h4>\n<p>Every blocked attempt is listed: who tried, when, and what (a post save, an upload, a REST request, a contact form). After the move you know exactly which edits to redo on the new server. The last ten freezes are kept too, with how many attempts each one blocked.</p>\n<h4>Freeze safely</h4>\n<ul>\n<li>Pick an end time and the freeze ends by itself. A deploy script that fails halfway cannot leave the site frozen for days.</li>\n<li>Running late? Add 30 minutes or an hour from the freeze screen or the admin bar. A live countdown shows the time left.</li>\n<li>Schedule a freeze for later, for example the start of a maintenance window.</li>\n<li>Tick &#8220;Let me keep editing&#8221; to exempt yourself.</li>\n<li>Write your own message for visitors, for example &#8220;We are moving servers. Back by 3 pm.&#8221;</li>\n<li>Freeze for an hour straight from the admin bar (under the site name), and unfreeze from the admin bar or the notice on every screen.</li>\n</ul>\n<h4>From a deploy script</h4>\n<pre><code>wp axle-read-only-mode on --minutes=30 --reason=\"Moving servers\"\nwp axle-read-only-mode off\nwp axle-read-only-mode status\nwp axle-read-only-mode extend 30\nwp axle-read-only-mode log\n</code></pre>\n<p>WP-CLI itself is never blocked, so your scripts can keep importing and replacing data. Use <code>--no-visitors</code> or <code>--no-cron</code> to leave those running.</p>\n<p>Or freeze from wp-config.php while files are being swapped:</p>\n<pre><code>define( 'AXLE_READ_ONLY_MODE', true );\ndefine( 'AXLE_READ_ONLY_MODE_REASON', 'Moving servers' );\n</code></pre>\n",
+        "faq": "\n<h4>\nHow is this different from a maintenance mode plugin?\n</h4>\n<p>\n<p>Maintenance mode shows visitors a placeholder page instead of the site. Axle Read-Only Mode keeps the site fully visible and only stops changes. Use it when the site has to stay online during the move.</p>\n</p>\n<h4>\nDoes it stop every plugin&#8217;s forms?\n</h4>\n<p>\n<p>It stops every form that posts to the site from the front end, every REST API write and every admin-ajax request that is not on the read-only list. A form that sends data straight to an outside service is not affected.</p>\n</p>\n<h4>\nA read-only screen of my plugin stopped working during the freeze.\n</h4>\n<p>\n<p>Admin-ajax requests are blocked unless they are known to be read-only. Add the action name with the <code>axle_read_only_mode_allowed_ajax_actions</code> filter.</p>\n</p>\n<h4>\nCan someone keep working while the site is frozen?\n</h4>\n<p>\n<p>Yes. Tick &#8220;Let me keep editing&#8221; when you freeze, or use the <code>axle_read_only_mode_user_can_bypass</code> filter.</p>\n</p>\n\n",
+        "changelog": "<h4>3.0.0</h4>\n<ul>\n<li>Changed (breaking change): rename to Axle Read-Only Mode for WordPress.org</li>\n</ul>\n<h4>2.0.1</h4>\n<ul>\n<li>Fix: refuse abilities that write during a freeze on WordPress 6.9 and 7.0</li>\n</ul>\n<h4>2.0.0</h4>\n<ul>\n<li>Changed (breaking change): rename to Axle Read-Only Mode for WordPress.org</li>\n</ul>\n<h4>1.3.0</h4>\n<ul>\n<li>Fix: make the abilities visible to MCP agents, and let the MCP adapter run them during a freeze</li>\n<li>New: add abilities so AI agents can check and control a freeze, and refuse other abilities that write during one</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>New: add filters for the freeze lengths, messages and limits, and actions for each blocked request</li>\n<li>Fix: stop bots from flooding the freeze log, and keep personal data out of it</li>\n<li>Fix: keep editor housekeeping working during a freeze</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>New: list of blocked attempts, so you know which edits to redo after a migration.</li>\n<li>New: history of the last ten freezes.</li>\n<li>New: extend a freeze by 30 minutes or an hour, with a live countdown.</li>\n<li>New: freeze and unfreeze from the admin bar.</li>\n<li>New: custom message for visitors.</li>\n<li>New: <code>wp axle-read-only-mode extend</code> and <code>wp axle-read-only-mode log</code>.</li>\n<li>Rewritten as PSR-4 classes.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "Read-only mode for migrations and deploys. Visitors still see the site; nothing can be saved, so no edits, orders or comments get lost.",
+    "description": "<p>When you move a site to a new server, or replace the live database with one from staging, anything saved on the old copy during the move is lost: a post an editor was finishing, a comment, a form entry, a WooCommerce order.</p>\n<p>Maintenance mode hides the whole site from visitors. Axle Read-Only Mode keeps the site online but makes it <strong>read-only</strong>:</p>\n<ul>\n<li><strong>Editors</strong> can open and read everything in wp-admin, but cannot save. The block editor disables Save and Publish and shows why. People who already have the editor open are locked within a minute, through the WordPress heartbeat, and unlocked again when the freeze ends.</li>\n<li><strong>Admin actions</strong> that change data are refused: saving settings, uploading media, installing or updating plugins, trashing posts. Automatic updates are paused.</li>\n<li><strong>The REST API and XML-RPC</strong> refuse anything that writes, with HTTP status 423. Reading still works.</li>\n<li><strong>Visitor submissions</strong> (optional, on by default): comments, sign-ups, contact forms, checkouts and any other form post get a &#8220;back soon&#8221; page with HTTP 503 and a Retry-After header, which search engines understand.</li>\n<li><strong>Scheduled tasks</strong> (optional, on by default) are held back and run when the freeze ends.</li>\n</ul>\n<p>Logging in always works, so an admin can always unfreeze.</p>\n<p>Free and open source under the GPL. No pro version, no upsells, no ads in wp-admin, no tracking. And it stays that way.</p>\n<p>Part of Axle by AryanX, a family of plugins for running WordPress sites safely.</p>\n<h4>See what was blocked</h4>\n<p>Every blocked attempt is listed: who tried, when, and what (a post save, an upload, a REST request, a contact form). After the move you know exactly which edits to redo on the new server. The last ten freezes are kept too, with how many attempts each one blocked.</p>\n<h4>Freeze safely</h4>\n<ul>\n<li>Pick an end time and the freeze ends by itself. A deploy script that fails halfway cannot leave the site frozen for days.</li>\n<li>Running late? Add 30 minutes or an hour from the freeze screen or the admin bar. A live countdown shows the time left.</li>\n<li>Schedule a freeze for later, for example the start of a maintenance window.</li>\n<li>Tick &#8220;Let me keep editing&#8221; to exempt yourself.</li>\n<li>Write your own message for visitors, for example &#8220;We are moving servers. Back by 3 pm.&#8221;</li>\n<li>Freeze for an hour straight from the admin bar (under the site name), and unfreeze from the admin bar or the notice on every screen.</li>\n</ul>\n<h4>From a deploy script</h4>\n<pre><code>wp axle-read-only-mode on --minutes=30 --reason=\"Moving servers\"\nwp axle-read-only-mode off\nwp axle-read-only-mode status\nwp axle-read-only-mode extend 30\nwp axle-read-only-mode log\n</code></pre>\n<p>WP-CLI itself is never blocked, so your scripts can keep importing and replacing data. Use <code>--no-visitors</code> or <code>--no-cron</code> to leave those running.</p>\n<p>Or freeze from wp-config.php while files are being swapped:</p>\n<pre><code>define( 'AXLE_READ_ONLY_MODE', true );\ndefine( 'AXLE_READ_ONLY_MODE_REASON', 'Moving servers' );\n</code></pre>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/axle-read-only-mode.3.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/axle-read-only-mode/assets/screenshot-1.png?rev=3774624",
+            "caption": "The block editor during a freeze."
+        },
+        {
+            "src": "https://ps.w.org/axle-read-only-mode/assets/screenshot-2.png?rev=3774624",
+            "caption": "Tools &gt; Axle Read-Only Mode during a freeze, with countdown and blocked attempts."
+        },
+        {
+            "src": "https://ps.w.org/axle-read-only-mode/assets/screenshot-3.png?rev=3774624",
+            "caption": "What visitors see when they send a form during a freeze."
+        }
+    ],
+    "tags": {
+        "deploy": "deploy",
+        "freeze": "freeze",
+        "maintenance": "maintenance",
+        "migration": "migration",
+        "read-only": "read only"
+    },
+    "stable_tag": "3.0.0",
+    "versions": {
+        "3.0.0": "https://downloads.wordpress.org/plugin/axle-read-only-mode.3.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/axle-read-only-mode.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/axle-read-only-mode/assets/banner-772x250.png?rev=3774624",
+        "high": "https://ps.w.org/axle-read-only-mode/assets/banner-1544x500.png?rev=3774624"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/axle-read-only-mode/assets/icon-128x128.png?rev=3774624",
+        "2x": "https://ps.w.org/axle-read-only-mode/assets/icon-256x256.png?rev=3774624"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
