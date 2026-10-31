@@ -1,0 +1,78 @@
+{
+    "name": "MINIMALIST Uploads for WPVibe",
+    "slug": "minimalist-uploads-for-wpvibe",
+    "version": "1.0.4",
+    "author": "<a href=\"https://profiles.wordpress.org/mariancapota/\">mariancapota</a>",
+    "author_profile": "https://profiles.wordpress.org/mariancapota/",
+    "contributors": {
+        "mariancapota": {
+            "profile": "https://profiles.wordpress.org/mariancapota/",
+            "avatar": "https://secure.gravatar.com/avatar/41acb94ce0552b5ed81a518dde1330d7b21ca2aaaaf95bf289cb7999122fd9ef?s=96&d=monsterid&r=g",
+            "display_name": "mariancapota"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/minimalist-uploads-for-wpvibe/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-31 16:48:00",
+    "added": "2026-10-31",
+    "homepage": "",
+    "sections": {
+        "description": "<p>MINIMALIST Uploads for WPVibe adds document upload endpoints for administrators using an existing WordPress REST connection. It is an independent extension, not an official WPVibe product. It can be called through WPVibe&#8217;s REST API tool or another authenticated REST client; WPVibe is not required to activate it.</p>\n<ul>\n<li>Upload PDF, Office, OpenDocument, RTF, TXT, CSV and ZIP files, subject to the site&#8217;s WordPress MIME policy.</li>\n<li>Maximum file size: the current WordPress upload limit, normally derived from PHP upload_max_filesize and post_max_size and any WordPress/multisite restrictions. Maximum chunk size: 1 MiB (1048576 decoded bytes); single-request upload: up to 2 MiB.</li>\n<li>HTTPS, an authenticated user and both manage_options and upload_files capabilities are required on every endpoint.</li>\n<li>SHA-256 transfer verification, user-bound upload sessions, sequential chunks and retry support.</li>\n<li>Temporary chunks are stored outside the known public website directories and expire after one hour. Cleanup runs hourly through WP-Cron and before a new upload.</li>\n<li>WordPress handles MIME validation and final Media Library import. Identical existing media of the same MIME type can be reused even after a filename change, without overwriting files.</li>\n</ul>\n<p>The plugin does not publish posts, compress documents, extract ZIP archives, change application password or firewall policies, install software, or provide malware scanning. Optimize and review documents before sending them. HTTPS and an existing authorized WordPress authentication mechanism are required; the plugin creates no credentials.</p>\n<h4>Privacy and external services</h4>\n<p>The plugin itself makes no outbound requests, sends no telemetry and embeds no external assets. Upload bytes are sent by your chosen client to your WordPress site. Temporary session records contain the administrator&#8217;s user ID, filename, title, size, checksum, expiration time and, after completion, the attachment ID. Published Media Library files are normally publicly accessible; upload only documents intended for that audience.</p>\n<p>If you choose to use WPVibe or another service to call the API, that service&#8217;s connection, privacy policy and terms apply separately. It is not required by this plugin and no third-party service is contacted automatically.</p>\n<h4>REST API</h4>\n<p>The compatibility namespace is /wpvibe-documents/v1. Send JSON and authenticate using the site&#8217;s existing authorized REST connection.</p>\n<ol>\n<li>POST /start: filename (plain filename), size (integer bytes), sha256 (64 lowercase hexadecimal characters). Optionally send the first chunk_base64 and boolean auto_finish=true. The response returns upload_id, offset and chunk_bytes, or an existing attachment with complete=true.</li>\n<li>POST /chunk: upload_id, offset (integer), chunk_base64 (canonical base64, at most chunk_bytes before encoding; currently 1 MiB). Use chunk_bytes from /start or /status to choose the chunk length; send a shorter final chunk when needed. Resume using the returned offset. Identical chunk retransmissions are accepted without duplicating bytes. With boolean auto_finish=true, the last chunk verifies and imports the document in the same request; retries return the completed attachment.</li>\n<li>GET /status?upload_id=&#8230;: retrieve the current offset or completed attachment.</li>\n<li>POST /finish: upload_id. Returns complete=true and attachment.id, url, title and mime_type after WordPress validation.</li>\n<li>POST /cancel: upload_id. Cancels an unfinished session only; it never deletes completed media.</li>\n</ol>\n<p>Files of at most 2 MiB can use POST /upload with filename, sha256 and content_base64 in one request. Do not include base64 data or authentication secrets in published posts.</p>\n",
+        "installation": "<ol>\n<li>If upgrading from WPVibe Documents 1.0.0 or Document Uploads for WPVibe 1.0.1/1.0.2, deactivate that previous plugin first. Its media and posts remain intact. Install this plugin separately; its folder is minimalist-uploads-for-wpvibe.</li>\n<li>Install and activate MINIMALIST Uploads for WPVibe through the WordPress Plugins screen.</li>\n<li>Use HTTPS and an administrator&#8217;s existing authorized REST connection.</li>\n<li>Ensure PHP&#8217;s temporary directory is writable and outside all publicly served paths, including any custom server aliases. The plugin refuses known public website directories.</li>\n<li>Keep WP-Cron operational, or schedule wp-cron.php through your host when WordPress cron is disabled.</li>\n</ol>\n<p>There is no settings screen. The plugin keeps the site&#8217;s MIME policy and upload limit, without an additional fixed file-size cap.</p>\n",
+        "faq": "\n<h4>\nDoes it compress PDF files?\n</h4>\n<p>\n<p>No. Compress documents before uploading, preserve signatures and interactive content, and review every page for readability. A server upload limit is not a reason to publish an unreadable file.</p>\n</p>\n<h4>\nDoes it bypass Wordfence or application password restrictions?\n</h4>\n<p>\n<p>No. WordPress must authenticate the request first. The extension changes no authentication, firewall or application password settings.</p>\n</p>\n<h4>\nIs an API upload private?\n</h4>\n<p>\n<p>Only staging is private. Imported files follow normal WordPress Media Library behavior and are normally public. Restrict confidential document access with a suitable access-control solution before upload.</p>\n</p>\n<h4>\nWhat happens on deactivation or uninstall?\n</h4>\n<p>\n<p>Deactivation clears the plugin&#8217;s cleanup schedule and temporary sessions for the current site. Uninstall also removes its session records and checksum metadata on the site&#8217;s blogs. Completed Media Library files and published posts are retained. If PHP&#8217;s private temporary directory is unavailable, physical cleanup may need the hosting administrator.</p>\n</p>\n<h4>\nCan I activate both the old and new plugins?\n</h4>\n<p>\n<p>Deactivate WPVibe Documents or Document Uploads for WPVibe first. While either previous plugin is active on the site or network, this extension displays an administrator notice and does not register its API callbacks. Completed media and posts are retained; unfinished uploads must be restarted after deactivation.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.4</h4>\n<ul>\n<li>Single-request uploads up to 2 MiB and advertised 1 MiB chunks.</li>\n<li>Optional first chunk in start and automatic finalization on the last chunk.</li>\n<li>Reuse matching SHA-256 media across filename changes, with MIME and file-byte checks.</li>\n<li>Kept legacy upload calls, permissions, hosting limits and transfer verification.</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>Renamed to MINIMALIST Uploads for WPVibe with the minimalist-uploads-for-wpvibe slug and text domain.</li>\n<li>Prevented conflicts with both previous plugin packages during migration.</li>\n<li>Retained the existing REST API and 256 KiB upload chunks.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Increased maximum chunk and single-request upload size from 32 KiB to 256 KiB.</li>\n<li>A 1 MiB document now takes 4 chunk requests instead of 32; 2 MiB takes 8 instead of 64.</li>\n<li>Existing clients using smaller chunks remain compatible. Clients must use the advertised chunk_bytes value to benefit.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>First WordPress.org submission package.</li>\n<li>Uses the current WordPress/PHP upload limit and rechecks it before final import.</li>\n<li>Independent plugin name, translated messages and uninstall cleanup.</li>\n<li>Preserved v1 REST namespace for existing clients.</li>\n<li>Corrected the native attachment-file API call when checking existing documents.</li>\n</ul>\n"
+    },
+    "short_description": "Upload documents to the Media Library through authenticated REST requests, with resumable chunks and the WordPress upload limit.",
+    "description": "<p>MINIMALIST Uploads for WPVibe adds document upload endpoints for administrators using an existing WordPress REST connection. It is an independent extension, not an official WPVibe product. It can be called through WPVibe&#8217;s REST API tool or another authenticated REST client; WPVibe is not required to activate it.</p>\n<ul>\n<li>Upload PDF, Office, OpenDocument, RTF, TXT, CSV and ZIP files, subject to the site&#8217;s WordPress MIME policy.</li>\n<li>Maximum file size: the current WordPress upload limit, normally derived from PHP upload_max_filesize and post_max_size and any WordPress/multisite restrictions. Maximum chunk size: 1 MiB (1048576 decoded bytes); single-request upload: up to 2 MiB.</li>\n<li>HTTPS, an authenticated user and both manage_options and upload_files capabilities are required on every endpoint.</li>\n<li>SHA-256 transfer verification, user-bound upload sessions, sequential chunks and retry support.</li>\n<li>Temporary chunks are stored outside the known public website directories and expire after one hour. Cleanup runs hourly through WP-Cron and before a new upload.</li>\n<li>WordPress handles MIME validation and final Media Library import. Identical existing media of the same MIME type can be reused even after a filename change, without overwriting files.</li>\n</ul>\n<p>The plugin does not publish posts, compress documents, extract ZIP archives, change application password or firewall policies, install software, or provide malware scanning. Optimize and review documents before sending them. HTTPS and an existing authorized WordPress authentication mechanism are required; the plugin creates no credentials.</p>\n<h4>Privacy and external services</h4>\n<p>The plugin itself makes no outbound requests, sends no telemetry and embeds no external assets. Upload bytes are sent by your chosen client to your WordPress site. Temporary session records contain the administrator&#8217;s user ID, filename, title, size, checksum, expiration time and, after completion, the attachment ID. Published Media Library files are normally publicly accessible; upload only documents intended for that audience.</p>\n<p>If you choose to use WPVibe or another service to call the API, that service&#8217;s connection, privacy policy and terms apply separately. It is not required by this plugin and no third-party service is contacted automatically.</p>\n<h4>REST API</h4>\n<p>The compatibility namespace is /wpvibe-documents/v1. Send JSON and authenticate using the site&#8217;s existing authorized REST connection.</p>\n<ol>\n<li>POST /start: filename (plain filename), size (integer bytes), sha256 (64 lowercase hexadecimal characters). Optionally send the first chunk_base64 and boolean auto_finish=true. The response returns upload_id, offset and chunk_bytes, or an existing attachment with complete=true.</li>\n<li>POST /chunk: upload_id, offset (integer), chunk_base64 (canonical base64, at most chunk_bytes before encoding; currently 1 MiB). Use chunk_bytes from /start or /status to choose the chunk length; send a shorter final chunk when needed. Resume using the returned offset. Identical chunk retransmissions are accepted without duplicating bytes. With boolean auto_finish=true, the last chunk verifies and imports the document in the same request; retries return the completed attachment.</li>\n<li>GET /status?upload_id=&#8230;: retrieve the current offset or completed attachment.</li>\n<li>POST /finish: upload_id. Returns complete=true and attachment.id, url, title and mime_type after WordPress validation.</li>\n<li>POST /cancel: upload_id. Cancels an unfinished session only; it never deletes completed media.</li>\n</ol>\n<p>Files of at most 2 MiB can use POST /upload with filename, sha256 and content_base64 in one request. Do not include base64 data or authentication secrets in published posts.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/minimalist-uploads-for-wpvibe.1.0.4.zip",
+    "upgrade_notice": {
+        "1.0.3": "<p>Deactivate WPVibe Documents or Document Uploads for WPVibe before installing this renamed package. Completed media and posts are retained. Restart unfinished uploads after deactivation.</p>",
+        "1.0.2": "<p>Update the existing Document Uploads for WPVibe plugin. Clients should read chunk_bytes from /start or /status instead of hard-coding 32768. Upload limits and existing media are preserved.</p>",
+        "1.0.1": "<p>Deactivate WPVibe Documents 1.0.0 before installing. Completed media and articles are kept. The file-size limit follows WordPress and the current PHP configuration.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "documents": "documents",
+        "media": "media",
+        "pdf": "pdf",
+        "rest-api": "rest-api",
+        "upload": "upload"
+    },
+    "stable_tag": "1.0.4",
+    "versions": {
+        "1.0.4": "https://downloads.wordpress.org/plugin/minimalist-uploads-for-wpvibe.1.0.4.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/minimalist-uploads-for-wpvibe.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/minimalist-uploads-for-wpvibe.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
