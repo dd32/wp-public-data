@@ -1,0 +1,76 @@
+{
+    "name": "Blockary &#8211; Access Firewall",
+    "slug": "blockary",
+    "version": "1.2.0",
+    "author": "<a href=\"https://profiles.wordpress.org/migaweb/\">Michael</a>",
+    "author_profile": "https://profiles.wordpress.org/migaweb/",
+    "contributors": {
+        "migaweb": {
+            "profile": "https://profiles.wordpress.org/migaweb/",
+            "avatar": "https://secure.gravatar.com/avatar/e90da70e205525499634b9c268bb6fb988b5505a1d2cf15477457f7f935cf63c?s=96&d=monsterid&r=g",
+            "display_name": "Michael"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.1.4",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/blockary/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-10-31 11:33:00",
+    "added": "2026-10-05",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Blockary blocks visitors by country and stops password guessing on the login page.</p>\n<p>The country rule works as a block list or as an allow list. You pick the countries on the settings page. The plugin reads the country from the Cloudflare header or from a local copy of the free &#8220;IP to Country Lite&#8221; database from DB-IP. Visitors from the whitelist and from private networks always pass. Logged-in users pass by default. You can turn that off on the settings page. Administrators always pass. A setting lets the Google crawlers pass the country rule, so that Google can index the site when the rule blocks the United States. The plugin verifies a crawler by its address against the list that Google publishes, not by its user agent.</p>\n<p>The login protection counts failed logins per address and per username. An address that reaches the limit gets a temporary ban. The ban time grows with each ban, and a permanent ban follows after a number of temporary bans. The plugin can also lock a username, show the same error for a wrong username and a wrong password, hide usernames from visitors, and turn off XML-RPC.</p>\n<p>The plugin loads as the first plugin. It decides a request without a login cookie before WordPress loads the other plugins. It decides a request with a login cookie as soon as WordPress can read that cookie. Blocked requests do not reach the theme. A log on the settings page shows the blocked requests, the failed logins, and the bans.</p>\n<h4>Load order</h4>\n<p>The plugin keeps itself first in the list of active plugins. WordPress then loads it before the other plugins, so a blocked request costs less and stays invisible to the other plugins. The plugin changes only the order of that list in the database. It writes no file for this and you do not have to set anything up.</p>\n<h4>Optional: the loader file</h4>\n<p>A loader file in the folder <code>wp-content/mu-plugins</code> is only useful when another plugin moves itself in front of Blockary. The plugin does not write that file itself. You download it on the settings page and copy it into the folder by hand, for example with SFTP. The settings page shows the exact path. The loader runs the decision only while the plugin is active. Without the plugin it does nothing. When you delete the plugin, delete the loader file too. When the settings page shows &#8220;Outdated&#8221; for the load order, download the file again and replace the copy.</p>\n<h4>Recovery</h4>\n<p>If a rule locks you out, add this line to <code>wp-config.php</code>:</p>\n<pre><code>define( 'BLOCKARY_DISABLE', true );\n</code></pre>\n<p>The plugin then blocks nothing until you remove the line.</p>\n<h3>External services</h3>\n<p>The plugin downloads the country database &#8220;IP to Country Lite&#8221; from DB-IP when you select the local database as the country source. The download runs once after you select that source and then once a month through WP-Cron. You can also start it on the settings page.</p>\n<p>The request goes to <code>https://download.db-ip.com/free/</code>. The request carries only the name of the database file for the current month. It carries no data about your site or your visitors. The database is licensed under CC BY 4.0. The settings page shows the attribution link that the license requires.</p>\n<p>Terms and privacy policy of DB-IP: https://db-ip.com/about and https://db-ip.com/privacy.php</p>\n<p>When you turn on the setting &#8220;Let Google crawlers pass the country rule&#8221;, the plugin downloads the list of crawler addresses that Google publishes. The first download runs after you save the setting. After that the plugin refreshes the list once a week through WP-Cron while the setting is on. The plugin ships a copy of the list, so the setting works before the first download.</p>\n<p>The request goes to <code>https://developers.google.com/static/crawling/ipranges/common-crawlers.json</code>. It carries no data about your site or your visitors.</p>\n<p>Terms and privacy policy of Google: https://policies.google.com/terms and https://policies.google.com/privacy</p>\n<p>The plugin sends no other request to an external service.</p>\n",
+        "installation": "<ol>\n<li>Upload the folder <code>blockary</code> to <code>wp-content/plugins</code>, or install the plugin from Plugins &gt; Add New.</li>\n<li>Activate the plugin.</li>\n<li>Open Settings &gt; Blockary.</li>\n<li>Add your own address to the IP whitelist.</li>\n<li>Pick the country mode and the countries.</li>\n<li>If your site runs behind Cloudflare or another proxy, add the proxy to the trusted proxies. Without that entry the plugin sees the proxy address for every visitor.</li>\n</ol>\n",
+        "faq": "\n<h4>\nWhere does the country data come from?\n</h4>\n<p>\n<p>The plugin reads the country from the Cloudflare header <code>CF-IPCountry</code> when the site runs behind Cloudflare. Without Cloudflare the plugin downloads the free &#8220;IP to Country Lite&#8221; database from DB-IP into <code>wp-content/uploads/blockary</code> and refreshes it once a month. See the section &#8220;External services&#8221;.</p>\n</p>\n<h4>\nDoes the plugin send data about my visitors?\n</h4>\n<p>\n<p>No. The country lookup runs on your server. The plugin sends no visitor data to any service.</p>\n</p>\n<h4>\nWhat does the plugin write outside its own folder?\n</h4>\n<p>\n<p>The plugin writes only the country database into <code>wp-content/uploads/blockary</code>. It removes that folder and its settings, bans, and log on uninstall. In the database, the plugin moves itself to the first position in the list of active plugins. The optional loader file in <code>wp-content/mu-plugins</code> is a file that you copy by hand. The plugin never writes or deletes it.</p>\n</p>\n<h4>\nI block the United States. Can Google still index my site?\n</h4>\n<p>\n<p>Yes. Turn on &#8220;Let Google crawlers pass the country rule&#8221; in the section &#8220;Country rule&#8221;. Googlebot and the other Google crawlers then pass the country rule. The plugin compares the address of the visitor with the list of crawler addresses that Google publishes. A visitor who only sends the Googlebot user agent does not pass. The bans still apply to a crawler address.</p>\n</p>\n<h4>\nI locked myself out. What now?\n</h4>\n<p>\n<p>Add <code>define( 'BLOCKARY_DISABLE', true );</code> to <code>wp-config.php</code>. The plugin then blocks nothing. Fix the rule on the settings page and remove the line again.</p>\n</p>\n<h4>\nDoes the firewall apply to logged-in users?\n</h4>\n<p>\n<p>Not by default. A visitor with a valid login cookie passes the country rule and the bans. If your site has open registration, turn off the setting &#8220;Do not apply the firewall to logged-in users&#8221;. The country rule and the bans then also apply to logged-in users. Administrators always pass, so that you cannot lock yourself out of the settings page.</p>\n</p>\n<h4>\nMy code uses the filter blockary_should_block. What changed in version 1.1.0?\n</h4>\n<p>\n<p>The plugin now decides a request without a login cookie before WordPress loads the other plugins. A callback in a normal plugin is not registered at that moment. Put the callback into a must-use plugin (a file in <code>wp-content/mu-plugins</code>).</p>\n</p>\n<h4>\nDoes the plugin work with a caching plugin?\n</h4>\n<p>\n<p>Yes. The plugin decides before WordPress loads the other plugins. A page cache that serves files before WordPress starts, for example a web server cache, can serve a cached page to a blocked visitor.</p>\n</p>\n\n",
+        "changelog": "<h4>1.2.0</h4>\n<ul>\n<li>New setting &#8220;Let Google crawlers pass the country rule&#8221;. It is off by default. The plugin verifies a crawler by its address against the list that Google publishes and refreshes that list once a week.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>The plugin keeps itself first in the list of active plugins. The firewall decides a request without a login cookie before WordPress loads the other plugins. The loader file is no longer needed for that.</li>\n<li>New setting &#8220;Do not apply the firewall to logged-in users&#8221;. It is on by default, which is the behavior of version 1.0.0. When it is off, the country rule and the bans also apply to logged-in users. Administrators always pass.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First version. Country rule with block list and allow list, login protection with bans, username lock, hidden usernames, XML-RPC switch, and a log.</li>\n</ul>\n"
+    },
+    "short_description": "Blocks visitors by country and blocks malicious login attempts before the page loads.",
+    "description": "<p>Blockary blocks visitors by country and stops password guessing on the login page.</p>\n<p>The country rule works as a block list or as an allow list. You pick the countries on the settings page. The plugin reads the country from the Cloudflare header or from a local copy of the free &#8220;IP to Country Lite&#8221; database from DB-IP. Visitors from the whitelist and from private networks always pass. Logged-in users pass by default. You can turn that off on the settings page. Administrators always pass. A setting lets the Google crawlers pass the country rule, so that Google can index the site when the rule blocks the United States. The plugin verifies a crawler by its address against the list that Google publishes, not by its user agent.</p>\n<p>The login protection counts failed logins per address and per username. An address that reaches the limit gets a temporary ban. The ban time grows with each ban, and a permanent ban follows after a number of temporary bans. The plugin can also lock a username, show the same error for a wrong username and a wrong password, hide usernames from visitors, and turn off XML-RPC.</p>\n<p>The plugin loads as the first plugin. It decides a request without a login cookie before WordPress loads the other plugins. It decides a request with a login cookie as soon as WordPress can read that cookie. Blocked requests do not reach the theme. A log on the settings page shows the blocked requests, the failed logins, and the bans.</p>\n<h4>Load order</h4>\n<p>The plugin keeps itself first in the list of active plugins. WordPress then loads it before the other plugins, so a blocked request costs less and stays invisible to the other plugins. The plugin changes only the order of that list in the database. It writes no file for this and you do not have to set anything up.</p>\n<h4>Optional: the loader file</h4>\n<p>A loader file in the folder <code>wp-content/mu-plugins</code> is only useful when another plugin moves itself in front of Blockary. The plugin does not write that file itself. You download it on the settings page and copy it into the folder by hand, for example with SFTP. The settings page shows the exact path. The loader runs the decision only while the plugin is active. Without the plugin it does nothing. When you delete the plugin, delete the loader file too. When the settings page shows &#8220;Outdated&#8221; for the load order, download the file again and replace the copy.</p>\n<h4>Recovery</h4>\n<p>If a rule locks you out, add this line to <code>wp-config.php</code>:</p>\n<pre><code>define( 'BLOCKARY_DISABLE', true );\n</code></pre>\n<p>The plugin then blocks nothing until you remove the line.</p>\n<h3>External services</h3>\n<p>The plugin downloads the country database &#8220;IP to Country Lite&#8221; from DB-IP when you select the local database as the country source. The download runs once after you select that source and then once a month through WP-Cron. You can also start it on the settings page.</p>\n<p>The request goes to <code>https://download.db-ip.com/free/</code>. The request carries only the name of the database file for the current month. It carries no data about your site or your visitors. The database is licensed under CC BY 4.0. The settings page shows the attribution link that the license requires.</p>\n<p>Terms and privacy policy of DB-IP: https://db-ip.com/about and https://db-ip.com/privacy.php</p>\n<p>When you turn on the setting &#8220;Let Google crawlers pass the country rule&#8221;, the plugin downloads the list of crawler addresses that Google publishes. The first download runs after you save the setting. After that the plugin refreshes the list once a week through WP-Cron while the setting is on. The plugin ships a copy of the list, so the setting works before the first download.</p>\n<p>The request goes to <code>https://developers.google.com/static/crawling/ipranges/common-crawlers.json</code>. It carries no data about your site or your visitors.</p>\n<p>Terms and privacy policy of Google: https://policies.google.com/terms and https://policies.google.com/privacy</p>\n<p>The plugin sends no other request to an external service.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/blockary.1.2.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "brute-force": "Brute Force",
+        "country-block": "country block",
+        "firewall": "firewall",
+        "login-protection": "login protection",
+        "security": "security"
+    },
+    "stable_tag": "1.2.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/blockary.1.0.0.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/blockary.1.1.0.zip",
+        "1.2.0": "https://downloads.wordpress.org/plugin/blockary.1.2.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/blockary.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/blockary.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
