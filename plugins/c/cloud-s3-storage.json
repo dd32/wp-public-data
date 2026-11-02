@@ -1,7 +1,7 @@
 {
     "name": "Cloud S3 Storage",
     "slug": "cloud-s3-storage",
-    "version": "1.5.0",
+    "version": "1.6.0",
     "author": "<a href=\"https://profiles.wordpress.org/matteoenna/\">Matteo Enna</a>",
     "author_profile": "https://profiles.wordpress.org/matteoenna/",
     "contributors": {
@@ -17,7 +17,7 @@
         }
     },
     "requires": "5.0",
-    "tested": "7.1.1",
+    "tested": "7.1.4",
     "requires_php": "7.2.5",
     "requires_plugins": [],
     "compatibility": [],
@@ -34,17 +34,17 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 10,
-    "last_updated": "2026-09-19 08:56:00",
+    "last_updated": "2026-11-02 17:26:00",
     "added": "2025-01-09",
     "homepage": "",
     "sections": {
         "description": "<p>The <strong>Cloud S3 Storage</strong> plugin enables seamless integration of your WordPress media library with S3-compatible cloud storage solutions. Free up server space, improve scalability, and optimize your site&#8217;s performance by offloading media files to the cloud.</p>\n<p>This plugin uses the AWS SDK for PHP, which is bundled with the plugin, to interact with S3-compatible storage services, such as AWS S3, Wasabi, or DigitalOcean Spaces.</p>\n<h3>Key Features</h3>\n<ul>\n<li><strong>S3-Compatible Integration:</strong> Works with any S3-compatible object storage service, such as AWS S3, Wasabi, or DigitalOcean Spaces.</li>\n<li><strong>Media Library Sync:</strong> Automatically sync your WordPress media files to the configured S3 storage bucket.</li>\n<li><strong>Custom Cron Jobs:</strong> Schedule automated tasks for reindexing and clearing media files from your S3 storage.</li>\n<li><strong>Hybrid Mode:</strong> Optionally keep files stored locally and on the cloud for redundancy.</li>\n<li><strong>Customizable Settings:</strong> Easily configure bucket details, upload preferences, and cron job timings from the admin interface.</li>\n<li><strong>Efficient File Management:</strong> Automatically delete unused or orphaned media files from your storage.</li>\n<li><strong>Fallback Mechanism:</strong> Ensures smooth functioning even during connectivity issues with the S3 service.</li>\n</ul>\n<h3>Usage</h3>\n<ol>\n<li>Enter your S3-compatible service credentials, bucket name, and region.</li>\n<li>Set the cron job timing to automate syncing and cleanup tasks.</li>\n<li>Use the media library as usual—uploads will automatically sync with S3 storage.</li>\n<li>Monitor synced files and manage unused media from the plugin dashboard.</li>\n</ol>\n<h3>FAQs</h3>\n<h3><strong>Q: Which S3-compatible services does this plugin support?</strong></h3>\n<p>A: Any service that supports the S3 API, including AWS S3, Wasabi, DigitalOcean Spaces, and others.</p>\n<h3><strong>Q: Do I need to install the AWS SDK separately?</strong></h3>\n<p>A: No, the AWS SDK for PHP is already bundled with this plugin. You don&#8217;t need to install it separately.</p>\n<h3><strong>Q: Can I revert my media library back to local storage?</strong></h3>\n<p>A: Yes, you can disable the plugin and move the media files back to your server if needed.</p>\n<h3><strong>Q: Does this plugin support large media files?</strong></h3>\n<p>A: Yes, the plugin handles chunked uploads for larger files to ensure compatibility with cloud storage.</p>\n",
         "installation": "<ol>\n<li>Upload the <strong>Cloud S3 Storage</strong> plugin to your WordPress site.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>Navigate to <strong>Settings &gt; Cloud S3 Storage</strong> to configure your storage settings.</li>\n<li>The AWS SDK for PHP is bundled with this plugin, so there is no need for separate installation or configuration of the SDK.</li>\n</ol>\n",
-        "changelog": "<h4>1.5.0</h4>\n<ul>\n<li>The Access Key and the Secret Key can now be defined in <code>wp-config.php</code>, with <code>CLOUD_S3_STORAGE_ACCESS_KEY</code> and <code>CLOUD_S3_STORAGE_SECRET_KEY</code>. Defined that way they stay out of the database, so they no longer travel in database dumps and backups; the settings screen shows they come from wp-config and leaves them alone.</li>\n<li>The two key fields no longer send the saved value back to the browser. Leave a field blank to keep the key you have, or type a new one to replace it.</li>\n<li>Tested up to WordPress 7.1.</li>\n</ul>\n<h3>1.0</h3>\n<ul>\n<li>Initial release:\n<ul>\n<li>Basic S3 integration for WordPress media library.</li>\n<li>Support for automated sync and cleanup tasks via cron jobs.</li>\n<li>Hybrid mode for local and cloud storage redundancy.</li>\n</ul>\n</li>\n</ul>\n<p>Simplify your WordPress media management and harness the power of cloud storage today with <strong>Cloud S3 Storage</strong>!</p>\n"
+        "changelog": "<h4>1.6.0</h4>\n<ul>\n<li>Generate frontend media URLs from the saved transfer state without per-image S3 existence checks or a connection probe on every page. Already-remote and external URLs are preserved. Live connection checks remain in transfer/cleanup/rollback operations and admin diagnostics, with listing limited to one object.</li>\n<li>Frontend delivery trusts the transfer index: deleting or moving objects directly in the bucket is not detected during page rendering. Use the plugin&#8217;s transfer and rollback operations to keep file state synchronized.</li>\n<li>Rewrite transferred media used in inline CSS backgrounds and style blocks to S3, preserving HTML/CSS quoting and leaving external or untransferred assets unchanged.</li>\n<li>Settings can be saved when credentials come from wp-config.php constants; validation errors no longer copy those credentials into the database.</li>\n<li>Reuse one S3 client and HTTP connection per request; rebuild the client when connection settings or credentials change.</li>\n<li>Initialize the WordPress filesystem before uploading, and return a recoverable failure when initialization is unavailable.</li>\n<li>Update upload status using the relative media path, including files stored directly in uploads without year/month directories.</li>\n<li>Optional AWS configuration in wp-config.php: set <code>CLOUD_S3_STORAGE_REGION</code> to the bucket region (for example <code>eu-south-1</code>) and <code>CLOUD_S3_STORAGE_OBJECT_ACL</code> to <code>private</code> to omit the ACL header for buckets with ACLs disabled. Existing installations keep region <code>auto</code> and ACL <code>public-read</code> by default. Private objects are not anonymously readable: the plugin&#8217;s direct media URLs still require a separate delivery configuration before use on a public website.</li>\n<li>S3 upload/download errors now catch the SDK&#8217;s correctly namespaced exception, avoiding uncaught exceptions on authentication or permission failures.</li>\n<li>Fixed: activation and ordinary page requests no longer load the entire Media Library or its file lists into memory. Reported by the VHosting Solution team: thank you.</li>\n<li>Media indexing now resumes from a saved attachment ID, processing up to 100 attachments per request. A separate metadata-only background job continues the initial scan independently of scheduled S3 transfers. Opening a plugin page also continues indexing and displays progress, including when WP-Cron is disabled. Manual REST/CLI commands advance the same scan.</li>\n<li>Transfer, local cleanup and rollback read bounded batches directly from the plugin table. An empty transfer limit defaults to 100 files; each execution processes at most 500 files. Repeat the command or use scheduled transfers to continue.</li>\n<li>Statistics use database counts, and Media Library highlighting requests only the visible attachment IDs.</li>\n<li>Existing transferred-file states are preserved during indexing. Files with the same name in different upload folders are indexed separately.</li>\n<li>Database migrations are verified before their version is saved, and failed migrations can retry.</li>\n<li>Metadata edits that fail or overlap an indexing batch are kept in a persistent retry queue, including attachments behind the scan cursor. Retries share the same batch limit and preserve existing S3 states.</li>\n<li>Index workers acquire their lock atomically in the database, including when the object cache contains an outdated lock value.</li>\n<li>Scheduled jobs now return normally so other due WordPress jobs can run. Rolling back one file no longer changes the state of its other image sizes.</li>\n<li>Removed repeated array copies when building the compatibility file list.</li>\n<li>Fixed: on WordPress 6.7 and later the plugin triggered the &#8220;Translation loading was triggered too early&#8221; notice. The settings field definitions and monitor labels are now read when needed.</li>\n</ul>\n<h4>1.5.0</h4>\n<ul>\n<li>The Access Key and the Secret Key can now be defined in <code>wp-config.php</code>, with <code>CLOUD_S3_STORAGE_ACCESS_KEY</code> and <code>CLOUD_S3_STORAGE_SECRET_KEY</code>. Defined that way they stay out of the database, so they no longer travel in database dumps and backups; the settings screen shows they come from wp-config and leaves them alone.</li>\n<li>The two key fields no longer send the saved value back to the browser. Leave a field blank to keep the key you have, or type a new one to replace it.</li>\n<li>Tested up to WordPress 7.1.</li>\n</ul>\n<h3>1.0</h3>\n<ul>\n<li>Initial release:\n<ul>\n<li>Basic S3 integration for WordPress media library.</li>\n<li>Support for automated sync and cleanup tasks via cron jobs.</li>\n<li>Hybrid mode for local and cloud storage redundancy.</li>\n</ul>\n</li>\n</ul>\n<p>Simplify your WordPress media management and harness the power of cloud storage today with <strong>Cloud S3 Storage</strong>!</p>\n"
     },
     "short_description": "Manage your WordPress media files with ease using S3-compatible object storage services.",
     "description": "<p>The <strong>Cloud S3 Storage</strong> plugin enables seamless integration of your WordPress media library with S3-compatible cloud storage solutions. Free up server space, improve scalability, and optimize your site&#8217;s performance by offloading media files to the cloud.</p>\n<p>This plugin uses the AWS SDK for PHP, which is bundled with the plugin, to interact with S3-compatible storage services, such as AWS S3, Wasabi, or DigitalOcean Spaces.</p>\n<h3>Key Features</h3>\n<ul>\n<li><strong>S3-Compatible Integration:</strong> Works with any S3-compatible object storage service, such as AWS S3, Wasabi, or DigitalOcean Spaces.</li>\n<li><strong>Media Library Sync:</strong> Automatically sync your WordPress media files to the configured S3 storage bucket.</li>\n<li><strong>Custom Cron Jobs:</strong> Schedule automated tasks for reindexing and clearing media files from your S3 storage.</li>\n<li><strong>Hybrid Mode:</strong> Optionally keep files stored locally and on the cloud for redundancy.</li>\n<li><strong>Customizable Settings:</strong> Easily configure bucket details, upload preferences, and cron job timings from the admin interface.</li>\n<li><strong>Efficient File Management:</strong> Automatically delete unused or orphaned media files from your storage.</li>\n<li><strong>Fallback Mechanism:</strong> Ensures smooth functioning even during connectivity issues with the S3 service.</li>\n</ul>\n<h3>Usage</h3>\n<ol>\n<li>Enter your S3-compatible service credentials, bucket name, and region.</li>\n<li>Set the cron job timing to automate syncing and cleanup tasks.</li>\n<li>Use the media library as usual—uploads will automatically sync with S3 storage.</li>\n<li>Monitor synced files and manage unused media from the plugin dashboard.</li>\n</ol>\n<h3>FAQs</h3>\n<h3><strong>Q: Which S3-compatible services does this plugin support?</strong></h3>\n<p>A: Any service that supports the S3 API, including AWS S3, Wasabi, DigitalOcean Spaces, and others.</p>\n<h3><strong>Q: Do I need to install the AWS SDK separately?</strong></h3>\n<p>A: No, the AWS SDK for PHP is already bundled with this plugin. You don&#8217;t need to install it separately.</p>\n<h3><strong>Q: Can I revert my media library back to local storage?</strong></h3>\n<p>A: Yes, you can disable the plugin and move the media files back to your server if needed.</p>\n<h3><strong>Q: Does this plugin support large media files?</strong></h3>\n<p>A: Yes, the plugin handles chunked uploads for larger files to ensure compatibility with cloud storage.</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/cloud-s3-storage.1.5.0.zip",
+    "download_link": "https://downloads.wordpress.org/plugin/cloud-s3-storage.1.6.0.zip",
     "upgrade_notice": [],
     "screenshots": [],
     "tags": {
@@ -54,7 +54,7 @@
         "object-storage": "object storage",
         "s3": "s3"
     },
-    "stable_tag": "1.5.0",
+    "stable_tag": "1.6.0",
     "versions": {
         "1.0": "https://downloads.wordpress.org/plugin/cloud-s3-storage.1.0.zip",
         "1.1": "https://downloads.wordpress.org/plugin/cloud-s3-storage.1.1.zip",
@@ -68,11 +68,13 @@
         "1.4.5": "https://downloads.wordpress.org/plugin/cloud-s3-storage.1.4.5.zip",
         "1.4.6": "https://downloads.wordpress.org/plugin/cloud-s3-storage.1.4.6.zip",
         "1.5.0": "https://downloads.wordpress.org/plugin/cloud-s3-storage.1.5.0.zip",
+        "1.6.0": "https://downloads.wordpress.org/plugin/cloud-s3-storage.1.6.0.zip",
         "trunk": "https://downloads.wordpress.org/plugin/cloud-s3-storage.zip"
     },
     "business_model": false,
     "repository_url": "",
     "commercial_support_url": "",
+    "guideline_labels": [],
     "donate_link": "",
     "banners": {
         "low": "https://ps.w.org/cloud-s3-storage/assets/banner-772x250.jpg?rev=3219893",
@@ -93,17 +95,17 @@
             "type": "plugin",
             "slug": "cloud-s3-storage",
             "language": "it_IT",
-            "version": "1.4.6",
+            "version": "1.5.0",
             "updated": "2026-01-20 04:45:53",
-            "package": "https://downloads.wordpress.org/translation/plugin/cloud-s3-storage/1.4.6/it_IT.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/cloud-s3-storage/1.5.0/it_IT.zip"
         },
         {
             "type": "plugin",
             "slug": "cloud-s3-storage",
             "language": "ru_RU",
-            "version": "1.4.6",
+            "version": "1.5.0",
             "updated": "2026-01-25 20:59:59",
-            "package": "https://downloads.wordpress.org/translation/plugin/cloud-s3-storage/1.4.6/ru_RU.zip"
+            "package": "https://downloads.wordpress.org/translation/plugin/cloud-s3-storage/1.5.0/ru_RU.zip"
         }
     ]
 }
