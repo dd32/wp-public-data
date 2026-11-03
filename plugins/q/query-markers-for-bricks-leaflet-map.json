@@ -1,0 +1,96 @@
+{
+    "name": "Query Markers for Bricks Leaflet Map",
+    "slug": "query-markers-for-bricks-leaflet-map",
+    "version": "1.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/louischan/\">Louis Chance</a>",
+    "author_profile": "https://profiles.wordpress.org/louischan/",
+    "contributors": {
+        "louischan": {
+            "profile": "https://profiles.wordpress.org/louischan/",
+            "avatar": "https://secure.gravatar.com/avatar/bda14b8e4d0c81153be6ea95f5eb1dba9eb9ba1b70dbaac3e729da8ac378fdfc?s=96&d=monsterid&r=g",
+            "display_name": "Louis Chance"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/query-markers-for-bricks-leaflet-map/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-03 14:54:00",
+    "added": "2026-11-02",
+    "homepage": "",
+    "sections": {
+        "description": "<p>The Map (Leaflet) element of the Bricks theme (2.1+) has no query loop option, unlike its Google Map element. This plugin adds a &#8220;Query markers&#8221; panel to the Map (Leaflet) element: the first marker you set is used as a template and duplicated for every post of the query, with all dynamic data tags rendered in the context of each post.</p>\n<p>Features:</p>\n<ul>\n<li>Location from two latitude / longitude custom fields (ACF, Meta Box, JetEngine, native custom fields&#8230;).</li>\n<li>Location from a single field: a text field containing &#8220;lat,lng&#8221;, an ACF OpenStreetMap field (ACF OpenStreetMap Field plugin), an ACF Google Map field, or a Meta Box OSM / Google Maps field.</li>\n<li>Any Bricks dynamic data tag in the marker popup (title, link, ACF fields&#8230;).</li>\n<li>Optional filter on a custom field, e.g. a &#8220;show on map&#8221; True/False field.</li>\n<li>Posts sharing the same location: merged into one marker with stacked popups, or spread on a small circle.</li>\n<li>Map automatically fitted to show all markers, unless you set a map center or a zoom level.</li>\n<li>Builder notice showing how many markers were found.</li>\n</ul>\n<p>This plugin requires the Bricks theme, which is a commercial product. It is not affiliated with or endorsed by Bricks Builder.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin.</li>\n<li>In Bricks, add a Map (Leaflet) element (not inside a query loop).</li>\n<li>In &#8220;Markers&#8221;, add ONE marker. It is the template used for every post. Set its Coordinates to {map_coords} (required).<br />\nThe popup is optional and accepts any Bricks dynamic tag, for example:<br />\n<strong>{post_title}</strong><br /><a href=\"{post_url}\" rel=\"nofollow ugc\">Read more</a></li>\n<li>Open the &#8220;Query markers&#8221; panel, enable &#8220;Generate markers from a query&#8221; and choose the post type, the location source (latitude + longitude fields, or a single location field) and the field names.</li>\n<li>Leave &#8220;Map center&#8221; and &#8220;Zoom level (Initial)&#8221; empty: the map is automatically fitted to show all markers. Set a zoom level to keep the map centered on the markers at that zoom, or a map center to control the view yourself.</li>\n</ol>\n",
+        "faq": "\n<h4>\nWhy are the markers not visible in the builder?\n</h4>\n<p>\n<p>Markers are generated when the page is rendered and are displayed on the frontend. In the builder, a notice over the map shows how many markers were found.</p>\n</p>\n<h4>\nWhich dynamic tags are added?\n</h4>\n<p>\n<p>{map_coords} returns &#8220;lat,lng&#8221; for the current post. It is the value to use in the marker Coordinates.</p>\n<p>{map_address} returns the address stored by an ACF OpenStreetMap field (the label of its marker: the address found when the editor searched for a place or clicked on the map, which they can edit) or by an ACF Google Map field. With other fields it is empty: display your own address field in the popup instead (e.g. {acf_address}).</p>\n<p>Outside a query map (e.g. in a single template), these tags read a single location field named &#8220;location&#8221;. Change it with the brxlm/default_context filter:</p>\n<pre><code>add_filter( 'brxlm/default_context', function ( $ctx ) {\n    $ctx['coords_field'] = 'my_location_field';\n    return $ctx;\n} );\n</code></pre>\n</p>\n<h4>\nDoes it work on multilingual sites?\n</h4>\n<p>\n<p>Yes. With WPML or Polylang, the technical settings of the plugin (post type, field names&#8230;) are excluded from translation, so a translated page uses the same query as the original.</p>\n</p>\n<h4>\nWhich values does the single field accept?\n</h4>\n<p>\n<ul>\n<li>An ACF OpenStreetMap field (first marker) or an ACF Google Map field</li>\n<li>A Meta Box OSM or Google Maps field (&#8220;lat,lng,zoom&#8221;: the zoom is ignored)</li>\n<li>&#8220;43.2965,5.3698&#8221; or &#8220;43.2965, 5.3698&#8221; (comma separator, dot as decimal separator)</li>\n<li>&#8220;43.2965;5.3698&#8221; or &#8220;43.2965; 5.3698&#8221; (semicolon separator)</li>\n<li>&#8220;43,2965; 5,3698&#8221; (semicolon separator with decimal commas)</li>\n</ul>\n<p>Ambiguous values such as &#8220;43,2965, 5,3698&#8221; are ignored: use a semicolon as separator when the decimal separator is a comma.</p>\n</p>\n<h4>\nI can&#8217;t find my Meta Box OSM field in the Bricks dynamic data picker, is it normal?\n</h4>\n<p>\n<p>Yes. The dynamic data picker lists the fields that Bricks itself can display as dynamic data, and some field types (such as the Meta Box OSM or ACF OpenStreetMap fields) are not listed.</p>\n<p>The plugin lists them itself: with the &#8220;Single field&#8221; source, pick your field in &#8220;Map field (detected)&#8221; (ACF OpenStreetMap, ACF Google Map, Meta Box OSM and Meta Box Google Maps fields). For any other field, leave &#8220;Map field (detected)&#8221; empty and type its field ID in &#8220;Location field (meta key)&#8221;, which is then displayed: the plugin reads the stored value directly, so any field works.</p>\n<p>If you pick a field with the dynamic data button, the tag is converted to the field name ({acf_my_field}, {cf_my_field}, {mb_post_type_my_field}).</p>\n</p>\n<h4>\nWhich field storages are supported?\n</h4>\n<p>\n<p>Fields are read with the standard WordPress post meta functions. Fields stored in custom tables (e.g. Meta Box custom table storage) are not supported.</p>\n</p>\n<h4>\nHow are the map center and zoom handled?\n</h4>\n<p>\n<ul>\n<li>&#8220;Map center&#8221; and &#8220;Zoom level (Initial)&#8221; empty: the map is fitted to show all markers (never closer than street level, and within the map min/max zoom).</li>\n<li>Only the zoom level set: the map is centered on the markers, at that zoom.</li>\n<li>&#8220;Map center&#8221; set: your center is used, with your zoom level (or the Bricks default).</li>\n</ul>\n</p>\n<h4>\nCan I customize the query?\n</h4>\n<p>\n<p>Yes, with the brxlm/query_args filter:</p>\n<pre><code>add_filter( 'brxlm/query_args', function ( $args, $settings, $element ) {\n    $args['orderby'] = 'title';\n    return $args;\n}, 10, 3 );\n</code></pre>\n</p>\n\n",
+        "changelog": "<h4>1.1.0</h4>\n<ul>\n<li>Location sources simplified: &#8220;Latitude + longitude fields&#8221; or &#8220;Single field&#8221;. The single field accepts text (&#8220;lat,lng&#8221;, &#8220;lat;lng&#8221;), ACF OpenStreetMap, ACF Google Map, Meta Box OSM and Meta Box Google Maps fields.</li>\n<li>Maps set up with the former &#8220;ACF OpenStreetMap field&#8221; source keep working.</li>\n<li>&#8220;Map field (detected)&#8221; setting: pick an ACF or Meta Box map field from a list.</li>\n<li>Map automatically fitted to all markers when &#8220;Map center&#8221; and &#8220;Zoom level (Initial)&#8221; are empty.</li>\n<li>Field name settings: a Meta Box tag picked with the dynamic data button (e.g. {mb_store_location}) is converted to the field ID.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Display one marker per post on the Bricks Map (Leaflet) element, from latitude/longitude fields or a single location field (ACF, Meta Box, text).",
+    "description": "<p>The Map (Leaflet) element of the Bricks theme (2.1+) has no query loop option, unlike its Google Map element. This plugin adds a &#8220;Query markers&#8221; panel to the Map (Leaflet) element: the first marker you set is used as a template and duplicated for every post of the query, with all dynamic data tags rendered in the context of each post.</p>\n<p>Features:</p>\n<ul>\n<li>Location from two latitude / longitude custom fields (ACF, Meta Box, JetEngine, native custom fields&#8230;).</li>\n<li>Location from a single field: a text field containing &#8220;lat,lng&#8221;, an ACF OpenStreetMap field (ACF OpenStreetMap Field plugin), an ACF Google Map field, or a Meta Box OSM / Google Maps field.</li>\n<li>Any Bricks dynamic data tag in the marker popup (title, link, ACF fields&#8230;).</li>\n<li>Optional filter on a custom field, e.g. a &#8220;show on map&#8221; True/False field.</li>\n<li>Posts sharing the same location: merged into one marker with stacked popups, or spread on a small circle.</li>\n<li>Map automatically fitted to show all markers, unless you set a map center or a zoom level.</li>\n<li>Builder notice showing how many markers were found.</li>\n</ul>\n<p>This plugin requires the Bricks theme, which is a commercial product. It is not affiliated with or endorsed by Bricks Builder.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/query-markers-for-bricks-leaflet-map.1.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/query-markers-for-bricks-leaflet-map/assets/screenshot-1.jpg?rev=3779780",
+            "caption": "A map with one marker per post on the frontend."
+        },
+        {
+            "src": "https://ps.w.org/query-markers-for-bricks-leaflet-map/assets/screenshot-2.jpg?rev=3779780",
+            "caption": "The \"Query markers\" panel of the Map (Leaflet) element."
+        },
+        {
+            "src": "https://ps.w.org/query-markers-for-bricks-leaflet-map/assets/screenshot-3.jpg?rev=3779780",
+            "caption": "The regular Markers panel containing one marker with the coordinate variable."
+        },
+        {
+            "src": "https://ps.w.org/query-markers-for-bricks-leaflet-map/assets/screenshot-4.jpg?rev=3779780",
+            "caption": "The map as it shows in the builder, with no marker but a message indicating how many markers will show on the front-end based on the query and optional filter."
+        }
+    ],
+    "tags": {
+        "acf": "acf",
+        "bricks": "bricks",
+        "leaflet": "leaflet",
+        "map": "map",
+        "openstreetmap": "openstreetmap"
+    },
+    "stable_tag": "1.1.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/query-markers-for-bricks-leaflet-map.1.0.0.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/query-markers-for-bricks-leaflet-map.1.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/query-markers-for-bricks-leaflet-map.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/query-markers-for-bricks-leaflet-map/assets/banner-772x250.png?rev=3779980",
+        "high": "https://ps.w.org/query-markers-for-bricks-leaflet-map/assets/banner-1544x500.png?rev=3779980"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/query-markers-for-bricks-leaflet-map/assets/icon.svg?rev=3779780",
+        "svg": "https://ps.w.org/query-markers-for-bricks-leaflet-map/assets/icon.svg?rev=3779780"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
