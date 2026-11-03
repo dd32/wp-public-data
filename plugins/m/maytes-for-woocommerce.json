@@ -1,0 +1,87 @@
+{
+    "name": "Maytes for WooCommerce",
+    "slug": "maytes-for-woocommerce",
+    "version": "1.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/kosmaytes/\">kosmaytes</a>",
+    "author_profile": "https://profiles.wordpress.org/kosmaytes/",
+    "contributors": {
+        "kosmaytes": {
+            "profile": "https://profiles.wordpress.org/kosmaytes/",
+            "avatar": "https://secure.gravatar.com/avatar/6281bb660380f2208233431ebae8e5017cd76fe052b1e46fd251bd746f501e86?s=96&d=monsterid&r=g",
+            "display_name": "kosmaytes"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/maytes-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-02 22:45:00",
+    "added": "2026-11-02",
+    "homepage": "https://developers.maytes.co/woocommerce",
+    "sections": {
+        "description": "<p><strong>Split with Maytes</strong> lets a customer pay their share of an order and invite their mates to pay theirs. The order is paid once everyone has paid, and you receive the full amount through Maytes.</p>\n<p>The plugin adds three things to your store:</p>\n<ul>\n<li><strong>The Split with Maytes button</strong>, in a full-width row of its own under the express checkout buttons (Apple Pay, Google Pay, Link), at the same size. It works on the classic checkout and on the Checkout block.</li>\n<li><strong>A checkout route</strong> on your site that turns the cart into a pending WooCommerce order and a Maytes checkout.</li>\n<li><strong>A webhook route</strong> on your site that captures the payment and marks the order paid, so your usual order emails go out.</li>\n</ul>\n<p>Your theme, your Stripe setup and your card checkout stay exactly as they are.</p>\n<h4>What you need</h4>\n<ul>\n<li>A Maytes merchant account, with sandbox and production credentials from the Maytes merchant portal.</li>\n<li>WooCommerce, with AUD as the store currency.</li>\n<li>A public HTTPS site, so Maytes can deliver webhooks.</li>\n<li>At least one other payment method enabled in WooCommerce, such as card payments. On the Checkout block, Split with Maytes can&#8217;t be the store&#8217;s only payment method.</li>\n</ul>\n<p>The full setup guide is at <a href=\"https://developers.maytes.co/woocommerce\" rel=\"nofollow ugc\">developers.maytes.co/woocommerce</a>.</p>\n<h3>External services</h3>\n<p>This plugin connects your store to Maytes, the service that runs Split with Maytes. It&#8217;s needed to take Split with Maytes payments.</p>\n<ul>\n<li><strong>Maytes checkout button script</strong>, loaded from <code>https://js.maytes.co</code> on checkout pages where the button shows. It draws the button and opens the Maytes checkout. As with any script, the customer&#8217;s browser sends standard request information, such as its IP address and user agent.</li>\n<li><strong>Maytes API</strong> (<code>https://api.maytes.co</code>, or <code>https://sandbox-api.maytes.co</code> while testing), called from your server only:\n<ul>\n<li>when a customer clicks Split with Maytes, to create the checkout. It sends the order ID, the total, the currency, the name, quantity and price of each line, and the return and cancel URLs on your store;</li>\n<li>when Maytes reports a payment, to capture or release it. It sends the checkout ID, the order ID, the total and the currency.<br />\nYour OAuth client ID and secret are sent to <code>/oauth/token</code> to get an access token. The customer&#8217;s name, email address and postal address are never sent.</li>\n</ul>\n</li>\n<li><strong>Maytes checkout</strong>, the page the button opens, where the customer and their mates pay. The customer&#8217;s payment details are entered there, with Maytes.</li>\n</ul>\n<p>Maytes <a href=\"https://maytes.co/terms/\" rel=\"nofollow ugc\">terms and conditions</a> and <a href=\"https://maytes.co/privacy/\" rel=\"nofollow ugc\">privacy policy</a>.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin.</li>\n<li>\n<p>Add your Maytes settings to <code>wp-config.php</code>, above the line <code>/* That's all, stop editing! */</code>. Start with sandbox values:</p>\n<p>define( &#8216;MAYTES_ENV&#8217;, &#8216;sandbox&#8217; ); // &#8216;production&#8217; when live<br />\ndefine( &#8216;MAYTES_API_ENDPOINT&#8217;, &#8216;https://sandbox-api.maytes.co&#8217; ); // live: https://api.maytes.co<br />\ndefine( &#8216;MAYTES_CLIENT_ID&#8217;, &#8216;…&#8217; );<br />\ndefine( &#8216;MAYTES_CLIENT_SECRET&#8217;, &#8216;…&#8217; );<br />\ndefine( &#8216;MAYTES_WEBHOOK_SECRET&#8217;, &#8216;…&#8217; );</p>\n</li>\n<li>\n<p>In the Maytes merchant portal, subscribe <code>https://your-store.example/wp-json/maytes/v1/webhook</code> to the <code>checkout.authorized</code> and <code>checkout.voided</code> events. Copy the signing secret it shows into <code>MAYTES_WEBHOOK_SECRET</code>.</p>\n</li>\n<li>Pay with a sandbox test card, then switch every setting to production.</li>\n</ol>\n<p>The settings stay on your server: the plugin never stores them in the database or sends them to the browser.</p>\n",
+        "faq": "\n<h4>\nDo I need a Maytes account?\n</h4>\n<p>\n<p>Yes. The plugin connects your store to Maytes, which runs the split payment. Your credentials are in the Maytes merchant portal.</p>\n</p>\n<h4>\nDoes it work with the Checkout block?\n</h4>\n<p>\n<p>Yes. On the Checkout block, Split with Maytes is an express payment method in a full-width row under the other express buttons. On the classic checkout, it sits directly under the WooCommerce Stripe Gateway&#8217;s express buttons.</p>\n</p>\n<h4>\nDoes it change my Stripe setup?\n</h4>\n<p>\n<p>No. Maytes payments stay outside Stripe. They don&#8217;t appear in your Stripe dashboard, and the money arrives through Maytes settlements.</p>\n</p>\n<h4>\nWhy does the button ask for my customer&#8217;s details first?\n</h4>\n<p>\n<p>Maytes doesn&#8217;t return the customer&#8217;s name, email or address, and your order emails need them. If a required field is empty, the customer sees the checkout&#8217;s usual error and fills it in first.</p>\n</p>\n<h4>\nWhere are refunds made?\n</h4>\n<p>\n<p>In the Maytes merchant portal, not from the WooCommerce order screen.</p>\n</p>\n<h4>\nWhich currencies are supported?\n</h4>\n<p>\n<p>AUD. The button stays hidden for other currencies.</p>\n</p>\n<h4>\nCan the Maytes checkout open in a popup?\n</h4>\n<p>\n<p>Yes. By default the button takes the customer to the Maytes checkout and back. To open it in a popup instead, add this to your theme&#8217;s <code>functions.php</code> or a small plugin:</p>\n<pre><code>add_filter( 'maytes_woo_client_config', function ( $config ) {\n    $config['button']['mode'] = 'popup';\n    return $config;\n} );\n</code></pre>\n</p>\n<h4>\nCan I stop a payment before the money is taken?\n</h4>\n<p>\n<p>Yes. Return <code>false</code> from the <code>maytes_woo_can_fulfil</code> filter, for example when a booking has just filled up. The customer&#8217;s funds are released, nothing is captured, and the order is marked Failed.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.0</h4>\n<ul>\n<li>Faster checkouts and webhooks: the plugin keeps its Maytes access token until shortly before it expires, instead of asking for a new one every time.</li>\n<li>A webhook delivered twice at the same moment is acted on once.</li>\n<li>A customer can start Split with Maytes up to 10 times in 10 minutes, so repeated clicks can&#8217;t pile up unpaid orders.</li>\n<li>The order received page says the payment is being confirmed while Maytes finishes it.</li>\n<li>New <code>maytes_woo_client_config</code> filter, for example to open the Maytes checkout in a popup.</li>\n<li>Deleting the plugin removes its cached tokens and settings. Orders keep their Maytes notes.</li>\n<li>The code is split into small classes. Hooks and their callbacks, routes, order data, the public <code>Maytes_Woo</code> methods and the <code>maytes_woo_can_fulfil</code> filter are unchanged, so code that moves the button or calls the plugin keeps working.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Fixed: on the classic checkout, the button now keeps clear of the &#8220;Billing details&#8221; heading when no other express button is showing.</li>\n<li>Fixed: a paid order now has one payment note, not two, on WooCommerce 10.4 and later.</li>\n<li>Fixed: your store&#8217;s own checkout checks (minimum order amounts, address checks, coupons, stock, and rules added by other plugins) now also run when a customer chooses Split with Maytes.</li>\n<li>Fixed: when the last item sells out while the order is being placed, the customer now sees the out-of-stock message instead of a general error.</li>\n<li>Fixed: the order page now says &#8220;Payment via Split with Maytes&#8221;, and Split with Maytes is listed under WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Payments with a link to the setup guide.</li>\n<li>Fixed: product names with &#8220;&amp;&#8221; or quotes now show on the Maytes checkout as written, not as &#8220;&amp;&#8221;.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First release: Split with Maytes on the classic checkout and the Checkout block, with capture on the webhook.</li>\n</ul>\n"
+    },
+    "short_description": "Let customers split the cost of an order with their mates. Adds the Split with Maytes button to your WooCommerce checkout.",
+    "description": "<p><strong>Split with Maytes</strong> lets a customer pay their share of an order and invite their mates to pay theirs. The order is paid once everyone has paid, and you receive the full amount through Maytes.</p>\n<p>The plugin adds three things to your store:</p>\n<ul>\n<li><strong>The Split with Maytes button</strong>, in a full-width row of its own under the express checkout buttons (Apple Pay, Google Pay, Link), at the same size. It works on the classic checkout and on the Checkout block.</li>\n<li><strong>A checkout route</strong> on your site that turns the cart into a pending WooCommerce order and a Maytes checkout.</li>\n<li><strong>A webhook route</strong> on your site that captures the payment and marks the order paid, so your usual order emails go out.</li>\n</ul>\n<p>Your theme, your Stripe setup and your card checkout stay exactly as they are.</p>\n<h4>What you need</h4>\n<ul>\n<li>A Maytes merchant account, with sandbox and production credentials from the Maytes merchant portal.</li>\n<li>WooCommerce, with AUD as the store currency.</li>\n<li>A public HTTPS site, so Maytes can deliver webhooks.</li>\n<li>At least one other payment method enabled in WooCommerce, such as card payments. On the Checkout block, Split with Maytes can&#8217;t be the store&#8217;s only payment method.</li>\n</ul>\n<p>The full setup guide is at <a href=\"https://developers.maytes.co/woocommerce\" rel=\"nofollow ugc\">developers.maytes.co/woocommerce</a>.</p>\n<h3>External services</h3>\n<p>This plugin connects your store to Maytes, the service that runs Split with Maytes. It&#8217;s needed to take Split with Maytes payments.</p>\n<ul>\n<li><strong>Maytes checkout button script</strong>, loaded from <code>https://js.maytes.co</code> on checkout pages where the button shows. It draws the button and opens the Maytes checkout. As with any script, the customer&#8217;s browser sends standard request information, such as its IP address and user agent.</li>\n<li><strong>Maytes API</strong> (<code>https://api.maytes.co</code>, or <code>https://sandbox-api.maytes.co</code> while testing), called from your server only:\n<ul>\n<li>when a customer clicks Split with Maytes, to create the checkout. It sends the order ID, the total, the currency, the name, quantity and price of each line, and the return and cancel URLs on your store;</li>\n<li>when Maytes reports a payment, to capture or release it. It sends the checkout ID, the order ID, the total and the currency.<br />\nYour OAuth client ID and secret are sent to <code>/oauth/token</code> to get an access token. The customer&#8217;s name, email address and postal address are never sent.</li>\n</ul>\n</li>\n<li><strong>Maytes checkout</strong>, the page the button opens, where the customer and their mates pay. The customer&#8217;s payment details are entered there, with Maytes.</li>\n</ul>\n<p>Maytes <a href=\"https://maytes.co/terms/\" rel=\"nofollow ugc\">terms and conditions</a> and <a href=\"https://maytes.co/privacy/\" rel=\"nofollow ugc\">privacy policy</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/maytes-for-woocommerce.1.1.0.zip",
+    "upgrade_notice": {
+        "1.1.0": "<p>Faster checkouts and webhooks, safer handling of repeated webhooks, and a popup option. Nothing to change on your store.</p>",
+        "1.0.1": "<p>Runs your store&#039;s own checkout checks for Split with Maytes orders, and fixes the button spacing on the classic checkout.</p>",
+        "1.0.0": "<p>First release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/maytes-for-woocommerce/assets/screenshot-1.png?rev=3779387",
+            "caption": "Split with Maytes on the checkout, on a phone."
+        }
+    ],
+    "tags": {
+        "checkout": "checkout",
+        "group-payments": "group payments",
+        "payments": "payments",
+        "split-payments": "Split Payments",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.1.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/maytes-for-woocommerce.1.0.0.zip",
+        "1.1.0": "https://downloads.wordpress.org/plugin/maytes-for-woocommerce.1.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/maytes-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/maytes-for-woocommerce/assets/icon-128x128.png?rev=3779272",
+        "2x": "https://ps.w.org/maytes-for-woocommerce/assets/icon-256x256.png?rev=3779272"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
