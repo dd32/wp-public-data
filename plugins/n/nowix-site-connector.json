@@ -1,0 +1,80 @@
+{
+    "name": "Nowix Site Connector",
+    "slug": "nowix-site-connector",
+    "version": "0.3.1",
+    "author": "<a href=\"https://profiles.wordpress.org/yungyikim/\">yungyikim</a>",
+    "author_profile": "https://profiles.wordpress.org/yungyikim/",
+    "contributors": {
+        "yungyikim": {
+            "profile": "https://profiles.wordpress.org/yungyikim/",
+            "avatar": "https://secure.gravatar.com/avatar/29fdb702a0dcf71f333ad2a74c83990ae4f8d2650588fb7ce49705142811f66e?s=96&d=monsterid&r=g",
+            "display_name": "yungyikim"
+        }
+    },
+    "requires": "6.3",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/nowix-site-connector/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-04 00:09:00",
+    "added": "2026-11-03",
+    "homepage": "https://nowix.co.kr/linkhub/plugin",
+    "sections": {
+        "description": "<p>Nowix Site Connector works with the external LinkHub service. Site owners register their own sites, verify domain ownership using DNS TXT records, review other sites and explicitly approve one-way or reciprocal recommendations. The connector retrieves the approved recommendation snapshots and renders ordinary HTML links in a page selected by the administrator.</p>\n<p>The plugin does not insert links automatically across your site. Add the LinkHub recommendations block or the [linkhub_links] shortcode where the recommendations are relevant. All recommendation links omit the rel attribute. There is no link-attribute setting. LinkHub does not promise crawling, indexing, traffic or search ranking improvements. Do not use it for excessive link exchanges or search ranking manipulation.</p>\n<p>A LinkHub account, a public HTTPS WordPress site and access to its DNS settings are required. There is no payment or subscription requirement in this release. The service is available at https://nowix.co.kr/linkhub/.</p>\n<h3>External service and consent</h3>\n<p>No external service request is made merely by activating the plugin. In Settings &gt; LinkHub, the administrator supplies a hub URL and a one-time code, then chooses Connect. This explicitly enables the following HTTPS requests to the selected hub (the default is https://nowix.co.kr/linkhub):</p>\n<ul>\n<li>Each request includes protocolVersion 2 to identify the supported synchronization format.</li>\n<li>/api/plugin/pair receives the one-time code and the WordPress home URL to verify the connection. It returns a site-specific credential and the initial approved recommendations.</li>\n<li>/api/plugin/sync receives the site credential in an Authorization header and the last recommendation revision actually rendered by the block or shortcode. This retrieves changes and reports rendering status. It runs on a five-minute WP-Cron schedule, or when the administrator chooses Sync.</li>\n<li>/api/plugin/disconnect receives the site credential when the administrator chooses Disconnect, to revoke it and stop sharing the site&#8217;s connections.</li>\n</ul>\n<p>The plugin sends no administrator password, WordPress session cookies, post content or visitor information. As with any HTTPS request, the receiving hub can see the WordPress server&#8217;s IP address. The separate hub account stores the operator&#8217;s email, profile, site descriptions and connection requests. Credentials and the latest recommendation manifest are stored locally in WordPress options without autoloading.</p>\n<p>Service information: https://nowix.co.kr/linkhub/plugin<br />\nTerms: https://nowix.co.kr/linkhub/terms<br />\nPrivacy: https://nowix.co.kr/linkhub/privacy<br />\nIf you use a different hub, review that operator&#8217;s policies before connecting.</p>\n<h3>Synchronization and caching</h3>\n<p>WP-Cron needs site visits to run. For reliable operation, arrange for WordPress cron to run on the server every five minutes. Recommendation data expires after one hour without a successful refresh. Expired data is not rendered. Revocations apply on the next successful synchronization, or at expiry if the hub is unavailable.</p>\n<p>Exclude recommendation pages from full-page caching, including CDN caches. Previously cached HTML served before WordPress runs is outside the plugin&#8217;s control. Rendering reports confirm that the block or shortcode ran; they are not independent public-page or search-engine checks.</p>\n",
+        "installation": "<ol>\n<li>Go to Plugins &gt; Add New, search for &#8220;Nowix Site Connector&#8221;, then install and activate it. The official directory page is https://wordpress.org/plugins/nowix-site-connector/.</li>\n<li>Register the same HTTPS URL as your WordPress home URL in LinkHub and complete DNS TXT verification.</li>\n<li>Generate a one-time pairing code in the hub. Codes expire after 15 minutes.</li>\n<li>In Settings &gt; LinkHub, enter the hub URL and code, review the external-service disclosure, then connect.</li>\n<li>Add the LinkHub recommendations block or [linkhub_links] shortcode to a relevant public page and publish it.</li>\n<li>Exclude that page from full-page caching. Open the page and synchronize once more to send its rendering report.</li>\n</ol>\n",
+        "faq": "\n<h4>\nDoes activation contact the service?\n</h4>\n<p>\n<p>No. Requests require the administrator to connect using a pairing code. Visitors are not tracked by this plugin.</p>\n</p>\n<h4>\nDoes accepting a request publish links everywhere?\n</h4>\n<p>\n<p>No. Acceptance permits synchronization. Links appear only in the block or shortcode placed by the administrator, while valid data is available.</p>\n</p>\n<h4>\nCan I stop a connection?\n</h4>\n<p>\n<p>Yes. Revoke it in the hub, disconnect the plugin, or remove the block or shortcode. Reconnecting with a new code replaces the old site credential. Deactivation clears cached recommendations and the cron task but keeps connection settings for reactivation.</p>\n</p>\n<h4>\nWhat happens when I delete the plugin?\n</h4>\n<p>\n<p>Uninstall removes its local options and scheduled task. It does not delete your hub account or its records. Disconnect first or archive your site in the hub to revoke its credential and connections.</p>\n</p>\n<h4>\nHow do I replace an earlier manual ZIP installation?\n</h4>\n<p>\n<p>The earlier development ZIP used the folder name &#8220;linkhub&#8221;. Do not activate both copies together. Deactivate and delete the old copy first, then install the directory version and pair it with a fresh code. Removing the old plugin clears its local settings; the fresh code replaces the old credential. The shortcode and block names remain the same.</p>\n</p>\n\n",
+        "changelog": "<h4>0.3.1</h4>\n<ul>\n<li>Render every recommendation as an ordinary HTML link without a rel attribute.</li>\n<li>Use synchronization protocol 2 and reject manifests containing link relationship attributes.</li>\n<li>Require existing installations to update and synchronize; connection settings remain intact.</li>\n</ul>\n<h4>0.3.0</h4>\n<ul>\n<li>First public release with an English readme, service disclosures and GPL license.</li>\n<li>Hardened administrator form input and malformed response validation.</li>\n<li>Kept explicit placement, site-specific credentials, expiring manifests and ugc nofollow links.</li>\n</ul>\n"
+    },
+    "short_description": "Sync manually approved site recommendations from LinkHub and display them using an optional block or shortcode.",
+    "description": "<p>Nowix Site Connector works with the external LinkHub service. Site owners register their own sites, verify domain ownership using DNS TXT records, review other sites and explicitly approve one-way or reciprocal recommendations. The connector retrieves the approved recommendation snapshots and renders ordinary HTML links in a page selected by the administrator.</p>\n<p>The plugin does not insert links automatically across your site. Add the LinkHub recommendations block or the [linkhub_links] shortcode where the recommendations are relevant. All recommendation links omit the rel attribute. There is no link-attribute setting. LinkHub does not promise crawling, indexing, traffic or search ranking improvements. Do not use it for excessive link exchanges or search ranking manipulation.</p>\n<p>A LinkHub account, a public HTTPS WordPress site and access to its DNS settings are required. There is no payment or subscription requirement in this release. The service is available at https://nowix.co.kr/linkhub/.</p>\n<h3>External service and consent</h3>\n<p>No external service request is made merely by activating the plugin. In Settings &gt; LinkHub, the administrator supplies a hub URL and a one-time code, then chooses Connect. This explicitly enables the following HTTPS requests to the selected hub (the default is https://nowix.co.kr/linkhub):</p>\n<ul>\n<li>Each request includes protocolVersion 2 to identify the supported synchronization format.</li>\n<li>/api/plugin/pair receives the one-time code and the WordPress home URL to verify the connection. It returns a site-specific credential and the initial approved recommendations.</li>\n<li>/api/plugin/sync receives the site credential in an Authorization header and the last recommendation revision actually rendered by the block or shortcode. This retrieves changes and reports rendering status. It runs on a five-minute WP-Cron schedule, or when the administrator chooses Sync.</li>\n<li>/api/plugin/disconnect receives the site credential when the administrator chooses Disconnect, to revoke it and stop sharing the site&#8217;s connections.</li>\n</ul>\n<p>The plugin sends no administrator password, WordPress session cookies, post content or visitor information. As with any HTTPS request, the receiving hub can see the WordPress server&#8217;s IP address. The separate hub account stores the operator&#8217;s email, profile, site descriptions and connection requests. Credentials and the latest recommendation manifest are stored locally in WordPress options without autoloading.</p>\n<p>Service information: https://nowix.co.kr/linkhub/plugin<br />\nTerms: https://nowix.co.kr/linkhub/terms<br />\nPrivacy: https://nowix.co.kr/linkhub/privacy<br />\nIf you use a different hub, review that operator&#8217;s policies before connecting.</p>\n<h3>Synchronization and caching</h3>\n<p>WP-Cron needs site visits to run. For reliable operation, arrange for WordPress cron to run on the server every five minutes. Recommendation data expires after one hour without a successful refresh. Expired data is not rendered. Revocations apply on the next successful synchronization, or at expiry if the hub is unavailable.</p>\n<p>Exclude recommendation pages from full-page caching, including CDN caches. Previously cached HTML served before WordPress runs is outside the plugin&#8217;s control. Rendering reports confirm that the block or shortcode ran; they are not independent public-page or search-engine checks.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/nowix-site-connector.0.3.1.zip",
+    "upgrade_notice": {
+        "0.3.1": "<p>All recommendation links now omit rel. Update, then choose Settings &gt; LinkHub &gt; Sync. Old manifests are not rendered by this version. Clear existing page/CDN caches. Older clients cannot refresh against protocol 2; their last data expires within one hour.</p>",
+        "0.3.0": "<p>First public release. Existing shortcode, block names and option keys remain compatible. See the FAQ before replacing an earlier manual installation.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "links": "links",
+        "recommendations": "recommendations"
+    },
+    "stable_tag": "0.3.1",
+    "versions": {
+        "0.3.0": "https://downloads.wordpress.org/plugin/nowix-site-connector.0.3.0.zip",
+        "0.3.1": "https://downloads.wordpress.org/plugin/nowix-site-connector.0.3.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/nowix-site-connector.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/nowix-site-connector.svg"
+    },
+    "blocks": {
+        "linkhub/recommendations": {
+            "name": "linkhub/recommendations",
+            "title": "LinkHub 추천 사이트"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
