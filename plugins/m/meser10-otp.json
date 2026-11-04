@@ -1,0 +1,97 @@
+{
+    "name": "Meser10 OTP",
+    "slug": "meser10-otp",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/meser10/\">meser10</a>",
+    "author_profile": "https://profiles.wordpress.org/meser10/",
+    "contributors": {
+        "meser10": {
+            "profile": "https://profiles.wordpress.org/meser10/",
+            "avatar": "https://secure.gravatar.com/avatar/1b6e80f527bb5339dede26af9deccbb175bb5429e8b602565bdfc93a959eec61?s=96&d=monsterid&r=g",
+            "display_name": "meser10"
+        }
+    },
+    "requires": "5.8",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/meser10-otp/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-04 10:09:00",
+    "added": "2026-11-04",
+    "homepage": "https://www.meser10.co.il/features/otp/",
+    "sections": {
+        "description": "<p>A one-time code by SMS is the simplest way to know that a phone number is real<br />\nand belongs to the person typing it. This plugin sends those codes through your<br />\nMeser 10 account and checks them, in three places you switch on separately:</p>\n<ul>\n<li><strong>Registration.</strong> The WordPress registration form and the WooCommerce My Account registration form ask for a mobile number, and the account is created only after it was confirmed with a code.</li>\n<li><strong>WooCommerce checkout.</strong> The billing mobile is confirmed with a code before the order is placed, for every order or only for cash on delivery orders, which is where fake orders cost the most. When registration verification is on, a code is also required whenever checkout creates an account. Signed-in customers who already verified the same number are not asked again.</li>\n<li><strong>Sign-in.</strong> After the password, users in the roles you choose enter a code sent to the mobile number on their profile. No session is created until the code is right, and users who need sign-in codes confirm both their current and their new number with codes before changing it on their own profile.</li>\n</ul>\n<h4>Who it is for</h4>\n<p>Israeli sites that already send SMS with Meser 10. Codes go out from the same Meser 10 account, SMS balance and approved sender name the site owner uses for SMS campaigns, so there is no separate SMS gateway (such as Twilio) to sign up for, fund or configure. Israeli mobile numbers are accepted the way people type them (05X, +972, 00972), anything that is not a valid Israeli mobile is rejected rather than guessed, and masked numbers display correctly inside Hebrew right-to-left text. Sites that also send abroad can widen the number check with the meser10_otp_normalize_phone filter.</p>\n<h4>Built so codes cannot be abused</h4>\n<p>Every code is a paid SMS, so the plugin is strict about who can ask for one:</p>\n<ul>\n<li>Limits per number, per visitor IP (IPv6 by /64 network) and for the whole site, per hour, plus a wait before a new code can be requested. Sign-in codes have their own counters, so nobody can use your public forms to lock users out of signing in.</li>\n<li>Sending and checking for a number are locked against parallel requests, so the limits and the wrong-try count cannot be raced.</li>\n<li>A code works once, expires after the time you set (5 minutes by default) and is cancelled after too many wrong tries. Sign-in codes are always at least 6 digits.</li>\n<li>Codes are created with a cryptographically secure generator and stored only as a keyed hash, never in plain text.</li>\n<li>The AJAX endpoints only answer for the places you switched on.</li>\n</ul>\n<h4>Other details</h4>\n<ul>\n<li>Phones fill in the code by themselves: the code field uses <code>autocomplete=\"one-time-code\"</code>, and an optional Web OTP line lets Android Chrome read it from the SMS.</li>\n<li>A test send on the settings screen, and a list of the latest sends with masked numbers.</li>\n<li>Works with the same API key as the Meser10 Connect plugin, if you use it.</li>\n<li>Hebrew translation included.</li>\n</ul>\n<h4>For developers</h4>\n<p>Use codes in your own forms:</p>\n<pre><code>$sent = meser10_otp_send( $phone, 'my_form' );       // true or WP_Error\n$ok   = meser10_otp_verify( $phone, $code, 'my_form' ); // true or WP_Error\n</code></pre>\n<p>Filters: <code>meser10_otp_normalize_phone</code> (accept numbers outside Israel), <code>meser10_otp_client_ip</code> (real visitor IP behind a proxy or CDN), <code>meser10_otp_before_send</code> (return a WP_Error to refuse a send, e.g. after a failed CAPTCHA), <code>meser10_otp_login_required</code>, <code>meser10_otp_checkout_required</code>, <code>meser10_otp_ajax_contexts</code>. Actions: <code>meser10_otp_sent</code>, <code>meser10_otp_verified</code>.</p>\n<h4>Before you start</h4>\n<p>You need a Meser 10 account with an SMS balance and an approved sender. Every code sent uses one SMS from that balance. By default, numbers are accepted in Israeli mobile format (05X, +972 or 00972).</p>\n<h3>External services</h3>\n<p>This plugin connects to Meser 10, an email and SMS messaging platform operated by Meser-Eser Ltd. It cannot send codes without a Meser 10 account, and nothing leaves your site until you save an API key and a sender.</p>\n<p><strong>What the service is used for:</strong> sending the SMS that carries the one-time code.</p>\n<p><strong>What data is sent, and when:</strong> each time a code is sent (a visitor asks for a code on a form you switched on, a user in a protected role signs in, or an administrator sends a test), the plugin sends the recipient&#8217;s mobile number, the text of the message including the code, the sender name, and your Meser 10 API key. Nothing else is sent, and nothing is sent on any other event.</p>\n<p><strong>Where it is sent:</strong> to the Meser 10 JSON API at <code>https://heb.mesereser.com/Services/JsonServices.aspx</code> over HTTPS. This is the only external endpoint the plugin contacts.</p>\n<p>This service is provided by Meser-Eser Ltd:</p>\n<ul>\n<li>Terms of use: https://www.meser10.co.il/terms/</li>\n<li>Privacy policy: https://www.meser10.co.il/privacy/</li>\n</ul>\n<p>Please make sure your site&#8217;s own privacy policy tells visitors that their mobile number is sent to Meser 10 to deliver verification codes.</p>\n<p>The plugin also sets one functional cookie, <code>meser10_otp_cid</code>, only when a visitor asks for a code. It holds a random identifier that links the verified number to the form the visitor then submits, and expires after one day.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin.</li>\n<li>Go to <strong>Settings &gt; Meser10 OTP</strong>.</li>\n<li>Paste the API key from your Meser 10 account (User Settings screen), enter your approved sender, and save.</li>\n<li>Send yourself a test code from the same screen.</li>\n<li>Switch on registration, checkout or sign-in, and save.</li>\n</ol>\n",
+        "faq": "\n<h4>\nDoes it work with the WooCommerce Checkout block?\n</h4>\n<p>\n<p>Not in this version. The code step is shown on the classic checkout, the <code>[woocommerce_checkout]</code> shortcode. Orders that need a code are refused when they come through the Store API (the Checkout block or direct API calls), so nobody can skip the step that way. The settings screen warns you if your checkout page uses the Checkout block.</p>\n</p>\n<h4>\nWhat happens to a user who must use sign-in codes but has no number?\n</h4>\n<p>\n<p>You choose. By default they sign in with the password until a number is added, and their profile screen asks them to add one (confirmed with a code). Or you can refuse their sign-in until an administrator adds a number. A user cannot switch codes off by clearing their own number.</p>\n</p>\n<h4>\nWhat about XML-RPC, the REST API and AJAX logins?\n</h4>\n<p>\n<p>For users who need a code, XML-RPC requests with the normal password are refused, and so are password logins made through AJAX or REST. Application passwords keep working: they are separate credentials the user created on purpose, and they never open a browser session.</p>\n</p>\n<h4>\nHow long does a code take to arrive?\n</h4>\n<p>\n<p>Codes are sent through the Meser 10 API&#8217;s single-message function, which sends at once, without a campaign, list or schedule.</p>\n</p>\n<h4>\nCan I change the text of the SMS?\n</h4>\n<p>\n<p>Yes. Use <code>{code}</code> for the code and <code>{site}</code> for the site name. If the text has no <code>{code}</code>, the code is added at the end.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>First release: codes at registration, WooCommerce checkout and sign-in, with rate limits, a test send and a send log.</li>\n</ul>\n"
+    },
+    "short_description": "One-time SMS codes through your Meser 10 account: verify mobile numbers at registration and checkout, and add an SMS step to sign-in.",
+    "description": "<p>A one-time code by SMS is the simplest way to know that a phone number is real<br />\nand belongs to the person typing it. This plugin sends those codes through your<br />\nMeser 10 account and checks them, in three places you switch on separately:</p>\n<ul>\n<li><strong>Registration.</strong> The WordPress registration form and the WooCommerce My Account registration form ask for a mobile number, and the account is created only after it was confirmed with a code.</li>\n<li><strong>WooCommerce checkout.</strong> The billing mobile is confirmed with a code before the order is placed, for every order or only for cash on delivery orders, which is where fake orders cost the most. When registration verification is on, a code is also required whenever checkout creates an account. Signed-in customers who already verified the same number are not asked again.</li>\n<li><strong>Sign-in.</strong> After the password, users in the roles you choose enter a code sent to the mobile number on their profile. No session is created until the code is right, and users who need sign-in codes confirm both their current and their new number with codes before changing it on their own profile.</li>\n</ul>\n<h4>Who it is for</h4>\n<p>Israeli sites that already send SMS with Meser 10. Codes go out from the same Meser 10 account, SMS balance and approved sender name the site owner uses for SMS campaigns, so there is no separate SMS gateway (such as Twilio) to sign up for, fund or configure. Israeli mobile numbers are accepted the way people type them (05X, +972, 00972), anything that is not a valid Israeli mobile is rejected rather than guessed, and masked numbers display correctly inside Hebrew right-to-left text. Sites that also send abroad can widen the number check with the meser10_otp_normalize_phone filter.</p>\n<h4>Built so codes cannot be abused</h4>\n<p>Every code is a paid SMS, so the plugin is strict about who can ask for one:</p>\n<ul>\n<li>Limits per number, per visitor IP (IPv6 by /64 network) and for the whole site, per hour, plus a wait before a new code can be requested. Sign-in codes have their own counters, so nobody can use your public forms to lock users out of signing in.</li>\n<li>Sending and checking for a number are locked against parallel requests, so the limits and the wrong-try count cannot be raced.</li>\n<li>A code works once, expires after the time you set (5 minutes by default) and is cancelled after too many wrong tries. Sign-in codes are always at least 6 digits.</li>\n<li>Codes are created with a cryptographically secure generator and stored only as a keyed hash, never in plain text.</li>\n<li>The AJAX endpoints only answer for the places you switched on.</li>\n</ul>\n<h4>Other details</h4>\n<ul>\n<li>Phones fill in the code by themselves: the code field uses <code>autocomplete=\"one-time-code\"</code>, and an optional Web OTP line lets Android Chrome read it from the SMS.</li>\n<li>A test send on the settings screen, and a list of the latest sends with masked numbers.</li>\n<li>Works with the same API key as the Meser10 Connect plugin, if you use it.</li>\n<li>Hebrew translation included.</li>\n</ul>\n<h4>For developers</h4>\n<p>Use codes in your own forms:</p>\n<pre><code>$sent = meser10_otp_send( $phone, 'my_form' );       // true or WP_Error\n$ok   = meser10_otp_verify( $phone, $code, 'my_form' ); // true or WP_Error\n</code></pre>\n<p>Filters: <code>meser10_otp_normalize_phone</code> (accept numbers outside Israel), <code>meser10_otp_client_ip</code> (real visitor IP behind a proxy or CDN), <code>meser10_otp_before_send</code> (return a WP_Error to refuse a send, e.g. after a failed CAPTCHA), <code>meser10_otp_login_required</code>, <code>meser10_otp_checkout_required</code>, <code>meser10_otp_ajax_contexts</code>. Actions: <code>meser10_otp_sent</code>, <code>meser10_otp_verified</code>.</p>\n<h4>Before you start</h4>\n<p>You need a Meser 10 account with an SMS balance and an approved sender. Every code sent uses one SMS from that balance. By default, numbers are accepted in Israeli mobile format (05X, +972 or 00972).</p>\n<h3>External services</h3>\n<p>This plugin connects to Meser 10, an email and SMS messaging platform operated by Meser-Eser Ltd. It cannot send codes without a Meser 10 account, and nothing leaves your site until you save an API key and a sender.</p>\n<p><strong>What the service is used for:</strong> sending the SMS that carries the one-time code.</p>\n<p><strong>What data is sent, and when:</strong> each time a code is sent (a visitor asks for a code on a form you switched on, a user in a protected role signs in, or an administrator sends a test), the plugin sends the recipient&#8217;s mobile number, the text of the message including the code, the sender name, and your Meser 10 API key. Nothing else is sent, and nothing is sent on any other event.</p>\n<p><strong>Where it is sent:</strong> to the Meser 10 JSON API at <code>https://heb.mesereser.com/Services/JsonServices.aspx</code> over HTTPS. This is the only external endpoint the plugin contacts.</p>\n<p>This service is provided by Meser-Eser Ltd:</p>\n<ul>\n<li>Terms of use: https://www.meser10.co.il/terms/</li>\n<li>Privacy policy: https://www.meser10.co.il/privacy/</li>\n</ul>\n<p>Please make sure your site&#8217;s own privacy policy tells visitors that their mobile number is sent to Meser 10 to deliver verification codes.</p>\n<p>The plugin also sets one functional cookie, <code>meser10_otp_cid</code>, only when a visitor asks for a code. It holds a random identifier that links the verified number to the form the visitor then submits, and expires after one day.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/meser10-otp.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>First release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/meser10-otp/assets/screenshot-1.png?rev=3783622",
+            "caption": "Settings: account, sender, message and where codes are required."
+        },
+        {
+            "src": "https://ps.w.org/meser10-otp/assets/screenshot-2.png?rev=3783622",
+            "caption": "Registration form with the code step."
+        },
+        {
+            "src": "https://ps.w.org/meser10-otp/assets/screenshot-3.png?rev=3783622",
+            "caption": "WooCommerce checkout with the billing mobile confirmed."
+        },
+        {
+            "src": "https://ps.w.org/meser10-otp/assets/screenshot-4.png?rev=3783622",
+            "caption": "The sign-in code screen."
+        }
+    ],
+    "tags": {
+        "otp": "otp",
+        "phone-verification": "phone verification",
+        "sms": "sms",
+        "two-factor": "two factor",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/meser10-otp.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/meser10-otp.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/meser10-otp/assets/banner-772x250.png?rev=3783622",
+        "high": "https://ps.w.org/meser10-otp/assets/banner-1544x500.png?rev=3783622"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/meser10-otp/assets/icon-128x128.png?rev=3783622",
+        "2x": "https://ps.w.org/meser10-otp/assets/icon-256x256.png?rev=3783622"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
