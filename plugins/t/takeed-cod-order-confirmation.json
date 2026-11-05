@@ -1,0 +1,97 @@
+{
+    "name": "Takeed COD Order Confirmation for WooCommerce",
+    "slug": "takeed-cod-order-confirmation",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/anishamdi/\">anishamdi</a>",
+    "author_profile": "https://profiles.wordpress.org/anishamdi/",
+    "contributors": {
+        "anishamdi": {
+            "profile": "https://profiles.wordpress.org/anishamdi/",
+            "avatar": "https://secure.gravatar.com/avatar/75c005ed4427930ec953cd5ac1dacc7294536802b4b86c5479a33f629c943605?s=96&d=monsterid&r=g",
+            "display_name": "anishamdi"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/takeed-cod-order-confirmation/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-05 14:19:00",
+    "added": "2026-11-05",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Fake and forgotten cash-on-delivery (COD) orders cost you a delivery fee and a parcel that comes back. This plugin asks every COD buyer to confirm on WhatsApp before you ship, and writes every answer into the WooCommerce order.</p>\n<p>It uses the official WhatsApp Cloud API with your own Meta app and your own WhatsApp Business phone number. There is no account to open with us and no service in between.</p>\n<h4>How it works</h4>\n<ol>\n<li>A buyer places an order with the &#8220;Cash on delivery&#8221; payment method. The plugin sends your approved WhatsApp &#8220;utility&#8221; template to the billing phone: reply 1 to confirm, 2 to cancel, 3 to change the address.</li>\n<li><strong>Reply 1:</strong> the order note says &#8220;Buyer confirmed&#8221;, and the buyer is asked for a delivery slot: A = morning, B = evening (in Arabic: أ / ب).</li>\n<li><strong>Reply A or B:</strong> the slot is saved on the order and the buyer gets a short confirmation.</li>\n<li><strong>Reply 2:</strong> the order is cancelled and the buyer is told.</li>\n<li><strong>Reply 3:</strong> the order is put on hold with the note &#8220;Call the buyer before shipping&#8221;, and you get an e-mail with the buyer&#8217;s number.</li>\n<li><strong>No reply:</strong> after 6 hours (you choose 1 to 72) exactly one reminder template is sent. If there is still no answer after the same delay again, the order note says so.</li>\n<li><strong>Change of mind:</strong> a buyer who confirmed and then replies 2 before the order is completed gets the order cancelled, and you get an e-mail saying &#8220;do not ship it&#8221;.</li>\n<li><strong>Anything else</strong> (free text, emoji, voice note, image, sticker): it is added to the order notes at once. The first message of an order is e-mailed to you straight away; later ones are grouped into at most one e-mail per order per hour. The buyer gets one short &#8220;please reply 1, 2 or 3&#8221; message per order, never more.</li>\n<li><strong>Every day</strong> you get one e-mail: confirmed, cancelled, no reply, address changes, morning and evening slots, and the buyer messages of the last 24 hours.</li>\n</ol>\n<h4>What the buyer can type</h4>\n<ul>\n<li>Western or Arabic-Indic digits: 1 or ١, 2 or ٢, 3 or ٣.</li>\n<li>Latin or Arabic letters for the slot: A or أ, B or ب, upper or lower case.</li>\n<li>Extra spaces, a trailing dot or &#8220;!&#8221; are fine: &#8221; 1. &#8221; counts as 1.</li>\n</ul>\n<h4>Languages</h4>\n<p>The follow-up messages to the buyer exist in Arabic, French and English. Arabic messages are right-to-left safe.</p>\n<h4>Built to be safe</h4>\n<ul>\n<li>Every webhook call is checked with your Meta app secret (X-Hub-Signature-256). Calls with a wrong signature are refused.</li>\n<li>Meta sometimes delivers the same message more than once. Each message is handled exactly once.</li>\n<li>The same answer sent twice (1 then 1, A then A) is ignored: no second message, no second note.</li>\n<li>Replies to an order that is cancelled, on address change, completed or refunded are ignored.</li>\n<li>The access token and the app secret are never shown back on the settings page.</li>\n<li>Works with the classic checkout and the block checkout, and with High-Performance Order Storage (HPOS).</li>\n</ul>\n<p>Every feature is free. There is no paid version, no limit and no upsell.</p>\n<h4>You use your own WhatsApp Business account</h4>\n<p>The plugin talks directly to the official WhatsApp Cloud API (Meta) with your own access token, phone number ID and app secret.<br />\nMeta may charge you for WhatsApp conversations according to its own pricing. The plugin does not send your data anywhere else.</p>\n<h4>External service</h4>\n<p>This plugin connects to the WhatsApp Cloud API (graph.facebook.com), a service by Meta Platforms, Inc.<br />\nIt sends the buyer&#8217;s phone number, first name, order number and order total when a COD order is placed, and the short follow-up messages after the buyer replies. It receives the buyer&#8217;s replies on the webhook URL shown on the settings page.<br />\nTerms: https://www.whatsapp.com/legal/business-terms<br />\nPrivacy policy: https://www.whatsapp.com/legal/privacy-policy</p>\n<p>This plugin is not made, endorsed or supported by Meta Platforms, Inc. WhatsApp is a trademark of its owner.</p>\n",
+        "installation": "<ol>\n<li>Install and activate WooCommerce and this plugin.</li>\n<li>In Meta for Developers, create an app with the WhatsApp product and a phone number. Copy the phone number ID, a permanent access token (system user) and the app secret.</li>\n<li>In WhatsApp Manager, create two &#8220;utility&#8221; templates in your language and wait for approval:\n<ul>\n<li>Confirmation, with variables {{1}} first name, {{2}} order number, {{3}} order total. Tell the buyer to reply 1, 2 or 3.</li>\n<li>Reminder, with variables {{1}} first name, {{2}} order number.</li>\n</ul>\n</li>\n<li>Go to WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Takeed. Fill in the token, phone number ID, app secret, a verify token of your choice, the two template names, the reminder delay and the language.</li>\n<li>In the Meta app, open WhatsApp <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Configuration <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Webhook. Paste the webhook URL shown on the settings page and the same verify token. Subscribe to the &#8220;messages&#8221; field.</li>\n<li>Place a test COD order with your own phone number.</li>\n</ol>\n",
+        "faq": "\n<h4>\nWhat can the buyer reply to the confirmation message?\n</h4>\n<p>\n<p>1 to confirm, 2 to cancel, 3 to change the address. Western digits (1 2 3) and Arabic-Indic digits (١ ٢ ٣) both work, with or without extra spaces or a trailing dot. Until the buyer gives one of these three answers, they can still answer, also after the reminder and after the order was marked &#8220;No reply&#8221;.</p>\n</p>\n<h4>\nHow does the delivery slot work?\n</h4>\n<p>\n<p>After reply 1 the buyer is asked: A = morning, B = evening (أ / ب in Arabic). The chosen slot is saved on the order, written in an order note and counted in the daily summary. If the buyer sends something else (for example C), the slot question is asked once more. After that, wrong answers are only added to the order notes and forwarded to you; nothing more is sent to the buyer.</p>\n</p>\n<h4>\nCan the buyer change their mind?\n</h4>\n<p>\n<p>Yes, from &#8220;confirmed&#8221; to &#8220;cancelled&#8221;: a buyer who replied 1 (with or without a slot) and then replies 2 gets the order cancelled, and you receive an e-mail &#8220;the buyer cancelled after confirming, do not ship it&#8221;. This works until the order is completed, cancelled or refunded in WooCommerce; after that, replies are ignored. Reply 2 and reply 3 are final: after them the plugin stops answering, and any change is up to you.</p>\n</p>\n<h4>\nWhat happens when the buyer writes a message, sends a voice note or a photo?\n</h4>\n<p>\n<p>While the 1 / 2 / 3 question is open, the buyer gets one short help message (&#8220;please reply 1, 2 or 3&#8221;), only once per order. Every such message is added to the order notes at once (&#8220;Buyer wrote on WhatsApp: …&#8221;). Voice notes, images, stickers and videos appear as [voice], [image], [sticker], [video]; a reaction appears as its emoji. Image captions are not read.</p>\n</p>\n<h4>\nWill I get an e-mail for every buyer message?\n</h4>\n<p>\n<p>No. The first forwarded message of an order is e-mailed to the site admin address at once. Later messages of the same order are grouped and sent together, at most one e-mail per order per hour. The grouped e-mail is sent by the plugin&#8217;s 15-minute cron job, so it can arrive up to about 1 hour 15 minutes after the previous one. Order notes are always immediate.</p>\n</p>\n<h4>\nHow many reminders are sent?\n</h4>\n<p>\n<p>Exactly one per order, after the delay you set (6 hours by default, 1 to 72). The order is marked as reminded before the template is sent, so a repeated or failed cron run can never send a second one. If the reminder template name is empty, no reminder is sent and the order note says so.</p>\n</p>\n<h4>\nWhat is in the daily summary e-mail?\n</h4>\n<p>\n<p>Once a day, the site admin address gets the orders sent for confirmation in the last 24 hours: confirmed, cancelled, no reply (also orders still waiting for an answer), address change requested, and morning / evening slots, followed by the buyer messages of the last 24 hours. On a day with no orders and no messages, nothing is sent.</p>\n</p>\n<h4>\nWhose WhatsApp account sends the messages?\n</h4>\n<p>\n<p>Yours. You create the app in Meta for Developers, connect your own WhatsApp Business phone number, create and get your own templates approved, and paste your token, phone number ID and app secret into WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Takeed. Meta bills you directly for conversations, according to its own pricing. Messages for another phone number of the same Meta app are ignored.</p>\n</p>\n<h4>\nWhat if Meta delivers the same message twice?\n</h4>\n<p>\n<p>It is handled once. Each WhatsApp message ID is claimed with one atomic database write before anything happens, so even two deliveries arriving at the same moment cannot both act. These markers are deleted after 7 days, and on uninstall. Separately, if the buyer sends the same answer twice (1 then 1), the second one is ignored.</p>\n</p>\n<h4>\nWhich orders get a message, and why is my reminder or summary late?\n</h4>\n<p>\n<p>Only new orders paid with &#8220;Cash on delivery&#8221;, from the classic or the block checkout, once per order. The billing phone is completed with the country calling code of the billing country; if it is still not valid, the order note says the message was not sent. Reminders, grouped e-mails and the summary use WP-Cron, which runs when your site gets visits. On a quiet site, set up a real cron job that calls wp-cron.php every 5 to 15 minutes.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>First release: confirmation template for COD orders, replies 1 / 2 / 3, delivery slot A / B, one reminder, daily summary email, Arabic / French / English.</li>\n</ul>\n"
+    },
+    "short_description": "Ask every cash-on-delivery buyer to confirm on WhatsApp: reply 1, 2 or 3, then pick a delivery slot. Uses your own WhatsApp Business account.",
+    "description": "<p>Fake and forgotten cash-on-delivery (COD) orders cost you a delivery fee and a parcel that comes back. This plugin asks every COD buyer to confirm on WhatsApp before you ship, and writes every answer into the WooCommerce order.</p>\n<p>It uses the official WhatsApp Cloud API with your own Meta app and your own WhatsApp Business phone number. There is no account to open with us and no service in between.</p>\n<h4>How it works</h4>\n<ol>\n<li>A buyer places an order with the &#8220;Cash on delivery&#8221; payment method. The plugin sends your approved WhatsApp &#8220;utility&#8221; template to the billing phone: reply 1 to confirm, 2 to cancel, 3 to change the address.</li>\n<li><strong>Reply 1:</strong> the order note says &#8220;Buyer confirmed&#8221;, and the buyer is asked for a delivery slot: A = morning, B = evening (in Arabic: أ / ب).</li>\n<li><strong>Reply A or B:</strong> the slot is saved on the order and the buyer gets a short confirmation.</li>\n<li><strong>Reply 2:</strong> the order is cancelled and the buyer is told.</li>\n<li><strong>Reply 3:</strong> the order is put on hold with the note &#8220;Call the buyer before shipping&#8221;, and you get an e-mail with the buyer&#8217;s number.</li>\n<li><strong>No reply:</strong> after 6 hours (you choose 1 to 72) exactly one reminder template is sent. If there is still no answer after the same delay again, the order note says so.</li>\n<li><strong>Change of mind:</strong> a buyer who confirmed and then replies 2 before the order is completed gets the order cancelled, and you get an e-mail saying &#8220;do not ship it&#8221;.</li>\n<li><strong>Anything else</strong> (free text, emoji, voice note, image, sticker): it is added to the order notes at once. The first message of an order is e-mailed to you straight away; later ones are grouped into at most one e-mail per order per hour. The buyer gets one short &#8220;please reply 1, 2 or 3&#8221; message per order, never more.</li>\n<li><strong>Every day</strong> you get one e-mail: confirmed, cancelled, no reply, address changes, morning and evening slots, and the buyer messages of the last 24 hours.</li>\n</ol>\n<h4>What the buyer can type</h4>\n<ul>\n<li>Western or Arabic-Indic digits: 1 or ١, 2 or ٢, 3 or ٣.</li>\n<li>Latin or Arabic letters for the slot: A or أ, B or ب, upper or lower case.</li>\n<li>Extra spaces, a trailing dot or &#8220;!&#8221; are fine: &#8221; 1. &#8221; counts as 1.</li>\n</ul>\n<h4>Languages</h4>\n<p>The follow-up messages to the buyer exist in Arabic, French and English. Arabic messages are right-to-left safe.</p>\n<h4>Built to be safe</h4>\n<ul>\n<li>Every webhook call is checked with your Meta app secret (X-Hub-Signature-256). Calls with a wrong signature are refused.</li>\n<li>Meta sometimes delivers the same message more than once. Each message is handled exactly once.</li>\n<li>The same answer sent twice (1 then 1, A then A) is ignored: no second message, no second note.</li>\n<li>Replies to an order that is cancelled, on address change, completed or refunded are ignored.</li>\n<li>The access token and the app secret are never shown back on the settings page.</li>\n<li>Works with the classic checkout and the block checkout, and with High-Performance Order Storage (HPOS).</li>\n</ul>\n<p>Every feature is free. There is no paid version, no limit and no upsell.</p>\n<h4>You use your own WhatsApp Business account</h4>\n<p>The plugin talks directly to the official WhatsApp Cloud API (Meta) with your own access token, phone number ID and app secret.<br />\nMeta may charge you for WhatsApp conversations according to its own pricing. The plugin does not send your data anywhere else.</p>\n<h4>External service</h4>\n<p>This plugin connects to the WhatsApp Cloud API (graph.facebook.com), a service by Meta Platforms, Inc.<br />\nIt sends the buyer&#8217;s phone number, first name, order number and order total when a COD order is placed, and the short follow-up messages after the buyer replies. It receives the buyer&#8217;s replies on the webhook URL shown on the settings page.<br />\nTerms: https://www.whatsapp.com/legal/business-terms<br />\nPrivacy policy: https://www.whatsapp.com/legal/privacy-policy</p>\n<p>This plugin is not made, endorsed or supported by Meta Platforms, Inc. WhatsApp is a trademark of its owner.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/takeed-cod-order-confirmation.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/takeed-cod-order-confirmation/assets/screenshot-1.png?rev=3786189",
+            "caption": "Settings page (WooCommerce → Takeed): your own Meta credentials, template names, reminder delay and language."
+        },
+        {
+            "src": "https://ps.w.org/takeed-cod-order-confirmation/assets/screenshot-2.png?rev=3786189",
+            "caption": "Order notes written by the plugin: confirmation sent, buyer confirmed, slot chosen, a forwarded buyer message."
+        },
+        {
+            "src": "https://ps.w.org/takeed-cod-order-confirmation/assets/screenshot-3.png?rev=3786189",
+            "caption": "A change of mind: the order is cancelled and the seller e-mail says \"do not ship it\"."
+        },
+        {
+            "src": "https://ps.w.org/takeed-cod-order-confirmation/assets/screenshot-4.png?rev=3786189",
+            "caption": "The daily summary e-mail: counts of the last 24 hours and the buyer messages."
+        }
+    ],
+    "tags": {
+        "cash-on-delivery": "cash on delivery",
+        "cod": "cod",
+        "delivery": "delivery",
+        "order-confirmation": "order confirmation",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/takeed-cod-order-confirmation.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/takeed-cod-order-confirmation.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/takeed-cod-order-confirmation/assets/banner-772x250.png?rev=3786189",
+        "high": "https://ps.w.org/takeed-cod-order-confirmation/assets/banner-1544x500.png?rev=3786189"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/takeed-cod-order-confirmation/assets/icon-128x128.png?rev=3786189",
+        "2x": "https://ps.w.org/takeed-cod-order-confirmation/assets/icon-256x256.png?rev=3786189"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

@@ -1,0 +1,172 @@
+{
+    "name": "Selectika AI Commerce",
+    "slug": "selectika",
+    "version": "1.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/selectika/\">Selectika AI</a>",
+    "author_profile": "https://profiles.wordpress.org/selectika/",
+    "contributors": {
+        "selectika": {
+            "profile": "https://profiles.wordpress.org/selectika/",
+            "avatar": "https://secure.gravatar.com/avatar/eda6fe3b5dc3d3661662b3bd8325424134e7cd5655c96d5d02f2f34bdfedbbb0?s=96&d=monsterid&r=g",
+            "display_name": "Selectika AI"
+        }
+    },
+    "requires": "6.3",
+    "tested": "7.1.4",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/selectika/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-05 14:59:00",
+    "added": "2026-11-05",
+    "homepage": "https://selectika.com/",
+    "sections": {
+        "description": "<p>Selectika AI Commerce connects a WordPress or WooCommerce store to your Selectika retailer account. Use it to publish complete product catalogs, place AI recommendation widgets on the storefront, and measure consented commerce activity — without sending customer contact details or payment data to Selectika.</p>\n<p>A Selectika account and retailer configuration are required for external features. Every new connection capability starts disabled until you opt in. Product enrichment, AI recommendations and search run in Selectika services outside WordPress.</p>\n<h4>What merchants get</h4>\n<ul>\n<li>Authenticated, read-only product feeds for simple and variable WooCommerce products.</li>\n<li>Complete paginated catalog generations; failed builds preserve the previous completed generation.</li>\n<li><code>[selectika]</code> shortcode, Selectika Carousel Gutenberg block and Elementor widget.</li>\n<li>Product, cart and checkout placement, including WooCommerce Cart and Checkout blocks.</li>\n<li>Consent-aware page, product, cart, checkout and purchase analytics.</li>\n<li>Optional signed server delivery for WooCommerce payment-complete, cancellation and refund events, with durable retries.</li>\n<li>Separate native WooCommerce REST connection for AI description approval and writeback through the Selectika dashboard.</li>\n</ul>\n<p>WordPress without WooCommerce supports widgets only. Multisite commerce connections are disabled. Bundles, subscriptions, grouped/external products, multilingual, multicurrency and fractional-quantity extensions are not certified by this release. Unsupported catalog product types fail the generation visibly instead of silently dropping products. Recognized WPML/Polylang, currency-switcher and dynamic-pricing integrations disable commerce capabilities and report the unsupported scope in connection diagnostics. Storefront widget placement remains available on ordinary single-site WordPress.</p>\n<h3>External services</h3>\n<p>This plugin uses Selectika, https://selectika.com/, to provide product recommendations, search, enrichment and commerce measurement. The following communication is optional and controlled by the connection switches and visitor consent:</p>\n<ul>\n<li>After visitor consent, the browser loads the Selectika widget loader and optional pixel from https://scripts.selectika.com/. The service necessarily receives normal network information such as the requesting IP address and browser headers. Widgets load components from https://statics.selectika.com/, retrieve retailer settings from https://retailers.selectika.com/, and request enabled recommendations/search features through https://ask.selectika.com/, https://search.selectika.com/ and https://srv.selectika.com/; their requests include retailer ID, product identity, selected action and relevant storefront context.</li>\n<li>When analytics is enabled and visitor consent is granted, native events include page/product/cart/checkout activity, product and variation identifiers, price, quantity, currency and an event ID. The existing Selectika pixel sends these events to https://data.selectika.com/v1/pixel/track and manages its own visitor/session identifiers. Plugin events do not include checkout addresses, payment details or customer names/emails. Pending native cart events are stored separately from the WooCommerce cart, keyed by a one-way session HMAC and connection generation; they expire after one hour and are pruned by native activity or scheduled cleanup.</li>\n<li>When catalog export is enabled, Selectika fetches the authenticated feed from this store. The feed contains published product descriptions, identifiers, variants, categories, attributes, images, prices, availability and links. No customer or order data is included in this feed.</li>\n<li>If server order delivery is enabled, consent recorded during checkout allows a signed order event to https://retailers.selectika.com/. Payloads contain the store/retailer identity, order/refund identifier, time, currency, totals and product lines. They exclude customer contact information, addresses and payment data. Failed deliveries remain in this site&#8217;s private database and retry. Delivered event bodies are removed after 90 days; deduplication markers remain until uninstall.</li>\n<li>Native AI description updates use WooCommerce&#8217;s own REST API. Selectika stores the credentials and applies the content approved in the Selectika dashboard. Drafts and the approval workflow are hosted by Selectika.</li>\n</ul>\n<p>Service privacy information: https://selectika.com/privacy-policy/#connected-stores<br />\nService terms: https://selectika.com/privacy-policy/#service-terms</p>\n<h3>Consent integration</h3>\n<p>No external widget or tracking script is loaded until consent is granted. Connect your consent manager by calling window.selectikaConsent(true) or window.selectikaConsent(false), or dispatch a selectika:consent event with detail { analytics: true/false }. Consent is stored in the first-party session cookie selectika_analytics_consent and is bound to the active connection generation. Reconnecting a different retailer requires fresh consent. When WordPress Consent API is present, the plugin uses the marketing category only when a consent manager has explicitly declared optin/optout behavior. An unconfigured Consent API does not imply consent.</p>\n<p>Withdrawing consent clears queued events and reloads the current page to unload already-executed service scripts. Cart contents are retained by WooCommerce. Server order events use the consent recorded on the order at checkout. When server order delivery is enabled, browser purchase commands from both the plugin and shared widgets are suppressed. Native WooCommerce owns add/remove cart conversions; widget attribution is retained under the separate selectika_widget_cart_attribution event instead of duplicating the conversion.</p>\n<h3>Retailer AI shopping (staging opt-in)</h3>\n<p>The AI shopping bridge is separate from existing catalog credentials. Configure server-only<br />\nSELECTIKA_AGENT_RETAILER, SELECTIKA_AGENT_MCP_ORIGIN and SELECTIKA_AGENT_TOKEN in wp-config.php.<br />\nThe token must be an explicit commerce credential scoped to this retailer with cart:handoff.<br />\nGET /selectika/commerce/review only shows confirmation; POST requires a Woo session nonce, consumes<br />\none ticket and validates native stock/price before adding to the current cart. No payment is taken.<br />\nPrice/tax settings and variant IDs must pass staging verification before handoffInstalled is enabled.</p>\n<p>For WordPress with or without WooCommerce, SELECTIKA_AGENT_DISCOVERY_ENABLED=true enables the<br />\nvirtual robots.txt link. After verifying real 404 responses, set SELECTIKA_AGENT_VERIFIED_MISSING_DOCUMENTS<br />\nto an array drawn from agents.md, llms.txt, llms-full.txt. Only those missing routes are served, late in<br />\ntemplate_redirect, as verified plain text from the configured retailer endpoint. Existing physical files<br />\nremain the web server&#8217;s responsibility and must be updated through the managed installation plan.<br />\nDisable these constants to roll back virtual routes; restore physical files only after checking hashes.</p>\n",
+        "installation": "<ol>\n<li>Upload the selectika directory, or install the supplied ZIP using Plugins &gt; Add New &gt; Upload Plugin.</li>\n<li>Activate Selectika AI Commerce. Activation alone does not contact Selectika.</li>\n<li>Open Settings &gt; Selectika connection. Enter the retailer ID supplied by Selectika, authorize the documented service and enable only the capabilities you need.</li>\n<li>Generate a read-only feed token and copy it into the protected Selectika integration settings. The plaintext token is shown once; WordPress retains its authentication hash; the one-time administrator display is encrypted and expires after one minute.</li>\n<li>Build the catalog snapshot. Monitor its completion and errors before enabling imports. Use a real system cron to run WordPress scheduled events on stores with low traffic.</li>\n<li>Configure visitor consent and, if needed, the analytics publisher ID. Widget placements remain editable under Settings &gt; Selectika.</li>\n<li>Description writeback requires a separate WooCommerce REST read/write key for a dedicated appropriately privileged user. Save that key in Selectika, never in shortcode attributes or frontend scripts. Selectika restricts its payload to the selected description field; the native key itself is not field-scoped.</li>\n<li>For the full connection, choose Full Selectika WooCommerce extension in the retailer&#8217;s Selectika settings. Save the canonical HTTPS store URL, native WooCommerce Consumer Key/Consumer Secret, and the WordPress-generated token under Plugin connection token. Use the matching publisher ID and catalog identity mapping. Then use Verify extension to authenticate the plugin and connect its completed feed. This action does not prove a native description write succeeded.</li>\n<li>Optional server order delivery requires one securely generated high-entropy secret of 32 to 256 characters. Enter exactly the same value in WordPress Order signing secret and Selectika Order event signing secret. In WordPress, set the HTTPS endpoint to https://retailers.selectika.com/integrations/woocommerce/{retailer}/events, replacing {retailer} with the URL-encoded retailer ID; enable signed delivery. In Selectika, enable Receive signed order events, save and verify the extension again. WordPress encrypts the signing secret using the site&#8217;s authentication salt. No secret or connection generation is automatically copied between systems.</li>\n<li>The plugin creates its site UUID and connection generation when the WordPress connection is saved. Verification reads these values; do not invent or manually copy a generation from another store. Ordinary no-change saves keep the generation. Changing retailer/site/identity or disconnecting rotates it and revokes credentials; generate a fresh plugin token, save the matching secrets, re-verify Selectika and obtain fresh visitor consent after such a change.</li>\n</ol>\n",
+        "faq": "\n<h4>\nCan I update descriptions without installing this plugin?\n</h4>\n<p>\n<p>Yes. Connect native WooCommerce REST credentials in Selectika. That connection does not change your existing catalog feed or storefront installation.</p>\n</p>\n<h4>\nWhich identifier should the catalog use?\n</h4>\n<p>\n<p>Keep the existing retailer mapping. The default is the product slug for compatibility; native product ID is available for new mappings. The feed separately includes immutable product/variation IDs and SKUs. Do not change an existing store&#8217;s identity without a matching Selectika migration.</p>\n</p>\n<h4>\nWhat happens if a feed build fails?\n</h4>\n<p>\n<p>The previous complete generation remains available until expiry. Errors appear in connection diagnostics. Corrupt or expired pages fail explicitly rather than returning an empty successful catalog.</p>\n</p>\n<h4>\nWhat happens when I deactivate or disconnect?\n</h4>\n<p>\n<p>Deactivation stops owned schedules and preserves settings. Disconnect revokes the feed token and signing secret and changes the connection generation. Merchant products and descriptions are never deleted. Uninstall removes owned settings, feed storage and outbox data.</p>\n</p>\n<h4>\nCan I use manual placement?\n</h4>\n<p>\n<p>Use [selectika action=&#8221;sbi&#8221; item=&#8221;product-slug&#8221;] or the existing block/Elementor widget. Components Only mode uses manual placements. Product Pages and Whole Site use the published Selectika placement configuration. Tracking is a separate capability.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.1</h4>\n<ul>\n<li>Publish WordPress.org directory branding, screenshots and public readme polish.</li>\n<li>Show the Selectika brand mark on connection and placement settings screens.</li>\n<li>Harden AI shopping discovery/commerce routes for WordPress coding standards.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Add the WooCommerce connection, private complete catalog generations and protected feed.</li>\n<li>Add consent-aware native cart events and signed order delivery with retries.</li>\n<li>Preserve existing placement identifiers and settings; consolidate renderer defaults.</li>\n<li>Add modern block metadata and explicit service/capability diagnostics.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial widget placement implementation.</li>\n</ul>\n"
+    },
+    "short_description": "AI product recommendations, catalog sync and consent-aware commerce analytics for WooCommerce — powered by Selectika.",
+    "description": "<p>Selectika AI Commerce connects a WordPress or WooCommerce store to your Selectika retailer account. Use it to publish complete product catalogs, place AI recommendation widgets on the storefront, and measure consented commerce activity — without sending customer contact details or payment data to Selectika.</p>\n<p>A Selectika account and retailer configuration are required for external features. Every new connection capability starts disabled until you opt in. Product enrichment, AI recommendations and search run in Selectika services outside WordPress.</p>\n<h4>What merchants get</h4>\n<ul>\n<li>Authenticated, read-only product feeds for simple and variable WooCommerce products.</li>\n<li>Complete paginated catalog generations; failed builds preserve the previous completed generation.</li>\n<li><code>[selectika]</code> shortcode, Selectika Carousel Gutenberg block and Elementor widget.</li>\n<li>Product, cart and checkout placement, including WooCommerce Cart and Checkout blocks.</li>\n<li>Consent-aware page, product, cart, checkout and purchase analytics.</li>\n<li>Optional signed server delivery for WooCommerce payment-complete, cancellation and refund events, with durable retries.</li>\n<li>Separate native WooCommerce REST connection for AI description approval and writeback through the Selectika dashboard.</li>\n</ul>\n<p>WordPress without WooCommerce supports widgets only. Multisite commerce connections are disabled. Bundles, subscriptions, grouped/external products, multilingual, multicurrency and fractional-quantity extensions are not certified by this release. Unsupported catalog product types fail the generation visibly instead of silently dropping products. Recognized WPML/Polylang, currency-switcher and dynamic-pricing integrations disable commerce capabilities and report the unsupported scope in connection diagnostics. Storefront widget placement remains available on ordinary single-site WordPress.</p>\n<h3>External services</h3>\n<p>This plugin uses Selectika, https://selectika.com/, to provide product recommendations, search, enrichment and commerce measurement. The following communication is optional and controlled by the connection switches and visitor consent:</p>\n<ul>\n<li>After visitor consent, the browser loads the Selectika widget loader and optional pixel from https://scripts.selectika.com/. The service necessarily receives normal network information such as the requesting IP address and browser headers. Widgets load components from https://statics.selectika.com/, retrieve retailer settings from https://retailers.selectika.com/, and request enabled recommendations/search features through https://ask.selectika.com/, https://search.selectika.com/ and https://srv.selectika.com/; their requests include retailer ID, product identity, selected action and relevant storefront context.</li>\n<li>When analytics is enabled and visitor consent is granted, native events include page/product/cart/checkout activity, product and variation identifiers, price, quantity, currency and an event ID. The existing Selectika pixel sends these events to https://data.selectika.com/v1/pixel/track and manages its own visitor/session identifiers. Plugin events do not include checkout addresses, payment details or customer names/emails. Pending native cart events are stored separately from the WooCommerce cart, keyed by a one-way session HMAC and connection generation; they expire after one hour and are pruned by native activity or scheduled cleanup.</li>\n<li>When catalog export is enabled, Selectika fetches the authenticated feed from this store. The feed contains published product descriptions, identifiers, variants, categories, attributes, images, prices, availability and links. No customer or order data is included in this feed.</li>\n<li>If server order delivery is enabled, consent recorded during checkout allows a signed order event to https://retailers.selectika.com/. Payloads contain the store/retailer identity, order/refund identifier, time, currency, totals and product lines. They exclude customer contact information, addresses and payment data. Failed deliveries remain in this site&#8217;s private database and retry. Delivered event bodies are removed after 90 days; deduplication markers remain until uninstall.</li>\n<li>Native AI description updates use WooCommerce&#8217;s own REST API. Selectika stores the credentials and applies the content approved in the Selectika dashboard. Drafts and the approval workflow are hosted by Selectika.</li>\n</ul>\n<p>Service privacy information: https://selectika.com/privacy-policy/#connected-stores<br />\nService terms: https://selectika.com/privacy-policy/#service-terms</p>\n<h3>Consent integration</h3>\n<p>No external widget or tracking script is loaded until consent is granted. Connect your consent manager by calling window.selectikaConsent(true) or window.selectikaConsent(false), or dispatch a selectika:consent event with detail { analytics: true/false }. Consent is stored in the first-party session cookie selectika_analytics_consent and is bound to the active connection generation. Reconnecting a different retailer requires fresh consent. When WordPress Consent API is present, the plugin uses the marketing category only when a consent manager has explicitly declared optin/optout behavior. An unconfigured Consent API does not imply consent.</p>\n<p>Withdrawing consent clears queued events and reloads the current page to unload already-executed service scripts. Cart contents are retained by WooCommerce. Server order events use the consent recorded on the order at checkout. When server order delivery is enabled, browser purchase commands from both the plugin and shared widgets are suppressed. Native WooCommerce owns add/remove cart conversions; widget attribution is retained under the separate selectika_widget_cart_attribution event instead of duplicating the conversion.</p>\n<h3>Retailer AI shopping (staging opt-in)</h3>\n<p>The AI shopping bridge is separate from existing catalog credentials. Configure server-only<br />\nSELECTIKA_AGENT_RETAILER, SELECTIKA_AGENT_MCP_ORIGIN and SELECTIKA_AGENT_TOKEN in wp-config.php.<br />\nThe token must be an explicit commerce credential scoped to this retailer with cart:handoff.<br />\nGET /selectika/commerce/review only shows confirmation; POST requires a Woo session nonce, consumes<br />\none ticket and validates native stock/price before adding to the current cart. No payment is taken.<br />\nPrice/tax settings and variant IDs must pass staging verification before handoffInstalled is enabled.</p>\n<p>For WordPress with or without WooCommerce, SELECTIKA_AGENT_DISCOVERY_ENABLED=true enables the<br />\nvirtual robots.txt link. After verifying real 404 responses, set SELECTIKA_AGENT_VERIFIED_MISSING_DOCUMENTS<br />\nto an array drawn from agents.md, llms.txt, llms-full.txt. Only those missing routes are served, late in<br />\ntemplate_redirect, as verified plain text from the configured retailer endpoint. Existing physical files<br />\nremain the web server&#8217;s responsibility and must be updated through the managed installation plan.<br />\nDisable these constants to roll back virtual routes; restore physical files only after checking hashes.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/selectika.1.1.0.zip",
+    "upgrade_notice": {
+        "1.1.1": "<p>Directory branding and coding-standards hardening only. Existing connection settings are preserved.</p>",
+        "1.1.0": "<p>Existing placement settings are preserved. Review and explicitly enable the new connection capabilities before external services run. Keep the existing catalog identity mapping.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/selectika/assets/screenshot-1.png?rev=3786249",
+            "caption": "Connection settings with the Selectika brand mark: authorize the service and enable catalog, widgets and analytics."
+        },
+        {
+            "src": "https://ps.w.org/selectika/assets/screenshot-2.png?rev=3786249",
+            "caption": "Widget placement settings for shortcodes, the Gutenberg block and auto-inject modes."
+        },
+        {
+            "src": "https://ps.w.org/selectika/assets/screenshot-3.png?rev=3786249",
+            "caption": "Storefront recommendation carousel after visitor consent."
+        },
+        {
+            "src": "https://ps.w.org/selectika/assets/screenshot-4.png?rev=3786249",
+            "caption": "Native WooCommerce cart with Selectika commerce context."
+        },
+        {
+            "src": "https://ps.w.org/selectika/assets/screenshot-5.png?rev=3786249",
+            "caption": "Selectika shortcode and block inside the Gutenberg editor."
+        }
+    ],
+    "tags": {
+        "ai": "AI",
+        "analytics": "analytics",
+        "catalog": "catalog",
+        "recommendations": "recommendations",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.1.0",
+    "versions": {
+        "1.1.1": "https://downloads.wordpress.org/plugin/selectika.1.1.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/selectika.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/selectika/assets/banner-772x250.png?rev=3786249",
+        "high": "https://ps.w.org/selectika/assets/banner-1544x500.png?rev=3786249"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/selectika/assets/icon.svg?rev=3786249",
+        "svg": "https://ps.w.org/selectika/assets/icon.svg?rev=3786249"
+    },
+    "blocks": {
+        "selectika/widget": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "selectika/widget",
+            "version": "1.1.1",
+            "title": "Selectika Carousel",
+            "category": "widgets",
+            "icon": "megaphone",
+            "description": "Display a Selectika AI product carousel (Shop Similar, Complete the Look, etc.)",
+            "keywords": [
+                "selectika",
+                "ai",
+                "recommendations",
+                "carousel",
+                "woocommerce"
+            ],
+            "textdomain": "selectika",
+            "attributes": {
+                "action": {
+                    "type": "string",
+                    "default": ""
+                },
+                "item": {
+                    "type": "string",
+                    "default": ""
+                },
+                "retailer": {
+                    "type": "string",
+                    "default": ""
+                },
+                "lang": {
+                    "type": "string",
+                    "default": ""
+                },
+                "carousel_view_type": {
+                    "type": "string",
+                    "default": "Carousel"
+                },
+                "item_count": {
+                    "type": "number",
+                    "default": 10
+                },
+                "title_text": {
+                    "type": "string",
+                    "default": ""
+                },
+                "custom_css": {
+                    "type": "string",
+                    "default": ""
+                },
+                "mtop": {
+                    "type": "string",
+                    "default": "0"
+                },
+                "mbottom": {
+                    "type": "string",
+                    "default": "80px"
+                }
+            },
+            "supports": {
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ]
+            },
+            "editorScript": "file:./index.js",
+            "editorStyle": "file:./editor.css"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
