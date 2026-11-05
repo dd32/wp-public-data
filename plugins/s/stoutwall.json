@@ -1,0 +1,85 @@
+{
+    "name": "Stoutwall",
+    "slug": "stoutwall",
+    "version": "1.2.0",
+    "author": "<a href=\"https://profiles.wordpress.org/felipepitol/\">felipepitol</a>",
+    "author_profile": "https://profiles.wordpress.org/felipepitol/",
+    "contributors": {
+        "felipepitol": {
+            "profile": "https://profiles.wordpress.org/felipepitol/",
+            "avatar": "https://secure.gravatar.com/avatar/150ce29961f702921620adac7e4f2ec3775e6f6bc5945fe6ce8cd18ef9a10adf?s=96&d=monsterid&r=g",
+            "display_name": "felipepitol"
+        }
+    },
+    "requires": "5.5",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/stoutwall/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-05 22:29:00",
+    "added": "2026-11-05",
+    "homepage": "https://github.com/felipepitol/protectmywordpress",
+    "sections": {
+        "description": "<p>Stoutwall applies a set of well-known hardening measures that most sites should have, each behind its own switch. There is no firewall, no scanner and no account to create: it changes how WordPress behaves, and you can see and undo every change.</p>\n<p><strong>What it can do</strong></p>\n<ul>\n<li><strong>Prevent code execution in uploads</strong> – adds rules to <code>wp-content/uploads/.htaccess</code> that block PHP files, including <code>.phtml</code>, <code>.php5</code>, <code>.phar</code> and double extensions such as <code>image.php.jpg</code>. Rules from other plugins in the same file are kept.</li>\n<li><strong>Disable XML-RPC</strong> – turns off every XML-RPC method, including <code>pingback.ping</code>, which is often abused for DDoS amplification, and removes the <code>X-Pingback</code> header.</li>\n<li><strong>Prevent user enumeration</strong> – stops <code>?author=N</code> lookups and hides usernames from the REST API for visitors, the users sitemap and oEmbed responses. Authors and editors keep the author list in the block editor.</li>\n<li><strong>Generic login errors</strong> – the login form no longer tells attackers whether a username exists. Registration errors are still shown.</li>\n<li><strong>Disable file editors</strong> – removes the theme and plugin file editors from the dashboard.</li>\n<li><strong>Disable registration</strong> – keeps &#8220;Anyone can register&#8221; off.</li>\n<li><strong>Block the &#8220;admin&#8221; username</strong> for new registrations.</li>\n<li><strong>Hide username as display name</strong> – users cannot save a profile whose public display name is their login.</li>\n<li><strong>Hide the WordPress version</strong> from the page head and feeds.</li>\n<li><strong>Remove the X-Powered-By header</strong> that reveals the PHP version.</li>\n<li><strong>Disable directory browsing</strong> in the uploads folder.</li>\n</ul>\n<p>A <strong>Check Module Status</strong> button on the settings page confirms that each measure is really in effect on your server, for example that the <code>.htaccess</code> rules are present, not only that the switch is on.</p>\n<p><strong>Privacy</strong></p>\n<p>Stoutwall does not collect data, does not send anything to external servers and does not add cookies.</p>\n",
+        "installation": "<ol>\n<li>Install Stoutwall from <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New</strong>, or upload the <code>stoutwall</code> folder to <code>/wp-content/plugins/</code>.</li>\n<li>Activate the plugin. All measures start enabled.</li>\n<li>Go to <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Stoutwall</strong> to turn individual measures off, then click <strong>Check Module Status</strong>.</li>\n</ol>\n",
+        "faq": "\n<h4>\nDoes it work on Nginx?\n</h4>\n<p>\n<p>Most measures work on any server. Blocking PHP in uploads and disabling directory browsing rely on <code>.htaccess</code>, which Apache and LiteSpeed read but Nginx ignores. On Nginx, add an equivalent rule to your server configuration, for example:</p>\n<pre><code>location ~* /wp-content/uploads/.*\\.(php[0-9]?|pht|phtml|phar|phps)$ { deny all; }\n</code></pre>\n</p>\n<h4>\nWill it break my site?\n</h4>\n<p>\n<p>Each measure can be turned off on its own. Things to know before enabling them:</p>\n<ul>\n<li>Disabling XML-RPC stops the Jetpack connection and the legacy WordPress mobile apps.</li>\n<li>Disabling registration overrides the &#8220;Anyone can register&#8221; setting.</li>\n<li>Blocking PHP in uploads affects any plugin that executes PHP files stored in the uploads folder, which is rare and usually a red flag.</li>\n</ul>\n</p>\n<h4>\nWhat happens when I deactivate or delete the plugin?\n</h4>\n<p>\n<p>Deactivating removes the plugin&#8217;s rules from the uploads <code>.htaccess</code> (other rules stay) and every other measure stops applying. Deleting the plugin also removes its settings.</p>\n</p>\n<h4>\nI used ProtectMyWordPress from GitHub. How do I move to Stoutwall?\n</h4>\n<p>\n<p>Install and activate Stoutwall. It imports your ProtectMyWordPress settings and replaces its <code>.htaccess</code> rules. Then deactivate and delete ProtectMyWordPress.</p>\n</p>\n\n",
+        "changelog": "<h4>1.2.0</h4>\n<ul>\n<li>Renamed to Stoutwall for the WordPress.org Plugin Directory. Settings and <code>.htaccess</code> rules from ProtectMyWordPress are migrated on activation.</li>\n<li>Uploads: rules are written in their own block even when <code>uploads/.htaccess</code> already exists. Before, an existing file meant no rules were added while the status still reported OK.</li>\n<li>Uploads: rules work on Apache 2.2 and 2.4 and also cover <code>.phtml</code>, <code>.php5</code>, <code>.phar</code> and double extensions. They are removed on deactivation.</li>\n<li>XML-RPC: pingbacks are now disabled too, and the <code>X-Pingback</code> header is removed.</li>\n<li>User enumeration: also covers the users sitemap, oEmbed, POST requests and lists such as <code>?author=1,2</code>. The posts list filter in the dashboard and the block editor author list work again.</li>\n<li>Generic login errors no longer hide registration errors.</li>\n<li>&#8220;Hide username as display name&#8221; now checks profile updates. Before, it read a field that the registration form does not have, so it never applied.</li>\n<li>The status check reports the state of each measure, translated, with clear labels.</li>\n<li>All strings are in English and ready for translation.</li>\n</ul>\n<h4>1.1</h4>\n<ul>\n<li>Fixed the settings form, the AJAX nonce and an XSS issue in notifications.</li>\n<li>Options are sanitized on save and assets load only on the settings page.</li>\n</ul>\n<h4>1.0</h4>\n<ul>\n<li>First release, as ProtectMyWordPress.</li>\n</ul>\n"
+    },
+    "short_description": "Common security hardening with simple switches: block PHP in uploads, disable XML-RPC, stop user enumeration, hide the version and more.",
+    "description": "<p>Stoutwall applies a set of well-known hardening measures that most sites should have, each behind its own switch. There is no firewall, no scanner and no account to create: it changes how WordPress behaves, and you can see and undo every change.</p>\n<p><strong>What it can do</strong></p>\n<ul>\n<li><strong>Prevent code execution in uploads</strong> – adds rules to <code>wp-content/uploads/.htaccess</code> that block PHP files, including <code>.phtml</code>, <code>.php5</code>, <code>.phar</code> and double extensions such as <code>image.php.jpg</code>. Rules from other plugins in the same file are kept.</li>\n<li><strong>Disable XML-RPC</strong> – turns off every XML-RPC method, including <code>pingback.ping</code>, which is often abused for DDoS amplification, and removes the <code>X-Pingback</code> header.</li>\n<li><strong>Prevent user enumeration</strong> – stops <code>?author=N</code> lookups and hides usernames from the REST API for visitors, the users sitemap and oEmbed responses. Authors and editors keep the author list in the block editor.</li>\n<li><strong>Generic login errors</strong> – the login form no longer tells attackers whether a username exists. Registration errors are still shown.</li>\n<li><strong>Disable file editors</strong> – removes the theme and plugin file editors from the dashboard.</li>\n<li><strong>Disable registration</strong> – keeps &#8220;Anyone can register&#8221; off.</li>\n<li><strong>Block the &#8220;admin&#8221; username</strong> for new registrations.</li>\n<li><strong>Hide username as display name</strong> – users cannot save a profile whose public display name is their login.</li>\n<li><strong>Hide the WordPress version</strong> from the page head and feeds.</li>\n<li><strong>Remove the X-Powered-By header</strong> that reveals the PHP version.</li>\n<li><strong>Disable directory browsing</strong> in the uploads folder.</li>\n</ul>\n<p>A <strong>Check Module Status</strong> button on the settings page confirms that each measure is really in effect on your server, for example that the <code>.htaccess</code> rules are present, not only that the switch is on.</p>\n<p><strong>Privacy</strong></p>\n<p>Stoutwall does not collect data, does not send anything to external servers and does not add cookies.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/stoutwall.1.2.0.zip",
+    "upgrade_notice": {
+        "1.2.0": "<p>Fixes uploads protection on sites that already had an .htaccess file in uploads, and fully disables XML-RPC pingbacks. Recommended for all users.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/stoutwall/assets/screenshot-1.png?rev=3786840",
+            "caption": "Protections grouped by area, with a meter that shows how many are on."
+        },
+        {
+            "src": "https://ps.w.org/stoutwall/assets/screenshot-2.png?rev=3786840",
+            "caption": "The status check shows whether each protection is working."
+        }
+    ],
+    "tags": {
+        "hardening": "hardening",
+        "security": "security",
+        "uploads": "uploads",
+        "user-enumeration": "user enumeration",
+        "xml-rpc": "xml-rpc"
+    },
+    "stable_tag": "1.2.0",
+    "versions": {
+        "1.2.0": "https://downloads.wordpress.org/plugin/stoutwall.1.2.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/stoutwall.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/stoutwall.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
