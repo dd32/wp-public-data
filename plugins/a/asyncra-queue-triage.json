@@ -1,0 +1,95 @@
+{
+    "name": "Asyncra Queue Triage for Action Scheduler",
+    "slug": "asyncra-queue-triage",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/hamzaahmadaslam/\">hamzaahmadaslam</a>",
+    "author_profile": "https://profiles.wordpress.org/hamzaahmadaslam/",
+    "contributors": {
+        "hamzaahmadaslam": {
+            "profile": "https://profiles.wordpress.org/hamzaahmadaslam/",
+            "avatar": "https://secure.gravatar.com/avatar/f6104f2be6804c86dc6e8dd1d40ef161c89502a39c4489c32927ef2348eb2784?s=96&d=monsterid&r=g",
+            "display_name": "hamzaahmadaslam"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/asyncra-queue-triage/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-06 17:20:00",
+    "added": "2026-11-06",
+    "homepage": "https://github.com/hamzaahmadaslam/asyncra-queue-triage",
+    "sections": {
+        "description": "<p>Action Scheduler is the background job queue inside WooCommerce and many other plugins. When it goes wrong, its own screen lists the actions one row at a time, and the notice &#8220;past-due actions found; something may be wrong&#8221; does not say what is wrong.</p>\n<p>Asyncra Queue Triage adds one screen under <strong>Tools &gt; Queue Triage</strong> that answers the questions a store owner or a developer asks first:</p>\n<ul>\n<li><strong>Why are actions failing?</strong> The newest failed actions (500 by default) are grouped by hook and by their error, with ids, dates, amounts, quoted values, email addresses and server paths taken out. 800 failures that differ only in an order number read as one group.</li>\n<li><strong>What should I do about each group?</strong> Each group gets a label from fixed rules: <em>Fix first</em> (a missing callback, a PHP error, rejected credentials, a deleted record), <em>Retry candidate, check first</em> (timeouts, rate limits, remote server errors) or <em>Review</em>. Each label comes with what the error usually means and what to check next.</li>\n<li><strong>Is the queue running?</strong> Past-due actions, how late the oldest one is, and the ten hooks with the most. Whether WP-Cron is disabled, when the queue&#8217;s cron event is due, and when anything last ran.</li>\n<li><strong>Is anything stuck?</strong> Actions in progress for more than five minutes, and claims left behind by a run that stopped part-way.</li>\n<li><strong>Are the tables growing?</strong> Rows and size of each Action Scheduler table, the retention periods in effect on this site, and whether cleanup keeps up with them.</li>\n<li><strong>Which copy of Action Scheduler is running?</strong> The version in use, the plugin it comes from, and every copy other plugins bundle.</li>\n</ul>\n<p>It also adds two Site Health tests (is the queue running on time, are actions failing), a section in Site Health Info, a report you can paste into a support ticket, and a WP-CLI command.</p>\n<h4>What it never does</h4>\n<ul>\n<li>It never runs, retries, cancels, edits or deletes an action, and it never writes to the database. It has no settings and stores nothing.</li>\n<li>It makes no external requests and collects no data. Nothing leaves your site.</li>\n<li>It has no upsell, no ads and no notices outside its own screen.</li>\n</ul>\n<h4>Why &#8220;retry candidate&#8221; and not &#8220;safe to retry&#8221;</h4>\n<p>The rules read the error text and the hook name, nothing else. They cannot see whether a payment went through before a timeout, or whether a remote service already received a request. So no group is ever called safe, and hooks whose names suggest payments, renewals, refunds, receipts, emails or webhooks never get the retry label at all.</p>\n<h4>Works with</h4>\n<p>Anything that uses Action Scheduler with its own database tables, such as WooCommerce, the Action Scheduler plugin and the many plugins that bundle it. Tested with Action Scheduler 3.9.2, 4.1.0 (inside WooCommerce 11.2.1) and 4.2.0. If no active plugin loads Action Scheduler, the screen still reads the tables that remain and says so.</p>\n<h4>WP-CLI</h4>\n<pre><code>wp queue-triage report prints the support report. `--format=groups` prints the failure groups as a table, `--format=json` prints everything, and `--sample=2000` reads more failed actions.\n</code></pre>\n<h4>Source code</h4>\n<p>Development happens on GitHub: <a href=\"https://github.com/hamzaahmadaslam/asyncra-queue-triage\" rel=\"nofollow ugc\">hamzaahmadaslam/asyncra-queue-triage</a>. Issues and pull requests are welcome there.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin from Plugins &gt; Add New, or upload the zip.</li>\n<li>Open Tools &gt; Queue Triage.</li>\n</ol>\n<p>There is nothing to set up. Administrators (the manage_options capability) can see the screen.</p>\n",
+        "faq": "\n<h4>\nDoes it slow down my site?\n</h4>\n<p>\n<p>No. It does nothing on the front end. The screen, the Site Health tests and the WP-CLI command run a fixed set of read queries when you open them, each limited or using Action Scheduler&#8217;s indexes.</p>\n</p>\n<h4>\nCan it retry the failed actions for me?\n</h4>\n<p>\n<p>No, on purpose. Action Scheduler does not run a failed action again; running the work again means scheduling a new action with the same hook and arguments. Whether that is safe depends on what the callback does, which only you or the plugin&#8217;s developer can judge. Fix the cause first, then use the tools of the plugin that owns the hook.</p>\n</p>\n<h4>\nWhat is a &#8220;past-due&#8221; action?\n</h4>\n<p>\n<p>A pending action whose scheduled time has passed. A few minutes late is normal between two runs of the queue. Hours or days late means nothing is running the queue, or it cannot keep up.</p>\n</p>\n<h4>\nWP-Cron is disabled on my site. Is that a problem?\n</h4>\n<p>\n<p>Not by itself. Many hosts disable WP-Cron and run it from a server cron job or WP-CLI. Queue Triage shows when anything last ran, so you can see whether something else is doing the job.</p>\n</p>\n<h4>\nWhat is in the support report?\n</h4>\n<p>\n<p>Versions, counts, settings, the past-due hooks, and the failure groups as hook names and error signatures. It leaves out action arguments, action ids, group names, email addresses, IP addresses, URL query strings and server paths. Read it before you share it: a hook name or an error message can still say something about your site.</p>\n</p>\n<h4>\nWho can see the screen?\n</h4>\n<p>\n<p>Users with the manage_options capability. Developers can change it with the <code>queue_triage_capability</code> filter. The <code>queue_triage_failed_sample</code> filter changes how many failed actions are read (500 by default, at most 5000).</p>\n</p>\n<h4>\nMy site is not in English.\n</h4>\n<p>\n<p>The screen can be translated. Action Scheduler&#8217;s own log lines are read in English; on a site in another language the last log line is used as the error, so grouping still works but some causes may show as &#8220;Review&#8221;.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "See why Action Scheduler jobs fail or stall: failures grouped by hook and error, past-due actions, stuck runs and table sizes. Read-only.",
+    "description": "<p>Action Scheduler is the background job queue inside WooCommerce and many other plugins. When it goes wrong, its own screen lists the actions one row at a time, and the notice &#8220;past-due actions found; something may be wrong&#8221; does not say what is wrong.</p>\n<p>Asyncra Queue Triage adds one screen under <strong>Tools &gt; Queue Triage</strong> that answers the questions a store owner or a developer asks first:</p>\n<ul>\n<li><strong>Why are actions failing?</strong> The newest failed actions (500 by default) are grouped by hook and by their error, with ids, dates, amounts, quoted values, email addresses and server paths taken out. 800 failures that differ only in an order number read as one group.</li>\n<li><strong>What should I do about each group?</strong> Each group gets a label from fixed rules: <em>Fix first</em> (a missing callback, a PHP error, rejected credentials, a deleted record), <em>Retry candidate, check first</em> (timeouts, rate limits, remote server errors) or <em>Review</em>. Each label comes with what the error usually means and what to check next.</li>\n<li><strong>Is the queue running?</strong> Past-due actions, how late the oldest one is, and the ten hooks with the most. Whether WP-Cron is disabled, when the queue&#8217;s cron event is due, and when anything last ran.</li>\n<li><strong>Is anything stuck?</strong> Actions in progress for more than five minutes, and claims left behind by a run that stopped part-way.</li>\n<li><strong>Are the tables growing?</strong> Rows and size of each Action Scheduler table, the retention periods in effect on this site, and whether cleanup keeps up with them.</li>\n<li><strong>Which copy of Action Scheduler is running?</strong> The version in use, the plugin it comes from, and every copy other plugins bundle.</li>\n</ul>\n<p>It also adds two Site Health tests (is the queue running on time, are actions failing), a section in Site Health Info, a report you can paste into a support ticket, and a WP-CLI command.</p>\n<h4>What it never does</h4>\n<ul>\n<li>It never runs, retries, cancels, edits or deletes an action, and it never writes to the database. It has no settings and stores nothing.</li>\n<li>It makes no external requests and collects no data. Nothing leaves your site.</li>\n<li>It has no upsell, no ads and no notices outside its own screen.</li>\n</ul>\n<h4>Why &#8220;retry candidate&#8221; and not &#8220;safe to retry&#8221;</h4>\n<p>The rules read the error text and the hook name, nothing else. They cannot see whether a payment went through before a timeout, or whether a remote service already received a request. So no group is ever called safe, and hooks whose names suggest payments, renewals, refunds, receipts, emails or webhooks never get the retry label at all.</p>\n<h4>Works with</h4>\n<p>Anything that uses Action Scheduler with its own database tables, such as WooCommerce, the Action Scheduler plugin and the many plugins that bundle it. Tested with Action Scheduler 3.9.2, 4.1.0 (inside WooCommerce 11.2.1) and 4.2.0. If no active plugin loads Action Scheduler, the screen still reads the tables that remain and says so.</p>\n<h4>WP-CLI</h4>\n<pre><code>wp queue-triage report prints the support report. `--format=groups` prints the failure groups as a table, `--format=json` prints everything, and `--sample=2000` reads more failed actions.\n</code></pre>\n<h4>Source code</h4>\n<p>Development happens on GitHub: <a href=\"https://github.com/hamzaahmadaslam/asyncra-queue-triage\" rel=\"nofollow ugc\">hamzaahmadaslam/asyncra-queue-triage</a>. Issues and pull requests are welcome there.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/asyncra-queue-triage.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/asyncra-queue-triage/assets/screenshot-1.png?rev=3788513",
+            "caption": "The checks at the top and the failed actions grouped by hook and error, each with a label and what to check next."
+        },
+        {
+            "src": "https://ps.w.org/asyncra-queue-triage/assets/screenshot-2.png?rev=3788513",
+            "caption": "Past-due actions by hook, the queue counts and the runner."
+        },
+        {
+            "src": "https://ps.w.org/asyncra-queue-triage/assets/screenshot-3.png?rev=3788513",
+            "caption": "Table sizes, retention in effect, the Action Scheduler copies on the site, and the report for a support ticket."
+        },
+        {
+            "src": "https://ps.w.org/asyncra-queue-triage/assets/screenshot-4.png?rev=3788513",
+            "caption": "The two Site Health tests."
+        }
+    ],
+    "tags": {
+        "action-scheduler": "action scheduler",
+        "scheduled-actions": "scheduled actions",
+        "site-health": "site health",
+        "woocommerce": "woocommerce",
+        "wp-cron": "wp cron"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/asyncra-queue-triage.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/asyncra-queue-triage.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/asyncra-queue-triage/assets/banner-772x250.png?rev=3788513",
+        "high": "https://ps.w.org/asyncra-queue-triage/assets/banner-1544x500.png?rev=3788513"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/asyncra-queue-triage/assets/icon.svg?rev=3788513",
+        "svg": "https://ps.w.org/asyncra-queue-triage/assets/icon.svg?rev=3788513"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
