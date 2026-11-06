@@ -1,0 +1,100 @@
+{
+    "name": "Civipass",
+    "slug": "civipass",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/jbosnakis/\">Perforks</a>",
+    "author_profile": "https://profiles.wordpress.org/jbosnakis/",
+    "contributors": {
+        "jbosnakis": {
+            "profile": "https://profiles.wordpress.org/jbosnakis/",
+            "avatar": "https://secure.gravatar.com/avatar/78a5b34a1ae685ff0a23597762b8e10a3b45f2f70ae01847557adf39d62e2c1c?s=96&d=monsterid&r=g",
+            "display_name": "Perforks"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/civipass/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-06 10:19:00",
+    "added": "2026-11-06",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Civipass connects a WordPress site to the official user authentication service (OAuth 2.0) of the Greek General Secretariat for Information Systems (GSIS). People sign in with their TaxisNet credentials on the GSIS pages — the site never sees them — and come back signed in to an account linked to their tax number.</p>\n<p>The GSIS offers this service to public sector bodies (ministries, municipalities, regions, universities, legal entities of public law, chambers and other bodies of the wider public sector). Each body applies through the Interoperability Centre&#8217;s request application (EDA) and receives its own credentials. Civipass shows the exact return address to declare in that request.</p>\n<p><strong>Features</strong></p>\n<ul>\n<li>&#8220;Sign in with TaxisNet&#8221; button on the login screen, as a shortcode (<code>[civipass_login]</code>) and as a block.</li>\n<li>Pilot (test.gsis.gr) and production (oauth2.gsis.gr) environments, each with its own credentials, and a button that checks them.</li>\n<li>Accounts are recognised by tax number. New accounts can be created on first sign-in (off by default), always with a role that cannot manage the site.</li>\n<li>People link their existing account from their profile. The tax number and names of a linked account are never edited by hand: they come from the GSIS at every sign-in, and the person can fetch them again with &#8220;Update details from TaxisNet&#8221; on their profile or with the <code>[civipass_refresh]</code> shortcode. Only staff who edit the account can unlink it.</li>\n<li>The GSIS does not give an e-mail address: new people enter one and confirm it by e-mail before it is saved.</li>\n<li>Signing out of the site also signs out of the GSIS, so a shared computer cannot reuse the session.</li>\n<li><code>[civipass_field name=\"fullname\"]</code> shows the signed-in person their own details (afm_masked, firstname, lastname, fullname…).</li>\n<li>Administrators see each linked account&#8217;s tax number in the users list and can find an account by typing the 9-digit number in the search box; everyone else sees it masked.</li>\n<li>Bodies that the GSIS has granted the one-time-code variant of the service (oAuth2.0-OTP) enter its credentials and get a second button.</li>\n<li>Personal data export and erasure, and suggested privacy policy text.</li>\n</ul>\n<p><strong>Security</strong></p>\n<p>Civipass creates and signs in accounts on behalf of an outside identity provider, so it is built to be strict by default:</p>\n<ul>\n<li>Nothing reaches the GSIS until a person presses the button. The TaxisNet password is typed only on the GSIS pages; the site never sees or stores it.</li>\n<li>Every sign-in carries a random, one-time <code>state</code> that is tied to the browser that started it (cookie) and expires after ten minutes, so a callback cannot be replayed, forged or forced on someone else.</li>\n<li>The one-time code is exchanged for the person&#8217;s details server to server, with certificate checks on, no redirects, a short timeout and a size limit. The answer is read with external entities and network access turned off.</li>\n<li>Accounts that can manage the site (administrators, editors and anyone with similar capabilities, also on multisite) cannot sign in with TaxisNet unless an administrator turns that on explicitly; they keep their password. New accounts never get such a role.</li>\n<li>The tax number and the GSIS client secrets are stored encrypted (libsodium). The key can be moved to wp-config.php, so a copy of the database alone reveals nothing. A keyed hash is used to find an account by tax number.</li>\n<li>User names are random, so the tax number never appears in author archives or other public addresses. Names that came from the GSIS cannot be changed by hand, through the profile screen, the REST API or <code>wp_update_user()</code>.</li>\n<li>Sign-in attempts and callbacks are rate-limited per address (per /64 for IPv6).</li>\n<li>Every form and action checks a nonce and the user&#8217;s capabilities, and every value is sanitised on input and escaped on output.</li>\n<li>A test server can only be used on sites marked as local, development or staging (<code>WP_ENVIRONMENT_TYPE</code>), so a forgotten setting can never send a live site&#8217;s sign-ins elsewhere.</li>\n</ul>\n<p><strong>Civipass Pro</strong>, sold separately, adds features that bodies need in production, such as sign-in for public administration employees and a sign-in log.</p>\n<h3>External services</h3>\n<p>This plugin connects to the user authentication service (OAuth 2.0) of the General Secretariat for Information Systems (GSIS) of the Ministry of Digital Governance, Greece. Nothing is sent before a person presses a &#8220;Sign in with TaxisNet&#8221; button or an administrator presses &#8220;Test the connection&#8221;.</p>\n<ul>\n<li>When a person signs in, their browser is sent to <code>https://test.gsis.gr/oauth2server/</code> (pilot) or <code>https://oauth2.gsis.gr/oauth2server/</code> (production) with the site&#8217;s client ID and return address (the oAuth2.0-OTP service uses the same addresses with its own client ID). After they sign in and consent there, the site sends the GSIS the one-time code, its client ID and secret, and receives the person&#8217;s tax number, first name, last name, father&#8217;s name, mother&#8217;s name and year of birth.</li>\n<li>When a person who signed in this way signs out, their browser is sent to the GSIS sign-out page of the same environment.</li>\n<li>&#8220;Test the connection&#8221; sends the client ID and secret with a made-up code to the token address above.</li>\n</ul>\n<p>GSIS: https://www.gsis.gr/ — service description and terms: https://www.gsis.gr/dimosia-dioikisi/ked/webservices/oauth20</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin.</li>\n<li>Go to Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Civipass and copy the return address.</li>\n<li>Submit an OAuth2 Service request in the EDA (https://www.gsis.gr/dimosia-dioikisi/ked/EDA) with that address for the pilot and for production.</li>\n<li>When the request is approved, set a password for the pilot in the EDA and enter the EDA username and that password in Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Civipass. Press &#8220;Test the connection&#8221;.</li>\n<li>Test the sign-in on the pilot; after the GSIS starts production, enter the production credentials and switch the environment to Production.</li>\n</ol>\n<p>For stronger protection, copy the <code>CIVIPASS_KEY</code> line shown in Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Civipass into wp-config.php.</p>\n",
+        "faq": "\n<h4>\nCan a private company use it?\n</h4>\n<p>\n<p>No. The GSIS gives this service only to bodies of the public and wider public sector. The plugin works only with credentials that the GSIS issued to your body.</p>\n</p>\n<h4>\nDoes the site see the TaxisNet password?\n</h4>\n<p>\n<p>No. People type it only on the GSIS pages.</p>\n</p>\n<h4>\nWhich details does the site receive?\n</h4>\n<p>\n<p>Tax number, first and last name, and for natural persons father&#8217;s name, mother&#8217;s name and year of birth. Civipass keeps the tax number (encrypted) and the first and last name; the rest only if you turn that on.</p>\n</p>\n<h4>\nCan someone take over an administrator account with TaxisNet?\n</h4>\n<p>\n<p>No. Accounts that can manage the site cannot sign in with TaxisNet unless an administrator turns that on, and a tax number can be linked to one account only.</p>\n</p>\n<h4>\nDoes our body have to log the sign-ins?\n</h4>\n<p>\n<p>Yes. The ministerial decisions that grant the oAuth2.0 service (for example ΥΑ 36695/2026, Β΄ 6269, article 2) oblige every body to take and keep appropriate technical and organisational security measures, and as a minimum to record and monitor access and ensure traceability. They also allow the received details to be used only for the purpose stated in the decision.</p>\n<p>Civipass itself does not keep a log of sign-ins: the body has to cover this obligation another way, for example with an activity-log plugin or the server&#8217;s access logs.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>First version.</li>\n</ul>\n"
+    },
+    "short_description": "Sign in with TaxisNet on the websites of Greek public bodies, and link each account to its tax number (ΑΦΜ).",
+    "description": "<p>Civipass connects a WordPress site to the official user authentication service (OAuth 2.0) of the Greek General Secretariat for Information Systems (GSIS). People sign in with their TaxisNet credentials on the GSIS pages — the site never sees them — and come back signed in to an account linked to their tax number.</p>\n<p>The GSIS offers this service to public sector bodies (ministries, municipalities, regions, universities, legal entities of public law, chambers and other bodies of the wider public sector). Each body applies through the Interoperability Centre&#8217;s request application (EDA) and receives its own credentials. Civipass shows the exact return address to declare in that request.</p>\n<p><strong>Features</strong></p>\n<ul>\n<li>&#8220;Sign in with TaxisNet&#8221; button on the login screen, as a shortcode (<code>[civipass_login]</code>) and as a block.</li>\n<li>Pilot (test.gsis.gr) and production (oauth2.gsis.gr) environments, each with its own credentials, and a button that checks them.</li>\n<li>Accounts are recognised by tax number. New accounts can be created on first sign-in (off by default), always with a role that cannot manage the site.</li>\n<li>People link their existing account from their profile. The tax number and names of a linked account are never edited by hand: they come from the GSIS at every sign-in, and the person can fetch them again with &#8220;Update details from TaxisNet&#8221; on their profile or with the <code>[civipass_refresh]</code> shortcode. Only staff who edit the account can unlink it.</li>\n<li>The GSIS does not give an e-mail address: new people enter one and confirm it by e-mail before it is saved.</li>\n<li>Signing out of the site also signs out of the GSIS, so a shared computer cannot reuse the session.</li>\n<li><code>[civipass_field name=\"fullname\"]</code> shows the signed-in person their own details (afm_masked, firstname, lastname, fullname…).</li>\n<li>Administrators see each linked account&#8217;s tax number in the users list and can find an account by typing the 9-digit number in the search box; everyone else sees it masked.</li>\n<li>Bodies that the GSIS has granted the one-time-code variant of the service (oAuth2.0-OTP) enter its credentials and get a second button.</li>\n<li>Personal data export and erasure, and suggested privacy policy text.</li>\n</ul>\n<p><strong>Security</strong></p>\n<p>Civipass creates and signs in accounts on behalf of an outside identity provider, so it is built to be strict by default:</p>\n<ul>\n<li>Nothing reaches the GSIS until a person presses the button. The TaxisNet password is typed only on the GSIS pages; the site never sees or stores it.</li>\n<li>Every sign-in carries a random, one-time <code>state</code> that is tied to the browser that started it (cookie) and expires after ten minutes, so a callback cannot be replayed, forged or forced on someone else.</li>\n<li>The one-time code is exchanged for the person&#8217;s details server to server, with certificate checks on, no redirects, a short timeout and a size limit. The answer is read with external entities and network access turned off.</li>\n<li>Accounts that can manage the site (administrators, editors and anyone with similar capabilities, also on multisite) cannot sign in with TaxisNet unless an administrator turns that on explicitly; they keep their password. New accounts never get such a role.</li>\n<li>The tax number and the GSIS client secrets are stored encrypted (libsodium). The key can be moved to wp-config.php, so a copy of the database alone reveals nothing. A keyed hash is used to find an account by tax number.</li>\n<li>User names are random, so the tax number never appears in author archives or other public addresses. Names that came from the GSIS cannot be changed by hand, through the profile screen, the REST API or <code>wp_update_user()</code>.</li>\n<li>Sign-in attempts and callbacks are rate-limited per address (per /64 for IPv6).</li>\n<li>Every form and action checks a nonce and the user&#8217;s capabilities, and every value is sanitised on input and escaped on output.</li>\n<li>A test server can only be used on sites marked as local, development or staging (<code>WP_ENVIRONMENT_TYPE</code>), so a forgotten setting can never send a live site&#8217;s sign-ins elsewhere.</li>\n</ul>\n<p><strong>Civipass Pro</strong>, sold separately, adds features that bodies need in production, such as sign-in for public administration employees and a sign-in log.</p>\n<h3>External services</h3>\n<p>This plugin connects to the user authentication service (OAuth 2.0) of the General Secretariat for Information Systems (GSIS) of the Ministry of Digital Governance, Greece. Nothing is sent before a person presses a &#8220;Sign in with TaxisNet&#8221; button or an administrator presses &#8220;Test the connection&#8221;.</p>\n<ul>\n<li>When a person signs in, their browser is sent to <code>https://test.gsis.gr/oauth2server/</code> (pilot) or <code>https://oauth2.gsis.gr/oauth2server/</code> (production) with the site&#8217;s client ID and return address (the oAuth2.0-OTP service uses the same addresses with its own client ID). After they sign in and consent there, the site sends the GSIS the one-time code, its client ID and secret, and receives the person&#8217;s tax number, first name, last name, father&#8217;s name, mother&#8217;s name and year of birth.</li>\n<li>When a person who signed in this way signs out, their browser is sent to the GSIS sign-out page of the same environment.</li>\n<li>&#8220;Test the connection&#8221; sends the client ID and secret with a made-up code to the token address above.</li>\n</ul>\n<p>GSIS: https://www.gsis.gr/ — service description and terms: https://www.gsis.gr/dimosia-dioikisi/ked/webservices/oauth20</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/civipass.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/civipass/assets/screenshot-1.png?rev=3787653",
+            "caption": "The login screen with the \"Sign in with TaxisNet\" button. The same button is available as a shortcode and as a block."
+        },
+        {
+            "src": "https://ps.w.org/civipass/assets/screenshot-2.png?rev=3787653",
+            "caption": "Settings → Civipass: the return address to declare in the EDA request, the pilot and production credentials, and \"Test the connection\"."
+        },
+        {
+            "src": "https://ps.w.org/civipass/assets/screenshot-3.png?rev=3787653",
+            "caption": "The person's profile: the details that came from the GSIS, read-only, and \"Update details from TaxisNet\"."
+        },
+        {
+            "src": "https://ps.w.org/civipass/assets/screenshot-4.png?rev=3787653",
+            "caption": "The users list: a TaxisNet column with the linked tax number (administrators only), and search by the 9-digit number."
+        }
+    ],
+    "tags": {
+        "greece": "Greece",
+        "gsis": "gsis",
+        "login": "login",
+        "oauth": "oauth",
+        "taxisnet": "taxisnet"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/civipass.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/civipass.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/civipass/assets/banner-772x250.png?rev=3787653",
+        "high": "https://ps.w.org/civipass/assets/banner-1544x500.png?rev=3787653"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/civipass/assets/icon.svg?rev=3787653",
+        "svg": "https://ps.w.org/civipass/assets/icon.svg?rev=3787653"
+    },
+    "blocks": {
+        "civipass/login": {
+            "name": "civipass/login",
+            "title": "Sign in with TaxisNet"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

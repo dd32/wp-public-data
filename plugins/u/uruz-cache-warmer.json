@@ -1,0 +1,100 @@
+{
+    "name": "Uruz Cache Warmer",
+    "slug": "uruz-cache-warmer",
+    "version": "1.3.0",
+    "author": "<a href=\"https://profiles.wordpress.org/brainrune/\">brainrune</a>",
+    "author_profile": "https://profiles.wordpress.org/brainrune/",
+    "contributors": {
+        "brainrune": {
+            "profile": "https://profiles.wordpress.org/brainrune/",
+            "avatar": "https://secure.gravatar.com/avatar/ce9a4da9b7d26657f8316410d187f8eff9d7ddbac893fac9de31c7652e0186ad?s=96&d=monsterid&r=g",
+            "display_name": "brainrune"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/uruz-cache-warmer/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-06 09:06:00",
+    "added": "2026-10-12",
+    "homepage": "https://brainrune.com/plugins/#cache-warmer",
+    "sections": {
+        "description": "<p>A page that falls out of cache is built from scratch for the next visitor. On a WooCommerce store that visitor waits seconds instead of milliseconds.</p>\n<p>Uruz Cache Warmer reads your sitemap, builds a queue of public URLs and visits them in the background, so pages are already cached by the time somebody asks for them.</p>\n<p>Every request goes to your own site. A URL on any other host is dropped before it is fetched, and the plugin contacts no third-party service.</p>\n<p><strong>The mobile bucket</strong></p>\n<p>LiteSpeed, and most CDNs, keep a separate cache copy for mobile devices: the response carries <code>vary: User-Agent</code> and the classification rules live in <code>.htaccess</code> or in the CDN. A warmer that sends only a desktop user agent leaves the mobile copy cold, and that is where most store traffic lands.</p>\n<p>This plugin warms both and reports them in separate columns, so a bucket that is not being filled is visible at a glance.</p>\n<p><strong>What it does</strong></p>\n<ul>\n<li>Reads a sitemap index or a plain <code>urlset</code>. With no readable sitemap it walks your published content instead.</li>\n<li>Extra URLs you list by hand are warmed on top of the sitemap.</li>\n<li>Six-step setup wizard: reads your sitemap on the spot and shows how long a full pass will take at the pace you pick.</li>\n<li>Warms a few URLs while you watch, with the cache answer for each one.</li>\n<li>A secret cron URL that warms one batch. Point a server cron entry at it and the warmer runs on hosting with no WP-CLI, independent of the WordPress cron queue.</li>\n<li>One line at the top of the dashboard says whether warming is running normally or has stopped, and what to do about it.</li>\n<li>A How it works tab: the steps the plugin follows, a live read of your cron setup, and the exact cron and WP-CLI lines to paste.</li>\n<li>Judges the cache only from the second pass onwards. The first warming request is the one that builds the page, so it always reads MISS; that is not counted and not emailed about.</li>\n<li>Warms the home page first, then archives, then everything else.</li>\n<li>Sends requests in parallel through the HTTP library WordPress already ships, with no added dependency.</li>\n<li>Adaptive pacing: slow answers or a loaded server shrink the next run, and a 429 or 503 is honoured for as long as Retry-After says.</li>\n<li>Quiet window: hours in which the warmer uses a larger batch and more parallel requests.</li>\n<li>Detects the cache header (LiteSpeed, Cloudflare, Nginx, Varnish, CloudFront, Kinsta, SiteGround, Sucuri, 20i) and reduces it to hit, miss, bypass or no cache.</li>\n<li>Warms a page the moment it is published or updated, instead of waiting for its turn.</li>\n<li>Emails you when too many warmed pages come back cold.</li>\n<li>Reads the cart, checkout and account pages from WooCommerce, in every language, and never warms them. Extra paths can be added by hand.</li>\n<li>WP-CLI: <code>wp brl-scw run</code>, <code>rebuild</code>, <code>warm &lt;url&gt;</code>, <code>status</code>, <code>reset</code>.</li>\n<li>Sends an identifying header and <code>DNT: 1</code>, so the traffic can be filtered out of logs and server-side analytics.</li>\n</ul>\n<p><strong>No paid tier</strong></p>\n<p>Every feature listed above is in this plugin. There is no URL limit, no locked screen and no upsell.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to <code>wp-content/plugins/</code>, or install the ZIP from Plugins &gt; Add New.</li>\n<li>Activate it.</li>\n<li>The setup wizard opens: it reads your sitemap, you pick a pace, and the last step turns the worker on.</li>\n<li>For hosting where WP-Cron is unreliable, add the cron entry shown under Settings &gt; Running the worker.</li>\n</ol>\n",
+        "faq": "\n<h4>\nDoes it hammer my server?\n</h4>\n<p>\n<p>No. A small batch per run, a delay between requests, a 45-second ceiling per run, and adaptive pacing that backs off when the site slows down or the machine is under load. All of these are settings.</p>\n</p>\n<h4>\nWhy are URLs never warmed on my low-traffic site?\n</h4>\n<p>\n<p>WP-Cron only fires when somebody visits, which a quiet site rarely has at night. Add a real cron entry at your host calling <code>wp brl-scw run</code>, or hitting <code>wp-cron.php</code>.</p>\n</p>\n<h4>\nShould I turn on the mobile pass?\n</h4>\n<p>\n<p>Yes, if your cache serves separate mobile copies, which LiteSpeed and most CDNs do. It doubles the requests per cycle, and the first cycle after you enable it is slow, because every mobile page is built from scratch.</p>\n</p>\n<h4>\nThe admin page hangs when I press &#8220;Run one batch now&#8221;\n</h4>\n<p>\n<p>Your site is serving one PHP request at a time. The warm requests queue up behind the admin request that started them, and neither can finish. It shows up on dev servers and on a php-fpm pool sized to a single worker.</p>\n<p>Let the background worker do the warming instead, or raise the number of PHP workers. On normal hosting this does not happen.</p>\n</p>\n<h4>\nWhat counts as &#8220;cold&#8221;?\n</h4>\n<p>\n<p>Only a real MISS. Bypass and no-cache are decisions your stack made on purpose, and unknown means no cache header could be read, so neither counts as cold.</p>\n</p>\n<h4>\nIs the cron URL safe to leave on the site?\n</h4>\n<p>\n<p>It runs one batch and nothing else, and only when the request carries the random key generated on your site. A wrong key gets a 403, and an administrator can replace the key from Settings at any time. A cron entry cannot send a login or a nonce, so the key is the credential. The cron command shown in Settings sends the key in a header, so it stays out of your server&#8217;s access log.</p>\n</p>\n<h4>\nCan I use it with Cloudflare HTML caching?\n</h4>\n<p>\n<p>Yes, and the plugin reads <code>cf-cache-status</code>. If you also run LiteSpeed, keep one purge strategy rather than two.</p>\n</p>\n\n",
+        "changelog": "<h4>1.3.0</h4>\n<ul>\n<li>Security: parallel warm requests now get the same checks as <code>wp_safe_remote_get()</code>, so no request can reach a private, loopback or link-local address that is not the site&#8217;s own host.</li>\n<li>Security: the canonical domain must be this site&#8217;s own host, with or without www. Any other value is ignored and the site address is used. A site served on a domain WordPress does not know about can add it with the <code>brl_scw_allowed_hosts</code> filter.</li>\n<li>Shop managers can still run and watch the warmer, but only an administrator can change the canonical domain, the sitemap URL, the extra URLs and the alert address, or generate a new cron key.</li>\n<li>The cron command sends the key in an <code>X-Brl-Scw-Key</code> header instead of the query string. Existing cron entries with the key in the address keep working.</li>\n<li>A sitemap index is read up to 200 sub-sitemaps and 50,000 URLs per rebuild.</li>\n<li>Front-end page views no longer read the plugin&#8217;s settings option, and the schema version is autoloaded.</li>\n<li>The event log is saved once at the end of a run instead of after every line.</li>\n</ul>\n<h4>1.2.4</h4>\n<ul>\n<li>Renamed to Uruz Cache Warmer, slug <code>uruz-cache-warmer</code>.</li>\n</ul>\n<h4>1.2.3</h4>\n<ul>\n<li>The admin page moved to <code>admin.php?page=brl-scw-cache-warmer</code>, and the WP-CLI command is now <code>wp brl-scw</code>. The old command name still works.</li>\n<li>The Events log keeps its columns: a long context folds to one line and opens to the full JSON on click.</li>\n<li>Database queries name the queue table through a placeholder instead of building it into the SQL.</li>\n<li>Uninstall also removes the canary timestamp and the setup wizard&#8217;s cached sitemap count.</li>\n<li>The warmer&#8217;s user agent carries the plugin&#8217;s real version.</li>\n<li>Recently warmed shows the path instead of the full address, so the desktop and mobile columns stay on screen on a laptop.</li>\n<li>No more sideways scrollbar under the admin screens.</li>\n<li>Setup lays the pace and quiet-window fields out side by side, and the Back button is readable on the dark bar.</li>\n<li>Notices are plain cards with a small status dot.</li>\n</ul>\n<h4>1.2.2</h4>\n<ul>\n<li>Purges done outside WordPress are now caught: each run checks three recently warmed URLs, and only when all three come back cold is the queue reset. A single check fired on the partial purges a stock sync makes.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Archive pagination: an optional switch warms page 2, 3&#8230; of categories, brands, the shop and the blog. A sitemap names only the first page of an archive, and on a big category the second page is visited almost as often. The page count comes from the term count and the products-per-page setting; a cap (default 3) limits how deep it goes.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Rebuilt adaptive pacing around measured request latency and exact concurrency.</li>\n<li>Made large sitemap rebuilds use safe database batches.</li>\n<li>Hardened same-site requests and the secret cron endpoint.</li>\n<li>Split the admin renderer and stylesheet into maintainable modules.</li>\n<li>Added automated tests and WordPress.org quality checks.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "Keeps your cache warm by visiting the URLs in your sitemap, in both the desktop and the mobile cache bucket.",
+    "description": "<p>A page that falls out of cache is built from scratch for the next visitor. On a WooCommerce store that visitor waits seconds instead of milliseconds.</p>\n<p>Uruz Cache Warmer reads your sitemap, builds a queue of public URLs and visits them in the background, so pages are already cached by the time somebody asks for them.</p>\n<p>Every request goes to your own site. A URL on any other host is dropped before it is fetched, and the plugin contacts no third-party service.</p>\n<p><strong>The mobile bucket</strong></p>\n<p>LiteSpeed, and most CDNs, keep a separate cache copy for mobile devices: the response carries <code>vary: User-Agent</code> and the classification rules live in <code>.htaccess</code> or in the CDN. A warmer that sends only a desktop user agent leaves the mobile copy cold, and that is where most store traffic lands.</p>\n<p>This plugin warms both and reports them in separate columns, so a bucket that is not being filled is visible at a glance.</p>\n<p><strong>What it does</strong></p>\n<ul>\n<li>Reads a sitemap index or a plain <code>urlset</code>. With no readable sitemap it walks your published content instead.</li>\n<li>Extra URLs you list by hand are warmed on top of the sitemap.</li>\n<li>Six-step setup wizard: reads your sitemap on the spot and shows how long a full pass will take at the pace you pick.</li>\n<li>Warms a few URLs while you watch, with the cache answer for each one.</li>\n<li>A secret cron URL that warms one batch. Point a server cron entry at it and the warmer runs on hosting with no WP-CLI, independent of the WordPress cron queue.</li>\n<li>One line at the top of the dashboard says whether warming is running normally or has stopped, and what to do about it.</li>\n<li>A How it works tab: the steps the plugin follows, a live read of your cron setup, and the exact cron and WP-CLI lines to paste.</li>\n<li>Judges the cache only from the second pass onwards. The first warming request is the one that builds the page, so it always reads MISS; that is not counted and not emailed about.</li>\n<li>Warms the home page first, then archives, then everything else.</li>\n<li>Sends requests in parallel through the HTTP library WordPress already ships, with no added dependency.</li>\n<li>Adaptive pacing: slow answers or a loaded server shrink the next run, and a 429 or 503 is honoured for as long as Retry-After says.</li>\n<li>Quiet window: hours in which the warmer uses a larger batch and more parallel requests.</li>\n<li>Detects the cache header (LiteSpeed, Cloudflare, Nginx, Varnish, CloudFront, Kinsta, SiteGround, Sucuri, 20i) and reduces it to hit, miss, bypass or no cache.</li>\n<li>Warms a page the moment it is published or updated, instead of waiting for its turn.</li>\n<li>Emails you when too many warmed pages come back cold.</li>\n<li>Reads the cart, checkout and account pages from WooCommerce, in every language, and never warms them. Extra paths can be added by hand.</li>\n<li>WP-CLI: <code>wp brl-scw run</code>, <code>rebuild</code>, <code>warm &lt;url&gt;</code>, <code>status</code>, <code>reset</code>.</li>\n<li>Sends an identifying header and <code>DNT: 1</code>, so the traffic can be filtered out of logs and server-side analytics.</li>\n</ul>\n<p><strong>No paid tier</strong></p>\n<p>Every feature listed above is in this plugin. There is no URL limit, no locked screen and no upsell.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/uruz-cache-warmer.1.3.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/uruz-cache-warmer/assets/screenshot-1.png?rev=3741833",
+            "caption": "The dashboard: queue size, cold share, and the measured time for a full cycle."
+        },
+        {
+            "src": "https://ps.w.org/uruz-cache-warmer/assets/screenshot-2.png?rev=3741833",
+            "caption": "Settings: pace, the quiet window, and the mobile bucket."
+        },
+        {
+            "src": "https://ps.w.org/uruz-cache-warmer/assets/screenshot-3.png?rev=3741833",
+            "caption": "Recently warmed URLs, with the desktop and mobile bucket in separate columns."
+        },
+        {
+            "src": "https://ps.w.org/uruz-cache-warmer/assets/screenshot-4.png?rev=3741833",
+            "caption": "The setup wizard turns the pace you pick into how long one full pass over the site takes."
+        },
+        {
+            "src": "https://ps.w.org/uruz-cache-warmer/assets/screenshot-5.png?rev=3741833",
+            "caption": "How it works: the steps the warmer follows, a live read of this site's cron setup, and the WP-CLI commands."
+        }
+    ],
+    "tags": {
+        "cache": "cache",
+        "cache-warming": "cache warming",
+        "litespeed": "litespeed",
+        "performance": "performance",
+        "sitemap": "sitemap"
+    },
+    "stable_tag": "1.3.0",
+    "versions": {
+        "1.2.4": "https://downloads.wordpress.org/plugin/uruz-cache-warmer.1.2.4.zip",
+        "1.3.0": "https://downloads.wordpress.org/plugin/uruz-cache-warmer.1.3.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/uruz-cache-warmer.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/uruz-cache-warmer/assets/banner-772x250.png?rev=3762961",
+        "high": "https://ps.w.org/uruz-cache-warmer/assets/banner-1544x500.png?rev=3762961"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/uruz-cache-warmer/assets/icon.svg?rev=3762950",
+        "svg": "https://ps.w.org/uruz-cache-warmer/assets/icon.svg?rev=3762950"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
