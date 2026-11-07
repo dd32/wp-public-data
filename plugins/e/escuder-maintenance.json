@@ -1,0 +1,91 @@
+{
+    "name": "Escuder Maintenance",
+    "slug": "escuder-maintenance",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/escuder/\">escuder</a>",
+    "author_profile": "https://profiles.wordpress.org/escuder/",
+    "contributors": {
+        "escuder": {
+            "profile": "https://profiles.wordpress.org/escuder/",
+            "avatar": "https://secure.gravatar.com/avatar/2d59bfa13758469ec7d5db0c8999091395554582069783f7bc2395fa184c4108?s=96&d=monsterid&r=g",
+            "display_name": "escuder"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/escuder-maintenance/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-07 16:40:00",
+    "added": "2026-11-07",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Escuder Maintenance lets you prepare a WordPress site without editing your theme. Turn maintenance on from Settings &gt; Escuder Maintenance, add trusted IPv4 or IPv6 addresses and customize the public page.</p>\n<p>Administrators with manage_options can always sign in and view the site. Visitors sharing an allowed IP can view it without an account. Everyone else receives a standalone maintenance page with HTTP 503, Retry-After and noindex headers.</p>\n<p>Features:</p>\n<ul>\n<li>Maintenance is off when first activated or reactivated.</li>\n<li>Up to 200 exact IPv4 or IPv6 addresses; equivalent IPv6 notations are normalized.</li>\n<li>Add the address WordPress sees with one click.</li>\n<li>Custom title, plain-text message, Media Library logo, accent and background colors.</li>\n<li>Administrator-only preview of saved settings, without enabling maintenance.</li>\n<li>Administration notice and toolbar indicator while maintenance is active.</li>\n<li>English interface with bundled French and Spanish translations.</li>\n<li>No external services, trackers, remote fonts, paid features or public author credits.</li>\n<li>No changes to themes, server rules, media files or WordPress indexing preferences.</li>\n</ul>\n<h4>Important scope</h4>\n<p>The plugin gates requests reaching its early WordPress init hook: public pages, feeds, REST, XML-RPC, Ajax and admin-post handlers. The real WordPress login page, ordinary administration, cron and WP-CLI keep their normal authentication and permissions. An allowed IP only bypasses maintenance; it never grants WordPress permissions.</p>\n<p>Images, PDFs and other files served directly by Apache, Nginx or a CDN are not protected. A page cache or another plugin responding before this plugin runs can also bypass it. Use hosting-level access control when the entire site must be private.</p>\n<p>Disable and purge full-page caching before enabling maintenance, and purge again after changes to maintenance or allowed IPs. Cache-control headers and DONOTCACHEPAGE cannot erase a page already cached upstream. The plugin does not automatically purge arbitrary hosting, plugin or CDN caches.</p>\n<p>Payment notifications, public Ajax, XML-RPC and other integrations may be blocked during maintenance. Check your integrations before enabling maintenance on a live store. There are no automatic webhook exceptions.</p>\n",
+        "installation": "<ol>\n<li>Upload the escuder-maintenance folder to /wp-content/plugins/, or upload the ZIP through Plugins &gt; Add New.</li>\n<li>Activate the plugin. Maintenance remains off.</li>\n<li>Open Settings &gt; Escuder Maintenance with an administrator account.</li>\n<li>Add authorized IPs, customize the page and save. Preview shows saved settings.</li>\n<li>Disable and purge full-page caches. Enable maintenance and save.</li>\n<li>Verify with a signed-out browser from an allowed IP and from another connection, such as mobile data.</li>\n<li>To reopen the site, uncheck Enable maintenance, save and purge caches.</li>\n</ol>\n",
+        "faq": "\n<h4>\nCan I lock myself out?\n</h4>\n<p>\n<p>The real wp-login.php page and ordinary administration remain available. Sign in with an account that has manage_options to view the site or change the IP list. Editors, authors and subscribers do not automatically bypass maintenance. If necessary, deactivate the plugin through WordPress or WP-CLI and purge caches.</p>\n<p>For emergency recovery, add define( &#8216;ESCUDER_MAINTENANCE_BYPASS&#8217;, true ); in wp-config.php before WordPress loads. Remove it or set it to false after recovery. This is a server configuration constant, not a query parameter or public bypass link.</p>\n</p>\n<h4>\nWhat does Add my IP do?\n</h4>\n<p>\n<p>It adds the REMOTE_ADDR address seen by WordPress to the unsaved list. Click Save changes to apply it. The plugin does not contact an external IP lookup service. A public IP may change, and everyone sharing an allowed public IP can view the site. Ranges, ports and comments are not accepted.</p>\n</p>\n<h4>\nDoes this work behind Cloudflare or a reverse proxy?\n</h4>\n<p>\n<p>Your host must restore the real visitor address from trusted proxies. The plugin deliberately ignores X-Forwarded-For, Forwarded, CF-Connecting-IP and similar visitor-supplied headers. Never allow the common IP of a proxy or CDN as a workaround: it could let every visitor in.</p>\n</p>\n<h4>\nAre REST, feeds and public Ajax blocked?\n</h4>\n<p>\n<p>Yes, when the request reaches the plugin and the visitor is not authorized. The same standalone HTML 503 page is returned, including for APIs. Authenticated administrators and allowed IPs can pass the maintenance gate, but native permissions and REST nonce checks still apply. Cron and WP-CLI remain available; scheduled tasks are not paused. Other plugins handling requests before this gate are outside its control.</p>\n</p>\n<h4>\nAre uploaded images and PDFs private?\n</h4>\n<p>\n<p>No. Direct static-file URLs are handled by the web server and may remain accessible. Use server or proxy access control for confidential staging sites.</p>\n</p>\n<h4>\nWhy can I still see the site after enabling maintenance?\n</h4>\n<p>\n<p>You may be signed in as an administrator, using an allowed IP, or seeing a cached page. Test while signed out on a different network. Disable and purge full-page caches at every layer, including the host and CDN. Check whether the emergency bypass constant is enabled.</p>\n</p>\n<h4>\nHow are languages handled?\n</h4>\n<p>\n<p>The interface follows WordPress and the administrator&#8217;s language. Default public messages follow the request locale; customized title and message are plain text in the language you enter. French and Spanish fallback translations are included. Official WordPress.org language packs take priority. The plugin does not change your WordPress language or indexing settings.</p>\n</p>\n<h4>\nCan I change themes?\n</h4>\n<p>\n<p>Yes. Configuration and the standalone maintenance page are independent of your theme and page builder.</p>\n</p>\n<h4>\nWhat happens on deactivation, reactivation and deletion?\n</h4>\n<p>\n<p>Deactivation stops maintenance and keeps settings. Reactivation keeps the page and IP list but turns maintenance off, so enabling a plugin cannot unexpectedly close a site. Deletion through WordPress removes this plugin&#8217;s settings and stored IP list. It never deletes uploaded logos, pages or media. Purge external caches after deactivation as well.</p>\n</p>\n<h4>\nIs multisite supported?\n</h4>\n<p>\n<p>Network activation is deliberately refused. Activate separately on each site if needed; settings belong to that site. This first release has not been validated on a real multisite network. Deletion removes plugin options across the network.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release: maintenance page, exact IPv4/IPv6 access list, administrator bypass, saved-page preview, recovery constant and bundled French/Spanish translations.</li>\n</ul>\n"
+    },
+    "short_description": "Show a maintenance or coming soon page while administrators and visitors from authorized IP addresses can preview your WordPress site.",
+    "description": "<p>Escuder Maintenance lets you prepare a WordPress site without editing your theme. Turn maintenance on from Settings &gt; Escuder Maintenance, add trusted IPv4 or IPv6 addresses and customize the public page.</p>\n<p>Administrators with manage_options can always sign in and view the site. Visitors sharing an allowed IP can view it without an account. Everyone else receives a standalone maintenance page with HTTP 503, Retry-After and noindex headers.</p>\n<p>Features:</p>\n<ul>\n<li>Maintenance is off when first activated or reactivated.</li>\n<li>Up to 200 exact IPv4 or IPv6 addresses; equivalent IPv6 notations are normalized.</li>\n<li>Add the address WordPress sees with one click.</li>\n<li>Custom title, plain-text message, Media Library logo, accent and background colors.</li>\n<li>Administrator-only preview of saved settings, without enabling maintenance.</li>\n<li>Administration notice and toolbar indicator while maintenance is active.</li>\n<li>English interface with bundled French and Spanish translations.</li>\n<li>No external services, trackers, remote fonts, paid features or public author credits.</li>\n<li>No changes to themes, server rules, media files or WordPress indexing preferences.</li>\n</ul>\n<h4>Important scope</h4>\n<p>The plugin gates requests reaching its early WordPress init hook: public pages, feeds, REST, XML-RPC, Ajax and admin-post handlers. The real WordPress login page, ordinary administration, cron and WP-CLI keep their normal authentication and permissions. An allowed IP only bypasses maintenance; it never grants WordPress permissions.</p>\n<p>Images, PDFs and other files served directly by Apache, Nginx or a CDN are not protected. A page cache or another plugin responding before this plugin runs can also bypass it. Use hosting-level access control when the entire site must be private.</p>\n<p>Disable and purge full-page caching before enabling maintenance, and purge again after changes to maintenance or allowed IPs. Cache-control headers and DONOTCACHEPAGE cannot erase a page already cached upstream. The plugin does not automatically purge arbitrary hosting, plugin or CDN caches.</p>\n<p>Payment notifications, public Ajax, XML-RPC and other integrations may be blocked during maintenance. Check your integrations before enabling maintenance on a live store. There are no automatic webhook exceptions.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/escuder-maintenance.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/escuder-maintenance/assets/screenshot-1.png?rev=3789922",
+            "caption": "Maintenance settings with authorized IP addresses, page customization and built-in guidance (French interface)."
+        },
+        {
+            "src": "https://ps.w.org/escuder-maintenance/assets/screenshot-2.png?rev=3789922",
+            "caption": "The public maintenance page on desktop, using the default French message."
+        },
+        {
+            "src": "https://ps.w.org/escuder-maintenance/assets/screenshot-3.png?rev=3789922",
+            "caption": "The public maintenance page on mobile."
+        }
+    ],
+    "tags": {
+        "coming-soon": "coming soon",
+        "ip-whitelist": "ip whitelist",
+        "maintenance": "maintenance",
+        "site-preview": "site preview",
+        "under-construction": "under construction"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/escuder-maintenance.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/escuder-maintenance.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/escuder-maintenance/assets/banner-772x250.jpg?rev=3789922",
+        "high": "https://ps.w.org/escuder-maintenance/assets/banner-1544x500.jpg?rev=3789922"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/escuder-maintenance/assets/icon-128x128.png?rev=3789922",
+        "2x": "https://ps.w.org/escuder-maintenance/assets/icon-256x256.png?rev=3789922"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

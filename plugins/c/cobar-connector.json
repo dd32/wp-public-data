@@ -1,0 +1,82 @@
+{
+    "name": "Cobar Connector",
+    "slug": "cobar-connector",
+    "version": "1.0.2",
+    "author": "<a href=\"https://profiles.wordpress.org/cobarai/\">Cobar</a>",
+    "author_profile": "https://profiles.wordpress.org/cobarai/",
+    "contributors": {
+        "cobarai": {
+            "profile": "https://profiles.wordpress.org/cobarai/",
+            "avatar": "https://secure.gravatar.com/avatar/0fcc4f22fa9e38da9d273bb65cc07df958a083e190924df574bbeabd07718fcc?s=96&d=monsterid&r=g",
+            "display_name": "Cobar"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/cobar-connector/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-07 16:46:00",
+    "added": "2026-11-07",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Cobar is where a marketing team prepares and approves articles. This plugin lets Cobar publish an approved article to your WordPress site.</p>\n<p>Without the plugin, Cobar publishes through WordPress&#8217;s standard REST API. That takes 10 to 15 requests per article and has no place for an SEO title, meta description or structured data, and some hosts turn away that many requests in a row.</p>\n<p>With the plugin, Cobar checks that the plugin is installed, then sends the whole article in one request. The plugin:</p>\n<ul>\n<li>uploads the article&#8217;s images and sets the first one as the featured image,</li>\n<li>creates the post, or finishes one an interrupted attempt started, and publishes it,</li>\n<li>when Yoast SEO or Rank Math is active, writes the SEO title and meta description where that plugin reads them, and puts the article&#8217;s structured data in that plugin&#8217;s own JSON-LD in place of its own article entry.</li>\n</ul>\n<p>With neither SEO plugin active the article still publishes, and Cobar is told which SEO values were not sent. Sending the same article again never makes a second post.</p>\n<p>The plugin prints nothing on your pages by itself. It has no settings screen and no external dependencies.</p>\n<h4>Security</h4>\n<ul>\n<li>Authentication is WordPress&#8217;s own: an application password for a WordPress user (Users &gt; Profile &gt; Application Passwords).</li>\n<li>Checking the plugin&#8217;s status needs a user who can write posts. Publishing needs a user who can publish posts, upload files when the article has images, and edit the post when Cobar is finishing one it started.</li>\n<li>Every input is validated and size-limited: images must be real JPEG, PNG or WebP files of at most 10 MB, and the whole request at most 48 MB (or the server&#8217;s post_max_size, if smaller). Article HTML goes through wp_kses_post and SEO text through sanitize_text_field. A value the sanitizer would change is not written; structured data containing &#8220;&lt;&#8221; is not written.</li>\n<li>Error messages never repeat what was sent.</li>\n</ul>\n<h3>Privacy and external services</h3>\n<p>The plugin connects to no external service. It sends no data anywhere, loads nothing from other servers, and collects no analytics.</p>\n<p>Cobar (https://cobar.ai) calls the plugin on your site, using the application password you create for it, to publish articles you approved in Cobar. Cobar&#8217;s terms and privacy policy cover that service: https://cobar.ai/terms and https://cobar.ai/privacy.</p>\n<p>The plugin stores on your site only what a publish needs: the posts and images it creates, their SEO fields, and on each one a Cobar delivery id so a repeated publish finds the same post.</p>\n<h3>REST API reference</h3>\n<p>Namespace <code>cobar/v1</code>.</p>\n<pre><code>GET /wp-json/cobar/v1/status returns `plugin` (\"cobar-connector\"), `plugin_version`, `wordpress_version`, `seo_plugin` (\"yoast\", \"rankmath\" or \"none\"), `can_publish`, `can_upload`, `accepts` (the SEO values the active SEO plugin can take: any of \"title\", \"description\", \"schema\"), `max_body_bytes` and `max_image_bytes`.\n\nPOST /wp-json/cobar/v1/publish takes `delivery_id`, `title`, `content_html`, `slug`, `status` (\"publish\"), `categories` and `tags` (names; a missing term is created only if the user may create terms), `images` (`position` \"hero\" or \"section_N\", `alt_text`, `mime_type`, `data_base64`, `filename`) and `seo` (`title`, `description`, `schema`, each optional). It returns `post_id`, `link`, `status`, `media` (`position`, `id`, `url`), `seo` (`written`, `not_sent`) and `terms_skipped`.\n</code></pre>\n<p>Image placement: <code>content_html</code> is the final article HTML with each image written as <code>src=\"cobar-image:N\"</code>, where N is that image&#8217;s index in <code>images</code>. Each image must be placed exactly once. The plugin replaces each placeholder with the uploaded image&#8217;s address. The hero image becomes the featured image.</p>\n<p>Idempotency: <code>delivery_id</code> is stored on the post (<code>_cobar_delivery_id</code>) and on each uploaded image (with <code>_cobar_position</code>). The same delivery_id again returns the post it already published and writes nothing. An attempt that stopped part way (a draft, some images uploaded) is completed, reusing what exists. While one attempt is running, a second with the same delivery_id is refused with <code>cobar_in_progress</code> (HTTP 409).</p>\n<p>Refusals: <code>cobar_invalid_request</code> and <code>cobar_too_large</code> (400), <code>rest_not_logged_in</code> (401), <code>cobar_forbidden</code> (403), <code>cobar_slug_taken</code>, <code>cobar_post_changed</code> and <code>cobar_in_progress</code> (409), <code>cobar_too_large</code> (413, whole request), <code>cobar_upload_failed</code> and <code>cobar_write_failed</code> (500).</p>\n",
+        "installation": "<ol>\n<li>In WordPress, go to Plugins &gt; Add New Plugin and search for &#8220;Cobar Connector&#8221;.</li>\n<li>Select Install Now, then Activate.</li>\n<li>Create an application password for the WordPress user Cobar should publish as (Users &gt; Profile &gt; Application Passwords). The user needs to be able to publish posts and upload files, for example an Editor.</li>\n<li>In Cobar, connect the site with that user name and application password. Cobar finds the plugin on its own.</li>\n</ol>\n",
+        "faq": "\n<h4>\nDo I need Yoast SEO or Rank Math?\n</h4>\n<p>\n<p>No. Articles publish either way. With one of them active, Cobar also sends the SEO title, meta description and structured data. With neither, Cobar lists those as not sent.</p>\n</p>\n<h4>\nRank Math is active but Cobar says it accepts nothing. Why?\n</h4>\n<p>\n<p>Rank Math prints nothing on your pages until its setup wizard is finished (connect a Rank Math account, or skip that step). Finish the wizard, then publish again.</p>\n</p>\n<h4>\nWhat happens if a publish is interrupted?\n</h4>\n<p>\n<p>Each article carries Cobar&#8217;s delivery id. Sending it again completes the same post and reuses images already uploaded; it never creates a second post.</p>\n</p>\n<h4>\nDoes the plugin change my theme or other posts?\n</h4>\n<p>\n<p>No. It writes only the posts Cobar publishes, their images and their SEO fields, and changes structured data only on those posts.</p>\n</p>\n<h4>\nCan I remove it?\n</h4>\n<p>\n<p>Yes. Deactivate and delete it like any plugin. Published articles stay as they are. Without the plugin, Cobar publishes through the standard REST API again.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.2</h4>\n<ul>\n<li>With Rank Math, Cobar&#8217;s structured data now prints true, false, numbers and empty values exactly as approved. Rank Math printed them as text (true as &#8220;1&#8221;, 1200 as &#8220;1200&#8221;), which search engines do not read as a yes/no or a number. Strings, Rank Math&#8217;s own values and Yoast SEO output are unchanged.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Cobar&#8217;s article structured data now replaces the SEO plugin&#8217;s own article entry instead of adding a second one. It keeps that entry&#8217;s identity and the details Cobar did not send. The same goes for an FAQ or how-to. Posts Cobar did not publish are unchanged.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First release: one-request publish, Yoast SEO and Rank Math fields, idempotent on the delivery id.</li>\n</ul>\n"
+    },
+    "short_description": "Lets Cobar publish an approved article to this site in one request, with its images and its SEO title, meta description and structured data.",
+    "description": "<p>Cobar is where a marketing team prepares and approves articles. This plugin lets Cobar publish an approved article to your WordPress site.</p>\n<p>Without the plugin, Cobar publishes through WordPress&#8217;s standard REST API. That takes 10 to 15 requests per article and has no place for an SEO title, meta description or structured data, and some hosts turn away that many requests in a row.</p>\n<p>With the plugin, Cobar checks that the plugin is installed, then sends the whole article in one request. The plugin:</p>\n<ul>\n<li>uploads the article&#8217;s images and sets the first one as the featured image,</li>\n<li>creates the post, or finishes one an interrupted attempt started, and publishes it,</li>\n<li>when Yoast SEO or Rank Math is active, writes the SEO title and meta description where that plugin reads them, and puts the article&#8217;s structured data in that plugin&#8217;s own JSON-LD in place of its own article entry.</li>\n</ul>\n<p>With neither SEO plugin active the article still publishes, and Cobar is told which SEO values were not sent. Sending the same article again never makes a second post.</p>\n<p>The plugin prints nothing on your pages by itself. It has no settings screen and no external dependencies.</p>\n<h4>Security</h4>\n<ul>\n<li>Authentication is WordPress&#8217;s own: an application password for a WordPress user (Users &gt; Profile &gt; Application Passwords).</li>\n<li>Checking the plugin&#8217;s status needs a user who can write posts. Publishing needs a user who can publish posts, upload files when the article has images, and edit the post when Cobar is finishing one it started.</li>\n<li>Every input is validated and size-limited: images must be real JPEG, PNG or WebP files of at most 10 MB, and the whole request at most 48 MB (or the server&#8217;s post_max_size, if smaller). Article HTML goes through wp_kses_post and SEO text through sanitize_text_field. A value the sanitizer would change is not written; structured data containing &#8220;&lt;&#8221; is not written.</li>\n<li>Error messages never repeat what was sent.</li>\n</ul>\n<h3>Privacy and external services</h3>\n<p>The plugin connects to no external service. It sends no data anywhere, loads nothing from other servers, and collects no analytics.</p>\n<p>Cobar (https://cobar.ai) calls the plugin on your site, using the application password you create for it, to publish articles you approved in Cobar. Cobar&#8217;s terms and privacy policy cover that service: https://cobar.ai/terms and https://cobar.ai/privacy.</p>\n<p>The plugin stores on your site only what a publish needs: the posts and images it creates, their SEO fields, and on each one a Cobar delivery id so a repeated publish finds the same post.</p>\n<h3>REST API reference</h3>\n<p>Namespace <code>cobar/v1</code>.</p>\n<pre><code>GET /wp-json/cobar/v1/status returns `plugin` (\"cobar-connector\"), `plugin_version`, `wordpress_version`, `seo_plugin` (\"yoast\", \"rankmath\" or \"none\"), `can_publish`, `can_upload`, `accepts` (the SEO values the active SEO plugin can take: any of \"title\", \"description\", \"schema\"), `max_body_bytes` and `max_image_bytes`.\n\nPOST /wp-json/cobar/v1/publish takes `delivery_id`, `title`, `content_html`, `slug`, `status` (\"publish\"), `categories` and `tags` (names; a missing term is created only if the user may create terms), `images` (`position` \"hero\" or \"section_N\", `alt_text`, `mime_type`, `data_base64`, `filename`) and `seo` (`title`, `description`, `schema`, each optional). It returns `post_id`, `link`, `status`, `media` (`position`, `id`, `url`), `seo` (`written`, `not_sent`) and `terms_skipped`.\n</code></pre>\n<p>Image placement: <code>content_html</code> is the final article HTML with each image written as <code>src=\"cobar-image:N\"</code>, where N is that image&#8217;s index in <code>images</code>. Each image must be placed exactly once. The plugin replaces each placeholder with the uploaded image&#8217;s address. The hero image becomes the featured image.</p>\n<p>Idempotency: <code>delivery_id</code> is stored on the post (<code>_cobar_delivery_id</code>) and on each uploaded image (with <code>_cobar_position</code>). The same delivery_id again returns the post it already published and writes nothing. An attempt that stopped part way (a draft, some images uploaded) is completed, reusing what exists. While one attempt is running, a second with the same delivery_id is refused with <code>cobar_in_progress</code> (HTTP 409).</p>\n<p>Refusals: <code>cobar_invalid_request</code> and <code>cobar_too_large</code> (400), <code>rest_not_logged_in</code> (401), <code>cobar_forbidden</code> (403), <code>cobar_slug_taken</code>, <code>cobar_post_changed</code> and <code>cobar_in_progress</code> (409), <code>cobar_too_large</code> (413, whole request), <code>cobar_upload_failed</code> and <code>cobar_write_failed</code> (500).</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/cobar-connector.1.0.2.zip",
+    "upgrade_notice": {
+        "1.0.2": "<p>With Rank Math, Cobar&#039;s structured data keeps true, false and numbers as approved instead of printing them as text.</p>",
+        "1.0.1": "<p>Cobar&#039;s article structured data now replaces the SEO plugin&#039;s own article entry instead of adding a second one, so each Cobar post describes one article to search engines.</p>",
+        "1.0.0": "<p>First release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "content": "content",
+        "publishing": "publishing",
+        "rest-api": "rest-api",
+        "schema": "schema",
+        "seo": "seo"
+    },
+    "stable_tag": "1.0.2",
+    "versions": {
+        "1.0.2": "https://downloads.wordpress.org/plugin/cobar-connector.1.0.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/cobar-connector.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/cobar-connector/assets/banner-772x250.png?rev=3789925",
+        "high": "https://ps.w.org/cobar-connector/assets/banner-1544x500.png?rev=3789925"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/cobar-connector/assets/icon-128x128.png?rev=3789925",
+        "2x": "https://ps.w.org/cobar-connector/assets/icon-256x256.png?rev=3789925"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
