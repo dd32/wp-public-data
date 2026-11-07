@@ -1,0 +1,95 @@
+{
+    "name": "Notice Triage",
+    "slug": "notice-triage",
+    "version": "0.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/loyaltyoverroyalty/\">Avo Avetisyan</a>",
+    "author_profile": "https://profiles.wordpress.org/loyaltyoverroyalty/",
+    "contributors": {
+        "loyaltyoverroyalty": {
+            "profile": "https://profiles.wordpress.org/loyaltyoverroyalty/",
+            "avatar": "https://secure.gravatar.com/avatar/816dc88900d50338530e75efbc5237b8f44d29ea1baf7394584069f3225ea1de?s=96&d=monsterid&r=g",
+            "display_name": "Avo Avetisyan"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.1.4",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/notice-triage/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-07 10:10:00",
+    "added": "2026-11-07",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Every plugin gets to shout at the top of wp-admin, and they all do: licence reminders, review requests, setup wizards, update nags. The existing answer is to hide them, and that creates a worse problem: a genuinely critical warning disappears along with the sales pitch.</p>\n<p>Notice Triage does not hide anything. It ranks. It captures every admin notice, works out which plugin or theme emitted it (by reflecting on the hook callback, not by guessing from the text), sorts it into a severity bucket and shows one summary bar: &#8220;6 notices — 2 need action, 3 informational, 1 license&#8221;. Critical notices stay inline by default, exactly where they were, unmodified. The log then tells you which plugin has shown you the same nag 400 times. Setup banners and onboarding bars that are not standard notice markup are collapsed as well; scripts and hidden templates pass through untouched. Nothing is deleted, nothing is rewritten; the panel simply moves the noise out of the way and labels each notice with its source.</p>\n<h4>Buckets</h4>\n<ul>\n<li><strong>Critical</strong> — error notices. Shown inline, at the top, by default. You can collapse them too: the panel then opens by itself and turns red whenever a critical notice is present.</li>\n<li><strong>Needs action</strong> — warnings and update nags.</li>\n<li><strong>Informational</strong> — success and info notices.</li>\n<li><strong>Marketing &amp; license</strong> — licence prompts, upgrade pitches, review requests, sales. Collapsed by default whatever colour the plugin painted them. A notice the plugin marked as an error is never put here.</li>\n</ul>\n<p>Severity comes from the notice&#8217;s declared type, then its CSS classes, then a list of keywords that can only raise a notice (security, failed, database error…). The keyword and marketing lists are visible and editable in Settings and filterable in code.</p>\n<h4>Notice log</h4>\n<p>Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Notice Log lists every distinct notice this admin has seen: the plugin behind it, its bucket, when it first and last appeared and how often it has interrupted you (counted at most once every five minutes per notice, so the log costs nothing on busy sites). The same count shows next to each notice in the panel. From there you can mute a notice for everyone, snooze it for 7 or 30 days, or pin it inline or collapsed regardless of its bucket. Each notice in the panel also has a per-user Snooze link (7 days), and administrators get a Mute link right there. Counters and dates are normalised before logging, so &#8220;3 items need attention&#8221; and &#8220;4 items need attention&#8221; are one entry.</p>\n<h4>Safe by design</h4>\n<p>This plugin intercepts other plugins&#8217; output, so the recovery paths come first:</p>\n<ul>\n<li><code>define( 'NOTICE_TRIAGE_DISABLE', true );</code> in wp-config.php switches capture off entirely.</li>\n<li>Append <code>?notice_triage_off=1</code> to any admin URL to bypass capture for that one page load — no FTP needed.</li>\n<li>Capture never runs during AJAX, REST, cron, the Customizer, iframes, or on the update and install screens, and never before the admin screen is known.</li>\n<li>A per-plugin &#8220;always inline&#8221; rule and a screen exclusion list exempt anything whose own scripts rely on inline notices.</li>\n<li>A notice callback that throws is caught and logged instead of taking down wp-admin.</li>\n</ul>\n<p>Captured markup is re-emitted byte-for-byte, including ids, classes, data attributes and inline scripts, so each plugin&#8217;s own dismiss buttons and AJAX handlers keep working.</p>\n<h4>Compatibility</h4>\n<p>Checked on WordPress 7.1 with each plugin&#8217;s current release, on a clean site. &#8220;Dismiss&#8221; means the plugin&#8217;s own dismiss control was clicked inside the collapsed panel and the notice stayed dismissed after a reload.</p>\n<ul>\n<li><strong>Yoast SEO</strong> — captured, attributed, &#8220;blocking robots&#8221; is Critical (inline), first-run configuration notice is Informational. No dismiss control on its notices.</li>\n<li><strong>Rank Math SEO</strong> — captured and attributed; &#8220;only one SEO plugin&#8221; is Critical and stays inline, its own dismiss works.</li>\n<li><strong>Elementor</strong> — captured and attributed; promotional notices land in Informational, its own dismiss control (<code>e-notice__dismiss</code>) works inside the panel and persists.</li>\n<li><strong>WooCommerce</strong> — no admin_notices output on a fresh store (its notes live in the WooCommerce Admin app). The panel renders on WooCommerce screens without conflict.</li>\n<li><strong>Jetpack</strong> — its connection banners are injected by JavaScript, not printed as admin notices, so they are neither captured nor affected.</li>\n<li><strong>Wordfence</strong> — captured and attributed (&#8220;Needs action&#8221;); its dismiss button works inside the panel and persists. Its onboarding banner is not a notice and passes through untouched.</li>\n<li><strong>WPForms</strong> — removes every admin notice on its own screens itself; elsewhere nothing to capture on a fresh install.</li>\n<li><strong>Contact Form 7</strong> — emits no notices on a fresh install; no conflict.</li>\n<li><strong>UpdraftPlus</strong> — welcome notice captured on its settings screen as Informational.</li>\n</ul>\n<p>No plugin needed the shipped &#8220;always inline&#8221; list, which is therefore empty in this release.</p>\n<h4>Known limitation</h4>\n<p>A plugin whose JavaScript binds to a position-dependent selector, or binds before the panel exists in the page, may lose its dismiss button when its notice is collapsed. Set that plugin to &#8220;Always inline&#8221; in Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Notice Triage <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Per-plugin rules.</p>\n<h4>Privacy</h4>\n<p>Notice Triage stores the plain-text excerpt, source and counts of each notice in a table on your site. It makes no outbound requests and sends nothing anywhere.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>notice-triage</code> folder to <code>/wp-content/plugins/</code>, or install it from the Plugins screen.</li>\n<li>Activate it.</li>\n<li>Open any admin screen: non-critical notices are now in a single collapsed panel. Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Notice Log shows what has been seen; Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Notice Triage holds the rules.</li>\n</ol>\n",
+        "faq": "\n<h4>\nHow is this different from the notice-hiding plugins?\n</h4>\n<p>\n<p>Three things. Attribution: every notice is labelled with the plugin or theme whose callback printed it, resolved from the code, so you know who is shouting. Ranking: notices are sorted into Critical, Needs action, Informational and Marketing &amp; license, with a guard rail that never demotes an error notice, so critical warnings cannot vanish into a &#8220;hidden&#8221; pile. The log: each distinct notice is counted, so you can see which plugin has interrupted you hundreds of times and act on that plugin rather than on one banner.</p>\n</p>\n<h4>\nDoes it hide anything?\n</h4>\n<p>\n<p>Not on its own. Every notice is either inline or inside the panel. The only way a notice disappears is a mute or snooze you set yourself, and the panel still counts them. If you collapse the Critical bucket, the panel forces itself open whenever a critical notice is present.</p>\n</p>\n<h4>\nA plugin&#8217;s dismiss button stopped working.\n</h4>\n<p>\n<p>Open Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Notice Triage <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Per-plugin rules and set that plugin to &#8220;Always inline&#8221;. Its notices then print exactly where they did before. Please also open a support thread with the plugin&#8217;s name so it can be added to the shipped defaults.</p>\n</p>\n<h4>\nCan I change what counts as marketing?\n</h4>\n<p>\n<p>Yes. Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Notice Triage lists every phrase, one per line. Developers can also use the <code>notice_triage_marketing_patterns</code> and <code>notice_triage_boost_keywords</code> filters, and <code>notice_triage_severity</code> to override the final bucket for a notice.</p>\n</p>\n<h4>\nDoes each user get their own settings?\n</h4>\n<p>\n<p>Bucket behaviour and the admin bar badge can be overridden per user on the profile screen. Snoozes set from the panel are per user; mutes and rules set from the Notice Log apply to everyone.</p>\n</p>\n<h4>\nSomething broke and I cannot reach wp-admin.\n</h4>\n<p>\n<p>Add <code>?notice_triage_off=1</code> to the admin URL to bypass the plugin for one page load, then switch capture off in Settings or deactivate it. For a permanent switch add <code>define( 'NOTICE_TRIAGE_DISABLE', true );</code> to wp-config.php.</p>\n</p>\n<h4>\nDoes it work on multisite?\n</h4>\n<p>\n<p>Yes. Network admin notices are captured on network screens. The log and settings are per site.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "Ranks admin notices instead of hiding them: critical stays inline, the rest collapse into one counted panel labelled with the plugin that sent it.",
+    "description": "<p>Every plugin gets to shout at the top of wp-admin, and they all do: licence reminders, review requests, setup wizards, update nags. The existing answer is to hide them, and that creates a worse problem: a genuinely critical warning disappears along with the sales pitch.</p>\n<p>Notice Triage does not hide anything. It ranks. It captures every admin notice, works out which plugin or theme emitted it (by reflecting on the hook callback, not by guessing from the text), sorts it into a severity bucket and shows one summary bar: &#8220;6 notices — 2 need action, 3 informational, 1 license&#8221;. Critical notices stay inline by default, exactly where they were, unmodified. The log then tells you which plugin has shown you the same nag 400 times. Setup banners and onboarding bars that are not standard notice markup are collapsed as well; scripts and hidden templates pass through untouched. Nothing is deleted, nothing is rewritten; the panel simply moves the noise out of the way and labels each notice with its source.</p>\n<h4>Buckets</h4>\n<ul>\n<li><strong>Critical</strong> — error notices. Shown inline, at the top, by default. You can collapse them too: the panel then opens by itself and turns red whenever a critical notice is present.</li>\n<li><strong>Needs action</strong> — warnings and update nags.</li>\n<li><strong>Informational</strong> — success and info notices.</li>\n<li><strong>Marketing &amp; license</strong> — licence prompts, upgrade pitches, review requests, sales. Collapsed by default whatever colour the plugin painted them. A notice the plugin marked as an error is never put here.</li>\n</ul>\n<p>Severity comes from the notice&#8217;s declared type, then its CSS classes, then a list of keywords that can only raise a notice (security, failed, database error…). The keyword and marketing lists are visible and editable in Settings and filterable in code.</p>\n<h4>Notice log</h4>\n<p>Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Notice Log lists every distinct notice this admin has seen: the plugin behind it, its bucket, when it first and last appeared and how often it has interrupted you (counted at most once every five minutes per notice, so the log costs nothing on busy sites). The same count shows next to each notice in the panel. From there you can mute a notice for everyone, snooze it for 7 or 30 days, or pin it inline or collapsed regardless of its bucket. Each notice in the panel also has a per-user Snooze link (7 days), and administrators get a Mute link right there. Counters and dates are normalised before logging, so &#8220;3 items need attention&#8221; and &#8220;4 items need attention&#8221; are one entry.</p>\n<h4>Safe by design</h4>\n<p>This plugin intercepts other plugins&#8217; output, so the recovery paths come first:</p>\n<ul>\n<li><code>define( 'NOTICE_TRIAGE_DISABLE', true );</code> in wp-config.php switches capture off entirely.</li>\n<li>Append <code>?notice_triage_off=1</code> to any admin URL to bypass capture for that one page load — no FTP needed.</li>\n<li>Capture never runs during AJAX, REST, cron, the Customizer, iframes, or on the update and install screens, and never before the admin screen is known.</li>\n<li>A per-plugin &#8220;always inline&#8221; rule and a screen exclusion list exempt anything whose own scripts rely on inline notices.</li>\n<li>A notice callback that throws is caught and logged instead of taking down wp-admin.</li>\n</ul>\n<p>Captured markup is re-emitted byte-for-byte, including ids, classes, data attributes and inline scripts, so each plugin&#8217;s own dismiss buttons and AJAX handlers keep working.</p>\n<h4>Compatibility</h4>\n<p>Checked on WordPress 7.1 with each plugin&#8217;s current release, on a clean site. &#8220;Dismiss&#8221; means the plugin&#8217;s own dismiss control was clicked inside the collapsed panel and the notice stayed dismissed after a reload.</p>\n<ul>\n<li><strong>Yoast SEO</strong> — captured, attributed, &#8220;blocking robots&#8221; is Critical (inline), first-run configuration notice is Informational. No dismiss control on its notices.</li>\n<li><strong>Rank Math SEO</strong> — captured and attributed; &#8220;only one SEO plugin&#8221; is Critical and stays inline, its own dismiss works.</li>\n<li><strong>Elementor</strong> — captured and attributed; promotional notices land in Informational, its own dismiss control (<code>e-notice__dismiss</code>) works inside the panel and persists.</li>\n<li><strong>WooCommerce</strong> — no admin_notices output on a fresh store (its notes live in the WooCommerce Admin app). The panel renders on WooCommerce screens without conflict.</li>\n<li><strong>Jetpack</strong> — its connection banners are injected by JavaScript, not printed as admin notices, so they are neither captured nor affected.</li>\n<li><strong>Wordfence</strong> — captured and attributed (&#8220;Needs action&#8221;); its dismiss button works inside the panel and persists. Its onboarding banner is not a notice and passes through untouched.</li>\n<li><strong>WPForms</strong> — removes every admin notice on its own screens itself; elsewhere nothing to capture on a fresh install.</li>\n<li><strong>Contact Form 7</strong> — emits no notices on a fresh install; no conflict.</li>\n<li><strong>UpdraftPlus</strong> — welcome notice captured on its settings screen as Informational.</li>\n</ul>\n<p>No plugin needed the shipped &#8220;always inline&#8221; list, which is therefore empty in this release.</p>\n<h4>Known limitation</h4>\n<p>A plugin whose JavaScript binds to a position-dependent selector, or binds before the panel exists in the page, may lose its dismiss button when its notice is collapsed. Set that plugin to &#8220;Always inline&#8221; in Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Notice Triage <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Per-plugin rules.</p>\n<h4>Privacy</h4>\n<p>Notice Triage stores the plain-text excerpt, source and counts of each notice in a table on your site. It makes no outbound requests and sends nothing anywhere.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/notice-triage.0.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/notice-triage/assets/screenshot-1.png?rev=3789319",
+            "caption": "One collapsed panel instead of a stack of banners; the critical notice stays inline above it."
+        },
+        {
+            "src": "https://ps.w.org/notice-triage/assets/screenshot-2.png?rev=3789319",
+            "caption": "The panel expanded, grouped by bucket, each notice labelled with its source."
+        },
+        {
+            "src": "https://ps.w.org/notice-triage/assets/screenshot-3.png?rev=3789319",
+            "caption": "Tools → Notice Log: every distinct notice, its source, bucket and how often it has appeared."
+        },
+        {
+            "src": "https://ps.w.org/notice-triage/assets/screenshot-4.png?rev=3789319",
+            "caption": "Settings: bucket behaviour, the marketing and keyword lists, per-plugin rules and screen exclusions."
+        }
+    ],
+    "tags": {
+        "admin": "admin",
+        "admin-notices": "Admin notices",
+        "cleanup": "cleanup",
+        "dashboard": "dashboard",
+        "notifications": "Notifications"
+    },
+    "stable_tag": "0.1.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/notice-triage.0.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/notice-triage.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/notice-triage/assets/banner-772x250.png?rev=3789319",
+        "high": "https://ps.w.org/notice-triage/assets/banner-1544x500.png?rev=3789319"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/notice-triage/assets/icon-128x128.png?rev=3789319",
+        "2x": "https://ps.w.org/notice-triage/assets/icon-256x256.png?rev=3789319"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
