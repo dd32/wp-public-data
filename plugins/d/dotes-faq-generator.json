@@ -1,0 +1,146 @@
+{
+    "name": "Dotes FAQ Generator",
+    "slug": "dotes-faq-generator",
+    "version": "1.3.3",
+    "author": "<a href=\"https://profiles.wordpress.org/dotes/\">Luiz Jr. Fernandes</a>",
+    "author_profile": "https://profiles.wordpress.org/dotes/",
+    "contributors": {
+        "dotes": {
+            "profile": "https://profiles.wordpress.org/dotes/",
+            "avatar": "https://secure.gravatar.com/avatar/769f3d674a62ab8fb46f3dd29dbab40bcb9feccea60977c76436bb36dcacb751?s=96&d=monsterid&r=g",
+            "display_name": "Luiz Jr. Fernandes"
+        }
+    },
+    "requires": "6.3",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/dotes-faq-generator/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-06 22:10:00",
+    "added": "2026-11-06",
+    "homepage": "https://dotes.com.br/plugins/dotes-faq-generator/",
+    "sections": {
+        "description": "<p>Dotes FAQ Generator lets you write frequently asked questions in groups and show them anywhere on your site.</p>\n<ul>\n<li><strong>FAQ groups and categories</strong> with search and status in the admin list.</li>\n<li><strong>Native block</strong> &#8220;FAQ (Dotes)&#8221; and the <code>[dotes_faq]</code> shortcode.</li>\n<li><strong>Accordion</strong> or <strong>open list</strong> display, chosen globally, per FAQ or per block/shortcode.</li>\n<li><strong>FAQPage structured data</strong> (JSON-LD) with every question of each group, including the FAQs selected in the post. It can be switched off in the settings.</li>\n<li><strong>&#8220;Was this answer helpful?&#8221; votes</strong> with duplicate-vote protection.</li>\n<li><strong>FAQ of the post</strong>: pick FAQs in a metabox (posts and pages) and insert them before or after the content.</li>\n<li><strong>Search</strong> inside a FAQ list, global colours.</li>\n<li><strong>Backup and import</strong> of FAQs, categories and settings.</li>\n<li>Create FAQs from the post editor (toolbar button and modal) and insert their shortcode.</li>\n</ul>\n<h4>Shortcode</h4>\n<ul>\n<li><code>[dotes_faq id=\"12\"]</code> shows FAQ group 12.</li>\n<li><code>[dotes_faq category=\"support\" limit=\"5\"]</code> lists the FAQs of a category (ID or slug).</li>\n<li><code>[dotes_faq toggle=\"list\"]</code> forces the open-list mode (<code>accordion</code> is the default).</li>\n<li><code>title=\"...\"</code> (or <code>title=\"false\"</code> to hide the title), <code>search=\"false\"</code> and <code>featured=\"true\"</code> are also available for lists.</li>\n</ul>\n<h4>For developers</h4>\n<p>The plugin exposes actions and filters for extensions, for example <code>dotes_faq_display_modes</code>, <code>dotes_faq_render_output</code>, <code>dotes_faq_admin_tabs</code>, <code>dotes_faq_settings_rows</code>, <code>dotes_faq_editor_rows</code>, <code>dotes_faq_style_fields</code>, <code>dotes_faq_item_css</code>, <code>dotes_faq_schema_data</code>, <code>dotes_faq_schema_faq_ids</code>, <code>dotes_faq_output_schema</code>, <code>dotes_faq_metabox_post_types</code>, <code>dotes_faq_group_saved</code>, <code>dotes_faq_vote_recorded</code>, <code>dotes_faq_client_ip</code>, <code>dotes_faq_store_ip</code> and <code>dotes_faq_public_nonce_actions</code>. Use <code>dotes_faq_generator()</code> to get the plugin instance.</p>\n<h4>Sites behind a proxy or CDN</h4>\n<p>Duplicate votes are detected by the visitor IP address, read from <code>REMOTE_ADDR</code>. Behind Cloudflare, a load balancer or another reverse proxy every visitor may arrive with the proxy address, so only the first vote would be accepted. Return the real visitor IP with the <code>dotes_faq_client_ip</code> filter, reading a header that only your proxy sets (for example <code>CF-Connecting-IP</code> on Cloudflare), or adjust the stored value with <code>dotes_faq_store_ip</code> (it receives the address already anonymised, or an empty string when IP collection is off).</p>\n<pre><code>add_filter( 'dotes_faq_client_ip', function ( $ip ) { return isset( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ) : $ip; } );\n</code></pre>\n<h4>Page cache</h4>\n<p>The vote buttons work on cached pages: when the security token printed in a cached page has expired, the script asks the site for a fresh one (<code>dotes_faq_nonce</code> AJAX action) and sends the vote again, once.</p>\n<h3>Privacy</h3>\n<p>When a visitor votes on a FAQ (&#8220;Was this answer helpful?&#8221;), the plugin stores the vote in your own database: FAQ ID, vote, date, user ID (logged-in users) and IP address, to block duplicate votes.</p>\n<ul>\n<li>The visitor IP address is <strong>anonymised</strong> before it is stored (last IPv4 octet / last 80 bits of IPv6 set to zero). You can disable IP storage in <strong>FAQ Generator &gt; Geral</strong>.</li>\n<li>The plugin adds a suggested text to <strong>Settings &gt; Privacy</strong> and registers a personal data exporter and eraser for the votes of registered users.</li>\n<li>Backup files are kept in a protected folder and are only downloadable by administrators; they are deleted after download, and files older than 24 hours are removed whenever a new export is created.</li>\n<li>The plugin does not track views and does not contact any external service. No data is sent to Dotes or any third party.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin does not connect to any external service. Every request it makes goes to your own site (<code>admin-ajax.php</code>), and Font Awesome and DataTables are bundled with the plugin instead of loaded from a CDN.</p>\n<h3>Third-party libraries</h3>\n<ul>\n<li>Font Awesome Free 6.7.2 — icons CC BY 4.0, fonts SIL OFL 1.1, code MIT (assets/vendor/fontawesome/LICENSE.txt).</li>\n<li>DataTables 3.1.5 and its Bootstrap 4 integration — MIT (assets/vendor/datatables/LICENSE.txt).</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>dotes-faq-generator</code> folder to <code>/wp-content/plugins/</code> or install it from the Plugins screen.</li>\n<li>Activate the plugin.</li>\n<li>Go to <strong>FAQ Generator</strong> in the admin menu, create a category and a FAQ.</li>\n<li>Add the &#8220;FAQ (Dotes)&#8221; block to a page or use the <code>[dotes_faq id=\"...\"]</code> shortcode.</li>\n</ol>\n",
+        "faq": "\n<h4>\nDoes it add FAQ structured data?\n</h4>\n<p>\n<p>Yes. When &#8220;Dados estruturados&#8221; is enabled (the default), a FAQPage JSON-LD block with the questions shown on the page is printed in the page head; with Dotes Auto Schema active it goes into its <code>@graph</code>. Since 2023 Google shows the FAQ rich result only for government and health sites, but the markup still describes the questions and answers to search engines and AI assistants. If another plugin already outputs FAQPage for the same page, return false from the <code>dotes_faq_output_schema</code> filter.</p>\n</p>\n<h4>\nWhat happens to my data when I delete the plugin?\n</h4>\n<p>\n<p>Deactivating keeps everything. Deleting the plugin from the Plugins screen removes its FAQs, categories, votes, settings, post meta and stored export files: export a backup first if you want to keep the FAQs.</p>\n</p>\n<h4>\nWhich icons does it use?\n</h4>\n<p>\n<p>On the site, the question icons are drawn with CSS: nothing is loaded from Font Awesome or any external service. Font Awesome Free is bundled for the plugin admin screens and the post editor modal.</p>\n</p>\n<h4>\nIs there a Pro version?\n</h4>\n<p>\n<p>Yes, Dotes FAQ Generator Pro is a separate add-on: display rules (show a FAQ on many pages automatically), FAQs per category and tag, analytics, per-FAQ styles and the blocks and tabs modes. This plugin is complete without it; the &#8220;Pro&#8221; tab of the settings only describes the add-on.</p>\n</p>\n\n",
+        "changelog": "<h4>1.3.3</h4>\n<ul>\n<li>Fixed: the admin notice shown when a database table cannot be created now includes the database error (it was cleared by the table check).</li>\n</ul>\n<h4>1.3.2</h4>\n<ul>\n<li>Changed: the &#8220;Custom CSS&#8221; setting was removed. CSS saved there is moved to the theme&#8217;s Additional CSS (Appearance &gt; Customize &gt; Additional CSS) during the update.</li>\n<li>Per-FAQ CSS and the FAQPage JSON-LD are added with the WordPress script and style functions.</li>\n<li>Hooks dotes_faq_group_saved and dotes_faq_item_saved no longer receive request data; dotes_faq_style_fields receives only the sanitized &#8220;style_*&#8221; fields. Requires Dotes FAQ Generator Pro 1.1.5 or later.</li>\n<li>Database: date columns no longer use CURRENT_TIMESTAMP defaults (MySQL 5.5 support); if the tables cannot be created, the plugin shows an admin notice and tries again later.</li>\n<li>Translations come from translate.wordpress.org; the bundled language files were removed.</li>\n<li>Updated DataTables to 3.1.5 and Font Awesome Free to 6.7.2.</li>\n</ul>\n<h4>1.3.1</h4>\n<ul>\n<li>New: standardized &#8220;Pro support&#8221; sub-tab, last in the Support tab. Pro subscribers send their request to the Dotes team from there (the form comes from the Pro add-on and checks the license); without Pro it shows what Pro support includes. The free plugin sends nothing by itself. The forum and FAQ links of the old &#8220;Help&#8221; sub-tab moved into it.</li>\n</ul>\n<h4>1.3.0</h4>\n<ul>\n<li>New settings screen: Dotes header, tabs with a fade, sticky save bar, settings grouped in sections and a &#8220;Pro&#8221; tab describing the add-on.</li>\n<li>FAQ list: &#8220;Avaliações&#8221; column with the helpful / not helpful votes of each FAQ; the unused search and category filter above the table were removed.</li>\n<li>Fixed: importing a backup always failed (&#8220;only JSON files&#8221;); imported rows are now sanitized.</li>\n<li>Fixed: on a new install the FAQPage data and the vote buttons stayed off while the settings showed them on; saving with no data no longer turns every option on.</li>\n<li>Fixed: with two FAQs on a page each vote was sent twice, and in list mode votes and search did not work. The vote state of all questions is now checked in one request.</li>\n<li>Fixed: the &#8220;Criar FAQ&#8221; modal of the post editor did not close; the status button of the FAQ list changed the questions instead of the FAQ; &#8220;Destaque&#8221;, &#8220;Busca&#8221;, &#8220;Abrir a primeira pergunta&#8221; and the secondary colour had no effect; the categories tab could load empty; saving a category could create it twice.</li>\n<li>Question icons are drawn with CSS (no Font Awesome needed on the site); the primary colour marks the open question and the keyboard focus.</li>\n<li>The admin styles no longer change WordPress screens outside the plugin (post editor, terms, block toolbar).</li>\n<li>The automatic title (first question) is no longer shown on the site; the post FAQs are inserted only in the main content.</li>\n<li>The FAQ tools of the post editor are shown only to users who can create FAQs (filter <code>dotes_faq_capability</code>).</li>\n<li>Removed: the &#8220;Ativar plugin&#8221; option (use the Plugins screen), the &#8220;performance indexes&#8221; panel (indexes are created on install) and unused AJAX actions.</li>\n<li>Every admin text, including the scripts, is translatable.</li>\n</ul>\n<h4>1.2.1</h4>\n<ul>\n<li>Editing a FAQ group from the post editor updates its questions in place: question IDs, votes and analytics are kept. A single FAQ turned into a group keeps its ID as the first question.</li>\n<li>Fixed: adding a question after removing another one could reuse the same field index and drop a question.</li>\n<li>With DOTES Auto Schema active, the FAQPage structured data goes into its single <code>@graph</code> instead of a separate script (no duplicate FAQPage). New filter <code>dotes_faq_use_schema_graph</code>.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Display rules, analytics, per-FAQ styles, term FAQs and the post FAQ manager moved to the separate Pro add-on; existing data is kept for it.</li>\n<li>The FAQ editor now creates one FAQ group with every question and edits groups in place (questions removed in the editor are deleted).</li>\n<li>The plugin no longer records views or other analytics events, and no longer loads Google Fonts.</li>\n<li>Single-question shortcodes load the stylesheet and script.</li>\n<li>Hooks for the settings screen, the FAQ editors, the FAQ list columns and the backup.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Native &#8220;FAQ (Dotes)&#8221; block and open-list display mode.</li>\n<li>FAQPage schema now includes every question of each group, and FAQs selected in posts and terms.</li>\n<li>Privacy: anonymised IP addresses, privacy policy text, personal data exporter and eraser, protected export files.</li>\n<li>Security hardening (nonces, capabilities, prepared queries, output escaping).</li>\n<li>Settings that could not be switched off are fixed; unused settings removed.</li>\n<li>Import keeps the relations between categories, groups, questions and display rules.</li>\n<li>Styles and scripts are loaded from files once per page; Font Awesome and DataTables are bundled.</li>\n<li>Google Fonts are optional.</li>\n<li>Hooks for extensions.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First version.</li>\n</ul>\n"
+    },
+    "short_description": "FAQ groups as an accordion or open list, with a native block, shortcode, FAQPage structured data and \"was this helpful?\" votes.",
+    "description": "<p>Dotes FAQ Generator lets you write frequently asked questions in groups and show them anywhere on your site.</p>\n<ul>\n<li><strong>FAQ groups and categories</strong> with search and status in the admin list.</li>\n<li><strong>Native block</strong> &#8220;FAQ (Dotes)&#8221; and the <code>[dotes_faq]</code> shortcode.</li>\n<li><strong>Accordion</strong> or <strong>open list</strong> display, chosen globally, per FAQ or per block/shortcode.</li>\n<li><strong>FAQPage structured data</strong> (JSON-LD) with every question of each group, including the FAQs selected in the post. It can be switched off in the settings.</li>\n<li><strong>&#8220;Was this answer helpful?&#8221; votes</strong> with duplicate-vote protection.</li>\n<li><strong>FAQ of the post</strong>: pick FAQs in a metabox (posts and pages) and insert them before or after the content.</li>\n<li><strong>Search</strong> inside a FAQ list, global colours.</li>\n<li><strong>Backup and import</strong> of FAQs, categories and settings.</li>\n<li>Create FAQs from the post editor (toolbar button and modal) and insert their shortcode.</li>\n</ul>\n<h4>Shortcode</h4>\n<ul>\n<li><code>[dotes_faq id=\"12\"]</code> shows FAQ group 12.</li>\n<li><code>[dotes_faq category=\"support\" limit=\"5\"]</code> lists the FAQs of a category (ID or slug).</li>\n<li><code>[dotes_faq toggle=\"list\"]</code> forces the open-list mode (<code>accordion</code> is the default).</li>\n<li><code>title=\"...\"</code> (or <code>title=\"false\"</code> to hide the title), <code>search=\"false\"</code> and <code>featured=\"true\"</code> are also available for lists.</li>\n</ul>\n<h4>For developers</h4>\n<p>The plugin exposes actions and filters for extensions, for example <code>dotes_faq_display_modes</code>, <code>dotes_faq_render_output</code>, <code>dotes_faq_admin_tabs</code>, <code>dotes_faq_settings_rows</code>, <code>dotes_faq_editor_rows</code>, <code>dotes_faq_style_fields</code>, <code>dotes_faq_item_css</code>, <code>dotes_faq_schema_data</code>, <code>dotes_faq_schema_faq_ids</code>, <code>dotes_faq_output_schema</code>, <code>dotes_faq_metabox_post_types</code>, <code>dotes_faq_group_saved</code>, <code>dotes_faq_vote_recorded</code>, <code>dotes_faq_client_ip</code>, <code>dotes_faq_store_ip</code> and <code>dotes_faq_public_nonce_actions</code>. Use <code>dotes_faq_generator()</code> to get the plugin instance.</p>\n<h4>Sites behind a proxy or CDN</h4>\n<p>Duplicate votes are detected by the visitor IP address, read from <code>REMOTE_ADDR</code>. Behind Cloudflare, a load balancer or another reverse proxy every visitor may arrive with the proxy address, so only the first vote would be accepted. Return the real visitor IP with the <code>dotes_faq_client_ip</code> filter, reading a header that only your proxy sets (for example <code>CF-Connecting-IP</code> on Cloudflare), or adjust the stored value with <code>dotes_faq_store_ip</code> (it receives the address already anonymised, or an empty string when IP collection is off).</p>\n<pre><code>add_filter( 'dotes_faq_client_ip', function ( $ip ) { return isset( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ) : $ip; } );\n</code></pre>\n<h4>Page cache</h4>\n<p>The vote buttons work on cached pages: when the security token printed in a cached page has expired, the script asks the site for a fresh one (<code>dotes_faq_nonce</code> AJAX action) and sends the vote again, once.</p>\n<h3>Privacy</h3>\n<p>When a visitor votes on a FAQ (&#8220;Was this answer helpful?&#8221;), the plugin stores the vote in your own database: FAQ ID, vote, date, user ID (logged-in users) and IP address, to block duplicate votes.</p>\n<ul>\n<li>The visitor IP address is <strong>anonymised</strong> before it is stored (last IPv4 octet / last 80 bits of IPv6 set to zero). You can disable IP storage in <strong>FAQ Generator &gt; Geral</strong>.</li>\n<li>The plugin adds a suggested text to <strong>Settings &gt; Privacy</strong> and registers a personal data exporter and eraser for the votes of registered users.</li>\n<li>Backup files are kept in a protected folder and are only downloadable by administrators; they are deleted after download, and files older than 24 hours are removed whenever a new export is created.</li>\n<li>The plugin does not track views and does not contact any external service. No data is sent to Dotes or any third party.</li>\n</ul>\n<h3>External services</h3>\n<p>This plugin does not connect to any external service. Every request it makes goes to your own site (<code>admin-ajax.php</code>), and Font Awesome and DataTables are bundled with the plugin instead of loaded from a CDN.</p>\n<h3>Third-party libraries</h3>\n<ul>\n<li>Font Awesome Free 6.7.2 — icons CC BY 4.0, fonts SIL OFL 1.1, code MIT (assets/vendor/fontawesome/LICENSE.txt).</li>\n<li>DataTables 3.1.5 and its Bootstrap 4 integration — MIT (assets/vendor/datatables/LICENSE.txt).</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/dotes-faq-generator.1.3.3.zip",
+    "upgrade_notice": {
+        "1.3.2": "<p>The Custom CSS setting moves to the theme&#039;s Additional CSS. Update Dotes FAQ Generator Pro to 1.1.5 or later.</p>",
+        "1.2.0": "<p>Display rules, analytics, per-FAQ styles and term FAQs are now part of Dotes FAQ Generator Pro. Their data stays in the database.</p>",
+        "1.1.0": "<p>Stored IP addresses are anonymised and old public export files are deleted during the update.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/dotes-faq-generator/assets/screenshot-1.png?rev=3788791",
+            "caption": "FAQ list in the admin."
+        },
+        {
+            "src": "https://ps.w.org/dotes-faq-generator/assets/screenshot-2.png?rev=3788791",
+            "caption": "FAQ editor with the display mode."
+        },
+        {
+            "src": "https://ps.w.org/dotes-faq-generator/assets/screenshot-3.png?rev=3788791",
+            "caption": "Accordion on the front end."
+        }
+    ],
+    "tags": {
+        "accordion": "Accordion",
+        "block": "block",
+        "faq": "faq",
+        "faq-schema": "faq schema",
+        "structured-data": "structured data"
+    },
+    "stable_tag": "1.3.3",
+    "versions": {
+        "1.3.3": "https://downloads.wordpress.org/plugin/dotes-faq-generator.1.3.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/dotes-faq-generator.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/dotes-faq-generator/assets/banner-772x250.png?rev=3788791",
+        "high": "https://ps.w.org/dotes-faq-generator/assets/banner-1544x500.png?rev=3788791"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/dotes-faq-generator/assets/icon-128x128.png?rev=3788791",
+        "2x": "https://ps.w.org/dotes-faq-generator/assets/icon-256x256.png?rev=3788791"
+    },
+    "blocks": {
+        "dotes-faq/faq": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "dotes-faq/faq",
+            "version": "1.1.0",
+            "title": "FAQ (Dotes)",
+            "category": "widgets",
+            "icon": "editor-help",
+            "description": "Displays a FAQ group or a list of FAQs from a category.",
+            "keywords": [
+                "faq",
+                "accordion",
+                "perguntas"
+            ],
+            "textdomain": "dotes-faq-generator",
+            "attributes": {
+                "id": {
+                    "type": "number",
+                    "default": 0
+                },
+                "category": {
+                    "type": "string",
+                    "default": ""
+                },
+                "limit": {
+                    "type": "number",
+                    "default": 0
+                },
+                "toggle": {
+                    "type": "string",
+                    "default": ""
+                },
+                "title": {
+                    "type": "string",
+                    "default": ""
+                },
+                "search": {
+                    "type": "boolean",
+                    "default": true
+                }
+            },
+            "supports": {
+                "html": false,
+                "align": [
+                    "wide",
+                    "full"
+                ]
+            },
+            "editorScript": "dotes-faq-block-editor"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

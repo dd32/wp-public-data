@@ -1,0 +1,93 @@
+{
+    "name": "Fstyle Static HTML Export",
+    "slug": "fstyle-static-export",
+    "version": "0.3.3",
+    "author": "<a href=\"https://profiles.wordpress.org/fstylegear09543/\">fstylegear09543</a>",
+    "author_profile": "https://profiles.wordpress.org/fstylegear09543/",
+    "contributors": {
+        "fstylegear09543": {
+            "profile": "https://profiles.wordpress.org/fstylegear09543/",
+            "avatar": "https://secure.gravatar.com/avatar/c9654fbfc8836eedebbc810b611de22d33c347b48d11ded3139e8bb55ec87b57?s=96&d=monsterid&r=g",
+            "display_name": "fstylegear09543"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/fstyle-static-export/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-06 23:05:00",
+    "added": "2026-10-28",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Fstyle Static HTML Export crawls your own site and saves every page, together with the CSS, JavaScript, images and other files it uses, as plain HTML files. You can upload the result to any web server or open it locally.</p>\n<p>Shared hosting often answers &#8220;429 Too Many Requests&#8221; when many pages are fetched at once. Instead of skipping those pages, this plugin slows down and retries, and when the export is done it lists the broken internal links and the parts of the site (forms, search, admin-ajax.php, REST API calls) that will not work on the static copy. Everything runs on your own server, with no external service.</p>\n<p><strong>Features</strong></p>\n<ul>\n<li><strong>Fast, concurrent fetching.</strong> Several pages are fetched at the same time (configurable). Static files under wp-content and wp-includes are copied straight from disk instead of over HTTP.</li>\n<li><strong>Automatic retries on 429 and 503.</strong> When the server answers &#8220;Too Many Requests&#8221; or &#8220;Service Unavailable&#8221; (or a request times out), the page is not skipped. The plugin waits (it honors Retry-After), lowers the number of concurrent requests, and tries again. Once requests succeed again, the concurrency is raised step by step.</li>\n<li><strong>Broken link report.</strong> After the export, every internal link and file reference in the exported HTML and CSS is checked. Missing files are listed, separately from links that are also broken on the original site, pages that could not be fetched, and links to dynamic WordPress URLs.</li>\n<li><strong>Relative or absolute URLs.</strong> Export with relative URLs, so the folder works from any location, or rewrite all URLs to the domain where the static site will be published. Optionally add index.html to relative links, so the folder can be browsed directly from disk.</li>\n<li><strong>Finds pages that are not linked.</strong> Besides following links, it reads robots.txt and the sitemaps (wp-sitemap.xml, sitemap.xml) and, optionally (on by default), the lists of posts, pages, categories and authors. The 404 page is saved as 404.html.</li>\n<li><strong>Pre-export check.</strong> Finds parts that will stop working on a static site, such as comment forms, search forms, contact forms, admin-ajax.php and REST API calls, and nonces.</li>\n<li><strong>Resumable.</strong> Progress is saved continuously. If the browser is closed or a request fails, the export can be resumed where it stopped.</li>\n<li><strong>Updated posts only.</strong> Re-export only the posts that changed since the previous export, reusing the rest.</li>\n<li><strong>Zip download</strong> of the finished export.</li>\n<li><strong>WP-CLI support.</strong> Run <code>wp fsse export</code> to export without the time limits of a web request.</li>\n</ul>\n<p>The exported files are saved in <code>wp-content/uploads/fsse-export/{date-time}/</code>. The plugin places <code>.htaccess</code> and an empty <code>index.html</code> in that folder so that the files cannot be accessed from outside. On nginx, <code>.htaccess</code> is not used: configure the server so that this folder cannot be accessed from outside.</p>\n<p><strong>WP-CLI</strong></p>\n<pre><code>wp fsse export [--concurrency=&lt;n&gt;] [--url-mode=&lt;relative|absolute&gt;] [--target=&lt;url&gt;] [--alias=&lt;hosts&gt;] [--exclude=&lt;prefixes&gt;] [--changed] [--resume=&lt;id&gt;] [--dir-index] [--skip-ssl-verify] [--zip] [--json]\n\nwp fsse report &lt;id&gt; prints the result of an export as JSON.\n</code></pre>\n<h3>External services</h3>\n<p>This plugin does not connect to any third-party or external service. It only sends HTTP requests to your own site (the home URL and the domains you list as &#8220;Domains treated as this site&#8221;) to fetch the pages it exports. No data is sent to the plugin author or anyone else.</p>\n<p>The plugin removes some WordPress head links from the exported HTML, such as <code>&lt;link rel=\"https://api.w.org/\"&gt;</code>. This only matches the text of that link in your own pages; the plugin never sends a request to api.w.org.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>fstyle-static-export</code> folder to <code>/wp-content/plugins/</code>, or install the plugin from the Plugins screen.</li>\n<li>Activate the plugin.</li>\n<li>Go to <strong>Tools &gt; Static HTML Export</strong>.</li>\n<li>Optionally click <strong>Check before export</strong> to see which parts of your site will not work as static HTML.</li>\n<li>Click <strong>Export everything</strong>. Keep the page open until the export has finished, then download the zip or copy the folder.</li>\n</ol>\n<p>On shared hosting, start with 2 to 3 concurrent requests. On a local copy of the site you can use more (WP-CLI uses 12 by default).</p>\n",
+        "faq": "\n<h4>\nDoes the plugin send any data to external services?\n</h4>\n<p>\n<p>No. The plugin only sends HTTP requests to your own site (the home URL and the domains you list as &#8220;Domains treated as this site&#8221;). Nothing is sent to the plugin author or any third party, and no tracking is included.</p>\n</p>\n<h4>\nWhat does not work on a static site?\n</h4>\n<p>\n<p>Anything that needs PHP or the database when a visitor uses it: comment forms, the built-in search, contact forms, login, admin-ajax.php and REST API calls (likes, view counters, infinite scroll, etc.), and nonces (they keep the value from the export time and are rejected after a few days). The pre-export check and the result screen list the pages where these were found, so you can replace them (for example with an external form service) or exclude those URLs.</p>\n</p>\n<h4>\nWhere are the files saved? Are they deleted when I uninstall the plugin?\n</h4>\n<p>\n<p>In <code>wp-content/uploads/fsse-export/</code>. The plugin adds <code>.htaccess</code> (Apache) and an empty <code>index.html</code> to this folder so that the exported files and zip files cannot be opened directly from outside; download the zip from the plugin screen. On nginx, configure the server so that this folder cannot be accessed from outside. Uninstalling the plugin deletes only its settings. The exported files are kept; delete the folder yourself if you no longer need it.</p>\n</p>\n<h4>\nThe export stopped in the middle.\n</h4>\n<p>\n<p>Click <strong>Resume</strong>. Progress is saved after every step. If your server limits requests, lower the number of concurrent requests in the settings. With WP-CLI, use <code>wp fsse export --resume=&lt;id&gt;</code>.</p>\n</p>\n<h4>\nMy site uses a self-signed certificate in a local environment.\n</h4>\n<p>\n<p>SSL certificates are verified by default. If your local copy of the site uses a self-signed certificate, the requests to your own site will fail. In that case, check <strong>Do not verify SSL certificates</strong> in the settings (it is off by default), use <code>wp fsse export --skip-ssl-verify</code>, or add this filter: <code>add_filter( 'fsse_verify_ssl', '__return_false' );</code>. Do not turn verification off on a public site.</p>\n</p>\n<h4>\nHow large a site can it export?\n</h4>\n<p>\n<p>There is no fixed limit on the number of pages. Progress is saved after every step, so a long export can be resumed, and WP-CLI (<code>wp fsse export</code>) runs without the time limits of a web request. On shared hosting, a few thousand pages take a while because the plugin keeps the number of concurrent requests low when the server is busy.</p>\n</p>\n<h4>\nAre page builders, pagination, feeds and sitemaps exported?\n</h4>\n<p>\n<p>The plugin saves the HTML your site actually serves, so pages made with a page builder are exported as they look. Pagination pages are exported when they are linked. Feeds are saved as <code>feed/index.xml</code>, and the sitemaps are read to find pages. Parts that load content with admin-ajax.php or the REST API after the page opens will not work; the pre-export check lists them.</p>\n</p>\n<h4>\nIs the plugin translated?\n</h4>\n<p>\n<p>The plugin is translation-ready (text domain <code>fstyle-static-export</code>). Translations are provided through translate.wordpress.org. A Japanese translation has been submitted there.</p>\n</p>\n\n",
+        "changelog": "<h4>0.3.3</h4>\n<ul>\n<li>The export folder (wp-content/uploads/fsse-export) is now protected from direct access: <code>.htaccess</code> and an empty <code>index.html</code> are added if they do not exist yet (existing files are not overwritten), and an empty <code>index.html</code> is added to each export folder. A notice is shown when they cannot be written. On nginx, block access to the folder in the server settings.</li>\n<li>The examples of &#8220;Remaining URLs of this site&#8221; in the result are shorter: about 40 characters around the match, at most 3 per row.</li>\n</ul>\n<h4>0.3.2</h4>\n<ul>\n<li>Translation files are no longer bundled. Translations are provided through translate.wordpress.org.</li>\n<li>Removed an unnecessary include of wp-admin/includes/file.php.</li>\n<li>Added the &#8220;External services&#8221; section to the readme.</li>\n</ul>\n<h4>0.3.1</h4>\n<ul>\n<li>Requests to your own site now use the Requests library bundled with WordPress instead of calling cURL directly.</li>\n<li>The URL entered for &#8220;Absolute URLs&#8221; is sanitized before it is saved.</li>\n</ul>\n<h4>0.3.0</h4>\n<ul>\n<li>All text is now in English and translatable. A Japanese translation is included.</li>\n<li>SSL certificates are verified by default. For local environments with a self-signed certificate, verification can be turned off in the settings, with <code>--skip-ssl-verify</code>, or with the new <code>fsse_verify_ssl</code> filter.</li>\n<li>Files are written with WP_Filesystem.</li>\n<li>Settings are deleted when the plugin is uninstalled.</li>\n<li>Added readme.txt.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>Faster recovery after 429 responses: concurrency is lowered at most once per second and raised by 1.5 times after a series of successful requests.</li>\n<li>New option to add index.html to relative links (settings screen and <code>wp fsse export --dir-index</code>).</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>First prototype: export screen, WP-CLI command, retries on 429/503, broken link report.</li>\n</ul>\n"
+    },
+    "short_description": "Turn your WordPress site into static HTML you can host anywhere. Retries when the server is busy and lists broken links and forms that will break.",
+    "description": "<p>Fstyle Static HTML Export crawls your own site and saves every page, together with the CSS, JavaScript, images and other files it uses, as plain HTML files. You can upload the result to any web server or open it locally.</p>\n<p>Shared hosting often answers &#8220;429 Too Many Requests&#8221; when many pages are fetched at once. Instead of skipping those pages, this plugin slows down and retries, and when the export is done it lists the broken internal links and the parts of the site (forms, search, admin-ajax.php, REST API calls) that will not work on the static copy. Everything runs on your own server, with no external service.</p>\n<p><strong>Features</strong></p>\n<ul>\n<li><strong>Fast, concurrent fetching.</strong> Several pages are fetched at the same time (configurable). Static files under wp-content and wp-includes are copied straight from disk instead of over HTTP.</li>\n<li><strong>Automatic retries on 429 and 503.</strong> When the server answers &#8220;Too Many Requests&#8221; or &#8220;Service Unavailable&#8221; (or a request times out), the page is not skipped. The plugin waits (it honors Retry-After), lowers the number of concurrent requests, and tries again. Once requests succeed again, the concurrency is raised step by step.</li>\n<li><strong>Broken link report.</strong> After the export, every internal link and file reference in the exported HTML and CSS is checked. Missing files are listed, separately from links that are also broken on the original site, pages that could not be fetched, and links to dynamic WordPress URLs.</li>\n<li><strong>Relative or absolute URLs.</strong> Export with relative URLs, so the folder works from any location, or rewrite all URLs to the domain where the static site will be published. Optionally add index.html to relative links, so the folder can be browsed directly from disk.</li>\n<li><strong>Finds pages that are not linked.</strong> Besides following links, it reads robots.txt and the sitemaps (wp-sitemap.xml, sitemap.xml) and, optionally (on by default), the lists of posts, pages, categories and authors. The 404 page is saved as 404.html.</li>\n<li><strong>Pre-export check.</strong> Finds parts that will stop working on a static site, such as comment forms, search forms, contact forms, admin-ajax.php and REST API calls, and nonces.</li>\n<li><strong>Resumable.</strong> Progress is saved continuously. If the browser is closed or a request fails, the export can be resumed where it stopped.</li>\n<li><strong>Updated posts only.</strong> Re-export only the posts that changed since the previous export, reusing the rest.</li>\n<li><strong>Zip download</strong> of the finished export.</li>\n<li><strong>WP-CLI support.</strong> Run <code>wp fsse export</code> to export without the time limits of a web request.</li>\n</ul>\n<p>The exported files are saved in <code>wp-content/uploads/fsse-export/{date-time}/</code>. The plugin places <code>.htaccess</code> and an empty <code>index.html</code> in that folder so that the files cannot be accessed from outside. On nginx, <code>.htaccess</code> is not used: configure the server so that this folder cannot be accessed from outside.</p>\n<p><strong>WP-CLI</strong></p>\n<pre><code>wp fsse export [--concurrency=&lt;n&gt;] [--url-mode=&lt;relative|absolute&gt;] [--target=&lt;url&gt;] [--alias=&lt;hosts&gt;] [--exclude=&lt;prefixes&gt;] [--changed] [--resume=&lt;id&gt;] [--dir-index] [--skip-ssl-verify] [--zip] [--json]\n\nwp fsse report &lt;id&gt; prints the result of an export as JSON.\n</code></pre>\n<h3>External services</h3>\n<p>This plugin does not connect to any third-party or external service. It only sends HTTP requests to your own site (the home URL and the domains you list as &#8220;Domains treated as this site&#8221;) to fetch the pages it exports. No data is sent to the plugin author or anyone else.</p>\n<p>The plugin removes some WordPress head links from the exported HTML, such as <code>&lt;link rel=\"https://api.w.org/\"&gt;</code>. This only matches the text of that link in your own pages; the plugin never sends a request to api.w.org.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/fstyle-static-export.0.3.3.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/fstyle-static-export/assets/screenshot-1.png?rev=3771810",
+            "caption": "The export screen under Tools, with the settings and the export buttons."
+        },
+        {
+            "src": "https://ps.w.org/fstyle-static-export/assets/screenshot-2.png?rev=3771810",
+            "caption": "Progress during an export, including retries after 429 responses."
+        },
+        {
+            "src": "https://ps.w.org/fstyle-static-export/assets/screenshot-3.png?rev=3771810",
+            "caption": "The result: pages, files, broken links and URLs that could not be fetched."
+        },
+        {
+            "src": "https://ps.w.org/fstyle-static-export/assets/screenshot-4.png?rev=3771810",
+            "caption": "The pre-export check listing forms and other parts that do not work on a static site."
+        }
+    ],
+    "tags": {
+        "broken-links": "broken links",
+        "export": "export",
+        "html": "html",
+        "static": "static",
+        "static-site": "static site"
+    },
+    "stable_tag": "0.3.3",
+    "versions": {
+        "0.3.2": "https://downloads.wordpress.org/plugin/fstyle-static-export.0.3.2.zip",
+        "0.3.3": "https://downloads.wordpress.org/plugin/fstyle-static-export.0.3.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/fstyle-static-export.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/fstyle-static-export/assets/icon-128x128.png?rev=3771810",
+        "2x": "https://ps.w.org/fstyle-static-export/assets/icon-256x256.png?rev=3771810"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

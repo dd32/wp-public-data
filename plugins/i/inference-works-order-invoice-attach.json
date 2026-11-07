@@ -1,0 +1,102 @@
+{
+    "name": "Inference Works Order Invoice Attach for WooCommerce",
+    "slug": "inference-works-order-invoice-attach",
+    "version": "1.2.1",
+    "author": "<a href=\"https://profiles.wordpress.org/grzegorzk/\">InferenceWorks</a>",
+    "author_profile": "https://profiles.wordpress.org/grzegorzk/",
+    "contributors": {
+        "grzegorzk": {
+            "profile": "https://profiles.wordpress.org/grzegorzk/",
+            "avatar": "https://secure.gravatar.com/avatar/6b42ee26f880b315c6ce36d21c8bdfd00412e82110e498b36dcfb08a45793f53?s=96&d=monsterid&r=g",
+            "display_name": "InferenceWorks"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/inference-works-order-invoice-attach/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-06 22:36:00",
+    "added": "2026-11-02",
+    "homepage": "https://wordpress.org/plugins/inference-works-order-invoice-attach/",
+    "sections": {
+        "description": "<p>Inference Works Order Invoice Attach for WooCommerce is for shops that issue invoices in an external accounting tool and only need WooCommerce to deliver the finished PDF.</p>\n<p><strong>This plugin does not generate invoices.</strong> It does not talk to any accounting API, assign numbers, or create credit notes. You upload a PDF on the order screen; the plugin stores it privately and attaches it to the emails you choose.</p>\n<h4>What it does</h4>\n<ul>\n<li>Upload a PDF invoice on the WooCommerce order edit screen (classic and High-Performance Order Storage).</li>\n<li>Attach that file to selected customer emails (completed, processing, refunded, or the manual invoice email).</li>\n<li>Let the customer download the same file from My Account when a PDF is present.</li>\n<li>Warn — or optionally block a manual status change — if you try to complete an order with no invoice uploaded.</li>\n<li>Store files under a random name inside uploads and provide a permission-checked download endpoint.</li>\n</ul>\n<h4>Storage and security</h4>\n<p>Files live in <code>wp-content/uploads/iwoia-invoices/{year}/{month}/</code> with a 32-character random filename. The original name is never used on disk. An <code>index.php</code> and <code>.htaccess</code> (<code>Deny from all</code>) are written in the root folder as extra Apache protection.</p>\n<p><strong>Nginx ignores <code>.htaccess</code>.</strong> Configure your server to deny direct public access to the invoice directories. Without such protection, someone who knows a direct PDF URL may bypass the download endpoint. Random names make URLs difficult to guess but do not replace access control. Direct storage URLs are not exposed by this plugin&#8217;s emails or admin interface.</p>\n<p>Existing invoices from versions up to 1.1.0 remain in <code>oia-invoices</code> and remain readable. New uploads use <code>iwoia-invoices</code>. Apply the server access restriction to both directories when upgrading.</p>\n<p>Download is allowed for shop managers, the logged-in order owner, or anyone with a valid order key (guest links).</p>\n<h4>Privacy</h4>\n<p>The plugin registers a personal data exporter (reports that an invoice file exists on an order) and an eraser (deletes the file). No remote requests, telemetry, or third-party scripts.</p>\n<p>Inference Works publishes its <a href=\"https://inferenceworks.eu/terms/\" rel=\"nofollow ugc\">Terms of Service</a> and <a href=\"https://inferenceworks.eu/en/privacy/\" rel=\"nofollow ugc\">Privacy Policy</a>. These documents include the terms and privacy information applicable to Inference Works plugins.</p>\n",
+        "installation": "<ol>\n<li>Install and activate WooCommerce.</li>\n<li>Upload the plugin folder to <code>wp-content/plugins/</code> or install the zip from Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New.</li>\n<li>Activate <strong>Inference Works Order Invoice Attach for WooCommerce</strong>.</li>\n<li>Open Inference Works <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Order invoices and choose which emails receive the PDF.</li>\n<li>On an order, upload the invoice PDF, then change status (or send the customer invoice email) as usual.</li>\n</ol>\n<h4>Upgrading from Order Invoice Attach 1.1.0 or earlier</h4>\n<p>Deactivate the former plugin before activating this version, which uses the new slug <code>inference-works-order-invoice-attach</code>. Do not delete the old plugin with its invoice cleanup option enabled. The new version imports existing settings without overwriting new settings and reads legacy invoice metadata and download links. Existing PDFs are not moved. Activating both versions leaves the new version inactive internally until the old plugin is deactivated, preventing duplicate order and email hooks.</p>\n<p>The WordPress.org package uses language packs from translate.wordpress.org and does not include bundled PO/MO translations. Existing source translations are maintained separately for contributors.</p>\n",
+        "faq": "\n<h4>\nDoes this plugin generate invoices?\n</h4>\n<p>\n<p>No. It never creates a PDF, VAT number, or invoice sequence. Use your accounting software, then upload the finished file on the WooCommerce order.</p>\n</p>\n<h4>\nWhich emails get the attachment?\n</h4>\n<p>\n<p>By default only <strong>Completed order</strong>. You can also enable Processing, Refunded, and Customer invoice / order details under Inference Works <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Order invoices.</p>\n</p>\n<h4>\nWhat happens if I complete an order without uploading a PDF?\n</h4>\n<p>\n<p>The default is a warning: the status still changes, the email goes out without an attachment, and a shop notice plus order note are recorded. You can switch to “block” so a manual status change is reverted until a PDF is present. Automatic status changes (checkout, REST, WP-CLI, cron) always use warning mode so payments are not stuck.</p>\n</p>\n<h4>\nWhere are files stored?\n</h4>\n<p>\n<p>In the WordPress uploads directory, in <code>iwoia-invoices</code>, with a random hash as the filename. They are not in the media library.</p>\n</p>\n<h4>\nCan customers see a “invoice unavailable” message?\n</h4>\n<p>\n<p>No. If no file is uploaded, My Account simply has no Invoice button.</p>\n</p>\n<h4>\nWill uninstalling delete invoices?\n</h4>\n<p>\n<p>Only if you enable <strong>Delete files and settings on uninstall</strong> in the settings. That option is off by default.</p>\n</p>\n\n",
+        "changelog": "<h4>1.2.1</h4>\n<ul>\n<li>Declare the WooCommerce dependency and tested WooCommerce range.</li>\n<li>Raise the minimum WordPress version to 6.2, matching WooCommerce 8.0 requirements and the compatibility matrix.</li>\n<li>Add the Inference Works terms and privacy links and suggested text for the WordPress privacy policy guide.</li>\n<li>Add automated compatibility coverage for classic order storage and HPOS.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Add distinctive Inference Works branding and a matching plugin slug and text domain.</li>\n<li>Replace short internal prefixes and retain compatibility with existing invoice data.</li>\n<li>Limit admin notices to relevant screens and omit bundled compiled translations from the WordPress.org package.</li>\n<li>Tighten invoice path validation and avoid following directory symlinks during opt-in uninstall cleanup.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Move settings to Inference Works <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Order invoices, with redirects from the old WooCommerce settings tab.</li>\n<li>Add the shared Inference Works overview, module registry, matrix icon, and Settings action link.</li>\n<li>Keep existing invoice settings, order uploads, HPOS support, and file storage.</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>Explicitly validate each upload metadata field so Plugin Check can recognize the existing input validation.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Use the WordPress upload API while keeping randomized invoice filenames and the dedicated storage directory.</li>\n<li>Verify AJAX nonces in the upload and delete handlers and sanitize upload metadata.</li>\n<li>Use automatic loading of WordPress.org translations.</li>\n<li>Exclude development and hidden files from the distribution package.</li>\n<li>Update tested WordPress version to 7.1 after manual functional verification.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Fix fatal error on every page: settings class no longer extends WC_Settings_Page before WooCommerce has loaded it.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release: PDF upload on orders, email attachments, My Account download, privacy tools.</li>\n</ul>\n"
+    },
+    "short_description": "Attach a PDF invoice to selected WooCommerce emails and let customers download it from My Account.",
+    "description": "<p>Inference Works Order Invoice Attach for WooCommerce is for shops that issue invoices in an external accounting tool and only need WooCommerce to deliver the finished PDF.</p>\n<p><strong>This plugin does not generate invoices.</strong> It does not talk to any accounting API, assign numbers, or create credit notes. You upload a PDF on the order screen; the plugin stores it privately and attaches it to the emails you choose.</p>\n<h4>What it does</h4>\n<ul>\n<li>Upload a PDF invoice on the WooCommerce order edit screen (classic and High-Performance Order Storage).</li>\n<li>Attach that file to selected customer emails (completed, processing, refunded, or the manual invoice email).</li>\n<li>Let the customer download the same file from My Account when a PDF is present.</li>\n<li>Warn — or optionally block a manual status change — if you try to complete an order with no invoice uploaded.</li>\n<li>Store files under a random name inside uploads and provide a permission-checked download endpoint.</li>\n</ul>\n<h4>Storage and security</h4>\n<p>Files live in <code>wp-content/uploads/iwoia-invoices/{year}/{month}/</code> with a 32-character random filename. The original name is never used on disk. An <code>index.php</code> and <code>.htaccess</code> (<code>Deny from all</code>) are written in the root folder as extra Apache protection.</p>\n<p><strong>Nginx ignores <code>.htaccess</code>.</strong> Configure your server to deny direct public access to the invoice directories. Without such protection, someone who knows a direct PDF URL may bypass the download endpoint. Random names make URLs difficult to guess but do not replace access control. Direct storage URLs are not exposed by this plugin&#8217;s emails or admin interface.</p>\n<p>Existing invoices from versions up to 1.1.0 remain in <code>oia-invoices</code> and remain readable. New uploads use <code>iwoia-invoices</code>. Apply the server access restriction to both directories when upgrading.</p>\n<p>Download is allowed for shop managers, the logged-in order owner, or anyone with a valid order key (guest links).</p>\n<h4>Privacy</h4>\n<p>The plugin registers a personal data exporter (reports that an invoice file exists on an order) and an eraser (deletes the file). No remote requests, telemetry, or third-party scripts.</p>\n<p>Inference Works publishes its <a href=\"https://inferenceworks.eu/terms/\" rel=\"nofollow ugc\">Terms of Service</a> and <a href=\"https://inferenceworks.eu/en/privacy/\" rel=\"nofollow ugc\">Privacy Policy</a>. These documents include the terms and privacy information applicable to Inference Works plugins.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/inference-works-order-invoice-attach.1.2.1.zip",
+    "upgrade_notice": {
+        "1.2.1": "<p>Adds explicit compatibility metadata and a privacy policy guide. The minimum supported WordPress version is now 6.2.</p>",
+        "1.2.0": "<p>New plugin slug. Deactivate the former Order Invoice Attach installation before activating this version. Existing settings and PDF files remain readable. See the migration guide.</p>",
+        "1.1.0": "<p>Settings are now under Inference Works → Order invoices. Existing options and invoices are retained.</p>",
+        "1.0.3": "<p>Clarifies upload input validation for static analysis by Plugin Check.</p>",
+        "1.0.2": "<p>WordPress upload API integration and Plugin Check compatibility fixes. Tested with WordPress 7.1.</p>",
+        "1.0.1": "<p>Fixes a critical error that took the site down after activation.</p>",
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/inference-works-order-invoice-attach/assets/screenshot-1.png?rev=3779562",
+            "caption": "Invoice metabox on the order edit screen."
+        },
+        {
+            "src": "https://ps.w.org/inference-works-order-invoice-attach/assets/screenshot-2.png?rev=3779562",
+            "caption": "Inference Works → Order invoices."
+        },
+        {
+            "src": "https://ps.w.org/inference-works-order-invoice-attach/assets/screenshot-3.png?rev=3779562",
+            "caption": "Invoice action on My Account → Orders."
+        }
+    ],
+    "tags": {
+        "email": "email",
+        "invoice": "invoice",
+        "order": "order",
+        "pdf": "pdf",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.2.1",
+    "versions": {
+        "1.2.0": "https://downloads.wordpress.org/plugin/inference-works-order-invoice-attach.1.2.0.zip",
+        "1.2.1": "https://downloads.wordpress.org/plugin/inference-works-order-invoice-attach.1.2.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/inference-works-order-invoice-attach.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/inference-works-order-invoice-attach/assets/banner-772x250.png?rev=3779562",
+        "high": "https://ps.w.org/inference-works-order-invoice-attach/assets/banner-1544x500.png?rev=3779562"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/inference-works-order-invoice-attach/assets/icon-128x128.png?rev=3779562",
+        "2x": "https://ps.w.org/inference-works-order-invoice-attach/assets/icon-256x256.png?rev=3779562"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
