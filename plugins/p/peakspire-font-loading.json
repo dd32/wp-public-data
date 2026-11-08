@@ -1,0 +1,78 @@
+{
+    "name": "Peakspire Font Loading Optimizer",
+    "slug": "peakspire-font-loading",
+    "version": "1.0.5",
+    "author": "<a href=\"https://profiles.wordpress.org/peakspire/\">PeakSpire</a>",
+    "author_profile": "https://profiles.wordpress.org/peakspire/",
+    "contributors": {
+        "peakspire": {
+            "profile": "https://profiles.wordpress.org/peakspire/",
+            "avatar": "https://secure.gravatar.com/avatar/f27ff3e12a8e1436841a2bea58352352a8bf3e526686e397d2b98e325eb52e60?s=96&d=monsterid&r=g",
+            "display_name": "PeakSpire"
+        }
+    },
+    "requires": "6.9",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/peakspire-font-loading/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-08 07:45:00",
+    "added": "2026-11-08",
+    "homepage": "https://peakspire.ca",
+    "sections": {
+        "description": "<p>Font loading is one of the largest contributors to Largest Contentful Paint (LCP) on real websites. Peakspire Font Loading Optimizer applies the three highest-impact font fixes, built from hands-on Core Web Vitals engineering on production sites:</p>\n<ol>\n<li>\n<p><strong>Preload local WOFF2 fonts</strong> &#8211; Scans your enqueued stylesheets for locally hosted WOFF2 files and adds <code>&lt;link rel=\"preload\"&gt;</code> tags, capped at 4 fonts. Preloaded fonts arrive before the browser discovers them inside CSS files, removing the font round-trip from the critical path.</p>\n</li>\n<li>\n<p><strong>Adds <code>font-display: swap</code> to eligible inline <code>@font-face</code> rules</strong> &#8211; Rules that already declare an explicit <code>optional</code>, <code>block</code>, <code>fallback</code>, or <code>auto</code> value are never touched. Rules without a descriptor get <code>swap</code>, so text renders immediately with the fallback font instead of sitting invisible while web fonts download.</p>\n</li>\n<li>\n<p><strong>Remove external Google Fonts (optional)</strong> &#8211; Dequeues all fonts.googleapis.com requests for sites that have self-hosted their fonts.</p>\n</li>\n<li>\n<p><strong>Remove dashicons for visitors (optional)</strong> &#8211; Dequeues the dashicons stylesheet for logged-out visitors, saving a render-blocking request most themes never use on the front end.</p>\n</li>\n</ol>\n<p>Everything is front-end only and safe to use alongside caching plugins (WP Rocket, LiteSpeed Cache, W3 Total Cache, etc.).</p>\n<h4>Why only local fonts are preloaded</h4>\n<p>Cross-origin font preloads waste bandwidth when the crossorigin fetch does not match the stylesheet fetch. This plugin deliberately preloads only same-host WOFF2 files, the safe default for virtually all themes that self-host fonts.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>peakspire-font-loading</code> folder to <code>/wp-content/plugins/</code>, or install via the Plugins screen.</li>\n<li>Activate the plugin.</li>\n<li>Open Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Peakspire Font Loading Optimizer. Preload and font-display are on by default; both are recommended.</li>\n</ol>\n",
+        "faq": "\n<h4>\nWhich fonts does this preload?\n</h4>\n<p>\n<p>WOFF2 files hosted on your own domain that are referenced from enqueued external stylesheets, up to a static maximum of 4 per page. Fonts declared inline in the HTML head are deliberately NOT preloaded: the browser already discovers those at parse time, so preloading them adds bandwidth cost without benefit (measured: a ~0.9s LCP regression on an inline-declaring theme before this rule was enforced). This is a deliberate simplicity tradeoff: the plugin does not measure per-page font relevance (paid performance suites do). For most sites with 2-4 font families, the cap is the right size.</p>\n</p>\n<h4>\nDoes this replace a font-localization plugin like OMGF?\n</h4>\n<p>\n<p>No &#8211; it complements one. Localization plugins handle fonts sourced from Google/Bunny CDNs. This plugin handles the other half: the fonts your theme or builder already bundles locally. Use both if you have both.</p>\n</p>\n<h4>\nDoes this work with caching plugins?\n</h4>\n<p>\n<p>Yes. All changes are front-end output (preload tags and CSS descriptor injection). Nothing modifies your theme files or cache behavior.</p>\n</p>\n<h4>\nWhich fonts get preloaded?\n</h4>\n<p>\n<p>Only WOFF2 files hosted on your own domain that are referenced from your enqueued stylesheets, up to a maximum of 4. Preloading more fonts typically hurts more than it helps.</p>\n</p>\n<h4>\nWhat if my fonts come from Google Fonts?\n</h4>\n<p>\n<p>Enable the &#8220;Remove external Google Fonts&#8221; option only after self-hosting your fonts. Sites not ready for that step should leave it off.</p>\n</p>\n<h4>\nIs the font-display change safe for my design?\n</h4>\n<p>\n<p>font-display: swap shows the fallback font until your web font loads, then swaps. It is the descriptor Google recommends and the default in most modern themes.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.3</h4>\n<ul>\n<li>Discovery prioritization: same-host stylesheets scanned first; CDN-hosted stylesheets no longer consume scan slots (they cannot yield same-host WOFF2 URLs)</li>\n<li>Real-theme tested on Twenty Twenty-Four: external CSS fonts correctly preloaded, inline declarations correctly skipped</li>\n<li>PHP 7.4 literal execution verified (Docker php:7.4-cli, lint + token scan)</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Security hardening: SSRF defense (private/loopback/link-local IP deny-list before fetch), cache-hit re-validation (same-host + is_string on every cached entry), corrupt-lock-value recovery (stale-reclaimable, not live-forever)</li>\n<li>Availability: preg_replace NULL guard on backtrack-limit exhaustion (never blanks a page)</li>\n<li>CSS correctness: @font-face rewrite scoped to </li>\n<li>Measured: zero LCP regression on inline-font themes; preload timing verified on external-CSS pages</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release: WOFF2 preload discovery, global font-display:swap injection, optional Google Fonts removal, optional dashicons removal for guests.</li>\n</ul>\n"
+    },
+    "short_description": "Speed up WordPress font loading: preloads self-hosted WOFF2 fonts, adds font-display swap, and removes render-blocking requests for faster LCP.",
+    "description": "<p>Font loading is one of the largest contributors to Largest Contentful Paint (LCP) on real websites. Peakspire Font Loading Optimizer applies the three highest-impact font fixes, built from hands-on Core Web Vitals engineering on production sites:</p>\n<ol>\n<li>\n<p><strong>Preload local WOFF2 fonts</strong> &#8211; Scans your enqueued stylesheets for locally hosted WOFF2 files and adds <code>&lt;link rel=\"preload\"&gt;</code> tags, capped at 4 fonts. Preloaded fonts arrive before the browser discovers them inside CSS files, removing the font round-trip from the critical path.</p>\n</li>\n<li>\n<p><strong>Adds <code>font-display: swap</code> to eligible inline <code>@font-face</code> rules</strong> &#8211; Rules that already declare an explicit <code>optional</code>, <code>block</code>, <code>fallback</code>, or <code>auto</code> value are never touched. Rules without a descriptor get <code>swap</code>, so text renders immediately with the fallback font instead of sitting invisible while web fonts download.</p>\n</li>\n<li>\n<p><strong>Remove external Google Fonts (optional)</strong> &#8211; Dequeues all fonts.googleapis.com requests for sites that have self-hosted their fonts.</p>\n</li>\n<li>\n<p><strong>Remove dashicons for visitors (optional)</strong> &#8211; Dequeues the dashicons stylesheet for logged-out visitors, saving a render-blocking request most themes never use on the front end.</p>\n</li>\n</ol>\n<p>Everything is front-end only and safe to use alongside caching plugins (WP Rocket, LiteSpeed Cache, W3 Total Cache, etc.).</p>\n<h4>Why only local fonts are preloaded</h4>\n<p>Cross-origin font preloads waste bandwidth when the crossorigin fetch does not match the stylesheet fetch. This plugin deliberately preloads only same-host WOFF2 files, the safe default for virtually all themes that self-host fonts.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/peakspire-font-loading.1.0.5.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "fonts": "fonts",
+        "google-fonts": "google fonts",
+        "performance": "performance",
+        "preload": "preload",
+        "speed": "speed"
+    },
+    "stable_tag": "1.0.5",
+    "versions": {
+        "1.0.5": "https://downloads.wordpress.org/plugin/peakspire-font-loading.1.0.5.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/peakspire-font-loading.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/peakspire-font-loading/assets/banner-772x250.png?rev=3790530",
+        "high": "https://ps.w.org/peakspire-font-loading/assets/banner-1544x500.png?rev=3790530"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/peakspire-font-loading/assets/icon-256x256.png?rev=3790631",
+        "2x": "https://ps.w.org/peakspire-font-loading/assets/icon-256x256.png?rev=3790631"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
