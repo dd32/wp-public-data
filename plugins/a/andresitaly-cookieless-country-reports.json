@@ -1,0 +1,92 @@
+{
+    "name": "Andresitaly Cookieless Country Reports",
+    "slug": "andresitaly-cookieless-country-reports",
+    "version": "1.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/andresitaly/\">Andres Hunger</a>",
+    "author_profile": "https://profiles.wordpress.org/andresitaly/",
+    "contributors": {
+        "andresitaly": {
+            "profile": "https://profiles.wordpress.org/andresitaly/",
+            "avatar": "https://secure.gravatar.com/avatar/fd9629e203ba43683a1220d9b115f99729003ad16fb4a38dd970a80767360c99?s=96&d=monsterid&r=g",
+            "display_name": "Andres Hunger"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1.4",
+    "requires_php": "8.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/andresitaly-cookieless-country-reports/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-08 17:49:00",
+    "added": "2026-11-08",
+    "homepage": "https://wordpress.org/plugins/andresitaly-cookieless-country-reports/",
+    "sections": {
+        "description": "<p>Andresitaly Cookieless Country Reports counts which pages your visitors read the most and where they come from — and nothing else. It exists for site owners who want a lightweight, privacy-first alternative to Google Analytics.</p>\n<ul>\n<li><strong>Works behind page caches.</strong> The hit is captured by a tiny vanilla-JS beacon, so it counts even when pages are served by LiteSpeed / W3 Total Cache / any full-page cache that skips server-side PHP.</li>\n<li><strong>Country detection, zero config</strong> — if the site is served through Cloudflare, the country comes from Cloudflare&#8217;s own header (no key, no download at all). Otherwise the plugin uses a locally hosted MaxMind GeoLite2 database (free license key, downloaded once from your own admin page). Lookups run on your server — the plugin never calls a remote service per visit.</li>\n<li><strong>Reports only in the admin</strong>: view totals, sessions, top 20 pages, views by country, 30-day daily trend chart, CSV export.</li>\n<li><strong>Privacy by design.</strong> No cookies are set, no IP addresses are stored, and the session identifier is a random per-tab string stored only hashed for at most your raw-hit retention (default 7 days).</li>\n</ul>\n<h4>How it works</h4>\n<ul>\n<li>A ~2 KB vanilla JavaScript beacon sends one hit per page view to your own site&#8217;s REST endpoint.</li>\n<li>The hit carries a server-minted HMAC token, so only pages actually rendered by your site can be counted.</li>\n<li>Known bots (Googlebot, bingbot, Lighthouse, curl, most SEO crawlers) are filtered by User-Agent; logged-in users are never counted.</li>\n<li>The raw hit table is aggregated into a small daily table (page × country × device) and pruned after a configurable number of days.</li>\n</ul>\n<h4>What it does NOT do</h4>\n<ul>\n<li>No public counters, no badges, no external branding.</li>\n<li>No cookies, no cross-site tracking, no third-party analytics calls.</li>\n<li>No IP address is stored anywhere (transient keys embed irreversible hashes only, and expire quickly).</li>\n</ul>\n<h3>Privacy</h3>\n<p><strong>No cookies. No IP addresses.</strong> The plugin stores:</p>\n<ul>\n<li>Aggregated view counts (page × country × device × day) — kept as long as you configure.</li>\n<li>Raw individual hits with a random ephemeral session identifier (hashed) — deleted after your retention window (default 7 days).</li>\n<li>Two transient entries containing only irreversible hashes (a 10-second request dedupe and a 12-hour country cache) — neither is connected to identity.</li>\n</ul>\n<p>The plugin is GDPR-friendly by design: it does not track individuals and does not require a consent banner. A suggested privacy-policy paragraph is offered in Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Privacy.</p>\n<h3>External services</h3>\n<p>Andresitaly Cookieless Country Reports uses one external service: <strong>MaxMind GeoLite2</strong>, used to tell which country your visitors read your pages from.</p>\n<ul>\n<li><strong>What the service is and what it is used for.</strong> GeoLite2 is MaxMind&#8217;s free downloadable country database. Andresitaly Cookieless Country Reports downloads it once and then answers all country lookups locally on your own server — the plugin never calls MaxMind per page view, in any direction.</li>\n<li><strong>What data is sent and when.</strong> Nothing is sent automatically and no visitor data is ever shared. The only request is the database download itself, made by <em>your web server</em> to <code>https://download.maxmind.com</code>. It happens (a) when you paste your own free MaxMind license key and click &#8220;Download / update GeoLite2 now&#8221; in the admin, or (b) at your optional daily refresh, only if you enable it. The request carries just that license key and standard HTTP headers — no page views, no URLs, no visitor information. If your site is behind Cloudflare, no MaxMind key or download is needed at all (the country comes from Cloudflare&#8217;s response header).</li>\n<li><strong>MaxMind Terms of Service (GeoLite2 EULA):</strong> https://www.maxmind.com/en/geolite2/eula</li>\n<li><strong>MaxMind Privacy Policy:</strong> https://www.maxmind.com/en/privacy_policy</li>\n</ul>\n<p>GeoLite2 is licensed under the Creative Commons Attribution 4.0 license. The plugin does not bundle the database: you download it with your own key, as MaxMind&#8217;s EULA requires.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin.</li>\n<li>Go to <strong>Page Views</strong> in the admin sidebar.</li>\n<li>Paste your free MaxMind license key (GeoLite2 settings section inside the page) and click <strong>Download / update GeoLite2 now</strong>.</li>\n<li>Browse your site — counts appear in the report as visits come in (the daily table fills up from today; the previous day rolls up by cron).</li>\n</ol>\n",
+        "faq": "\n<h4>\nCan I use it behind LiteSpeed, W3 Total Cache, or a CDN?\n</h4>\n<p>\n<p>Yes — the beacon is client-side, so cached page views still count. That was the point.</p>\n</p>\n<h4>\nWhich pages are counted?\n</h4>\n<p>\n<p>Public, published singular pages: posts, pages, and any public custom post type. Not admin screens, not search results, not 404s, not logged-in views.</p>\n</p>\n<h4>\nIs a visitor&#8217;s IP stored?\n</h4>\n<p>\n<p>No. IP addresses are used only transiently (10 seconds, hashed keys) for request dedupe and country detection, then discarded.</p>\n</p>\n<h4>\nWhat is a &#8220;Session&#8221;?\n</h4>\n<p>\n<p>Counted by a random per-tab identifier, so it is browser/device-granular: the same person in two browsers counts twice. We call it Sessions, not unique users, honestly.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.1</h4>\n<ul>\n<li>Fix: the country filter showed &#8220;Unknown&#8221; instead of &#8220;All countries&#8221; when some visits had no detected country.</li>\n<li>Fix: the selected country no longer appears twice in the country filter.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First release: beacon tracking, GeoLite2 country detection, admin dashboard, CSV export.</li>\n</ul>\n"
+    },
+    "short_description": "Cookieless page views with per-country breakdown, for admins only. No Google Analytics, no cookies, no IP addresses stored.",
+    "description": "<p>Andresitaly Cookieless Country Reports counts which pages your visitors read the most and where they come from — and nothing else. It exists for site owners who want a lightweight, privacy-first alternative to Google Analytics.</p>\n<ul>\n<li><strong>Works behind page caches.</strong> The hit is captured by a tiny vanilla-JS beacon, so it counts even when pages are served by LiteSpeed / W3 Total Cache / any full-page cache that skips server-side PHP.</li>\n<li><strong>Country detection, zero config</strong> — if the site is served through Cloudflare, the country comes from Cloudflare&#8217;s own header (no key, no download at all). Otherwise the plugin uses a locally hosted MaxMind GeoLite2 database (free license key, downloaded once from your own admin page). Lookups run on your server — the plugin never calls a remote service per visit.</li>\n<li><strong>Reports only in the admin</strong>: view totals, sessions, top 20 pages, views by country, 30-day daily trend chart, CSV export.</li>\n<li><strong>Privacy by design.</strong> No cookies are set, no IP addresses are stored, and the session identifier is a random per-tab string stored only hashed for at most your raw-hit retention (default 7 days).</li>\n</ul>\n<h4>How it works</h4>\n<ul>\n<li>A ~2 KB vanilla JavaScript beacon sends one hit per page view to your own site&#8217;s REST endpoint.</li>\n<li>The hit carries a server-minted HMAC token, so only pages actually rendered by your site can be counted.</li>\n<li>Known bots (Googlebot, bingbot, Lighthouse, curl, most SEO crawlers) are filtered by User-Agent; logged-in users are never counted.</li>\n<li>The raw hit table is aggregated into a small daily table (page × country × device) and pruned after a configurable number of days.</li>\n</ul>\n<h4>What it does NOT do</h4>\n<ul>\n<li>No public counters, no badges, no external branding.</li>\n<li>No cookies, no cross-site tracking, no third-party analytics calls.</li>\n<li>No IP address is stored anywhere (transient keys embed irreversible hashes only, and expire quickly).</li>\n</ul>\n<h3>Privacy</h3>\n<p><strong>No cookies. No IP addresses.</strong> The plugin stores:</p>\n<ul>\n<li>Aggregated view counts (page × country × device × day) — kept as long as you configure.</li>\n<li>Raw individual hits with a random ephemeral session identifier (hashed) — deleted after your retention window (default 7 days).</li>\n<li>Two transient entries containing only irreversible hashes (a 10-second request dedupe and a 12-hour country cache) — neither is connected to identity.</li>\n</ul>\n<p>The plugin is GDPR-friendly by design: it does not track individuals and does not require a consent banner. A suggested privacy-policy paragraph is offered in Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Privacy.</p>\n<h3>External services</h3>\n<p>Andresitaly Cookieless Country Reports uses one external service: <strong>MaxMind GeoLite2</strong>, used to tell which country your visitors read your pages from.</p>\n<ul>\n<li><strong>What the service is and what it is used for.</strong> GeoLite2 is MaxMind&#8217;s free downloadable country database. Andresitaly Cookieless Country Reports downloads it once and then answers all country lookups locally on your own server — the plugin never calls MaxMind per page view, in any direction.</li>\n<li><strong>What data is sent and when.</strong> Nothing is sent automatically and no visitor data is ever shared. The only request is the database download itself, made by <em>your web server</em> to <code>https://download.maxmind.com</code>. It happens (a) when you paste your own free MaxMind license key and click &#8220;Download / update GeoLite2 now&#8221; in the admin, or (b) at your optional daily refresh, only if you enable it. The request carries just that license key and standard HTTP headers — no page views, no URLs, no visitor information. If your site is behind Cloudflare, no MaxMind key or download is needed at all (the country comes from Cloudflare&#8217;s response header).</li>\n<li><strong>MaxMind Terms of Service (GeoLite2 EULA):</strong> https://www.maxmind.com/en/geolite2/eula</li>\n<li><strong>MaxMind Privacy Policy:</strong> https://www.maxmind.com/en/privacy_policy</li>\n</ul>\n<p>GeoLite2 is licensed under the Creative Commons Attribution 4.0 license. The plugin does not bundle the database: you download it with your own key, as MaxMind&#8217;s EULA requires.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/andresitaly-cookieless-country-reports.1.0.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/andresitaly-cookieless-country-reports/assets/screenshot-1.png?rev=3791297",
+            "caption": "The Page Views dashboard: totals, sessions, countries, a 30-day trend chart and the top pages, with date range, country filter and CSV export."
+        },
+        {
+            "src": "https://ps.w.org/andresitaly-cookieless-country-reports/assets/screenshot-2.png?rev=3791297",
+            "caption": "Views by country, with flags, views and sessions."
+        },
+        {
+            "src": "https://ps.w.org/andresitaly-cookieless-country-reports/assets/screenshot-3.png?rev=3791297",
+            "caption": "GeoLite2 settings: paste a free MaxMind key once, then every country lookup happens on your own server."
+        }
+    ],
+    "tags": {
+        "analytics": "analytics",
+        "geolocation": "geolocation",
+        "page-views": "page views",
+        "privacy": "privacy",
+        "statistics": "statistics"
+    },
+    "stable_tag": "1.0.1",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/andresitaly-cookieless-country-reports.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/andresitaly-cookieless-country-reports.1.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/andresitaly-cookieless-country-reports.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/andresitaly-cookieless-country-reports/assets/banner-772x250.png?rev=3791297",
+        "high": "https://ps.w.org/andresitaly-cookieless-country-reports/assets/banner-1544x500.png?rev=3791297"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/andresitaly-cookieless-country-reports/assets/icon-128x128.png?rev=3791297",
+        "2x": "https://ps.w.org/andresitaly-cookieless-country-reports/assets/icon-256x256.png?rev=3791297"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
