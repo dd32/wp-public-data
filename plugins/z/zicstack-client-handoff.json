@@ -1,0 +1,97 @@
+{
+    "name": "Client Handoff",
+    "slug": "zicstack-client-handoff",
+    "version": "0.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/ezekielapetu/\">ezekielapetu</a>",
+    "author_profile": "https://profiles.wordpress.org/ezekielapetu/",
+    "contributors": {
+        "ezekielapetu": {
+            "profile": "https://profiles.wordpress.org/ezekielapetu/",
+            "avatar": "https://secure.gravatar.com/avatar/cc18ca69877aa4bc9e42b13608d094fd6a51e44448ca3435536fcd8b677dd6d7?s=96&d=monsterid&r=g",
+            "display_name": "ezekielapetu"
+        }
+    },
+    "requires": "6.0",
+    "tested": "6.9.11",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/zicstack-client-handoff/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-10 15:37:00",
+    "added": "2026-11-10",
+    "homepage": "https://github.com/Apetuezekiel/handoff-wp",
+    "sections": {
+        "description": "<p>When a developer hands off a WordPress site to a non-technical client, the standard admin interface presents features the client should not touch (plugin management, theme switching, code editors, core update controls) alongside nothing to orient them toward what they actually need to do. There is no built-in structure for that transition.</p>\n<p>Client Handoff addresses this through two mechanisms: a first-run setup flow that walks the developer through configuring the site for a client, and a runtime enforcement layer that limits what designated client roles can see and do. Configuration is stored as a single option and can be exported as JSON for reuse across multiple sites.</p>\n<p><strong>What it does</strong></p>\n<ul>\n<li>Replaces the WordPress dashboard for designated client roles with a configurable widget containing a welcome message, quick links, developer contact information, and site status.</li>\n<li>Hides admin menus, admin bar entries, and update nags for client roles without modifying their underlying role capabilities in the database.</li>\n<li>Blocks deactivation and deletion of plugins the developer marks as protected, intercepting four distinct request shapes (single deactivate, bulk deactivate, single delete, bulk delete).</li>\n<li>Filters eleven codebase-altering capabilities at runtime (including install_plugins, activate_plugins, edit_plugins, switch_themes, update_core, and six others) using WordPress&#8217;s user_has_cap filter. No changes are written to the role definitions in the database.</li>\n<li>Provides a four-step setup flow (Roles, Dashboard, Restrictions, Activate) that guides the developer through full configuration before handoff mode is enabled.</li>\n<li>Exports and imports the full configuration as a JSON file for multi-site deployment.</li>\n</ul>\n<p><strong>What it does NOT do</strong></p>\n<ul>\n<li>Does not modify role capabilities or role definitions in the database. All capability filtering is runtime-only and disappears on deactivation.</li>\n<li>Does not phone home, send telemetry, or make external API calls of any kind.</li>\n<li>Does not include a premium tier, upsell prompts, or in-admin advertising.</li>\n<li>Does not support network-wide activation on multisite in this version. Single-site activation on a multisite network is supported; network-wide activation is detected and no-ops with an admin notice.</li>\n</ul>\n<p><strong>Comparison with BrenWP Client Safe Mode</strong></p>\n<p>BrenWP Client Safe Mode is the established option in this space and focuses on depth of restriction: granular control over what client roles can access. Client Handoff focuses on the workflow layer above restrictions: the guided setup experience, the client-facing dashboard widget, and the JSON export/import for deploying the same configuration across multiple sites. The two plugins address different problems and can coexist if a developer wants both the workflow structure of Client Handoff and the restriction depth of Client Safe Mode.</p>\n<p>Client Handoff is for developers and agencies who hand off WordPress sites to non-technical clients and need a structured, repeatable process for that transition.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to <code>wp-content/plugins/</code> or install it through the WordPress plugin directory at Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New.</li>\n<li>Activate the plugin via Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Installed Plugins.</li>\n<li>The plugin is inert until configured. On first activation, a four-step setup flow launches automatically in the admin and walks through role assignment, dashboard configuration, restriction selection, and final activation.</li>\n<li>On the setup flow&#8217;s final step, click &#8220;Activate Handoff Mode&#8221; to enable enforcement. The plugin has no effect on the front end or on users who are not in a designated client role.</li>\n</ol>\n",
+        "faq": "\n<h4>\nDoes this plugin modify user roles or capabilities in the database?\n</h4>\n<p>\n<p>No. Capability filtering happens at runtime through WordPress&#8217;s <code>user_has_cap</code> filter hook. The filter is only active when the plugin is active and handoff mode is enabled. Deactivating the plugin restores the standard WordPress capability resolution immediately. No data is written to the wp_user_roles option or to user meta.</p>\n</p>\n<h4>\nWhat happens if I lock myself out by mistake?\n</h4>\n<p>\n<p>Four safeguards prevent permanent lockout. First, user ID 1 (the original admin account) is always exempt from all restrictions. Second, users assigned to a role listed under Admin Roles in the Roles tab bypass enforcement entirely; assigning your own role to Admin Roles restores full access. Third, the <code>activate_plugins</code> capability acts as a hard floor: any user who has it in their role&#8217;s base capabilities is exempt, regardless of other settings. Fourth, WordPress super-admins on multisite are always exempt.</p>\n</p>\n<h4>\nCan this run alongside BrenWP Client Safe Mode?\n</h4>\n<p>\n<p>Yes. The two plugins operate through different hooks and address different concerns. Client Handoff provides setup flow, dashboard widget, and JSON export/import. BrenWP Client Safe Mode provides deeper restriction controls. Running both is supported. Verify the role and capability configuration in each plugin does not produce conflicting results for your specific setup.</p>\n</p>\n<h4>\nWhat happens when I deactivate the plugin?\n</h4>\n<p>\n<p>Deactivating the plugin removes all runtime enforcement immediately: menus reappear, capability filters are gone, and the original WordPress dashboard returns. The saved configuration is preserved in the database so the plugin can be reactivated without reconfiguring from scratch. Uninstalling the plugin (Delete via the Plugins screen) removes the saved configuration, activity log, and developer checklist from the database entirely.</p>\n</p>\n<h4>\nDoes this work on a multisite network?\n</h4>\n<p>\n<p>Single-site activation on a multisite network is supported: activate the plugin on a specific site and it works within that site&#8217;s admin. Network-wide activation (activating from the Network Admin <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Plugins screen) is not supported at this version. If network-wide activation is attempted, the plugin detects this and no-ops with an admin notice directing the developer to activate on individual sites instead.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>Initial release.</li>\n<li>Core: configuration loading, role resolution, lockout safeguards (user ID 1, admin_roles, activate_plugins floor, super-admin), recursion-safe capability helper.</li>\n<li>Enforcement: capability filter via user_has_cap, screen guard for designated admin screens, plugin protection intercepting four distinct request shapes.</li>\n<li>Cosmetic: per-role admin menu hiding, admin bar simplification, notification and nag suppression.</li>\n<li>Client dashboard: replaces the default WordPress dashboard for protected users with a configurable five-section widget.</li>\n<li>Settings UI: three configurable tabs (Roles, Restrictions, Dashboard) with tab-gated settings registration.</li>\n<li>Setup flow: four-step guided first-run experience (Roles, Dashboard, Restrictions, Activate).</li>\n<li>JSON export and import for multi-site deployment; import uses overwrite semantics against plugin defaults.</li>\n<li>Test suite: 148 unit tests across nine suites covering all pure-logic paths.</li>\n</ul>\n"
+    },
+    "short_description": "Structured developer-to-client handoff for WordPress sites: guided setup, client dashboard, contextual help, role-based restrictions.",
+    "description": "<p>When a developer hands off a WordPress site to a non-technical client, the standard admin interface presents features the client should not touch (plugin management, theme switching, code editors, core update controls) alongside nothing to orient them toward what they actually need to do. There is no built-in structure for that transition.</p>\n<p>Client Handoff addresses this through two mechanisms: a first-run setup flow that walks the developer through configuring the site for a client, and a runtime enforcement layer that limits what designated client roles can see and do. Configuration is stored as a single option and can be exported as JSON for reuse across multiple sites.</p>\n<p><strong>What it does</strong></p>\n<ul>\n<li>Replaces the WordPress dashboard for designated client roles with a configurable widget containing a welcome message, quick links, developer contact information, and site status.</li>\n<li>Hides admin menus, admin bar entries, and update nags for client roles without modifying their underlying role capabilities in the database.</li>\n<li>Blocks deactivation and deletion of plugins the developer marks as protected, intercepting four distinct request shapes (single deactivate, bulk deactivate, single delete, bulk delete).</li>\n<li>Filters eleven codebase-altering capabilities at runtime (including install_plugins, activate_plugins, edit_plugins, switch_themes, update_core, and six others) using WordPress&#8217;s user_has_cap filter. No changes are written to the role definitions in the database.</li>\n<li>Provides a four-step setup flow (Roles, Dashboard, Restrictions, Activate) that guides the developer through full configuration before handoff mode is enabled.</li>\n<li>Exports and imports the full configuration as a JSON file for multi-site deployment.</li>\n</ul>\n<p><strong>What it does NOT do</strong></p>\n<ul>\n<li>Does not modify role capabilities or role definitions in the database. All capability filtering is runtime-only and disappears on deactivation.</li>\n<li>Does not phone home, send telemetry, or make external API calls of any kind.</li>\n<li>Does not include a premium tier, upsell prompts, or in-admin advertising.</li>\n<li>Does not support network-wide activation on multisite in this version. Single-site activation on a multisite network is supported; network-wide activation is detected and no-ops with an admin notice.</li>\n</ul>\n<p><strong>Comparison with BrenWP Client Safe Mode</strong></p>\n<p>BrenWP Client Safe Mode is the established option in this space and focuses on depth of restriction: granular control over what client roles can access. Client Handoff focuses on the workflow layer above restrictions: the guided setup experience, the client-facing dashboard widget, and the JSON export/import for deploying the same configuration across multiple sites. The two plugins address different problems and can coexist if a developer wants both the workflow structure of Client Handoff and the restriction depth of Client Safe Mode.</p>\n<p>Client Handoff is for developers and agencies who hand off WordPress sites to non-technical clients and need a structured, repeatable process for that transition.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/zicstack-client-handoff.0.1.0.zip",
+    "upgrade_notice": {
+        "0.1.0": "<p>Initial release. No upgrade path required.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/zicstack-client-handoff/assets/screenshot-1.png?rev=3794903",
+            "caption": "Setup flow, Step 1 of 4: Configure Roles. Select which roles are treated as client roles and which roles bypass enforcement."
+        },
+        {
+            "src": "https://ps.w.org/zicstack-client-handoff/assets/screenshot-2.png?rev=3794903",
+            "caption": "Settings page: Restrictions tab with blocked capabilities checklist and protected plugins selection."
+        },
+        {
+            "src": "https://ps.w.org/zicstack-client-handoff/assets/screenshot-3.png?rev=3794903",
+            "caption": "Client view: replacement dashboard widget with welcome message, quick links, and developer contact information."
+        },
+        {
+            "src": "https://ps.w.org/zicstack-client-handoff/assets/screenshot-4.png?rev=3794903",
+            "caption": "Settings page: Dashboard tab with welcome message editor and quick-link row configuration."
+        }
+    ],
+    "tags": {
+        "agency-tools": "agency tools",
+        "client-dashboard": "client dashboard",
+        "client-handoff": "client handoff",
+        "developer-tools": "developer-tools",
+        "simplified-admin": "simplified admin"
+    },
+    "stable_tag": "0.1.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/zicstack-client-handoff.0.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/zicstack-client-handoff.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/zicstack-client-handoff/assets/banner-772x250.png?rev=3794903",
+        "high": "https://ps.w.org/zicstack-client-handoff/assets/banner-1544x500.png?rev=3794903"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/zicstack-client-handoff/assets/icon-128x128.png?rev=3794903",
+        "2x": "https://ps.w.org/zicstack-client-handoff/assets/icon-256x256.png?rev=3794903"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
