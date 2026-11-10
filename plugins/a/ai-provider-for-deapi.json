@@ -1,0 +1,95 @@
+{
+    "name": "AI Provider for deAPI",
+    "slug": "ai-provider-for-deapi",
+    "version": "0.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/deapi/\">deAPI</a>",
+    "author_profile": "https://profiles.wordpress.org/deapi/",
+    "contributors": {
+        "deapi": {
+            "profile": "https://profiles.wordpress.org/deapi/",
+            "avatar": "https://secure.gravatar.com/avatar/1e11c92fe75bae2709f1ecfa2016f70439d815405d456c09c766e717da3a6daf?s=96&d=monsterid&r=g",
+            "display_name": "deAPI"
+        }
+    },
+    "requires": "6.9",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/ai-provider-for-deapi/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-10 09:28:00",
+    "added": "2026-11-10",
+    "homepage": "https://github.com/deapi-ai/ai-provider-for-deapi",
+    "sections": {
+        "description": "<p>This plugin adds <a href=\"https://deapi.ai\" rel=\"nofollow ugc\">deAPI</a> as a provider for the WordPress AI Client, which is part of WordPress 7.0. Once it is active and an API key is saved under Settings &gt; Connectors, any plugin built on the AI Client can generate and edit images, generate videos, create speech and compute embeddings with deAPI.</p>\n<p>deAPI runs open-source models on a distributed GPU network and charges per request, with no subscription.</p>\n<p><strong>Supported models</strong></p>\n<ul>\n<li>Image generation: FLUX.1 [schnell], Z-Image Turbo, Z-Anime Distill and FLUX.2 [klein] 4B.</li>\n<li>Image editing: FLUX.2 [klein] 4B, with up to three input images.</li>\n<li>Video generation: LTX-2.5 22B (3-10 seconds) and MiniMax H3 33B Turbo (8 seconds), from text or from a first-frame image. Sizes: 768&#215;768, 1344&#215;768, 768&#215;1344, 1024&#215;768 and 768&#215;1024. Output is MP4.</li>\n<li>Text-to-speech: Kokoro (41 voices in 7 languages), Chatterbox and Qwen3 TTS CustomVoice. Output is MP3.</li>\n<li>Embeddings: BGE-M3 (1024 dimensions). Requires WordPress 7.2 or later.</li>\n</ul>\n<p>The plugin lists only the models available to your deAPI account. deAPI has no chat models, so text features such as title or excerpt generation keep using your other AI providers.</p>\n<p><strong>Requirements</strong></p>\n<ul>\n<li>WordPress 7.0 or later (the plugin loads on 6.9 but does nothing without the AI Client).</li>\n<li>A deAPI account and API key. You can <a href=\"https://app.deapi.ai/register\" rel=\"nofollow ugc\">create an account</a>.</li>\n</ul>\n<p><strong>Source code</strong></p>\n<p>The plugin ships its full, unminified source. Development happens on <a href=\"https://github.com/deapi-ai/ai-provider-for-deapi\" rel=\"nofollow ugc\">GitHub</a>, where you can report issues and run the tests.</p>\n<p>The model classes follow the structure of the <a href=\"https://wordpress.org/plugins/ai-provider-for-openai/\" rel=\"ugc\">AI Provider for OpenAI</a> plugin by the WordPress AI Team, which is licensed under GPLv2 or later.</p>\n<h3>External services</h3>\n<p>This plugin connects to the deAPI API at <code>https://oai.deapi.ai/v1</code> to list the models available to your account and to run the generation requests that plugins send through the WordPress AI Client. Nothing is sent until an API key is configured.</p>\n<ul>\n<li>When you save an API key under Settings &gt; Connectors, and when the AI Client needs the model list, the plugin sends your API key to <code>https://oai.deapi.ai/v1/models</code>.</li>\n<li>When a plugin asks the AI Client for an image, an image edit, a video, speech or embeddings and deAPI is selected, the plugin sends your API key, the prompt or input text, any source images, and the requested options (model, size, number of images, video length, voice) to the matching deAPI endpoint. For videos it then checks the job status every 5 seconds and downloads the finished file from the same API.</li>\n<li>Generated images may be returned as links to <code>https://results.deapi.ai</code>, which the AI Client may download.</li>\n</ul>\n<p>The plugin sends no other data and makes no requests in the background.</p>\n<p>deAPI <a href=\"https://deapi.ai/terms-of-service\" rel=\"nofollow ugc\">Terms of Service</a> and <a href=\"https://deapi.ai/privacy-policy\" rel=\"nofollow ugc\">Privacy Policy</a>.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin.</li>\n<li>Create an API key in the <a href=\"https://app.deapi.ai/settings/api-keys\" rel=\"nofollow ugc\">deAPI dashboard</a>.</li>\n<li>Go to Settings &gt; Connectors, find deAPI and paste the key. WordPress checks the key with deAPI when you save it.</li>\n</ol>\n<p>You can also set the key with the <code>DEAPI_API_KEY</code> environment variable or a <code>DEAPI_API_KEY</code> constant in <code>wp-config.php</code>.</p>\n<p>To try it, install the <a href=\"https://wordpress.org/plugins/ai/\" rel=\"ugc\">AI</a> plugin, turn on Image Generation and Editing under Settings &gt; AI, then open Media &gt; Generate Image. Its Text to Speech feature also works with deAPI and creates an audio version of a post from the editor sidebar.</p>\n",
+        "faq": "\n<h4>\nWhich deAPI features are not available?\n</h4>\n<p>\n<p>Transcription, music generation and the other deAPI endpoints are not part of this plugin, because the WordPress AI Client does not support them yet or deAPI does not offer them through its OpenAI-compatible gateway.</p>\n</p>\n<h4>\nWhy does image generation take a few seconds?\n</h4>\n<p>\n<p>deAPI waits for the GPU job to finish before it answers. Most images take 5 to 30 seconds, edits can take longer. The plugin allows up to 5 minutes per request.</p>\n</p>\n<h4>\nHow long does video generation take?\n</h4>\n<p>\n<p>Usually 30 seconds to 2 minutes. The AI Client waits for the finished MP4, so call it from WP-CLI, a cron event or a background job rather than a normal page request, where the PHP time limit (often 30 seconds) can stop it first. Set the length with the <code>seconds</code> custom option, for example <code>['customOptions' =&gt; ['seconds' =&gt; 5]]</code>.</p>\n</p>\n<h4>\nHow do I choose a voice?\n</h4>\n<p>\n<p>Pass a voice ID through the AI Client, for example <code>af_nova</code> or <code>bm_george</code> for Kokoro. The OpenAI voice names (<code>alloy</code>, <code>echo</code>, <code>fable</code>, <code>onyx</code>, <code>nova</code>, <code>shimmer</code>) also work. The default voice is <code>alloy</code>.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>Initial release: image generation and editing, video generation, text-to-speech and embeddings.</li>\n</ul>\n"
+    },
+    "short_description": "deAPI image and video generation, image editing, text-to-speech and embeddings with open models for the WordPress AI Client.",
+    "description": "<p>This plugin adds <a href=\"https://deapi.ai\" rel=\"nofollow ugc\">deAPI</a> as a provider for the WordPress AI Client, which is part of WordPress 7.0. Once it is active and an API key is saved under Settings &gt; Connectors, any plugin built on the AI Client can generate and edit images, generate videos, create speech and compute embeddings with deAPI.</p>\n<p>deAPI runs open-source models on a distributed GPU network and charges per request, with no subscription.</p>\n<p><strong>Supported models</strong></p>\n<ul>\n<li>Image generation: FLUX.1 [schnell], Z-Image Turbo, Z-Anime Distill and FLUX.2 [klein] 4B.</li>\n<li>Image editing: FLUX.2 [klein] 4B, with up to three input images.</li>\n<li>Video generation: LTX-2.5 22B (3-10 seconds) and MiniMax H3 33B Turbo (8 seconds), from text or from a first-frame image. Sizes: 768&#215;768, 1344&#215;768, 768&#215;1344, 1024&#215;768 and 768&#215;1024. Output is MP4.</li>\n<li>Text-to-speech: Kokoro (41 voices in 7 languages), Chatterbox and Qwen3 TTS CustomVoice. Output is MP3.</li>\n<li>Embeddings: BGE-M3 (1024 dimensions). Requires WordPress 7.2 or later.</li>\n</ul>\n<p>The plugin lists only the models available to your deAPI account. deAPI has no chat models, so text features such as title or excerpt generation keep using your other AI providers.</p>\n<p><strong>Requirements</strong></p>\n<ul>\n<li>WordPress 7.0 or later (the plugin loads on 6.9 but does nothing without the AI Client).</li>\n<li>A deAPI account and API key. You can <a href=\"https://app.deapi.ai/register\" rel=\"nofollow ugc\">create an account</a>.</li>\n</ul>\n<p><strong>Source code</strong></p>\n<p>The plugin ships its full, unminified source. Development happens on <a href=\"https://github.com/deapi-ai/ai-provider-for-deapi\" rel=\"nofollow ugc\">GitHub</a>, where you can report issues and run the tests.</p>\n<p>The model classes follow the structure of the <a href=\"https://wordpress.org/plugins/ai-provider-for-openai/\" rel=\"ugc\">AI Provider for OpenAI</a> plugin by the WordPress AI Team, which is licensed under GPLv2 or later.</p>\n<h3>External services</h3>\n<p>This plugin connects to the deAPI API at <code>https://oai.deapi.ai/v1</code> to list the models available to your account and to run the generation requests that plugins send through the WordPress AI Client. Nothing is sent until an API key is configured.</p>\n<ul>\n<li>When you save an API key under Settings &gt; Connectors, and when the AI Client needs the model list, the plugin sends your API key to <code>https://oai.deapi.ai/v1/models</code>.</li>\n<li>When a plugin asks the AI Client for an image, an image edit, a video, speech or embeddings and deAPI is selected, the plugin sends your API key, the prompt or input text, any source images, and the requested options (model, size, number of images, video length, voice) to the matching deAPI endpoint. For videos it then checks the job status every 5 seconds and downloads the finished file from the same API.</li>\n<li>Generated images may be returned as links to <code>https://results.deapi.ai</code>, which the AI Client may download.</li>\n</ul>\n<p>The plugin sends no other data and makes no requests in the background.</p>\n<p>deAPI <a href=\"https://deapi.ai/terms-of-service\" rel=\"nofollow ugc\">Terms of Service</a> and <a href=\"https://deapi.ai/privacy-policy\" rel=\"nofollow ugc\">Privacy Policy</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/ai-provider-for-deapi.0.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/ai-provider-for-deapi/assets/screenshot-1.png?rev=3793994",
+            "caption": "deAPI connected under Settings &gt; Connectors."
+        },
+        {
+            "src": "https://ps.w.org/ai-provider-for-deapi/assets/screenshot-2.png?rev=3793994",
+            "caption": "An image generated with deAPI from Media &gt; Generate Image (AI plugin)."
+        },
+        {
+            "src": "https://ps.w.org/ai-provider-for-deapi/assets/screenshot-3.png?rev=3793994",
+            "caption": "Refining a generated image with a text instruction: deAPI edits it with FLUX.2 [klein]."
+        },
+        {
+            "src": "https://ps.w.org/ai-provider-for-deapi/assets/screenshot-4.png?rev=3793994",
+            "caption": "An audio version of a post created with deAPI text-to-speech (Text to Speech feature of the AI plugin)."
+        }
+    ],
+    "tags": {
+        "ai": "AI",
+        "connector": "connector",
+        "image-generation": "image-generation",
+        "text-to-speech": "text to speech",
+        "video-generation": "video-generation"
+    },
+    "stable_tag": "0.1.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/ai-provider-for-deapi.0.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/ai-provider-for-deapi.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/ai-provider-for-deapi/assets/banner-772x250.png?rev=3793928",
+        "high": "https://ps.w.org/ai-provider-for-deapi/assets/banner-1544x500.png?rev=3793928"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/ai-provider-for-deapi/assets/icon.svg?rev=3793928",
+        "svg": "https://ps.w.org/ai-provider-for-deapi/assets/icon.svg?rev=3793928"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
