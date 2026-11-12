@@ -1,0 +1,87 @@
+{
+    "name": "Aystat Detect Hidden",
+    "slug": "aystat-detect-hidden",
+    "version": "1.0.4",
+    "author": "<a href=\"https://profiles.wordpress.org/stonemanhero/\">stonemanhero</a>",
+    "author_profile": "https://profiles.wordpress.org/stonemanhero/",
+    "contributors": {
+        "stonemanhero": {
+            "profile": "https://profiles.wordpress.org/stonemanhero/",
+            "avatar": "https://secure.gravatar.com/avatar/19b08d29efc2831adbd60af3999d16b83843ab635e5fb83f57e12ae5ce6add39?s=96&d=monsterid&r=g",
+            "display_name": "stonemanhero"
+        }
+    },
+    "requires": "5.8",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/aystat-detect-hidden/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-12 09:24:00",
+    "added": "2026-11-12",
+    "homepage": "https://aystat.com/detect-hidden",
+    "sections": {
+        "description": "<p><strong>Aystat Detect Hidden</strong> is an advanced security auditing and threat remediation plugin designed to expose stealth malware, backdoor administrators, concealed posts, hidden doorway pages, and clandestine plugins.</p>\n<h3>The Problem: Hook-Based Cloaking</h3>\n<p>Modern WordPress malware rarely modifies core files directly. Instead, sophisticated attackers and backdoors insert malicious users or content into your database and hook into WordPress filter APIs to keep them invisible:<br />\n* <strong>Hidden Users:</strong> Malware adds a rogue administrator account to the <code>wp_users</code> database table, then registers a hook on <code>pre_user_query</code> to filter its own ID out of all standard WordPress queries. To the site owner browsing <code>/wp-admin/users.php</code>, the user list appears normal. Malware often also filters <code>views_users</code> to tamper with displayed user counter tallies.<br />\n* <strong>Concealed Posts &amp; Doorway Pages:</strong> Attackers insert SEO spam, phishing forms, or doorway pages into <code>wp_posts</code>, then manipulate <code>pre_get_posts</code> or <code>posts_where</code> so the posts never appear in the WordPress Admin post list.<br />\n* <strong>Concealed Plugins:</strong> Rogue plugins or backdoors hook into the <code>all_plugins</code> filter to hide themselves from the <code>/wp-admin/plugins.php</code> interface while continuing to execute on every HTTP request.</p>\n<h3>The Solution: Differential Auditing &amp; Hook Inspection</h3>\n<p>Aystat Detect Hidden bypasses hooked filters through deep differential comparison and multi-layered defense-in-depth:<br />\n1. <strong>User Differential Audit:</strong> Fetches visible users via standard <code>get_users()</code> queries and compares them against raw database rows queried directly from <code>{$wpdb-&gt;users}</code> and <code>{$wpdb-&gt;usermeta}</code>. Any user record present in the raw database but excluded from <code>get_users()</code> is immediately flagged.<br />\n2. <strong>Post &amp; Page Differential Audit:</strong> Executes <code>WP_Query</code> with active filters and compares returned IDs against raw database records from <code>{$wpdb-&gt;posts}</code>. Any post or page omitted from the API query is flagged.<br />\n3. <strong>Plugin &amp; Component Audit:</strong> Physically inspects the plugins directory via <code>DirectoryIterator</code> (supporting subdirectories, single-file plugins, and unmanaged standalone PHP scripts) and compares physical files against filtered <code>all_plugins</code> hook output.<br />\n4. <strong>MU-Plugin &amp; Core Drop-in Inspection:</strong> Enumerates all active Must-Use plugins and core architectural drop-ins in the content directory, highlighting high-privilege drop-ins (<code>db.php</code>, <code>object-cache.php</code>) with elevated security advisories.<br />\n5. <strong>Enhanced Hook &amp; Query Inspector:</strong> Leverages PHP Reflection to analyze callbacks on sensitive filters (<code>query</code>, <code>pre_user_query</code>, <code>all_plugins</code>, <code>posts_where</code>), revealing exact file paths, declaration line numbers, and anonymous closures.<br />\n6. <strong>False-Positive Whitelisting:</strong> Ignore approved exceptions (custom tools or intentional drop-ins) with a single click, keeping your audit reports clean.</p>\n<h3>Advanced Edition Upgrades</h3>\n<p>Need 1-click threat remediation and autonomous background monitoring? Aystat Detect Hidden Advanced adds:<br />\n* <strong>1-Click Safe Remediation:</strong> Instantly delete rogue users (with active-admin protection), trash spam posts, and delete unauthorized backdoor files with strict path traversal safeguards.<br />\n* <strong>Autonomous 24/7 Background Scans:</strong> Scheduled WP-Cron runner with configurable scan frequencies.<br />\n* <strong>Smart State-Diff Email Alerts:</strong> Zero email fatigue — alerts dispatched only when new threats appear.<br />\n* <strong>Priority Security Support:</strong> Direct developer assistance and priority updates.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>aystat-detect-hidden</code> folder to the <code>/wp-content/plugins/</code> directory, or install directly through the WordPress plugin installer.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; screen in WordPress.</li>\n<li>Navigate to <strong>Tools &gt; Detect Hidden</strong> in your WordPress admin menu.</li>\n<li>Click <strong>Run Security Audit</strong> to execute a full differential analysis.</li>\n</ol>\n",
+        "faq": "\n<h4>\nDoes this plugin affect frontend site speed?\n</h4>\n<p>\n<p>No. Audits execute only when an administrator triggers a scan in the admin dashboard. Zero queries or hooks are added to front-end visitor traffic.</p>\n</p>\n<h4>\nWhat makes this scanner different from other security plugins?\n</h4>\n<p>\n<p>Standard security plugins ask WordPress APIs for lists of users and plugins. If stealth malware has hooked <code>pre_user_query</code> or <code>all_plugins</code>, standard plugins are blinded by the same hooks. Aystat Detect Hidden queries the database tables and filesystem directly to uncover hidden discrepancies.</p>\n</p>\n<h4>\nWhat is the difference between Free and Advanced?\n</h4>\n<p>\n<p>The Free version on WordPress.org provides 100% complete differential auditing across users, posts, plugins, drop-ins, and hook inspection, plus false-positive whitelisting. The separate Advanced edition adds 1-click automated threat deletion (users, posts, plugin files) and 24/7 background WP-Cron scans with smart email alerts.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.4</h4>\n<ul>\n<li>Added Enhanced Hook &amp; Query Interception Inspector using PHP Reflection: extracts exact file paths, line numbers, closure detection, and provenance classification.</li>\n<li>Added actionable Threats Found card navigation with automatic tab switching and smooth scrolling to flagged items.</li>\n<li>Added False-Positive Whitelist (Ignore/Unignore) feature to approve legitimate exceptions.</li>\n<li>Added Clear Scan Snapshot action to reset cached scan states safely.</li>\n<li>Updated file and directory path resolution to use core WordPress path functions.</li>\n<li>Removed all locked/premium-gated code to ensure 100% free, unrestricted functionality in the WordPress.org edition.</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>Added defense-in-depth low-level SQL query filter isolation to defeat in-memory query rewrites.</li>\n<li>Added critical alert detection for active hooks on the WordPress <code>query</code> filter.</li>\n<li>Added unmanaged standalone PHP script and headerless plugin directory detection.</li>\n<li>Added elevated security warning badge and advisories for <code>db.php</code> and <code>object-cache.php</code> drop-ins.</li>\n<li>Added runtime database driver class integrity checks.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Added perceptible live scanning states and execution time reporting.</li>\n<li>Added persistent audit state on page reload.</li>\n<li>Scalability optimizations for databases with 30,000+ users and high post counts.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Enhanced button flex layout and Dashicons alignment to prevent line-wrapping.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial public release with differential user, post, and plugin auditing.</li>\n</ul>\n"
+    },
+    "short_description": "Detects hidden users, stealth backdoors, hidden posts/pages, hidden plugins, mu-plugins, and drop-ins through differential auditing.",
+    "description": "<p><strong>Aystat Detect Hidden</strong> is an advanced security auditing and threat remediation plugin designed to expose stealth malware, backdoor administrators, concealed posts, hidden doorway pages, and clandestine plugins.</p>\n<h3>The Problem: Hook-Based Cloaking</h3>\n<p>Modern WordPress malware rarely modifies core files directly. Instead, sophisticated attackers and backdoors insert malicious users or content into your database and hook into WordPress filter APIs to keep them invisible:<br />\n* <strong>Hidden Users:</strong> Malware adds a rogue administrator account to the <code>wp_users</code> database table, then registers a hook on <code>pre_user_query</code> to filter its own ID out of all standard WordPress queries. To the site owner browsing <code>/wp-admin/users.php</code>, the user list appears normal. Malware often also filters <code>views_users</code> to tamper with displayed user counter tallies.<br />\n* <strong>Concealed Posts &amp; Doorway Pages:</strong> Attackers insert SEO spam, phishing forms, or doorway pages into <code>wp_posts</code>, then manipulate <code>pre_get_posts</code> or <code>posts_where</code> so the posts never appear in the WordPress Admin post list.<br />\n* <strong>Concealed Plugins:</strong> Rogue plugins or backdoors hook into the <code>all_plugins</code> filter to hide themselves from the <code>/wp-admin/plugins.php</code> interface while continuing to execute on every HTTP request.</p>\n<h3>The Solution: Differential Auditing &amp; Hook Inspection</h3>\n<p>Aystat Detect Hidden bypasses hooked filters through deep differential comparison and multi-layered defense-in-depth:<br />\n1. <strong>User Differential Audit:</strong> Fetches visible users via standard <code>get_users()</code> queries and compares them against raw database rows queried directly from <code>{$wpdb-&gt;users}</code> and <code>{$wpdb-&gt;usermeta}</code>. Any user record present in the raw database but excluded from <code>get_users()</code> is immediately flagged.<br />\n2. <strong>Post &amp; Page Differential Audit:</strong> Executes <code>WP_Query</code> with active filters and compares returned IDs against raw database records from <code>{$wpdb-&gt;posts}</code>. Any post or page omitted from the API query is flagged.<br />\n3. <strong>Plugin &amp; Component Audit:</strong> Physically inspects the plugins directory via <code>DirectoryIterator</code> (supporting subdirectories, single-file plugins, and unmanaged standalone PHP scripts) and compares physical files against filtered <code>all_plugins</code> hook output.<br />\n4. <strong>MU-Plugin &amp; Core Drop-in Inspection:</strong> Enumerates all active Must-Use plugins and core architectural drop-ins in the content directory, highlighting high-privilege drop-ins (<code>db.php</code>, <code>object-cache.php</code>) with elevated security advisories.<br />\n5. <strong>Enhanced Hook &amp; Query Inspector:</strong> Leverages PHP Reflection to analyze callbacks on sensitive filters (<code>query</code>, <code>pre_user_query</code>, <code>all_plugins</code>, <code>posts_where</code>), revealing exact file paths, declaration line numbers, and anonymous closures.<br />\n6. <strong>False-Positive Whitelisting:</strong> Ignore approved exceptions (custom tools or intentional drop-ins) with a single click, keeping your audit reports clean.</p>\n<h3>Advanced Edition Upgrades</h3>\n<p>Need 1-click threat remediation and autonomous background monitoring? Aystat Detect Hidden Advanced adds:<br />\n* <strong>1-Click Safe Remediation:</strong> Instantly delete rogue users (with active-admin protection), trash spam posts, and delete unauthorized backdoor files with strict path traversal safeguards.<br />\n* <strong>Autonomous 24/7 Background Scans:</strong> Scheduled WP-Cron runner with configurable scan frequencies.<br />\n* <strong>Smart State-Diff Email Alerts:</strong> Zero email fatigue — alerts dispatched only when new threats appear.<br />\n* <strong>Priority Security Support:</strong> Direct developer assistance and priority updates.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/aystat-detect-hidden.1.0.4.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/aystat-detect-hidden/assets/screenshot-1.png?rev=3797927",
+            "caption": "Clean state – security audit dashboard ready to scan."
+        },
+        {
+            "src": "https://ps.w.org/aystat-detect-hidden/assets/screenshot-2.png?rev=3797927",
+            "caption": "Threat detection results – differential scan exposing hidden components, cloaked users, and hook interceptors."
+        }
+    ],
+    "tags": {
+        "audit": "audit",
+        "backdoor": "backdoor",
+        "hidden-users": "hidden users",
+        "security": "security",
+        "stealth-malware": "stealth malware"
+    },
+    "stable_tag": "1.0.4",
+    "versions": {
+        "1.0.4": "https://downloads.wordpress.org/plugin/aystat-detect-hidden.1.0.4.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/aystat-detect-hidden.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "https://aystat.com",
+    "banners": {
+        "low": "https://ps.w.org/aystat-detect-hidden/assets/banner-772x250.png?rev=3797890",
+        "high": "https://ps.w.org/aystat-detect-hidden/assets/banner-1544x500.png?rev=3797890"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/aystat-detect-hidden/assets/icon-128x128.png?rev=3797890",
+        "2x": "https://ps.w.org/aystat-detect-hidden/assets/icon-256x256.png?rev=3797890"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
