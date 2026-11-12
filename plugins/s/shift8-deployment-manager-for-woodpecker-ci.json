@@ -1,0 +1,78 @@
+{
+    "name": "Shift8 Deployment Manager for Woodpecker CI",
+    "slug": "shift8-deployment-manager-for-woodpecker-ci",
+    "version": "1.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/shift8/\">shift8</a>",
+    "author_profile": "https://profiles.wordpress.org/shift8/",
+    "contributors": {
+        "shift8": {
+            "profile": "https://profiles.wordpress.org/shift8/",
+            "avatar": "https://secure.gravatar.com/avatar/41026e039477795c776288f898e0f1090a54c871f1b8ab70948f786707f26a92?s=96&d=monsterid&r=g",
+            "display_name": "shift8"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/shift8-deployment-manager-for-woodpecker-ci/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-12 15:19:00",
+    "added": "2026-11-12",
+    "homepage": "https://github.com/stardothosting/shift8-woodpecker",
+    "sections": {
+        "description": "<p>Shift8 Deployment Manager for Woodpecker CI lets an administrator push a staging site to production by starting a manual Woodpecker pipeline from Shift8 <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Woodpecker, either immediately or at a scheduled date and time. An activity log records the WordPress user, the date/time, and how each deployment ended.</p>\n<p>&#8220;Woodpecker CI&#8221; is the name of a third-party open source project. This plugin is an independent integration made by Shift8 and is not affiliated with, endorsed by or sponsored by the Woodpecker CI project.</p>\n<p>The plugin only triggers and observes the pipeline; the deployment itself is performed by your Woodpecker workflow. The API token stays on the server, is never stored in the database and is never sent to the browser. End users cannot cancel a running deployment.</p>\n<h3>External services</h3>\n<p>This plugin connects to one external service: the Woodpecker CI server whose address you enter in the settings (or define in <code>wp-config.php</code>). Woodpecker is open source and normally self-hosted, so the server is your own or one your organisation operates. Nothing is sent anywhere else, and the plugin does not contact Shift8 or any third party.</p>\n<p>When it is used:</p>\n<ul>\n<li>When an administrator clicks &#8220;Test Woodpecker Connection&#8221;, the plugin requests <code>/api/user</code>, <code>/api/repos/{id}</code> and the repository&#8217;s workflow list.</li>\n<li>When a deployment is started (immediately or by a schedule), the plugin sends a request to <code>/api/repos/{id}/pipelines</code> containing the configured branch, the optional workflow name, an empty variables object and a short message (by default &#8220;WordPress production deployment by {display name of the WordPress user}&#8221;).</li>\n<li>While a deployment is running, the plugin requests <code>/api/repos/{id}/pipelines/{number}</code> to read its status.</li>\n</ul>\n<p>Every request carries your Woodpecker API token as a bearer token in the Authorization header. The token is read only from <code>wp-config.php</code> and is never shown in the browser or stored in the database.</p>\n<p>Woodpecker is a project of the Woodpecker CI community: https://woodpecker-ci.org. This plugin is an independent integration and is not affiliated with or endorsed by that project. Terms and privacy for your server are those of whoever hosts it.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin to <code>/wp-content/plugins/shift8-deployment-manager-for-woodpecker-ci</code> and activate it (on the staging site).</li>\n<li>\n<p>Define the API token in <code>wp-config.php</code>. It is required and is the only way to set it:</p>\n<p>define( &#8216;SHIFT8_WOODPECKER_TOKEN&#8217;, &#8216;&#8230;&#8217; );</p>\n</li>\n<li>\n<p>Open Shift8 <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Woodpecker <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings and enter the Woodpecker URL, repository ID, branch and (optionally) workflow. These can also be defined in <code>wp-config.php</code> as <code>SHIFT8_WOODPECKER_URL</code>, <code>SHIFT8_WOODPECKER_REPO_ID</code>, <code>SHIFT8_WOODPECKER_BRANCH</code> and <code>SHIFT8_WOODPECKER_WORKFLOW</code>, which override the saved values.</p>\n</li>\n<li>On the Deployment tab click &#8220;Test Woodpecker Connection&#8221;.</li>\n<li>Make sure the Woodpecker workflow accepts the <code>manual</code> event.</li>\n<li>For scheduled deployments use a system cron to run <code>wp-cron.php</code> every minute and add <code>define( 'DISABLE_WP_CRON', true );</code>.</li>\n</ol>\n",
+        "faq": "\n<h4>\nDoes the plugin deploy anything itself?\n</h4>\n<p>\n<p>No. It asks Woodpecker to start a pipeline. Everything else is up to your pipeline.</p>\n</p>\n<h4>\nHow does scheduling work?\n</h4>\n<p>\n<p>Woodpecker cannot delay a pipeline, so the schedule is kept in WordPress (WP-Cron) and the pipeline is started when the time arrives, in the site timezone. One schedule can be pending at a time; a schedule that is more than 30 minutes late is skipped and logged instead of running.</p>\n</p>\n<h4>\nWho can deploy?\n</h4>\n<p>\n<p>Users with the <code>manage_options</code> capability by default, filterable with <code>shift8_woodpecker_deploy_capability</code>. Settings always require <code>manage_options</code>.</p>\n</p>\n<h4>\nWhere do I see the result of a deployment?\n</h4>\n<p>\n<p>In the activity log on the Deployment tab: a &#8220;Started deployment&#8221; line and, when the pipeline stops, a &#8220;Deployment finished&#8221; line with the final status. It is recorded when the page next checks the pipeline, so it may appear at your next visit if nobody was watching.</p>\n</p>\n<h4>\nDoes the plugin need a system cron?\n</h4>\n<p>\n<p>Only for scheduled deployments, which rely on WP-Cron. A system cron running <code>wp-cron.php</code> every minute with <code>DISABLE_WP_CRON</code> set makes schedules reliable.</p>\n</p>\n<h4>\nDoes it work on the production site too?\n</h4>\n<p>\n<p>Install it on staging only. A staging-to-production database copy carries the plugin&#8217;s saved settings, schedule and log with it.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.0</h4>\n<ul>\n<li>Renamed to &#8220;Shift8 Deployment Manager for Woodpecker CI&#8221; after WordPress.org review, with a not-affiliated notice</li>\n<li>Single Shift8 <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Woodpecker page with Deployment and Settings tabs</li>\n<li>Schedule a deployment for a later date/time (site timezone, up to 30 days ahead)</li>\n<li>Activity log of which user started or scheduled a deployment, when, and the final status</li>\n<li>End users cannot cancel a running deployment; removed the link to the Woodpecker UI</li>\n<li>The API token can only be set in wp-config.php</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
+    },
+    "short_description": "Start or schedule a Woodpecker CI deployment from the WordPress admin, with a log of who did it and when. An independent Shift8 integration, not affil …",
+    "description": "<p>Shift8 Deployment Manager for Woodpecker CI lets an administrator push a staging site to production by starting a manual Woodpecker pipeline from Shift8 <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Woodpecker, either immediately or at a scheduled date and time. An activity log records the WordPress user, the date/time, and how each deployment ended.</p>\n<p>&#8220;Woodpecker CI&#8221; is the name of a third-party open source project. This plugin is an independent integration made by Shift8 and is not affiliated with, endorsed by or sponsored by the Woodpecker CI project.</p>\n<p>The plugin only triggers and observes the pipeline; the deployment itself is performed by your Woodpecker workflow. The API token stays on the server, is never stored in the database and is never sent to the browser. End users cannot cancel a running deployment.</p>\n<h3>External services</h3>\n<p>This plugin connects to one external service: the Woodpecker CI server whose address you enter in the settings (or define in <code>wp-config.php</code>). Woodpecker is open source and normally self-hosted, so the server is your own or one your organisation operates. Nothing is sent anywhere else, and the plugin does not contact Shift8 or any third party.</p>\n<p>When it is used:</p>\n<ul>\n<li>When an administrator clicks &#8220;Test Woodpecker Connection&#8221;, the plugin requests <code>/api/user</code>, <code>/api/repos/{id}</code> and the repository&#8217;s workflow list.</li>\n<li>When a deployment is started (immediately or by a schedule), the plugin sends a request to <code>/api/repos/{id}/pipelines</code> containing the configured branch, the optional workflow name, an empty variables object and a short message (by default &#8220;WordPress production deployment by {display name of the WordPress user}&#8221;).</li>\n<li>While a deployment is running, the plugin requests <code>/api/repos/{id}/pipelines/{number}</code> to read its status.</li>\n</ul>\n<p>Every request carries your Woodpecker API token as a bearer token in the Authorization header. The token is read only from <code>wp-config.php</code> and is never shown in the browser or stored in the database.</p>\n<p>Woodpecker is a project of the Woodpecker CI community: https://woodpecker-ci.org. This plugin is an independent integration and is not affiliated with or endorsed by that project. Terms and privacy for your server are those of whoever hosts it.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/shift8-deployment-manager-for-woodpecker-ci.1.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "ci": "CI",
+        "deployment": "deployment",
+        "push": "push",
+        "shift8": "shift8",
+        "woodpecker": "woodpecker"
+    },
+    "stable_tag": "1.1.0",
+    "versions": {
+        "1.1.0": "https://downloads.wordpress.org/plugin/shift8-deployment-manager-for-woodpecker-ci.1.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/shift8-deployment-manager-for-woodpecker-ci.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "https://www.shift8web.ca",
+    "banners": {
+        "low": "https://ps.w.org/shift8-deployment-manager-for-woodpecker-ci/assets/banner-772x250.png?rev=3798644",
+        "high": false
+    },
+    "icons": {
+        "1x": "https://ps.w.org/shift8-deployment-manager-for-woodpecker-ci/assets/icon-128x128.png?rev=3798644",
+        "2x": "https://ps.w.org/shift8-deployment-manager-for-woodpecker-ci/assets/icon-256x256.png?rev=3798644"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

@@ -1,20 +1,22 @@
 {
-    "name": "Paylolly Gateway",
+    "name": "PayLolly Payment Gateway AddOn",
     "slug": "paylolly-payment-gateway-addon",
-    "version": "1.0.0",
-    "author": "<a href=\"http://paylolly.com\">Paylolly Ltd</a>",
+    "version": "2026.11.12",
+    "author": "<a href=\"https://profiles.wordpress.org/paylolly/\">paylolly</a>",
     "author_profile": "https://profiles.wordpress.org/paylolly/",
     "contributors": {
         "paylolly": {
             "profile": "https://profiles.wordpress.org/paylolly/",
-            "avatar": "https://secure.gravatar.com/avatar/2c6a24c62dbbdb0ca656831ea847f346?s=96&d=monsterid&r=g",
+            "avatar": "https://secure.gravatar.com/avatar/d96bc9b51ac89d5461a76c284dbccbd01ae2bf79a8816e21f18b83dd9da769ce?s=96&d=monsterid&r=g",
             "display_name": "paylolly"
         }
     },
     "requires": "6.0",
-    "tested": "6.2.6",
-    "requires_php": "8.0",
-    "requires_plugins": [],
+    "tested": "7.1.4",
+    "requires_php": "8.3",
+    "requires_plugins": [
+        "woocommerce"
+    ],
     "compatibility": [],
     "rating": 0,
     "ratings": {
@@ -29,36 +31,47 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "downloaded": 919,
-    "last_updated": "2023-06-20 14:25:00",
+    "last_updated": "2026-11-12 16:00:00",
     "added": "2023-06-20",
     "homepage": "",
     "sections": {
-        "description": "<p>Plugin allows payments using the PayLolly gateway from merchants using wordpress with woocommerce plugin.</p>\n"
+        "description": "<p>Take card payments in your WooCommerce store through the PayLolly gateway.</p>\n<ul>\n<li>Works with the block checkout (the default in current WooCommerce) and with the classic checkout.</li>\n<li>The card is sent from the customer&#8217;s browser straight to PayLolly, which gives back a token: card numbers never reach your server and are never stored.</li>\n<li>Saved cards for logged in customers (optional), refunds from the WooCommerce order screen, and subscription renewals with WooCommerce Subscriptions (optional).</li>\n<li>Compatible with High-Performance Order Storage (HPOS).</li>\n<li>Clear reporting when PayLolly refuses something: a private note on the order, a notice for administrators after repeated failures, and plain instructions for the shopper when the card details need correcting.</li>\n<li>The payment method is only offered at checkout when it is set up (merchant id and key present, HTTPS in live mode); the configuration problems are shown to administrators only.</li>\n</ul>\n<p>You need a PayLolly merchant account. The plugin is translation ready: translations are contributed on translate.wordpress.org.</p>\n<h3>External services</h3>\n<p>This plugin sends payment data to the PayLolly payment service. Without it the plugin cannot take payments.</p>\n<p><strong>PayLolly API</strong> (https://api.paylolly.app for live payments, https://api.stg.paylolly.app when &#8220;Enable Test Mode&#8221; is on)</p>\n<ul>\n<li>What it is used for: creating card payments, refunds and subscription renewals, and getting a short-lived session key for the card form.</li>\n<li>What is sent, and when:\n<ul>\n<li>At checkout, when the customer places an order: the order amount and currency, the order number, the billing name, email address, phone number and address, the customer&#8217;s IP address, the merchant id, the card token and the encrypted security code made by the card form (never the card number), the address of the thank you page and of the store&#8217;s notification URL.</li>\n<li>When a refund is made from the order screen: the merchant id, the amount and the PayLolly payment id.</li>\n<li>When a subscription renewal is charged (WooCommerce Subscriptions): the merchant id, the amount, the currency and the saved card token.</li>\n<li>When a checkout page is shown (and when a page that has been open too long asks for a new key): a request for a session key, authenticated with your merchant key. Your merchant key is only ever sent from your server and is never shown to visitors.</li>\n<li>Every request from the server carries a User-Agent that names the plugin version and the WordPress, WooCommerce and PHP versions. It contains no store address, merchant id or customer data.</li>\n</ul>\n</li>\n<li>The customer&#8217;s browser calls PayLolly directly from the checkout page: the card form sends the card number, the expiry date and the security code to PayLolly&#8217;s tokenisation endpoint (https://api.paylolly.app/api/rest/v1.0/TokenJS/, or the api.stg.paylolly.app equivalent in test mode) using the short-lived session key, and receives a token and an encrypted security code in return. No other script is loaded from another host: the scripts of the plugin are part of the plugin.</li>\n<li>PayLolly also posts a signed notification to your store when a payment is approved. The plugin checks the signature before it marks an order as paid.</li>\n<li>Terms of service: https://paylolly.com/legal/terms-of-service</li>\n<li>Privacy policy: https://paylolly.com/legal/privacy-policy</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Install the plugin and activate it through the &#8220;Plugins&#8221; menu in WordPress. WooCommerce must be active.</li>\n<li>Go to WooCommerce &gt; Settings &gt; Payments &gt; PayLolly and enter the merchant id and key of your PayLolly merchant account (use the test ones while &#8220;Enable Test Mode&#8221; is on).</li>\n<li>Tick &#8220;Enable PayLolly Gateway&#8221; and save.</li>\n</ol>\n",
+        "faq": "\n<h4>\nDoes it work with the block checkout?\n</h4>\n<p>\n<p>Yes, since version 2026.11.12. The classic checkout keeps working too.</p>\n</p>\n<h4>\nWhere do I find my merchant id and key?\n</h4>\n<p>\n<p>In your PayLolly portal. Use the test keys while &#8220;Enable Test Mode&#8221; is on, and the live keys when it is off. The key stays on your server: the browser only gets a time limited session key.</p>\n</p>\n<h4>\nDoes it need PHP 8.3?\n</h4>\n<p>\n<p>Yes. PHP 8.3 is the version WooCommerce requires, and it gets security fixes until the end of 2027. A site on an older PHP is told by WordPress that this update is not compatible and keeps the version it has.</p>\n</p>\n<h4>\nWhy is the payment method not shown at checkout?\n</h4>\n<p>\n<p>It is only offered when it is set up: both the merchant id and the key of the current mode must be entered, and live mode needs the store to be served over HTTPS. Administrators see what is missing in the WordPress admin.</p>\n</p>\n<h4>\nWhat happens when PayLolly refuses a payment?\n</h4>\n<p>\n<p>The customer is told what to do when it is something they can fix (for example a mistyped card number); otherwise they see a general message. The administrator gets a private note on the order with PayLolly&#8217;s error code, and after repeated failures a notice in the admin area. The notes and the log (WooCommerce &gt; Status &gt; Logs, source paylolly) never contain card data, tokens or keys.</p>\n</p>\n<h4>\nIs it translated?\n</h4>\n<p>\n<p>The plugin is translation ready. Translations are contributed on translate.wordpress.org.</p>\n</p>\n\n",
+        "changelog": "<h4>2026.11.12</h4>\n<ul>\n<li>Security: the &#8220;payment approved&#8221; notification from PayLolly is now verified (SHA-512 signature made with your merchant key) and checked against the order (payment id, merchant reference, amount and currency) before an order is marked as paid. Before, anyone who knew an order number could mark it as paid.</li>\n<li>Security: a refund is reported as done only when PayLolly confirms it; a refused or failed refund now shows an error instead of a success note.</li>\n<li>Block checkout support (WooCommerce Blocks), including saved cards.</li>\n<li>High-Performance Order Storage (HPOS): order data is read and written through the WooCommerce order object.</li>\n<li>Needs PHP 8.3 or higher.</li>\n<li>The customer returns to the order page after the payment, and the order gets the customer&#8217;s phone number, IP address and a reference in the PayLolly portal.</li>\n<li>The session key for the card form is cached for 15 minutes instead of being requested on every page view, and is renewed when a page has been open too long.</li>\n<li>Failed or unreadable answers from PayLolly give the customer a clear message instead of an error; a card tokenisation error is reported on the checkout page, with specific advice for the common card mistakes.</li>\n<li>Refusals from PayLolly are reported to the merchant: a private order note with PayLolly&#8217;s error code, an admin notice after repeated failures, and log entries at error level.</li>\n<li>A store that is not set up (no merchant id or key, or live mode without HTTPS) no longer shows a message to shoppers: the payment method is simply not offered, and the problem is shown to administrators.</li>\n<li>Fixes for WooCommerce Subscriptions renewals (hook name and order lookup).</li>\n<li>Fixes for PHP 8.2 and later (no deprecation notices), the plugin no longer errors when WooCommerce is not active, and all texts are translatable.</li>\n<li>A User-Agent that names the plugin version is sent with every request to PayLolly.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
     },
-    "short_description": "Plugin allows payments using the PayLolly gateway from merchants using wordpress with woocommerce plugin.",
-    "description": "<p>Plugin allows payments using the PayLolly gateway from merchants using wordpress with woocommerce plugin.</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/paylolly-payment-gateway-addon.1.0.zip",
-    "upgrade_notice": [],
+    "short_description": "Take card payments in WooCommerce through the PayLolly payment gateway: block and classic checkout, saved cards, refunds and subscription renewals.",
+    "description": "<p>Take card payments in your WooCommerce store through the PayLolly gateway.</p>\n<ul>\n<li>Works with the block checkout (the default in current WooCommerce) and with the classic checkout.</li>\n<li>The card is sent from the customer&#8217;s browser straight to PayLolly, which gives back a token: card numbers never reach your server and are never stored.</li>\n<li>Saved cards for logged in customers (optional), refunds from the WooCommerce order screen, and subscription renewals with WooCommerce Subscriptions (optional).</li>\n<li>Compatible with High-Performance Order Storage (HPOS).</li>\n<li>Clear reporting when PayLolly refuses something: a private note on the order, a notice for administrators after repeated failures, and plain instructions for the shopper when the card details need correcting.</li>\n<li>The payment method is only offered at checkout when it is set up (merchant id and key present, HTTPS in live mode); the configuration problems are shown to administrators only.</li>\n</ul>\n<p>You need a PayLolly merchant account. The plugin is translation ready: translations are contributed on translate.wordpress.org.</p>\n<h3>External services</h3>\n<p>This plugin sends payment data to the PayLolly payment service. Without it the plugin cannot take payments.</p>\n<p><strong>PayLolly API</strong> (https://api.paylolly.app for live payments, https://api.stg.paylolly.app when &#8220;Enable Test Mode&#8221; is on)</p>\n<ul>\n<li>What it is used for: creating card payments, refunds and subscription renewals, and getting a short-lived session key for the card form.</li>\n<li>What is sent, and when:\n<ul>\n<li>At checkout, when the customer places an order: the order amount and currency, the order number, the billing name, email address, phone number and address, the customer&#8217;s IP address, the merchant id, the card token and the encrypted security code made by the card form (never the card number), the address of the thank you page and of the store&#8217;s notification URL.</li>\n<li>When a refund is made from the order screen: the merchant id, the amount and the PayLolly payment id.</li>\n<li>When a subscription renewal is charged (WooCommerce Subscriptions): the merchant id, the amount, the currency and the saved card token.</li>\n<li>When a checkout page is shown (and when a page that has been open too long asks for a new key): a request for a session key, authenticated with your merchant key. Your merchant key is only ever sent from your server and is never shown to visitors.</li>\n<li>Every request from the server carries a User-Agent that names the plugin version and the WordPress, WooCommerce and PHP versions. It contains no store address, merchant id or customer data.</li>\n</ul>\n</li>\n<li>The customer&#8217;s browser calls PayLolly directly from the checkout page: the card form sends the card number, the expiry date and the security code to PayLolly&#8217;s tokenisation endpoint (https://api.paylolly.app/api/rest/v1.0/TokenJS/, or the api.stg.paylolly.app equivalent in test mode) using the short-lived session key, and receives a token and an encrypted security code in return. No other script is loaded from another host: the scripts of the plugin are part of the plugin.</li>\n<li>PayLolly also posts a signed notification to your store when a payment is approved. The plugin checks the signature before it marks an order as paid.</li>\n<li>Terms of service: https://paylolly.com/legal/terms-of-service</li>\n<li>Privacy policy: https://paylolly.com/legal/privacy-policy</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/paylolly-payment-gateway-addon.2026.11.12.zip",
+    "upgrade_notice": {
+        "2026.11.12": "<p>Security release: payment notifications are now verified and refunds are checked. Adds block checkout support. Needs PHP 8.3 or higher and WooCommerce; sites on an older PHP are not offered this update. Settings are kept.</p>"
+    },
     "screenshots": [],
     "tags": {
+        "credit-card": "credit card",
         "paylolly": "PayLolly",
-        "payment": "payment",
+        "payment-gateway": "payment gateway",
+        "payments": "payments",
         "woocommerce": "woocommerce"
     },
-    "stable_tag": "1.0",
+    "stable_tag": "2026.11.12",
     "versions": {
         "1.0": "https://downloads.wordpress.org/plugin/paylolly-payment-gateway-addon.1.0.zip",
+        "2026.11.12": "https://downloads.wordpress.org/plugin/paylolly-payment-gateway-addon.2026.11.12.zip",
         "trunk": "https://downloads.wordpress.org/plugin/paylolly-payment-gateway-addon.zip"
     },
     "business_model": false,
     "repository_url": "",
     "commercial_support_url": "",
+    "guideline_labels": [],
     "donate_link": "",
-    "banners": [],
+    "banners": {
+        "low": "https://ps.w.org/paylolly-payment-gateway-addon/assets/banner-772x250.png?rev=3798731",
+        "high": "https://ps.w.org/paylolly-payment-gateway-addon/assets/banner-1544x500.png?rev=3798731"
+    },
     "icons": {
-        "1x": "https://ps.w.org/paylolly-payment-gateway-addon/assets/icon.svg?rev=2929068",
-        "svg": "https://ps.w.org/paylolly-payment-gateway-addon/assets/icon.svg?rev=2929068"
+        "1x": "https://ps.w.org/paylolly-payment-gateway-addon/assets/icon-128x128.png?rev=3798731",
+        "2x": "https://ps.w.org/paylolly-payment-gateway-addon/assets/icon-256x256.png?rev=3798731"
     },
     "blocks": [],
     "block_assets": [],

@@ -1,0 +1,79 @@
+{
+    "name": "Senvarel",
+    "slug": "senvarel",
+    "version": "1.4.2",
+    "author": "<a href=\"https://profiles.wordpress.org/elghamdi/\">elghamdi</a>",
+    "author_profile": "https://profiles.wordpress.org/elghamdi/",
+    "contributors": {
+        "elghamdi": {
+            "profile": "https://profiles.wordpress.org/elghamdi/",
+            "avatar": "https://secure.gravatar.com/avatar/be5e41878508caf818b8e69cb089be81401e0f72b88311b074a4ee6571b1182b?s=96&d=monsterid&r=g",
+            "display_name": "elghamdi"
+        }
+    },
+    "requires": "5.8",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/senvarel/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-12 15:21:00",
+    "added": "2026-11-12",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Senvarel connects a self-hosted WordPress website to the Senvarel service through a verified and revocable pairing flow.</p>\n<p>The connector can:</p>\n<ul>\n<li>Verify the WordPress site, multisite blog and administrator permissions.</li>\n<li>Synchronize authorized posts and pages with Senvarel.</li>\n<li>Send signed content-change events to Senvarel.</li>\n<li>Create and update WordPress drafts requested from Senvarel.</li>\n<li>Publish an existing draft only after an explicit manual approval in Senvarel.</li>\n<li>Revoke the connection locally or from Senvarel.</li>\n</ul>\n<p>Connecting WordPress does not enable automatic publishing. This plugin does not contain an automatic publishing scheduler. Draft creation, draft updates and manual publication remain separate operations with separate permission checks.</p>\n<p>Senvarel is a hosted service. A Senvarel account and an OWNER or ADMIN role for the matching Senvarel site are required to complete pairing. The WordPress user who starts pairing must have the <code>manage_options</code> capability. Feature availability in the service may depend on the customer&#8217;s Senvarel plan.</p>\n<p>For service terms, see https://senvarel.com/terms. For the privacy policy, see https://senvarel.com/privacy.</p>\n<h3>External services and privacy</h3>\n<p>This plugin communicates with the Senvarel service at <code>https://senvarel.com</code>. It does not contact Senvarel merely because the plugin files are installed. Communication begins when an administrator explicitly starts pairing, and continues while the verified connection remains active.</p>\n<p>During pairing, the plugin sends the WordPress home URL, site URL, REST URL, site name, generated instance identifier, numeric WordPress user identifier, blog and network identifiers, multisite status, WordPress/PHP/plugin versions and capability booleans. It receives short-lived pairing data and dedicated signing credentials.</p>\n<p>When synchronization is requested, the plugin can send authorized post or page identifiers, status, title, excerpt, content, slug, timestamps, categories, author display name and Senvarel provenance metadata. Private content and author information are included only when the connected WordPress user has the corresponding permissions.</p>\n<p>While connected, the plugin records local content-change events and delivers signed event metadata to Senvarel. Draft creation, draft updates and manual publication receive signed operation data from Senvarel. Requests include installation and binding identifiers, timestamps, nonces and HMAC signatures.</p>\n<p>Senvarel processes this data to provide the connector, synchronization, draft-management and manually approved publication features requested by the customer. See https://senvarel.com/privacy and https://senvarel.com/terms for the service&#8217;s policies.</p>\n",
+        "installation": "<ol>\n<li>Install the Senvarel plugin from the WordPress Plugin Directory when it becomes available, or upload an official ZIP supplied by Senvarel for an authorized test.</li>\n<li>Activate <strong>Senvarel</strong> for the intended site. On multisite, activate it for the intended blog or network-activate it.</li>\n<li>Open <strong>Settings &gt; Senvarel</strong> in the administration area of the exact blog to connect.</li>\n<li>Select <strong>Connect Senvarel</strong>. WordPress requests a short-lived pairing code from Senvarel.</li>\n<li>Open the verification link and confirm the matching organization, site, domain and blog in Senvarel.</li>\n<li>Return to WordPress and select <strong>Finalize verification</strong>.</li>\n<li>Confirm that WordPress reports the connection as verified before starting a synchronization.</li>\n</ol>\n<p>No WordPress password or manually copied API key is required by the official pairing flow.</p>\n<p>Upgrades from the historical token connector remove the local legacy token. The deprecated <code>geo-growth/v1/status</code> and <code>geo-growth/v1/publish</code> routes return a non-mutating HTTP 410 response. Reconnect through the verified pairing flow; legacy credentials are never converted automatically.</p>\n",
+        "faq": "\n<h4>\nDoes connecting WordPress enable automatic publishing?\n</h4>\n<p>\n<p>No. Pairing verifies identity and permissions only. The plugin has no automatic publishing scheduler, and the official connection keeps automatic publishing disabled.</p>\n</p>\n<h4>\nCan Senvarel publish an article?\n</h4>\n<p>\n<p>Senvarel can create and update drafts. An existing draft can become public only through the manual publication flow after an OWNER or ADMIN explicitly reviews and confirms that operation in Senvarel. WordPress permissions are checked again immediately before publication.</p>\n</p>\n<h4>\nIs my WordPress password sent to Senvarel?\n</h4>\n<p>\n<p>No. The plugin never asks for or sends a WordPress password. Pairing exchanges dedicated random signing credentials over HTTPS after confirmation on both sides.</p>\n</p>\n<h4>\nWhich WordPress permissions are required?\n</h4>\n<p>\n<p>manage_options is required to pair or revoke the connector. Read, draft and publish operations additionally require the relevant WordPress capabilities for the connected user and content type. If those capabilities are removed, the operation is rejected.</p>\n</p>\n<h4>\nDoes the plugin support WordPress multisite?\n</h4>\n<p>\n<p>Yes. Credentials and signed requests are scoped to the exact WordPress network and blog. A request for a different blog is rejected.</p>\n</p>\n<h4>\nWhat happens when the plugin is deactivated?\n</h4>\n<p>\n<p>The connector endpoints and event delivery stop. Connection credentials remain stored so reactivation can restore the connection. Disconnect first if you want Senvarel to revoke the remote installation.</p>\n</p>\n<h4>\nWhat happens when the plugin is deleted?\n</h4>\n<p>\n<p>Uninstallation removes Senvarel credentials, pending pairing data, connector options, replay nonces, scheduled events and the plugin&#8217;s custom journal tables from every affected blog. WordPress posts and pages are not deleted. Because uninstall code does not contact an external service, disconnect before deletion when possible so the remote credential is revoked as well.</p>\n</p>\n<h4>\nWhere are connection credentials stored?\n</h4>\n<p>\n<p>Dedicated HMAC credentials are stored as non-autoloaded WordPress options in the database of the connected blog. They are never displayed in the WordPress interface or included in connector logs.</p>\n</p>\n\n",
+        "changelog": "<h4>1.4.2</h4>\n<ul>\n<li>Internationalize the WordPress administration and connector error messages.</li>\n<li>Bundle the French translation and the source translation catalogue.</li>\n<li>Complete the final WordPress.org compatibility and packaging review.</li>\n<li>Keep the legacy writer retired and automatic publishing disabled.</li>\n</ul>\n<h4>1.4.1</h4>\n<ul>\n<li>Retire the historical bearer-token writer and remove its token controls.</li>\n<li>Delete the historical token on upgrade without changing WordPress content.</li>\n<li>Return a non-mutating HTTP 410 response from the deprecated legacy routes.</li>\n<li>Require the verified pairing, scoped HMAC credentials and official operation engine for every mutation.</li>\n</ul>\n<h4>1.4.0</h4>\n<ul>\n<li>Add manually approved publication of an existing WordPress draft.</li>\n<li>Recheck WordPress publication permissions, binding scope and remote version before mutation.</li>\n<li>Reuse the durable operation journal for idempotency and reconciliation.</li>\n<li>Keep automatic publishing disabled.</li>\n</ul>\n<h4>1.3.0</h4>\n<ul>\n<li>Add signed, durable content-change events with retry and replay support.</li>\n<li>Add idempotent draft creation, draft updates and remote-state reconciliation.</li>\n<li>Preserve multisite blog isolation and reject writes after revocation.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Add signed connector health and capability diagnostics.</li>\n<li>Add initial and incremental synchronization for authorized articles and pages.</li>\n<li>Bind signed requests to the paired WordPress network and blog.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Add short-lived, double-confirmed Senvarel pairing.</li>\n<li>Add signed identity verification and anti-replay protection.</li>\n<li>Add capability reporting and bidirectional revocation.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial connector with legacy token compatibility.</li>\n</ul>\n"
+    },
+    "short_description": "Connect your WordPress website to Senvarel to manage AI-assisted content, synchronize articles, create drafts and publish approved content.",
+    "description": "<p>Senvarel connects a self-hosted WordPress website to the Senvarel service through a verified and revocable pairing flow.</p>\n<p>The connector can:</p>\n<ul>\n<li>Verify the WordPress site, multisite blog and administrator permissions.</li>\n<li>Synchronize authorized posts and pages with Senvarel.</li>\n<li>Send signed content-change events to Senvarel.</li>\n<li>Create and update WordPress drafts requested from Senvarel.</li>\n<li>Publish an existing draft only after an explicit manual approval in Senvarel.</li>\n<li>Revoke the connection locally or from Senvarel.</li>\n</ul>\n<p>Connecting WordPress does not enable automatic publishing. This plugin does not contain an automatic publishing scheduler. Draft creation, draft updates and manual publication remain separate operations with separate permission checks.</p>\n<p>Senvarel is a hosted service. A Senvarel account and an OWNER or ADMIN role for the matching Senvarel site are required to complete pairing. The WordPress user who starts pairing must have the <code>manage_options</code> capability. Feature availability in the service may depend on the customer&#8217;s Senvarel plan.</p>\n<p>For service terms, see https://senvarel.com/terms. For the privacy policy, see https://senvarel.com/privacy.</p>\n<h3>External services and privacy</h3>\n<p>This plugin communicates with the Senvarel service at <code>https://senvarel.com</code>. It does not contact Senvarel merely because the plugin files are installed. Communication begins when an administrator explicitly starts pairing, and continues while the verified connection remains active.</p>\n<p>During pairing, the plugin sends the WordPress home URL, site URL, REST URL, site name, generated instance identifier, numeric WordPress user identifier, blog and network identifiers, multisite status, WordPress/PHP/plugin versions and capability booleans. It receives short-lived pairing data and dedicated signing credentials.</p>\n<p>When synchronization is requested, the plugin can send authorized post or page identifiers, status, title, excerpt, content, slug, timestamps, categories, author display name and Senvarel provenance metadata. Private content and author information are included only when the connected WordPress user has the corresponding permissions.</p>\n<p>While connected, the plugin records local content-change events and delivers signed event metadata to Senvarel. Draft creation, draft updates and manual publication receive signed operation data from Senvarel. Requests include installation and binding identifiers, timestamps, nonces and HMAC signatures.</p>\n<p>Senvarel processes this data to provide the connector, synchronization, draft-management and manually approved publication features requested by the customer. See https://senvarel.com/privacy and https://senvarel.com/terms for the service&#8217;s policies.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/senvarel.1.4.2.zip",
+    "upgrade_notice": {
+        "1.4.2": "<p>Version 1.4.2 adds complete English and French administration translations and final release-candidate compliance updates. Connection credentials, WordPress content and publishing consent are unchanged.</p>",
+        "1.4.1": "<p>The historical token writer is retired and its local token is deleted. Existing WordPress content is preserved. Reconnect through the official Senvarel pairing flow before using synchronization, drafts or manually approved publication.</p>",
+        "1.4.0": "<p>Version 1.4.0 adds secure manual publication and durable operation recovery. It does not enable automatic publishing. After upgrading, use the Senvarel health check to verify the connected user&#039;s current permissions.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "ai": "AI",
+        "automation": "automation",
+        "content": "content",
+        "publishing": "publishing",
+        "seo": "seo"
+    },
+    "stable_tag": "1.4.2",
+    "versions": {
+        "1.4.2": "https://downloads.wordpress.org/plugin/senvarel.1.4.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/senvarel.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/senvarel/assets/icon-256x256.png?rev=3798674",
+        "2x": "https://ps.w.org/senvarel/assets/icon-256x256.png?rev=3798674"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

@@ -1,0 +1,82 @@
+{
+    "name": "tlloancy Turn Relay",
+    "slug": "tlloancy-turn-relay",
+    "version": "1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/tlloancy/\">Thomas Lloancy</a>",
+    "author_profile": "https://profiles.wordpress.org/tlloancy/",
+    "contributors": {
+        "tlloancy": {
+            "profile": "https://profiles.wordpress.org/tlloancy/",
+            "avatar": "https://secure.gravatar.com/avatar/c4c69c0a9e0098d951460c12fd1d8ecbd8ecf9588215dc76a29116ea2a329b60?s=96&d=monsterid&r=g",
+            "display_name": "Thomas Lloancy"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.1.4",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/tlloancy-turn-relay/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-12 16:09:00",
+    "added": "2026-11-12",
+    "homepage": "",
+    "sections": {
+        "description": "<p>WebRTC in the browser needs ICE servers. STUN discovers a public address. TURN relays the media when a direct path is impossible. coturn does that work. This plugin does not.</p>\n<p><strong>tlloancy Turn Relay</strong> signs a username and a password that coturn accepts for a limited time (<code>use-auth-secret</code>). The shared secret stays on the server. Callers receive <code>iceServers</code> for <code>RTCPeerConnection</code> and leave <code>iceTransportPolicy</code> at <code>all</code>.</p>\n<p>Other plugins, including a video plugin, call <code>tlloancy_turn_relay_get_ice_servers()</code> when a call starts. They do not collect a TURN host of their own.</p>\n<p>Publication is off until you turn it on. A published card is JSON. It never contains the shared secret.</p>\n<ul>\n<li><strong>STUN only</strong> — the card lists a <code>stun:</code> URL.</li>\n<li><strong>Shared</strong> — the card also lists the credential endpoint. Another site must present an invitation token.</li>\n<li><strong>Private</strong> — the card contains the class and nothing else.</li>\n</ul>\n<p>You can paste another site’s card URL. Private and loopback addresses are refused. The admin drawing measures latency in your browser with <code>RTCPeerConnection</code>. A figure advertised by the remote card is ignored.</p>\n<p>Step-by-step guides: <code>docs/USER-GUIDE.md</code> (English) and <code>docs/MODE-DEMPLOI.md</code> (French).</p>\n<h3>External services</h3>\n<p>Nothing is contacted when you only issue credentials for your own coturn host.</p>\n<p>If an administrator pastes a card URL, the server fetches that HTTPS URL once. The request sends no secret and no visitor data. The response is limited to 8 KB and redirects are not followed.</p>\n<p>If an administrator then enables “During a call” on a shared node and stores that node’s invitation token, a call requests credentials from that node’s endpoint. The request sends the invitation token. It does not send your shared secret or the contents of the call. At most two nodes are asked.</p>\n<p>The diagnostics buttons resolve your own TURN host and open a TCP connection to its TLS port. They run only when an administrator clicks them.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>tlloancy-turn-relay</code> folder to <code>/wp-content/plugins/</code>.</li>\n<li>Activate <strong>tlloancy Turn Relay</strong>.</li>\n<li>Open <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> tlloancy Turn Relay</strong>.</li>\n<li>Enter the TURN host and a shared secret of at least 32 characters. The same secret is configured on coturn as <code>static-auth-secret</code>.</li>\n<li>Leave publication off until you want another site to read a card.</li>\n</ol>\n<p>To keep the secret out of the database, define it in <code>wp-config.php</code>:</p>\n<pre><code>define( 'TLLOANCY_TURN_RELAY_SECRET', 'paste-a-long-random-secret' );\n</code></pre>\n",
+        "faq": "\n<h4>\nDoes this plugin relay audio or video?\n</h4>\n<p>\n<p>No. coturn relays the media. The plugin only signs credentials and, if you turn it on, publishes a card.</p>\n</p>\n<h4>\nWhy do the credentials change?\n</h4>\n<p>\n<p>The password is visible in the browser. It expires. A fixed TURN user would keep working after someone copies it. An administrator sets the host and the secret once. Visitors never edit them.</p>\n</p>\n<h4>\nHow does another plugin start a call?\n</h4>\n<p>\n<p>tlloancy_turn_relay_get_ice_servers() returns the list. In the browser, enqueue the helper and call <code>TlloancyTurnRelay.getIceServers()</code>. Guests are allowed by returning true from the <code>tlloancy_turn_relay_can_issue</code> filter.</p>\n</p>\n<h4>\nWhat is the invitation token?\n</h4>\n<p>\n<p>It is not the shared secret. A shared card tells another site where to ask for credentials. That request must include the token in the <code>X-Tlloancy-Turn-Relay-Token</code> header. The HMAC secret never leaves this server.</p>\n</p>\n<h4>\nCan I list every WordPress site that has the plugin?\n</h4>\n<p>\n<p>No. A site appears only after an administrator pastes its card URL, and only if that administrator has published the card.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0</h4>\n<ul>\n<li>Short-lived TURN credentials for a coturn server configured with <code>use-auth-secret</code>.</li>\n<li>Optional public card, manual nodes, and an admin latency drawing.</li>\n</ul>\n"
+    },
+    "short_description": "Issues short-lived TURN credentials for a shared coturn server. An optional card can share a STUN address or a credential endpoint.",
+    "description": "<p>WebRTC in the browser needs ICE servers. STUN discovers a public address. TURN relays the media when a direct path is impossible. coturn does that work. This plugin does not.</p>\n<p><strong>tlloancy Turn Relay</strong> signs a username and a password that coturn accepts for a limited time (<code>use-auth-secret</code>). The shared secret stays on the server. Callers receive <code>iceServers</code> for <code>RTCPeerConnection</code> and leave <code>iceTransportPolicy</code> at <code>all</code>.</p>\n<p>Other plugins, including a video plugin, call <code>tlloancy_turn_relay_get_ice_servers()</code> when a call starts. They do not collect a TURN host of their own.</p>\n<p>Publication is off until you turn it on. A published card is JSON. It never contains the shared secret.</p>\n<ul>\n<li><strong>STUN only</strong> — the card lists a <code>stun:</code> URL.</li>\n<li><strong>Shared</strong> — the card also lists the credential endpoint. Another site must present an invitation token.</li>\n<li><strong>Private</strong> — the card contains the class and nothing else.</li>\n</ul>\n<p>You can paste another site’s card URL. Private and loopback addresses are refused. The admin drawing measures latency in your browser with <code>RTCPeerConnection</code>. A figure advertised by the remote card is ignored.</p>\n<p>Step-by-step guides: <code>docs/USER-GUIDE.md</code> (English) and <code>docs/MODE-DEMPLOI.md</code> (French).</p>\n<h3>External services</h3>\n<p>Nothing is contacted when you only issue credentials for your own coturn host.</p>\n<p>If an administrator pastes a card URL, the server fetches that HTTPS URL once. The request sends no secret and no visitor data. The response is limited to 8 KB and redirects are not followed.</p>\n<p>If an administrator then enables “During a call” on a shared node and stores that node’s invitation token, a call requests credentials from that node’s endpoint. The request sends the invitation token. It does not send your shared secret or the contents of the call. At most two nodes are asked.</p>\n<p>The diagnostics buttons resolve your own TURN host and open a TCP connection to its TLS port. They run only when an administrator clicks them.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/tlloancy-turn-relay.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "coturn": "coturn",
+        "stun": "stun",
+        "turn": "turn",
+        "webrtc": "webrtc"
+    },
+    "stable_tag": "1.0",
+    "versions": {
+        "1.0": "https://downloads.wordpress.org/plugin/tlloancy-turn-relay.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/tlloancy-turn-relay.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "https://donorbox.org/wordpress-plugins",
+    "banners": {
+        "low": "https://ps.w.org/tlloancy-turn-relay/assets/banner-772x250.png?rev=3798744",
+        "high": "https://ps.w.org/tlloancy-turn-relay/assets/banner-1544x500.png?rev=3798744"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/tlloancy-turn-relay/assets/icon-128x128.png?rev=3798744",
+        "2x": "https://ps.w.org/tlloancy-turn-relay/assets/icon-256x256.png?rev=3798744"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [
+        {
+            "filename": "blueprint.json",
+            "url": "https://wordpress.org/plugins/wp-json/plugins/v1/plugin/tlloancy-turn-relay/blueprint.json?rev=3798744"
+        }
+    ],
+    "preview_link": "",
+    "language_packs": []
+}
