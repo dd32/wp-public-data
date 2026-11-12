@@ -1,0 +1,95 @@
+{
+    "name": "Birim Private Files – Protect Uploads &amp; Private Pages",
+    "slug": "birim-private-files",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/birimone/\">Melih Birim</a>",
+    "author_profile": "https://profiles.wordpress.org/birimone/",
+    "contributors": {
+        "birimone": {
+            "profile": "https://profiles.wordpress.org/birimone/",
+            "avatar": "https://secure.gravatar.com/avatar/de65059c6ce15094c3c812ee1bc2c8593549065649c1e766f9e53881a83aba76?s=96&d=monsterid&r=g",
+            "display_name": "Melih Birim"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/birim-private-files/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-12 01:14:00",
+    "added": "2026-11-12",
+    "homepage": "https://birimone.pages.dev/private-files/",
+    "sections": {
+        "description": "<p>WordPress stores uploads in <code>/wp-content/uploads/</code>, and every file there is a public URL. Making a page private, or putting your site behind a login, does not protect the files on it: anyone with the link can open them.</p>\n<p>Birim Private Files routes every request for an uploaded file through WordPress and only serves it to people who are allowed to see it.</p>\n<ul>\n<li><strong>Three ways to decide who opens files</strong>: any logged-in user, only the roles you choose, or <strong>only the people each file is shared with</strong> (the uploader, people you add in the file&#8217;s &#8220;Shared with&#8221; field, editors and administrators).</li>\n<li><strong>Private pages too</strong>: a &#8220;Who can view&#8221; box in the page editor (block editor and classic editor) sets each page or post to Everyone, Logged-in users or chosen roles. Restricted pages send logged-out visitors to the login page, and their text is hidden in search results, archives, feeds and the REST API, and left out of the sitemap.</li>\n<li><strong>Files follow their page</strong>: in per-file mode, files uploaded to a restricted page open for whoever can view that page.</li>\n<li><strong>A &#8220;My files&#8221; list</strong>: put <code>[birim_my_files]</code> on a page and each person sees the files they uploaded or that were shared with them.</li>\n<li><strong>Direct links are protected</strong>, not just pages. Logged-out visitors who open a file link are sent to the login page and come back to the file after logging in.</li>\n<li><strong>It checks that protection really works.</strong> After you turn it on, the plugin requests a test file from your site as a logged-out visitor and tells you the result: Protected, Not protected, or Could not check. Until protection is confirmed, administrators see a warning. Many file protection setups fail silently on nginx servers; this one tells you.</li>\n<li><strong>Apache</strong>: rules are added to <code>wp-content/uploads/.htaccess</code> automatically, and removed when you deactivate the plugin.</li>\n<li><strong>nginx</strong>: the settings page shows the exact two-line rule to add for your site.</li>\n<li><strong>Public exceptions</strong>: keep chosen files public, such as a logo, with simple patterns like <code>public/*</code>.</li>\n<li>Files are served with private caching headers (so CDNs and shared caches do not store them), conditional requests and byte ranges, so video seeking works.</li>\n<li>Script files are never served from uploads, and paths outside the uploads folder are refused.</li>\n<li>Lightweight: one file, no tracking, no external requests, no ads.</li>\n</ul>\n<h4>What you can do with it</h4>\n<ul>\n<li><strong>Staff intranet</strong>: share HR policies, handbooks, rotas and internal reports on WordPress. Only staff who log in can open them, even if a link is forwarded outside the company.</li>\n<li><strong>Client portal</strong>: agencies, freelancers, accountants and lawyers share each contract, design or report with one client, who sees it in their &#8220;My files&#8221; page. Other clients cannot open it, even with the link.</li>\n<li><strong>Members-only content</strong>: sell or share course PDFs, e-books, worksheets and videos without the download link being passed around. Video seeking still works.</li>\n<li><strong>Schools, clubs and charities</strong>: keep photos of children, member lists and meeting minutes visible to parents and members only.</li>\n<li><strong>Forms that collect documents</strong>: CVs, ID scans and signed forms uploaded through form plugins usually land in the public uploads folder. Keep them away from anyone who guesses or finds the link.</li>\n<li><strong>Staging and pre-launch sites</strong>: stop unreleased product images and documents from leaking or showing up in Google Images.</li>\n</ul>\n<h4>What it does not do</h4>\n<ul>\n<li>Titles of restricted pages can still appear in menus and archive lists; only their text is hidden.</li>\n<li>WordPress&#8217;s public REST API lists media items (titles and links) to anyone. The files themselves stay protected, but to hide the list as well, use a REST API lockdown plugin such as Birim REST Lock.</li>\n<li>It does not encrypt files on the server or make your site compliant with any regulation on its own. It controls who can open them.</li>\n</ul>\n<h4>For developers</h4>\n<ul>\n<li><code>birim_private_files_can_access</code> filter: <code>( bool $allowed, string $relative_path )</code> to make your own access decisions, for example per file or per user.</li>\n<li><code>birim_private_files_served</code> action: <code>( string $relative_path, string $absolute_path )</code>, fired just before an allowed file is sent, for example to log downloads.</li>\n<li><code>birim_private_files_serve( $path, array( 'download' =&gt; true ) )</code> sends a file as a download (attachment) instead of inline.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Install from Plugins &gt; Add New, or upload the <code>birim-private-files</code> folder to <code>/wp-content/plugins/</code>.</li>\n<li>Activate the plugin. Nothing changes until you turn protection on.</li>\n<li>Go to Settings &gt; Private Files, tick &#8220;Make uploaded files private&#8221; and save.</li>\n<li>Check the status. On nginx, add the rule shown, reload nginx and click &#8220;Check again&#8221;.</li>\n</ol>\n",
+        "faq": "\n<h4>\nWill images on my public pages break?\n</h4>\n<p>\n<p>Yes, for logged-out visitors, unless the files match a public exception. This plugin is meant for sites where the content is private too. Use the public exceptions for files that must stay visible, such as a logo.</p>\n</p>\n<h4>\nThe status says &#8220;Not protected&#8221;.\n</h4>\n<p>\n<p>Your web server is serving files directly without asking WordPress. On nginx, add the rule shown on the settings page. On Apache, your host may not allow <code>.htaccess</code> rewrite rules, or it may run nginx in front of Apache; send your host the rule shown on the settings page.</p>\n</p>\n<h4>\nThe status says &#8220;Could not check&#8221;.\n</h4>\n<p>\n<p>Your server could not make a request to its own website, which some hosts block. Check manually: copy the link of an uploaded file, open a private browser window and paste it. You should see the login page or &#8220;This file is private&#8221;.</p>\n</p>\n<h4>\nDoes it slow down my site?\n</h4>\n<p>\n<p>Each file request now starts WordPress to check the login, so files are served a little slower than directly by the web server. Logged-in browsers cache files for an hour.</p>\n</p>\n<h4>\nI use a CDN.\n</h4>\n<p>\n<p>Files are sent with <code>Cache-Control: private</code>, which CDNs respect by default. If your CDN is set to cache everything regardless of headers, exclude <code>/wp-content/uploads/</code> from that rule.</p>\n</p>\n<h4>\nWhat happens when I deactivate the plugin?\n</h4>\n<p>\n<p>On Apache the rules are removed and files are public again. On nginx, remove the rule you added, or file links will stop working.</p>\n</p>\n<h4>\nDoes it work on multisite?\n</h4>\n<p>\n<p>Not yet. Multisite support is planned.</p>\n</p>\n<h4>\nHow do I report a security issue?\n</h4>\n<p>\n<p>Please email security@birim.one instead of posting in the forum. See https://birimone.pages.dev/security/ for the full policy.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "Protect uploaded files and pages: open only for logged-in users, chosen roles or people you share them with, even by direct link. Checks it works.",
+    "description": "<p>WordPress stores uploads in <code>/wp-content/uploads/</code>, and every file there is a public URL. Making a page private, or putting your site behind a login, does not protect the files on it: anyone with the link can open them.</p>\n<p>Birim Private Files routes every request for an uploaded file through WordPress and only serves it to people who are allowed to see it.</p>\n<ul>\n<li><strong>Three ways to decide who opens files</strong>: any logged-in user, only the roles you choose, or <strong>only the people each file is shared with</strong> (the uploader, people you add in the file&#8217;s &#8220;Shared with&#8221; field, editors and administrators).</li>\n<li><strong>Private pages too</strong>: a &#8220;Who can view&#8221; box in the page editor (block editor and classic editor) sets each page or post to Everyone, Logged-in users or chosen roles. Restricted pages send logged-out visitors to the login page, and their text is hidden in search results, archives, feeds and the REST API, and left out of the sitemap.</li>\n<li><strong>Files follow their page</strong>: in per-file mode, files uploaded to a restricted page open for whoever can view that page.</li>\n<li><strong>A &#8220;My files&#8221; list</strong>: put <code>[birim_my_files]</code> on a page and each person sees the files they uploaded or that were shared with them.</li>\n<li><strong>Direct links are protected</strong>, not just pages. Logged-out visitors who open a file link are sent to the login page and come back to the file after logging in.</li>\n<li><strong>It checks that protection really works.</strong> After you turn it on, the plugin requests a test file from your site as a logged-out visitor and tells you the result: Protected, Not protected, or Could not check. Until protection is confirmed, administrators see a warning. Many file protection setups fail silently on nginx servers; this one tells you.</li>\n<li><strong>Apache</strong>: rules are added to <code>wp-content/uploads/.htaccess</code> automatically, and removed when you deactivate the plugin.</li>\n<li><strong>nginx</strong>: the settings page shows the exact two-line rule to add for your site.</li>\n<li><strong>Public exceptions</strong>: keep chosen files public, such as a logo, with simple patterns like <code>public/*</code>.</li>\n<li>Files are served with private caching headers (so CDNs and shared caches do not store them), conditional requests and byte ranges, so video seeking works.</li>\n<li>Script files are never served from uploads, and paths outside the uploads folder are refused.</li>\n<li>Lightweight: one file, no tracking, no external requests, no ads.</li>\n</ul>\n<h4>What you can do with it</h4>\n<ul>\n<li><strong>Staff intranet</strong>: share HR policies, handbooks, rotas and internal reports on WordPress. Only staff who log in can open them, even if a link is forwarded outside the company.</li>\n<li><strong>Client portal</strong>: agencies, freelancers, accountants and lawyers share each contract, design or report with one client, who sees it in their &#8220;My files&#8221; page. Other clients cannot open it, even with the link.</li>\n<li><strong>Members-only content</strong>: sell or share course PDFs, e-books, worksheets and videos without the download link being passed around. Video seeking still works.</li>\n<li><strong>Schools, clubs and charities</strong>: keep photos of children, member lists and meeting minutes visible to parents and members only.</li>\n<li><strong>Forms that collect documents</strong>: CVs, ID scans and signed forms uploaded through form plugins usually land in the public uploads folder. Keep them away from anyone who guesses or finds the link.</li>\n<li><strong>Staging and pre-launch sites</strong>: stop unreleased product images and documents from leaking or showing up in Google Images.</li>\n</ul>\n<h4>What it does not do</h4>\n<ul>\n<li>Titles of restricted pages can still appear in menus and archive lists; only their text is hidden.</li>\n<li>WordPress&#8217;s public REST API lists media items (titles and links) to anyone. The files themselves stay protected, but to hide the list as well, use a REST API lockdown plugin such as Birim REST Lock.</li>\n<li>It does not encrypt files on the server or make your site compliant with any regulation on its own. It controls who can open them.</li>\n</ul>\n<h4>For developers</h4>\n<ul>\n<li><code>birim_private_files_can_access</code> filter: <code>( bool $allowed, string $relative_path )</code> to make your own access decisions, for example per file or per user.</li>\n<li><code>birim_private_files_served</code> action: <code>( string $relative_path, string $absolute_path )</code>, fired just before an allowed file is sent, for example to log downloads.</li>\n<li><code>birim_private_files_serve( $path, array( 'download' =&gt; true ) )</code> sends a file as a download (attachment) instead of inline.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/birim-private-files.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/birim-private-files/assets/screenshot-1.png?rev=3797315",
+            "caption": "Settings &gt; Private Files: the status check confirms files are protected on this server. Here files open only for the people each one is shared with."
+        },
+        {
+            "src": "https://ps.w.org/birim-private-files/assets/screenshot-2.png?rev=3797315",
+            "caption": "Share a file with a client from the media library: type their username or email in \"Shared with\"."
+        },
+        {
+            "src": "https://ps.w.org/birim-private-files/assets/screenshot-3.png?rev=3797315",
+            "caption": "The \"Who can view\" box in the page editor: this page is visible only to editors and authors."
+        },
+        {
+            "src": "https://ps.w.org/birim-private-files/assets/screenshot-4.png?rev=3797315",
+            "caption": "What a client sees: their \"My files\" page lists only the files shared with them."
+        }
+    ],
+    "tags": {
+        "files": "files",
+        "intranet": "intranet",
+        "media": "media",
+        "private": "private",
+        "protect-uploads": "protect uploads"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/birim-private-files.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/birim-private-files.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/birim-private-files/assets/banner-772x250.png?rev=3797315",
+        "high": "https://ps.w.org/birim-private-files/assets/banner-1544x500.png?rev=3797315"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/birim-private-files/assets/icon.svg?rev=3797315",
+        "svg": "https://ps.w.org/birim-private-files/assets/icon.svg?rev=3797315"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
