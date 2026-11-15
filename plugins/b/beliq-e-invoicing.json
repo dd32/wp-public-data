@@ -1,0 +1,86 @@
+{
+    "name": "beliq e-invoicing",
+    "slug": "beliq-e-invoicing",
+    "version": "0.2.2",
+    "author": "<a href=\"https://profiles.wordpress.org/beliq/\">beliq</a>",
+    "author_profile": "https://profiles.wordpress.org/beliq/",
+    "contributors": {
+        "beliq": {
+            "profile": "https://profiles.wordpress.org/beliq/",
+            "avatar": "https://secure.gravatar.com/avatar/2a57af25785966d8019921cc6dfcb711319385cbfd4e5475c156e72f73c34da3?s=96&d=monsterid&r=g",
+            "display_name": "beliq"
+        }
+    },
+    "requires": "6.5",
+    "tested": "7.1.4",
+    "requires_php": "8.2",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/beliq-e-invoicing/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-15 19:08:00",
+    "added": "2026-11-15",
+    "homepage": "https://docs.beliq.eu/integrations/woocommerce/",
+    "sections": {
+        "description": "<p>beliq e-invoicing turns a WooCommerce order into a structured EN 16931 electronic invoice using the beliq API. When an order reaches the status you choose, the plugin maps the order onto invoice semantics, calls beliq to produce the document, validates it against the business rules, and stores it with the order for download.</p>\n<p>The plugin generates and validates the document. It does not send, file, transmit, or archive it: Peppol transmission, e-mail delivery, and tax-authority reporting stay with you.</p>\n<p>beliq validates every document against the EN 16931 business rules and the rules of the chosen format before it returns it. That helps you meet e-invoicing obligations, but no plugin can guarantee legal compliance: whether your invoices meet the rules that apply to your business stays your responsibility. The rule sets beliq validates against, with their versions and dates, are listed at https://docs.beliq.eu/compliance/validation-artifacts/.</p>\n<p>Supported output formats:</p>\n<ul>\n<li>XRechnung (XML)</li>\n<li>ZUGFeRD / Factur-X (hybrid PDF)</li>\n<li>Peppol BIS Billing (XML)</li>\n</ul>\n<p>Features:</p>\n<ul>\n<li>Automatic generation when an order becomes processing or completed. When beliq cannot be reached or is unavailable, the plugin tries again later, for up to about an hour, and shows each failure on the order.</li>\n<li>A business-only default: generate only when the buyer looks like a business (VAT ID or company), or widen it to every order.</li>\n<li>Seller legal details, payment account, and VAT category for zero-rated lines, all configurable.</li>\n<li>Reads a buyer VAT ID and a buyer reference (for example a Leitweg-ID) from order meta keys you name, so data another plugin stores can flow onto the invoice.</li>\n<li>Manual generate and regenerate from the order screen, with a capability-checked download.</li>\n<li>High-Performance Order Storage (HPOS) compatible.</li>\n</ul>\n<p>A beliq API key is required. The free tier is enough to evaluate the plugin.</p>\n<h3>External services</h3>\n<p>This plugin connects to the beliq API at https://api.beliq.eu, a third-party service operated by beliq, to generate and validate your e-invoices. The plugin cannot produce a document without it.</p>\n<p>When an invoice is generated (automatically when an order reaches the status you configure, again later from a scheduled action when that attempt could not reach beliq or beliq was unavailable, or manually from the order screen), the plugin sends that order&#8217;s invoice data to the beliq API: the seller details you configure, the buyer&#8217;s billing details and VAT ID, the order line items, and the amounts and taxes. The request is authenticated with your beliq API key. beliq returns the generated document, which the plugin stores with the order. No data is sent to beliq at any other time, and nothing is sent to any other service.</p>\n<p>For how beliq handles this data, see the beliq Terms of Service at https://beliq.eu/legal/terms-of-service/ and the Privacy Policy at https://beliq.eu/legal/privacy-policy/.</p>\n",
+        "installation": "<ol>\n<li>Install and activate WooCommerce.</li>\n<li>Upload the plugin to wp-content/plugins and activate it, or install it from the plugin directory.</li>\n<li>Go to WooCommerce &gt; Settings &gt; Integration &gt; beliq e-invoicing.</li>\n<li>Enter your beliq API key and your seller legal details.</li>\n<li>Choose the document format and the order status that generation runs on, then enable automatic generation.</li>\n</ol>\n",
+        "faq": "\n<h4>\nDoes this send my invoices to my customers?\n</h4>\n<p>\n<p>No. The plugin sends the order&#8217;s invoice data to the beliq API to generate and validate the document (see External services), and stores the returned document with the order. Delivering it to your customer, filing, and archiving stay with you.</p>\n</p>\n<h4>\nDo I need a beliq account?\n</h4>\n<p>\n<p>Yes, you need a beliq API key. The free tier is enough to evaluate the plugin.</p>\n</p>\n<h4>\nWhich orders get an invoice?\n</h4>\n<p>\n<p>By default, only orders that look like a business purchase (a VAT ID or a company on the billing details). You can widen this to every order in the settings.</p>\n</p>\n<h4>\nWhat happens when beliq is unavailable when an order is paid?\n</h4>\n<p>\n<p>The order&#8217;s status change goes through as always. The plugin notes the failure on the order and in the beliq box, and tries again with Action Scheduler at about 2, 5, 10, 14, 30 and 60 minutes after the first attempt, or later when beliq asks for a longer wait. A failure the order&#8217;s data causes (beliq rejects the invoice) is not retried, since the same data would fail again; it stays on the order next to the &#8220;Generate now&#8221; button. A request that may have run at beliq (a lost connection, a timeout of the first attempt, or beliq&#8217;s engine being unavailable) is retried at most three times, and only within the first 15 minutes: beliq does not charge a repeat of a request it charged in the last 15 minutes (with a key of the same mode, up to 10 repeats), and a repeat after that could be charged again. An outage that follows such a failure still gets the later attempts, so in that case one more unit can be charged for an invoice that would otherwise not be made.</p>\n<p>Action Scheduler runs from WP-Cron, which runs when the site gets a visit. On a quiet shop a later attempt can run late. A real cron job that calls wp-cron.php, or <code>wp action-scheduler run</code>, every minute keeps it on time.</p>\n</p>\n<h4>\nWhere is the document stored?\n</h4>\n<p>\n<p>In a protected subdirectory of your WordPress uploads folder. It is served only through a capability-checked download on the order screen, never linked publicly.</p>\n</p>\n\n",
+        "changelog": "<h4>0.2.2</h4>\n<ul>\n<li>The plugin header&#8217;s Plugin URI points at the plugin&#8217;s documentation page instead of the beliq home page, which is the Author URI.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>An automatic invoice that fails because beliq is unavailable is tried again later with Action Scheduler, at about 2, 5, 10, 14, 30 and 60 minutes, or later when beliq asks for a longer wait. A rejection is not retried.</li>\n<li>Every failure of the automatic invoice shows on the order, as an order note and in the beliq box, with the next attempt&#8217;s time.</li>\n<li>Two status changes of one order at once make one attempt.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release: order-to-EN 16931 mapping, the beliq API client, the settings screen, automatic generation on the configured order status, manual generate/regenerate, protected download, and HPOS compatibility.</li>\n</ul>\n"
+    },
+    "short_description": "Generate EN 16931 e-invoices (XRechnung, ZUGFeRD, Factur-X, Peppol BIS) from WooCommerce orders through the beliq API.",
+    "description": "<p>beliq e-invoicing turns a WooCommerce order into a structured EN 16931 electronic invoice using the beliq API. When an order reaches the status you choose, the plugin maps the order onto invoice semantics, calls beliq to produce the document, validates it against the business rules, and stores it with the order for download.</p>\n<p>The plugin generates and validates the document. It does not send, file, transmit, or archive it: Peppol transmission, e-mail delivery, and tax-authority reporting stay with you.</p>\n<p>beliq validates every document against the EN 16931 business rules and the rules of the chosen format before it returns it. That helps you meet e-invoicing obligations, but no plugin can guarantee legal compliance: whether your invoices meet the rules that apply to your business stays your responsibility. The rule sets beliq validates against, with their versions and dates, are listed at https://docs.beliq.eu/compliance/validation-artifacts/.</p>\n<p>Supported output formats:</p>\n<ul>\n<li>XRechnung (XML)</li>\n<li>ZUGFeRD / Factur-X (hybrid PDF)</li>\n<li>Peppol BIS Billing (XML)</li>\n</ul>\n<p>Features:</p>\n<ul>\n<li>Automatic generation when an order becomes processing or completed. When beliq cannot be reached or is unavailable, the plugin tries again later, for up to about an hour, and shows each failure on the order.</li>\n<li>A business-only default: generate only when the buyer looks like a business (VAT ID or company), or widen it to every order.</li>\n<li>Seller legal details, payment account, and VAT category for zero-rated lines, all configurable.</li>\n<li>Reads a buyer VAT ID and a buyer reference (for example a Leitweg-ID) from order meta keys you name, so data another plugin stores can flow onto the invoice.</li>\n<li>Manual generate and regenerate from the order screen, with a capability-checked download.</li>\n<li>High-Performance Order Storage (HPOS) compatible.</li>\n</ul>\n<p>A beliq API key is required. The free tier is enough to evaluate the plugin.</p>\n<h3>External services</h3>\n<p>This plugin connects to the beliq API at https://api.beliq.eu, a third-party service operated by beliq, to generate and validate your e-invoices. The plugin cannot produce a document without it.</p>\n<p>When an invoice is generated (automatically when an order reaches the status you configure, again later from a scheduled action when that attempt could not reach beliq or beliq was unavailable, or manually from the order screen), the plugin sends that order&#8217;s invoice data to the beliq API: the seller details you configure, the buyer&#8217;s billing details and VAT ID, the order line items, and the amounts and taxes. The request is authenticated with your beliq API key. beliq returns the generated document, which the plugin stores with the order. No data is sent to beliq at any other time, and nothing is sent to any other service.</p>\n<p>For how beliq handles this data, see the beliq Terms of Service at https://beliq.eu/legal/terms-of-service/ and the Privacy Policy at https://beliq.eu/legal/privacy-policy/.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/beliq-e-invoicing.0.2.2.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/beliq-e-invoicing/assets/screenshot-1.png?rev=3803734",
+            "caption": "The beliq integration settings under WooCommerce &gt; Settings &gt; Integration: the API key, seller legal details, payment account, and invoice generation options."
+        },
+        {
+            "src": "https://ps.w.org/beliq-e-invoicing/assets/screenshot-2.png?rev=3803734",
+            "caption": "The beliq e-invoice box on the order screen (highlighted), showing the generation status and a capability-checked download."
+        }
+    ],
+    "tags": {
+        "e-invoicing": "e-invoicing",
+        "factur-x": "factur-x",
+        "peppol": "peppol",
+        "xrechnung": "xrechnung",
+        "zugferd": "zugferd"
+    },
+    "stable_tag": "0.2.2",
+    "versions": {
+        "0.2.2": "https://downloads.wordpress.org/plugin/beliq-e-invoicing.0.2.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/beliq-e-invoicing.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/beliq-e-invoicing/assets/icon.svg?rev=3803831",
+        "svg": "https://ps.w.org/beliq-e-invoicing/assets/icon.svg?rev=3803831"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
