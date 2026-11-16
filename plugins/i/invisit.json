@@ -1,0 +1,75 @@
+{
+    "name": "invisit",
+    "slug": "invisit",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/invisit/\">invisit</a>",
+    "author_profile": "https://profiles.wordpress.org/invisit/",
+    "contributors": {
+        "invisit": {
+            "profile": "https://profiles.wordpress.org/invisit/",
+            "avatar": "https://secure.gravatar.com/avatar/c85c02602655bb68163b8d8ede01c2cdbce3c6316cc6d63357bcd254265f63dd?s=96&d=monsterid&r=g",
+            "display_name": "invisit"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/invisit/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-16 18:37:00",
+    "added": "2026-11-16",
+    "homepage": "",
+    "sections": {
+        "description": "<p>This plugin connects your WordPress site to <a href=\"https://invisit.dev\" rel=\"nofollow ugc\">invisit</a>, a hosted analytics service that counts visitors without cookies. You paste one site ID, and every front-end page loads the invisit tracker. Your numbers show up in the invisit dashboard, not in wp-admin.</p>\n<p>What it does:</p>\n<ul>\n<li>Loads the tracker the way WordPress expects: enqueued, <code>async</code>, in the page head, through <code>wp_enqueue_script()</code>.</li>\n<li>Leaves out signed-in administrators and editors by default. You choose which roles, so customers and members who sign in can still be counted.</li>\n<li>Lets you turn on Global Privacy Control and Do Not Track, wait for consent, keep nothing on the visitor&#8217;s device, stop recording outbound link and download clicks, and list paths that are never measured.</li>\n<li>Adds <code>data-cfasync=\"false\"</code> to the tag, so Cloudflare Rocket Loader and LiteSpeed Cache leave it alone.</li>\n</ul>\n<p>What it does not do: it keeps no analytics in your database, adds no dashboard widget, and makes no requests from wp-admin. It stores no API key. Everything beyond the options above, such as allowed domains, redacted query parameters, heatmaps and the feedback widget, is set per site in the invisit dashboard and picked up by the tracker on its own.</p>\n<p>You need an invisit account. There is a free plan up to 20,000 events a month; see <a href=\"https://invisit.dev/pricing\" rel=\"nofollow ugc\">pricing</a>.</p>\n<h3>External services</h3>\n<p>This plugin is the WordPress side of invisit, a hosted analytics service run by invisit. Without the service it does nothing.</p>\n<p>Once you save a site ID, every front-end page your visitors open (except for the signed-in roles you leave out) loads the tracker script from <code>https://api.invisit.dev/invisit.js</code>. From then on the visitor&#8217;s browser sends to <code>https://api.invisit.dev</code>:</p>\n<ul>\n<li>page views: the page address with sensitive query parameters removed, the page title and the referrer</li>\n<li>time spent and scroll depth on the page, and page speed measurements (web vitals)</li>\n<li>clicks on outbound links and file downloads, unless you turn those off</li>\n<li>a short heartbeat while the page is open, for the realtime view</li>\n<li>clicks for heatmaps and feedback messages, only if you turn those on in the invisit dashboard</li>\n</ul>\n<p>Like any web request, these carry the visitor&#8217;s IP address and browser user agent. invisit uses the IP address to tell visits apart for a day and to look up an approximate location, and does not store it with the analytics. The tracker sets no cookies. With &#8220;Wait for consent&#8221; on, nothing is sent until your consent tool grants it, and with Global Privacy Control or Do Not Track respected, those browsers send nothing at all.</p>\n<p>The plugin itself sends nothing from your server and makes no request from wp-admin. Your site ID is public and appears in your page source.</p>\n<ul>\n<li>invisit Terms of Service: https://invisit.dev/legal/terms</li>\n<li>invisit Privacy Policy: https://invisit.dev/legal/privacy</li>\n<li>Data Processing Agreement: https://invisit.dev/legal/dpa</li>\n</ul>\n<p>Depending on where your visitors are, you may need to mention invisit in your own privacy policy.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin from Plugins, Add New, or upload the zip.</li>\n<li>Create a site in the <a href=\"https://app.invisit.dev\" rel=\"nofollow ugc\">invisit dashboard</a> and copy its site ID from Settings, Installation.</li>\n<li>In WordPress, open Settings, invisit, paste the site ID and save.</li>\n<li>Open your site in a private window and check the Realtime view in invisit. Your visit should show up within a few seconds.</li>\n</ol>\n",
+        "faq": "\n<h4>\nDoes invisit use cookies?\n</h4>\n<p>\n<p>No. Visits are told apart with a hash that changes every day, so a visitor cannot be followed from one day to the next. The tracker only keeps a consent answer or your own opt-out on the device, and &#8220;Keep nothing on the visitor&#8217;s device&#8221; turns even that off.</p>\n</p>\n<h4>\nI am signed in and see no tracker in the page source. Is it broken?\n</h4>\n<p>\n<p>Probably not. Administrators and editors get no tracker by default. Check from a private window, or untick your role under Settings, invisit.</p>\n</p>\n<h4>\nMy caching plugin serves the same page to everyone. Are my editors counted?\n</h4>\n<p>\n<p>The role check runs when WordPress builds the page. Most caching plugins never serve cached pages to signed-in users, so it keeps working. A cache that does, such as Cloudflare&#8217;s Cache Everything, serves your editors the cached page with the tracker in it. Open the site once in each browser you use with <code>#invisit-ignore</code> at the end of the address, and that browser stops being counted.</p>\n</p>\n<h4>\nPage views are missing since I turned on an optimisation plugin.\n</h4>\n<p>\n<p>Delaying JavaScript until the visitor interacts, or combining the tracker into a bundle with other scripts, loses page views. Exclude <code>invisit.js</code> from &#8220;delay JavaScript&#8221; and &#8220;combine JavaScript&#8221; in WP Rocket, LiteSpeed Cache or Perfmatters, then clear every cache.</p>\n</p>\n<h4>\nCan I serve the tracker from my own domain?\n</h4>\n<p>\n<p>Not with this plugin yet. To count visitors correctly, a proxy has to tell invisit each visitor&#8217;s real address, and invisit only accepts that from a proxy that signs it with a secret API key. This first version stores no secrets, so it loads the tracker from api.invisit.dev. The invisit docs show how to put a Cloudflare Worker in front of your site instead.</p>\n</p>\n<h4>\nCan I record custom events or WooCommerce orders?\n</h4>\n<p>\n<p>Clicks on any element become events with a <code>data-invisit-event</code> attribute, which you can add in a Custom HTML block. In your own code, call <code>window.invisit.track()</code> once the tracker has loaded. See the <a href=\"https://invisit.dev/docs/guides/events\" rel=\"nofollow ugc\">events guide</a>.</p>\n</p>\n<h4>\nWhat happens to my data when I delete the plugin?\n</h4>\n<p>\n<p>Deleting the plugin removes its settings from WordPress. Analytics already collected stay in your invisit account until you delete the site there.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>First release: site ID, excluded roles, privacy and click options, excluded paths.</li>\n</ul>\n"
+    },
+    "short_description": "Cookieless web analytics from invisit. Adds the tracker to your pages and keeps your own team out of the numbers.",
+    "description": "<p>This plugin connects your WordPress site to <a href=\"https://invisit.dev\" rel=\"nofollow ugc\">invisit</a>, a hosted analytics service that counts visitors without cookies. You paste one site ID, and every front-end page loads the invisit tracker. Your numbers show up in the invisit dashboard, not in wp-admin.</p>\n<p>What it does:</p>\n<ul>\n<li>Loads the tracker the way WordPress expects: enqueued, <code>async</code>, in the page head, through <code>wp_enqueue_script()</code>.</li>\n<li>Leaves out signed-in administrators and editors by default. You choose which roles, so customers and members who sign in can still be counted.</li>\n<li>Lets you turn on Global Privacy Control and Do Not Track, wait for consent, keep nothing on the visitor&#8217;s device, stop recording outbound link and download clicks, and list paths that are never measured.</li>\n<li>Adds <code>data-cfasync=\"false\"</code> to the tag, so Cloudflare Rocket Loader and LiteSpeed Cache leave it alone.</li>\n</ul>\n<p>What it does not do: it keeps no analytics in your database, adds no dashboard widget, and makes no requests from wp-admin. It stores no API key. Everything beyond the options above, such as allowed domains, redacted query parameters, heatmaps and the feedback widget, is set per site in the invisit dashboard and picked up by the tracker on its own.</p>\n<p>You need an invisit account. There is a free plan up to 20,000 events a month; see <a href=\"https://invisit.dev/pricing\" rel=\"nofollow ugc\">pricing</a>.</p>\n<h3>External services</h3>\n<p>This plugin is the WordPress side of invisit, a hosted analytics service run by invisit. Without the service it does nothing.</p>\n<p>Once you save a site ID, every front-end page your visitors open (except for the signed-in roles you leave out) loads the tracker script from <code>https://api.invisit.dev/invisit.js</code>. From then on the visitor&#8217;s browser sends to <code>https://api.invisit.dev</code>:</p>\n<ul>\n<li>page views: the page address with sensitive query parameters removed, the page title and the referrer</li>\n<li>time spent and scroll depth on the page, and page speed measurements (web vitals)</li>\n<li>clicks on outbound links and file downloads, unless you turn those off</li>\n<li>a short heartbeat while the page is open, for the realtime view</li>\n<li>clicks for heatmaps and feedback messages, only if you turn those on in the invisit dashboard</li>\n</ul>\n<p>Like any web request, these carry the visitor&#8217;s IP address and browser user agent. invisit uses the IP address to tell visits apart for a day and to look up an approximate location, and does not store it with the analytics. The tracker sets no cookies. With &#8220;Wait for consent&#8221; on, nothing is sent until your consent tool grants it, and with Global Privacy Control or Do Not Track respected, those browsers send nothing at all.</p>\n<p>The plugin itself sends nothing from your server and makes no request from wp-admin. Your site ID is public and appears in your page source.</p>\n<ul>\n<li>invisit Terms of Service: https://invisit.dev/legal/terms</li>\n<li>invisit Privacy Policy: https://invisit.dev/legal/privacy</li>\n<li>Data Processing Agreement: https://invisit.dev/legal/dpa</li>\n</ul>\n<p>Depending on where your visitors are, you may need to mention invisit in your own privacy policy.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/invisit.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "analytics": "analytics",
+        "cookieless": "cookieless",
+        "privacy": "privacy",
+        "statistics": "statistics",
+        "web-analytics": "web analytics"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/invisit.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/invisit.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/invisit/assets/icon.svg?rev=3805860",
+        "svg": "https://ps.w.org/invisit/assets/icon.svg?rev=3805860"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

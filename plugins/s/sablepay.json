@@ -1,0 +1,91 @@
+{
+    "name": "SablePay",
+    "slug": "sablepay",
+    "version": "1.3.13",
+    "author": "<a href=\"https://profiles.wordpress.org/rahul153/\">Sable Payments Inc.</a>",
+    "author_profile": "https://profiles.wordpress.org/rahul153/",
+    "contributors": {
+        "rahul153": {
+            "profile": "https://profiles.wordpress.org/rahul153/",
+            "avatar": "https://secure.gravatar.com/avatar/349090df72444177e17987d46ca081af588321e99e03ac5c856ee2a00b8e7a9f?s=96&d=monsterid&r=g",
+            "display_name": "Sable Payments Inc."
+        }
+    },
+    "requires": "5.8",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 100,
+    "ratings": {
+        "5": 1,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 1,
+    "support_url": "https://wordpress.org/support/plugin/sablepay/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-16 20:14:00",
+    "added": "2026-11-16",
+    "homepage": "",
+    "sections": {
+        "description": "<p>SablePay lets your customers pay in stablecoins by scanning a QR code with their phone or clicking to pay on the same device. The plugin handles the whole payment flow for you:</p>\n<ol>\n<li>A payment is created through the SablePay API.</li>\n<li>A payment window opens with the amount, a QR code and an expiry countdown.</li>\n<li>The plugin checks the payment status automatically until it is completed, failed or expired.</li>\n<li>The customer sees a success or failure screen, and your site can react to the result.</li>\n</ol>\n<h4>Features</h4>\n<ul>\n<li><strong>Payment button shortcode</strong>: add <code>[sablepay_button amount=\"10.50\"]</code> to any page or post. No code needed.</li>\n<li><strong>Ready-made payment window</strong>: QR code, converted stablecoin amount, &#8220;click to pay&#8221; link and an expiry countdown.</li>\n<li><strong>Live status tracking</strong>: checks every 3 seconds for the first minute, then backs off to every 10 seconds.</li>\n<li><strong>Secure by design</strong>: your API key is stored on your server and is never sent to visitors&#8217; browsers. Browser requests go through your own site (<code>/wp-json/sablepay/v1/</code>), protected by a nonce and per-IP rate limits.</li>\n<li><strong>Sandbox and live modes</strong>: the environment is detected from your API key.</li>\n<li><strong>Connection test</strong>: check your credentials from the settings screen.</li>\n<li><strong>Developer SDKs</strong>: a JavaScript SDK (<code>window.SablePay</code>) and a PHP SDK (<code>sablepay()</code>), with the same API as the SablePay Angular, React and Android SDKs.</li>\n<li><strong>Hooks for fulfilment</strong>: <code>sablepay_payment_completed</code>, <code>sablepay_payment_created</code>, <code>sablepay_create_payment_request</code> and more.</li>\n<li><strong>No external scripts</strong>: the QR code encoder and all assets are included in the plugin.</li>\n</ul>\n<h4>Shortcode</h4>\n<pre><code>[sablepay_button amount=\"10.50\" label=\"Pay with SablePay\" item=\"Coffee\" metadata=\"order_id:123\" success_url=\"/thank-you/\"]\n</code></pre>\n<ul>\n<li><code>amount</code> (required): payment amount, 0.01 to 1,000,000.</li>\n<li><code>label</code>: button text.</li>\n<li><code>item</code> / <code>quantity</code>: optional line item sent with the payment.</li>\n<li><code>metadata</code>: optional <code>key:value</code> pairs, separated by commas.</li>\n<li><code>success_url</code>: where to send the customer after payment. <code>?sablepay_payment_id=…</code> is added to the URL.</li>\n</ul>\n<h4>For developers</h4>\n<pre><code>// JavaScript (enqueue with sablepay_enqueue() in PHP)\nSablePay.initializeFromWordPress();\nSablePay.launchPayment(\n  { amount: 10.5, metadata: { order_id: '123' } },\n  { onSuccess: (r) =&gt; console.log(r.transactionHash), onFailure: (e) =&gt; console.log(e.message) }\n);\n\n// PHP: always verify on the server before fulfilling an order\n$status = sablepay()-&gt;getPaymentStatus( $payment_id );\nif ( \\SablePay\\PaymentStatus::isCompleted( $status['status'] ) ) { /* fulfil */ }\n</code></pre>\n<p>Hooks and filters: <code>sablepay_payment_created</code>, <code>sablepay_payment_status_checked</code>, <code>sablepay_payment_completed</code>, <code>sablepay_create_payment_request</code>, <code>sablepay_rest_permission</code>, <code>sablepay_rest_require_nonce</code>, <code>sablepay_rate_limits</code>, <code>sablepay_settings</code>, <code>sablepay_client_config</code>.</p>\n<h3>External services</h3>\n<p>This plugin connects to the <strong>SablePay payment API</strong>, operated by SablePay, to create stablecoin payments and check their status. This connection is required: the plugin cannot take payments without it.</p>\n<p><strong>When data is sent</strong></p>\n<ul>\n<li>When a visitor clicks a SablePay payment button, or your site calls <code>SablePay.launchPayment()</code>, the plugin creates a payment.</li>\n<li>While the payment window is open, the plugin checks the payment status every few seconds until the payment finishes.</li>\n<li>When an administrator clicks &#8220;Test connection&#8221; on the settings screen, the plugin fetches the most recent payment.</li>\n<li>When your own code calls the PHP SDK (for example <code>sablepay()-&gt;getPaymentStatus()</code>).</li>\n</ul>\n<p><strong>What data is sent</strong></p>\n<ul>\n<li>Your SablePay API key and Merchant ID, sent from your server only and never exposed to visitors.</li>\n<li>The payment amount, any line items (name, quantity, price, SKU) and any metadata you add (for example an order ID).</li>\n<li>Payment IDs, when checking a payment&#8217;s status.</li>\n</ul>\n<p>The plugin does not send visitors&#8217; names, email addresses or IP addresses to SablePay. Requests go from your web server to:</p>\n<ul>\n<li>Sandbox: <code>https://sandbox-api.sablepay.io/api/v1/</code></li>\n<li>Production: <code>https://api.sablepay.io/api/v1/</code></li>\n<li>or a custom API base URL that you set on the settings screen.</li>\n</ul>\n<p>The customer completes the payment on SablePay&#8217;s payment page, which is linked from the QR code, using their own wallet.</p>\n<ul>\n<li>SablePay Terms of Service: https://www.sablepay.io/terms-of-service</li>\n<li>SablePay Privacy Policy: https://www.sablepay.io/privacy-policy</li>\n</ul>\n<h3>Third-party libraries</h3>\n<ul>\n<li>qrcode-generator 1.4.4 by Kazuhiko Arase, MIT License: https://github.com/kazuhikoarase/qrcode-generator</li>\n</ul>\n",
+        "installation": "<ol>\n<li>In your WordPress admin, go to <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New Plugin</strong>, search for <strong>SablePay</strong>, then click <strong>Install Now</strong> and <strong>Activate</strong>.</li>\n<li>Go to <strong>Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> SablePay</strong>.</li>\n<li>Enter your <strong>API Key</strong> (<code>sable_sk_sand_…</code> for sandbox, <code>sable_sk_live_…</code> for production) and your <strong>Merchant ID</strong>. You can find both in your SablePay dashboard.</li>\n<li>Click <strong>Save Changes</strong>, then <strong>Test connection</strong>.</li>\n<li>Add <code>[sablepay_button amount=\"10.00\"]</code> to any page.</li>\n</ol>\n<p>Optional: define the credentials in <code>wp-config.php</code> instead. Values defined there override the settings screen:</p>\n<pre><code>define( 'SABLEPAY_API_KEY', 'sable_sk_live_...' );\ndefine( 'SABLEPAY_MERCHANT_ID', 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' );\n</code></pre>\n",
+        "faq": "\n<h4>\nDo I need a SablePay account?\n</h4>\n<p>\n<p>Yes. Sign up at https://www.sablepay.io to get an API key and Merchant ID. Use a sandbox key (<code>sable_sk_sand_…</code>) for testing.</p>\n</p>\n<h4>\nWhich coins and networks are supported?\n</h4>\n<p>\n<p>That depends on your SablePay account. Customers can pay with the stablecoins and networks enabled for your merchant account. The token and network actually used are shown on the success screen.</p>\n</p>\n<h4>\nIs my API key safe?\n</h4>\n<p>\n<p>Yes. The key is stored on your server and is only used for server-to-server requests. Visitors&#8217; browsers talk to your own site&#8217;s REST endpoint, never directly to SablePay with your key.</p>\n</p>\n<h4>\nHow do I know a payment was really completed?\n</h4>\n<p>\n<p>Don&#8217;t rely only on the browser&#8217;s success screen. Check the status on the server with <code>sablepay()-&gt;getPaymentStatus( $id )</code>, or use the <code>sablepay_payment_completed</code> action. The plugin provides both.</p>\n</p>\n<h4>\nCan I control the amount on the server?\n</h4>\n<p>\n<p>Yes. Use the <code>sablepay_create_payment_request</code> filter to recalculate the amount (for example from an order), or return a <code>WP_Error</code> to reject the request.</p>\n</p>\n<h4>\nMy page cache serves old pages and payments fail with &#8220;session has expired&#8221;\n</h4>\n<p>\n<p>Exclude pages with payment buttons from your page cache, or use the <code>sablepay_rest_require_nonce</code> filter (rate limiting still applies).</p>\n</p>\n<h4>\nDoes it work with WooCommerce?\n</h4>\n<p>\n<p>This version provides a payment button, the payment window and developer SDKs. A WooCommerce payment gateway isn&#8217;t included yet. Developers can build one with the PHP and JavaScript SDKs.</p>\n</p>\n\n",
+        "changelog": "<h4>1.3.13</h4>\n<ul>\n<li>Fix: use the correct SablePay API endpoints (<code>https://api.sablepay.io/api/v1/</code> and <code>https://sandbox-api.sablepay.io/api/v1/</code>).</li>\n</ul>\n<h4>1.3.12</h4>\n<ul>\n<li>Initial release on WordPress.org.</li>\n<li>Payment window with QR code, live status tracking and expiry countdown.</li>\n<li><code>[sablepay_button]</code> shortcode.</li>\n<li>Secure REST proxy, so the API key never reaches the browser.</li>\n<li>JavaScript and PHP SDKs, with the same API as the SablePay Angular SDK.</li>\n<li>Settings screen with connection test, plus <code>wp-config.php</code> overrides.</li>\n</ul>\n"
+    },
+    "short_description": "Accept stablecoin payments (USDC, USDT and more) with a QR code payment window, live status tracking and a simple payment button shortcode.",
+    "description": "<p>SablePay lets your customers pay in stablecoins by scanning a QR code with their phone or clicking to pay on the same device. The plugin handles the whole payment flow for you:</p>\n<ol>\n<li>A payment is created through the SablePay API.</li>\n<li>A payment window opens with the amount, a QR code and an expiry countdown.</li>\n<li>The plugin checks the payment status automatically until it is completed, failed or expired.</li>\n<li>The customer sees a success or failure screen, and your site can react to the result.</li>\n</ol>\n<h4>Features</h4>\n<ul>\n<li><strong>Payment button shortcode</strong>: add <code>[sablepay_button amount=\"10.50\"]</code> to any page or post. No code needed.</li>\n<li><strong>Ready-made payment window</strong>: QR code, converted stablecoin amount, &#8220;click to pay&#8221; link and an expiry countdown.</li>\n<li><strong>Live status tracking</strong>: checks every 3 seconds for the first minute, then backs off to every 10 seconds.</li>\n<li><strong>Secure by design</strong>: your API key is stored on your server and is never sent to visitors&#8217; browsers. Browser requests go through your own site (<code>/wp-json/sablepay/v1/</code>), protected by a nonce and per-IP rate limits.</li>\n<li><strong>Sandbox and live modes</strong>: the environment is detected from your API key.</li>\n<li><strong>Connection test</strong>: check your credentials from the settings screen.</li>\n<li><strong>Developer SDKs</strong>: a JavaScript SDK (<code>window.SablePay</code>) and a PHP SDK (<code>sablepay()</code>), with the same API as the SablePay Angular, React and Android SDKs.</li>\n<li><strong>Hooks for fulfilment</strong>: <code>sablepay_payment_completed</code>, <code>sablepay_payment_created</code>, <code>sablepay_create_payment_request</code> and more.</li>\n<li><strong>No external scripts</strong>: the QR code encoder and all assets are included in the plugin.</li>\n</ul>\n<h4>Shortcode</h4>\n<pre><code>[sablepay_button amount=\"10.50\" label=\"Pay with SablePay\" item=\"Coffee\" metadata=\"order_id:123\" success_url=\"/thank-you/\"]\n</code></pre>\n<ul>\n<li><code>amount</code> (required): payment amount, 0.01 to 1,000,000.</li>\n<li><code>label</code>: button text.</li>\n<li><code>item</code> / <code>quantity</code>: optional line item sent with the payment.</li>\n<li><code>metadata</code>: optional <code>key:value</code> pairs, separated by commas.</li>\n<li><code>success_url</code>: where to send the customer after payment. <code>?sablepay_payment_id=…</code> is added to the URL.</li>\n</ul>\n<h4>For developers</h4>\n<pre><code>// JavaScript (enqueue with sablepay_enqueue() in PHP)\nSablePay.initializeFromWordPress();\nSablePay.launchPayment(\n  { amount: 10.5, metadata: { order_id: '123' } },\n  { onSuccess: (r) =&gt; console.log(r.transactionHash), onFailure: (e) =&gt; console.log(e.message) }\n);\n\n// PHP: always verify on the server before fulfilling an order\n$status = sablepay()-&gt;getPaymentStatus( $payment_id );\nif ( \\SablePay\\PaymentStatus::isCompleted( $status['status'] ) ) { /* fulfil */ }\n</code></pre>\n<p>Hooks and filters: <code>sablepay_payment_created</code>, <code>sablepay_payment_status_checked</code>, <code>sablepay_payment_completed</code>, <code>sablepay_create_payment_request</code>, <code>sablepay_rest_permission</code>, <code>sablepay_rest_require_nonce</code>, <code>sablepay_rate_limits</code>, <code>sablepay_settings</code>, <code>sablepay_client_config</code>.</p>\n<h3>External services</h3>\n<p>This plugin connects to the <strong>SablePay payment API</strong>, operated by SablePay, to create stablecoin payments and check their status. This connection is required: the plugin cannot take payments without it.</p>\n<p><strong>When data is sent</strong></p>\n<ul>\n<li>When a visitor clicks a SablePay payment button, or your site calls <code>SablePay.launchPayment()</code>, the plugin creates a payment.</li>\n<li>While the payment window is open, the plugin checks the payment status every few seconds until the payment finishes.</li>\n<li>When an administrator clicks &#8220;Test connection&#8221; on the settings screen, the plugin fetches the most recent payment.</li>\n<li>When your own code calls the PHP SDK (for example <code>sablepay()-&gt;getPaymentStatus()</code>).</li>\n</ul>\n<p><strong>What data is sent</strong></p>\n<ul>\n<li>Your SablePay API key and Merchant ID, sent from your server only and never exposed to visitors.</li>\n<li>The payment amount, any line items (name, quantity, price, SKU) and any metadata you add (for example an order ID).</li>\n<li>Payment IDs, when checking a payment&#8217;s status.</li>\n</ul>\n<p>The plugin does not send visitors&#8217; names, email addresses or IP addresses to SablePay. Requests go from your web server to:</p>\n<ul>\n<li>Sandbox: <code>https://sandbox-api.sablepay.io/api/v1/</code></li>\n<li>Production: <code>https://api.sablepay.io/api/v1/</code></li>\n<li>or a custom API base URL that you set on the settings screen.</li>\n</ul>\n<p>The customer completes the payment on SablePay&#8217;s payment page, which is linked from the QR code, using their own wallet.</p>\n<ul>\n<li>SablePay Terms of Service: https://www.sablepay.io/terms-of-service</li>\n<li>SablePay Privacy Policy: https://www.sablepay.io/privacy-policy</li>\n</ul>\n<h3>Third-party libraries</h3>\n<ul>\n<li>qrcode-generator 1.4.4 by Kazuhiko Arase, MIT License: https://github.com/kazuhikoarase/qrcode-generator</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/sablepay.1.3.13.zip",
+    "upgrade_notice": {
+        "1.3.13": "<p>Fixes the SablePay API endpoints. Please update: 1.3.12 cannot reach the API.</p>",
+        "1.3.12": "<p>Initial release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/sablepay/assets/screenshot-1.png?rev=3805946",
+            "caption": "The payment window: amount, converted stablecoin amount, QR code and expiry countdown."
+        },
+        {
+            "src": "https://ps.w.org/sablepay/assets/screenshot-2.png?rev=3805946",
+            "caption": "Payment successful, with transaction details."
+        }
+    ],
+    "tags": {
+        "crypto-payments": "crypto payments",
+        "payments": "payments",
+        "qr-code": "qr code",
+        "stablecoin": "stablecoin",
+        "usdc": "usdc"
+    },
+    "stable_tag": "1.3.13",
+    "versions": {
+        "1.3.12": "https://downloads.wordpress.org/plugin/sablepay.1.3.12.zip",
+        "1.3.13": "https://downloads.wordpress.org/plugin/sablepay.1.3.13.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/sablepay.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/sablepay/assets/banner-772x250.png?rev=3805946",
+        "high": "https://ps.w.org/sablepay/assets/banner-1544x500.png?rev=3805946"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/sablepay/assets/icon-128x128.png?rev=3805946",
+        "2x": "https://ps.w.org/sablepay/assets/icon-256x256.png?rev=3805946"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 100,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
