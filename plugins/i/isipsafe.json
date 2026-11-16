@@ -1,0 +1,76 @@
+{
+    "name": "isIPsafe",
+    "slug": "isipsafe",
+    "version": "0.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/sasivardhini/\">sasivardhini</a>",
+    "author_profile": "https://profiles.wordpress.org/sasivardhini/",
+    "contributors": {
+        "sasivardhini": {
+            "profile": "https://profiles.wordpress.org/sasivardhini/",
+            "avatar": "https://secure.gravatar.com/avatar/42cc98f9d62ef2e0844d88e1ab5da7d8fa0ef88f9e9016936ba740883011bacc?s=96&d=monsterid&r=g",
+            "display_name": "sasivardhini"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/isipsafe/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-16 08:24:00",
+    "added": "2026-11-16",
+    "homepage": "https://isipsafe.com/integrations/wordpress",
+    "sections": {
+        "description": "<p>isIPsafe connects your site to <a href=\"https://isipsafe.com\" rel=\"nofollow ugc\">isIPsafe</a>, a free IP reputation and abuse reporting service.</p>\n<ul>\n<li><strong>Login protection.</strong> When someone tries to sign in, the visitor&#8217;s IP address is checked. Addresses that isIPsafe lists as malicious are refused, on wp-login.php, XML-RPC and application passwords alike.</li>\n<li><strong>Comment protection (optional).</strong> Comments from malicious addresses can be marked as spam or rejected.</li>\n<li><strong>Automatic reporting.</strong> Addresses that keep failing to sign in (by default 5 times in 10 minutes) are reported to isIPsafe, so other sites can block them too.</li>\n<li><strong>Fast and safe.</strong> Lookups are cached, so isIPsafe is not called on every request. If isIPsafe is slow or unreachable, visitors are let through: the plugin never locks people out because of a network problem.</li>\n<li><strong>Activity counters</strong> on the settings page and in a dashboard widget.</li>\n</ul>\n<p>An address counts as malicious when it has been reported at least once, is not on the isIPsafe allowlist (public DNS resolvers and similar), and its abuse confidence score is at or above your threshold (75 by default).</p>\n<p>Nothing is sent to isIPsafe until you save an API key. Keys are free.</p>\n<h3>External services</h3>\n<p>This plugin connects to the isIPsafe API at <code>https://isipsafe.com/api/v1</code>, operated by WaveCentric. It is needed to look up the reputation of IP addresses and to report abusive ones. No request is made until an administrator saves an API key on Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> isIPsafe (or defines <code>ISIPSAFE_API_KEY</code> in wp-config.php).</p>\n<p>What is sent, and when:</p>\n<ul>\n<li><strong>Reputation lookups</strong> (<code>GET /check</code>): the IP address of a visitor who submits the login form, signs in over XML-RPC or with an application password, or (if enabled) posts a comment. Results are cached for an hour by default, so an address is looked up at most once per cache period.</li>\n<li><strong>Abuse reports</strong> (<code>POST /report</code>, only when &#8220;Report brute-force attacks&#8221; is enabled): the IP address that failed to sign in repeatedly, the categories <code>brute-force</code> and <code>web-app-attack</code>, and a short comment such as &#8220;WordPress login brute-force: 5 failed attempts in 10 minutes&#8221;. Reports and their comments are public on isipsafe.com. Visitor IP addresses are transmitted solely for reputation lookup and attack reporting. Usernames, passwords, site URLs, and all other personal data are never collected or sent.</li>\n<li><strong>Connection test</strong> (<code>GET /check</code> for 1.1.1.1): only when an administrator clicks &#8220;Test connection&#8221;.</li>\n</ul>\n<p>Every request carries your API key in an <code>Authorization</code> header and the plugin version in the <code>User-Agent</code> header.</p>\n<ul>\n<li>Terms of service: https://isipsafe.com/terms</li>\n<li>Privacy policy: https://isipsafe.com/privacy</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Install the plugin from Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New, or upload the <code>isipsafe</code> folder to <code>/wp-content/plugins/</code>.</li>\n<li>Activate it.</li>\n<li>Get a free API key at <a href=\"https://isipsafe.com/login\" rel=\"nofollow ugc\">isipsafe.com</a>.</li>\n<li>Go to Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> isIPsafe, paste the key, save, and click &#8220;Test connection&#8221;.</li>\n</ol>\n<p>To keep the key out of the database, add this to wp-config.php instead:</p>\n<pre><code>define( 'ISIPSAFE_API_KEY', 'sl_your_key_here' );\n</code></pre>\n<p>If your site is behind Cloudflare or another reverse proxy, choose the matching option under &#8220;Visitor IP address&#8221;, otherwise every visitor appears to come from the proxy.</p>\n",
+        "faq": "\n<h4>\nIs isIPsafe free?\n</h4>\n<p>\n<p>Yes. A free key allows 10,000 lookups a day, which is far more than most sites need because lookups are cached and only made when someone signs in or comments.</p>\n</p>\n<h4>\nWhat happens if isIPsafe is down?\n</h4>\n<p>\n<p>Sign-ins and comments are allowed. After an error the plugin also stops asking isIPsafe for a minute so that visitors are not slowed down.</p>\n</p>\n<h4>\nI locked myself out. What now?\n</h4>\n<p>\n<p>Add your own IP address to &#8220;Never block&#8221; on the settings page. If you cannot reach the dashboard, rename the <code>wp-content/plugins/isipsafe</code> folder over FTP or SSH to deactivate the plugin, sign in, and rename it back.</p>\n</p>\n<h4>\nWhich visitor IP address is used?\n</h4>\n<p>\n<p>By default <code>REMOTE_ADDR</code>, which cannot be forged. The <code>CF-Connecting-IP</code> and <code>X-Forwarded-For</code> headers are only used when you select them, because a visitor can send fake values when the site is not really behind a proxy. With <code>X-Forwarded-For</code> the plugin reads the chain of hops from the right and skips private addresses and the &#8220;Trusted proxies&#8221; you list, so a visitor cannot pick their own address by adding hops on the left. Private and reserved addresses are never looked up or reported.</p>\n</p>\n<h4>\nCan developers change the behaviour?\n</h4>\n<p>\n<p>Two filters are available: <code>isipsafe_visitor_ip</code> to change the detected address, and <code>isipsafe_should_block</code> to override the decision for a login (<code>$context</code> is <code>login</code>) or a comment (<code>$context</code> is <code>comment</code>).</p>\n</p>\n<h4>\nWhat is removed when I delete the plugin?\n</h4>\n<p>\n<p>All settings, counters and cached lookups.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>First release: login and comment protection, automatic brute-force reporting, cached lookups, dashboard widget.</li>\n</ul>\n"
+    },
+    "short_description": "Block sign-ins and comments from IP addresses with a bad reputation, and report brute-force attackers to the free isIPsafe service.",
+    "description": "<p>isIPsafe connects your site to <a href=\"https://isipsafe.com\" rel=\"nofollow ugc\">isIPsafe</a>, a free IP reputation and abuse reporting service.</p>\n<ul>\n<li><strong>Login protection.</strong> When someone tries to sign in, the visitor&#8217;s IP address is checked. Addresses that isIPsafe lists as malicious are refused, on wp-login.php, XML-RPC and application passwords alike.</li>\n<li><strong>Comment protection (optional).</strong> Comments from malicious addresses can be marked as spam or rejected.</li>\n<li><strong>Automatic reporting.</strong> Addresses that keep failing to sign in (by default 5 times in 10 minutes) are reported to isIPsafe, so other sites can block them too.</li>\n<li><strong>Fast and safe.</strong> Lookups are cached, so isIPsafe is not called on every request. If isIPsafe is slow or unreachable, visitors are let through: the plugin never locks people out because of a network problem.</li>\n<li><strong>Activity counters</strong> on the settings page and in a dashboard widget.</li>\n</ul>\n<p>An address counts as malicious when it has been reported at least once, is not on the isIPsafe allowlist (public DNS resolvers and similar), and its abuse confidence score is at or above your threshold (75 by default).</p>\n<p>Nothing is sent to isIPsafe until you save an API key. Keys are free.</p>\n<h3>External services</h3>\n<p>This plugin connects to the isIPsafe API at <code>https://isipsafe.com/api/v1</code>, operated by WaveCentric. It is needed to look up the reputation of IP addresses and to report abusive ones. No request is made until an administrator saves an API key on Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> isIPsafe (or defines <code>ISIPSAFE_API_KEY</code> in wp-config.php).</p>\n<p>What is sent, and when:</p>\n<ul>\n<li><strong>Reputation lookups</strong> (<code>GET /check</code>): the IP address of a visitor who submits the login form, signs in over XML-RPC or with an application password, or (if enabled) posts a comment. Results are cached for an hour by default, so an address is looked up at most once per cache period.</li>\n<li><strong>Abuse reports</strong> (<code>POST /report</code>, only when &#8220;Report brute-force attacks&#8221; is enabled): the IP address that failed to sign in repeatedly, the categories <code>brute-force</code> and <code>web-app-attack</code>, and a short comment such as &#8220;WordPress login brute-force: 5 failed attempts in 10 minutes&#8221;. Reports and their comments are public on isipsafe.com. Visitor IP addresses are transmitted solely for reputation lookup and attack reporting. Usernames, passwords, site URLs, and all other personal data are never collected or sent.</li>\n<li><strong>Connection test</strong> (<code>GET /check</code> for 1.1.1.1): only when an administrator clicks &#8220;Test connection&#8221;.</li>\n</ul>\n<p>Every request carries your API key in an <code>Authorization</code> header and the plugin version in the <code>User-Agent</code> header.</p>\n<ul>\n<li>Terms of service: https://isipsafe.com/terms</li>\n<li>Privacy policy: https://isipsafe.com/privacy</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/isipsafe.0.1.0.zip",
+    "upgrade_notice": {
+        "0.1.0": "<p>First release.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "brute-force": "Brute Force",
+        "firewall": "firewall",
+        "login": "login",
+        "security": "security",
+        "spam": "spam"
+    },
+    "stable_tag": "0.1.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/isipsafe.0.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/isipsafe.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/isipsafe.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
