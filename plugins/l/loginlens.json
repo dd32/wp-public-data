@@ -1,0 +1,91 @@
+{
+    "name": "LoginLens – Account Sharing Detector",
+    "slug": "loginlens",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/eyargilad/\">eyargilad</a>",
+    "author_profile": "https://profiles.wordpress.org/eyargilad/",
+    "contributors": {
+        "eyargilad": {
+            "profile": "https://profiles.wordpress.org/eyargilad/",
+            "avatar": "https://secure.gravatar.com/avatar/c62e4deb4eeda2566cb788fa04580edecdf2b2625a39a72b08476be3aeadf7bd?s=96&d=monsterid&r=g",
+            "display_name": "eyargilad"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/loginlens/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-17 19:52:00",
+    "added": "2026-11-17",
+    "homepage": "https://wordpress.org/plugins/loginlens/",
+    "sections": {
+        "description": "<p>Most anti-sharing plugins just cap concurrent logins. That stops sharing, but it also kicks out the member who reads on their phone and their laptop.</p>\n<p>LoginLens takes the other approach: it <strong>watches and reports</strong> so you can decide what to do. It never blocks a login.</p>\n<p><strong>What it detects</strong></p>\n<ul>\n<li><strong>Simultaneous use:</strong> different devices actively using the same account within the same 15 minutes. This is the strongest sign of sharing.</li>\n<li><strong>Too many devices:</strong> many different browser, OS and device combinations in a short window.</li>\n<li><strong>Too many networks:</strong> logins from many different networks, for example several cities in one day.</li>\n<li><strong>Shared login cookies:</strong> an existing session suddenly appearing from another network.</li>\n</ul>\n<p><strong>What you get</strong></p>\n<ul>\n<li>Users <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Account Sharing: flagged accounts, ranked most suspicious first, with the reason for each flag.</li>\n<li>A page for each account showing open sessions right now (with which ones are live), its devices, and the full event log.</li>\n<li>Country of each login when your site is behind Cloudflare (read from the CF-IPCountry header, so no lookups and no external calls). Tor exit nodes are labelled.</li>\n<li>Clickable IPs: open a lookup page for any IP in one click.</li>\n<li>A one-click &#8220;Log out of all devices&#8221; button.</li>\n<li>Optional email alerts, sent at most once per account per window.</li>\n<li>Thresholds you can adjust, plus roles to exclude (administrators are excluded by default).</li>\n</ul>\n<p><strong>Works with any login form.</strong> It hooks into WordPress core logins and sessions, so it works with wp-login.php, Elementor login forms, WooCommerce, MemberPress, LearnDash, Paid Memberships Pro and others.</p>\n<p><strong>Lightweight.</strong> Each session&#8217;s &#8220;last seen&#8221; time is updated at most once every 5 minutes. Ordinary page loads add no database writes.</p>\n<p><strong>Privacy-friendly.</strong> No external services, no tracking and no fingerprinting. Devices are recorded only at a &#8220;Chrome on Windows&#8221; level. Logs are deleted automatically after a retention period you choose (90 days by default). The data is included in WordPress&#8217;s Export and Erase Personal Data tools, and a privacy-policy paragraph is suggested for you under Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Privacy.</p>\n",
+        "installation": "<ol>\n<li>Install and activate the plugin.</li>\n<li>Go to <strong>Users <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Account Sharing <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings</strong> and review the thresholds.</li>\n<li>If your site is behind Cloudflare or a reverse proxy, set <strong>Client IP source</strong>. Otherwise every visitor will appear to share one IP.</li>\n<li>Check <strong>Users <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Account Sharing</strong> after your members have been active for a day or so.</li>\n</ol>\n",
+        "faq": "\n<h4>\nWill it log out or block my members?\n</h4>\n<p>\n<p>No. It only records and reports. You can end a member&#8217;s sessions manually from their account page.</p>\n</p>\n<h4>\nWon&#8217;t someone with a phone and a laptop be flagged?\n</h4>\n<p>\n<p>Not with the default settings. An account is flagged at 3 or more devices active at the same time, 4 or more distinct devices, or 5 or more networks within 24 hours. All three thresholds can be changed.</p>\n</p>\n<h4>\nEvery user shows the same IP address.\n</h4>\n<p>\n<p>Your site is behind a proxy or CDN. Choose the matching header in Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Client IP source.</p>\n</p>\n<h4>\nWhy don&#8217;t I see a Country column?\n</h4>\n<p>\n<p>Country comes from Cloudflare&#8217;s CF-IPCountry header, so it only appears when your site is behind Cloudflare, and only for events recorded after that. You can also supply countries from your own GeoIP source with the <code>loginlens_client_country</code> filter.</p>\n</p>\n<h4>\nDoes clicking an IP send data anywhere?\n</h4>\n<p>\n<p>Only if you click it. The link opens ipinfo.io in a new tab, from your own browser. The plugin never contacts it. Use the <code>loginlens_ip_lookup_url</code> filter to choose another service, or return an empty string to turn the links off.</p>\n</p>\n<h4>\nDoes it work on multisite?\n</h4>\n<p>\n<p>Yes. Each site keeps its own log.</p>\n</p>\n<h4>\nDevelopers: are there hooks?\n</h4>\n<p>\n<ul>\n<li><code>loginlens_client_ip</code> (filter): override the detected IP.</li>\n<li><code>loginlens_is_user_excluded</code> (filter): exclude specific users.</li>\n<li><code>loginlens_event_recorded</code> (action): runs after each event, with the user ID, event type and number of live devices.</li>\n<li><code>loginlens_client_country</code> (filter): set a two-letter country code from your own GeoIP source.</li>\n<li><code>loginlens_ip_lookup_url</code> (filter): the IP lookup URL pattern, where <code>%s</code> is the IP. Return an empty string to turn the links off.</li>\n<li><code>loginlens_waitlist_url</code> (filter): the URL of the early-access link (empty hides it).</li>\n</ul>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "See which members share their login, without locking out honest customers. Logs devices, networks and simultaneous use, and flags suspicious accounts.",
+    "description": "<p>Most anti-sharing plugins just cap concurrent logins. That stops sharing, but it also kicks out the member who reads on their phone and their laptop.</p>\n<p>LoginLens takes the other approach: it <strong>watches and reports</strong> so you can decide what to do. It never blocks a login.</p>\n<p><strong>What it detects</strong></p>\n<ul>\n<li><strong>Simultaneous use:</strong> different devices actively using the same account within the same 15 minutes. This is the strongest sign of sharing.</li>\n<li><strong>Too many devices:</strong> many different browser, OS and device combinations in a short window.</li>\n<li><strong>Too many networks:</strong> logins from many different networks, for example several cities in one day.</li>\n<li><strong>Shared login cookies:</strong> an existing session suddenly appearing from another network.</li>\n</ul>\n<p><strong>What you get</strong></p>\n<ul>\n<li>Users <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Account Sharing: flagged accounts, ranked most suspicious first, with the reason for each flag.</li>\n<li>A page for each account showing open sessions right now (with which ones are live), its devices, and the full event log.</li>\n<li>Country of each login when your site is behind Cloudflare (read from the CF-IPCountry header, so no lookups and no external calls). Tor exit nodes are labelled.</li>\n<li>Clickable IPs: open a lookup page for any IP in one click.</li>\n<li>A one-click &#8220;Log out of all devices&#8221; button.</li>\n<li>Optional email alerts, sent at most once per account per window.</li>\n<li>Thresholds you can adjust, plus roles to exclude (administrators are excluded by default).</li>\n</ul>\n<p><strong>Works with any login form.</strong> It hooks into WordPress core logins and sessions, so it works with wp-login.php, Elementor login forms, WooCommerce, MemberPress, LearnDash, Paid Memberships Pro and others.</p>\n<p><strong>Lightweight.</strong> Each session&#8217;s &#8220;last seen&#8221; time is updated at most once every 5 minutes. Ordinary page loads add no database writes.</p>\n<p><strong>Privacy-friendly.</strong> No external services, no tracking and no fingerprinting. Devices are recorded only at a &#8220;Chrome on Windows&#8221; level. Logs are deleted automatically after a retention period you choose (90 days by default). The data is included in WordPress&#8217;s Export and Erase Personal Data tools, and a privacy-policy paragraph is suggested for you under Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Privacy.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/loginlens.1.0.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/loginlens/assets/screenshot-1.png?rev=3808065",
+            "caption": "Flagged accounts, most suspicious first, with the reason for each flag."
+        },
+        {
+            "src": "https://ps.w.org/loginlens/assets/screenshot-2.png?rev=3808065",
+            "caption": "An account's page: why it's flagged, open sessions (live ones in red), and one-click \"Log out of all devices\"."
+        },
+        {
+            "src": "https://ps.w.org/loginlens/assets/screenshot-3.png?rev=3808065",
+            "caption": "The event log: every login, simultaneous use and network change, with country (via Cloudflare), Tor detection and clickable IPs."
+        },
+        {
+            "src": "https://ps.w.org/loginlens/assets/screenshot-4.png?rev=3808065",
+            "caption": "Settings: thresholds, email alerts, excluded roles and the proxy/CDN IP source."
+        }
+    ],
+    "tags": {
+        "account-sharing": "account-sharing",
+        "concurrent-logins": "concurrent logins",
+        "login-log": "login log",
+        "membership": "membership",
+        "password-sharing": "password sharing"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/loginlens.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/loginlens.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/loginlens.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
