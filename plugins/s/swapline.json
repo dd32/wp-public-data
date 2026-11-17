@@ -1,0 +1,112 @@
+{
+    "name": "Swapline",
+    "slug": "swapline",
+    "version": "0.4.1",
+    "author": "<a href=\"https://profiles.wordpress.org/rebelcode/\">RebelCode</a>",
+    "author_profile": "https://profiles.wordpress.org/rebelcode/",
+    "contributors": {
+        "rebelcode": {
+            "profile": "https://profiles.wordpress.org/rebelcode/",
+            "avatar": "https://secure.gravatar.com/avatar/dc1edda808a135a0c120b5da004db9deea403f0a64b0d0f9cd21f98bf722e55c?s=96&d=monsterid&r=g",
+            "display_name": "RebelCode"
+        },
+        "jeangalea": {
+            "profile": "https://profiles.wordpress.org/jeangalea/",
+            "avatar": "https://secure.gravatar.com/avatar/cbe95a6adc45cc80347c3c7194431b9f9f804748308c526947753bd8445bee81?s=96&d=monsterid&r=g",
+            "display_name": "Jean Galea"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.1.4",
+    "requires_php": "8.0",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/swapline/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-17 12:54:00",
+    "added": "2026-11-17",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Swapline finds and replaces text in your database tables. It&#8217;s built for moving a site to a new domain, switching to HTTPS, or fixing a string that appears in hundreds of places.</p>\n<ul>\n<li>Choose the tables to process. The list shows each table&#8217;s size, with shortcuts for all tables and core tables only. On multisite you can filter the list by site.</li>\n<li>Run several search and replace pairs in one pass. They&#8217;re applied in order, each on the result of the one before.</li>\n<li>Limit a run, backup or import to the columns you name, or skip some.</li>\n<li>Serialized data is rebuilt with correct lengths at any depth, including serialized strings stored inside other serialized strings. Objects are never instantiated.</li>\n<li>JSON values, such as page builder data, are matched in their escaped form too, so <code>https:\\/\\/example.com</code> is found when you search for <code>https://example.com</code>.</li>\n<li>Values that look serialized but are broken are left alone and counted in the report.</li>\n<li>Case-insensitive matching and regular expressions, with the pattern checked before anything runs.</li>\n<li>Dry runs report matched rows and cells per table.</li>\n<li>&#8220;View exactly what changed&#8221; shows a side-by-side diff of every changed cell, with its table, row and column. The last five runs are kept in History.</li>\n<li>Undo a live run from History. Each cell the run changed goes back to its earlier value, and cells edited since the run keep their newer value.</li>\n<li>Save any number of named profiles and load them later.</li>\n<li>Large tables are processed in batches with a progress bar. Tables without a primary key work too.</li>\n<li>If a run is interrupted, for example by closing the tab, Swapline offers to resume it where it stopped.</li>\n<li>On multisite, the tool lives in the network admin and super admins can pick tables from any site.</li>\n<li>Back up the whole database or selected tables to a gzipped SQL file. Optionally apply a search and replace to the backup only, to move the site to a new domain without touching the live site.</li>\n<li>Backups are stored in a folder with a random name in your uploads directory, with random file names and .htaccess and web.config rules that deny web access. If your web server serves files from that folder anyway, the Backup tab warns you so you can add a server rule. Download backups from the admin and keep as many as you like.</li>\n<li>A live search and replace can back up the selected tables first. History links each run to that backup, with a button to restore it.</li>\n<li>Restore any backup from the Backup list.</li>\n<li>Import a .sql or .sql.gz file, or one of your backups, with an optional search and replace. Every statement is checked first, the data loads into temporary tables, and the live tables are swapped only when everything has loaded. If anything fails, the live database is untouched.</li>\n<li>Importing can keep you logged in and keep the site&#8217;s address.</li>\n<li>WP-CLI: <code>wp swapline run</code>, <code>wp swapline backup</code> and <code>wp swapline import</code>, with the same column options as the admin screen.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>swapline</code> folder to <code>/wp-content/plugins/</code>, or install the zip from Plugins &gt; Add New.</li>\n<li>Activate it. On multisite, network-activate it.</li>\n<li>Go to Tools &gt; Search &amp; Replace (Settings &gt; Search &amp; Replace in the network admin).</li>\n</ol>\n",
+        "faq": "\n<h4>\nShould I back up first?\n</h4>\n<p>\n<p>Yes. Do a dry run first and check the diff. Tick &#8220;Back up the selected tables first&#8221; when you start a live run, and History shows a button to restore that backup next to the run. History can also undo a live run cell by cell.</p>\n</p>\n<h4>\nCan I let other roles use Swapline?\n</h4>\n<p>\n<p>Yes. Return a different capability from the <code>swapline_capability</code> filter, for example <code>add_filter( 'swapline_capability', fn() =&gt; 'manage_woocommerce' );</code>. It controls the Search &amp; Replace and History screens. Backups, downloads, imports, restores and runs on the users tables always need <code>manage_options</code> (<code>manage_network</code> on multisite), because they expose password hashes and can create administrators. Anyone you give the capability to can rewrite your posts, options and settings, so pick a role you&#8217;d trust with the database.</p>\n</p>\n<h4>\nWhy is the guid column skipped?\n</h4>\n<p>\n<p>WordPress uses post GUIDs as permanent identifiers, and feed readers rely on them not changing. Untick the option if you really need to change them.</p>\n</p>\n<h4>\nAre array keys replaced?\n</h4>\n<p>\n<p>No. Only values are changed, inside serialized data and JSON alike, which matches how WordPress and WP-CLI handle it.</p>\n</p>\n<h4>\nHow do I write a regular expression?\n</h4>\n<p>\n<p>Enter the pattern without delimiters, for example <code>https?://old\\.example\\.com</code>. Use <code>$1</code>, <code>$2</code> in the replacement for captured groups.</p>\n</p>\n<h4>\nWhere are backups stored?\n</h4>\n<p>\n<p>In a folder with a random name inside your uploads directory. It has .htaccess and web.config rules that deny web access, and the file names are random too, so on servers that ignore those rules (such as nginx) the file names can&#8217;t be guessed. If the server serves files from the folder, the Backup tab says so and names the folder, so you can add a rule that denies access to it. Download backups from Tools &gt; Search &amp; Replace &gt; Backup.</p>\n</p>\n<h4>\nWhat can be imported?\n</h4>\n<p>\n<p>SQL files with CREATE TABLE, DROP TABLE, INSERT &#8230; VALUES, LOCK/UNLOCK TABLES and session SET statements, which covers backups from Swapline, WP-CLI and mysqldump. Anything else, such as GRANT, triggers or stored procedures, is listed and nothing is imported. Table names must use this site&#8217;s table prefix.</p>\n</p>\n<h4>\nWhat does WP-CLI&#8217;s command add over wp search-replace?\n</h4>\n<p>\n<p>It uses the same engine as the admin screen, so it also replaces JSON-escaped values, reports broken serialized values it skipped, can load a saved profile with <code>--profile</code>, and records the run in the admin history so you can view the diff.</p>\n</p>\n\n",
+        "changelog": "<h4>0.4.1</h4>\n<ul>\n<li>The History tab&#8217;s action buttons wrap onto extra lines instead of running past the edge of the table.</li>\n<li>The WP-CLI run summary now reads &#8220;1 cell in 1 row changed (1 replacement)&#8221; for single counts.</li>\n</ul>\n<h4>0.4.0</h4>\n<ul>\n<li>Undo a live run from History. Cells the run changed go back to their earlier value, and cells edited since keep their newer value.</li>\n<li>Restore any backup from the Backup list, or the backup taken before a run straight from its History row.</li>\n<li>Run several search and replace pairs in one pass, applied in order.</li>\n<li>Limit a run, backup or import to chosen columns, or skip some. WP-CLI takes <code>--columns</code> and <code>--skip-columns</code>.</li>\n<li>Runs show in History while they&#8217;re in progress. An interrupted run can be resumed or stopped, and its diff stays available.</li>\n<li>The Backup tab warns you when the web server serves files from the backup folder.</li>\n<li><code>wp swapline run</code> asks before a live run writes. Add <code>--yes</code> to skip the question.</li>\n<li>On multisite, filter the table list by site.</li>\n<li>Admin, API and WP-CLI runs no longer interfere with each other&#8217;s recorded changes.</li>\n<li>Table names match the site&#8217;s prefix exactly, so other installs sharing the database are left out.</li>\n<li>Password hashes and session tokens are kept out of the change history.</li>\n<li>Backups, downloads, imports, restores and runs on the users, usermeta and options tables stay limited to administrators when the capability filter delegates Swapline to other roles.</li>\n<li>Only the user who started a run, or an administrator, can continue or cancel it.</li>\n<li>Imports reject gzip files that expand far beyond their size, and use this site&#8217;s prefix for temporary tables.</li>\n<li>Database errors show a general message in the browser and are logged in full.</li>\n<li>SQLite sites get a clear message on the Import tab.</li>\n<li>The reasons an import is refused can be translated.</li>\n<li>The search and replace screen, report, diff and History work at phone widths.</li>\n</ul>\n<h4>0.3.0</h4>\n<ul>\n<li>Other plugins can run previews, replacements and backups through Swapline&#8217;s API.</li>\n<li>The <code>swapline_capability</code> filter sets which capability can use Swapline.</li>\n</ul>\n<h4>0.2.1</h4>\n<ul>\n<li>Backups and imports keep columns whose default is an expression, such as CURRENT_TIMESTAMP.</li>\n<li>Imports check quoted storage engine names against the allowed list.</li>\n<li>Serialized data inside reformatted JSON, and serialized strings written with S:, are left unchanged and reported instead of being corrupted.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>Backups, with an optional search and replace applied to the backup only.</li>\n<li>Imports through temporary tables, with statement checks and an optional search and replace.</li>\n<li>Optional backup before a live search and replace.</li>\n<li>WP-CLI: <code>wp swapline backup</code>, <code>wp swapline import</code> and <code>--backup</code> on <code>wp swapline run</code>.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "Search and replace across your database with serialized data and JSON handled safely, plus backups and safe imports for moving a site.",
+    "description": "<p>Swapline finds and replaces text in your database tables. It&#8217;s built for moving a site to a new domain, switching to HTTPS, or fixing a string that appears in hundreds of places.</p>\n<ul>\n<li>Choose the tables to process. The list shows each table&#8217;s size, with shortcuts for all tables and core tables only. On multisite you can filter the list by site.</li>\n<li>Run several search and replace pairs in one pass. They&#8217;re applied in order, each on the result of the one before.</li>\n<li>Limit a run, backup or import to the columns you name, or skip some.</li>\n<li>Serialized data is rebuilt with correct lengths at any depth, including serialized strings stored inside other serialized strings. Objects are never instantiated.</li>\n<li>JSON values, such as page builder data, are matched in their escaped form too, so <code>https:\\/\\/example.com</code> is found when you search for <code>https://example.com</code>.</li>\n<li>Values that look serialized but are broken are left alone and counted in the report.</li>\n<li>Case-insensitive matching and regular expressions, with the pattern checked before anything runs.</li>\n<li>Dry runs report matched rows and cells per table.</li>\n<li>&#8220;View exactly what changed&#8221; shows a side-by-side diff of every changed cell, with its table, row and column. The last five runs are kept in History.</li>\n<li>Undo a live run from History. Each cell the run changed goes back to its earlier value, and cells edited since the run keep their newer value.</li>\n<li>Save any number of named profiles and load them later.</li>\n<li>Large tables are processed in batches with a progress bar. Tables without a primary key work too.</li>\n<li>If a run is interrupted, for example by closing the tab, Swapline offers to resume it where it stopped.</li>\n<li>On multisite, the tool lives in the network admin and super admins can pick tables from any site.</li>\n<li>Back up the whole database or selected tables to a gzipped SQL file. Optionally apply a search and replace to the backup only, to move the site to a new domain without touching the live site.</li>\n<li>Backups are stored in a folder with a random name in your uploads directory, with random file names and .htaccess and web.config rules that deny web access. If your web server serves files from that folder anyway, the Backup tab warns you so you can add a server rule. Download backups from the admin and keep as many as you like.</li>\n<li>A live search and replace can back up the selected tables first. History links each run to that backup, with a button to restore it.</li>\n<li>Restore any backup from the Backup list.</li>\n<li>Import a .sql or .sql.gz file, or one of your backups, with an optional search and replace. Every statement is checked first, the data loads into temporary tables, and the live tables are swapped only when everything has loaded. If anything fails, the live database is untouched.</li>\n<li>Importing can keep you logged in and keep the site&#8217;s address.</li>\n<li>WP-CLI: <code>wp swapline run</code>, <code>wp swapline backup</code> and <code>wp swapline import</code>, with the same column options as the admin screen.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/swapline.0.4.1.zip",
+    "upgrade_notice": {
+        "0.4.0": "<p>Adds undo from History, several search and replace pairs per run, column limits, backup restore and resumable runs, with security hardening for sites that delegate Swapline to other roles.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/swapline/assets/screenshot-1.png?rev=3807163",
+            "caption": "Search and replace with two pairs, run on the tables you pick."
+        },
+        {
+            "src": "https://ps.w.org/swapline/assets/screenshot-2.png?rev=3807163",
+            "caption": "A dry run reports the rows and cells that would change in each table."
+        },
+        {
+            "src": "https://ps.w.org/swapline/assets/screenshot-3.png?rev=3807163",
+            "caption": "The side-by-side diff of every changed cell, here a serialized value with its lengths rebuilt and a JSON-escaped URL."
+        },
+        {
+            "src": "https://ps.w.org/swapline/assets/screenshot-4.png?rev=3807163",
+            "caption": "History keeps recent runs, with undo and a restore button for the backup taken before a run."
+        },
+        {
+            "src": "https://ps.w.org/swapline/assets/screenshot-5.png?rev=3807163",
+            "caption": "Create, download, restore and delete backups."
+        },
+        {
+            "src": "https://ps.w.org/swapline/assets/screenshot-6.png?rev=3807163",
+            "caption": "Import a backup or SQL file, with an optional search and replace and your login kept."
+        }
+    ],
+    "tags": {
+        "database": "database",
+        "migration": "migration",
+        "multisite": "multisite",
+        "search-replace": "search replace",
+        "serialized": "serialized"
+    },
+    "stable_tag": "0.4.1",
+    "versions": {
+        "0.3.0": "https://downloads.wordpress.org/plugin/swapline.0.3.0.zip",
+        "0.4.0": "https://downloads.wordpress.org/plugin/swapline.0.4.0.zip",
+        "0.4.1": "https://downloads.wordpress.org/plugin/swapline.0.4.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/swapline.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/swapline/assets/banner-772x250.png?rev=3807163",
+        "high": "https://ps.w.org/swapline/assets/banner-1544x500.png?rev=3807163"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/swapline/assets/icon-128x128.png?rev=3807163",
+        "2x": "https://ps.w.org/swapline/assets/icon-256x256.png?rev=3807163"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

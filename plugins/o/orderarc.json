@@ -1,0 +1,106 @@
+{
+    "name": "OrderArc – Order Archive for WooCommerce",
+    "slug": "orderarc",
+    "version": "0.1.3",
+    "author": "<a href=\"https://profiles.wordpress.org/nicolassalinas/\">Nicolás Alejandro Salinas</a>",
+    "author_profile": "https://profiles.wordpress.org/nicolassalinas/",
+    "contributors": {
+        "nicolassalinas": {
+            "profile": "https://profiles.wordpress.org/nicolassalinas/",
+            "avatar": "https://secure.gravatar.com/avatar/494478c9ffa41d11445e63eed998fd9e5a10df985a1d8ebe6cdcb120698305dc?s=96&d=monsterid&r=g",
+            "display_name": "Nicolás Alejandro Salinas"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.1.4",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/orderarc/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-17 10:44:00",
+    "added": "2026-11-06",
+    "homepage": "https://getorderarc.com",
+    "sections": {
+        "description": "<p>On stores with tens or hundreds of thousands of orders, the WooCommerce orders screen gets slow and order search can stop working altogether (the server cuts the request before it finishes). Most of those orders are years old and nobody opens them, but every search still has to go through them.</p>\n<p>OrderArc moves old orders into separate archive tables inside your own database. The orders screen and search only see recent orders, so they are fast again. Archived orders are still there: you can search them, open them and restore them with one click.</p>\n<p><strong>How it moves orders</strong></p>\n<ul>\n<li>Every row of an order is moved: the order, addresses, items, item meta, notes, order meta, refunds, the legacy <code>wp_posts</code> / <code>wp_postmeta</code> copy when there is one, and rows that other plugins keep per order (detected automatically, for example invoices or tracking numbers).</li>\n<li>Each batch runs inside one database transaction. Before anything is deleted, OrderArc checks that the copy has the same number of rows and the same checksum of every column as the original. If anything differs, the whole batch is rolled back and those orders are not touched.</li>\n<li>It does not use the WooCommerce order API to move orders, so no emails are sent, stock is not changed and no &#8220;order deleted&#8221; hooks run.</li>\n<li>The order number stays reserved, so a new order never reuses an archived number.</li>\n<li>WooCommerce Analytics and reports keep counting archived orders (their tables are not moved).</li>\n<li>Download links that customers already received keep working; archived orders do not appear under Downloads in My Account.</li>\n</ul>\n<p><strong>What you get</strong></p>\n<ul>\n<li>Overview: how your orders are stored (HPOS, legacy, with or without sync), how many orders are ready to archive, and a button that measures how long a real WooCommerce order search takes on your site.</li>\n<li>Preview before archiving, then &#8220;Archive now&#8221; or a daily automatic run.</li>\n<li>Runs in the background with Action Scheduler (included with WooCommerce), inside a time window you choose (01:00–06:00 by default), and slows down by itself if the server gets slow.</li>\n<li>If the site had no traffic during the night and the run did not start, it can continue slowly during the day or wait for the next night (your choice).</li>\n<li>&#8220;Archived orders&#8221; tab: search by order number, email, name or phone, open any archived order (read-only) and restore one, several or all.</li>\n<li>An &#8220;Archived (N)&#8221; link in the WooCommerce orders list, and old links to an archived order open its archived view.</li>\n<li>Customers see their archived orders under &#8220;Older orders&#8221; in My Account (only orders placed with their own account).</li>\n<li>Works with HPOS (with or without sync) and with legacy order storage.</li>\n<li>Orders that have child orders other than refunds (for example subscriptions), and renewal orders of a subscription, are never archived.</li>\n<li>Personal data requests (Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Export Personal Data and Erase Personal Data) also cover archived orders, following the WooCommerce setting for removing personal data from orders.</li>\n</ul>\n<p><strong>What it does not do</strong></p>\n<ul>\n<li>It does not delete orders. Archived orders stay in your database until you restore them.</li>\n<li>It does not send your data anywhere. Everything happens on your own server.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Install and activate WooCommerce and OrderArc.</li>\n<li>Go to WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> OrderArc.</li>\n<li>Make a backup of your database.</li>\n<li>In the Archive tab, choose which statuses and how old, click Preview, then Archive now.</li>\n</ol>\n",
+        "faq": "\n<h4>\nIs it safe?\n</h4>\n<p>\n<p>Each batch is copied, verified (row count and checksum of every column) and only then removed from the live tables, all inside one transaction. If the check fails, nothing changes for those orders. Even so, OrderArc asks you to confirm that you have a recent database backup before the first run, and you should have one.</p>\n</p>\n<h4>\nDo my reports change?\n</h4>\n<p>\n<p>No. WooCommerce Analytics tables are not moved, so totals and history stay the same. One exception: if you re-import historical data in Analytics with &#8220;Delete previously imported data&#8221;, WooCommerce rebuilds the reports from live orders only, so archived orders drop out until you restore them.</p>\n</p>\n<h4>\nCan I get an order back?\n</h4>\n<p>\n<p>Yes. Open the Archived orders tab, find the order and click Restore. It goes back exactly as it was. Orders you restore by hand are not archived again by the automatic run.</p>\n</p>\n<h4>\nWhich orders can be archived?\n</h4>\n<p>\n<p>Orders that are no longer in progress: Completed, Cancelled, Refunded, Failed or a final status added by another plugin (Completed, Cancelled and Refunded by default), older than the number of days you choose (minimum 30, 365 by default). Renewal orders of a subscription are never archived.</p>\n</p>\n<h4>\nWhat happens if I uninstall the plugin?\n</h4>\n<p>\n<p>If there are archived orders, their tables are kept, so nothing is lost. Install OrderArc again to see and restore them. If the archive is empty, uninstalling removes everything the plugin created.</p>\n</p>\n<h4>\nWhat if I switch between HPOS and legacy storage?\n</h4>\n<p>\n<p>Restore all archived orders before switching. If you switch anyway, OrderArc shows a notice in its screen.</p>\n</p>\n<h4>\nDoes it work on shared hosting?\n</h4>\n<p>\n<p>Yes. Work is done in short slices (about 20 seconds each) that fit common PHP time limits, and the batch size adapts to how fast your server answers.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.3</h4>\n<ul>\n<li>Once there are archived orders, the OrderArc screen asks once for a review on WordPress.org (Maybe later hides it for 14 days; Don&#8217;t ask again hides it for good).</li>\n</ul>\n<h4>0.1.2</h4>\n<ul>\n<li>Database queries reworked so that only placeholders are added to the SQL. No change in behaviour.</li>\n<li>Translations are now delivered by translate.wordpress.org.</li>\n</ul>\n<h4>0.1.1</h4>\n<ul>\n<li>Personal data export and erasure requests now include archived orders.</li>\n<li>Renewal orders of a subscription are never archived.</li>\n<li>Stricter detection of tables that other plugins use to store data per order.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>First release.</li>\n</ul>\n"
+    },
+    "short_description": "Move old WooCommerce orders out of the way so the orders screen and order search are fast again. Exact, verified and reversible.",
+    "description": "<p>On stores with tens or hundreds of thousands of orders, the WooCommerce orders screen gets slow and order search can stop working altogether (the server cuts the request before it finishes). Most of those orders are years old and nobody opens them, but every search still has to go through them.</p>\n<p>OrderArc moves old orders into separate archive tables inside your own database. The orders screen and search only see recent orders, so they are fast again. Archived orders are still there: you can search them, open them and restore them with one click.</p>\n<p><strong>How it moves orders</strong></p>\n<ul>\n<li>Every row of an order is moved: the order, addresses, items, item meta, notes, order meta, refunds, the legacy <code>wp_posts</code> / <code>wp_postmeta</code> copy when there is one, and rows that other plugins keep per order (detected automatically, for example invoices or tracking numbers).</li>\n<li>Each batch runs inside one database transaction. Before anything is deleted, OrderArc checks that the copy has the same number of rows and the same checksum of every column as the original. If anything differs, the whole batch is rolled back and those orders are not touched.</li>\n<li>It does not use the WooCommerce order API to move orders, so no emails are sent, stock is not changed and no &#8220;order deleted&#8221; hooks run.</li>\n<li>The order number stays reserved, so a new order never reuses an archived number.</li>\n<li>WooCommerce Analytics and reports keep counting archived orders (their tables are not moved).</li>\n<li>Download links that customers already received keep working; archived orders do not appear under Downloads in My Account.</li>\n</ul>\n<p><strong>What you get</strong></p>\n<ul>\n<li>Overview: how your orders are stored (HPOS, legacy, with or without sync), how many orders are ready to archive, and a button that measures how long a real WooCommerce order search takes on your site.</li>\n<li>Preview before archiving, then &#8220;Archive now&#8221; or a daily automatic run.</li>\n<li>Runs in the background with Action Scheduler (included with WooCommerce), inside a time window you choose (01:00–06:00 by default), and slows down by itself if the server gets slow.</li>\n<li>If the site had no traffic during the night and the run did not start, it can continue slowly during the day or wait for the next night (your choice).</li>\n<li>&#8220;Archived orders&#8221; tab: search by order number, email, name or phone, open any archived order (read-only) and restore one, several or all.</li>\n<li>An &#8220;Archived (N)&#8221; link in the WooCommerce orders list, and old links to an archived order open its archived view.</li>\n<li>Customers see their archived orders under &#8220;Older orders&#8221; in My Account (only orders placed with their own account).</li>\n<li>Works with HPOS (with or without sync) and with legacy order storage.</li>\n<li>Orders that have child orders other than refunds (for example subscriptions), and renewal orders of a subscription, are never archived.</li>\n<li>Personal data requests (Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Export Personal Data and Erase Personal Data) also cover archived orders, following the WooCommerce setting for removing personal data from orders.</li>\n</ul>\n<p><strong>What it does not do</strong></p>\n<ul>\n<li>It does not delete orders. Archived orders stay in your database until you restore them.</li>\n<li>It does not send your data anywhere. Everything happens on your own server.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/orderarc.0.1.3.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/orderarc/assets/screenshot-1.png?rev=3787381",
+            "caption": "Overview: how orders are stored, how many are ready to archive, and how long a real WooCommerce order search takes."
+        },
+        {
+            "src": "https://ps.w.org/orderarc/assets/screenshot-2.png?rev=3787381",
+            "caption": "Archive tab: choose statuses and age, preview exactly what would move, then archive now or every night."
+        },
+        {
+            "src": "https://ps.w.org/orderarc/assets/screenshot-3.png?rev=3787381",
+            "caption": "Archived orders: search by number, email, name or phone, and restore one, several or all."
+        },
+        {
+            "src": "https://ps.w.org/orderarc/assets/screenshot-4.png?rev=3787381",
+            "caption": "An archived order, opened read-only, with a Restore button."
+        },
+        {
+            "src": "https://ps.w.org/orderarc/assets/screenshot-5.png?rev=3787381",
+            "caption": "The WooCommerce orders list with the \"Archived\" link."
+        },
+        {
+            "src": "https://ps.w.org/orderarc/assets/screenshot-6.png?rev=3787381",
+            "caption": "My Account: customers still see their own archived orders under \"Older orders\"."
+        }
+    ],
+    "tags": {
+        "archive": "archive",
+        "hpos": "hpos",
+        "orders": "orders",
+        "performance": "performance",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "0.1.3",
+    "versions": {
+        "0.1.2": "https://downloads.wordpress.org/plugin/orderarc.0.1.2.zip",
+        "0.1.3": "https://downloads.wordpress.org/plugin/orderarc.0.1.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/orderarc.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/orderarc/assets/banner-772x250.png?rev=3787381",
+        "high": "https://ps.w.org/orderarc/assets/banner-1544x500.png?rev=3787381"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/orderarc/assets/icon.svg?rev=3787381",
+        "svg": "https://ps.w.org/orderarc/assets/icon.svg?rev=3787381"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
