@@ -1,7 +1,7 @@
 {
     "name": "Astro Hide Unpublished Post Types From Menu",
     "slug": "astro-hide-unpublished-post-types-from-menu",
-    "version": "1.0.2",
+    "version": "2.0.0",
     "author": "<a href=\"https://profiles.wordpress.org/alian/\">Alian Schiavoncini</a>",
     "author_profile": "https://profiles.wordpress.org/alian/",
     "contributors": {
@@ -12,7 +12,7 @@
         }
     },
     "requires": "5.2",
-    "tested": "7.0.3",
+    "tested": "7.1.4",
     "requires_php": "7.4",
     "requires_plugins": [],
     "compatibility": [],
@@ -29,19 +29,21 @@
     "support_threads": 0,
     "support_threads_resolved": 0,
     "active_installs": 0,
-    "last_updated": "2026-08-07 16:30:00",
+    "last_updated": "2026-11-18 11:47:00",
     "added": "2024-07-30",
     "homepage": "",
     "sections": {
-        "description": "<p>The &#8220;Astro Hide Unpublished Post Types From Menu&#8221; plugin automatically hides from WordPress menus all post types and pages, including custom post types such as WooCommerce products, that have a status other than &#8220;published&#8221;. This feature is useful as it prevents page not found errors (404 errors) for unpublished posts and saves the site administrator time in updating menu items if the post type is updated with a draft, pending, future, private or trash status.</p>\n<h3>Wordefence vendor verification key</h3>\n<p>gsphudo7by90lzwdlihyerqxbzj6jiln</p>\n<h3>License</h3>\n<p>This plugin is licensed under the GPLv2 or later. For more information, see the <a href=\"https://www.gnu.org/licenses/gpl-2.0.html\" rel=\"nofollow ugc\">GPLv2 license</a>.</p>\n",
-        "installation": "<ol>\n<li>Upload the <code>astro-hide-unpublished-post-types</code> folder to the <code>/wp-content/plugins/</code> directory.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>The plugin will automatically hide unpublished post types in menus.</li>\n</ol>\n",
-        "faq": "\n<dt id=\"can%20i%20customize%20which%20post%20statuses%20are%20hidden%3F\">\nCan I customize which post statuses are hidden?\n</h4>\n<p>\n<p>Currently, the plugin is designed to hide all post types except those with the &#8220;published&#8221; status. Customization would require modifying the plugin code.</p>\n</p>\n\n",
-        "changelog": "<h4>1.0.2</h4>\n<ul>\n<li>Changed: the plugin author is now Alian Schiavoncini (https://www.alian.it). The previous AstroThemes website and email address are no longer active.</li>\n<li>Compatibility: tested with WordPress 7.0.</li>\n<li>Changed: added the ASTRO_HUPT_VERSION constant.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Added full compatibility with WordPress version 6.8.3</li>\n<li>Added Wordefence vendor verification key</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial version</li>\n</ul>\n"
+        "description": "<p>The &#8220;Astro Hide Unpublished Post Types From Menu&#8221; plugin automatically hides from WordPress navigation menus the items that point to content with a status other than &#8220;published&#8221;: draft, pending, scheduled and private posts, pages and custom post types such as WooCommerce products. This prevents visitors from reaching &#8220;page not found&#8221; (404) errors and saves the site administrator from updating the menus every time a page is unpublished.</p>\n<p>When a hidden item has published sub-items, they move up to the nearest visible level, so they stay reachable. Custom links, category and archive items are never hidden.</p>\n<p>The plugin works with classic menus (Appearance &gt; Menus and the Navigation Menu widget). The Navigation block of block themes already hides unpublished pages on its own.</p>\n<h3>Wordefence vendor verification key</h3>\n<p>gsphudo7by90lzwdlihyerqxbzj6jiln</p>\n<h3>License</h3>\n<p>This plugin is licensed under the GPLv2 or later. For more information, see the <a href=\"https://www.gnu.org/licenses/gpl-2.0.html\" rel=\"nofollow ugc\">GPLv2 license</a>.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>astro-hide-unpublished-post-types-from-menu</code> folder to the <code>/wp-content/plugins/</code> directory.</li>\n<li>Activate the plugin through the &#8216;Plugins&#8217; menu in WordPress.</li>\n<li>Unpublished content is hidden from the navigation menus automatically: there are no settings.</li>\n</ol>\n",
+        "faq": "\n<h4>\nCan I customize which items are hidden?\n</h4>\n<p>\n<p>Yes, with the astro_hupt_is_item_hidden filter. It receives true when the item points to unpublished content, and the menu item. For example, to keep private pages in the menu for logged-in users:</p>\n<pre><code>add_filter( 'astro_hupt_is_item_hidden', function ( $hidden, $item ) { return $hidden &amp;&amp; ! ( is_user_logged_in() &amp;&amp; 'private' === get_post_status( $item-&gt;object_id ) ); }, 10, 2 );\n</code></pre>\n</p>\n<h4>\nDoes the plugin change the admin lists?\n</h4>\n<p>\n<p>Not anymore. Up to version 1.0.4 it hid unpublished content from the admin lists for users other than administrators, which did not hide anything from the menus and prevented authors and editors from seeing their drafts and the posts awaiting review. Version 2.0.0 removed that behavior.</p>\n</p>\n\n",
+        "changelog": "<h4>2.0.0</h4>\n<ul>\n<li>Fixed: unpublished content is now actually hidden from the navigation menus, as the plugin description states. Previous versions did not touch the menus at all.</li>\n<li>Added: published sub-items of a hidden item move up to the nearest visible level.</li>\n<li>Added: the astro_hupt_is_item_hidden filter, to decide which menu items are hidden.</li>\n<li>Changed: the plugin no longer limits the admin lists to published content for users other than administrators. That behavior hid their drafts from authors, the posts awaiting review from editors, and emptied the Media Library list view. The astro_hupt_parse_query() and astro_hupt_filter_views() functions are deprecated and no longer hooked.</li>\n</ul>\n<h4>1.0.4</h4>\n<ul>\n<li>Changed: the text domain is now astro-hide-unpublished-post-types-from-menu, matching the plugin slug as required to receive translations from translate.wordpress.org.</li>\n<li>Fixed: the installation instructions referenced the wrong plugin folder name.</li>\n</ul>\n<h4>1.0.3</h4>\n<ul>\n<li>Compatibility: tested with WordPress 7.1.</li>\n</ul>\n<h4>1.0.2</h4>\n<ul>\n<li>Changed: the plugin author is now Alian Schiavoncini (https://www.alian.it). The previous AstroThemes website and email address are no longer active.</li>\n<li>Compatibility: tested with WordPress 7.0.</li>\n<li>Changed: added the ASTRO_HUPT_VERSION constant.</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Added full compatibility with WordPress version 6.8.3</li>\n<li>Added Wordefence vendor verification key</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial version</li>\n</ul>\n"
     },
     "short_description": "Hides from menus all post_types that have a status other than published.",
-    "description": "<p>The &#8220;Astro Hide Unpublished Post Types From Menu&#8221; plugin automatically hides from WordPress menus all post types and pages, including custom post types such as WooCommerce products, that have a status other than &#8220;published&#8221;. This feature is useful as it prevents page not found errors (404 errors) for unpublished posts and saves the site administrator time in updating menu items if the post type is updated with a draft, pending, future, private or trash status.</p>\n<h3>Wordefence vendor verification key</h3>\n<p>gsphudo7by90lzwdlihyerqxbzj6jiln</p>\n<h3>License</h3>\n<p>This plugin is licensed under the GPLv2 or later. For more information, see the <a href=\"https://www.gnu.org/licenses/gpl-2.0.html\" rel=\"nofollow ugc\">GPLv2 license</a>.</p>\n",
-    "download_link": "https://downloads.wordpress.org/plugin/astro-hide-unpublished-post-types-from-menu.1.0.2.zip",
-    "upgrade_notice": [],
+    "description": "<p>The &#8220;Astro Hide Unpublished Post Types From Menu&#8221; plugin automatically hides from WordPress navigation menus the items that point to content with a status other than &#8220;published&#8221;: draft, pending, scheduled and private posts, pages and custom post types such as WooCommerce products. This prevents visitors from reaching &#8220;page not found&#8221; (404) errors and saves the site administrator from updating the menus every time a page is unpublished.</p>\n<p>When a hidden item has published sub-items, they move up to the nearest visible level, so they stay reachable. Custom links, category and archive items are never hidden.</p>\n<p>The plugin works with classic menus (Appearance &gt; Menus and the Navigation Menu widget). The Navigation block of block themes already hides unpublished pages on its own.</p>\n<h3>Wordefence vendor verification key</h3>\n<p>gsphudo7by90lzwdlihyerqxbzj6jiln</p>\n<h3>License</h3>\n<p>This plugin is licensed under the GPLv2 or later. For more information, see the <a href=\"https://www.gnu.org/licenses/gpl-2.0.html\" rel=\"nofollow ugc\">GPLv2 license</a>.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/astro-hide-unpublished-post-types-from-menu.2.0.0.zip",
+    "upgrade_notice": {
+        "2.0.0": "<p>The plugin now really hides unpublished content from navigation menus and no longer filters the admin lists for non-administrators. Check your menus after updating.</p>"
+    },
     "screenshots": [],
     "tags": {
         "hide": "hide",
@@ -50,16 +52,20 @@
         "post-types": "post types",
         "unpublished": "unpublished"
     },
-    "stable_tag": "1.0.2",
+    "stable_tag": "2.0.0",
     "versions": {
         "1.0.0": "https://downloads.wordpress.org/plugin/astro-hide-unpublished-post-types-from-menu.1.0.0.zip",
         "1.0.1": "https://downloads.wordpress.org/plugin/astro-hide-unpublished-post-types-from-menu.1.0.1.zip",
         "1.0.2": "https://downloads.wordpress.org/plugin/astro-hide-unpublished-post-types-from-menu.1.0.2.zip",
+        "1.0.3": "https://downloads.wordpress.org/plugin/astro-hide-unpublished-post-types-from-menu.1.0.3.zip",
+        "1.0.4": "https://downloads.wordpress.org/plugin/astro-hide-unpublished-post-types-from-menu.1.0.4.zip",
+        "2.0.0": "https://downloads.wordpress.org/plugin/astro-hide-unpublished-post-types-from-menu.2.0.0.zip",
         "trunk": "https://downloads.wordpress.org/plugin/astro-hide-unpublished-post-types-from-menu.zip"
     },
     "business_model": false,
     "repository_url": "",
     "commercial_support_url": "",
+    "guideline_labels": [],
     "donate_link": "",
     "banners": [],
     "icons": {
