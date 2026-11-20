@@ -1,0 +1,100 @@
+{
+    "name": "WST Post Expiration",
+    "slug": "wst-post-expiration",
+    "version": "1.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/webtatsu/\">webtatsu</a>",
+    "author_profile": "https://profiles.wordpress.org/webtatsu/",
+    "contributors": {
+        "webtatsu": {
+            "profile": "https://profiles.wordpress.org/webtatsu/",
+            "avatar": "https://secure.gravatar.com/avatar/bfcd98a04db2e96c8d4995655edba62d095e466e38cc983cfb164406b4d6feab?s=96&d=monsterid&r=g",
+            "display_name": "webtatsu"
+        }
+    },
+    "requires": "7.0",
+    "tested": "7.1.5",
+    "requires_php": "8.2",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/wst-post-expiration/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 10,
+    "last_updated": "2026-11-20 10:21:00",
+    "added": "2026-09-30",
+    "homepage": "",
+    "sections": {
+        "description": "<p>WST Post Expiration adds an expiration date and time to your posts. Once that time passes, the post switches from published to draft automatically. It keeps announcements and campaign pages with a fixed run time from staying public after they are over.</p>\n<p>The date is set where you already work: the block editor sidebar, the classic editor meta box, or Quick Edit on the post list. An &#8220;Expiration&#8221; column is added to the post list, so you can see at a glance which posts expire and when.</p>\n<h4>How it works</h4>\n<ul>\n<li>Each post with an expiration date gets its own single WP-Cron event, scheduled for exactly that time</li>\n<li>An hourly fallback picks up posts whose event was lost (after a site copy, damaged cron data, and the like)</li>\n<li>An expiration date that is already in the past is handled on the next cron run</li>\n<li>An expired post becomes a <code>draft</code>. The target status can be changed with the <code>wst_post_expiration_new_status</code> filter</li>\n<li>Clearing the field removes the scheduled event</li>\n</ul>\n<h4>Features</h4>\n<ul>\n<li>One expiration date and time per post</li>\n<li>Set it from the block editor sidebar, the classic editor, or Quick Edit</li>\n<li>An &#8220;Expiration&#8221; column on the post list</li>\n<li>Choose which post types can have an expiration date (posts, pages, and custom post types)</li>\n<li>A &#8220;Scheduled events&#8221; section on the settings screen shows the posts with an expiration date and the events registered for them, with a &#8220;Reschedule&#8221; button to repair a mismatch</li>\n<li>Times are evaluated in the site timezone (Settings &gt; General)</li>\n<li>Developer hooks: <code>wst_post_expiration_new_status</code> (filter), <code>wst_post_expiration_expired</code> (action), <code>wst_post_expiration_settings_capability</code> (filter)</li>\n</ul>\n<h4>Capabilities</h4>\n<ul>\n<li>Setting the expiration date of a post requires permission to edit that post</li>\n<li>Changing the plugin settings requires administrator permissions (<code>manage_options</code>). Use the <code>wst_post_expiration_settings_capability</code> filter to change this</li>\n</ul>\n<h4>Before you start</h4>\n<ul>\n<li>Expiration relies on WP-Cron. On a low traffic site, cron only runs when someone visits, so the change may be applied a little late. Calling <code>wp-cron.php</code> from a server-side cron job makes it exact.</li>\n<li>Moving a post to draft is a real status change. To bring it back, publish it again. The expiration date stays on the post, so it fires again while that time is in the past. Clear or update the date as well.</li>\n<li>Deactivating the plugin removes every scheduled event. The dates stay on the posts, so activating it again schedules them once more.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the plugin files to <code>/wp-content/plugins/wst-post-expiration</code>, or install it from the Plugins &gt; Add New screen.</li>\n<li>Activate the plugin from the Plugins screen.</li>\n<li>Open the &#8220;Post Expiration&#8221; menu in wp-admin and choose the post types that can have an expiration date.</li>\n<li>Edit a post of one of those post types and set the date from the sidebar, the classic editor, or Quick Edit.</li>\n</ol>\n",
+        "faq": "\n<h4>\nWhat happens when a post reaches its expiration date?\n</h4>\n<p>\n<p>Its status changes from published to draft. The content, the title, and everything else stay as they are.</p>\n</p>\n<h4>\nCan it move the post to the trash or make it private instead of a draft?\n</h4>\n<p>\n<p>Yes, with code. Return <code>private</code>, <code>pending</code>, <code>trash</code>, or any registered status from the <code>wst_post_expiration_new_status</code> filter.</p>\n<pre><code>trash goes through the standard WordPress trash handling. When the trash is disabled (`EMPTY_TRASH_DAYS` is `0`), the post is kept as a draft instead of being deleted permanently.\n</code></pre>\n</p>\n<h4>\nI set a time, but nothing changed right away\n</h4>\n<p>\n<p>Expiration runs through WP-Cron, which fires when someone visits the site. On a quiet site it waits for the next visit. Calling <code>wp-cron.php</code> from a server-side cron job removes the delay.</p>\n</p>\n<h4>\nWhich timezone is used?\n</h4>\n<p>\n<p>The site timezone (Settings &gt; General). The date and time you enter is treated as local site time.</p>\n</p>\n<h4>\nDoes it work with pages and custom post types?\n</h4>\n<p>\n<p>Yes. The &#8220;Enabled post types&#8221; setting lets you pick which post types can have an expiration date.</p>\n</p>\n<h4>\nWhat happens when I deactivate the plugin?\n</h4>\n<p>\n<p>Every scheduled expiration event is removed. The dates stay on the posts, so activating the plugin again schedules them once more.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.1</h4>\n<ul>\n<li>The admin page title and the browser tab now read &#8220;WST Post Expiration&#8221;.</li>\n<li>Moved the admin menu below Settings.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release</li>\n</ul>\n"
+    },
+    "short_description": "Set an expiration date and time on a post. Once that time passes, the post is moved back to draft automatically.",
+    "description": "<p>WST Post Expiration adds an expiration date and time to your posts. Once that time passes, the post switches from published to draft automatically. It keeps announcements and campaign pages with a fixed run time from staying public after they are over.</p>\n<p>The date is set where you already work: the block editor sidebar, the classic editor meta box, or Quick Edit on the post list. An &#8220;Expiration&#8221; column is added to the post list, so you can see at a glance which posts expire and when.</p>\n<h4>How it works</h4>\n<ul>\n<li>Each post with an expiration date gets its own single WP-Cron event, scheduled for exactly that time</li>\n<li>An hourly fallback picks up posts whose event was lost (after a site copy, damaged cron data, and the like)</li>\n<li>An expiration date that is already in the past is handled on the next cron run</li>\n<li>An expired post becomes a <code>draft</code>. The target status can be changed with the <code>wst_post_expiration_new_status</code> filter</li>\n<li>Clearing the field removes the scheduled event</li>\n</ul>\n<h4>Features</h4>\n<ul>\n<li>One expiration date and time per post</li>\n<li>Set it from the block editor sidebar, the classic editor, or Quick Edit</li>\n<li>An &#8220;Expiration&#8221; column on the post list</li>\n<li>Choose which post types can have an expiration date (posts, pages, and custom post types)</li>\n<li>A &#8220;Scheduled events&#8221; section on the settings screen shows the posts with an expiration date and the events registered for them, with a &#8220;Reschedule&#8221; button to repair a mismatch</li>\n<li>Times are evaluated in the site timezone (Settings &gt; General)</li>\n<li>Developer hooks: <code>wst_post_expiration_new_status</code> (filter), <code>wst_post_expiration_expired</code> (action), <code>wst_post_expiration_settings_capability</code> (filter)</li>\n</ul>\n<h4>Capabilities</h4>\n<ul>\n<li>Setting the expiration date of a post requires permission to edit that post</li>\n<li>Changing the plugin settings requires administrator permissions (<code>manage_options</code>). Use the <code>wst_post_expiration_settings_capability</code> filter to change this</li>\n</ul>\n<h4>Before you start</h4>\n<ul>\n<li>Expiration relies on WP-Cron. On a low traffic site, cron only runs when someone visits, so the change may be applied a little late. Calling <code>wp-cron.php</code> from a server-side cron job makes it exact.</li>\n<li>Moving a post to draft is a real status change. To bring it back, publish it again. The expiration date stays on the post, so it fires again while that time is in the past. Clear or update the date as well.</li>\n<li>Deactivating the plugin removes every scheduled event. The dates stay on the posts, so activating it again schedules them once more.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/wst-post-expiration.1.0.1.zip",
+    "upgrade_notice": {
+        "1.0.1": "<p>Updates the admin page title and menu position. No settings change.</p>",
+        "1.0.0": "<p>Initial release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/wst-post-expiration/assets/screenshot-1.png?rev=3721521",
+            "caption": "The expiration field in the block editor sidebar"
+        },
+        {
+            "src": "https://ps.w.org/wst-post-expiration/assets/screenshot-2.png?rev=3721521",
+            "caption": "The settings screen: enabled post types and scheduled events"
+        },
+        {
+            "src": "https://ps.w.org/wst-post-expiration/assets/screenshot-3.png?rev=3721521",
+            "caption": "The \"Expiration\" column and the Quick Edit field on the post list"
+        }
+    ],
+    "tags": {
+        "cron": "cron",
+        "editorial-workflow": "editorial workflow",
+        "expiration": "expiration",
+        "schedule": "schedule",
+        "unpublish": "unpublish"
+    },
+    "stable_tag": "1.0.1",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/wst-post-expiration.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/wst-post-expiration.1.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/wst-post-expiration.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/wst-post-expiration.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "wst-post-expiration",
+            "language": "ja",
+            "version": "1.0.0",
+            "updated": "2026-10-03 08:51:32",
+            "package": "https://downloads.wordpress.org/translation/plugin/wst-post-expiration/1.0.0/ja.zip"
+        }
+    ]
+}
