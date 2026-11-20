@@ -1,0 +1,99 @@
+{
+    "name": "OliForge Session Control",
+    "slug": "oliforge-session-control",
+    "version": "2.3.2",
+    "author": "<a href=\"https://profiles.wordpress.org/oliforge/\">oliforge</a>",
+    "author_profile": "https://profiles.wordpress.org/oliforge/",
+    "contributors": {
+        "oliforge": {
+            "profile": "https://profiles.wordpress.org/oliforge/",
+            "avatar": "https://secure.gravatar.com/avatar/d9cca5454f68bc263b07f3cab1015c00bc11dadf0b5c0075e31e3cf124517f15?s=96&d=monsterid&r=g",
+            "display_name": "oliforge"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.1.5",
+    "requires_php": "8.1",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/oliforge-session-control/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-20 17:21:00",
+    "added": "2026-11-20",
+    "homepage": "https://oliforge.io/plugins/oliforge-session-control/",
+    "sections": {
+        "description": "<p>OliForge Session Control lets administrators configure:</p>\n<ul>\n<li>Normal login session lifetime in hours.</li>\n<li>Remember Me session lifetime in days.</li>\n<li>Optional automatic logout after inactivity.</li>\n<li>Whether the settings apply to administrators, frontend users, or both.</li>\n</ul>\n<p>It also adds an Active Sessions screen with:</p>\n<ul>\n<li>A running log of every login, kept in its own database table independent of WordPress&#8217;s own session-token storage.</li>\n<li>Search by user, filter by role, sortable Logged In / Last Active columns, and pagination (20 per page).</li>\n<li>Terminate Session to sign a still-active device out immediately, available as a row action or bulk action.</li>\n<li>Delete from List to remove a row from the log only — it never signs anyone out.</li>\n<li>Sync current sessions, a one-click backfill for sessions that were already open before this feature was enabled, using WordPress&#8217;s own stored login time, IP address and user agent.</li>\n</ul>\n<p>On WordPress Multisite networks, network administrators also get:</p>\n<ul>\n<li>A Network Sessions screen (Network Admin &gt; Settings) that aggregates every site&#8217;s session log into one searchable, sortable, paginated table.</li>\n<li>Site, User, Device, IP, Status, Logged In and Last Active columns, with Terminate Session and Delete from List available per row and in bulk across sites.</li>\n<li>A warning notice if a network is too large to fully scan in one pass, instead of silently showing incomplete results.</li>\n<li>Every site keeps its own independent session log and settings; a single-site installation is completely unaffected by this feature and behaves exactly as before.</li>\n</ul>\n<p>The plugin uses the WordPress Settings API and native authentication hooks. It does not send data to external services.</p>\n<p>Settings are available under Settings &gt; OliForge Session Control, and the session log under its Active Sessions tab.</p>\n<h4>Privacy</h4>\n<ul>\n<li>The session log stores, for every login, the user ID, the visitor&#8217;s IP address (as sent by the server, not hashed), the browser user agent and two timestamps. It is shown only to administrators.</li>\n<li>Log rows are deleted automatically after the retention period you set under Settings &gt; OliForge Session Control (90 days by default), and Delete from List removes a row immediately.</li>\n<li>Uninstalling the plugin drops the log table and all settings.</li>\n<li>Nothing is sent to an external service.</li>\n<li>The plugin adds a suggested paragraph for your privacy policy under Settings &gt; Privacy &gt; Policy Guide.</li>\n</ul>\n<h4>Extending the plugin</h4>\n<p>Add-ons can adjust the settings per user with the <code>oliforge_session_control_user_settings</code> filter (keys: <code>normal_hours</code>, <code>remember_days</code>, <code>allow_remember</code>, <code>enable_idle_logout</code>, <code>idle_minutes</code>), react to a new login with the <code>oliforge_session_control_session_started</code> action, and render their own panel below the settings form with the <code>oliforge_session_control_settings_after_core</code> action. The &#8220;apply to administrators / frontend users&#8221; switches still decide whether the plugin applies to a user at all.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>oliforge-session-control</code> folder to the <code>/wp-content/plugins/</code> directory.</li>\n<li>Activate the plugin through the Plugins screen in WordPress.</li>\n<li>Open Settings &gt; OliForge Session Control.</li>\n<li>Configure the session and idle timeout values.</li>\n<li>Switch to the Active Sessions tab to review and manage logged-in sessions.</li>\n<li>On a Multisite network, network administrators can also open Network Admin &gt; Settings &gt; OliForge Network Sessions for an aggregated, network-wide view.</li>\n</ol>\n",
+        "faq": "\n<h4>\nDoes the plugin replace WordPress authentication?\n</h4>\n<p>\n<p>No. It only filters WordPress authentication cookie expiration and can log out inactive users.</p>\n</p>\n<h4>\nDoes the plugin make external requests?\n</h4>\n<p>\n<p>No. The plugin does not connect to external services or transmit user data.</p>\n</p>\n<h4>\nWhat data does the plugin store?\n</h4>\n<p>\n<p>The plugin stores one settings option and a session-log database table. Each log row holds the user, a SHA-256 verifier of the session token (never the token itself), the IP address, the user agent, the login time and the last-seen time. The last-seen time is also what idle logout uses, so no extra user meta is written. See the Privacy section below.</p>\n</p>\n<h4>\nWill sessions that existed before I updated the plugin show up in the log?\n</h4>\n<p>\n<p>Not automatically — the log only records logins from the moment this feature is active. Use &#8220;Sync current sessions&#8221; on the Active Sessions screen to backfill any sessions that were already open, using the login time, IP and user agent WordPress already stored for them.</p>\n</p>\n<h4>\nDoes &#8220;Delete from List&#8221; sign the user out?\n</h4>\n<p>\n<p>No. It only removes that row from the log. Use &#8220;Terminate Session&#8221; to actually end a live session.</p>\n</p>\n<h4>\nDoes this work on WordPress Multisite?\n</h4>\n<p>\n<p>Yes. Each site in the network keeps its own independent settings and session log, exactly as on a single-site install. Network administrators additionally get a Network Sessions screen under Network Admin &gt; Settings that aggregates every site&#8217;s log into one table. On a very large network, results may be capped per pass; a notice on the Network Sessions screen says so rather than showing an incomplete picture silently.</p>\n</p>\n<h4>\nAre settings removed when the plugin is uninstalled?\n</h4>\n<p>\n<p>Yes. The plugin removes its settings, legacy activity metadata, scheduled cleanup event, and session-log database table. On multisite, uninstall cleanup runs across all sites in the network.</p>\n</p>\n\n",
+        "changelog": "<h4>2.3.2</h4>\n<ul>\n<li>The Active Sessions table&#8217;s User column is wider, so e-mail addresses are no longer broken in the middle of a word.</li>\n<li>Bulk actions on the Active Sessions and Network Sessions screens now sanitize the submitted action values before comparing them.</li>\n</ul>\n<h4>2.3.1</h4>\n<ul>\n<li>Prepared the plugin for the WordPress.org directory: added the Author URI header and replaced the 96 KB admin logo with a 10 KB, 128 px version (moved to assets/images/).</li>\n<li>Added a suggested paragraph for the site&#8217;s privacy policy (Settings &gt; Privacy &gt; Policy Guide) and a Privacy section to the readme that lists exactly what the session log stores.</li>\n<li>Added one &#8220;Get a Pro version&#8221; prompt under the settings form. It is hidden when OliForge Session Control Pro is active.</li>\n<li>Corrected the readme: the last-seen time used for idle logout is stored in the session log, not in user meta.</li>\n</ul>\n<h4>2.3.0</h4>\n<ul>\n<li>Added extension points for add-ons such as OliForge Session Control Pro (per-role rules): the <code>oliforge_session_control_user_settings</code> filter, the <code>oliforge_session_control_session_started</code> action and the <code>oliforge_session_control_settings_after_core</code> action. Without an add-on the plugin behaves exactly as before.</li>\n<li>A new <code>allow_remember</code> setting key lets an add-on switch Remember Me off for a user, so the normal session lifetime applies instead.</li>\n</ul>\n<h4>2.2.2</h4>\n<ul>\n<li>Added the Plugin URI header linking to the plugin page on oliforge.io.</li>\n</ul>\n<h4>2.2.1</h4>\n<ul>\n<li>Removed &#8220;Active Sessions&#8221; as a separate item under the Settings menu; it remains reachable as a tab on the OliForge Session Control settings page.</li>\n<li>Hardened direct database queries (session log table name and dynamic IN()/ORDER BY clauses now use <code>$wpdb-&gt;prepare()</code>&#8216;s <code>%i</code> identifier placeholder) and corrected several PHPCS suppression comments that had drifted out of sync with the sniffs they were meant to silence.</li>\n</ul>\n<h4>2.2.0</h4>\n<ul>\n<li>Store only SHA-256 session verifiers in the plugin log; legacy raw tokens are migrated and removed.</li>\n<li>Fix Active/Ended detection, session termination and current-session sync.</li>\n<li>Track idle activity per session instead of per user.</li>\n<li>Add multisite table lifecycle for network activation and new sites.</li>\n<li>Add configurable session-log retention with daily cleanup.</li>\n<li>Split session storage, repository, manager, idle-timeout, schema and admin responsibilities.</li>\n</ul>\n<h4>2.1.0</h4>\n<ul>\n<li>Added a Network Sessions screen (Network Admin &gt; Settings, multisite only) that aggregates every site&#8217;s session log into one searchable, role-filterable, sortable, paginated table.</li>\n<li>Added a Site column and cross-site Terminate Session / Delete from List row and bulk actions, switching into each row&#8217;s own site before acting on it.</li>\n<li>Added a &#8220;Network Sessions&#8221; tab, shown only to network administrators on a multisite install.</li>\n<li>Added a truncation warning on the Network Sessions screen if a network has more sites, or a site has more matching sessions, than a single pass can merge and sort.</li>\n<li>All multisite code is gated behind is_multisite() and never runs on a single-site install, which continues to behave exactly as before.</li>\n</ul>\n<h4>2.0.0</h4>\n<ul>\n<li>Added a new Active Sessions screen backed by its own database table — a persistent login history independent of WordPress&#8217;s own session-token storage.</li>\n<li>Added search by user, role filtering, sortable Logged In / Last Active columns, and pagination (20 sessions per page).</li>\n<li>Added Terminate Session (ends a live session) and Delete from List (removes only the log entry, never signs anyone out) as row and bulk actions.</li>\n<li>Added &#8220;Sync current sessions&#8221; to backfill sessions that were already active before this feature was installed, using WordPress&#8217;s own stored login time, IP address and user agent.</li>\n<li>Added a Settings / Active Sessions tab bar shared by both admin screens.</li>\n<li>Converted the on/off settings to toggle switches and redesigned both admin screens with the OliForge brand system: header, cards, styled selects, buttons and self-dismissing notices.</li>\n<li>Extended uninstall cleanup to remove the new session-log database table.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Declared compatibility with WordPress 7.0.</li>\n<li>Updated plugin headers and WordPress.org readme metadata.</li>\n<li>Hardened settings sanitization against malformed input.</li>\n<li>Added capability enforcement on the settings screen.</li>\n<li>Avoided idle checks during WordPress cron requests.</li>\n<li>Improved activity timestamp write throttling.</li>\n<li>Added uninstall cleanup for plugin settings and activity metadata.</li>\n<li>Updated code formatting and inline documentation for WordPress coding standards.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Rebranded for OliForge.</li>\n<li>Hardened settings validation and redirect handling.</li>\n<li>Added safe upper limits for timeout values.</li>\n<li>Reduced unnecessary user-meta writes.</li>\n<li>Fixed logout activity cleanup.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial release.</li>\n</ul>\n"
+    },
+    "short_description": "Manage WordPress authentication cookie lifetimes, optionally log users out after inactivity, and review a searchable log of every login.",
+    "description": "<p>OliForge Session Control lets administrators configure:</p>\n<ul>\n<li>Normal login session lifetime in hours.</li>\n<li>Remember Me session lifetime in days.</li>\n<li>Optional automatic logout after inactivity.</li>\n<li>Whether the settings apply to administrators, frontend users, or both.</li>\n</ul>\n<p>It also adds an Active Sessions screen with:</p>\n<ul>\n<li>A running log of every login, kept in its own database table independent of WordPress&#8217;s own session-token storage.</li>\n<li>Search by user, filter by role, sortable Logged In / Last Active columns, and pagination (20 per page).</li>\n<li>Terminate Session to sign a still-active device out immediately, available as a row action or bulk action.</li>\n<li>Delete from List to remove a row from the log only — it never signs anyone out.</li>\n<li>Sync current sessions, a one-click backfill for sessions that were already open before this feature was enabled, using WordPress&#8217;s own stored login time, IP address and user agent.</li>\n</ul>\n<p>On WordPress Multisite networks, network administrators also get:</p>\n<ul>\n<li>A Network Sessions screen (Network Admin &gt; Settings) that aggregates every site&#8217;s session log into one searchable, sortable, paginated table.</li>\n<li>Site, User, Device, IP, Status, Logged In and Last Active columns, with Terminate Session and Delete from List available per row and in bulk across sites.</li>\n<li>A warning notice if a network is too large to fully scan in one pass, instead of silently showing incomplete results.</li>\n<li>Every site keeps its own independent session log and settings; a single-site installation is completely unaffected by this feature and behaves exactly as before.</li>\n</ul>\n<p>The plugin uses the WordPress Settings API and native authentication hooks. It does not send data to external services.</p>\n<p>Settings are available under Settings &gt; OliForge Session Control, and the session log under its Active Sessions tab.</p>\n<h4>Privacy</h4>\n<ul>\n<li>The session log stores, for every login, the user ID, the visitor&#8217;s IP address (as sent by the server, not hashed), the browser user agent and two timestamps. It is shown only to administrators.</li>\n<li>Log rows are deleted automatically after the retention period you set under Settings &gt; OliForge Session Control (90 days by default), and Delete from List removes a row immediately.</li>\n<li>Uninstalling the plugin drops the log table and all settings.</li>\n<li>Nothing is sent to an external service.</li>\n<li>The plugin adds a suggested paragraph for your privacy policy under Settings &gt; Privacy &gt; Policy Guide.</li>\n</ul>\n<h4>Extending the plugin</h4>\n<p>Add-ons can adjust the settings per user with the <code>oliforge_session_control_user_settings</code> filter (keys: <code>normal_hours</code>, <code>remember_days</code>, <code>allow_remember</code>, <code>enable_idle_logout</code>, <code>idle_minutes</code>), react to a new login with the <code>oliforge_session_control_session_started</code> action, and render their own panel below the settings form with the <code>oliforge_session_control_settings_after_core</code> action. The &#8220;apply to administrators / frontend users&#8221; switches still decide whether the plugin applies to a user at all.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/oliforge-session-control.2.3.2.zip",
+    "upgrade_notice": {
+        "2.3.0": "<p>Adds extension points for add-ons. No change in behavior or data without an add-on.</p>",
+        "2.2.2": "<p>Metadata only: adds the plugin page link. No functional or data changes.</p>",
+        "2.2.1": "<p>Active Sessions is no longer a separate Settings submenu item — find it as a tab on the OliForge Session Control settings page. No functional or data changes.</p>",
+        "2.2.0": "<p>Security/session-model upgrade: raw session tokens are migrated to SHA-256 verifiers and removed; Active/Ended, Terminate and Sync are corrected; idle activity is tracked per session; multisite lifecycle and session-log retention are added.</p>",
+        "2.1.0": "<p>Adds a Network Sessions aggregate screen for multisite networks (Network Admin &gt; Settings). No effect on single-site installs, which behave exactly as before.</p>",
+        "2.0.0": "<p>Adds a new Active Sessions log (own database table) with search, filtering, sorting, pagination, session termination and a redesigned admin UI. Creates a new database table on upgrade; existing settings are unaffected.</p>",
+        "1.2.0": "<p>Adds WordPress 7.0 compatibility metadata, stricter validation, and uninstall cleanup.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/oliforge-session-control/assets/screenshot-1.png?rev=3814188",
+            "caption": "Settings: the session lifetime, Remember Me lifetime, idle logout, who the rules apply to and how long the log is kept."
+        },
+        {
+            "src": "https://ps.w.org/oliforge-session-control/assets/screenshot-2.png?rev=3814188",
+            "caption": "Active Sessions: a log of every login with user, device, IP address and status. Terminate a live session or remove a row from the list."
+        },
+        {
+            "src": "https://ps.w.org/oliforge-session-control/assets/screenshot-3.png?rev=3814188",
+            "caption": "Search the log by user or filter it by role."
+        }
+    ],
+    "tags": {
+        "authentication": "authentication",
+        "login": "login",
+        "security": "security",
+        "session": "session",
+        "timeout": "timeout"
+    },
+    "stable_tag": "2.3.2",
+    "versions": {
+        "2.3.2": "https://downloads.wordpress.org/plugin/oliforge-session-control.2.3.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/oliforge-session-control.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/oliforge-session-control/assets/banner-772x250.png?rev=3814188",
+        "high": "https://ps.w.org/oliforge-session-control/assets/banner-1544x500.png?rev=3814188"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/oliforge-session-control/assets/icon-128x128.png?rev=3814188",
+        "2x": "https://ps.w.org/oliforge-session-control/assets/icon-256x256.png?rev=3814188"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
