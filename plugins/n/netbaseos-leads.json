@@ -1,0 +1,122 @@
+{
+    "name": "NetBaseOS Leads",
+    "slug": "netbaseos-leads",
+    "version": "0.1.1",
+    "author": "<a href=\"https://profiles.wordpress.org/netbaseos/\">netbaseos</a>",
+    "author_profile": "https://profiles.wordpress.org/netbaseos/",
+    "contributors": {
+        "netbaseos": {
+            "profile": "https://profiles.wordpress.org/netbaseos/",
+            "avatar": "https://secure.gravatar.com/avatar/d637decee980f549968eab2356cc906ea2abef4847beb78f513c5c7a85831a52?s=96&d=monsterid&r=g",
+            "display_name": "netbaseos"
+        }
+    },
+    "requires": "6.3",
+    "tested": "7.1.5",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/netbaseos-leads/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-21 22:24:00",
+    "added": "2026-11-21",
+    "homepage": "",
+    "sections": {
+        "description": "<p>NetBaseOS is a contact and lead management service for independent sales partners (https://netbaseos.de). This plugin connects your WordPress site to your NetBaseOS account:</p>\n<ul>\n<li><strong>Forms to leads:</strong> Submissions of selected Contact Form 7 or WPForms forms are created as leads in your NetBaseOS account – with the form name and page as origin. You choose per form which field fills which lead field (first name, last name, full name, email, phone, message). Fields without a mapping are never transmitted.</li>\n<li><strong>Retries on outages:</strong> If NetBaseOS cannot be reached, submissions are kept on your site for a limited time and retried automatically (see FAQ). A submission that is retried is created only once.</li>\n<li><strong>Embed funnels:</strong> The block &#8220;NetBaseOS Funnel&#8221; or the shortcode <code>[netbaseos funnel=\"your-funnel\"]</code> shows a NetBaseOS funnel in your page – or, with <code>display=\"popup\"</code>, a button that opens it in a dialog. A link to <code>#netbaseos-your-funnel</code> (e.g. a menu item) opens the dialog as well.</li>\n</ul>\n<p>The lead connection requires a NetBaseOS account with the Premium plan (or higher) and an API key, which you create in NetBaseOS under Settings › Integrations. Embedding funnels requires a NetBaseOS account with a published funnel; no API key is needed for that.</p>\n<p>The API key can only create leads in your account. It cannot read any data.</p>\n<h3>External services</h3>\n<p>This plugin connects to <strong>NetBaseOS</strong> (https://netbaseos.de), operated by Justin Tückmantel, Am Stationsgarten 43, 42327 Wuppertal, Germany.</p>\n<ol>\n<li><strong>Lead API</strong> – only after you have saved an API key on the settings page and switched on at least one form:\n<ul>\n<li>When a visitor submits a switched-on form, your web server sends the mapped fields (first/last/full name, email, phone, message – only those you mapped), the form name, the address of the page the form was submitted on (scheme, domain and path only – query string and fragment are removed before sending), a random submission ID and the source marker <code>wordpress</code> to <code>https://netbaseos.de/api/v1/leads</code>, together with your API key. NetBaseOS keeps only the domain and path of the page address, stores the submission ID only as a derived check value (so a retried submission is created once) and discards fields it does not support. If the first attempt fails, the same data is sent again from the queue (see FAQ).</li>\n<li>When you save a key or click &#8220;Test connection&#8221;, the plugin calls <code>https://netbaseos.de/api/v1/verbindung</code> with your key to check it. No visitor data is sent.</li>\n<li>Like every request made by WordPress, these requests reveal your server&#8217;s IP address and WordPress&#8217;s standard user agent, which contains your site&#8217;s address.</li>\n</ul>\n</li>\n<li><strong>Funnel embedding</strong> – only on pages where you placed the block or shortcode: the visitor&#8217;s browser loads the funnel from <code>https://netbaseos.de/f/&lt;your-funnel&gt;</code> in an iframe and thereby transmits technically necessary data such as the visitor&#8217;s IP address and browser information to NetBaseOS. With the popup display, the iframe is only loaded when the visitor opens the dialog. What the funnel collects is described in the privacy notice linked inside the funnel.</li>\n</ol>\n<p>The plugin sends no other data to NetBaseOS or to anyone else – no usage statistics or tracking.</p>\n<p>Terms of use: https://netbaseos.de/terms<br />\nPrivacy policy: https://netbaseos.de/privacy<br />\nData processing agreement and sub-processors: https://netbaseos.de/avv</p>\n<p>NetBaseOS processes the transmitted form data as your processor (Art. 28 GDPR) under the data processing agreement you accept when you create the API key. You remain the controller for your website and its forms and are responsible for informing your visitors. A non-binding suggested text is added to the WordPress privacy policy guide (Settings › Privacy); check and adapt it before use – it does not replace legal advice.</p>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to <code>/wp-content/plugins/</code> or install the ZIP via Plugins › Add New › Upload Plugin, then activate it.</li>\n<li>In NetBaseOS, go to Settings › Integrations › &#8220;Connection for your own forms&#8221; and create an API key.</li>\n<li>In WordPress, go to Settings › NetBaseOS Leads, paste the key and save.</li>\n<li>Switch on the forms that should create leads, check the field mapping and save.</li>\n</ol>\n<p>To embed a funnel, add the block &#8220;NetBaseOS Funnel&#8221; and enter the funnel name (the last part of its address, e.g. <code>my-funnel</code> for <code>netbaseos.de/f/my-funnel</code>).</p>\n",
+        "faq": "\n<h4>\nWhich form plugins are supported?\n</h4>\n<p>\n<p>Contact Form 7 and WPForms (Lite and Pro).</p>\n</p>\n<h4>\nWhat happens if NetBaseOS is not reachable?\n</h4>\n<p>\n<p>The submission is kept in a queue in your site&#8217;s database (table <code>{prefix}netbaseos_leads_queue</code>) and retried with increasing pauses (5 minutes, growing to at most 6 hours), up to 12 attempts in total. On a site with regular visits that is about a day and a half; WP-Cron only runs when your site is visited, so it can take longer – but no submission waits longer than 3 days; older ones are deleted. The queue also holds at most 500 submissions; further ones are not stored while it is full. Delivered submissions are deleted from the queue immediately; after the last attempt, or if NetBaseOS rejects the data, the submission is deleted without being delivered. Your form plugin&#8217;s own email notification is not affected.</p>\n<p>While a submission waits, its mapped contact data is stored on your site. That is processing by you as the site operator, not by NetBaseOS – include it in your own documentation (e.g. your record of processing activities) where required. If you deactivate the plugin, waiting submissions are no longer sent but stay in the table until you delete the plugin; deleting the plugin removes the table and all settings.</p>\n</p>\n<h4>\nCan I send health data?\n</h4>\n<p>\n<p>No. Do not ask for health data or other special categories of personal data (Art. 9 GDPR) in forms you connect to NetBaseOS.</p>\n</p>\n<h4>\nDoes the plugin add a &#8220;powered by&#8221; link?\n</h4>\n<p>\n<p>No.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.1</h4>\n<ul>\n<li>Translations are now delivered through translate.wordpress.org; bundled language files removed.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>First version: Contact Form 7 and WPForms to NetBaseOS leads, funnel block and shortcode.</li>\n</ul>\n"
+    },
+    "short_description": "Send Contact Form 7 and WPForms submissions to NetBaseOS as leads, and embed NetBaseOS funnels in your pages.",
+    "description": "<p>NetBaseOS is a contact and lead management service for independent sales partners (https://netbaseos.de). This plugin connects your WordPress site to your NetBaseOS account:</p>\n<ul>\n<li><strong>Forms to leads:</strong> Submissions of selected Contact Form 7 or WPForms forms are created as leads in your NetBaseOS account – with the form name and page as origin. You choose per form which field fills which lead field (first name, last name, full name, email, phone, message). Fields without a mapping are never transmitted.</li>\n<li><strong>Retries on outages:</strong> If NetBaseOS cannot be reached, submissions are kept on your site for a limited time and retried automatically (see FAQ). A submission that is retried is created only once.</li>\n<li><strong>Embed funnels:</strong> The block &#8220;NetBaseOS Funnel&#8221; or the shortcode <code>[netbaseos funnel=\"your-funnel\"]</code> shows a NetBaseOS funnel in your page – or, with <code>display=\"popup\"</code>, a button that opens it in a dialog. A link to <code>#netbaseos-your-funnel</code> (e.g. a menu item) opens the dialog as well.</li>\n</ul>\n<p>The lead connection requires a NetBaseOS account with the Premium plan (or higher) and an API key, which you create in NetBaseOS under Settings › Integrations. Embedding funnels requires a NetBaseOS account with a published funnel; no API key is needed for that.</p>\n<p>The API key can only create leads in your account. It cannot read any data.</p>\n<h3>External services</h3>\n<p>This plugin connects to <strong>NetBaseOS</strong> (https://netbaseos.de), operated by Justin Tückmantel, Am Stationsgarten 43, 42327 Wuppertal, Germany.</p>\n<ol>\n<li><strong>Lead API</strong> – only after you have saved an API key on the settings page and switched on at least one form:\n<ul>\n<li>When a visitor submits a switched-on form, your web server sends the mapped fields (first/last/full name, email, phone, message – only those you mapped), the form name, the address of the page the form was submitted on (scheme, domain and path only – query string and fragment are removed before sending), a random submission ID and the source marker <code>wordpress</code> to <code>https://netbaseos.de/api/v1/leads</code>, together with your API key. NetBaseOS keeps only the domain and path of the page address, stores the submission ID only as a derived check value (so a retried submission is created once) and discards fields it does not support. If the first attempt fails, the same data is sent again from the queue (see FAQ).</li>\n<li>When you save a key or click &#8220;Test connection&#8221;, the plugin calls <code>https://netbaseos.de/api/v1/verbindung</code> with your key to check it. No visitor data is sent.</li>\n<li>Like every request made by WordPress, these requests reveal your server&#8217;s IP address and WordPress&#8217;s standard user agent, which contains your site&#8217;s address.</li>\n</ul>\n</li>\n<li><strong>Funnel embedding</strong> – only on pages where you placed the block or shortcode: the visitor&#8217;s browser loads the funnel from <code>https://netbaseos.de/f/&lt;your-funnel&gt;</code> in an iframe and thereby transmits technically necessary data such as the visitor&#8217;s IP address and browser information to NetBaseOS. With the popup display, the iframe is only loaded when the visitor opens the dialog. What the funnel collects is described in the privacy notice linked inside the funnel.</li>\n</ol>\n<p>The plugin sends no other data to NetBaseOS or to anyone else – no usage statistics or tracking.</p>\n<p>Terms of use: https://netbaseos.de/terms<br />\nPrivacy policy: https://netbaseos.de/privacy<br />\nData processing agreement and sub-processors: https://netbaseos.de/avv</p>\n<p>NetBaseOS processes the transmitted form data as your processor (Art. 28 GDPR) under the data processing agreement you accept when you create the API key. You remain the controller for your website and its forms and are responsible for informing your visitors. A non-binding suggested text is added to the WordPress privacy policy guide (Settings › Privacy); check and adapt it before use – it does not replace legal advice.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/netbaseos-leads.0.1.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "contact-form-7": "contact form 7",
+        "crm": "crm",
+        "funnel": "funnel",
+        "leads": "leads",
+        "wpforms": "WPForms"
+    },
+    "stable_tag": "0.1.1",
+    "versions": {
+        "0.1.1": "https://downloads.wordpress.org/plugin/netbaseos-leads.0.1.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/netbaseos-leads.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/netbaseos-leads/assets/banner-772x250.png?rev=3815874",
+        "high": "https://ps.w.org/netbaseos-leads/assets/banner-1544x500.png?rev=3815874"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/netbaseos-leads/assets/icon-128x128.png?rev=3815874",
+        "2x": "https://ps.w.org/netbaseos-leads/assets/icon-256x256.png?rev=3815874"
+    },
+    "blocks": {
+        "netbaseos/funnel": {
+            "$schema": "https://schemas.wp.org/trunk/block.json",
+            "apiVersion": 3,
+            "name": "netbaseos/funnel",
+            "version": "0.1.0",
+            "title": "NetBaseOS Funnel",
+            "category": "widgets",
+            "icon": "feedback",
+            "description": "Embeds a NetBaseOS funnel, in the page or as a button that opens it in a dialog.",
+            "keywords": [
+                "netbaseos",
+                "funnel",
+                "form",
+                "lead"
+            ],
+            "textdomain": "netbaseos-leads",
+            "attributes": {
+                "slug": {
+                    "type": "string",
+                    "default": ""
+                },
+                "display": {
+                    "type": "string",
+                    "enum": [
+                        "inline",
+                        "popup"
+                    ],
+                    "default": "inline"
+                },
+                "text": {
+                    "type": "string",
+                    "default": ""
+                },
+                "color": {
+                    "type": "string",
+                    "default": ""
+                }
+            },
+            "supports": {
+                "html": false
+            },
+            "editorScript": "file:./editor.js"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
