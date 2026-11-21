@@ -1,0 +1,77 @@
+{
+    "name": "NeuTarget: Analytics &amp; Revenue Tracking for WooCommerce",
+    "slug": "neutarget-analytics-for-woocommerce",
+    "version": "1.1.2",
+    "author": "<a href=\"https://profiles.wordpress.org/neutarget/\">neutarget</a>",
+    "author_profile": "https://profiles.wordpress.org/neutarget/",
+    "contributors": {
+        "neutarget": {
+            "profile": "https://profiles.wordpress.org/neutarget/",
+            "avatar": "https://secure.gravatar.com/avatar/30451be2ff758e09d02a4b1163b1476ed043f7c2ee8be1c5d3a58ffc259d195d?s=96&d=monsterid&r=g",
+            "display_name": "neutarget"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.5",
+    "requires_php": "8.0",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/neutarget-analytics-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-21 08:48:00",
+    "added": "2026-11-21",
+    "homepage": "https://www.neutarget.com/integrations/woocommerce",
+    "sections": {
+        "description": "<p>NeuTarget is a hosted acquisition-to-outcome analytics service. This plugin connects your WooCommerce storefront to your NeuTarget website so you can review website activity alongside recorded financial outcomes.</p>\n<p>The browser tracker measures permitted storefront activity without setting analytics cookies. The separate server integration sends payment and refund receipts to NeuTarget. A valid payment remains reportable when optional attribution context is missing; it is then shown as unattributed rather than assigned to an invented visit.</p>\n<p>The integration provides:</p>\n<ul>\n<li>Storefront tracking using the public NeuTarget browser SDK.</li>\n<li>Merchant-server payment and refund reporting with exact currency minor units.</li>\n<li>Optional checkout context for classic checkout and Checkout Blocks.</li>\n<li>Durable delivery through WooCommerce Action Scheduler, with receipt status and operator retry.</li>\n</ul>\n<p>A NeuTarget account and configured website are required. The plugin connects to the NeuTarget service; reports and account features are provided there under your service plan. Review current plans at https://www.neutarget.com/pricing before enabling the service. Installing this plugin does not purchase a subscription or enable paid add-ons.</p>\n<h3>External services</h3>\n<p>This plugin connects to NeuTarget, operated at https://www.neutarget.com. Configure the integration only if you authorize the following service connections.</p>\n<p>When storefront tracking is enabled and a valid Website ID is configured, the plugin loads https://cdn.neutarget.com/script/v1/nt.min.js. That public SDK sends permitted website activity and browser or campaign context to https://api.neutarget.com according to your NeuTarget website collection settings and applicable consent choices. It runs on storefront pages, not the WordPress admin.</p>\n<p>When financial receipts are enabled, WooCommerce payment or refund activity queues an authenticated request to https://api.neutarget.com/api/v1/financial-events. The receipt includes the website ID, stable event identity, order reference, amount in currency minor units, event kind and occurrence time. It can also include the consent state and an opaque session identifier. For registered customers who granted consent, a website-scoped opaque customer hash can be included. The plugin does not send the order&#8217;s billing address or customer email to NeuTarget.</p>\n<p>The private website API secret authenticates server-to-server requests over HTTPS. It is never placed in browser markup or sent by the checkout scripts. Browser context is optional; the financial receipt can still be delivered without it.</p>\n<p>Service terms: https://www.neutarget.com/legal/terms<br />\nService privacy policy: https://www.neutarget.com/legal/privacy</p>\n",
+        "installation": "<ol>\n<li>Install and activate NeuTarget: Analytics &amp; Revenue Tracking for WooCommerce from the WordPress Plugin Directory, or upload its installation ZIP. The directory slug is <code>neutarget-analytics-for-woocommerce</code>. WooCommerce 8.2 or later and PHP 8.0 or later are required. WooCommerce Action Scheduler must be available for receipt delivery.</li>\n<li>Add your store as a website in NeuTarget. Open WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Integration <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> NeuTarget Analytics and enter that website&#8217;s public Website ID and private API secret. The secret is encrypted using WordPress salts. Alternatively, define <code>NEUTARGET_WEBSITE_ID</code> and <code>NEUTARGET_API_SECRET</code> in <code>wp-config.php</code>; these constants take precedence over saved settings.</li>\n<li>Choose whether to enable storefront tracking and financial receipts. Configure your consent manager to call <code>window.neutarget.setConsent('granted')</code> or <code>window.neutarget.setConsent('denied')</code> as appropriate. The plugin does not decide which consent requirements apply to your store.</li>\n<li>Visit the storefront and verify an observed pageview in NeuTarget. Place a test paid order through your intended gateway and check that a financial receipt is accepted. A saved configuration or a thank-you page alone does not verify financial delivery.</li>\n<li>Inspect WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Status <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Scheduled Actions for jobs in the <code>neutarget-financial</code> group. After correcting a credential or delivery problem, use the affected order&#8217;s NeuTarget: retry pending receipts action. Integration settings show the last accepted receipt and the latest order requiring review.</li>\n<li>Keep WordPress cron running. On low-traffic stores, use a system cron to invoke <code>wp-cron.php</code>. A bounded repair scan runs every 15 minutes and revisits up to 25 pending orders per run if the queue lost a job. If delivery remains unavailable, inspect Scheduled Actions and WooCommerce logs with source <code>neutarget</code>.</li>\n</ol>\n",
+        "faq": "\n<h4>\nDoes this plugin verify payment settlement with the gateway?\n</h4>\n<p>\n<p>No. These are merchant-server receipts. WooCommerce and the selected payment gateway assert the event; NeuTarget does not independently verify settlement through this plugin. Review captures against your source records for the reporting interval you rely on.</p>\n</p>\n<h4>\nWhich payments and refunds are reported?\n</h4>\n<p>\n<p>Online captures are queued when WooCommerce emits <code>woocommerce_payment_complete</code>. Changing an order&#8217;s status to processing or completed does not declare payment. The built-in cash on delivery, bank transfer and cheque methods are excluded from that automatic gateway path. For an offline payment already received, an authorized operator can use the order action NeuTarget: record confirmed cash payment.</p>\n<p>Gateway API refunds are reported when WooCommerce marks the refund as refunded through its payment API. Manual refunds are excluded unless you explicitly enable Manual refunds after confirming your operators create them only after returning money. Chargebacks and gateway-specific settlement checks require a separate supported integration. Evaluate partial-capture gateways against the reported WooCommerce order total before production use.</p>\n</p>\n<h4>\nWhat happens if attribution context is missing?\n</h4>\n<p>\n<p>An eligible financial receipt is still sent. Optional session context is carried from classic checkout or Checkout Blocks only when available and permitted by the applicable collection policy. Missing context leaves the receipt unattributed. A browser interaction is not converted into a financial receipt.</p>\n</p>\n<h4>\nWhat happens if NeuTarget or the delivery queue is unavailable?\n</h4>\n<p>\n<p>A queued receipt retains its stable event identity and exact payload while Action Scheduler retries temporary failures. A periodic repair scan can recover a payload left behind by a queue failure. Invalid credentials or conflicting receipts require operator review. Inspect delivery status and retry after resolving the cause; do not change event identities to bypass an error.</p>\n</p>\n<h4>\nHow are privacy requests handled?\n</h4>\n<p>\n<p>The plugin adds suggested WordPress privacy-policy text and a personal-data eraser for its checkout context. Erasure removes optional context from unsent payloads while retaining the financial amount for delivery. Already delivered receipts follow your NeuTarget website&#8217;s retention and erasure controls. Review both systems when fulfilling a data request. Changing the WordPress authentication salts also prevents decryption of the stored API secret; configure it again if those salts are rotated.</p>\n</p>\n<h4>\nDoes it support HPOS and Checkout Blocks?\n</h4>\n<p>\n<p>Order access uses WooCommerce CRUD, and the plugin declares HPOS compatibility. Checkout Blocks use Store API extension data; classic checkout uses optional hidden context fields. Validate your actual checkout and gateway on a staging store before relying on reports. Include an accepted capture, refund delivery, duplicate callbacks, missing attribution and a temporary API failure in that acceptance check.</p>\n</p>\n<h4>\nWhere do I get help?\n</h4>\n<p>\n<p>Use https://www.neutarget.com/contact or create an authenticated support case from your NeuTarget account. Include the plugin version and the relevant delivery status. Do not send your private API secret or customer records in a public support thread.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.2</h4>\n<ul>\n<li>Update the plugin display name and short description to clarify its analytics and revenue tracking purpose.</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>Align the text domain and release metadata with the approved WordPress.org directory slug.</li>\n<li>Declare the WooCommerce plugin dependency and clarify external service connections.</li>\n<li>Correct HPOS detection in the bounded pending-receipt repair scan.</li>\n<li>Improve checkout input sanitization and clarify translation placeholders.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Replaced legacy revenue calls with durable financial-events receipts.</li>\n<li>Added exact currency scales, consent handoff, Blocks Store API metadata, gateway/refund gating, Action Scheduler retry and repair, encrypted secret storage, privacy eraser, and truthful delivery status.</li>\n<li>Removed fabricated attribution and automatic-payment claims.</li>\n</ul>\n"
+    },
+    "short_description": "Cookieless storefront analytics with payment and refund reporting, connected to your NeuTarget account.",
+    "description": "<p>NeuTarget is a hosted acquisition-to-outcome analytics service. This plugin connects your WooCommerce storefront to your NeuTarget website so you can review website activity alongside recorded financial outcomes.</p>\n<p>The browser tracker measures permitted storefront activity without setting analytics cookies. The separate server integration sends payment and refund receipts to NeuTarget. A valid payment remains reportable when optional attribution context is missing; it is then shown as unattributed rather than assigned to an invented visit.</p>\n<p>The integration provides:</p>\n<ul>\n<li>Storefront tracking using the public NeuTarget browser SDK.</li>\n<li>Merchant-server payment and refund reporting with exact currency minor units.</li>\n<li>Optional checkout context for classic checkout and Checkout Blocks.</li>\n<li>Durable delivery through WooCommerce Action Scheduler, with receipt status and operator retry.</li>\n</ul>\n<p>A NeuTarget account and configured website are required. The plugin connects to the NeuTarget service; reports and account features are provided there under your service plan. Review current plans at https://www.neutarget.com/pricing before enabling the service. Installing this plugin does not purchase a subscription or enable paid add-ons.</p>\n<h3>External services</h3>\n<p>This plugin connects to NeuTarget, operated at https://www.neutarget.com. Configure the integration only if you authorize the following service connections.</p>\n<p>When storefront tracking is enabled and a valid Website ID is configured, the plugin loads https://cdn.neutarget.com/script/v1/nt.min.js. That public SDK sends permitted website activity and browser or campaign context to https://api.neutarget.com according to your NeuTarget website collection settings and applicable consent choices. It runs on storefront pages, not the WordPress admin.</p>\n<p>When financial receipts are enabled, WooCommerce payment or refund activity queues an authenticated request to https://api.neutarget.com/api/v1/financial-events. The receipt includes the website ID, stable event identity, order reference, amount in currency minor units, event kind and occurrence time. It can also include the consent state and an opaque session identifier. For registered customers who granted consent, a website-scoped opaque customer hash can be included. The plugin does not send the order&#8217;s billing address or customer email to NeuTarget.</p>\n<p>The private website API secret authenticates server-to-server requests over HTTPS. It is never placed in browser markup or sent by the checkout scripts. Browser context is optional; the financial receipt can still be delivered without it.</p>\n<p>Service terms: https://www.neutarget.com/legal/terms<br />\nService privacy policy: https://www.neutarget.com/legal/privacy</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/neutarget-analytics-for-woocommerce.1.1.2.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "analytics": "analytics",
+        "attribution": "attribution",
+        "revenue": "revenue",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.1.2",
+    "versions": {
+        "1.1.1": "https://downloads.wordpress.org/plugin/neutarget-analytics-for-woocommerce.1.1.1.zip",
+        "1.1.2": "https://downloads.wordpress.org/plugin/neutarget-analytics-for-woocommerce.1.1.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/neutarget-analytics-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/neutarget-analytics-for-woocommerce/assets/icon-128x128.png?rev=3815003",
+        "2x": "https://ps.w.org/neutarget-analytics-for-woocommerce/assets/icon-256x256.png?rev=3815003"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
