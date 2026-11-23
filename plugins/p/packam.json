@@ -1,0 +1,101 @@
+{
+    "name": "PackAm",
+    "slug": "packam",
+    "version": "0.3.2",
+    "author": "<a href=\"https://profiles.wordpress.org/surgentlabs/\">surgentlabs</a>",
+    "author_profile": "https://profiles.wordpress.org/surgentlabs/",
+    "contributors": {
+        "surgentlabs": {
+            "profile": "https://profiles.wordpress.org/surgentlabs/",
+            "avatar": "https://secure.gravatar.com/avatar/9713c002e735b8fff6485280078b09309d36d910ddab7b7fcc53fc4e88536a54?s=96&d=monsterid&r=g",
+            "display_name": "surgentlabs"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.5",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/packam/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-23 18:06:00",
+    "added": "2026-11-23",
+    "homepage": "https://packam.ng",
+    "sections": {
+        "description": "<p>PackAm links your WooCommerce store to <a href=\"https://packam.ng\" rel=\"nofollow ugc\">PackAm</a>, the<br />\nscan-to-pack verification app for Nigerian merchants. It:</p>\n<ul>\n<li>Generates a one-time <strong>connection key</strong> and a private <strong>store secret</strong>, and<br />\nexposes a handshake endpoint so PackAm can complete the connection.</li>\n<li>Signs every request in both directions with <strong>HMAC-SHA256</strong>, with a 5-minute<br />\ntimestamp window and nonce replay protection.</li>\n<li>Serves <strong>order</strong> and <strong>product</strong> reads through the WooCommerce CRUD layer, so<br />\nit behaves identically on <strong>HPOS</strong> and legacy postmeta storage. HPOS<br />\ncompatibility is declared.</li>\n<li>Includes <strong>product variations</strong> and reports where variation SKUs are missing.</li>\n<li>Registers <strong>webhooks</strong> for order.created, order.updated and product.updated,<br />\nwith PackAm&#8217;s reconciliation poller (a <code>modified_after</code> cursor on the read<br />\nendpoints) as a backstop.</li>\n<li>Writes fulfilment back to WooCommerce: sets status, attaches tracking number<br />\nand courier, adds an order note, and supports <strong>partial fulfilment</strong>.</li>\n</ul>\n<p>This plugin does not collect or transmit any data until you connect it to a<br />\nPackAm account and complete the handshake.</p>\n<p>Learn more and create a free PackAm store at <a href=\"https://packam.ng\" rel=\"nofollow ugc\">packam.ng</a>.</p>\n<h3>External services</h3>\n<p>This plugin connects your store to PackAm, a hosted service run by PackAm<br />\n(<a href=\"https://packam.ng\" rel=\"nofollow ugc\">packam.ng</a>) that your packing team uses to scan and check orders. It is<br />\nneeded for the plugin to do anything: without a PackAm account the plugin stays<br />\nidle and sends nothing.</p>\n<p>Nothing is sent until a store manager generates a connection key under<br />\nWooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> PackAm and enters it in PackAm. After that:</p>\n<ul>\n<li><strong>When an order is created or updated</strong>, the plugin sends that order to<br />\napi.packam.ng: order number, status, currency, total, payment method, the<br />\ndate created and last changed, the customer&#8217;s billing name, phone number and<br />\nemail address, and each line item&#8217;s product ID, name, SKU and quantity.<br />\nUnfinished checkouts (draft orders) are never sent.</li>\n<li><strong>When a product is updated</strong>, the plugin sends that product to<br />\napi.packam.ng: its ID, type, name, SKU and image URL, and each variation&#8217;s<br />\nID, SKU, attributes and image URL.</li>\n<li><strong>When PackAm asks for them</strong>, over signed requests to this site&#8217;s REST API,<br />\nthe plugin returns the same order and product details; the store&#8217;s name,<br />\naddress (WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> General), currency, timezone and<br />\nWooCommerce version; and the connection&#8217;s health (last sync times and last<br />\nerror).</li>\n<li><strong>When an order is packed in PackAm</strong>, PackAm calls this site to mark it<br />\ncompleted (or partly packed), add the tracking number and courier, and leave<br />\nan order note. Orders that are pending, on hold, cancelled, refunded,<br />\nfailed or already completed keep their status; only the tracking and note are added.</li>\n</ul>\n<p>Each message includes this site&#8217;s URL. Delivery addresses, payment details and<br />\npasswords are never sent. Disconnecting under WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> PackAm stops all<br />\nof the above.</p>\n<ul>\n<li>PackAm terms of service: <a href=\"https://packam.ng/terms\" rel=\"nofollow ugc\">packam.ng/terms</a></li>\n<li>PackAm privacy policy: <a href=\"https://packam.ng/privacy\" rel=\"nofollow ugc\">packam.ng/privacy</a></li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the <code>packam</code> folder to <code>/wp-content/plugins/</code>, or install the zip via<br />\nPlugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload.</li>\n<li>Activate <strong>PackAm</strong> through the Plugins screen. WooCommerce must be active.</li>\n<li>Go to <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> PackAm</strong> and click <strong>Generate connection key</strong>.</li>\n<li>Copy the key (shown once) into PackAm to complete the connection.</li>\n</ol>\n",
+        "faq": "\n<h4>\nDoes it work with High-Performance Order Storage (HPOS)?\n</h4>\n<p>\n<p>Yes. All reads and writes go through the WooCommerce CRUD layer, and the plugin<br />\ndeclares HPOS compatibility, so it works the same on custom-tables and legacy<br />\nstorage.</p>\n</p>\n<h4>\nWhat happens if a webhook fails to deliver?\n</h4>\n<p>\n<p>Nothing is lost. PackAm polls your store on a schedule using a <code>modified_after</code><br />\ncursor and reconciles anything a webhook missed.</p>\n</p>\n<h4>\nCan I rotate the secret?\n</h4>\n<p>\n<p>Yes. Rotation keeps the previous secret valid for 24 hours so nothing breaks<br />\nmid-rotation, but only the current secret can rotate it again. You can also<br />\nregenerate the connection key or disconnect at any time from WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span><br />\nPackAm. If you think a secret has leaked, disconnect or regenerate: that ends<br />\naccess for every old secret at once.</p>\n</p>\n\n",
+        "changelog": "<h4>0.3.2</h4>\n<ul>\n<li>Security: PackAm no longer changes the status of an order that is pending,<br />\non hold, cancelled, refunded, failed, completed or still a draft. If such an order is<br />\nsent from PackAm, the tracking number and a private note are added, but the<br />\nstatus stays as it is and no customer email goes out.</li>\n<li>Security: unfinished checkouts (draft orders) are no longer sent to PackAm,<br />\nso the contact details of shoppers who never placed an order stay on your<br />\nsite.</li>\n<li>Security: a fulfilment update from PackAm is read from the signed message<br />\nitself. An empty or unreadable update is refused, and an item PackAm did not<br />\nmention is no longer counted as packed.</li>\n<li>Security: after you rotate the store secret, the old secret can no longer be<br />\nused to rotate it again. Order updates are only sent to an https address and<br />\nnever follow redirects. Failed sign-ins get one plain &#8220;Unauthorized&#8221; reply.</li>\n<li>Uninstalling on a multisite network now removes PackAm&#8217;s settings from every<br />\nsite.</li>\n</ul>\n<h4>0.3.1</h4>\n<ul>\n<li>Security: request signatures now cover the query string as well, so no<br />\nparameter can be added to or changed in a signed request&#8217;s URL. The order<br />\nfulfilment endpoint reads the order ID from the signed route only.<br />\nRequires PackAm&#8217;s current API, which already sends the new signature.</li>\n</ul>\n<h4>0.3.0</h4>\n<ul>\n<li>Security: request signatures are now bound to their direction, HTTP method<br />\nand route, so a signed reply from the plugin can no longer be replayed as a<br />\nrequest to it. Replies to requests that fail verification are no longer<br />\nsigned. Requires PackAm&#8217;s current API, which already sends the new<br />\nsignature.</li>\n<li>Security: each request&#8217;s nonce is claimed in one atomic database statement,<br />\nso two copies of the same request arriving together can&#8217;t both pass replay<br />\nprotection.</li>\n</ul>\n<h4>0.2.2</h4>\n<ul>\n<li>Ready for the WordPress.org directory: tested with WordPress 7.1 and<br />\nWooCommerce 11.3, declares WooCommerce as a required plugin, and suggests<br />\nprivacy policy text under Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Privacy.</li>\n<li>Removed the optional Sentry error reporting, which the distributed plugin<br />\ncould not load.</li>\n</ul>\n<h4>0.2.1</h4>\n<ul>\n<li>A corrected waybill from the PackAm app now replaces PackAm&#8217;s Shipment<br />\nTracking entry instead of adding a second one, and leaves the order status<br />\nalone. A retried write-back no longer duplicates the entry either. Tracking<br />\nadded by staff or other plugins is untouched.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>Expose the store name + address (WooCommerce Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> General) to PackAm for<br />\ntax invoices: new signed GET /store endpoint, and the address is included in<br />\nthe handshake response. No new permissions; read-only.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>Initial release: handshake, signed sync, webhooks, fulfilment write-back,<br />\nadmin connection panel.</li>\n</ul>\n"
+    },
+    "short_description": "Connects WooCommerce to PackAm, the scan-to-pack app that checks every order is packed right before it ships.",
+    "description": "<p>PackAm links your WooCommerce store to <a href=\"https://packam.ng\" rel=\"nofollow ugc\">PackAm</a>, the<br />\nscan-to-pack verification app for Nigerian merchants. It:</p>\n<ul>\n<li>Generates a one-time <strong>connection key</strong> and a private <strong>store secret</strong>, and<br />\nexposes a handshake endpoint so PackAm can complete the connection.</li>\n<li>Signs every request in both directions with <strong>HMAC-SHA256</strong>, with a 5-minute<br />\ntimestamp window and nonce replay protection.</li>\n<li>Serves <strong>order</strong> and <strong>product</strong> reads through the WooCommerce CRUD layer, so<br />\nit behaves identically on <strong>HPOS</strong> and legacy postmeta storage. HPOS<br />\ncompatibility is declared.</li>\n<li>Includes <strong>product variations</strong> and reports where variation SKUs are missing.</li>\n<li>Registers <strong>webhooks</strong> for order.created, order.updated and product.updated,<br />\nwith PackAm&#8217;s reconciliation poller (a <code>modified_after</code> cursor on the read<br />\nendpoints) as a backstop.</li>\n<li>Writes fulfilment back to WooCommerce: sets status, attaches tracking number<br />\nand courier, adds an order note, and supports <strong>partial fulfilment</strong>.</li>\n</ul>\n<p>This plugin does not collect or transmit any data until you connect it to a<br />\nPackAm account and complete the handshake.</p>\n<p>Learn more and create a free PackAm store at <a href=\"https://packam.ng\" rel=\"nofollow ugc\">packam.ng</a>.</p>\n<h3>External services</h3>\n<p>This plugin connects your store to PackAm, a hosted service run by PackAm<br />\n(<a href=\"https://packam.ng\" rel=\"nofollow ugc\">packam.ng</a>) that your packing team uses to scan and check orders. It is<br />\nneeded for the plugin to do anything: without a PackAm account the plugin stays<br />\nidle and sends nothing.</p>\n<p>Nothing is sent until a store manager generates a connection key under<br />\nWooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> PackAm and enters it in PackAm. After that:</p>\n<ul>\n<li><strong>When an order is created or updated</strong>, the plugin sends that order to<br />\napi.packam.ng: order number, status, currency, total, payment method, the<br />\ndate created and last changed, the customer&#8217;s billing name, phone number and<br />\nemail address, and each line item&#8217;s product ID, name, SKU and quantity.<br />\nUnfinished checkouts (draft orders) are never sent.</li>\n<li><strong>When a product is updated</strong>, the plugin sends that product to<br />\napi.packam.ng: its ID, type, name, SKU and image URL, and each variation&#8217;s<br />\nID, SKU, attributes and image URL.</li>\n<li><strong>When PackAm asks for them</strong>, over signed requests to this site&#8217;s REST API,<br />\nthe plugin returns the same order and product details; the store&#8217;s name,<br />\naddress (WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> General), currency, timezone and<br />\nWooCommerce version; and the connection&#8217;s health (last sync times and last<br />\nerror).</li>\n<li><strong>When an order is packed in PackAm</strong>, PackAm calls this site to mark it<br />\ncompleted (or partly packed), add the tracking number and courier, and leave<br />\nan order note. Orders that are pending, on hold, cancelled, refunded,<br />\nfailed or already completed keep their status; only the tracking and note are added.</li>\n</ul>\n<p>Each message includes this site&#8217;s URL. Delivery addresses, payment details and<br />\npasswords are never sent. Disconnecting under WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> PackAm stops all<br />\nof the above.</p>\n<ul>\n<li>PackAm terms of service: <a href=\"https://packam.ng/terms\" rel=\"nofollow ugc\">packam.ng/terms</a></li>\n<li>PackAm privacy policy: <a href=\"https://packam.ng/privacy\" rel=\"nofollow ugc\">packam.ng/privacy</a></li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/packam.0.3.2.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/packam/assets/screenshot-1.png?rev=3818956",
+            "caption": "WooCommerce → PackAm shows the connection status and sync health."
+        },
+        {
+            "src": "https://ps.w.org/packam/assets/screenshot-2.png?rev=3818956",
+            "caption": "A one-time connection key connects the store to PackAm."
+        },
+        {
+            "src": "https://ps.w.org/packam/assets/screenshot-3.png?rev=3818956",
+            "caption": "When an order is packed, PackAm completes it in WooCommerce and adds the courier and waybill as an order note."
+        },
+        {
+            "src": "https://ps.w.org/packam/assets/screenshot-4.png?rev=3818956",
+            "caption": "The packing phone: the order queue, scanning an item, a correct scan, and a wrong item caught before the box is sealed."
+        },
+        {
+            "src": "https://ps.w.org/packam/assets/screenshot-5.png?rev=3818956",
+            "caption": "The PackAm dashboard shows each order's history, packed items and scan log."
+        }
+    ],
+    "tags": {
+        "barcode": "barcode",
+        "fulfilment": "fulfilment",
+        "order-sync": "order sync",
+        "packing": "packing",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "0.3.2",
+    "versions": {
+        "0.3.2": "https://downloads.wordpress.org/plugin/packam.0.3.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/packam.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/packam/assets/banner-772x250.png?rev=3818920",
+        "high": "https://ps.w.org/packam/assets/banner-1544x500.png?rev=3818920"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/packam/assets/icon.svg?rev=3818920",
+        "svg": "https://ps.w.org/packam/assets/icon.svg?rev=3818920"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
