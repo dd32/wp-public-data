@@ -1,0 +1,82 @@
+{
+    "name": "SysLock – Lightweight Hardening &amp; Update Quarantine",
+    "slug": "syslock",
+    "version": "1.0.1",
+    "author": "<a href=\"https://profiles.wordpress.org/jbg001/\">Josep Blanes</a>",
+    "author_profile": "https://profiles.wordpress.org/jbg001/",
+    "contributors": {
+        "jbg001": {
+            "profile": "https://profiles.wordpress.org/jbg001/",
+            "avatar": "https://secure.gravatar.com/avatar/58dde6f4aa3865962b54e7b9be80ae75aaa7a2e7b78d92af4c20cf62ecb99f33?s=96&d=monsterid&r=g",
+            "display_name": "Josep Blanes"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.5",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/syslock/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-25 17:20:00",
+    "added": "2026-11-21",
+    "homepage": "",
+    "sections": {
+        "description": "<p><strong>SysLock</strong> is a zero-bloat, set-and-forget security plugin built for site owners and maintainers who want essential hardening without heavy firewalls, frontend scripts, or external cloud accounts.</p>\n<p>Activate it and it works immediately with sane defaults—no setup wizards, no dashboard clutter, and zero impact on frontend page load times.</p>\n<h4>Core Protections</h4>\n<ul>\n<li><strong>Identity &amp; Hijack Lock:</strong> Blocks unauthorized user creation across the admin UI, REST API, XML-RPC, WP-CLI, and direct <code>wp_insert_user()</code> calls; prevents privilege escalation to the Administrator role; disables Application Passwords (note: this intentionally blocks the official WordPress mobile apps and external REST integrations that rely on them); and locks critical site options (<code>siteurl</code>, <code>home</code>, <code>default_role</code>, <code>users_can_register</code>) with explicit WP-CLI warnings when triggered from the terminal.</li>\n<li><strong>72-Hour Auto-Update Quarantine:</strong> Intercepts automatic plugin and theme updates and holds them for a 72-hour stabilization buffer after first detection before allowing installation—preserving the original pending timestamp across rapid hotfix releases (<code>x.1</code> <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> <code>x.2</code>) so legitimate patches are not indefinitely delayed.</li>\n<li><strong>On-Demand Integrity, Permissions &amp; Exposure Audit:</strong> Verifies WordPress core files against official WordPress.org MD5 checksums, scans <code>wp-content/uploads</code> for hidden PHP executables, checks POSIX permission bitmasks on critical directories and <code>wp-config.php</code>, and flags publicly exposed backups, SQL dumps, <code>.git</code> folders, or debug logs.</li>\n<li><strong>Rate-Limited Email Alerts:</strong> Sends plain-text notifications to the site administrator email whenever an unauthorized action is blocked (capped at 1 email per hour per event type) or if the plugin is temporarily deactivated.</li>\n<li><strong>WP-CLI Support:</strong> Run audits directly from the terminal via <code>wp syslock audit</code>.</li>\n</ul>\n<h4>Privacy &amp; External Services</h4>\n<p>SysLock stores only minimal operational state in the <code>wp_options</code> table (with <code>autoload</code> disabled) and sends no telemetry or tracking data.</p>\n<p>When you manually trigger an audit, the plugin queries the official WordPress.org Checksums API (<code>https://api.wordpress.org/core/checksums/1.0/</code>) solely to retrieve the reference MD5 hashes for your current WordPress version and locale.</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>syslock</code> folder to <code>/wp-content/plugins/</code>, or install the ZIP package directly from <strong>Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload Plugin</strong>.</li>\n<li>Activate the plugin through the <strong>Plugins</strong> screen in WordPress.</li>\n<li>Visit <strong>Tools <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> SysLock</strong> to review protection status, view quarantined updates, and run an on-demand security audit.</li>\n</ol>\n",
+        "faq": "\n<h4>\nHow do I create a new user, change site URLs, or allow customer registrations when SysLock is active?\n</h4>\n<p>\n<p>Because SysLock blocks all new user insertions (including front-end registrations and checkouts) and locks <code>siteurl</code>/<code>home</code> while active, temporarily deactivate SysLock from <strong>Plugins</strong> (you will receive an email reminder to re-enable it when done), or define <code>define( 'SYSLOCK_UNLOCK', true );</code> in your <code>wp-config.php</code> file during maintenance.</p>\n</p>\n<h4>\nDoes disabling Application Passwords affect mobile apps or integrations?\n</h4>\n<p>\n<p>Yes. While SysLock is locked, Application Passwords are disabled completely, which prevents the official WordPress mobile apps and external REST API integrations from authenticating. If you rely on Application Passwords, define <code>define( 'SYSLOCK_UNLOCK', true );</code> or keep SysLock unlocked during setup.</p>\n</p>\n<h4>\nDoes temporarily deactivating SysLock reset the 72-hour update quarantine?\n</h4>\n<p>\n<p>No. Quarantine timestamps and recent blocked event logs are preserved across temporary deactivations so you do not lose stabilization progress during routine maintenance.</p>\n</p>\n<h4>\nDoes SysLock modify file permissions automatically?\n</h4>\n<p>\n<p>No. The POSIX permissions check is strictly read-only and diagnostic—it never runs <code>chmod()</code> or alters your server filesystem.</p>\n</p>\n<h4>\nDoes this plugin load any CSS or JavaScript on the public site?\n</h4>\n<p>\n<p>None at all. SysLock runs exclusively on targeted backend hooks and adds zero assets or database queries to frontend visitors.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.1</h4>\n<ul>\n<li>Hardened user creation lock by hooking <code>wp_pre_insert_user_data</code> so REST API, XML-RPC, WP-CLI, and direct <code>wp_insert_user()</code> calls are blocked consistently alongside the admin UI.</li>\n<li>Improved 72-hour quarantine timer to preserve the initial pending timestamp when a plugin or theme releases rapid follow-up hotfixes (<code>x.1</code> -&gt; <code>x.2</code>), preventing indefinite delays.</li>\n<li>Added explicit <code>WP_CLI::warning()</code> notices when SysLock blocks protected option updates (<code>siteurl</code>, <code>home</code>, <code>default_role</code>, <code>users_can_register</code>) or user creation during CLI operations.</li>\n<li>Clarified documentation regarding Application Passwords impact on mobile apps/REST integrations and user creation lock behavior.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial public release.</li>\n<li>Added Identity &amp; Hijack Lock (users, admin roles, Application Passwords, and core URLs/registration options).</li>\n<li>Added 72-hour automatic update quarantine for plugins and themes.</li>\n<li>Added on-demand Core Checksum, uploads PHP scanner, POSIX permissions, and exposed archive/log auditor.</li>\n<li>Added WP-CLI command <code>wp syslock audit</code>.</li>\n</ul>\n"
+    },
+    "short_description": "Surgical WordPress security: identity lock, 72-hour auto-update quarantine, and on-demand core checksum &amp; POSIX permissions audit.",
+    "description": "<p><strong>SysLock</strong> is a zero-bloat, set-and-forget security plugin built for site owners and maintainers who want essential hardening without heavy firewalls, frontend scripts, or external cloud accounts.</p>\n<p>Activate it and it works immediately with sane defaults—no setup wizards, no dashboard clutter, and zero impact on frontend page load times.</p>\n<h4>Core Protections</h4>\n<ul>\n<li><strong>Identity &amp; Hijack Lock:</strong> Blocks unauthorized user creation across the admin UI, REST API, XML-RPC, WP-CLI, and direct <code>wp_insert_user()</code> calls; prevents privilege escalation to the Administrator role; disables Application Passwords (note: this intentionally blocks the official WordPress mobile apps and external REST integrations that rely on them); and locks critical site options (<code>siteurl</code>, <code>home</code>, <code>default_role</code>, <code>users_can_register</code>) with explicit WP-CLI warnings when triggered from the terminal.</li>\n<li><strong>72-Hour Auto-Update Quarantine:</strong> Intercepts automatic plugin and theme updates and holds them for a 72-hour stabilization buffer after first detection before allowing installation—preserving the original pending timestamp across rapid hotfix releases (<code>x.1</code> <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> <code>x.2</code>) so legitimate patches are not indefinitely delayed.</li>\n<li><strong>On-Demand Integrity, Permissions &amp; Exposure Audit:</strong> Verifies WordPress core files against official WordPress.org MD5 checksums, scans <code>wp-content/uploads</code> for hidden PHP executables, checks POSIX permission bitmasks on critical directories and <code>wp-config.php</code>, and flags publicly exposed backups, SQL dumps, <code>.git</code> folders, or debug logs.</li>\n<li><strong>Rate-Limited Email Alerts:</strong> Sends plain-text notifications to the site administrator email whenever an unauthorized action is blocked (capped at 1 email per hour per event type) or if the plugin is temporarily deactivated.</li>\n<li><strong>WP-CLI Support:</strong> Run audits directly from the terminal via <code>wp syslock audit</code>.</li>\n</ul>\n<h4>Privacy &amp; External Services</h4>\n<p>SysLock stores only minimal operational state in the <code>wp_options</code> table (with <code>autoload</code> disabled) and sends no telemetry or tracking data.</p>\n<p>When you manually trigger an audit, the plugin queries the official WordPress.org Checksums API (<code>https://api.wordpress.org/core/checksums/1.0/</code>) solely to retrieve the reference MD5 hashes for your current WordPress version and locale.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/syslock.1.0.1.zip",
+    "upgrade_notice": {
+        "1.0.1": "<p>Hardens core user creation blocking across all vectors, preserves initial quarantine timestamps across rapid hotfix releases, and adds WP-CLI warnings when option locks trigger.</p>",
+        "1.0.0": "<p>Initial public release of SysLock.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "checksum": "checksum",
+        "hardening": "hardening",
+        "permissions": "permissions",
+        "security": "security",
+        "updates": "updates"
+    },
+    "stable_tag": "1.0.1",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/syslock.1.0.0.zip",
+        "1.0.1": "https://downloads.wordpress.org/plugin/syslock.1.0.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/syslock.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/syslock/assets/banner-772x250.png?rev=3817642",
+        "high": "https://ps.w.org/syslock/assets/banner-1544x500.png?rev=3815229"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/syslock/assets/icon-128x128.png?rev=3817642",
+        "2x": "https://ps.w.org/syslock/assets/icon-256x256.png?rev=3815229"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

@@ -1,0 +1,79 @@
+{
+    "name": "ReclaimLog",
+    "slug": "reclaimlog",
+    "version": "1.2.3",
+    "author": "<a href=\"https://profiles.wordpress.org/returnivo/\">returnivo</a>",
+    "author_profile": "https://profiles.wordpress.org/returnivo/",
+    "contributors": {
+        "returnivo": {
+            "profile": "https://profiles.wordpress.org/returnivo/",
+            "avatar": "https://secure.gravatar.com/avatar/8a2c024d59d346b953d0a7d40689fe84e69f193a4afc4ce34b21573e5809d7d0?s=96&d=monsterid&r=g",
+            "display_name": "returnivo"
+        }
+    },
+    "requires": "6.2",
+    "tested": "7.1.5",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/reclaimlog/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-25 19:10:00",
+    "added": "2026-11-25",
+    "homepage": "",
+    "sections": {
+        "description": "<p>ReclaimLog lets authorized WooCommerce store staff record products that have physically arrived back. It works with existing WooCommerce order edit screens, including High-Performance Order Storage (HPOS), and provides a standalone WooCommerce &gt; ReclaimLog page.</p>\n<ul>\n<li>Record partial returns or multiple order items with controlled reason codes.</li>\n<li>See ordered, already received and remaining quantities. Active received quantities cannot exceed ordered quantities.</li>\n<li>Void incorrect records without deleting their history. Voided quantities no longer count as received.</li>\n<li>Keep returns independent of refunds, payment changes and inventory changes.</li>\n<li>Read minimal return evidence through the existing authenticated WooCommerce REST orders endpoint.</li>\n</ul>\n<p>This plugin does not issue refunds, alter payments or change product stock. Refunds, order statuses and restocks are never inferred to be physical returns.</p>\n<h4>Requirements</h4>\n<p>WordPress 6.2 or newer, PHP 7.4 or newer, and WooCommerce 7.1 or newer are required. The plugin declares HPOS compatibility and uses WooCommerce CRUD for order and order-item access. Return recording uses database transactions and MySQL/MariaDB named locks; a database host that refuses named locks will prevent recording rather than bypass the quantity safeguard.</p>\n<h4>REST fields and privacy</h4>\n<p>The read-only <code>returnivo_returns</code> field contains record IDs, RECEIVED/VOIDED status, UTC creation timestamps, order-item IDs, quantities and reason codes. The read-only <code>returnivo_restocked_items</code> field contains only order-item IDs and positive cumulative quantities from WooCommerce&#8217;s <code>_restock_refunded_items</code> metadata. These fields use the existing WooCommerce orders permissions; no public endpoint or additional permission is added.</p>\n<p>Restock evidence is inventory evidence only, not proof of physical receipt. It has no restock timestamp and never contributes to physical-return rates. Empty lists mean the plugin is installed with no records of that kind. Without the plugin the fields are absent. Consumers using <code>_fields</code> must explicitly include the desired field.</p>\n<p>The plugin stores return/order-item IDs, status, controlled reasons, quantities and timestamps in two local tables. It does not copy customer names, email addresses, addresses, notes or photos into those tables or additional REST fields. Order-linked IDs can still be associated with existing store records and should be protected as store data.</p>\n<p>The plugin makes no outbound requests, performs no tracking, and sends no credentials or data to Returnivo automatically. Authorized clients can read the fields through the store&#8217;s authenticated REST API. A store owner chooses whether to connect the separate Returnivo service with a read-only WooCommerce key. Local recording and history work without a Returnivo account. Returnivo analytics require that separate service and a subsequent sync; availability and plan terms are separate from this free plugin. Service availability, privacy and terms information is provided by the separate Returnivo service before any connection is made.</p>\n<p>Saving or voiding a record, and WooCommerce&#8217;s existing refund-restock action, updates a private order marker so incremental consumers can detect changes. After activation, the plugin also touches the most recently modified order once for discovery. No sync or outbound request is triggered. Older orders are not guaranteed to be included until a consumer imports them again.</p>\n<h4>Support</h4>\n<p>Support will be available through this plugin&#8217;s WordPress.org support forum after the plugin is approved in the directory. Pre-approval support and contact details will be supplied during submission if they are needed. Do not send API keys, passwords or customer records.</p>\n",
+        "installation": "<ol>\n<li>Install and activate WooCommerce 7.1 or newer.</li>\n<li>In WordPress, open Plugins &gt; Add New &gt; Upload Plugin, select the plugin ZIP, install it and activate it.</li>\n<li>Open a saved WooCommerce order and select Record physical return near the top of the edit screen. Staff need the <code>manage_woocommerce</code> capability.</li>\n<li>Enter only quantities physically received back, select a reason for each line and save. The standalone WooCommerce &gt; ReclaimLog page is available as a fallback.</li>\n<li>Optionally connect an authorized read-only REST consumer. For Returnivo, use the separate app&#8217;s supported connection process and run its normal sync; the plugin itself does not initiate synchronization.</li>\n</ol>\n",
+        "faq": "\n<h4>\nDoes a refund or restock automatically create a physical return?\n</h4>\n<p>\n<p>No. Only staff recording actual physical receipt creates a RECEIVED record. Restock metadata remains separate inventory evidence.</p>\n</p>\n<h4>\nCan I correct a return?\n</h4>\n<p>\n<p>Void the incorrect record from the order&#8217;s return history. It remains in audit history and its quantities can be recorded again. An external analytics consumer excludes it after importing the updated VOIDED status and refreshing its results.</p>\n</p>\n<h4>\nDoes this work with HPOS and without JavaScript?\n</h4>\n<p>\n<p>The plugin uses WooCommerce order CRUD and declares HPOS compatibility. A standalone admin page provides the recording/history fallback when JavaScript or native dialog support is unavailable.</p>\n</p>\n<h4>\nDoes this send data to an external service?\n</h4>\n<p>\n<p>No outbound calls or tracking are implemented. Authenticated REST consumers may read the two documented fields when the store owner grants access. The separate Returnivo service is optional.</p>\n</p>\n<h4>\nWhat happens on deactivation or deletion?\n</h4>\n<p>\n<p>Return records are retained as audit history. Deletion removes the discovery option but keeps both return tables, the schema-version option and private order markers. Back up the store before any deliberate manual cleanup; the plugin has no automatic record-erasure tool.</p>\n</p>\n<h4>\nAre the order quantities and return rates unit-based?\n</h4>\n<p>\n<p>The plugin records received units. Returnivo&#8217;s order-based return rate counts a qualifying order once even if it has multiple received records or items. Only RECEIVED records count; VOIDED records and restock evidence do not.</p>\n</p>\n\n",
+        "changelog": "<h4>1.2.3</h4>\n<ul>\n<li>Renamed the plugin to ReclaimLog and aligned its directory slug and translation text domain. Existing records, REST fields and storage remain unchanged.</li>\n</ul>\n<h4>1.2.2</h4>\n<ul>\n<li>Replaced generated history-query placeholders with a prepared order-scoped table join. History ordering, output and all write safeguards remain unchanged.</li>\n</ul>\n<h4>1.2.1</h4>\n<ul>\n<li>Aligned the initial directory slug and translation text domain.</li>\n<li>Prepared audit-table identifiers safely and hardened admin input validation. No schema, inventory or REST behavior changes.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>Added minimal read-only restock-after-refund evidence and an order-marker touch hook. No inventory changes.</li>\n<li>Added WordPress.org-format documentation, GPL license text, dependency metadata and directory-aligned translation naming for initial submission preparation.</li>\n</ul>\n<h4>1.1.1</h4>\n<ul>\n<li>Moved the physical-return action to the top of saved order edit screens.</li>\n<li>Disabled recording when all quantities are received while retaining history and void controls.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Added the legacy/HPOS order-edit dialog and shared protected save/void handlers.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Initial physical-receipt records, quantity limits, reason codes, void history and read-only returns field.</li>\n</ul>\n"
+    },
+    "short_description": "Record physical returns received by your WooCommerce store.",
+    "description": "<p>ReclaimLog lets authorized WooCommerce store staff record products that have physically arrived back. It works with existing WooCommerce order edit screens, including High-Performance Order Storage (HPOS), and provides a standalone WooCommerce &gt; ReclaimLog page.</p>\n<ul>\n<li>Record partial returns or multiple order items with controlled reason codes.</li>\n<li>See ordered, already received and remaining quantities. Active received quantities cannot exceed ordered quantities.</li>\n<li>Void incorrect records without deleting their history. Voided quantities no longer count as received.</li>\n<li>Keep returns independent of refunds, payment changes and inventory changes.</li>\n<li>Read minimal return evidence through the existing authenticated WooCommerce REST orders endpoint.</li>\n</ul>\n<p>This plugin does not issue refunds, alter payments or change product stock. Refunds, order statuses and restocks are never inferred to be physical returns.</p>\n<h4>Requirements</h4>\n<p>WordPress 6.2 or newer, PHP 7.4 or newer, and WooCommerce 7.1 or newer are required. The plugin declares HPOS compatibility and uses WooCommerce CRUD for order and order-item access. Return recording uses database transactions and MySQL/MariaDB named locks; a database host that refuses named locks will prevent recording rather than bypass the quantity safeguard.</p>\n<h4>REST fields and privacy</h4>\n<p>The read-only <code>returnivo_returns</code> field contains record IDs, RECEIVED/VOIDED status, UTC creation timestamps, order-item IDs, quantities and reason codes. The read-only <code>returnivo_restocked_items</code> field contains only order-item IDs and positive cumulative quantities from WooCommerce&#8217;s <code>_restock_refunded_items</code> metadata. These fields use the existing WooCommerce orders permissions; no public endpoint or additional permission is added.</p>\n<p>Restock evidence is inventory evidence only, not proof of physical receipt. It has no restock timestamp and never contributes to physical-return rates. Empty lists mean the plugin is installed with no records of that kind. Without the plugin the fields are absent. Consumers using <code>_fields</code> must explicitly include the desired field.</p>\n<p>The plugin stores return/order-item IDs, status, controlled reasons, quantities and timestamps in two local tables. It does not copy customer names, email addresses, addresses, notes or photos into those tables or additional REST fields. Order-linked IDs can still be associated with existing store records and should be protected as store data.</p>\n<p>The plugin makes no outbound requests, performs no tracking, and sends no credentials or data to Returnivo automatically. Authorized clients can read the fields through the store&#8217;s authenticated REST API. A store owner chooses whether to connect the separate Returnivo service with a read-only WooCommerce key. Local recording and history work without a Returnivo account. Returnivo analytics require that separate service and a subsequent sync; availability and plan terms are separate from this free plugin. Service availability, privacy and terms information is provided by the separate Returnivo service before any connection is made.</p>\n<p>Saving or voiding a record, and WooCommerce&#8217;s existing refund-restock action, updates a private order marker so incremental consumers can detect changes. After activation, the plugin also touches the most recently modified order once for discovery. No sync or outbound request is triggered. Older orders are not guaranteed to be included until a consumer imports them again.</p>\n<h4>Support</h4>\n<p>Support will be available through this plugin&#8217;s WordPress.org support forum after the plugin is approved in the directory. Pre-approval support and contact details will be supplied during submission if they are needed. Do not send API keys, passwords or customer records.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/reclaimlog.1.2.3.zip",
+    "upgrade_notice": {
+        "1.2.3": "<p>Renames the plugin to ReclaimLog. Existing physical-return records, database tables and REST field names are preserved.</p>",
+        "1.2.2": "<p>Improves prepared history reads without changing audit records, REST fields, inventory or database version 1.</p>",
+        "1.2.1": "<p>Requires WordPress 6.2 for prepared SQL identifier support. Existing audit records, database version 1 and REST fields are unchanged.</p>",
+        "1.2.0": "<p>Adds separate inventory-restock evidence. Physical returns still require manual receipt recording. Database version remains 1.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "inventory": "inventory",
+        "returns": "returns",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.2.3",
+    "versions": {
+        "1.2.3": "https://downloads.wordpress.org/plugin/reclaimlog.1.2.3.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/reclaimlog.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/reclaimlog.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
