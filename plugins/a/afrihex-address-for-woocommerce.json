@@ -1,0 +1,102 @@
+{
+    "name": "AfriHex Address for WooCommerce",
+    "slug": "afrihex-address-for-woocommerce",
+    "version": "0.1.0",
+    "author": "<a href=\"https://profiles.wordpress.org/yeboah70/\">yeboah70</a>",
+    "author_profile": "https://profiles.wordpress.org/yeboah70/",
+    "contributors": {
+        "yeboah70": {
+            "profile": "https://profiles.wordpress.org/yeboah70/",
+            "avatar": "https://secure.gravatar.com/avatar/d626f179dd45b3b39ba5421b23b4ccc84200a2bd1fd0d2b6379940d3428a1cc0?s=96&d=monsterid&r=g",
+            "display_name": "yeboah70"
+        }
+    },
+    "requires": "6.4",
+    "tested": "7.1.5",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/afrihex-address-for-woocommerce/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-25 00:23:00",
+    "added": "2026-11-25",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Ghanaian addresses are given as GhanaPostGPS codes (&#8220;GA-183-8164&#8221;) or as directions (&#8220;opposite Goil, Madina Zongo Junction&#8221;). Street-and-number address forms lose both. This plugin adds a <strong>Delivery location</strong> field to the checkout:</p>\n<ul>\n<li>Type a GhanaPostGPS code, a place name, or landmark directions; suggestions appear as you type.</li>\n<li>Or tap &#8220;Use my current location&#8221;.</li>\n<li>The chosen spot shows on a small map. The customer can drag the pin to their gate.</li>\n<li>When the order is placed, the location is checked on your server with AfriHex (<code>POST /v2/address/validate</code>) and saved on the order: GhanaPostGPS code, coordinates, verdict (verified / confirm with customer / could not locate), landmark, and entrance details such as &#8220;2nd gate · blue gate&#8221;.</li>\n<li>The location appears on the admin order page, in order emails, on the customer&#8217;s order page, and in the REST API (<code>afrihex_location</code> on <code>/wp-json/wc/v3/orders</code>), so delivery partners get it.</li>\n</ul>\n<p>If AfriHex can&#8217;t be reached, checkout is <strong>not</strong> blocked: the order is saved with what the customer typed, marked &#8220;Not checked yet&#8221;, and checked again automatically (after 5 minutes, 30 minutes and 3 hours). You can also re-check from the order page, optionally with a corrected GhanaPostGPS code.</p>\n<p>Works with both the block-based Checkout and the classic <code>[woocommerce_checkout]</code> shortcode, and with High-Performance Order Storage.</p>\n<h4>External service</h4>\n<p>This plugin uses the AfriHex API (https://api.afrihex.com), operated by AfriHex.</p>\n<ul>\n<li>In the customer&#8217;s browser, as they type: what they type, and their location if they tap &#8220;Use my current location&#8221;, is sent with your <strong>publishable</strong> key to look up suggestions.</li>\n<li>On your server, when an order is placed: the delivery location the customer chose and the order&#8217;s address lines are sent with your <strong>secret</strong> key to check them.</li>\n<li>The map loads tiles from the tile server set in the settings (OpenStreetMap by default, https://www.openstreetmap.org, tile usage policy: https://operations.osmfoundation.org/policies/tiles/).</li>\n</ul>\n<p>The map uses Leaflet 1.9.4 (BSD-2-Clause, https://leafletjs.com), bundled in assets/vendor/leaflet.</p>\n<p>AfriHex terms: https://afrihex.com/terms — privacy: https://afrihex.com/privacy</p>\n",
+        "installation": "<ol>\n<li>Upload the <code>afrihex-address-for-woocommerce</code> folder to <code>/wp-content/plugins/</code>, or upload the zip under Plugins <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Add New <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Upload.</li>\n<li>Activate it. WooCommerce must be active.</li>\n<li>Go to <strong>WooCommerce <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> AfriHex Address</strong>.</li>\n<li>Paste your publishable key (<code>afx_pub_…</code>). In the AfriHex dashboard, add your shop&#8217;s address (shown on the settings page, e.g. <code>https://myshop.com.gh</code>) to that key&#8217;s websites.</li>\n<li>Paste your secret key (<code>afx_live_…</code>) and, for testing, your test key (<code>afx_test_…</code>). Click <strong>Test secret key</strong>.</li>\n<li>Open your checkout. The field appears under the shipping address; nothing needs to be added to the page.</li>\n</ol>\n<p>Secret keys can instead be set in <code>wp-config.php</code>:</p>\n<pre><code>define( 'AFRIHEX_SECRET_KEY', 'afx_live_…' );\ndefine( 'AFRIHEX_TEST_SECRET_KEY', 'afx_test_…' );\n</code></pre>\n",
+        "faq": "\n<h4>\nIs my secret key sent to the browser?\n</h4>\n<p>\n<p>No. Only the publishable key, which only works from your shop&#8217;s own web address and only for lookups, is put in the checkout page. The secret key is used from your server and is never printed into any page, including the settings page.</p>\n</p>\n<h4>\nWhat happens if AfriHex is down?\n</h4>\n<p>\n<p>The order goes through. What the customer typed is saved, the order is marked &#8220;Not checked yet&#8221;, and the check is retried automatically. Nothing is lost.</p>\n</p>\n<h4>\nCan I stop orders with an address that can&#8217;t be found?\n</h4>\n<p>\n<p>Yes: tick &#8220;Ask the customer to correct an address AfriHex cannot locate&#8221;. By default such orders go through and are flagged &#8220;Could not locate&#8221; for you to follow up.</p>\n</p>\n<h4>\nWhat is removed when I delete the plugin?\n</h4>\n<p>\n<p>Its settings and scheduled retries. Locations saved on past orders are kept. To remove those too, add <code>define( 'AFRIHEX_REMOVE_ALL_DATA', true );</code> to <code>wp-config.php</code> before deleting.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.0</h4>\n<ul>\n<li>First version.</li>\n</ul>\n"
+    },
+    "short_description": "Ghana checkout addresses: customers enter a GhanaPostGPS code, place or landmark directions; each order gets a checked location and rider directions.",
+    "description": "<p>Ghanaian addresses are given as GhanaPostGPS codes (&#8220;GA-183-8164&#8221;) or as directions (&#8220;opposite Goil, Madina Zongo Junction&#8221;). Street-and-number address forms lose both. This plugin adds a <strong>Delivery location</strong> field to the checkout:</p>\n<ul>\n<li>Type a GhanaPostGPS code, a place name, or landmark directions; suggestions appear as you type.</li>\n<li>Or tap &#8220;Use my current location&#8221;.</li>\n<li>The chosen spot shows on a small map. The customer can drag the pin to their gate.</li>\n<li>When the order is placed, the location is checked on your server with AfriHex (<code>POST /v2/address/validate</code>) and saved on the order: GhanaPostGPS code, coordinates, verdict (verified / confirm with customer / could not locate), landmark, and entrance details such as &#8220;2nd gate · blue gate&#8221;.</li>\n<li>The location appears on the admin order page, in order emails, on the customer&#8217;s order page, and in the REST API (<code>afrihex_location</code> on <code>/wp-json/wc/v3/orders</code>), so delivery partners get it.</li>\n</ul>\n<p>If AfriHex can&#8217;t be reached, checkout is <strong>not</strong> blocked: the order is saved with what the customer typed, marked &#8220;Not checked yet&#8221;, and checked again automatically (after 5 minutes, 30 minutes and 3 hours). You can also re-check from the order page, optionally with a corrected GhanaPostGPS code.</p>\n<p>Works with both the block-based Checkout and the classic <code>[woocommerce_checkout]</code> shortcode, and with High-Performance Order Storage.</p>\n<h4>External service</h4>\n<p>This plugin uses the AfriHex API (https://api.afrihex.com), operated by AfriHex.</p>\n<ul>\n<li>In the customer&#8217;s browser, as they type: what they type, and their location if they tap &#8220;Use my current location&#8221;, is sent with your <strong>publishable</strong> key to look up suggestions.</li>\n<li>On your server, when an order is placed: the delivery location the customer chose and the order&#8217;s address lines are sent with your <strong>secret</strong> key to check them.</li>\n<li>The map loads tiles from the tile server set in the settings (OpenStreetMap by default, https://www.openstreetmap.org, tile usage policy: https://operations.osmfoundation.org/policies/tiles/).</li>\n</ul>\n<p>The map uses Leaflet 1.9.4 (BSD-2-Clause, https://leafletjs.com), bundled in assets/vendor/leaflet.</p>\n<p>AfriHex terms: https://afrihex.com/terms — privacy: https://afrihex.com/privacy</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/afrihex-address-for-woocommerce.0.1.0.zip",
+    "upgrade_notice": [],
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/afrihex-address-for-woocommerce/assets/screenshot-1.png?rev=3821766",
+            "caption": "The field at checkout with the chosen place and draggable pin."
+        },
+        {
+            "src": "https://ps.w.org/afrihex-address-for-woocommerce/assets/screenshot-2.png?rev=3821766",
+            "caption": "Suggestions for a GhanaPostGPS code."
+        },
+        {
+            "src": "https://ps.w.org/afrihex-address-for-woocommerce/assets/screenshot-3.png?rev=3821766",
+            "caption": "The delivery location on the admin order page."
+        },
+        {
+            "src": "https://ps.w.org/afrihex-address-for-woocommerce/assets/screenshot-4.png?rev=3821766",
+            "caption": "Settings."
+        }
+    ],
+    "tags": {
+        "address": "address",
+        "checkout": "checkout",
+        "delivery": "delivery",
+        "ghana": "ghana",
+        "ghanapostgps": "ghanapostgps"
+    },
+    "stable_tag": "0.1.0",
+    "versions": {
+        "0.1.0": "https://downloads.wordpress.org/plugin/afrihex-address-for-woocommerce.0.1.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/afrihex-address-for-woocommerce.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/afrihex-address-for-woocommerce/assets/banner-772x250.png?rev=3821766",
+        "high": "https://ps.w.org/afrihex-address-for-woocommerce/assets/banner-1544x500.png?rev=3821766"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/afrihex-address-for-woocommerce/assets/icon-128x128.png?rev=3821766",
+        "2x": "https://ps.w.org/afrihex-address-for-woocommerce/assets/icon-256x256.png?rev=3821766"
+    },
+    "blocks": {
+        "afrihex/delivery-location": {
+            "name": "afrihex/delivery-location",
+            "title": "AfriHex delivery location"
+        }
+    },
+    "block_assets": [],
+    "author_block_count": 1,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

@@ -1,0 +1,88 @@
+{
+    "name": "EI-OS AI Visibility",
+    "slug": "eios-visibility-ai",
+    "version": "0.1.8",
+    "author": "<a href=\"https://profiles.wordpress.org/alin90/\">alin90</a>",
+    "author_profile": "https://profiles.wordpress.org/alin90/",
+    "contributors": {
+        "alin90": {
+            "profile": "https://profiles.wordpress.org/alin90/",
+            "avatar": "https://secure.gravatar.com/avatar/2b12b3f1db0e60d2935df7b41214397ea83729abe18584ff2b67f18aac78058c?s=96&d=monsterid&r=g",
+            "display_name": "alin90"
+        }
+    },
+    "requires": "5.8",
+    "tested": "7.1.5",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/eios-visibility-ai/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-24 23:24:00",
+    "added": "2026-11-24",
+    "homepage": "",
+    "sections": {
+        "description": "<p>EI-OS AI Visibility notifies an automation endpoint of your choice (for example an n8n webhook) whenever a post or page changes publication state. Each request is signed with HMAC-SHA256 using a secret generated on your site, includes a timestamp and an atomically claimed one-time nonce, and carries a stable event ID so the receiver can deduplicate. Replay markers are stored as non-autoloaded WordPress options and scheduled for cleanup after 15 minutes; WP-Cron must run for cleanup to execute.</p>\n<p>The plugin does nothing until you enable it, enter an HTTPS webhook URL and save. It sends no data to OptimusAi or to any other server unless you enter that server&#8217;s URL yourself.</p>\n<p><strong>Events</strong></p>\n<ul>\n<li><code>post.published</code>, <code>post.updated</code>, <code>post.unpublished</code> for posts and pages.</li>\n<li>Failed deliveries are retried up to three times through WP-Cron (permanent 4xx errors are not retried).</li>\n<li>A signed ping endpoint lets your receiver check connectivity.</li>\n</ul>\n<p><strong>Data sent</strong> (per event): <code>event</code>, <code>event_id</code>, <code>site_id</code>, <code>origin</code> (site address), <code>post_id</code>, <code>post_type</code>, <code>status</code>, <code>modified_gmt</code>, <code>permalink</code> and <code>occurred_at</code> (UTC event occurrence time). The event includes a permalink, which may reveal the URL of the published or formerly published content. No visitor data, comments, user accounts or post content are sent. The plugin stores up to 20 local delivery-result rows, including event ID, event type, post ID, attempt count, result and UTC log time.</p>\n<p><strong>Requirements for the receiver</strong>: it must verify the signature described in the FAQ. The plugin works with any receiver that implements it. The endpoint is selected and configured by the site administrator; this plugin does not choose or operate a receiver. The selected receiver may process or retain the data under its own terms and privacy policy.</p>\n<h3>External services</h3>\n<p>This plugin can send event data to one external endpoint only when the site administrator enables delivery and configures an HTTPS webhook URL under Settings &gt; EI-OS AI Visibility. The endpoint is selected by the administrator; this plugin package does not select or operate a receiver. Before enabling delivery, the administrator must identify the receiver, review its terms and privacy policy, and confirm that sending the documented post metadata is appropriate. The plugin author cannot supply a single service-specific terms or privacy URL for an administrator-selected endpoint.</p>\n<ul>\n<li>What is sent and when: the fields listed under &#8220;Data sent&#8221;, when a post or page is published, updated or unpublished, and on retries after a failed delivery. The signed <code>/wp-json/eios/v1/ping</code> endpoint also receives the request body and authentication headers sent by the configured receiver.</li>\n<li>Local retention: settings, including the administrator-generated shared secret, are stored in the WordPress options table. At most 20 delivery-result rows are retained; replay-protection markers are scheduled for cleanup after 15 minutes and may remain until WP-Cron runs. Uninstall removes settings, delivery logs, replay-marker options and all scheduled retry and cleanup events. Deactivation clears scheduled retries.</li>\n</ul>\n",
+        "installation": "<ol>\n<li>Upload the plugin folder to <code>/wp-content/plugins/</code>, or install it from the Plugins screen.</li>\n<li>Activate it.</li>\n<li>Open Settings &gt; EI-OS AI Visibility, set a stable Site ID, enter your HTTPS webhook URL and tick &#8220;Send events&#8221;.</li>\n<li>Save, then copy the new secret shown once into your receiver.</li>\n</ol>\n",
+        "faq": "\n<h4>\nHow is a request signed?\n</h4>\n<p>\n<p>Headers: <code>X-EIOS-Site</code>, <code>X-EIOS-Timestamp</code>, <code>X-EIOS-Nonce</code>, <code>X-EIOS-Signature</code> (<code>v1=&lt;hex&gt;</code>). The signature is HMAC-SHA256, with your secret, over the string <code>v1\\n{timestamp}\\n{nonce}\\n{site_id}\\n{sha256(body)}</code>. Reject requests whose timestamp differs by more than 300 seconds or whose nonce was already seen.</p>\n</p>\n<h4>\nDoes it work on WordPress Multisite?\n</h4>\n<p>\n<p>Yes. Install and configure it per site with a unique Site ID. Settings and scheduled events are stored per site, and uninstalling the plugin from the Network removes its data from every site.</p>\n</p>\n<h4>\nIs any data sent without my configuration?\n</h4>\n<p>\n<p>No. Without a webhook URL, secret and the &#8220;Send events&#8221; option, nothing is sent.</p>\n</p>\n\n",
+        "changelog": "<h4>0.1.8</h4>\n<ul>\n<li>Multisite: uninstall now removes the plugin&#8217;s options, retry events and replay-cleanup data from every site in the network, not only the current one.</li>\n</ul>\n<h4>0.1.7</h4>\n<ul>\n<li>Uninstall and deactivation now remove every scheduled retry and replay-cleanup event, including events that carry arguments.</li>\n<li>Readme: replaced a rarely used tag and added a Screenshots section.</li>\n</ul>\n<h4>0.1.6</h4>\n<ul>\n<li>Remove the Plugin URI header so it no longer duplicates the Author URI.</li>\n</ul>\n<h4>0.1.5</h4>\n<ul>\n<li>Prefix uninstall cleanup variables and document the narrowly scoped database cleanup.</li>\n</ul>\n<h4>0.1.4</h4>\n<ul>\n<li>Make replay nonce claims atomic and isolate plugin identifiers from EI-OS Connector.</li>\n<li>Correct the privacy disclosure to match the exact event payload and local retention.</li>\n</ul>\n<h4>0.1.3</h4>\n<ul>\n<li>Adopted the official EI-OS AI Visibility name, package path and stable eios/v1 REST namespace.</li>\n<li>Retained administrator-configured signed event delivery and safe outbound HTTP handling.</li>\n</ul>\n<h4>0.1.2</h4>\n<ul>\n<li>Expanded the generated privacy policy text to describe all event fields, retries and the administrator-selected receiver.</li>\n<li>Use WordPress safe HTTP API for outbound webhook requests.</li>\n</ul>\n<h4>0.1.1</h4>\n<ul>\n<li>First release: signed publish events, retries, signed ping endpoint.</li>\n</ul>\n"
+    },
+    "short_description": "Sends signed (HMAC-SHA256) events when posts and pages are published, updated or unpublished, to a webhook URL that you control.",
+    "description": "<p>EI-OS AI Visibility notifies an automation endpoint of your choice (for example an n8n webhook) whenever a post or page changes publication state. Each request is signed with HMAC-SHA256 using a secret generated on your site, includes a timestamp and an atomically claimed one-time nonce, and carries a stable event ID so the receiver can deduplicate. Replay markers are stored as non-autoloaded WordPress options and scheduled for cleanup after 15 minutes; WP-Cron must run for cleanup to execute.</p>\n<p>The plugin does nothing until you enable it, enter an HTTPS webhook URL and save. It sends no data to OptimusAi or to any other server unless you enter that server&#8217;s URL yourself.</p>\n<p><strong>Events</strong></p>\n<ul>\n<li><code>post.published</code>, <code>post.updated</code>, <code>post.unpublished</code> for posts and pages.</li>\n<li>Failed deliveries are retried up to three times through WP-Cron (permanent 4xx errors are not retried).</li>\n<li>A signed ping endpoint lets your receiver check connectivity.</li>\n</ul>\n<p><strong>Data sent</strong> (per event): <code>event</code>, <code>event_id</code>, <code>site_id</code>, <code>origin</code> (site address), <code>post_id</code>, <code>post_type</code>, <code>status</code>, <code>modified_gmt</code>, <code>permalink</code> and <code>occurred_at</code> (UTC event occurrence time). The event includes a permalink, which may reveal the URL of the published or formerly published content. No visitor data, comments, user accounts or post content are sent. The plugin stores up to 20 local delivery-result rows, including event ID, event type, post ID, attempt count, result and UTC log time.</p>\n<p><strong>Requirements for the receiver</strong>: it must verify the signature described in the FAQ. The plugin works with any receiver that implements it. The endpoint is selected and configured by the site administrator; this plugin does not choose or operate a receiver. The selected receiver may process or retain the data under its own terms and privacy policy.</p>\n<h3>External services</h3>\n<p>This plugin can send event data to one external endpoint only when the site administrator enables delivery and configures an HTTPS webhook URL under Settings &gt; EI-OS AI Visibility. The endpoint is selected by the administrator; this plugin package does not select or operate a receiver. Before enabling delivery, the administrator must identify the receiver, review its terms and privacy policy, and confirm that sending the documented post metadata is appropriate. The plugin author cannot supply a single service-specific terms or privacy URL for an administrator-selected endpoint.</p>\n<ul>\n<li>What is sent and when: the fields listed under &#8220;Data sent&#8221;, when a post or page is published, updated or unpublished, and on retries after a failed delivery. The signed <code>/wp-json/eios/v1/ping</code> endpoint also receives the request body and authentication headers sent by the configured receiver.</li>\n<li>Local retention: settings, including the administrator-generated shared secret, are stored in the WordPress options table. At most 20 delivery-result rows are retained; replay-protection markers are scheduled for cleanup after 15 minutes and may remain until WP-Cron runs. Uninstall removes settings, delivery logs, replay-marker options and all scheduled retry and cleanup events. Deactivation clears scheduled retries.</li>\n</ul>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/eios-visibility-ai.0.1.8.zip",
+    "upgrade_notice": {
+        "0.1.8": "<p>Multisite uninstall now cleans up every site in the network.</p>",
+        "0.1.7": "<p>Cleaner uninstall: no scheduled events are left behind.</p>",
+        "0.1.6": "<p>Header fix: duplicate Plugin URI removed.</p>",
+        "0.1.5": "<p>Plugin Check follow-up for uninstall cleanup warnings.</p>",
+        "0.1.4": "<p>Atomic replay protection and corrected data disclosures.</p>",
+        "0.1.3": "<p>Official EI-OS AI Visibility name and package identity.</p>",
+        "0.1.2": "<p>Privacy text and safe outbound HTTP handling updated.</p>",
+        "0.1.1": "<p>Improved readme compliance and webhook input sanitization.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "automation": "automation",
+        "events": "events",
+        "n8n": "n8n",
+        "signature": "signature",
+        "webhook": "webhook"
+    },
+    "stable_tag": "0.1.8",
+    "versions": {
+        "0.1.7": "https://downloads.wordpress.org/plugin/eios-visibility-ai.0.1.7.zip",
+        "0.1.8": "https://downloads.wordpress.org/plugin/eios-visibility-ai.0.1.8.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/eios-visibility-ai.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/eios-visibility-ai/assets/banner-772x250.png?rev=3821279",
+        "high": "https://ps.w.org/eios-visibility-ai/assets/banner-1544x500.png?rev=3821279"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/eios-visibility-ai/assets/icon-128x128.png?rev=3821279",
+        "2x": "https://ps.w.org/eios-visibility-ai/assets/icon-256x256.png?rev=3821279"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
