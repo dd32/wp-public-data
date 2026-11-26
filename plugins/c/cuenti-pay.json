@@ -1,0 +1,107 @@
+{
+    "name": "Cuenti Pay",
+    "slug": "cuenti-pay",
+    "version": "1.3.6",
+    "author": "<a href=\"https://profiles.wordpress.org/juandaviddavila/\">juandaviddavila</a>",
+    "author_profile": "https://profiles.wordpress.org/juandaviddavila/",
+    "contributors": {
+        "juandaviddavila": {
+            "profile": "https://profiles.wordpress.org/juandaviddavila/",
+            "avatar": "https://secure.gravatar.com/avatar/a9ed8be06d14724c12bec0c64c7599a20fc7f7b4519898ea1254415de097b819?s=96&d=monsterid&r=g",
+            "display_name": "juandaviddavila"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.5",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "woocommerce"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/cuenti-pay/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-26 20:48:00",
+    "added": "2026-11-24",
+    "homepage": "https://app-paylite.cuenti.co",
+    "sections": {
+        "description": "<p>Cuenti Pay adds the payment method «Cuenti Pay» to your store. When the customer places the order, the store creates a Cuenti Pay payment link for the order total and sends the customer to pay it with the payment methods your business has enabled in Cuenti Pay (for example cards, Nequi or PSE in Colombia, Yappy or Clave in Panama).</p>\n<p>When your connection offers Yappy or cards, the checkout shows them as separate methods, «Cuenti Pay · Yappy» and «Cuenti Pay · Tarjeta» (Clave is paid inside «Cuenti Pay · Tarjeta»), and each one opens a link with only that method. The general «Cuenti Pay» is hidden then; turn on «Mostrar también Cuenti Pay con todos los medios» in the advanced options to show it too.</p>\n<p>Cuenti Pay does not hold your money: payments are processed by your own payment gateway account connected in Cuenti Pay (Wompi Colombia, Wompi Panama or Yappy). You need a Cuenti Pay account with at least one payment gateway connected.</p>\n<p>How orders are confirmed:</p>\n<ul>\n<li>An order is marked paid only after the store reads the link status from Cuenti Pay. The signed notice (webhook) from Cuenti Pay only tells the store which link to check; neither that notice nor the customer coming back to the store marks anything on its own.</li>\n<li>If the link expires or is cancelled without a payment, the order is cancelled with a note. While a payment is in progress, the order waits.</li>\n<li>If the amount paid does not match the order, the order is put «On hold» with a note for you to review.</li>\n<li>If the customer pays an order again, the store checks the previous link first, so the same order is not charged twice. If two payments still arrive for one order, the order is put «On hold» with a note.</li>\n<li>A test-mode payment puts the order «On hold» with a note saying no real money was received.</li>\n<li>Currencies: COP or USD, the one chosen when you connect.</li>\n<li>Limits: each connection has a maximum amount per order and per day, shown in the settings. When the cart total is above the maximum per order, Cuenti Pay is not offered at checkout.</li>\n<li>Works with the classic checkout, the Cart and Checkout blocks, and High-Performance Order Storage (HPOS).</li>\n</ul>\n<p>Refunds are made outside Cuenti Pay: this plugin does not issue refunds.</p>\n<p>Amounts are read from your payment gateway. Cuenti Pay Lite does not verify them with the bank.</p>\n<p>The plugin&#8217;s screens and messages are in Spanish.</p>\n<h3>External services</h3>\n<p>This plugin connects to Cuenti Pay, the service that creates the payment links. It is needed to connect the store, create a payment link for each order and read whether it was paid. Nothing is sent until an administrator clicks «Conectar con Cuenti».</p>\n<p>Outgoing calls (the API address is the one Cuenti Pay returns when you connect, by default https://app-paylite.cuenti.co/api/v1):</p>\n<ul>\n<li>Connect: the administrator&#8217;s browser opens https://app-paylite.cuenti.co/conectar/woocommerce with the store address, the return address, a random state and a PKCE code challenge. The store then sends the one-time connection code, the state and the PKCE code verifier to https://app-paylite.cuenti.co/api/v1/store/connect/exchange, and receives the store key, the webhook secret, the branch, the currency, the limits and the list of payment methods.</li>\n<li>Checkout: when a customer places an order with Cuenti Pay, the store sends to <code>/store/checkout-links</code> the chosen method (Yappy or card, when a separate method was chosen), the order total, the order ID as reference, a concept («Pedido # – »), the language, the link expiry, the order page address (to return the customer to the store) and the customer&#8217;s billing name, e-mail and phone. The customer is then sent to the payment page on https://pay-online.cuenti.co.</li>\n<li>Status: the store reads a link by its ID (<code>/store/checkout-links/&lt;id&gt;</code>) when the customer returns, when a notice arrives, and every 5 minutes for pending orders up to 24 hours. Only the link ID is sent.</li>\n<li>Cancel: the store cancels a link by its ID (<code>/store/checkout-links/&lt;id&gt;/cancel</code>) when an order is cancelled or replaced by a new link. Only the link ID is sent.</li>\n<li>Disconnect: the store sends a disconnect request (<code>/store/disconnect</code>) when you click «Desconectar» or delete the plugin. No order data is sent.</li>\n</ul>\n<p>Every call uses HTTPS and the store key; no redirects are followed.</p>\n<p>Incoming calls (REST routes the plugin adds to your site):</p>\n<ul>\n<li><code>/wp-json/cuenti-pay/v1/verify</code>: during the connection only, Cuenti Pay sends a random challenge and the store answers with a proof computed from its secret code. It answers nothing when no connection is in progress.</li>\n<li><code>/wp-json/cuenti-pay/v1/webhook</code>: Cuenti Pay sends a signed notice with the ID of a paid link. The store checks the signature and then reads the link from Cuenti Pay before changing the order.</li>\n</ul>\n<p>Cuenti Pay terms of service: https://www.j4pro.com/wp-content/uploads/T%C3%A9rminos-y-Condicones.pdf<br />\nCuenti Pay privacy policy: https://cuenti.com/wp-content/uploads/2023/09/POLITICA-DE-PRIVACIDAD-Y-DE-PROTECCION-DE-DATOS-PERSONALES-DE-GRUPO-SEJEL.pdf</p>\n<p>Payments are processed by the merchant&#8217;s own gateway (Wompi or Yappy) under that gateway&#8217;s own terms.</p>\n",
+        "installation": "<ol>\n<li>In WordPress, go to Plugins &gt; Add New, search for «Cuenti Pay», then install and activate it. You can also upload the zip in Plugins &gt; Add New &gt; Upload Plugin.</li>\n<li>Make sure pretty permalinks are on (Settings &gt; Permalinks, any option except «Plain»). Cuenti Pay checks that your store answers at its address while you connect, and uses them to notify payments right away.</li>\n<li>Go to WooCommerce &gt; Settings &gt; Payments &gt; Cuenti Pay and click «Conectar con Cuenti» (Connect with Cuenti). Sign in to Cuenti Pay, choose the branch, enter the code sent to your e-mail and authorize. Done.</li>\n</ol>\n<p>Only a person allowed to connect online stores in your Cuenti Pay company can authorize the connection. If Cuenti Pay does not send you back to the store, use «Pegar código de conexión» (Paste connection code) with the code Cuenti Pay shows (valid for 5 minutes).</p>\n<p>Server requirements: PHP 7.4 or later with OpenSSL (the connection is stored encrypted).</p>\n",
+        "faq": "\n<h4>\nDo I need to copy keys or tokens?\n</h4>\n<p>\n<p>No. When you authorize, Cuenti Pay creates the connection and the store saves it encrypted. Keys are never shown.</p>\n</p>\n<h4>\nHow does Cuenti Pay know the store is mine?\n</h4>\n<p>\n<p>The store creates a secret code that never leaves your server. Before handing over the connection, Cuenti Pay asks the store to prove it holds that code. If the store does not answer (for example, it cannot be reached from the internet), no connection is created and you connect again.</p>\n</p>\n<h4>\nWho processes the payments?\n</h4>\n<p>\n<p>Your own payment gateway account (Wompi Colombia, Wompi Panama or Yappy) connected in Cuenti Pay. Cuenti Pay creates the payment link and reads its status; it does not receive or hold the money.</p>\n</p>\n<h4>\nThe store says the connection is no longer valid\n</h4>\n<p>\n<p>The connection was revoked in Cuenti Pay, or the WordPress security keys changed. Click «Conectar con Cuenti» again.</p>\n</p>\n<h4>\nHow do I disconnect the store?\n</h4>\n<p>\n<p>In WooCommerce &gt; Settings &gt; Payments &gt; Cuenti Pay, click «Desconectar» (Disconnect). Cuenti Pay revokes the connection and the store forgets it. Deleting the plugin also tries to revoke the connection in Cuenti Pay.</p>\n</p>\n<h4>\nWhy does the checkout show «Cuenti Pay · Yappy» and «Cuenti Pay · Tarjeta» instead of «Cuenti Pay»?\n</h4>\n<p>\n<p>Since 1.3.6 each method your connection offers (Yappy, cards) is its own entry at checkout. To also show «Cuenti Pay» with every method, turn on «Mostrar también Cuenti Pay con todos los medios» in WooCommerce &gt; Settings &gt; Payments &gt; Cuenti Pay &gt; Opciones avanzadas. A store connected with a version before 1.3.0 needs to connect again to see the separate methods.</p>\n</p>\n<h4>\nCan I refund from WooCommerce?\n</h4>\n<p>\n<p>No. Refunds are made outside Cuenti Pay.</p>\n</p>\n\n",
+        "changelog": "<h4>1.3.6</h4>\n<ul>\n<li>The checkout shows «Cuenti Pay · Yappy» and «Cuenti Pay · Tarjeta» as separate methods when your connection offers them; each opens a link with only that method (Clave is offered inside «Cuenti Pay · Tarjeta»). The general «Cuenti Pay» is hidden then, unless you turn on «Mostrar también Cuenti Pay con todos los medios». Classic and block checkout.</li>\n</ul>\n<h4>1.3.5</h4>\n<ul>\n<li>New payment methods «Cuenti Pay · Yappy», «Cuenti Pay · Tarjeta» and «Cuenti Pay · Clave», never shown at checkout: a paid order moves to the one that paid it, so accounting systems can map each method to its bank. The checkout keeps one «Cuenti Pay».</li>\n</ul>\n<h4>1.3.4</h4>\n<ul>\n<li>The paid order now shows which method was used: its payment method reads «Cuenti Pay · Yappy», «Cuenti Pay · Tarjeta» or «Cuenti Pay · Clave», and the order keeps it in the meta <code>_cuenti_pay_method</code> (code) and <code>_cuenti_pay_method_label</code> (name) for accounting systems.</li>\n</ul>\n<h4>1.3.3</h4>\n<ul>\n<li>Fix: on a new store, connecting with Cuenti now leaves Cuenti Pay enabled at checkout (before, it appeared only after pressing «Save changes» once). A merchant who turned it off keeps it off.</li>\n</ul>\n<h4>1.3.2</h4>\n<ul>\n<li>Admin notices appear only on the Plugins screen and the WooCommerce settings, never on the dashboard.</li>\n</ul>\n<h4>1.3.1</h4>\n<ul>\n<li>Prepared for the WordPress.org directory: readme in English, direct access protection in every file, WordPress URL parsing, «Tested up to» 7.1.</li>\n</ul>\n<h4>1.3.0</h4>\n<ul>\n<li>The description shown to the customer names only the payment methods of your connection. A description you wrote yourself is never changed; on disconnect a generated description goes back to a general text.</li>\n</ul>\n<h4>1.2.0</h4>\n<ul>\n<li>An order is no longer cancelled while its payment is in progress.</li>\n<li>Cancelling an order in WooCommerce cancels its payment link.</li>\n<li>A payment that arrives after the order was cancelled puts the order «On hold» with a note.</li>\n<li>After reconnecting the store, an order with a link of the previous connection does not get a second link.</li>\n<li>The 5-minute check uses the link&#8217;s date and includes cancelled orders that have a link.</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>Stronger connection: PKCE code and a check that the store answers at its address.</li>\n<li>The store key and the webhook secret are stored encrypted.</li>\n<li>The notice from Cuenti Pay only says which link to check; the order is decided by reading the link.</li>\n<li>An order keeps all its links, and a second payment puts the order «On hold» for review.</li>\n<li>Cuenti Pay is hidden when the cart is above the maximum per order.</li>\n<li>The settings show the limits per order and per day.</li>\n<li>Deleting the plugin revokes the connection in Cuenti Pay.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>First version: one-button connection, payment link when the order is placed, signed webhook and a status check every 5 minutes.</li>\n</ul>\n"
+    },
+    "short_description": "Payment gateway for WooCommerce: take orders with a Cuenti Pay payment link. Connect your store with one button, no keys to copy.",
+    "description": "<p>Cuenti Pay adds the payment method «Cuenti Pay» to your store. When the customer places the order, the store creates a Cuenti Pay payment link for the order total and sends the customer to pay it with the payment methods your business has enabled in Cuenti Pay (for example cards, Nequi or PSE in Colombia, Yappy or Clave in Panama).</p>\n<p>When your connection offers Yappy or cards, the checkout shows them as separate methods, «Cuenti Pay · Yappy» and «Cuenti Pay · Tarjeta» (Clave is paid inside «Cuenti Pay · Tarjeta»), and each one opens a link with only that method. The general «Cuenti Pay» is hidden then; turn on «Mostrar también Cuenti Pay con todos los medios» in the advanced options to show it too.</p>\n<p>Cuenti Pay does not hold your money: payments are processed by your own payment gateway account connected in Cuenti Pay (Wompi Colombia, Wompi Panama or Yappy). You need a Cuenti Pay account with at least one payment gateway connected.</p>\n<p>How orders are confirmed:</p>\n<ul>\n<li>An order is marked paid only after the store reads the link status from Cuenti Pay. The signed notice (webhook) from Cuenti Pay only tells the store which link to check; neither that notice nor the customer coming back to the store marks anything on its own.</li>\n<li>If the link expires or is cancelled without a payment, the order is cancelled with a note. While a payment is in progress, the order waits.</li>\n<li>If the amount paid does not match the order, the order is put «On hold» with a note for you to review.</li>\n<li>If the customer pays an order again, the store checks the previous link first, so the same order is not charged twice. If two payments still arrive for one order, the order is put «On hold» with a note.</li>\n<li>A test-mode payment puts the order «On hold» with a note saying no real money was received.</li>\n<li>Currencies: COP or USD, the one chosen when you connect.</li>\n<li>Limits: each connection has a maximum amount per order and per day, shown in the settings. When the cart total is above the maximum per order, Cuenti Pay is not offered at checkout.</li>\n<li>Works with the classic checkout, the Cart and Checkout blocks, and High-Performance Order Storage (HPOS).</li>\n</ul>\n<p>Refunds are made outside Cuenti Pay: this plugin does not issue refunds.</p>\n<p>Amounts are read from your payment gateway. Cuenti Pay Lite does not verify them with the bank.</p>\n<p>The plugin&#8217;s screens and messages are in Spanish.</p>\n<h3>External services</h3>\n<p>This plugin connects to Cuenti Pay, the service that creates the payment links. It is needed to connect the store, create a payment link for each order and read whether it was paid. Nothing is sent until an administrator clicks «Conectar con Cuenti».</p>\n<p>Outgoing calls (the API address is the one Cuenti Pay returns when you connect, by default https://app-paylite.cuenti.co/api/v1):</p>\n<ul>\n<li>Connect: the administrator&#8217;s browser opens https://app-paylite.cuenti.co/conectar/woocommerce with the store address, the return address, a random state and a PKCE code challenge. The store then sends the one-time connection code, the state and the PKCE code verifier to https://app-paylite.cuenti.co/api/v1/store/connect/exchange, and receives the store key, the webhook secret, the branch, the currency, the limits and the list of payment methods.</li>\n<li>Checkout: when a customer places an order with Cuenti Pay, the store sends to <code>/store/checkout-links</code> the chosen method (Yappy or card, when a separate method was chosen), the order total, the order ID as reference, a concept («Pedido # – »), the language, the link expiry, the order page address (to return the customer to the store) and the customer&#8217;s billing name, e-mail and phone. The customer is then sent to the payment page on https://pay-online.cuenti.co.</li>\n<li>Status: the store reads a link by its ID (<code>/store/checkout-links/&lt;id&gt;</code>) when the customer returns, when a notice arrives, and every 5 minutes for pending orders up to 24 hours. Only the link ID is sent.</li>\n<li>Cancel: the store cancels a link by its ID (<code>/store/checkout-links/&lt;id&gt;/cancel</code>) when an order is cancelled or replaced by a new link. Only the link ID is sent.</li>\n<li>Disconnect: the store sends a disconnect request (<code>/store/disconnect</code>) when you click «Desconectar» or delete the plugin. No order data is sent.</li>\n</ul>\n<p>Every call uses HTTPS and the store key; no redirects are followed.</p>\n<p>Incoming calls (REST routes the plugin adds to your site):</p>\n<ul>\n<li><code>/wp-json/cuenti-pay/v1/verify</code>: during the connection only, Cuenti Pay sends a random challenge and the store answers with a proof computed from its secret code. It answers nothing when no connection is in progress.</li>\n<li><code>/wp-json/cuenti-pay/v1/webhook</code>: Cuenti Pay sends a signed notice with the ID of a paid link. The store checks the signature and then reads the link from Cuenti Pay before changing the order.</li>\n</ul>\n<p>Cuenti Pay terms of service: https://www.j4pro.com/wp-content/uploads/T%C3%A9rminos-y-Condicones.pdf<br />\nCuenti Pay privacy policy: https://cuenti.com/wp-content/uploads/2023/09/POLITICA-DE-PRIVACIDAD-Y-DE-PROTECCION-DE-DATOS-PERSONALES-DE-GRUPO-SEJEL.pdf</p>\n<p>Payments are processed by the merchant&#8217;s own gateway (Wompi or Yappy) under that gateway&#8217;s own terms.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/cuenti-pay.1.3.6.zip",
+    "upgrade_notice": {
+        "1.3.6": "<p>Yappy and card appear as separate payment methods at checkout.</p>",
+        "1.3.5": "<p>Paid orders use their own payment method (Yappy, card, Clave) for accounting systems.</p>",
+        "1.3.4": "<p>Paid orders record the payment method used (Yappy, card, Clave…).</p>",
+        "1.3.3": "<p>Cuenti Pay appears at checkout right after connecting a new store.</p>",
+        "1.3.2": "<p>No functional change: admin notices limited to the plugin screens.</p>",
+        "1.3.1": "<p>No functional change: directory compliance only.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/cuenti-pay/assets/screenshot-1.png?rev=3821902",
+            "caption": "The Cuenti Pay settings in WooCommerce &gt; Settings &gt; Payments before connecting, with the «Conectar con Cuenti» button."
+        },
+        {
+            "src": "https://ps.w.org/cuenti-pay/assets/screenshot-2.png?rev=3821902",
+            "caption": "The Cuenti Pay authorization page where the merchant picks the branch and authorizes the store."
+        },
+        {
+            "src": "https://ps.w.org/cuenti-pay/assets/screenshot-3.png?rev=3821902",
+            "caption": "The settings after connecting: merchant name, branch and limits per order and per day."
+        },
+        {
+            "src": "https://ps.w.org/cuenti-pay/assets/screenshot-4.png?rev=3821902",
+            "caption": "The checkout with «Cuenti Pay» as payment method and the customer's payment page."
+        }
+    ],
+    "tags": {
+        "colombia": "colombia",
+        "panama": "panama",
+        "payment-link": "payment link",
+        "payments": "payments",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "1.3.6",
+    "versions": {
+        "1.3.2": "https://downloads.wordpress.org/plugin/cuenti-pay.1.3.2.zip",
+        "1.3.3": "https://downloads.wordpress.org/plugin/cuenti-pay.1.3.3.zip",
+        "1.3.5": "https://downloads.wordpress.org/plugin/cuenti-pay.1.3.5.zip",
+        "1.3.6": "https://downloads.wordpress.org/plugin/cuenti-pay.1.3.6.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/cuenti-pay.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/cuenti-pay/assets/banner-772x250.png?rev=3821902",
+        "high": "https://ps.w.org/cuenti-pay/assets/banner-1544x500.png?rev=3821902"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/cuenti-pay/assets/icon-128x128.png?rev=3821902",
+        "2x": "https://ps.w.org/cuenti-pay/assets/icon-256x256.png?rev=3821902"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
