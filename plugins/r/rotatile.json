@@ -1,0 +1,102 @@
+{
+    "name": "Rotatile",
+    "slug": "rotatile",
+    "version": "1.0.0",
+    "author": "<a href=\"https://profiles.wordpress.org/fyrins/\">Alexandre R.</a>",
+    "author_profile": "https://profiles.wordpress.org/fyrins/",
+    "contributors": {
+        "fyrins": {
+            "profile": "https://profiles.wordpress.org/fyrins/",
+            "avatar": "https://secure.gravatar.com/avatar/1905c3090c8f882bb4f27b3782fe32afbf38f808ac73bf59e07ff7c0ec026768?s=96&d=monsterid&r=g",
+            "display_name": "Alexandre R."
+        }
+    },
+    "requires": "6.6",
+    "tested": "7.2",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/rotatile/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-26 09:43:00",
+    "added": "2026-11-02",
+    "homepage": "https://github.com/Fyrins/rotatile",
+    "sections": {
+        "description": "<p><span class=\"embed-youtube\" style=\"text-align:center; display: block;\"><iframe loading=\"lazy\" class=\"youtube-player\" width=\"750\" height=\"422\" src=\"https://www.youtube.com/embed/wZRDZyblClU?version=3&#038;rel=1&#038;showsearch=0&#038;showinfo=1&#038;iv_load_policy=1&#038;fs=1&#038;hl=en-US&#038;autohide=2&#038;wmode=transparent\" allowfullscreen=\"true\" style=\"border:0;\" sandbox=\"allow-scripts allow-same-origin allow-popups allow-presentation allow-popups-to-escape-sandbox\"></iframe></span></p>\n<p>Rotatile adds a Rotation panel to the block inspector. Pick an angle, watch the block tilt in the editor, and that is the whole feature. There is no settings page, no account, no dashboard notice and no outgoing request.</p>\n<p>Out of the box the panel is offered on the Image block and nothing else. That restriction is the point rather than an oversight: a tilted paragraph is a paragraph people have to tilt their head to read. If your design needs another block type, one filter opens it up.</p>\n<p><strong>What it does not touch</strong></p>\n<p>The angle is kept in the block comment, not in the saved markup. Your post content stays byte for byte what the block itself produced, and the transform is added while the page is being built. Two things follow from that:</p>\n<ul>\n<li>Deactivating the plugin does not invalidate a single block. The tilt stops, the content is intact, and the editor raises no &#8220;this block contains unexpected content&#8221; warning.</li>\n<li>Nothing is written twice. The rotation exists in one place and is applied once, on the server.</li>\n</ul>\n<p><strong>Things worth knowing before you tilt something</strong></p>\n<p>A CSS transform has consequences that have nothing to do with this plugin, and they are worth saying out loud:</p>\n<ul>\n<li>A rotated element still occupies its original, unrotated layout box. The visible corners stick out of it and can overlap whatever sits next to the block. Give the block some breathing room rather than expecting the page to make room for it.</li>\n<li>A transform creates a containing block and a stacking context. A descendant with <code>position: fixed</code> stops being fixed to the viewport, and <code>z-index</code> inside the block is measured against the block instead of the page.</li>\n<li>A block sitting inside the normal content width does not push the page sideways, even at 45 degrees. A block set to full-width alignment at a large angle does, and that is worth avoiding: a page that scrolls both up and down and left to right is hard to use and fails an accessibility requirement. Keep rotation for blocks inside the content width, or keep the angle small on a block that spans the whole viewport.</li>\n</ul>\n<p><strong>Front end</strong></p>\n<p>No JavaScript. One small stylesheet, requested only on pages that actually contain a rotated block, carrying a transform origin and a transition. The transition switches itself off for anyone whose system asks for reduced motion.</p>\n<p><strong>Filters</strong></p>\n<p>Everything is configured in code. <code>rotatile_supported_blocks</code> sets the block types, <code>rotatile_min_angle</code> and <code>rotatile_max_angle</code> set the range, <code>rotatile_step</code> sets the increment, <code>rotatile_default_angle</code> sets the starting value, and <code>rotatile_transition_duration</code> sets or removes the transition. The development README documents each one with an example.</p>\n<p><strong>Source code and build</strong></p>\n<p>The editor script shipped in <code>build/</code> is compiled from <code>src/editor.js</code>. The uncompiled source, the build configuration and the full history live in the public repository:</p>\n<p>https://github.com/Fyrins/rotatile</p>\n<p>The toolchain is <a href=\"https://www.npmjs.com/package/@wordpress/scripts\" rel=\"nofollow ugc\">@wordpress/scripts</a>, the build tool maintained by the WordPress project, and nothing else. To reproduce the shipped file:</p>\n<pre><code>git clone https://github.com/Fyrins/rotatile.git\ncd rotatile\nnpm install\nnpm run build\n</code></pre>\n<p>The front-end stylesheet is not compiled: <code>assets/css/rotatile.css</code> is written by hand and shipped as it reads.</p>\n",
+        "installation": "<ol>\n<li>In your admin, go to Plugins, then Add New Plugin, and search for Rotatile.</li>\n<li>Install and activate it.</li>\n<li>Edit a post or a template, select an Image block, and open Rotation in the block settings sidebar.</li>\n</ol>\n<p>There is nothing to configure afterwards. A manual install works the same way: upload the folder to <code>wp-content/plugins</code> and activate it.</p>\n",
+        "faq": "\n<h4>\nWhy is only the Image block supported?\n</h4>\n<p>\n<p>Because rotating text is a readability problem rather than a design feature. Anyone who genuinely needs another block type can say so in code, and that decision then lives in their theme instead of being the plugin&#8217;s default.</p>\n</p>\n<h4>\nHow do I make another block type rotatable?\n</h4>\n<p>\n<p>Add this to your theme&#8217;s <code>functions.php</code> or to a small plugin of your own:</p>\n<pre><code>add_filter( 'rotatile_supported_blocks', function ( $blocks ) {\n    $blocks[] = 'core/group';\n    return $blocks;\n} );\n</code></pre>\n</p>\n<h4>\nDoes it change my saved post content?\n</h4>\n<p>\n<p>No. The angle lives in the block comment, which block validation ignores. The markup stored in your database is exactly what the block&#8217;s own save function wrote.</p>\n</p>\n<h4>\nWhat happens to my rotated blocks if I deactivate the plugin?\n</h4>\n<p>\n<p>They stop being rotated, and that is all. No block is invalidated, no content is lost, and there is no cleanup to do.</p>\n</p>\n<h4>\nMy rotated image overlaps the text below it. Is that a bug?\n</h4>\n<p>\n<p>No, that is how CSS transforms work. The layout box stays where it was and only the paint is rotated, so the corners of a tilted element reach outside their box. Add spacing around the block, or use a smaller angle.</p>\n</p>\n<h4>\nMy page scrolls sideways now.\n</h4>\n<p>\n<p>Check whether the rotated block is set to full-width alignment. A block that already spans the viewport has nowhere to put its rotated corners, so they end up past the edge of the page and the browser offers a horizontal scrollbar. A block inside the normal content width does not do this, even at 45 degrees. Either drop the full-width alignment or use a smaller angle.</p>\n</p>\n<h4>\nSomething inside my rotated block used to be sticky or fixed and now it is not.\n</h4>\n<p>\n<p>A transform turns the element into a containing block, so <code>position: fixed</code> inside it becomes relative to the block rather than to the viewport. That is a browser rule and the plugin cannot opt out of it. Rotate the inner element instead of the container, or drop the fixed positioning.</p>\n</p>\n<h4>\nCan I turn the transition off?\n</h4>\n<p>\n<p>Yes, and it is already off for anyone who has asked their operating system for reduced motion. To remove it for everybody:</p>\n<pre><code>add_filter( 'rotatile_transition_duration', '__return_empty_string' );\n</code></pre>\n</p>\n<h4>\nDoes it phone home?\n</h4>\n<p>\n<p>No. There is no telemetry, no external asset and no outgoing request of any kind, and no option is written to your database.</p>\n</p>\n<h4>\nI heard WordPress is adding its own rotation setting.\n</h4>\n<p>\n<p>It is being worked on in the Gutenberg project, and it is not part of WordPress 7.2. If it ships in a later release, it will store its angle somewhere else and use the CSS <code>rotate</code> property rather than <code>transform</code>, so the two do not break each other. They do add up, though: set the angle in one place only. Once the core setting is available on your site, it is the better choice for new content.</p>\n</p>\n\n",
+        "changelog": "<h4>1.0.0</h4>\n<ul>\n<li>First release.</li>\n<li>Rotation panel in the block inspector, with a free angle, a live preview and a reset button.</li>\n<li>Server-side rendering through <code>render_block</code> and the HTML Tag Processor, with nothing written to the saved markup.</li>\n<li>Stylesheet loaded only on pages that contain a rotated block.</li>\n<li>Transition neutralised under <code>prefers-reduced-motion</code>.</li>\n</ul>\n"
+    },
+    "short_description": "Tilt a block by any angle from the editor sidebar. The transform is rendered by the server, so the front end ships no JavaScript.",
+    "description": "<p><span class=\"embed-youtube\" style=\"text-align:center; display: block;\"><iframe loading=\"lazy\" class=\"youtube-player\" width=\"750\" height=\"422\" src=\"https://www.youtube.com/embed/wZRDZyblClU?version=3&#038;rel=1&#038;showsearch=0&#038;showinfo=1&#038;iv_load_policy=1&#038;fs=1&#038;hl=en-US&#038;autohide=2&#038;wmode=transparent\" allowfullscreen=\"true\" style=\"border:0;\" sandbox=\"allow-scripts allow-same-origin allow-popups allow-presentation allow-popups-to-escape-sandbox\"></iframe></span></p>\n<p>Rotatile adds a Rotation panel to the block inspector. Pick an angle, watch the block tilt in the editor, and that is the whole feature. There is no settings page, no account, no dashboard notice and no outgoing request.</p>\n<p>Out of the box the panel is offered on the Image block and nothing else. That restriction is the point rather than an oversight: a tilted paragraph is a paragraph people have to tilt their head to read. If your design needs another block type, one filter opens it up.</p>\n<p><strong>What it does not touch</strong></p>\n<p>The angle is kept in the block comment, not in the saved markup. Your post content stays byte for byte what the block itself produced, and the transform is added while the page is being built. Two things follow from that:</p>\n<ul>\n<li>Deactivating the plugin does not invalidate a single block. The tilt stops, the content is intact, and the editor raises no &#8220;this block contains unexpected content&#8221; warning.</li>\n<li>Nothing is written twice. The rotation exists in one place and is applied once, on the server.</li>\n</ul>\n<p><strong>Things worth knowing before you tilt something</strong></p>\n<p>A CSS transform has consequences that have nothing to do with this plugin, and they are worth saying out loud:</p>\n<ul>\n<li>A rotated element still occupies its original, unrotated layout box. The visible corners stick out of it and can overlap whatever sits next to the block. Give the block some breathing room rather than expecting the page to make room for it.</li>\n<li>A transform creates a containing block and a stacking context. A descendant with <code>position: fixed</code> stops being fixed to the viewport, and <code>z-index</code> inside the block is measured against the block instead of the page.</li>\n<li>A block sitting inside the normal content width does not push the page sideways, even at 45 degrees. A block set to full-width alignment at a large angle does, and that is worth avoiding: a page that scrolls both up and down and left to right is hard to use and fails an accessibility requirement. Keep rotation for blocks inside the content width, or keep the angle small on a block that spans the whole viewport.</li>\n</ul>\n<p><strong>Front end</strong></p>\n<p>No JavaScript. One small stylesheet, requested only on pages that actually contain a rotated block, carrying a transform origin and a transition. The transition switches itself off for anyone whose system asks for reduced motion.</p>\n<p><strong>Filters</strong></p>\n<p>Everything is configured in code. <code>rotatile_supported_blocks</code> sets the block types, <code>rotatile_min_angle</code> and <code>rotatile_max_angle</code> set the range, <code>rotatile_step</code> sets the increment, <code>rotatile_default_angle</code> sets the starting value, and <code>rotatile_transition_duration</code> sets or removes the transition. The development README documents each one with an example.</p>\n<p><strong>Source code and build</strong></p>\n<p>The editor script shipped in <code>build/</code> is compiled from <code>src/editor.js</code>. The uncompiled source, the build configuration and the full history live in the public repository:</p>\n<p>https://github.com/Fyrins/rotatile</p>\n<p>The toolchain is <a href=\"https://www.npmjs.com/package/@wordpress/scripts\" rel=\"nofollow ugc\">@wordpress/scripts</a>, the build tool maintained by the WordPress project, and nothing else. To reproduce the shipped file:</p>\n<pre><code>git clone https://github.com/Fyrins/rotatile.git\ncd rotatile\nnpm install\nnpm run build\n</code></pre>\n<p>The front-end stylesheet is not compiled: <code>assets/css/rotatile.css</code> is written by hand and shipped as it reads.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/rotatile.1.0.0.zip",
+    "upgrade_notice": {
+        "1.0.0": "<p>First release.</p>"
+    },
+    "screenshots": [
+        {
+            "src": "https://ps.w.org/rotatile/assets/screenshot-1.png?rev=3779267",
+            "caption": "The Rotation panel in the block inspector, with the angle control and the reset button."
+        },
+        {
+            "src": "https://ps.w.org/rotatile/assets/screenshot-2.png?rev=3779267",
+            "caption": "Dragging the angle control tilts the block in the editor straight away."
+        },
+        {
+            "src": "https://ps.w.org/rotatile/assets/screenshot-3.png?rev=3779267",
+            "caption": "The same block on the front end, rotated by a server-rendered CSS transform."
+        }
+    ],
+    "tags": {
+        "block-editor": "block-editor",
+        "gutenberg": "gutenberg",
+        "image": "image",
+        "rotate": "rotate",
+        "transform": "transform"
+    },
+    "stable_tag": "1.0.0",
+    "versions": {
+        "1.0.0": "https://downloads.wordpress.org/plugin/rotatile.1.0.0.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/rotatile.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/rotatile/assets/banner-772x250.png?rev=3779267",
+        "high": "https://ps.w.org/rotatile/assets/banner-1544x500.png?rev=3779267"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/rotatile/assets/icon-128x128.png?rev=3779267",
+        "2x": "https://ps.w.org/rotatile/assets/icon-256x256.png?rev=3779267"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": [
+        {
+            "type": "plugin",
+            "slug": "rotatile",
+            "language": "fr_FR",
+            "version": "1.0.0",
+            "updated": "2026-11-06 08:17:33",
+            "package": "https://downloads.wordpress.org/translation/plugin/rotatile/1.0.0/fr_FR.zip"
+        }
+    ]
+}
