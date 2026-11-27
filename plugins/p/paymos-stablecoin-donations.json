@@ -1,0 +1,77 @@
+{
+    "name": "Paymos Stablecoin Donations",
+    "slug": "paymos-stablecoin-donations",
+    "version": "1.1.1",
+    "author": "<a href=\"https://profiles.wordpress.org/paymos/\">Paymos</a>",
+    "author_profile": "https://profiles.wordpress.org/paymos/",
+    "contributors": {
+        "paymos": {
+            "profile": "https://profiles.wordpress.org/paymos/",
+            "avatar": "https://secure.gravatar.com/avatar/46bf71794b28e05a4114f6605d184a3795a6b14c8c93d87a9bd45b468a139c36?s=96&d=monsterid&r=g",
+            "display_name": "Paymos"
+        }
+    },
+    "requires": "6.9",
+    "tested": "7.1.5",
+    "requires_php": "7.4",
+    "requires_plugins": [
+        "give"
+    ],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/paymos-stablecoin-donations/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-27 21:24:00",
+    "added": "2026-11-27",
+    "homepage": "https://paymos.io/docs/cms-givewp",
+    "sections": {
+        "description": "<p>Paymos adds a stablecoin payment method to GiveWP Visual and legacy donation forms. Donors open Paymos checkout from a status page on your site. GiveWP records a confirmed donation and offers its native receipt after the plugin verifies the payment with Paymos.</p>\n<p>The plugin requires an HTTPS WordPress site, GiveWP 4.19.1.1 or later, and a Paymos project. Activate the plugin on each site individually. It supports one-time donations.</p>\n<h3>External services</h3>\n<p>Paymos provides the hosted checkout and merchant API used by this gateway. Read the <a href=\"https://paymos.io/terms\" rel=\"nofollow ugc\">Paymos Terms</a> and <a href=\"https://paymos.io/privacy\" rel=\"nofollow ugc\">Privacy Policy</a>.</p>\n<p><strong>Connection.</strong> When an administrator starts Connect, WordPress sends <code>client_id=paymos-cms</code> and <code>scope=cms:bootstrap</code> to <code>https://app.paymos.io/connect/cms/device</code>. The browser approval link carries the <code>givewp</code> plugin identifier, the site URL, a user code, and the admin return URL when it shares the site&#8217;s origin. During approval WordPress polls <code>https://app.paymos.io/connect/token</code> with the device-code grant, <code>client_id</code>, and the secret <code>device_code</code>. WordPress stores the selected environment&#8217;s credentials in an encrypted option and discards the short-lived OAuth token.</p>\n<p><strong>Donations.</strong> When the donor opens Paymos checkout, WordPress sends <code>POST /v1/invoices</code> to <code>https://api.paymos.io</code> with <code>project_id</code>, <code>amount</code>, <code>currency</code>, and a random <code>external_order_id</code>. Donor details and GiveWP receipt credentials stay in WordPress. The plugin checks the exact invoice with <code>GET /v1/invoices/{invoice_id}</code> and can look up an interrupted request with <code>GET /v1/invoices</code> using the project and original reference. These requests carry a key ID, timestamp, and HMAC signature. The signing secret stays on your site.</p>\n<p><strong>Payment and confirmation.</strong> Donors open the hosted invoice at <code>https://checkout.paymos.io</code>. Paymos sends signed invoice notifications to the WordPress webhook associated with the connected Paymos project. The plugin verifies the signature, retrieves the exact invoice from the API, and checks its scope and payment before updating GiveWP. The WordPress scheduled reconciliation job also checks pending work through the API.</p>\n<p><strong>Refunds.</strong> Authorized staff can request a full or overpayment refund from <strong>GiveWP <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Paymos refunds</strong>. WordPress sends a signed <code>POST /v1/refunds</code> with <code>invoice_id</code>, <code>mode</code>, and a random <code>external_order_id</code>. Paymos determines the destination from the original payment. The plugin checks the operation with <code>GET /v1/refunds/{withdrawal_id}</code> and, when needed, the invoice-scoped <code>GET /v1/refunds</code> list. GiveWP records a full refund after verifying the completed Paymos operation. A refund of the excess preserves the original donation status.</p>\n",
+        "installation": "<ol>\n<li>Install and activate GiveWP, then install and activate Paymos Stablecoin Donations.</li>\n<li>Open <strong>GiveWP <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Settings <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Payment Gateways <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Paymos</strong>. Choose Sandbox or Live to match GiveWP&#8217;s payment mode.</li>\n<li>Click <strong>Connect Paymos</strong> and approve the site and project on the Paymos approval page.</li>\n<li>Enable Paymos on the Visual or legacy forms where you want to accept stablecoins.</li>\n</ol>\n",
+        "faq": "\n<h4>\nHow can a donor resume a donation after a page reload?\n</h4>\n<p>\n<p>When the browser can save the recovery link, the donor can choose <strong>Resume your previous Paymos donation</strong> on the same form. The link opens the site&#8217;s status page and expires within 12 hours. The site verifies the original browser and GiveWP binding before showing the status or receipt. A regular new submission starts a separate donation.</p>\n</p>\n<h4>\nWhat happens when I disconnect or delete the plugin?\n</h4>\n<p>\n<p>Disabling the gateway stops new Paymos donations and preserves the credentials needed to check unresolved operations. Deactivating the plugin stops its scheduled checks. Deleting it removes local credentials, browser access to its status pages, and scheduled work. GiveWP keeps its donation history. The plugin keeps minimal references for unresolved payments and refunds so an administrator can review them manually. Manage remote keys and webhooks in the Paymos project.</p>\n</p>\n<h4>\nWhere can I get help?\n</h4>\n<p>\n<p>Contact <a href=\"mailto:support@paymos.io\" rel=\"nofollow ugc\">support@paymos.io</a> for help with Paymos checkout, connection, or refunds.</p>\n</p>\n\n",
+        "changelog": "<h4>1.1.1</h4>\n<ul>\n<li>chore: rebuild canonical CMS package</li>\n</ul>\n<h4>1.1.0</h4>\n<ul>\n<li>feat(release): automate Odoo 20.0 and GiveWP releases across all 21 ecosystem mirrors</li>\n<li>chore: bundle Paymos PHP SDK v1.11.1</li>\n<li>chore: rebuild canonical CMS package</li>\n</ul>\n<h4>1.0.1</h4>\n<ul>\n<li>Trusted server-confirmed final <code>paid</code> settlement status, preserved 24-decimal NEAR amount formatting, and expanded tolerance refund reconciliation coverage.</li>\n</ul>\n<h4>1.0.0</h4>\n<ul>\n<li>Added Paymos hosted checkout for one-time donations in GiveWP Visual and legacy forms.</li>\n<li>Added signed invoice verification, recovery of interrupted checkout, and native GiveWP receipts.</li>\n<li>Added full and overpayment refund requests and reconciliation for authorized GiveWP staff.</li>\n</ul>\n"
+    },
+    "short_description": "Accept one-time stablecoin donations through Paymos hosted checkout in GiveWP.",
+    "description": "<p>Paymos adds a stablecoin payment method to GiveWP Visual and legacy donation forms. Donors open Paymos checkout from a status page on your site. GiveWP records a confirmed donation and offers its native receipt after the plugin verifies the payment with Paymos.</p>\n<p>The plugin requires an HTTPS WordPress site, GiveWP 4.19.1.1 or later, and a Paymos project. Activate the plugin on each site individually. It supports one-time donations.</p>\n<h3>External services</h3>\n<p>Paymos provides the hosted checkout and merchant API used by this gateway. Read the <a href=\"https://paymos.io/terms\" rel=\"nofollow ugc\">Paymos Terms</a> and <a href=\"https://paymos.io/privacy\" rel=\"nofollow ugc\">Privacy Policy</a>.</p>\n<p><strong>Connection.</strong> When an administrator starts Connect, WordPress sends <code>client_id=paymos-cms</code> and <code>scope=cms:bootstrap</code> to <code>https://app.paymos.io/connect/cms/device</code>. The browser approval link carries the <code>givewp</code> plugin identifier, the site URL, a user code, and the admin return URL when it shares the site&#8217;s origin. During approval WordPress polls <code>https://app.paymos.io/connect/token</code> with the device-code grant, <code>client_id</code>, and the secret <code>device_code</code>. WordPress stores the selected environment&#8217;s credentials in an encrypted option and discards the short-lived OAuth token.</p>\n<p><strong>Donations.</strong> When the donor opens Paymos checkout, WordPress sends <code>POST /v1/invoices</code> to <code>https://api.paymos.io</code> with <code>project_id</code>, <code>amount</code>, <code>currency</code>, and a random <code>external_order_id</code>. Donor details and GiveWP receipt credentials stay in WordPress. The plugin checks the exact invoice with <code>GET /v1/invoices/{invoice_id}</code> and can look up an interrupted request with <code>GET /v1/invoices</code> using the project and original reference. These requests carry a key ID, timestamp, and HMAC signature. The signing secret stays on your site.</p>\n<p><strong>Payment and confirmation.</strong> Donors open the hosted invoice at <code>https://checkout.paymos.io</code>. Paymos sends signed invoice notifications to the WordPress webhook associated with the connected Paymos project. The plugin verifies the signature, retrieves the exact invoice from the API, and checks its scope and payment before updating GiveWP. The WordPress scheduled reconciliation job also checks pending work through the API.</p>\n<p><strong>Refunds.</strong> Authorized staff can request a full or overpayment refund from <strong>GiveWP <span aria-hidden=\"true\" class=\"wp-exclude-emoji\">→</span> Paymos refunds</strong>. WordPress sends a signed <code>POST /v1/refunds</code> with <code>invoice_id</code>, <code>mode</code>, and a random <code>external_order_id</code>. Paymos determines the destination from the original payment. The plugin checks the operation with <code>GET /v1/refunds/{withdrawal_id}</code> and, when needed, the invoice-scoped <code>GET /v1/refunds</code> list. GiveWP records a full refund after verifying the completed Paymos operation. A refund of the excess preserves the original donation status.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/paymos-stablecoin-donations.1.1.1.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "donations": "donations",
+        "givewp": "givewp",
+        "payments": "payments",
+        "stablecoins": "stablecoins",
+        "usdc": "usdc"
+    },
+    "stable_tag": "1.1.1",
+    "versions": {
+        "1.1.1": "https://downloads.wordpress.org/plugin/paymos-stablecoin-donations.1.1.1.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/paymos-stablecoin-donations.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "1x": "https://ps.w.org/paymos-stablecoin-donations/assets/icon-128x128.png?rev=3830493",
+        "2x": "https://ps.w.org/paymos-stablecoin-donations/assets/icon-256x256.png?rev=3830493"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}

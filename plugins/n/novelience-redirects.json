@@ -1,0 +1,89 @@
+{
+    "name": "Novelience Redirects",
+    "slug": "novelience-redirects",
+    "version": "1.2.11",
+    "author": "<a href=\"https://profiles.wordpress.org/novelience/\">novelience</a>",
+    "author_profile": "https://profiles.wordpress.org/novelience/",
+    "contributors": {
+        "novelience": {
+            "profile": "https://profiles.wordpress.org/novelience/",
+            "avatar": "https://secure.gravatar.com/avatar/38fdfc02df29b0e54790f7dad59aa7457f8fd8e87013c469f06a61ceb20af42a?s=96&d=monsterid&r=g",
+            "display_name": "novelience"
+        }
+    },
+    "requires": "6.3",
+    "tested": "7.1.5",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/novelience-redirects/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-27 22:46:00",
+    "added": "2026-11-26",
+    "homepage": "",
+    "sections": {
+        "description": "<p>Novelience Redirects keeps legacy URLs working after a migration or a change of site structure. Every old address receives one explicit destination, checked before the map goes live.</p>\n<ul>\n<li>Imports a CSV map from Tools &gt; Redirects.</li>\n<li>Rejects malformed rows, duplicate normalized sources, user-info URLs, cross-domain redirects, self-redirects and loops before replacing anything.</li>\n<li>Collapses redirect chains to their final target, so visitors and search engines reach the destination in a single redirect. Chains with a query or fragment on an intermediate target are rejected.</li>\n<li>Replaces the map in one database transaction: a refused import leaves the active map untouched.</li>\n<li>Reports how many redirects were added, changed and removed by each import.</li>\n<li>Exports the active map as CSV, in the exact format the import accepts.</li>\n<li>Matches the host and path at request time, with and without the <code>www.</code> prefix, under the comparison rule of the import described in the FAQ, and revalidates every target before redirecting.</li>\n<li>Lists and searches the active map with pagination.</li>\n<li>Includes a complete French translation.</li>\n</ul>\n<p>The map is stored in a dedicated table of the site database. The plugin needs no external service or account.</p>\n<h4>CSV format</h4>\n<p>The file needs the columns <code>source_url</code>, <code>target_url</code> and <code>decision</code>. Rows are imported when <code>decision</code> is <code>redirect_301</code>; other rows are ignored. An optional <code>reason</code> column is kept as a note. Source URLs must not carry a query string or a fragment, and the target must stay on the same domain as the source.</p>\n<pre><code>source_url,target_url,decision,reason\nhttps://example.com/old-page,https://example.com/new-page/,redirect_301,Site restructuring\n</code></pre>\n<h4>Advanced edition</h4>\n<p>Redirect Map Manager, the advanced edition published by Novelience, reads the same CSV files and adds:</p>\n<ul>\n<li>an import history with the author, file checksum, note and per-row changes of every import;</li>\n<li>Nginx <code>map</code> and Apache <code>RedirectPermanent</code> exports to serve the map from the web server;</li>\n<li>WP-CLI commands to import, export and review the history in scripted migrations.</li>\n</ul>\n<p>Switching: export the map as CSV from Tools &gt; Redirects and import the same file into Redirect Map Manager. Both plugins can stay active meanwhile; nothing is copied automatically.</p>\n<p>Compare the editions: the <a href=\"https://novelience.com/en/produits/gestionnaire-redirections/#features\" rel=\"nofollow ugc\">Redirect Map Manager page</a> details the WordPress edition that this plugin compares with; its <a href=\"https://novelience.com/en/produits/gestionnaire-redirections/#offres\" rel=\"nofollow ugc\">plans</a> are listed on the same page.</p>\n<p>Developed and maintained by Novelience.</p>\n",
+        "installation": "<ol>\n<li>Install and activate Novelience Redirects.</li>\n<li>Open Tools &gt; Redirects as an administrator.</li>\n<li>Import your CSV map, then test an old address in a private browser window.</li>\n</ol>\n",
+        "faq": "\n<h4>\nHow do I change or remove a redirect?\n</h4>\n<p>\n<p>Export the map as CSV, edit the file, and import it again. Each import replaces the whole map; importing a file that contains only the header removes every redirect. Browsers can keep an earlier permanent redirect in cache while you test.</p>\n</p>\n<h4>\nHow are sources compared?\n</h4>\n<p>\n<p>A source is its host, with or without <code>www.</code>, and its path without the trailing slash; the query string is ignored. Paths are compared in the percent-encoded form browsers send: <code>/café</code> and <code>/caf%C3%A9</code> are the same source, <code>/cafe</code> is another one. Letter case follows the database of the site: with the case-insensitive collations WordPress uses on MySQL and MariaDB, and on SQLite, <code>/Product.html</code> and <code>/product.html</code> are one source and both answer its redirect; with a binary or case-sensitive collation they are two sources. The import applies the same rule before anything is replaced: two rows designating the same source are refused with both CSV line numbers, a row pointing to its own address in another letter case is refused as a self-redirect, and two paths whose first 190 characters are identical are refused because the database index cannot tell them apart. After an update, every source that answered before keeps answering without a new import; a source stored by an earlier release with raw accents or spaces, which browsers never matched, answers once the same file is imported again (export, then import).</p>\n</p>\n<h4>\nWhich status code is used?\n</h4>\n<p>\n<p>301 by default. Developers can choose 302, 307 or 308 with the <code>novelience_redirects_status</code> filter.</p>\n</p>\n<h4>\nWho can manage the map?\n</h4>\n<p>\n<p>Administrators with the <code>manage_options</code> capability. The <code>novelience_redirects_capability</code> filter can assign another capability.</p>\n</p>\n<h4>\nCan I move to Redirect Map Manager later?\n</h4>\n<p>\n<p>Yes. Export the map as CSV and import the same file into Redirect Map Manager. While both plugins are active, Redirect Map Manager answers first and Novelience Redirects still serves the paths it does not handle. Once the map is imported there, deactivate Novelience Redirects.</p>\n</p>\n<h4>\nWhat happens when I delete the plugin?\n</h4>\n<p>\n<p>Deleting the plugin from the Plugins screen removes its table and options. Export the map first to keep a copy. Deactivating the plugin keeps the map and stops the redirects.</p>\n</p>\n\n",
+        "changelog": "<h4>1.2.11</h4>\n<ul>\n<li>After an update without a new import, a source stored by an earlier release with lowercase percent-encoded characters keeps answering a request written the same way on databases that compare letter case (binary or case-sensitive collations), as before 1.2.10; 1.2.10 only searched the uppercase form.</li>\n<li>An insert refused by the database for another reason than a duplicate (storage, engine) is reported as a database error, without SQL text, instead of being described as a collision; a duplicate of the unique key is still named with its CSV line. The map is kept in both cases.</li>\n<li>1.2.10 was prepared but not distributed.</li>\n</ul>\n<h4>1.2.10</h4>\n<ul>\n<li>Two sources the database compares as one address, such as <code>/Product.html</code> and <code>/product.html</code>, are refused before the import with both CSV line numbers, instead of failing with &#8220;Atomic redirect map import failed.&#8221;. A row pointing to its own address in another letter case is refused as a self-redirect instead of serving an endless redirect. Two paths sharing their first 190 characters are refused with their line numbers.</li>\n<li>Non-ASCII characters of a source path are stored percent-encoded, as browsers send them, so a source written <code>/café</code> now answers visitors. Maps imported earlier with such sources serve them once imported again (export, then import).</li>\n<li>The FAQ states the comparison rule of sources instead of describing the match as exact. No change to the table or settings.</li>\n</ul>\n<h4>1.2.9</h4>\n<ul>\n<li>Added German (de_DE), Spanish (es_ES) and Italian (it_IT) translations of every message of the plugin, next to the existing French one.</li>\n<li>A WordPress.org language pack keeps priority for its own locale only; the bundled catalogs still serve the other locales on WordPress 6.3 to 6.7.</li>\n<li>The Advanced edition section explains how to switch and links to the comparison and the plans of the advanced edition on novelience.com; the same link is added to the plugin row on the Plugins screen. No data is sent and nothing is installed.</li>\n<li>On SQLite sites such as WordPress Playground, an import attempted while another one holds the lock no longer writes a database error to the PHP log; the attempt is still refused and the active map is unchanged.</li>\n</ul>\n<h4>1.2.8</h4>\n<ul>\n<li>CSV imports now succeed on sites running the SQLite Database Integration, including WordPress Playground and the plugin preview: there the import lock is a row of the site options, taken atomically and released after the import, instead of a MySQL advisory lock.</li>\n<li>The MySQL import lock carries the database name, so sites sharing a database server and a table prefix never wait for each other&#8217;s imports.</li>\n</ul>\n<h4>1.2.7</h4>\n<ul>\n<li>The Tools &gt; Redirects screen loads its styles from a stylesheet enqueued on that screen only, instead of an inline style element.</li>\n</ul>\n<h4>1.2.6</h4>\n<ul>\n<li>First public edition on WordPress.org, built from the Redirect Map Manager 1.2.6 engine: atomic CSV import, validation, chain collapsing, CSV export and French translation.</li>\n</ul>\n"
+    },
+    "short_description": "Imports, serves and exports an exact CSV redirect map after rejecting loops, duplicates, unsafe targets and cross-domain redirects.",
+    "description": "<p>Novelience Redirects keeps legacy URLs working after a migration or a change of site structure. Every old address receives one explicit destination, checked before the map goes live.</p>\n<ul>\n<li>Imports a CSV map from Tools &gt; Redirects.</li>\n<li>Rejects malformed rows, duplicate normalized sources, user-info URLs, cross-domain redirects, self-redirects and loops before replacing anything.</li>\n<li>Collapses redirect chains to their final target, so visitors and search engines reach the destination in a single redirect. Chains with a query or fragment on an intermediate target are rejected.</li>\n<li>Replaces the map in one database transaction: a refused import leaves the active map untouched.</li>\n<li>Reports how many redirects were added, changed and removed by each import.</li>\n<li>Exports the active map as CSV, in the exact format the import accepts.</li>\n<li>Matches the host and path at request time, with and without the <code>www.</code> prefix, under the comparison rule of the import described in the FAQ, and revalidates every target before redirecting.</li>\n<li>Lists and searches the active map with pagination.</li>\n<li>Includes a complete French translation.</li>\n</ul>\n<p>The map is stored in a dedicated table of the site database. The plugin needs no external service or account.</p>\n<h4>CSV format</h4>\n<p>The file needs the columns <code>source_url</code>, <code>target_url</code> and <code>decision</code>. Rows are imported when <code>decision</code> is <code>redirect_301</code>; other rows are ignored. An optional <code>reason</code> column is kept as a note. Source URLs must not carry a query string or a fragment, and the target must stay on the same domain as the source.</p>\n<pre><code>source_url,target_url,decision,reason\nhttps://example.com/old-page,https://example.com/new-page/,redirect_301,Site restructuring\n</code></pre>\n<h4>Advanced edition</h4>\n<p>Redirect Map Manager, the advanced edition published by Novelience, reads the same CSV files and adds:</p>\n<ul>\n<li>an import history with the author, file checksum, note and per-row changes of every import;</li>\n<li>Nginx <code>map</code> and Apache <code>RedirectPermanent</code> exports to serve the map from the web server;</li>\n<li>WP-CLI commands to import, export and review the history in scripted migrations.</li>\n</ul>\n<p>Switching: export the map as CSV from Tools &gt; Redirects and import the same file into Redirect Map Manager. Both plugins can stay active meanwhile; nothing is copied automatically.</p>\n<p>Compare the editions: the <a href=\"https://novelience.com/en/produits/gestionnaire-redirections/#features\" rel=\"nofollow ugc\">Redirect Map Manager page</a> details the WordPress edition that this plugin compares with; its <a href=\"https://novelience.com/en/produits/gestionnaire-redirections/#offres\" rel=\"nofollow ugc\">plans</a> are listed on the same page.</p>\n<p>Developed and maintained by Novelience.</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/novelience-redirects.1.2.11.zip",
+    "upgrade_notice": {
+        "1.2.11": "<p>Refuses sources that differ only by letter case with their CSV line numbers, serves sources written with accents, and keeps every source that answered before. No change to the table or settings.</p>",
+        "1.2.10": "<p>Refuses sources that differ only by letter case with their CSV line numbers instead of a generic error, and serves sources written with accents. No change to the table or settings.</p>",
+        "1.2.9": "<p>Adds German, Spanish and Italian translations. No change to the plugin data or settings.</p>",
+        "1.2.8": "<p>Fixes CSV imports on SQLite sites such as WordPress Playground. No change to the redirect map or its settings.</p>",
+        "1.2.7": "<p>The administration screen styles now come from an enqueued stylesheet. No change to the redirect map or its settings.</p>",
+        "1.2.6": "<p>First public edition.</p>"
+    },
+    "screenshots": [],
+    "tags": {
+        "csv": "csv",
+        "migration": "migration",
+        "redirect": "redirect",
+        "redirects": "redirects",
+        "seo": "seo"
+    },
+    "stable_tag": "1.2.11",
+    "versions": {
+        "1.2.11": "https://downloads.wordpress.org/plugin/novelience-redirects.1.2.11.zip",
+        "1.2.7": "https://downloads.wordpress.org/plugin/novelience-redirects.1.2.7.zip",
+        "1.2.8": "https://downloads.wordpress.org/plugin/novelience-redirects.1.2.8.zip",
+        "1.2.9": "https://downloads.wordpress.org/plugin/novelience-redirects.1.2.9.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/novelience-redirects.zip"
+    },
+    "business_model": "commercial",
+    "repository_url": "",
+    "commercial_support_url": "https://novelience.com/produits/gestionnaire-redirections/",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": [],
+    "icons": {
+        "default": "https://s.w.org/plugins/geopattern-icon/novelience-redirects.svg"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [
+        {
+            "filename": "blueprint.json",
+            "url": "https://wordpress.org/plugins/wp-json/plugins/v1/plugin/novelience-redirects/blueprint.json?rev=3830600"
+        }
+    ],
+    "preview_link": "https://wordpress.org/plugins/novelience-redirects/?preview=1",
+    "language_packs": []
+}
