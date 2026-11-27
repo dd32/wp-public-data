@@ -1,0 +1,78 @@
+{
+    "name": "Fidem Verification",
+    "slug": "fidem-verification",
+    "version": "0.3.2",
+    "author": "<a href=\"https://profiles.wordpress.org/fidemcheck/\">fidemcheck</a>",
+    "author_profile": "https://profiles.wordpress.org/fidemcheck/",
+    "contributors": {
+        "fidemcheck": {
+            "profile": "https://profiles.wordpress.org/fidemcheck/",
+            "avatar": "https://secure.gravatar.com/avatar/b5a35b152bf4ea31a570bbecfdb3f0549e6f62234d3ecdecf49d0980c1cd49e0?s=96&d=monsterid&r=g",
+            "display_name": "fidemcheck"
+        }
+    },
+    "requires": "6.0",
+    "tested": "7.1.5",
+    "requires_php": "7.4",
+    "requires_plugins": [],
+    "compatibility": [],
+    "rating": 0,
+    "ratings": {
+        "5": 0,
+        "4": 0,
+        "3": 0,
+        "2": 0,
+        "1": 0
+    },
+    "num_ratings": 0,
+    "support_url": "https://wordpress.org/support/plugin/fidem-verification/",
+    "support_threads": 0,
+    "support_threads_resolved": 0,
+    "active_installs": 0,
+    "last_updated": "2026-11-27 12:34:00",
+    "added": "2026-11-27",
+    "homepage": "https://fidemcheck.com/para-tiendas.html",
+    "sections": {
+        "description": "<p>AI agents are starting to buy for people. Before paying, an agent needs to know which company is behind a shop, and a copied legal notice proves nothing. Fidem verifies the company behind a domain and signs a Merchant Verification File (MVF), an open standard that any agent can check without calling Fidem.</p>\n<p>This plugin connects your WordPress or WooCommerce site to Fidem:</p>\n<ul>\n<li><strong>Domain proof without DNS.</strong> It serves <code>/.well-known/fidem-verification.txt</code> with your sign-up code, so Fidem can check that the domain is yours.</li>\n<li><strong>Your signed file on your own domain.</strong> It redirects <code>/.well-known/merchant-verification.json</code> to your signed file at fidemcheck.com, so agents find it where they look, and Fidem renews it every week without touching your site.</li>\n<li><strong>The seal, only when it is true.</strong> It shows the Fidem seal in the footer, or wherever you put the <code>[fidem_sello]</code> shortcode, only while Fidem says your shop is verified. If the verification lapses, the seal disappears on its own.</li>\n</ul>\n<p>It works with WooCommerce and with any WordPress site. It adds no tracking, no cookies and nothing to your checkout, and it sends nothing about your customers or orders.</p>\n<p>Fidem has a Free plan (domain proven, company checked against the official register) and a paid Verified plan with the signed file and the seal. The plugin is the same for both.</p>\n<h3>External services</h3>\n<p>This plugin connects to Fidem (fidemcheck.com), the verifier that issues the signed file.</p>\n<ul>\n<li><strong>What is sent:</strong> the domain name of your site, and nothing else. No personal data, customer data or order data.</li>\n<li><strong>When:</strong> in the background through WP-Cron, about once an hour while the seal is shown, when an admin opens the dashboard and the saved status is more than an hour old, and when you open the plugin settings page or press «Check status now». Your visitors&#8217; pages never wait for this request: they only read the status saved in your database.</li>\n<li><strong>Why:</strong> to know whether your shop is verified, so the seal is only shown while it is.</li>\n<li><strong>Endpoint:</strong> <code>https://fidemcheck.com/v/your-domain</code> (JSON)</li>\n<li>The seal image is loaded from <code>https://fidemcheck.com/v/your-domain/sello.svg</code> by your visitors&#8217; browsers when the seal is shown.</li>\n<li>When an agent requests <code>/.well-known/merchant-verification.json</code> on your site, it is redirected to <code>https://fidemcheck.com/v/your-domain/merchant-verification.json</code>.</li>\n<li>To keep the copy of your signed identity (IETF format) that your site serves at <code>/.well-known/merchant-identity.json</code>, the plugin downloads it from <code>https://fidemcheck.com/v/your-domain/merchant-identity.json</code> in the same background check. Only your domain name is sent.</li>\n</ul>\n<p>Fidem terms of service: https://fidemcheck.com/legal-notice.html<br />\nFidem privacy policy: https://fidemcheck.com/privacy.html</p>\n",
+        "installation": "<ol>\n<li>Sign up your shop at https://fidemcheck.com/for-shops.html. You get a sign-up code by email.</li>\n<li>Install and activate the plugin.</li>\n<li>Go to WooCommerce, Fidem (or Settings, Fidem if you do not use WooCommerce), paste the code and save.</li>\n<li>In your Fidem account page, press «Check».</li>\n</ol>\n",
+        "faq": "\n<h4>\nDo I need to change my DNS?\n</h4>\n<p>\n<p>No. The plugin serves the proof file. If your server does not pass <code>/.well-known/</code> to WordPress, Fidem also accepts a DNS record, as explained in your account page.</p>\n</p>\n<h4>\nWhat does an AI agent see?\n</h4>\n<p>\n<p>The agent looks up your domain at Fidem (by API or MCP) or reads your signed file. It sees which company runs the shop, the official register it was checked against and until when the verification is valid. Fidem gives no score and no buying advice.</p>\n</p>\n<h4>\nIs my data sent anywhere?\n</h4>\n<p>\n<p>Only your own domain name, to check your status at Fidem. See External services below.</p>\n</p>\n\n",
+        "changelog": "<h4>0.3.2</h4>\n<ul>\n<li>The seal is drawn inside your page instead of loading an image from fidemcheck.com: your visitors&#8217; browsers never contact Fidem, and the seal never shows as a broken image.</li>\n</ul>\n<h4>0.3.1</h4>\n<ul>\n<li>If an agent asks for /.well-known/merchant-identity.json before the first copy arrives, or after it expires, the plugin asks for a fresh one at once instead of waiting for the next hourly run.</li>\n</ul>\n<h4>0.3.0</h4>\n<ul>\n<li>Serves /.well-known/merchant-identity.json from your own site (IETF draft-anders-merchant-identity-assertions), from a copy kept in your database and refreshed in the background. No redirect, as the draft requires.</li>\n<li>Authorizes Fidem as the issuer with a delegation document (/.well-known/mia-delegation.json) signed by a key only your site holds (/.well-known/mia-keys.json), so no extra DNS record is needed.</li>\n</ul>\n<h4>0.2.0</h4>\n<ul>\n<li>The status check never runs while a visitor&#8217;s page is built: it runs in the background (WP-Cron) or from the dashboard.</li>\n<li>Uses the lighter public endpoint /v/your-domain. A saved status older than three days hides the seal.</li>\n</ul>\n<h4>0.1.0</h4>\n<ul>\n<li>First version: domain proof by file, delegated signed file and seal shown only while the shop is verified.</li>\n</ul>\n"
+    },
+    "short_description": "Let AI shopping agents check who is behind your shop. Prove your domain without touching DNS and link your signed verification file.",
+    "description": "<p>AI agents are starting to buy for people. Before paying, an agent needs to know which company is behind a shop, and a copied legal notice proves nothing. Fidem verifies the company behind a domain and signs a Merchant Verification File (MVF), an open standard that any agent can check without calling Fidem.</p>\n<p>This plugin connects your WordPress or WooCommerce site to Fidem:</p>\n<ul>\n<li><strong>Domain proof without DNS.</strong> It serves <code>/.well-known/fidem-verification.txt</code> with your sign-up code, so Fidem can check that the domain is yours.</li>\n<li><strong>Your signed file on your own domain.</strong> It redirects <code>/.well-known/merchant-verification.json</code> to your signed file at fidemcheck.com, so agents find it where they look, and Fidem renews it every week without touching your site.</li>\n<li><strong>The seal, only when it is true.</strong> It shows the Fidem seal in the footer, or wherever you put the <code>[fidem_sello]</code> shortcode, only while Fidem says your shop is verified. If the verification lapses, the seal disappears on its own.</li>\n</ul>\n<p>It works with WooCommerce and with any WordPress site. It adds no tracking, no cookies and nothing to your checkout, and it sends nothing about your customers or orders.</p>\n<p>Fidem has a Free plan (domain proven, company checked against the official register) and a paid Verified plan with the signed file and the seal. The plugin is the same for both.</p>\n<h3>External services</h3>\n<p>This plugin connects to Fidem (fidemcheck.com), the verifier that issues the signed file.</p>\n<ul>\n<li><strong>What is sent:</strong> the domain name of your site, and nothing else. No personal data, customer data or order data.</li>\n<li><strong>When:</strong> in the background through WP-Cron, about once an hour while the seal is shown, when an admin opens the dashboard and the saved status is more than an hour old, and when you open the plugin settings page or press «Check status now». Your visitors&#8217; pages never wait for this request: they only read the status saved in your database.</li>\n<li><strong>Why:</strong> to know whether your shop is verified, so the seal is only shown while it is.</li>\n<li><strong>Endpoint:</strong> <code>https://fidemcheck.com/v/your-domain</code> (JSON)</li>\n<li>The seal image is loaded from <code>https://fidemcheck.com/v/your-domain/sello.svg</code> by your visitors&#8217; browsers when the seal is shown.</li>\n<li>When an agent requests <code>/.well-known/merchant-verification.json</code> on your site, it is redirected to <code>https://fidemcheck.com/v/your-domain/merchant-verification.json</code>.</li>\n<li>To keep the copy of your signed identity (IETF format) that your site serves at <code>/.well-known/merchant-identity.json</code>, the plugin downloads it from <code>https://fidemcheck.com/v/your-domain/merchant-identity.json</code> in the same background check. Only your domain name is sent.</li>\n</ul>\n<p>Fidem terms of service: https://fidemcheck.com/legal-notice.html<br />\nFidem privacy policy: https://fidemcheck.com/privacy.html</p>\n",
+    "download_link": "https://downloads.wordpress.org/plugin/fidem-verification.0.3.2.zip",
+    "upgrade_notice": [],
+    "screenshots": [],
+    "tags": {
+        "ai-agents": "ai agents",
+        "merchant": "merchant",
+        "trust": "trust",
+        "verification": "verification",
+        "woocommerce": "woocommerce"
+    },
+    "stable_tag": "0.3.2",
+    "versions": {
+        "0.3.2": "https://downloads.wordpress.org/plugin/fidem-verification.0.3.2.zip",
+        "trunk": "https://downloads.wordpress.org/plugin/fidem-verification.zip"
+    },
+    "business_model": false,
+    "repository_url": "",
+    "commercial_support_url": "",
+    "guideline_labels": [],
+    "donate_link": "",
+    "banners": {
+        "low": "https://ps.w.org/fidem-verification/assets/banner-772x250.png?rev=3829528",
+        "high": "https://ps.w.org/fidem-verification/assets/banner-1544x500.png?rev=3829528"
+    },
+    "icons": {
+        "1x": "https://ps.w.org/fidem-verification/assets/icon-128x128.png?rev=3829528",
+        "2x": "https://ps.w.org/fidem-verification/assets/icon-256x256.png?rev=3829528"
+    },
+    "blocks": [],
+    "block_assets": [],
+    "author_block_count": 0,
+    "author_block_rating": 0,
+    "blueprints": [],
+    "preview_link": "",
+    "language_packs": []
+}
